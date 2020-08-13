@@ -1,4 +1,5 @@
 import Foundation
+import NYPLAudiobookToolkit
 
 @objcMembers final class NYPLKeychainManager: NSObject {
 
@@ -25,6 +26,7 @@ import Foundation
     migrateItemsFromOldKeychain()
     updateKeychainForBackgroundFetch()
     manageFeedbooksData()
+    manageFeedbookDrmPrivateKey()
   }
 
   // The app does not handle DRM Authentication logic when assuming a user
@@ -160,38 +162,72 @@ import Foundation
       ]
       let status = SecItemAdd(addQuery as CFDictionary, nil)
       if status != errSecSuccess && status != errSecDuplicateItem {
-        // This is unexpected
-        var errMsg = ""
-        if #available(iOS 11.3, *) {
-          errMsg = (SecCopyErrorMessageString(status, nil) as String?) ?? ""
-        }
-        if errMsg.isEmpty {
-          switch status {
-          case errSecUnimplemented:
-            errMsg = "errSecUnimplemented"
-          case errSecDiskFull:
-            errMsg = "errSecDiskFull"
-          case errSecIO:
-            errMsg = "errSecIO"
-          case errSecOpWr:
-            errMsg = "errSecOpWr"
-          case errSecParam:
-            errMsg = "errSecParam"
-          case errSecWrPerm:
-            errMsg = "errSecWrPerm"
-          case errSecAllocate:
-            errMsg = "errSecAllocate"
-          case errSecUserCanceled:
-            errMsg = "errSecUserCanceled"
-          case errSecBadReq:
-            errMsg = "errSecBadReq"
-          default:
-            errMsg = "Unknown OSStatus: \(status)"
-          }
-        }
-        
-        Log.error(#file, "FeedbookKeyManagement Error: \(errMsg)")
+        logKeychainError(forVendor: vendor.rawValue, status: status, message: "FeedbookKeyManagement Error:")
       }
     }
+  }
+    
+  private class func manageFeedbookDrmPrivateKey() {
+    for vendor in AudioBookVendors.allCases {
+      // Header of PEM key needed to be stripped in order to create SecKey in NYPLAudiobookToolkit
+      // Performing the strip here to avoid converting the data to string back and forth after retrieval
+      guard let privateKeyString = NYPLSecrets.drmCertificate(forVendor: vendor),
+        let privateKeyData = Data(base64Encoded: RSAUtils.stripPEMKeyHeader(privateKeyString)),
+        let tag = "\(FeedbookDRMPrivateKeyTag)\(vendor.rawValue)".data(using: .utf8) else {
+          Log.error(#file, "Could not load drm private key for vendor: \(vendor.rawValue)")
+          continue
+      }
+    
+      let addQuery: [String: Any] = [
+        kSecClass as String: kSecClassKey,
+        kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
+        kSecAttrApplicationTag as String: tag,
+        kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
+        kSecValueData as String: privateKeyData,
+        kSecAttrKeyClass as String: kSecAttrKeyClassPrivate
+      ]
+        
+      let status = SecItemAdd(addQuery as CFDictionary, nil)
+      if status != errSecSuccess && status != errSecDuplicateItem {
+        logKeychainError(forVendor: vendor.rawValue, status: status, message: "FeedbookDrmPrivateKeyManagement Error:")
+      }
+    }
+  }
+    
+  private class func logKeychainError(forVendor vendor:String, status: OSStatus, message: String) {
+    // This is unexpected
+    var errMsg = ""
+    if #available(iOS 11.3, *) {
+      errMsg = (SecCopyErrorMessageString(status, nil) as String?) ?? ""
+    }
+    if errMsg.isEmpty {
+      switch status {
+      case errSecUnimplemented:
+        errMsg = "errSecUnimplemented"
+      case errSecDiskFull:
+        errMsg = "errSecDiskFull"
+      case errSecIO:
+        errMsg = "errSecIO"
+      case errSecOpWr:
+        errMsg = "errSecOpWr"
+      case errSecParam:
+        errMsg = "errSecParam"
+      case errSecWrPerm:
+        errMsg = "errSecWrPerm"
+      case errSecAllocate:
+        errMsg = "errSecAllocate"
+      case errSecUserCanceled:
+        errMsg = "errSecUserCanceled"
+      case errSecBadReq:
+        errMsg = "errSecBadReq"
+      default:
+        errMsg = "Unknown OSStatus: \(status)"
+      }
+    }
+    
+    NYPLErrorLogger.logError(withCode: .keychainItemAddFail,
+                             context: "\(NYPLErrorLogger.Context.keychainManagement.rawValue) \(vendor)",
+                             message: "\(message) \(errMsg)",
+                            metadata: nil)
   }
 }

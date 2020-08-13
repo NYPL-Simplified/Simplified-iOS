@@ -98,6 +98,9 @@ fileprivate let nullString = "null"
   // low-level / system related
   case missingSystemPaths = 1200
   case fileMoveFail = 1201
+    
+  // keychain
+  case keychainItemAddFail = 1300
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
@@ -133,6 +136,7 @@ fileprivate let nullString = "null"
     case signOut
     case signUp
     case errorHandling
+    case keychainManagement
   }
 
   // MARK:- Generic helpers

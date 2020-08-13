@@ -116,6 +116,7 @@
 		17071065242A923400E2648F /* NYPLSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17071060242A923400E2648F /* NYPLSecrets.swift */; };
 		171966A924170819007BB87E /* NYPLBookState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171966A824170819007BB87E /* NYPLBookState.swift */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
+		175E47DE24E477710066A6CF /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		179699D124131BA500EC309F /* UIColor+LabelColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179699D024131BA500EC309F /* UIColor+LabelColor.swift */; };
 		17CE5305243C020800315E63 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		17D08381248E938000092AA9 /* OverdriveProcessor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */; };
@@ -422,7 +423,6 @@
 		738EF2E22405EA6000F388FB /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */; };
 		738EF2E32405EA6000F388FB /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */; };
 		738EF2E72405EBAD00F388FB /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */; };
-		738EF2E92405EBC100F388FB /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		738EF2EA2405EC1100F388FB /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */; };
 		738EF2EC2405EC5900F388FB /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2EB2405EC5900F388FB /* PromisesObjC.framework */; };
 		73A3EAED2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */; };
@@ -1061,6 +1061,7 @@
 				148B1C2E21768EAA00FF64AB /* NYPLAudiobookToolkit.framework in Frameworks */,
 				738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */,
 				738EF2DC2405EA6000F388FB /* FirebaseCoreDiagnostics.framework in Frameworks */,
+				175E47DE24E477710066A6CF /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				738EF2DD2405EA6000F388FB /* FirebaseCore.framework in Frameworks */,
 				738EF2DE2405EA6000F388FB /* FirebaseAnalytics.framework in Frameworks */,
 				738EF2E02405EA6000F388FB /* nanopb.framework in Frameworks */,
@@ -1068,7 +1069,6 @@
 				738EF2E22405EA6000F388FB /* GoogleAppMeasurement.framework in Frameworks */,
 				738EF2E32405EA6000F388FB /* FIRAnalyticsConnector.framework in Frameworks */,
 				738EF2E72405EBAD00F388FB /* GoogleDataTransport.framework in Frameworks */,
-				738EF2E92405EBC100F388FB /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				738EF2EA2405EC1100F388FB /* FirebaseInstallations.framework in Frameworks */,
 				738EF2EC2405EC5900F388FB /* PromisesObjC.framework in Frameworks */,
 				731DA5FC240711F5009CC191 /* Fabric.framework in Frameworks */,
@@ -2768,7 +2768,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2779,9 +2779,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.5.1;
+				MARKETING_VERSION = 3.5.3;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
@@ -2815,7 +2815,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2830,9 +2830,9 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.5.1;
+				MARKETING_VERSION = 3.5.3;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
