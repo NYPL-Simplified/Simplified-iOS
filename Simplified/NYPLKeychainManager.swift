@@ -162,7 +162,7 @@ import NYPLAudiobookToolkit
       ]
       let status = SecItemAdd(addQuery as CFDictionary, nil)
       if status != errSecSuccess && status != errSecDuplicateItem {
-        logKeychainError(for: status, with: "FeedbookKeyManagement Vendor: \(vendor.rawValue) Error:")
+        logKeychainError(forVendor: vendor.rawValue, status: status, message: "FeedbookKeyManagement Error:")
       }
     }
   }
@@ -189,12 +189,12 @@ import NYPLAudiobookToolkit
         
       let status = SecItemAdd(addQuery as CFDictionary, nil)
       if status != errSecSuccess && status != errSecDuplicateItem {
-        logKeychainError(for: status, with: "FeedbookDrmPrivateKeyManagement Vendor: \(vendor.rawValue) Error:")
+        logKeychainError(forVendor: vendor.rawValue, status: status, message: "FeedbookDrmPrivateKeyManagement Error:")
       }
     }
   }
     
-  private class func logKeychainError(for status: OSStatus, with message: String) {
+  private class func logKeychainError(forVendor vendor:String, status: OSStatus, message: String) {
     // This is unexpected
     var errMsg = ""
     if #available(iOS 11.3, *) {
@@ -226,7 +226,7 @@ import NYPLAudiobookToolkit
     }
     
     NYPLErrorLogger.logError(withCode: .keychainItemAddFail,
-                             context: NYPLErrorLogger.Context.keychainManagement.rawValue,
+                             context: "\(NYPLErrorLogger.Context.keychainManagement.rawValue) \(vendor)",
                              message: "\(message) \(errMsg)",
                             metadata: nil)
   }
