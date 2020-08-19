@@ -33,7 +33,6 @@ fileprivate let nullString = "null"
   // book registry
   case nilBookIdentifier = 200 // caused by book registry, downloads
   case nilCFI = 201
-  case missingBookFile = 202
   case unknownBookState = 203
   case registrySyncFailure = 204
 
@@ -91,6 +90,10 @@ fileprivate let nullString = "null"
   case downloadFail = 908
   case responseFail = 909
 
+  // DRM
+  case epubDecodingError = 1000
+  case adobeDRMFulfillmentFail = 1001
+
   // wrong content
   case unknownRightsManagement = 1100
   case unexpectedFormat = 1101
@@ -117,9 +120,11 @@ fileprivate let nullString = "null"
   }
 
   /// Broad areas providing some kind of operating context for error reporting.
-  /// These are meant to be related to the code base more than functionality,
-  /// (e.g. an error related to audiobooks may happen in different classes)
-  /// although the two things may obviously overlap.
+  ///
+  /// - note: This is deprecated because it's of little use in Crashlytics.
+  /// Instead of context it's more useful to provide a string that identifies
+  /// and describes the error in a more developer-friendly way.
+  /// - todo: SIMPLY-2985 will address this deprecation.
   enum Context: String {
     case accountManagement
     case audiobooks
@@ -135,7 +140,7 @@ fileprivate let nullString = "null"
     case errorHandling
   }
 
-  // MARK:- Generic helpers
+  // MARK:- Private helpers
 
   /**
    Helper method for other logging functions that adds relevant account info
@@ -217,7 +222,7 @@ fileprivate let nullString = "null"
              metadata: metadata)
   }
 
-  // MARK:- Specialized logging methods
+  // MARK:- Book Download Errors
 
   /**
     Report when there's a null book identifier
@@ -244,29 +249,9 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
   
-  /**
-    Report when there's an error copying the book from RMSDK to app storage
-    @param book target book
-    @return
-   */
-  class func logMissingFileURLAfterDownloadingBook(_ book: NYPLBook?,
-                                                   message: String) {
-    var metadata = [String : Any]()
-    metadata["bookIdentifier"] = book?.identifier ?? nullString
-    metadata["bookTitle"] = book?.title ?? nullString
-    addAccountInfoToMetadata(&metadata)
+  //----------------------------------------------------------------------------
+  // MARK:- EReader errors
 
-    let userInfo = additionalInfo(
-      severity: .warning,
-      message: message,
-      metadata: metadata)
-    let err = NSError(domain: Context.bookDownload.rawValue,
-                      code: NYPLErrorCode.missingBookFile.rawValue,
-                      userInfo: userInfo)
-
-    Crashlytics.sharedInstance().recordError(err)
-  }
-  
   /**
     Report when there's a null CFI
     @param location CFI location in the EPUB
@@ -299,7 +284,8 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
 
-  // MARK: Sign up/in/out errors
+  //----------------------------------------------------------------------------
+  // MARK:- Sign up/in/out errors
 
   /**
     Report when there's an error deauthorizing device at RMSDK level
@@ -569,6 +555,9 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
 
+  //----------------------------------------------------------------------------
+  // MARK:- Audiobook errors
+
   class func logAudiobookIssue(_ error: NSError,
                                severity: NYPLSeverity,
                                message: String? = nil) {
@@ -601,6 +590,9 @@ fileprivate let nullString = "null"
                       userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
   }
+
+  //----------------------------------------------------------------------------
+  // MARK:- Network errors
 
   /// Use this function for logging low-level errors occurring in api execution
   /// when there's no other more relevant context available, or when it's more
@@ -656,7 +648,7 @@ fileprivate let nullString = "null"
   }
 
   //----------------------------------------------------------------------------
-  // MARK: - Private helpers
+  // MARK:- Private main method to report errors
 
   /// Helper to log a generic error to Crashlytics.
   /// - Parameters:

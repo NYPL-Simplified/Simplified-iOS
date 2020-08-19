@@ -78,8 +78,8 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
 
     if (data == nil) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedNoData
-                                context:@"NYPLOPDSFeed"
-                                message:@"Received no data from server"
+                                context:@"NYPLOPDSFeed: no data from server"
+                                message:nil
                                metadata:@{
                                  @"Request": [request loggableString],
                                  @"Response": response,
@@ -98,27 +98,25 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
         NSString *msg = [NSString stringWithFormat:@"Got %ld HTTP status with no error object.", (long)httpResp.statusCode];
 
         NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        if (dataString == nil) {
-          dataString = [NSString stringWithFormat:@"datalength=%lu",
-                        (unsigned long)data.length];
+
+        NSDictionary *problemDocDict = nil;
+        if (response.isProblemDocument) {
+          problemDocDict = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
         }
 
         [NYPLErrorLogger logNetworkError:error
                                     code:NYPLErrorCodeApiCall
-                                 context:NSStringFromClass([self class])
+                                 context:@"NYPLOPDSFeed: HTTP status error"
                                  request:request
                                 response:response
                                  message:msg
                                 metadata:@{
-                                  @"receivedData": dataString ?: @""
+                                  @"receivedData": dataString ?: @"N/A",
+                                  @"receivedDataLength (bytes)": @(data.length),
+                                  @"problemDoc": problemDocDict ?: @"N/A"
                                 }];
 
-        NSDictionary *errorDict = nil;
-        if (response.isProblemDocument) {
-          errorDict = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
-        }
-
-        NYPLAsyncDispatch(^{handler(nil, errorDict);});
+        NYPLAsyncDispatch(^{handler(nil, problemDocDict);});
         return;
       }
     }
@@ -127,9 +125,12 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
     if(!feedXML) {
       NYPLLOG(@"Failed to parse data as XML.");
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeFeedParseFail
-                                context:@"NYPLOPDSFeed"
-                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]
-                               metadata:nil];
+                                context:@"NYPLOPDSFeed: Failed to parse data as XML"
+                                message:@"Error in NYPLOPDSFeed::withURL:"
+                               metadata:@{
+                                 @"request": request.loggableString,
+                                 @"response": response ?: @"N/A",
+                               }];
       // this error may be nil
       NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
       NYPLAsyncDispatch(^{handler(nil, error);});
@@ -140,9 +141,12 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
     if(!feed) {
       NYPLLOG(@"Could not interpret XML as OPDS.");
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedParseFail
-                                context:@"NYPLOPDSFeed"
-                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]
-                               metadata:nil];
+                                context:@"NYPLOPDSFeed: Failed to parse XML as OPDS"
+                                message:@"Error in NYPLOPDSFeed::withURL:"
+                               metadata:@{
+                                 @"request": request.loggableString,
+                                 @"response": response ?: @"N/A",
+                               }];
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
