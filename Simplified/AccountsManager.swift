@@ -72,7 +72,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     
     NotificationCenter.default.addObserver(
       self,
-      selector: #selector(updateAccountSet),
+      selector: #selector(updateAccountSetFromNotification(_:)),
       name: NSNotification.Name.NYPLUseBetaDidChange,
       object: nil
     )
@@ -264,7 +264,11 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
 
     return accounts ?? []
   }
-  
+
+  @objc private func updateAccountSetFromNotification(_ notif: NSNotification) {
+    updateAccountSet(completion: { _ in })
+  }
+
   func updateAccountSet(completion: @escaping (Bool) -> () = { _ in }) {
     accountSetsWorkQueue.sync(flags: .barrier) {
       self.accountSet = NYPLSettings.shared.useBetaLibraries ? betaUrlHash : prodUrlHash

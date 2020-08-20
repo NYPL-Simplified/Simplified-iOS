@@ -56,14 +56,19 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
 
 @implementation NYPLOPDSFeed
 
-+ (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
++ (void)withURL:(NSURL *)URL
+shouldResetCache:(BOOL)shouldResetCache
+completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
 {
   if(!handler) {
     @throw NSInvalidArgumentException;
   }
 
   __block NSURLRequest *request = nil;
-  request = [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+  request = [[NYPLSession sharedSession]
+             withURL:URL
+             shouldResetCache:shouldResetCache
+             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
 
     if (error != nil) {
       // NYPLSession already logged this.

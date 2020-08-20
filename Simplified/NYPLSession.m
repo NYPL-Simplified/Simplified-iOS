@@ -82,6 +82,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 }
 
 - (NSURLRequest*)withURL:(NSURL *const)URL
+        shouldResetCache:(BOOL)shouldResetCache
        completionHandler:(void (^)(NSData *data,
                                    NSURLResponse *response,
                                    NSError *error))handler
@@ -89,9 +90,17 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   if(!handler) {
     @throw NSInvalidArgumentException;
   }
-  
+
   NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
-  
+
+  if (shouldResetCache) {
+    // NB: this sledgehammer approach is not ideal, and the only reason we
+    // don't use `removeCachedResponseForRequest:` (which is really what we
+    // should be using) is because that method has been buggy since iOS 8,
+    // and it still is in iOS 13.
+    [self.session.configuration.URLCache removeAllCachedResponses];
+  }
+
   NSString *lpe = [URL lastPathComponent];
   if ([lpe isEqualToString:@"borrow"])
     [req setHTTPMethod:@"PUT"];

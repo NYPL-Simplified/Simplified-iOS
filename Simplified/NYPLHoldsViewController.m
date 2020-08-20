@@ -85,7 +85,7 @@
   
   self.collectionView.alwaysBounceVertical = YES;
   self.refreshControl = [[UIRefreshControl alloc] init];
-  [self.refreshControl addTarget:self action:@selector(didSelectSync) forControlEvents:UIControlEventValueChanged];
+  [self.refreshControl addTarget:self action:@selector(didPullToRefresh) forControlEvents:UIControlEventValueChanged];
   [self.collectionView addSubview:self.refreshControl];
   
   // We know that super sets it to a flow layout.
@@ -252,7 +252,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (void)didSelectSync
+- (void)didPullToRefresh
 {  
   Account *const account = [AccountsManager shared].currentAccount;
   if (account.details.needsAuth) {

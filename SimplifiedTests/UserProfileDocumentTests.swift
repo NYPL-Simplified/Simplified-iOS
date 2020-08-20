@@ -123,6 +123,65 @@ class UserProfileDocumentTests: XCTestCase {
   }
   """
 
+  let simply2491ProfileDoc = """
+  {
+    "simplified:authorization_identifier": "23333999999666",
+    "drm": [{
+      "drm:vendor": "NYPL",
+      "drm:scheme": "http://librarysimplified.org/terms/drm/scheme/ACS",
+      "drm:clientToken": "NYNYPL|1566686661|52ccc666-b666-23ea-1238-0eab1234154d|666stru4hIMzf7NRP3XhcjxfSapaNGodE2GGGGY8KGc@"
+    }],
+    "links": [{
+      "href": "https://circulation.librarysimplified.org/NYNYPL/AdobeAuth/devices",
+      "rel": "http://librarysimplified.org/terms/drm/rel/devices"
+    }, {
+      "href": "https://circulation.librarysimplified.org/NYNYPL/annotations/",
+      "type": "application/ld+json; profile=\\"http://www.w3.org/ns/anno.jsonld\\"",
+      "rel": "http://www.w3.org/ns/oa#annotationService"
+    }],
+    "simplified:authorization_expires": "2023-06-25T00:00:00Z",
+    "settings": {
+      "simplified:synchronize_annotations": null
+    }
+  }
+  """
+
+  /// For this test to be meaningful it needs to be run on a physical device
+  /// with these global system settings:
+  /// General - Language & Region:
+  /// - Region: UK
+  /// - Calendar: Gregorian
+  /// General - Date & Time:
+  /// - 24-Hour Time: Off
+  func testParseProfileDocCausingSIMPLY2491() {
+    guard let data = simply2491ProfileDoc.data(using: .utf8) else {
+      XCTFail("Failed to generate test Data from String")
+      return
+    }
+
+    do {
+      let profileDoc = try UserProfileDocument.fromData(data)
+      XCTAssertNotNil(profileDoc)
+      XCTAssertEqual(profileDoc.authorizationIdentifier, "23333999999666")
+
+      let cal = NSCalendar(identifier: .gregorian)!
+      cal.timeZone = TimeZone(secondsFromGMT: 0)!
+      cal.locale = Locale(identifier: "en_US_POSIX")
+      guard let date = profileDoc.authorizationExpires else {
+        XCTFail("Failed to parse `authorizationExpires`")
+        return
+      }
+      XCTAssertEqual(cal.component(.year, from: date), 2023)
+      XCTAssertEqual(cal.component(.month, from: date), 6)
+      XCTAssertEqual(cal.component(.day, from: date), 25)
+      XCTAssertEqual(cal.component(.hour, from: date), 0)
+      XCTAssertEqual(cal.component(.minute, from: date), 0)
+      XCTAssertEqual(cal.component(.second, from: date), 0)
+    } catch {
+      XCTFail("parse fail with error \(error)")
+    }
+  }
+
   func testParse() {
     let data = validJson.data(using: .utf8)
     XCTAssertNotNil(data)
@@ -132,7 +191,7 @@ class UserProfileDocumentTests: XCTestCase {
       XCTAssert(pDoc.authorizationIdentifier == "23333999999915")
       XCTAssertNotNil(pDoc.authorizationExpires)
       print(pDoc.authorizationExpires!)
-      
+
       // Test DRM
       XCTAssertNotNil(pDoc.drm)
       if let drms = pDoc.drm {
@@ -170,7 +229,7 @@ class UserProfileDocumentTests: XCTestCase {
       XCTAssert(pDoc.authorizationIdentifier == "23333999999915")
       XCTAssertNotNil(pDoc.authorizationExpires)
       print(pDoc.authorizationExpires!)
-      
+
       // Test DRM
       XCTAssertNotNil(pDoc.drm)
       if let drms = pDoc.drm {
