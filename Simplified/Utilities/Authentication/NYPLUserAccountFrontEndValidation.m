@@ -56,7 +56,7 @@ replacementString:(NSString *)string
     }
 
     // Usernames cannot be longer than 25 characters.
-    if ([textField.text stringByReplacingCharactersInRange:range withString:string].length > 25) {
+    if (range.location < 0 || range.location + range.length > textField.text.length || [textField.text stringByReplacingCharactersInRange:range withString:string].length > 25) {
       return NO;
     }
   }

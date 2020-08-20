@@ -315,6 +315,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
   [NYPLOpenSearchDescription
    withURL:self.feed.openSearchURL
+   shouldResetCache:NO
    completionHandler:^(NYPLOpenSearchDescription *const description) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.searchDescription = description;

@@ -89,7 +89,7 @@ private let standardCellHeight: CGFloat = 44.0
     }
 
     addPendingIndicator()
-    NYPLOPDSFeed.withURL(url) { (feed, errorDict) in
+    NYPLOPDSFeed.withURL(url, shouldResetCache: false) { (feed, errorDict) in
       DispatchQueue.main.async {
         if feed?.type == .acquisitionGrouped {
           let groupedFeed = NYPLCatalogGroupedFeed.init(opdsFeed: feed)
