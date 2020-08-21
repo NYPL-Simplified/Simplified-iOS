@@ -47,10 +47,12 @@ extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
 
       guard string.rangeOfCharacter(from: bannedCharacters) == nil else { return false }
 
-      if let text = textField.text,
-        let textRange = Range(range, in: text) {
+      if let text = textField.text {
+        if range.location < 0 || range.location + range.length > text.count {
+          return false
+        }
 
-        let updatedText = text.replacingCharacters(in: textRange, with: string)
+        let updatedText = (text as NSString).replacingCharacters(in: range, with: string)
         // Usernames cannot be longer than 25 characters.
         guard updatedText.count <= 25 else { return false }
       }
