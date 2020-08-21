@@ -465,7 +465,7 @@ Authenticating with any of those barcodes should work.
        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
        if (!pDoc) {
          [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                                  context:@"signOut"
+                                                  context:@"signOut: unable to parse user profile doc"
                                                   barcode:currentBarcode];
          [self showLogoutAlertWithError:pDocError responseCode:statusCode];
          [self removeActivityTitle];
@@ -543,25 +543,34 @@ Authenticating with any of those barcodes should work.
   NSString *tokenPassword = [licensorItems lastObject];
   [licensorItems removeLastObject];
   NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+  NSString *deviceID = [self.selectedUserAccount deviceID];
   
   NYPLLOG(@"***DRM Deactivation Attempt***");
   NYPLLOG_F(@"\nLicensor: %@\n",licensor);
   NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
   NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
   NYPLLOG_F(@"UserID: %@\n",[self.selectedUserAccount userID]);
-  NYPLLOG_F(@"DeviceID: %@\n",[self.selectedUserAccount deviceID]);
+  NYPLLOG_F(@"DeviceID: %@\n",deviceID);
   
   [[NYPLADEPT sharedInstance]
    deauthorizeWithUsername:tokenUsername
    password:tokenPassword
    userID:[self.selectedUserAccount userID]
-   deviceID:[self.selectedUserAccount deviceID]
+   deviceID:deviceID
    completion:^(BOOL success, NSError *error) {
      
      if(!success) {
        // Even though we failed, let the user continue to log out.
        // The most likely reason is a user changing their PIN.
-       [NYPLErrorLogger logDeauthorizationError:error];
+       [NYPLErrorLogger logError:error
+                         context:@"User lost an activation on signout: ADEPT error"
+                         message:nil
+                        metadata:@{
+                          @"DeviceID": deviceID ?: @"N/A",
+                          @"Licensor": licensor ?: @"N/A",
+                          @"AdobeTokenUsername": tokenUsername,
+                          @"AdobeTokenPassword": tokenPassword,
+                        }];
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
@@ -623,7 +632,7 @@ Authenticating with any of those barcodes should work.
                                   error:nil
                            errorMessage:@"Error parsing user profile document"];
     [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                             context:@"SignIn-settingsTab"
+                                             context:@"SignIn-settingsTab: unable to parse user profile doc"
                                              barcode:barcode];
     return;
   }
@@ -740,7 +749,7 @@ Authenticating with any of those barcodes should work.
                               problemDocumentData:data
                                           barcode:barcode
                                               url:request.URL
-                                          context:@"SettingsAccountDetailVC-processCreds"
+                                          context:@"SettingsAccountDetailVC-processCreds: Problem Doc parse error"
                                           message:@"Sign-in failed, got a corrupted problem doc"];
   } else if (problemDocument) {
     [NYPLErrorLogger logLoginError:error
@@ -942,9 +951,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       {
         if (self.selectedAccount.details.signUpUrl == nil) {
           // this situation should be impossible, but let's log it if it happens
-          [NYPLErrorLogger logSignUpError:nil
-                                     code:NYPLErrorCodeNilSignUpURL
-                                  message:@"signUpUrl from selected account is nil"];
+          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilSignUpURL
+                                    context:@"SignUp Error in Settings: nil signUp URL"
+                                    message:nil
+                                   metadata:@{
+                                     @"selectedLibraryAccountUUID": self.selectedAccount.uuid,
+                                     @"selectedLibraryAccountName": self.selectedAccount.name,
+                                   }];
           return;
         }
 

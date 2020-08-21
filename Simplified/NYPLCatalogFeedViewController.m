@@ -39,7 +39,8 @@
   if (![response.MIMEType isEqualToString:@"application/atom+xml"]) {
     NYPLLOG(@"Did not receive XML atom feed, cannot initialize");
     [NYPLErrorLogger
-     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidResponseMimeType];
+     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidResponseMimeType
+     response:response metadata:nil];
     return nil;
   }
 
@@ -47,7 +48,8 @@
   if(!XML) {
     NYPLLOG(@"Cannot initialize due to invalid XML.");
     [NYPLErrorLogger
-     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidXML];
+     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidXML
+     response:response metadata:nil];
     return nil;
   }
 
@@ -55,7 +57,8 @@
   if(!feed) {
     NYPLLOG(@"Cannot initialize due to XML not representing an OPDS feed.");
     [NYPLErrorLogger
-     logCatalogInitErrorWithCode:NYPLErrorCodeOpdsFeedParseFail];
+     logCatalogInitErrorWithCode:NYPLErrorCodeOpdsFeedParseFail
+     response:response metadata:nil];
     return nil;
   }
 
@@ -72,7 +75,10 @@
               remoteViewController:remoteVC];
     case NYPLOPDSFeedTypeInvalid:
       NYPLLOG(@"Cannot initialize due to invalid feed.");
-      [NYPLErrorLogger logCatalogInitErrorWithCode:NYPLErrorCodeInvalidFeedType];
+      [NYPLErrorLogger
+       logCatalogInitErrorWithCode:NYPLErrorCodeInvalidFeedType
+       response:response
+       metadata:@{ @"feedType": @(feed.type)}];
       return nil;
     case NYPLOPDSFeedTypeNavigation: {
       return [NYPLCatalogFeedViewController navigationFeedWithData:XML

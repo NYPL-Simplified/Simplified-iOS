@@ -313,7 +313,7 @@
                                 problemDocumentData:self.data
                                             barcode:nil
                                                 url:[self.response URL]
-                                            context:@"RemoteViewController"
+                                            context:@"Catalog api fail: Problem Doc parse error"
                                             message:@"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"];
       alert = [NYPLAlertUtils
                alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
@@ -321,7 +321,7 @@
                                          @"Message for a problem document error")];
     } else {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeProblemDocMessageDisplayed
-                                context:@"RemoteViewController"
+                                context:@"Catalog api fail: Problem Doc returned"
                                 message:@"Server-side api call (likely related to Catalog loading) failed"
                                metadata:pDoc.debugDictionary];
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
@@ -331,7 +331,7 @@
     // not a 200 but also no problem doc: this could be an error or not
     // depending on the mimeType and the data
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnexpectedHTTPCodeWarning
-                              context:@"RemoteViewController"
+                              context:@"Catalog api fail"
                               message:@"Server-side api call (likely related to Catalog loading) returned a non-200 HTTP status"
                              metadata:@{
                                @"HTTPstatusCode": @(httpResponse.statusCode),

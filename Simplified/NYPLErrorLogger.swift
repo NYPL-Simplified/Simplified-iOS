@@ -26,19 +26,16 @@ fileprivate let nullString = "null"
 @objc enum NYPLErrorCode: Int {
   case ignore = 0
 
-  // generic app related (101 and 102 codes are obsolete, don't use)
+  // generic app related
   case appLaunch = 100
   case genericErrorMsgDisplayed = 103
 
   // book registry
-  case nilBookIdentifier = 200 // caused by book registry, downloads
-  case nilCFI = 201
   case unknownBookState = 203
   case registrySyncFailure = 204
 
-  // sign in/out/up (304 code is obsolete, don't use)
+  // sign in/out/up
   case invalidLicensor = 300
-  case deAuthFail = 301
   case barcodeException = 302
   case remoteLoginError = 303
   case userProfileDocFail = 305
@@ -53,9 +50,10 @@ fileprivate let nullString = "null"
   // audiobooks
   case audiobookUserEvent = 400
   case audiobookCorrupted = 401
+  case audiobookExternalError = 402
 
   // ereader
-  case deleteBookmarkFail = 500
+  case nilCFI = 500
 
   // Parse failure
   case parseProfileDataCorrupted = 600
@@ -128,9 +126,7 @@ fileprivate let nullString = "null"
   enum Context: String {
     case accountManagement
     case audiobooks
-    case bookDownload
     case catalog
-    case ereader
     case infrastructure
     case myBooks
     case opds
@@ -143,8 +139,8 @@ fileprivate let nullString = "null"
   // MARK:- Private helpers
 
   /**
-   Helper method for other logging functions that adds relevant account info
-   to our crash reporting system.
+   Helper method for other logging functions that adds relevant library
+   account info to our crash reports.
    - parameter metadata: report metadata dictionary
    */
   private class func addAccountInfoToMetadata(_ metadata: inout [String: Any]) {
@@ -222,106 +218,8 @@ fileprivate let nullString = "null"
              metadata: metadata)
   }
 
-  // MARK:- Book Download Errors
-
-  /**
-    Report when there's a null book identifier
-    @param book book
-    @param identifier book ID
-    @param title book title
-    @return
-   */
-  class func logUnexpectedNilIdentifier(_ identifier: String?, book: NYPLBook?) {
-    var metadata = [String : Any]()
-    metadata["incomingIdentifierString"] = identifier ?? nullString
-    metadata["bookTitle"] = book?.title ?? nullString
-    metadata["revokeLink"] = book?.revokeURL?.absoluteString ?? nullString
-    addAccountInfoToMetadata(&metadata)
-
-    let userInfo = additionalInfo(
-      severity: .warning,
-      message: "The book identifier was unexpectedly nil when attempting to return.",
-      metadata: metadata)
-    let err = NSError(domain: Context.myBooks.rawValue,
-                      code: NYPLErrorCode.nilBookIdentifier.rawValue,
-                      userInfo: userInfo)
-
-    Crashlytics.sharedInstance().recordError(err)
-  }
-  
-  //----------------------------------------------------------------------------
-  // MARK:- EReader errors
-
-  /**
-    Report when there's a null CFI
-    @param location CFI location in the EPUB
-    @param locationDictionary
-    @param bookId id of the book
-    @param title name of the book
-    @return
-   */
-  class func logNilContentCFI(location: NYPLBookLocation?,
-                              locationDictionary: Dictionary<String, Any>?,
-                              bookId: String?,
-                              title: String?,
-                              message: String?) {
-    var metadata = [String : Any]()
-    metadata["bookID"] = bookId ?? nullString
-    metadata["bookTitle"] = title ?? nullString
-    metadata["registry locationString"] = location?.locationString ?? nullString
-    metadata["renderer"] = location?.renderer ?? nullString
-    metadata["openPageRequest idref"] = locationDictionary?["idref"] ?? nullString
-    addAccountInfoToMetadata(&metadata)
-    
-    let userInfo = additionalInfo(
-      severity: .warning,
-      message: message,
-      metadata: metadata)
-    let err = NSError(domain: Context.ereader.rawValue,
-                      code: NYPLErrorCode.nilCFI.rawValue,
-                      userInfo: userInfo)
-
-    Crashlytics.sharedInstance().recordError(err)
-  }
-
   //----------------------------------------------------------------------------
   // MARK:- Sign up/in/out errors
-
-  /**
-    Report when there's an error deauthorizing device at RMSDK level
-    - Parameter error: Underlying error that happened during deauthorization.
-   */
-  class func logDeauthorizationError(_ error: NSError?) {
-    var metadata = [String : Any]()
-    addAccountInfoToMetadata(&metadata)
-    if let error = error {
-      metadata[NSUnderlyingErrorKey] = error
-    }
-    
-    let userInfo = additionalInfo(
-      severity: .error,
-      message: "User has lost an activation on signout due to NYPLAdept Error.",
-      metadata: metadata)
-    let err = NSError(domain: Context.signOut.rawValue,
-                      code: NYPLErrorCode.deAuthFail.rawValue,
-                      userInfo: userInfo)
-
-    Crashlytics.sharedInstance().recordError(err)
-  }
-
-  /// Reports a sign up error.
-  /// - Parameters:
-  ///   - error: Any error obtained during the sign up process, if present.
-  ///   - code: A code identifying the error situation.
-  ///   - message: A string for further context.
-  class func logSignUpError(_ error: Error? = nil,
-                            code: NYPLErrorCode,
-                            message: String) {
-    logError(error,
-             code: code,
-             context: Context.signUp.rawValue,
-             message: message)
-  }
 
   /// Report when there's an error logging in to an account.
   /// - Parameters:
@@ -429,20 +327,7 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
 
-  // MARK: Misc
-
-  class func logDeleteBookmarkError(message: String,
-                                    context: String,
-                                    metadata: [String: Any]) {
-    let userInfo = additionalInfo(severity: .warning,
-                                  message: message,
-                                  context: context,
-                                  metadata: metadata)
-    let err = NSError(domain: Context.ereader.rawValue,
-                      code: NYPLErrorCode.deleteBookmarkFail.rawValue,
-                      userInfo: userInfo)
-    Crashlytics.sharedInstance().recordError(err)
-  }
+  // MARK:- Misc
 
   /**
     Report when user launches the app.
@@ -466,23 +351,32 @@ fileprivate let nullString = "null"
     @return
    */
   class func logBarcodeException(_ exception: NSException?, library: String?) {
-    var metadata = [String : Any]()
+    var metadata: [String : Any] = [
+      "Library": library ?? nullString,
+      "ExceptionName": exception?.name ?? nullString,
+      "ExceptionReason": exception?.reason ?? nullString,
+    ]
+
     addAccountInfoToMetadata(&metadata)
-    
-    let userInfo = additionalInfo(
-      severity: .info,
-      message: "\(library ?? nullString): \(exception?.name.rawValue ?? nullString). \(exception?.reason ?? nullString)",
-      context: "NYPLZXingEncoder",
-      metadata: metadata)
-    let err = NSError(domain: Context.signIn.rawValue,
+    let userInfo = additionalInfo(severity: .info, metadata: metadata)
+
+    let err = NSError(domain: "\(Context.signIn.rawValue): BarcodeScanner",
                       code: NYPLErrorCode.barcodeException.rawValue,
                       userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
 
-  class func logCatalogInitError(withCode code: NYPLErrorCode) {
-    logError(withCode: code, context: Context.catalog.rawValue)
+  class func logCatalogInitError(withCode code: NYPLErrorCode,
+                                 response: URLResponse?,
+                                 metadata: [String: Any]?) {
+    var metadata = metadata ?? [String: Any]()
+    if let response = response {
+      metadata["response"] = response
+    }
+    logError(withCode: code,
+             context: "Catalog VC Initialization",
+             metadata: metadata)
   }
 
   /**
@@ -577,16 +471,6 @@ fileprivate let nullString = "null"
                                   context: Context.audiobooks.rawValue)
     let err = NSError(domain: Context.audiobooks.rawValue,
                       code: NYPLErrorCode.audiobookUserEvent.rawValue,
-                      userInfo: userInfo)
-    Crashlytics.sharedInstance().recordError(err)
-  }
-
-  class func logOverdriveInvalidResponse(message: String, response: [String: Any]) {
-    let userInfo = additionalInfo(severity: .error,
-                                  message: message,
-                                  context: Context.bookDownload.rawValue)
-    let err = NSError(domain: Context.bookDownload.rawValue,
-                      code: NYPLErrorCode.overdriveFulfillResponseParseFail.rawValue,
                       userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
   }

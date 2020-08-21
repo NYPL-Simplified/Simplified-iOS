@@ -255,7 +255,7 @@
                                  message:msg];
     } else {
       if (level > LogLevelDebug) {
-        NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
+        NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:NYPLErrorCodeAudiobookExternalError userInfo:nil];
 
         NYPLSeverity severity = level == LogLevelInfo ? NYPLSeverityInfo : level == LogLevelWarn ? NYPLSeverityWarning : NYPLSeverityError;
         [NYPLErrorLogger logAudiobookIssue:error

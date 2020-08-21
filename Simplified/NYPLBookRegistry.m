@@ -693,6 +693,11 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 
 - (void)setProcessing:(BOOL)processing forIdentifier:(NSString *)identifier
 {
+  // guard to avoid crash
+  if (identifier == nil) {
+    return;
+  }
+
   @synchronized(self) {
     if(processing) {
       [self.processingIdentifiers addObject:identifier];

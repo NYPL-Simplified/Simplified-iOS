@@ -531,9 +531,6 @@ didCompleteWithError:(NSError *)error
   NSString *bookTitle = book.title;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed;
-  if (!book.identifier) {
-    [NYPLErrorLogger logUnexpectedNilIdentifier:identifier book:book];
-  }
 
   // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
