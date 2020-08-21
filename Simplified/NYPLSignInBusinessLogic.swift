@@ -12,7 +12,8 @@ import NYPLCardCreator
 @objc protocol NYPLBookRegistrySyncing: NSObjectProtocol {
   var syncing: Bool {get}
   func reset(_ libraryAccountUUID: String)
-  func sync(completionHandler: ((_ success: Bool) -> Void)?)
+  func syncResettingCache(_ resetCache: Bool,
+                          completionHandler: ((_ success: Bool) -> Void)?)
   func save()
 }
 

@@ -93,7 +93,7 @@ import UIKit
     @return
    */
   class func setProblemDocument(controller: UIAlertController?, document: NYPLProblemDocument?, append: Bool) {
-    guard let controller = controller else {
+    guard let alert = controller else {
       return
     }
     guard let document = document else {
@@ -101,19 +101,19 @@ import UIKit
     }
 
     if append == false {
-      controller.title = document.title
-      controller.message = document.detail
+      alert.title = document.title
+      alert.message = document.detail
       return
     }
 
     var titleWasAdded = false
-    if controller.title?.isEmpty ?? true {
-      controller.title = document.title
+    if alert.title?.isEmpty ?? true {
+      alert.title = document.title
       titleWasAdded = true
     }
 
     let existingMsg: String = {
-      if let existingMsg = controller.message, !existingMsg.isEmpty {
+      if let existingMsg = alert.message, !existingMsg.isEmpty {
         return existingMsg + "\n"
       }
       return ""
@@ -122,9 +122,9 @@ import UIKit
     let docDetail: String = document.detail ?? ""
 
     if !titleWasAdded, let docTitle = document.title, !docTitle.isEmpty {
-      controller.message = "\(existingMsg)\(docTitle)\n\(docDetail)"
+      alert.message = "\(existingMsg)\(docTitle)\n\(docDetail)"
     } else {
-      controller.message = "\(existingMsg)\(docDetail)"
+      alert.message = "\(existingMsg)\(docDetail)"
     }
   }
   

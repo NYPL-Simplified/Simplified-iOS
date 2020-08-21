@@ -456,6 +456,7 @@ viewForHeaderInSection:(NSInteger const)section
 {
   [NYPLOpenSearchDescription
    withURL:self.feed.openSearchURL
+   shouldResetCache:NO
    completionHandler:^(NYPLOpenSearchDescription *const description) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.searchDescription = description;

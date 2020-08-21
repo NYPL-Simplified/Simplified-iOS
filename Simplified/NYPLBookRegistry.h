@@ -47,23 +47,29 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
 /**
  Grandfathering original sync method. Passes nil for the background fetch handler.
 
+ @param shouldResetCache Whether we should wipe the whole cache of
+ loans/holds/book details/open search/ungrouped feeds in its entirety or not.
  @param handler Completion Handler is on main thread, but not gauranteed to be called.
  */
-- (void)syncWithCompletionHandler:(void (^ _Nullable)(BOOL success))handler;
+- (void)syncResettingCache:(BOOL)shouldResetCache
+         completionHandler:(void (^ _Nullable)(BOOL success))handler;
 
 /**
  Syncs the latest loans content from the server. Attempting to sync while one is
  already in progress will be ignored. Resetting the registry while a sync is in
  progress will cause the handler not to be called.
 
- @param handler Called on completion on the main thread. Not gauranteed to be
+ @param shouldResetCache Whether we should wipe the whole cache of
+ loans/holds/book details/open search/ungrouped feeds in its entirety or not.
+ @param handler Called on completion on the main thread. Not guaranteed to be
  called.
  @param fetchHandler Called on completion on the main thread while exceuting
  from a Background App State, like from the App Delegate method. Calls to this
  block should be balanced with calls to the method.
  */
-- (void)syncWithCompletionHandler:(void (^ _Nullable)(BOOL success))handler
-            backgroundFetchHandler:(void (^ _Nullable)(UIBackgroundFetchResult))fetchHandler;
+- (void)syncResettingCache:(BOOL)shouldResetCache
+         completionHandler:(void (^ _Nullable)(BOOL success))handler
+    backgroundFetchHandler:(void (^ _Nullable)(UIBackgroundFetchResult))fetchHandler;
 
 /**
  Calls syncWithCompletionHandler: with a handler that presents standard

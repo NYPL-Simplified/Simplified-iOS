@@ -113,7 +113,7 @@
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
 
   UIAlertControllerStyle style;
-  if (viewController) {
+  if (viewController && viewController.navigationItem.leftBarButtonItem) {
     style = UIAlertControllerStyleActionSheet;
   } else {
     style = UIAlertControllerStyleAlert;
@@ -196,7 +196,7 @@
     [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
     
     [[NYPLBookRegistry sharedRegistry] justLoad];
-    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
       if (success) {
         [[NYPLBookRegistry sharedRegistry] save];
       }

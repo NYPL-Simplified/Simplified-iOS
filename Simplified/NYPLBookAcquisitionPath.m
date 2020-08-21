@@ -2,6 +2,8 @@
 
 #import "NYPLBookAcquisitionPath.h"
 
+NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.overdrive.circulation.api+json;profile=audiobook";
+
 @interface NYPLBookAcquisitionPath ()
 
 @property (nonatomic) NYPLOPDSAcquisitionRelation relation;
@@ -38,7 +40,8 @@
       ContentTypeFindaway,
       ContentTypeOpenAccessAudiobook,
       ContentTypeOpenAccessPDF,
-      ContentTypeFeedbooksAudiobook
+      ContentTypeFeedbooksAudiobook,
+      ContentTypeOverdriveAudiobook
     ]];
   }
 
@@ -58,7 +61,8 @@
         ContentTypeEpubZip,
         ContentTypeOpenAccessPDF,
         ContentTypeOpenAccessAudiobook,
-        ContentTypeFeedbooksAudiobook
+        ContentTypeFeedbooksAudiobook,
+        ContentTypeOverdriveAudiobook
       ]],
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
       ContentTypeBearerToken: [NSSet setWithArray:@[
@@ -72,6 +76,13 @@
   NSSet<NSString *> *types = subtypesForTypes[type];
   
   return types ?: [NSSet set];
+}
+
++ (NSSet<NSString *> *_Nonnull)audiobookTypes {
+  return [NSSet setWithArray:@[ContentTypeFindaway,
+                               ContentTypeOpenAccessAudiobook,
+                               ContentTypeFeedbooksAudiobook,
+                               ContentTypeOverdriveAudiobook]];
 }
 
 - (BOOL)isEqual:(id const)object

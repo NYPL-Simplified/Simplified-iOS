@@ -23,3 +23,9 @@ extension URLResponse {
       mimeType == "application/api-problem+json"
   }
 }
+
+extension HTTPURLResponse {
+  @objc func isFailure() -> Bool {
+    return statusCode < 200 || statusCode > 299
+  }
+}

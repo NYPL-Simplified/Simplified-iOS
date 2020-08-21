@@ -244,6 +244,8 @@
 "WelcomeScreenSubtitle2" = "E-books free to download and read without a library card.";
 "WelcomeScreenButtonTitle2" = "Add a Library Later";
 "LibraryListTitle" = "Pick Your Library";
+"Under 13" = "Under 13";
+"13 or Older" = "13 or Older";
 
 // NYPLSettingsAdvancedViewController
 "Advanced" = "Advanced";

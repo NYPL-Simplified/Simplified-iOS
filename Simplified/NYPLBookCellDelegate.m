@@ -1,6 +1,7 @@
 @import MediaPlayer;
 @import NYPLAudiobookToolkit;
 @import PDFRendererProvider;
+@import OverdriveProcessor;
 
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBook.h"
@@ -23,12 +24,13 @@
 #import <ADEPT/ADEPT.h>
 #endif
 
-@interface NYPLBookCellDelegate ()
+@interface NYPLBookCellDelegate () <RefreshDelegate>
 
 @property (nonatomic) NSTimer *timer;
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) id<AudiobookManager> manager;
 @property (nonatomic, weak) AudiobookPlayerViewController *audiobookViewController;
+@property (strong) NSLock *refreshAudiobookLock;
 
 @end
 
@@ -52,8 +54,15 @@
 - (instancetype)init
 {
   self = [super init];
+    
+  _refreshAudiobookLock = [[NSLock alloc] init];
   
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark NYPLBookButtonsDelegate
@@ -158,7 +167,15 @@
   }
 
   id const json = NYPLJSONObjectFromData(data);
-  id<Audiobook> const audiobook = [AudiobookFactory audiobook:json];
+    
+  NSMutableDictionary *dict = nil;
+    
+  if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
+    dict = [(NSMutableDictionary *)json mutableCopy];
+    dict[@"id"] = book.identifier;
+  }
+  
+  id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
 
   if (!audiobook) {
     [self presentUnsupportedItemError];
@@ -171,6 +188,7 @@
   id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
                                         initWithMetadata:metadata
                                         audiobook:audiobook];
+  manager.refreshDelegate = self;
 
   AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
                                                       initWithAudiobookManager:manager];
@@ -322,6 +340,48 @@
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:cell.book.identifier];
+}
+
+#pragma mark Audiobook Manager Refresh Delegate
+
+- (void)audiobookManagerDidRequestRefresh {
+  if (![self.refreshAudiobookLock tryLock]) {
+    return;
+  }
+    
+  [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:self.book.identifier];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateODAudiobookManifest) name:NYPLMyBooksDownloadCenterDidChangeNotification object:nil];
+    
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
+}
+
+- (void)updateODAudiobookManifest {
+  if ([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier] == NYPLBookStateDownloadSuccessful) {
+    OverdriveAudiobook *odAudiobook = (OverdriveAudiobook *)self.manager.audiobook;
+
+    NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:self.book.identifier];
+    NSData *const data = [NSData dataWithContentsOfURL:url];
+    if (data == nil) {
+      [self presentCorruptedItemErrorForBook:self.book fromURL:url];
+      return;
+    }
+
+    id const json = NYPLJSONObjectFromData(data);
+
+    NSMutableDictionary *dict = [(NSMutableDictionary *)json mutableCopy];
+
+    dict[@"id"] = self.book.identifier;
+
+    [odAudiobook updateManifestWithJSON:dict];
+
+    DefaultAudiobookManager *audiobookManager = (DefaultAudiobookManager *)_manager;
+    [audiobookManager updateAudiobookWith:odAudiobook.spine];
+      
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+      
+    [self.refreshAudiobookLock unlock];
+  }
 }
 
 @end

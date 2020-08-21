@@ -12,6 +12,7 @@ static NSString * const _Nonnull ContentTypeFindaway = @"application/vnd.library
 static NSString * const _Nonnull ContentTypeOpenAccessAudiobook = @"application/audiobook+json";
 static NSString * const _Nonnull ContentTypeOpenAccessPDF = @"application/pdf";
 static NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/audiobook+json;profile=\"http://www.feedbooks.com/audiobooks/access-restriction\"";
+extern NSString * const _Nonnull ContentTypeOverdriveAudiobook;
 
 
 /// Represents a single path the application can take through an acquisition
@@ -36,6 +37,9 @@ static NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/a
 /// @return All types of acqusitions supported by the application, including
 /// intermediate indirect acqusition types.
 + (NSSet<NSString *> *_Nonnull)supportedTypes;
+
+/// @return Audiobook types of acqusitions 
++ (NSSet<NSString *> *_Nonnull)audiobookTypes;
 
 /// O(n).
 /// @param types The types by which to limit the search for supported paths.

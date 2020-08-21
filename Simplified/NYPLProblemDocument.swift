@@ -12,13 +12,21 @@ import Foundation
     "http://librarysimplified.org/terms/problem/credentials-invalid";
   static let noStatus: Int = -1
 
+  /// Per RFC7807, this identifies the type of problem.
   let type: String?
+
+  /// Per RFC7807, this is a short, human-readable summary of the problem.
   let title: String?
 
-  /// The HTTP status code.
+  /// Per RFC7807, this will match the HTTP status code.
   let status: Int?
 
+  /// Per RFC7807, this is a human-readable explanation of the specific problem
+  /// that occurred. It can also provide information to correct the problem.
   let detail: String?
+
+  /// Per RFC7807, a URI reference that identifies the specific occurrence of
+  /// the problem.
   let instance: String?
   
   fileprivate init(_ dict: [String : Any]) {

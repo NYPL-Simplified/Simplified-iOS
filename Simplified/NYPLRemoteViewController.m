@@ -134,7 +134,9 @@
 
       if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
         self.reloadView.hidden = false;
-        [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:([NYPLUserAccount sharedAccount].barcode) completionHandler:^{
+        [NYPLAccountSignInViewController
+         requestCredentialsUsingExistingBarcode:([NYPLUserAccount sharedAccount].barcode != nil)
+         completionHandler:^{
           [self load];
         }];
         return;
@@ -292,6 +294,7 @@
 
     if (problemDocumentParseError) {
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                problemDocumentData:data
                                             barcode:nil
                                                 url:httpResponse.URL
                                             context:@"RemoteViewController"

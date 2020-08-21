@@ -8,12 +8,12 @@
 
 import Foundation
 
-//------------------------------------------------------------------------------
 fileprivate struct NYPLNetworkTaskInfo {
   var progressData: Data
   var startDate: Date
   var completion: ((NYPLResult<Data>) -> Void)
 
+  //----------------------------------------------------------------------------
   init(completion: (@escaping (NYPLResult<Data>) -> Void)) {
     self.progressData = Data()
     self.startDate = Date()
@@ -21,21 +21,25 @@ fileprivate struct NYPLNetworkTaskInfo {
   }
 }
 
-//------------------------------------------------------------------------------
+/// This class responds to URLSession events related to the tasks being
+/// issued on the URLSession, keeping a tally of the related completion
+/// handlers in a thread-safe way.
 class NYPLNetworkResponder: NSObject {
   typealias TaskID = Int
 
   private var taskInfo: [TaskID: NYPLNetworkTaskInfo]
 
-  /// Protects access to `taskInfo`.
+  /// Protects access to `taskInfo` to ensure thread-safety.
   private let taskInfoLock: NSRecursiveLock
 
+  //----------------------------------------------------------------------------
   override init() {
     self.taskInfo = [Int: NYPLNetworkTaskInfo]()
     self.taskInfoLock = NSRecursiveLock()
     super.init()
   }
 
+  //----------------------------------------------------------------------------
   func addCompletion(_ completion: @escaping (NYPLResult<Data>) -> Void,
                      taskID: TaskID) {
     taskInfoLock.lock()
@@ -47,9 +51,9 @@ class NYPLNetworkResponder: NSObject {
   }
 }
 
-  //----------------------------------------------------------------------------
-  // MARK: - URLSessionDelegate
+// MARK: - URLSessionDelegate
 extension NYPLNetworkResponder: URLSessionDelegate {
+  //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession, didBecomeInvalidWithError err: Error?) {
     if let err = err {
       NYPLErrorLogger.logError(err, message: "URLSession became invalid")
@@ -68,9 +72,10 @@ extension NYPLNetworkResponder: URLSessionDelegate {
   }
 }
 
-  //----------------------------------------------------------------------------
-  // MARK: - URLSessionDataDelegate
+// MARK: - URLSessionDataDelegate
 extension NYPLNetworkResponder: URLSessionDataDelegate {
+
+  //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession,
                   dataTask: URLSessionDataTask,
                   didReceive data: Data) {
@@ -84,6 +89,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     taskInfo[dataTask.taskIdentifier] = currentTaskInfo
   }
 
+  //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession,
                   dataTask: URLSessionDataTask,
                   willCacheResponse proposedResponse: CachedURLResponse,
@@ -103,30 +109,63 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     }
   }
 
+  //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession,
                   task: URLSessionTask,
                   didCompleteWithError error: Error?) {
     let taskID = task.taskIdentifier
+    var logMetadata: [String: Any] = [
+      "currentRequest": task.currentRequest?.loggableString ?? "N/A",
+    ]
 
     taskInfoLock.lock()
-
     guard let currentTaskInfo = taskInfo.removeValue(forKey: taskID) else {
+      taskInfoLock.unlock()
       NYPLErrorLogger.logNetworkError(
         error,
         code: .noTaskInfoAvailable,
         request: task.originalRequest,
         response: task.response,
-        message: "No task info available for task \(taskID)")
+        message: "No task info available for task \(taskID). Completion closure could not be called.",
+        metadata: logMetadata)
+      return
+    }
+    taskInfoLock.unlock()
+
+    let responseData = currentTaskInfo.progressData
+    let elapsed = Date().timeIntervalSince(currentTaskInfo.startDate)
+    logMetadata["elapsedTime"] = elapsed
+    Log.info(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
+
+    // attempt parsing of Problem Document
+    if task.response?.isProblemDocument() ?? false {
+      let parseError: Error?
+      do {
+        let problemDoc = try NYPLProblemDocument.fromData(responseData)
+        let err = task.makeErrorFromProblemDocument(problemDoc)
+        parseError = nil
+        logMetadata["problemDocument"] = problemDoc
+        currentTaskInfo.completion(.failure(err, task.response))
+      } catch (let error) {
+        parseError = error
+        let responseString = String(data: responseData, encoding: .utf8) ?? "N/A"
+        logMetadata["problemDocumentBody"] = responseString
+        currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError, task.response))
+      }
+      if let error = error {
+        logMetadata["urlSessionError"] = error
+      }
+      NYPLErrorLogger.logNetworkError(parseError,
+                                      request: task.originalRequest,
+                                      response: task.response,
+                                      message: "Network request for task \(taskID)  failed. A Problem Document was returned.",
+                                      metadata: logMetadata)
       return
     }
 
-    taskInfoLock.unlock()
-
-    let elapsed = Date().timeIntervalSince(currentTaskInfo.startDate)
-    Log.debug(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
-
+    // no problem document, but if we have an error it's still a failure
     if let error = error {
-      currentTaskInfo.completion(.failure(error, task.response))
+      currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError, task.response))
 
       // logging the error after the completion call so that the error report
       // will include any eventual logging done in the completion handler.
@@ -134,38 +173,68 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
         error,
         request: task.originalRequest,
         response: task.response,
-        message: "Task \(taskID) completed with error")
+        message: "Network task \(taskID) completed with error",
+        metadata: logMetadata)
       return
     }
 
-    // TODO: SIMPLY-2881
-    // Note: we purposedly ignore looking at the HTTP status code to
-    // determine if we had an actual success or failure because currently
-    // upper/application level classes sometimes parse the Problem Document
-    // that may be returned in the `progressData`.
-    //
-    // So while we currently must consider that (and anything that didn't
-    // generate an actual `error`) a "successful" result here, ideally (per
-    // SIMPLY-2881) NYPLNetworkResponder should check for presence of a problem
-    // document instead of having other classes do that work elsewhere.
+    // no problem document nor error, but response could still be a failure
+    if let httpResponse = task.response as? HTTPURLResponse {
+      guard !httpResponse.isFailure() else {
+        logMetadata["response"] = httpResponse
+        logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("UnknownRequestError", comment: "A generic error message for when a network request fails")
+        let err = NSError(domain: NYPLErrorLogger.Context.infrastructure.rawValue,
+                          code: NYPLErrorCode.responseFail.rawValue,
+                          userInfo: logMetadata)
+        currentTaskInfo.completion(.failure(err, task.response))
+        NYPLErrorLogger.logNetworkError(code: NYPLErrorCode.responseFail,
+                                        request: task.originalRequest,
+                                        message: "Network request for task \(taskID) failed.",
+                                        metadata: logMetadata)
+        return
+      }
+    }
 
-    currentTaskInfo.completion(.success(currentTaskInfo.progressData, task.response))
+    currentTaskInfo.completion(.success(responseData, task.response))
   }
+}
 
+extension URLSessionTask {
+  //----------------------------------------------------------------------------
+  func makeErrorFromProblemDocument(_ problemDoc: NYPLProblemDocument) -> NSError {
+    var userInfo = [String: Any]()
+    if let currentRequest = currentRequest {
+      userInfo["taskCurrentRequest"] = currentRequest
+    }
+    if let originalRequest = originalRequest {
+      userInfo["taskOriginalRequest"] = originalRequest
+    }
+    if let response = response {
+      userInfo["response"] = response
+    }
+
+    let err = NSError.makeFromProblemDocument(
+      problemDoc,
+      domain: NYPLErrorLogger.Context.infrastructure.rawValue,
+      code: NYPLErrorCode.apiCall.rawValue,
+      userInfo: userInfo)
+
+    return err
+  }
 }
 
 //----------------------------------------------------------------------------
 // MARK: - URLSessionTaskDelegate
 extension NYPLNetworkResponder: URLSessionTaskDelegate {
-    func urlSession(_ session: URLSession,
-                    task: URLSessionTask,
-                    didReceive challenge: URLAuthenticationChallenge,
-                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
-    {
-//        NYPLLOG_F(@"NSURLSessionTask: %@. Challenge Received: %@",
-//                   task.currentRequest.URL.absoluteString,
-//                   challenge.protectionSpace.authenticationMethod);
-
-        NYPLBasicAuth.authHandler(challenge: challenge, completionHandler: completionHandler)
-    }
+  func urlSession(_ session: URLSession,
+                  task: URLSessionTask,
+                  didReceive challenge: URLAuthenticationChallenge,
+                  completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+  {
+    //        NYPLLOG_F(@"NSURLSessionTask: %@. Challenge Received: %@",
+    //                   task.currentRequest.URL.absoluteString,
+    //                   challenge.protectionSpace.authenticationMethod);
+    
+    NYPLBasicAuth.authHandler(challenge: challenge, completionHandler: completionHandler)
+  }
 }

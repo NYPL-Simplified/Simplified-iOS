@@ -81,6 +81,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 }
 
 - (NSURLRequest*)withURL:(NSURL *const)URL
+        shouldResetCache:(BOOL)shouldResetCache
        completionHandler:(void (^)(NSData *data,
                                    NSURLResponse *response,
                                    NSError *error))handler
@@ -112,6 +113,14 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
       handler(data, response, nil);
     };
+
+  if (shouldResetCache) {
+    // NB: this sledgehammer approach is not ideal, and the only reason we
+    // don't use `removeCachedResponseForRequest:` (which is really what we
+    // should be using) is because that method has been buggy since iOS 8,
+    // and it still is in iOS 13.
+    [NYPLNetworkExecutor.shared clearCache];
+  }
 
   NSString *lpe = [URL lastPathComponent];
   if ([lpe isEqualToString:@"borrow"])
