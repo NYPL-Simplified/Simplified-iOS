@@ -16,7 +16,7 @@ import Foundation
     
     if paths.count < 1 {
       NYPLErrorLogger.logError(withCode: .missingSystemPaths,
-                               context: "DirectoryManager::directory",
+                               summary: "DirectoryManager::directory",
                                message: "No valid search paths in iOS's ApplicationSupport directory in the UserDomain",
                                metadata: ["account": account])
       return nil

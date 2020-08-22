@@ -201,7 +201,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       case .failure(let error):
         NYPLErrorLogger.logError(
           withCode: .libraryListLoadFail,
-          context: "Unable to load libraries list",
+          summary: "Unable to load libraries list",
           message: "Libraries list failed to load from \(targetUrl)",
           metadata: [
             NSUnderlyingErrorKey: error,

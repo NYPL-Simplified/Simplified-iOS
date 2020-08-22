@@ -21,8 +21,11 @@ fileprivate let nullString = "null"
   }
 }
 
-/// Detailed error codes that span across Contexts. E.g. you could have a
-/// `invalidURLSession` for any `Context` that's using URLSession.
+/// Detailed error codes that span across different error reports.
+/// E.g. you could have a `invalidURLSession` for a number of different api
+/// calls, happening in catalog loading, sign-in, etc. So the `summary` of
+/// the error will be different, but the code will be the same. Sometimes it
+/// is useful in fact to search all possible instances of a given code.
 @objc enum NYPLErrorCode: Int {
   case ignore = 0
 
@@ -140,20 +143,15 @@ fileprivate let nullString = "null"
   /// - Parameters:
   ///   - severity: How severe the event is.
   ///   - message: An optional message.
-  ///   - context: Page/VC name or anything that can help identify the in-code location where the error occurred.
   ///   - metadata: Any additional metadata.
   private class func additionalInfo(severity: NYPLSeverity,
                                     message: String? = nil,
-                                    context: String? = nil,
                                     metadata: [String: Any]? = nil) -> [String: Any] {
     var dict = metadata ?? [:]
 
     dict["severity"] = severity.stringValue()
     if let message = message {
       dict["message"] = message
-    }
-    if let context = context {
-      dict["context"] = context
     }
 
     return dict
@@ -164,18 +162,16 @@ fileprivate let nullString = "null"
   /// Reports an error.
   /// - Parameters:
   ///   - error: Any originating error that occurred.
-  ///   - context: Choose from `Context` enum or provide a string that can
-  ///   be used to group similar errors. This will be the top line (searchable)
-  ///   in Crashlytics UI.
+  ///   - summary: This will be the top line (searchable) in Crashlytics UI.
   ///   - message: A string for further context.
   ///   - metadata: Any additional metadata to be logged.
   class func logError(_ error: Error,
-                      context: String? = nil,
+                      summary: String? = nil,
                       message: String? = nil,
                       metadata: [String: Any]? = nil) {
     logError(error,
              code: .ignore,
-             context: context,
+             summary: summary,
              message: message,
              metadata: metadata)
   }
@@ -185,18 +181,16 @@ fileprivate let nullString = "null"
   /// - Parameters:
   ///   - code: A code identifying the error situation. Searchable in
   ///   Crashlytics UI.
-  ///   - context: Choose from `Context` enum or provide a string that can
-  ///   be used to group similar errors. This will be the top line (searchable)
-  ///   in Crashlytics UI.
+  ///   - summary: This will be the top line (searchable) in Crashlytics UI.
   ///   - message: A string for further context.
   ///   - metadata: Any additional metadata to be logged.
   class func logError(withCode code: NYPLErrorCode,
-                      context: String,
+                      summary: String,
                       message: String? = nil,
                       metadata: [String: Any]? = nil) {
     logError(nil,
              code: code,
-             context: context,
+             summary: summary,
              message: message,
              metadata: metadata)
   }
@@ -301,7 +295,6 @@ fileprivate let nullString = "null"
     let userInfo = additionalInfo(
       severity: .warning,
       message: "No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.",
-      context: "NYPLSettingsAccountDetailViewController",
       metadata: metadata)
     let err = NSError(domain: "SignOut deauthorization error: no licensor",
                       code: NYPLErrorCode.invalidLicensor.rawValue,
@@ -358,7 +351,7 @@ fileprivate let nullString = "null"
       metadata["response"] = response
     }
     logError(withCode: code,
-             context: "Catalog VC Initialization",
+             summary: "Catalog VC Initialization",
              metadata: metadata)
   }
 
@@ -367,7 +360,7 @@ fileprivate let nullString = "null"
    - parameter originalError: the parsing error.
    - parameter barcode: The clear-text user barcode. This will be hashed.
    - parameter url: the url the problem document is being fetched from.
-   - parameter context: client-provided operating context.
+   - parameter summary: client-provided operating context.
    - parameter message: A dev-friendly message to concisely explain what's
    happening.
    */
@@ -375,7 +368,7 @@ fileprivate let nullString = "null"
                                           problemDocumentData: Data?,
                                           barcode: String?,
                                           url: URL?,
-                                          context: String,
+                                          summary: String,
                                           message: String?) {
     var metadata = [String: Any]()
     addAccountInfoToMetadata(&metadata)
@@ -396,7 +389,7 @@ fileprivate let nullString = "null"
       message: message,
       metadata: metadata)
 
-    let err = NSError(domain: context,
+    let err = NSError(domain: summary,
                       code: NYPLErrorCode.parseProblemDocFail.rawValue,
                       userInfo: userInfo)
 
@@ -407,14 +400,12 @@ fileprivate let nullString = "null"
   /// from the server during sign in / up / out process.
   /// - Parameters:
   ///   - error: The parse error.
-  ///   - context: Choose from `Context` enum or provide a string that can
-  ///   be used to group similar errors. This will be the top line (searchable)
-  ///   in Crashlytics UI.
+  ///   - summary: This will be the top line (searchable) in Crashlytics UI.
   ///   - barcode: The clear-text barcode used to authenticate. This will be
   ///   hashed.
   /// TODO: SIMPLY-2992 move this together with sign-in functions
   class func logUserProfileDocumentAuthError(_ error: NSError?,
-                                             context: String,
+                                             summary: String,
                                              barcode: String?) {
     var userInfo = [String : Any]()
     addAccountInfoToMetadata(&userInfo)
@@ -426,7 +417,7 @@ fileprivate let nullString = "null"
       userInfo[NSUnderlyingErrorKey] = originalError
     }
 
-    let err = NSError(domain: context,
+    let err = NSError(domain: summary,
                       code: NYPLErrorCode.userProfileDocFail.rawValue,
                       userInfo: userInfo)
 
@@ -468,7 +459,7 @@ fileprivate let nullString = "null"
   ///   wrapped under `NSUnderlyingErrorKey` in Crashlytics.
   ///   - code: Client-provided code to identify errors more easily.
   ///   Searchable in Crashlytics.
-  ///   - context: Client-provided context to identify errors more easily.
+  ///   - summary: Client-provided context to identify errors more easily.
   ///   Searchable in Crashlytics.
   ///   - request: Only the output of `loggableString` will be attached to the
   ///   report, to ensure privacy.
@@ -478,7 +469,7 @@ fileprivate let nullString = "null"
   @discardableResult
   class func logNetworkError(_ originalError: Error? = nil,
                              code: NYPLErrorCode = .ignore,
-                             context: String? = nil,
+                             summary: String? = nil,
                              request: URLRequest?,
                              response: URLResponse? = nil,
                              message: String? = nil,
@@ -500,7 +491,7 @@ fileprivate let nullString = "null"
                                   message: message,
                                   metadata: metadata)
     let error = NSError(
-      domain: context ?? "Network error",
+      domain: summary ?? "Network error",
       code: (code != .ignore ? code : NYPLErrorCode.apiCall).rawValue,
       userInfo: userInfo)
 
@@ -521,12 +512,12 @@ fileprivate let nullString = "null"
   ///   - originalError: Any originating error that occurred, if available.
   ///   - code: A code identifying the error situation. This is ignored if
   ///   `error` is not nil.
-  ///   - context: Operating context to help identify where the error occurred.
+  ///   - summary: Operating context to help identify where the error occurred.
   ///   - message: A string for further context.
   ///   - metadata: Any additional metadata to be logged.
   private class func logError(_ originalError: Error?,
                               code: NYPLErrorCode = .ignore,
-                              context: String? = nil,
+                              summary: String? = nil,
                               message: String? = nil,
                               metadata: [String: Any]? = nil) {
     if let message = message {
@@ -554,7 +545,7 @@ fileprivate let nullString = "null"
       finalCode = NYPLErrorCode.ignore.rawValue
     }
 
-    let err = NSError(domain: context ?? NYPLSimplyEDomain,
+    let err = NSError(domain: summary ?? NYPLSimplyEDomain,
                       code: finalCode,
                       userInfo: userInfo)
 

@@ -53,7 +53,7 @@ import UIKit
           metadata["error"] = error
         }
         NYPLErrorLogger.logError(withCode: .genericErrorMsgDisplayed,
-                                 context: "Displayed error alert with generic message",
+                                 summary: "Displayed error alert with generic message",
                                  message: "Error \(error?.description ?? "") contained no usable error message for the user, so we defaulted to a generic one.",
                                  metadata: metadata)
       }

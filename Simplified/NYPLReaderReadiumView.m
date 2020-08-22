@@ -563,7 +563,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     if (!contentCFI) {
       contentCFI = @"";
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilCFI
-                                context:@"R1 eReader warning: no CFI from NYPLLocation"
+                                summary:@"R1 eReader warning: no CFI from NYPLLocation"
                                 message:nil
                                metadata:@{
                                  @"Book": self.book.loggableDictionary ?: @"N/A",
@@ -774,7 +774,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
        if(!result || [result isKindOfClass:[NSNull class]]) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium 1.");
          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilCFI
-                                   context:@"eReader bug: R1 failed to generate CFI"
+                                   summary:@"eReader bug: R1 failed to generate CFI"
                                    message:nil
                                   metadata:@{
                                     @"Book": self.book.loggableDictionary ?: @"N/A",

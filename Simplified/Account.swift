@@ -328,7 +328,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       NYPLErrorLogger.logError(
         withCode: .noURL,
-        context: "Authentication Document Load Error",
+        summary: "Authentication Document Load Error",
         message: "Failed to load authentication document because its URL is invalid",
         metadata: ["self.uuid": uuid]
       )
@@ -347,7 +347,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
           let responseBody = String(data: serverData, encoding: .utf8)
           NYPLErrorLogger.logError(
             withCode: .authDocParseFail,
-            context: "Authentication Document Load Error",
+            summary: "Authentication Document Load Error",
             message: "Failed to parse authentication document data obtained from \(url)",
             metadata: [
               "underlyingError": error,
@@ -359,7 +359,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       case .failure(let error):
         NYPLErrorLogger.logError(
           withCode: .authDocLoadFail,
-          context: "Authentication Document Load Error",
+          summary: "Authentication Document Load Error",
           message: "Request to load authentication document at \(url) failed.",
           metadata: ["underlyingError": error]
         )

@@ -316,7 +316,7 @@
 
   NSString *logMsg = [NSString stringWithFormat:@"bookID: %@; fileURL: %@", book.identifier, url];
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
-                            context:@"Audiobooks: corrupted audiobook"
+                            summary:@"Audiobooks: corrupted audiobook"
                             message:logMsg
                            metadata:nil];
 }

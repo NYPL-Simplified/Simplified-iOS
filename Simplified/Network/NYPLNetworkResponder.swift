@@ -60,7 +60,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
       NYPLErrorLogger.logError(err, message: "URLSession became invalid")
     } else {
       NYPLErrorLogger.logError(withCode: .invalidURLSession,
-                               context: "URLSessionDelegate: session became invalid")
+                               summary: "URLSessionDelegate: session became invalid")
     }
 
     taskInfoLock.lock()

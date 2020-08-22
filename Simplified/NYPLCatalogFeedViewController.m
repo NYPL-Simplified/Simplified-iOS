@@ -96,7 +96,7 @@
   if (!gatedXML) {
     NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAgeGateElement
-                              context:NSStringFromClass([self class])
+                              summary:NSStringFromClass([self class])
                               message:@"Data received from Server lacks `gate` element for age-check."
                              metadata:nil];
     return nil;
@@ -114,7 +114,7 @@
         [remoteVC loadWithURL:url];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                                  context:NSStringFromClass([self class])
+                                  summary:NSStringFromClass([self class])
                                   message:@"Server response for age verification lacks a URL to load."
                                  metadata:@{
                                    @"ageAboveLimit": @(ageAboveLimit),
@@ -168,7 +168,7 @@
         [[NYPLBookRegistry sharedRegistry] save];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeRegistrySyncFailure
-                                  context:@"NYPLCatalogFeedViewController"
+                                  summary:@"NYPLCatalogFeedViewController"
                                   message:@"Book registry sync failed"
                                  metadata:@{@"Catalog feed URL": wSelf.URL ?: @"N/A"}];
       }

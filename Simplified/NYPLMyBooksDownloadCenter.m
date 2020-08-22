@@ -196,7 +196,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
        problemDocumentData:problemDocData
        barcode:NYPLUserAccount.sharedAccount.barcode
        url:tmpSavedFileURL
-       context:[NSString stringWithFormat:@"Error parsing problem doc downloading %@ book", book.distributor]
+       summary:[NSString stringWithFormat:@"Error parsing problem doc downloading %@ book", book.distributor]
        message:[book loggableShortString]];
     }
     [self logBookDownloadFailure:book
@@ -660,7 +660,7 @@ didCompleteWithError:(NSError *)error
   dict[@"response"] = downloadTask.response ?: @"N/A";
 
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeDownloadFail
-                            context:context
+                            summary:context
                             message:nil
                            metadata:dict];
 }
@@ -822,7 +822,7 @@ didCompleteWithError:(NSError *)error
                                                    completion:^(NSDictionary<NSString *,id> * _Nullable responseHeaders, NSError * _Nullable error) {
         if (error) {
           [NYPLErrorLogger logError:error
-                            context:@"Overdrive audiobook fulfillment error"
+                            summary:@"Overdrive audiobook fulfillment error"
                             message:nil
                            metadata:@{
                              @"responseHeaders": responseHeaders ?: @"N/A",
@@ -836,7 +836,7 @@ didCompleteWithError:(NSError *)error
 
         if (!responseHeaders[@"x-overdrive-scope"] || !responseHeaders[@"location"]) {
           [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOverdriveFulfillResponseParseFail
-                                    context:@"Overdrive audiobook fulfillment: wrong headers"
+                                    summary:@"Overdrive audiobook fulfillment: wrong headers"
                                     message:@"Response does not contain the expected headers"
                                    metadata:@{
                                      @"responseHeaders": responseHeaders ?: @"N/A",
@@ -862,7 +862,7 @@ didCompleteWithError:(NSError *)error
            completion:^(NSError * _Nullable error) {
             if (error) {
               [NYPLErrorLogger logError:error
-                                context:@"Overdrive audiobook fulfillment: patron token error"
+                                summary:@"Overdrive audiobook fulfillment: patron token error"
                                 message:@"Error refreshing Overdrive patron token"
                                metadata:@{
                                  @"responseHeaders": responseHeaders ?: @"N/A",
@@ -891,7 +891,7 @@ didCompleteWithError:(NSError *)error
         // segmentation fault.
         NYPLLOG(@"Aborting request with invalid URL.");
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeDownloadFail
-                                  context:@"Book download failure: nil download URL"
+                                  summary:@"Book download failure: nil download URL"
                                   message:@"Unable to download book because the download URL is nil"
                                  metadata:@{
                                    @"acquisitionURL": URL ?: @"N/A",
@@ -1124,7 +1124,7 @@ didFinishDownload:(BOOL)didFinishDownload
 
     if (![self fileURLForBookIndentifier:book.identifier]) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAdobeDRMFulfillmentFail
-                                context:@"Adobe DRM error: final file URL unavailable"
+                                summary:@"Adobe DRM error: final file URL unavailable"
                                 message:@"fileURLForBookIndentifier returned nil, so no destination to copy file to."
                                metadata:@{
                                  @"adeptError": adeptError ?: @"N/A",
@@ -1148,7 +1148,7 @@ didFinishDownload:(BOOL)didFinishDownload
                          error:&copyError];
     if(!didSucceedCopying) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAdobeDRMFulfillmentFail
-                                context:@"Adobe DRM error: failure copying file"
+                                summary:@"Adobe DRM error: failure copying file"
                                 message:@"NSFileManager::copyItemAtURL:toURL:error: failed"
                                metadata:@{
                                  @"adeptError": adeptError ?: @"N/A",
@@ -1163,7 +1163,7 @@ didFinishDownload:(BOOL)didFinishDownload
     }
   } else {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAdobeDRMFulfillmentFail
-                              context:@"Adobe DRM error: did not finish download"
+                              summary:@"Adobe DRM error: did not finish download"
                               message:@"ADEPT callback was called with didFinishDownload == false"
                              metadata:@{
                                @"adeptError": adeptError ?: @"N/A",
