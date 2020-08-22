@@ -117,26 +117,9 @@ fileprivate let nullString = "null"
     }
   }
 
-  /// Broad areas providing some kind of operating context for error reporting.
-  ///
-  /// - note: This is deprecated because it's of little use in Crashlytics.
-  /// Instead of context it's more useful to provide a string that identifies
-  /// and describes the error in a more developer-friendly way.
-  /// - todo: SIMPLY-2985 will address this deprecation.
-  enum Context: String {
-    case accountManagement
-    case audiobooks
-    case catalog
-    case infrastructure
-    case myBooks
-    case opds
-    case signIn
-    case signOut
-    case signUp
-    case errorHandling
-  }
-
   // MARK:- Private helpers
+
+  // TODO: SIMPLY-2992 move these private helpers to bottom of file
 
   /**
    Helper method for other logging functions that adds relevant library
@@ -268,7 +251,7 @@ fileprivate let nullString = "null"
     addAccountInfoToMetadata(&metadata)
 
     let userInfo = additionalInfo(severity: .error, metadata: metadata)
-    let err = NSError(domain: Context.signIn.rawValue,
+    let err = NSError(domain: "SignIn error: problem document available",
                       code: errorCode,
                       userInfo: userInfo)
 
@@ -299,7 +282,7 @@ fileprivate let nullString = "null"
       severity: .info,
       message: "Local Login Failed With Error",
       metadata: metadata)
-    let err = NSError(domain: Context.signIn.rawValue,
+    let err = NSError(domain: "SignIn error: Adobe activation",
                       code: NYPLErrorCode.adeptAuthFail.rawValue,
                       userInfo: userInfo)
 
@@ -320,7 +303,7 @@ fileprivate let nullString = "null"
       message: "No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.",
       context: "NYPLSettingsAccountDetailViewController",
       metadata: metadata)
-    let err = NSError(domain: Context.signOut.rawValue,
+    let err = NSError(domain: "SignOut deauthorization error: no licensor",
                       code: NYPLErrorCode.invalidLicensor.rawValue,
                       userInfo: userInfo)
 
@@ -360,7 +343,7 @@ fileprivate let nullString = "null"
     addAccountInfoToMetadata(&metadata)
     let userInfo = additionalInfo(severity: .info, metadata: metadata)
 
-    let err = NSError(domain: "\(Context.signIn.rawValue): BarcodeScanner",
+    let err = NSError(domain: "SignIn error: BarcodeScanner exception",
                       code: NYPLErrorCode.barcodeException.rawValue,
                       userInfo: userInfo)
 
@@ -429,6 +412,7 @@ fileprivate let nullString = "null"
   ///   in Crashlytics UI.
   ///   - barcode: The clear-text barcode used to authenticate. This will be
   ///   hashed.
+  /// TODO: SIMPLY-2992 move this together with sign-in functions
   class func logUserProfileDocumentAuthError(_ error: NSError?,
                                              context: String,
                                              barcode: String?) {
@@ -466,10 +450,8 @@ fileprivate let nullString = "null"
   }
 
   class func logAudiobookInfoEvent(message: String) {
-    let userInfo = additionalInfo(severity: .info,
-                                  message: message,
-                                  context: Context.audiobooks.rawValue)
-    let err = NSError(domain: Context.audiobooks.rawValue,
+    let userInfo = additionalInfo(severity: .info, message: message)
+    let err = NSError(domain: "Audiobooks",
                       code: NYPLErrorCode.audiobookUserEvent.rawValue,
                       userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
@@ -518,7 +500,7 @@ fileprivate let nullString = "null"
                                   message: message,
                                   metadata: metadata)
     let error = NSError(
-      domain: context ?? Context.infrastructure.rawValue,
+      domain: context ?? "Network error",
       code: (code != .ignore ? code : NYPLErrorCode.apiCall).rawValue,
       userInfo: userInfo)
 

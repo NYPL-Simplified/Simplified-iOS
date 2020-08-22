@@ -60,8 +60,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
       NYPLErrorLogger.logError(err, message: "URLSession became invalid")
     } else {
       NYPLErrorLogger.logError(withCode: .invalidURLSession,
-                               context: NYPLErrorLogger.Context.infrastructure.rawValue,
-                               message: "URLSession became invalid")
+                               context: "URLSessionDelegate: session became invalid")
     }
 
     taskInfoLock.lock()
@@ -182,7 +181,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
       guard !httpResponse.isFailure() else {
         logMetadata["response"] = httpResponse
         logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("UnknownRequestError", comment: "A generic error message for when a network request fails")
-        let err = NSError(domain: NYPLErrorLogger.Context.infrastructure.rawValue,
+        let err = NSError(domain: "Api call with failure HTTP status",
                           code: NYPLErrorCode.responseFail.rawValue,
                           userInfo: logMetadata)
         currentTaskInfo.completion(.failure(err))
@@ -214,7 +213,7 @@ extension URLSessionTask {
 
     let err = NSError.makeFromProblemDocument(
       problemDoc,
-      domain: NYPLErrorLogger.Context.infrastructure.rawValue,
+      domain: "Api call failure: problem document available",
       code: NYPLErrorCode.apiCall.rawValue,
       userInfo: userInfo)
 

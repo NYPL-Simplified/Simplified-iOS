@@ -172,13 +172,11 @@ class NYPLSignInBusinessLogic: NSObject {
     // below) we'll run into an error soon after, at the 1st screen of the flow.
     if NYPLSecrets.cardCreatorUsername == nil {
       NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
-                               context: NYPLErrorLogger.Context.signUp.rawValue,
-                               message: "Unable to decode cardCreator username")
+                               context: "CardCreator username decode error from NYPLSecrets")
     }
     if NYPLSecrets.cardCreatorPassword == nil {
       NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
-                               context: NYPLErrorLogger.Context.signUp.rawValue,
-                               message: "Unable to decode cardCreator password")
+                               context:"CardCreator password decode error from NYPLSecrets")
     }
 
     return (username: NYPLSecrets.cardCreatorUsername ?? "",
