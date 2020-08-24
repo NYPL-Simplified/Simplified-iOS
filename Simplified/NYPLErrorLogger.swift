@@ -105,6 +105,9 @@ fileprivate let nullString = "null"
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
+  //----------------------------------------------------------------------------
+  // MARK:- Configuration
+
   class func configureCrashAnalytics() {
     FirebaseApp.configure()
 
@@ -120,43 +123,7 @@ fileprivate let nullString = "null"
     }
   }
 
-  // MARK:- Private helpers
-
-  // TODO: SIMPLY-2992 move these private helpers to bottom of file
-
-  /**
-   Helper method for other logging functions that adds relevant library
-   account info to our crash reports.
-   - parameter metadata: report metadata dictionary
-   */
-  private class func addAccountInfoToMetadata(_ metadata: inout [String: Any]) {
-    let currentLibrary = AccountsManager.shared.currentAccount
-    metadata["currentAccountName"] = currentLibrary?.name ?? nullString
-    metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
-    metadata["currentAccountCatalogURL"] = currentLibrary?.catalogUrl ?? nullString
-    metadata["currentAccountAuthDocURL"] = currentLibrary?.authenticationDocumentUrl ?? nullString
-    metadata["currentAccountLoansURL"] = currentLibrary?.loansUrl ?? nullString
-    metadata["numAccounts"] = AccountsManager.shared.accounts().count
-  }
-
-  /// Creates a dictionary with information to be logged in relation to an event.
-  /// - Parameters:
-  ///   - severity: How severe the event is.
-  ///   - message: An optional message.
-  ///   - metadata: Any additional metadata.
-  private class func additionalInfo(severity: NYPLSeverity,
-                                    message: String? = nil,
-                                    metadata: [String: Any]? = nil) -> [String: Any] {
-    var dict = metadata ?? [:]
-
-    dict["severity"] = severity.stringValue()
-    if let message = message {
-      dict["message"] = message
-    }
-
-    return dict
-  }
-
+  //----------------------------------------------------------------------------
   // MARK:- Generic methods for error logging
 
   /// Reports an error.
@@ -193,6 +160,59 @@ fileprivate let nullString = "null"
              summary: summary,
              message: message,
              metadata: metadata)
+  }
+
+  /// Use this function for logging low-level errors occurring in api execution
+  /// when there's no other more relevant context available, or when it's more
+  /// relevant to log request and response objects.
+  /// - Parameters:
+  ///   - originalError: Any originating error that occurred. This will be
+  ///   wrapped under `NSUnderlyingErrorKey` in Crashlytics.
+  ///   - code: Client-provided code to identify errors more easily.
+  ///   Searchable in Crashlytics.
+  ///   - summary: Client-provided context to identify errors more easily.
+  ///   Searchable in Crashlytics.
+  ///   - request: Only the output of `loggableString` will be attached to the
+  ///   report, to ensure privacy.
+  ///   - response: Useful to understand if the error originated on the server.
+  ///   - message: A string for further context.
+  /// - Returns: The error that was logged.
+  @discardableResult
+  class func logNetworkError(_ originalError: Error? = nil,
+                             code: NYPLErrorCode = .ignore,
+                             summary: String? = nil,
+                             request: URLRequest?,
+                             response: URLResponse? = nil,
+                             message: String? = nil,
+                             metadata: [String: Any]? = nil) -> Error {
+    // compute metadata
+    var metadata = metadata ?? [String : Any]()
+    if let request = request {
+      metadata["request"] = request.loggableString
+    }
+    if let response = response {
+      metadata["response"] = response
+    }
+    if let originalError = originalError {
+      metadata[NSUnderlyingErrorKey] = originalError
+    }
+    addAccountInfoToMetadata(&metadata)
+
+    let userInfo = additionalInfo(severity: .error,
+                                  message: message,
+                                  metadata: metadata)
+    let error = NSError(
+      domain: summary ?? "Network error",
+      code: (code != .ignore ? code : NYPLErrorCode.apiCall).rawValue,
+      userInfo: userInfo)
+
+    Log.error(#file, """
+      Request \(request?.loggableString ?? "") failed. \
+      Message: \(message ?? "<>"). Error: \(originalError ?? error)
+      """)
+
+    Crashlytics.sharedInstance().recordError(error)
+    return error
   }
 
   //----------------------------------------------------------------------------
@@ -303,6 +323,58 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
 
+  /// Report when there's an issue parsing a user profile document obtained
+  /// from the server during sign in / up / out process.
+  /// - Parameters:
+  ///   - error: The parse error.
+  ///   - summary: This will be the top line (searchable) in Crashlytics UI.
+  ///   - barcode: The clear-text barcode used to authenticate. This will be
+  ///   hashed.
+  class func logUserProfileDocumentAuthError(_ error: NSError?,
+                                             summary: String,
+                                             barcode: String?) {
+    var userInfo = [String : Any]()
+    addAccountInfoToMetadata(&userInfo)
+    userInfo = additionalInfo(severity: .error, metadata: userInfo)
+    if let barcode = barcode {
+      userInfo["hashedBarcode"] = barcode.md5hex()
+    }
+    if let originalError = error {
+      userInfo[NSUnderlyingErrorKey] = originalError
+    }
+
+    let err = NSError(domain: summary,
+                      code: NYPLErrorCode.userProfileDocFail.rawValue,
+                      userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
+  }
+
+  //----------------------------------------------------------------------------
+  // MARK:- Audiobook errors
+
+  class func logAudiobookIssue(_ error: NSError,
+                               severity: NYPLSeverity,
+                               message: String? = nil) {
+    var metadata = [String : Any]()
+    addAccountInfoToMetadata(&metadata)
+
+    let userInfo = additionalInfo(severity: severity,
+                                  message: message,
+                                  metadata: metadata)
+    Crashlytics.sharedInstance().recordError(error,
+                                             withAdditionalUserInfo: userInfo)
+  }
+
+  class func logAudiobookInfoEvent(message: String) {
+    let userInfo = additionalInfo(severity: .info, message: message)
+    let err = NSError(domain: "Audiobooks",
+                      code: NYPLErrorCode.audiobookUserEvent.rawValue,
+                      userInfo: userInfo)
+    Crashlytics.sharedInstance().recordError(err)
+  }
+
+  //----------------------------------------------------------------------------
   // MARK:- Misc
 
   /**
@@ -396,116 +468,8 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
   
-  /// Report when there's an issue parsing a user profile document obtained
-  /// from the server during sign in / up / out process.
-  /// - Parameters:
-  ///   - error: The parse error.
-  ///   - summary: This will be the top line (searchable) in Crashlytics UI.
-  ///   - barcode: The clear-text barcode used to authenticate. This will be
-  ///   hashed.
-  /// TODO: SIMPLY-2992 move this together with sign-in functions
-  class func logUserProfileDocumentAuthError(_ error: NSError?,
-                                             summary: String,
-                                             barcode: String?) {
-    var userInfo = [String : Any]()
-    addAccountInfoToMetadata(&userInfo)
-    userInfo = additionalInfo(severity: .error, metadata: userInfo)
-    if let barcode = barcode {
-      userInfo["hashedBarcode"] = barcode.md5hex()
-    }
-    if let originalError = error {
-      userInfo[NSUnderlyingErrorKey] = originalError
-    }
-
-    let err = NSError(domain: summary,
-                      code: NYPLErrorCode.userProfileDocFail.rawValue,
-                      userInfo: userInfo)
-
-    Crashlytics.sharedInstance().recordError(err)
-  }
-
   //----------------------------------------------------------------------------
-  // MARK:- Audiobook errors
-
-  class func logAudiobookIssue(_ error: NSError,
-                               severity: NYPLSeverity,
-                               message: String? = nil) {
-    var metadata = [String : Any]()
-    addAccountInfoToMetadata(&metadata)
-
-    let userInfo = additionalInfo(severity: severity,
-                                  message: message,
-                                  metadata: metadata)
-    Crashlytics.sharedInstance().recordError(error,
-                                             withAdditionalUserInfo: userInfo)
-  }
-
-  class func logAudiobookInfoEvent(message: String) {
-    let userInfo = additionalInfo(severity: .info, message: message)
-    let err = NSError(domain: "Audiobooks",
-                      code: NYPLErrorCode.audiobookUserEvent.rawValue,
-                      userInfo: userInfo)
-    Crashlytics.sharedInstance().recordError(err)
-  }
-
-  //----------------------------------------------------------------------------
-  // MARK:- Network errors
-
-  /// Use this function for logging low-level errors occurring in api execution
-  /// when there's no other more relevant context available, or when it's more
-  /// relevant to log request and response objects.
-  /// - Parameters:
-  ///   - originalError: Any originating error that occurred. This will be
-  ///   wrapped under `NSUnderlyingErrorKey` in Crashlytics.
-  ///   - code: Client-provided code to identify errors more easily.
-  ///   Searchable in Crashlytics.
-  ///   - summary: Client-provided context to identify errors more easily.
-  ///   Searchable in Crashlytics.
-  ///   - request: Only the output of `loggableString` will be attached to the
-  ///   report, to ensure privacy.
-  ///   - response: Useful to understand if the error originated on the server.
-  ///   - message: A string for further context.
-  /// - Returns: The error that was logged.
-  @discardableResult
-  class func logNetworkError(_ originalError: Error? = nil,
-                             code: NYPLErrorCode = .ignore,
-                             summary: String? = nil,
-                             request: URLRequest?,
-                             response: URLResponse? = nil,
-                             message: String? = nil,
-                             metadata: [String: Any]? = nil) -> Error {
-    // compute metadata
-    var metadata = metadata ?? [String : Any]()
-    if let request = request {
-      metadata["request"] = request.loggableString
-    }
-    if let response = response {
-      metadata["response"] = response
-    }
-    if let originalError = originalError {
-      metadata[NSUnderlyingErrorKey] = originalError
-    }
-    addAccountInfoToMetadata(&metadata)
-
-    let userInfo = additionalInfo(severity: .error,
-                                  message: message,
-                                  metadata: metadata)
-    let error = NSError(
-      domain: summary ?? "Network error",
-      code: (code != .ignore ? code : NYPLErrorCode.apiCall).rawValue,
-      userInfo: userInfo)
-
-    Log.error(#file, """
-      Request \(request?.loggableString ?? "") failed. \
-      Message: \(message ?? "<>"). Error: \(originalError ?? error)
-      """)
-
-    Crashlytics.sharedInstance().recordError(error)
-    return error
-  }
-
-  //----------------------------------------------------------------------------
-  // MARK:- Private main method to report errors
+  // MARK:- Private helpers
 
   /// Helper to log a generic error to Crashlytics.
   /// - Parameters:
@@ -550,6 +514,39 @@ fileprivate let nullString = "null"
                       userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
+  }
+
+  /**
+   Helper method for other logging functions that adds relevant library
+   account info to our crash reports.
+   - parameter metadata: report metadata dictionary
+   */
+  private class func addAccountInfoToMetadata(_ metadata: inout [String: Any]) {
+    let currentLibrary = AccountsManager.shared.currentAccount
+    metadata["currentAccountName"] = currentLibrary?.name ?? nullString
+    metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
+    metadata["currentAccountCatalogURL"] = currentLibrary?.catalogUrl ?? nullString
+    metadata["currentAccountAuthDocURL"] = currentLibrary?.authenticationDocumentUrl ?? nullString
+    metadata["currentAccountLoansURL"] = currentLibrary?.loansUrl ?? nullString
+    metadata["numAccounts"] = AccountsManager.shared.accounts().count
+  }
+
+  /// Creates a dictionary with information to be logged in relation to an event.
+  /// - Parameters:
+  ///   - severity: How severe the event is.
+  ///   - message: An optional message.
+  ///   - metadata: Any additional metadata.
+  private class func additionalInfo(severity: NYPLSeverity,
+                                    message: String? = nil,
+                                    metadata: [String: Any]? = nil) -> [String: Any] {
+    var dict = metadata ?? [:]
+
+    dict["severity"] = severity.stringValue()
+    if let message = message {
+      dict["message"] = message
+    }
+
+    return dict
   }
 
 }
