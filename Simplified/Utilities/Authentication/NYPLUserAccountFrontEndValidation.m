@@ -33,7 +33,7 @@
 
 - (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
 {
-  return ![[NYPLUserAccount sharedAccount] hasBarcodeAndPIN];
+  return ![[NYPLUserAccount sharedAccount:self.account.uuid] hasBarcodeAndPIN];
 }
 
 - (BOOL)textField:(UITextField *)textField
