@@ -47,9 +47,15 @@ import UIKit
         message = errorDescription
       } else {
         message = "An error occurred. Please try again later or report an issue from the Settings tab."
+        var metadata = [String: Any]()
+        metadata["alertTitle"] = title ?? "N/A"
+        if let error = error {
+          metadata["error"] = error
+        }
         NYPLErrorLogger.logError(withCode: .genericErrorMsgDisplayed,
-                                 context: NYPLErrorLogger.Context.errorHandling.rawValue,
-                                 message: "Error \(error?.description ?? "") contained no usable error message for the user, so we defaulted to a generic one.")
+                                 summary: "Displayed error alert with generic message",
+                                 message: "Error \(error?.description ?? "") contained no usable error message for the user, so we defaulted to a generic one.",
+                                 metadata: metadata)
       }
     }
 

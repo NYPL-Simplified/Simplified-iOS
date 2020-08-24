@@ -320,9 +320,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       {
         if (self.currentAccount.details.signUpUrl == nil) {
           // this situation should be impossible, but let's log it if it happens
-          [NYPLErrorLogger logSignUpError:nil
-                                     code:NYPLErrorCodeNilSignUpURL
-                                  message:@"signUpUrl from current account is nil"];
+          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilSignUpURL
+                                    summary:@"SignUp Error in modal: nil signUp URL"
+                                    message:nil
+                                   metadata:nil];
           return;
         }
 
@@ -840,7 +841,7 @@ completionHandler:(void (^)(void))handler
          UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
          if (!pDoc) {
            [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                                    context:@"SignIn-modal"
+                                                    summary:@"SignIn-modal: unable to parse user profile doc"
                                                     barcode:barcode];
            [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
            return;
@@ -850,7 +851,7 @@ completionHandler:(void (^)(void))handler
            } else {
              NYPLLOG(@"Authorization ID (Barcode String) was nil.");
              [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
-                                       context:@"SignIn-modal"
+                                       summary:@"SignIn-modal: no auth-id in user profile doc"
                                        message:@"The UserProfileDocument obtained from the server contained no authorization identifier."
                                       metadata:@{
                                         @"hashedBarcode": barcode.md5String
@@ -861,7 +862,7 @@ completionHandler:(void (^)(void))handler
            } else {
              NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
              [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
-                                       context:@"SignIn-modal"
+                                       summary:@"SignIn-modal"
                                        message:@"The UserProfileDocument obtained from the server contained no licensor token."
                                       metadata:@{
                                         @"hashedBarcode": barcode.md5String
@@ -959,7 +960,7 @@ completionHandler:(void (^)(void))handler
                                   problemDocumentData:data
                                               barcode:barcode
                                                   url:request.URL
-                                              context:@"AccountSignInVC-validateCreds"
+                                              summary:@"AccountSignInVC-validateCreds: Problem Doc parse error"
                                               message:@"Sign-in failed via SignIn-modal, problem doc parsing failed"];
       } else {
         [NYPLErrorLogger logLoginError:error

@@ -141,20 +141,6 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       // changing the `accountsSets` dictionary will also change `currentAccount`
       if hadAccount != (self.currentAccount != nil) {
         self.currentAccount?.loadAuthenticationDocument { success in
-          if !success {
-            NYPLErrorLogger.logError(
-              withCode: .authDocLoadFail,
-              context: NYPLErrorLogger.Context.accountManagement.rawValue,
-              message: """
-              Failed to load authentication document for current library: \
-              \(self.currentAccount?.name ?? "N/A"). Will still attempt to \
-              load catalogURL \(self.currentAccount?.catalogUrl ?? "N/A").
-              """,
-              metadata: [
-                "currentLibrary": self.currentAccount?.debugDescription ?? "N/A"
-            ])
-          }
-
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
@@ -215,7 +201,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       case .failure(let error):
         NYPLErrorLogger.logError(
           withCode: .libraryListLoadFail,
-          context: NYPLErrorLogger.Context.accountManagement.rawValue,
+          summary: "Unable to load libraries list",
           message: "Libraries list failed to load from \(targetUrl)",
           metadata: [
             NSUnderlyingErrorKey: error,

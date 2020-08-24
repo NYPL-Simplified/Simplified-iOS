@@ -562,11 +562,15 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     NSString *contentCFI = locationDictionary[@"contentCFI"];
     if (!contentCFI) {
       contentCFI = @"";
-      [NYPLErrorLogger logNilContentCFIWithLocation:location
-                                 locationDictionary:locationDictionary
-                                             bookId:self.book.identifier
-                                              title:self.book.title
-                                            message:@"No CFI from NYPLLocation"];
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilCFI
+                                summary:@"R1 eReader warning: no CFI from NYPLLocation"
+                                message:nil
+                               metadata:@{
+                                 @"Book": self.book.loggableDictionary ?: @"N/A",
+                                 @"Registry locationString": location.locationString ?: @"N/A",
+                                 @"renderer": location.renderer ?: @"N/A",
+                                 @"openPageRequest idref": locationDictionary[@"idref"] ?: @"N/A",
+                               }];
     }
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
     NYPLLOG_F(@"Readium Initialize: Open Page Req idref: %@ elementCfi: %@", locationDictionary[@"idref"], contentCFI);
@@ -768,12 +772,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
 
        if(!result || [result isKindOfClass:[NSNull class]]) {
-         NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
-         [NYPLErrorLogger logNilContentCFIWithLocation:nil
-                                    locationDictionary:nil
-                                                bookId:nil
-                                                 title:nil
-                                               message:@"Readium failed to generate a CFI"];
+         NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium 1.");
+         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilCFI
+                                   summary:@"eReader bug: R1 failed to generate CFI"
+                                   message:nil
+                                  metadata:@{
+                                    @"Book": self.book.loggableDictionary ?: @"N/A",
+                                  }];
          return;
        }
        NSString *const locationJSON = result;
