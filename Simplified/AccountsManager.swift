@@ -10,7 +10,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
 
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
-@objcMembers final class AccountsManager: NSObject
+@objcMembers final class AccountsManager: NSObject, NYPLUserAccountProvider
 {
   static let NYPLAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949", //NYPL proper
@@ -140,7 +140,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       // note: `currentAccount` computed property feeds off of `accountSets`, so
       // changing the `accountsSets` dictionary will also change `currentAccount`
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument { success in
+        self.currentAccount?.loadAuthenticationDocument(userAccountProvider: self) { success in
           if !success {
             NYPLErrorLogger.logError(
               withCode: .authDocLoadFail,
@@ -307,5 +307,9 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     } catch {
       Log.error("ClearCache", "Unable to clear cache")
     }
+  }
+    
+  func isSignedIn() -> Bool {
+    return NYPLUserAccount.sharedAccount().hasBarcodeAndPIN()
   }
 }

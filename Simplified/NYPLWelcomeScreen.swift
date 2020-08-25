@@ -191,7 +191,7 @@ import PureLayout
         } else {
           // Show loading overlay while we load the auth document
           let loadingOverlay = self.addLoadingOverlayView(toVC: self.navigationController)
-          account.loadAuthenticationDocument { (success) in
+          account.loadAuthenticationDocument(userAccountProvider: nil) { (success) in
             DispatchQueue.main.async {
               self.removeLoadingOverlayView(loadingOverlay)
               guard success else {
@@ -246,7 +246,7 @@ import PureLayout
         loadingOverlay = self.addLoadingOverlayView()
       }
       // Load the auth document for the classics library
-      classicsAccount.loadAuthenticationDocument { (authSuccess) in
+      classicsAccount.loadAuthenticationDocument(userAccountProvider: nil) { (authSuccess) in
         DispatchQueue.main.async {
           self.removeLoadingOverlayView(loadingOverlay)
           if authSuccess {
