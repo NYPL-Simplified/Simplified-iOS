@@ -48,7 +48,7 @@ class NYPLAnnouncementManager {
     
   class private func storePresentedAnnouncementToFile() {
     guard let filePathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(filename) else {
-      // TODO: error logging
+        NYPLErrorLogger.logError(withCode: .directoryURLCreateFail, summary: "Unable to create directory URL for storing presented announcements")
       return
     }
     
@@ -56,8 +56,10 @@ class NYPLAnnouncementManager {
       let codedData = NSKeyedArchiver.archivedData(withRootObject: presentedAnnouncement)
       try codedData.write(to: filePathURL)
     } catch {
-      // TODO: Error logging
-      print(error)
+      NYPLErrorLogger.logError(error,
+                               summary: "Fail to write Presented Announcements file to local storage",
+                               message: nil,
+                               metadata: nil)
     }
   }
 }
