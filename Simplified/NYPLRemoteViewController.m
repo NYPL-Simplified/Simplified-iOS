@@ -138,7 +138,7 @@
         [self load];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                                  context:@"RemoteViewController"
+                                  summary:@"RemoteViewController"
                                   message:@"Failed to reload accounts after having found nil URL"
                                  metadata:@{
                                    @"currentURL": self.URL ?: @"N/A",
@@ -255,7 +255,7 @@
     [vc didMoveToParentViewController:self];
   } else {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnableToMakeVCAfterLoading
-                              context:@"RemoteViewController"
+                              summary:@"RemoteViewController"
                               message:@"Failed to create VC after loading from server"
                              metadata:@{
                                @"HTTPstatusCode": @(httpResponse.statusCode),
@@ -285,7 +285,7 @@
     @"connection.originalRequest": connection.originalRequest.loggableString ?: @"none",
   };
   [NYPLErrorLogger logError:error
-                    context:@"RemoteViewController"
+                    summary:@"RemoteViewController"
                     message:@"Server-side api call (likely related to Catalog loading) did fail with network error"
                    metadata:metadata];
 
@@ -313,7 +313,7 @@
                                 problemDocumentData:self.data
                                             barcode:nil
                                                 url:[self.response URL]
-                                            context:@"RemoteViewController"
+                                            summary:@"Catalog api fail: Problem Doc parse error"
                                             message:@"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"];
       alert = [NYPLAlertUtils
                alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
@@ -321,7 +321,7 @@
                                          @"Message for a problem document error")];
     } else {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeProblemDocMessageDisplayed
-                                context:@"RemoteViewController"
+                                summary:@"Catalog api fail: Problem Doc returned"
                                 message:@"Server-side api call (likely related to Catalog loading) failed"
                                metadata:pDoc.debugDictionary];
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
@@ -331,7 +331,7 @@
     // not a 200 but also no problem doc: this could be an error or not
     // depending on the mimeType and the data
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnexpectedHTTPCodeWarning
-                              context:@"RemoteViewController"
+                              summary:@"Catalog api fail"
                               message:@"Server-side api call (likely related to Catalog loading) returned a non-200 HTTP status"
                              metadata:@{
                                @"HTTPstatusCode": @(httpResponse.statusCode),
