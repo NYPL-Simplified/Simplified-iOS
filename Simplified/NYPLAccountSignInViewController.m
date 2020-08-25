@@ -19,7 +19,6 @@
 #import "NYPLReachability.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLUserAccountFrontEndValidation.h"
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -128,6 +127,7 @@ CGFloat const marginPadding = 2.0;
   
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
                             initWithAccount:self.currentAccount
+                            businessLogic:self.businessLogic
                             inputProvider:self];
   return self;
 }

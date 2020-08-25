@@ -18,7 +18,6 @@
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLSettingsAccountURLSessionChallengeHandler.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLUserAccountFrontEndValidation.h"
 #import "NYPLXML.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -146,6 +145,7 @@ Authenticating with any of those barcodes should work.
 
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
                             initWithAccount:self.selectedAccount
+                            businessLogic:self.businessLogic
                             inputProvider:self];
 
   [[NSNotificationCenter defaultCenter]
