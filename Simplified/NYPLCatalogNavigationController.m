@@ -148,7 +148,7 @@
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [account loadAuthenticationDocumentWithUserAccountProvider:nil completion:^(BOOL success) {
+        [account loadAuthenticationDocumentUsingSignedInStateProvider:nil completion:^(BOOL success) {
           dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
               [AccountsManager shared].currentAccount = account;

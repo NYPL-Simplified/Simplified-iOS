@@ -3,7 +3,7 @@ private let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
-@objc protocol NYPLUserAccountProvider {
+@objc protocol NYPLSignedInStateProvider {
   func isSignedIn() -> Bool
 }
 
@@ -325,11 +325,12 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
 
   /// Load authentication documents from the network or cache.
-  /// - Parameter userAccountProvider: The object provide user account for performing sign in check. nil means check failed
+  /// - Parameter signedInStateProvider: The object providing user signed in state for presenting announcement. nil means no announcements will be present
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
   /// thread or not. This closure is not retained by `self`.
-  func loadAuthenticationDocument(userAccountProvider: NYPLUserAccountProvider?, completion: @escaping (Bool) -> ()) {
+  @objc(loadAuthenticationDocumentUsingSignedInStateProvider:completion:)
+  func loadAuthenticationDocument(using signedInStateProvider: NYPLSignedInStateProvider? = nil, completion: @escaping (Bool) -> ()) {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       NYPLErrorLogger.logError(
         withCode: .noURL,
@@ -347,10 +348,10 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
         do {
           self.authenticationDocument = try
             OPDS2AuthenticationDocument.fromData(serverData)
-          if let provider = userAccountProvider,
+          if let provider = signedInStateProvider,
             provider.isSignedIn(),
             let announcements = self.authenticationDocument?.announcements {
-              NYPLAnnouncementManager.presentAnnouncements(announcements)
+            NYPLAnnouncementBusinessLogic.shared.presentAnnouncements(announcements)
           }
           completion(true)
         } catch (let error) {

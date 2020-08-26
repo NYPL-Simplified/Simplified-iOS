@@ -5,20 +5,20 @@ class NYPLAnnouncementManagerTests: XCTestCase {
   let announcementId = "test_announcement_id"
     
   override func tearDown() {
-    NYPLAnnouncementManager.deletePresentedAnnouncement(id: announcementId)
+    NYPLAnnouncementBusinessLogic.shared.testing_deletePresentedAnnouncement(id: announcementId)
   }
     
   func testShouldPresentAnnouncement() {
-    XCTAssertTrue(NYPLAnnouncementManager.shouldPresentAnnouncement(id:announcementId))
+    XCTAssertTrue(NYPLAnnouncementBusinessLogic.shared.testing_shouldPresentAnnouncement(id:announcementId))
   }
     
   func testAddPresentedAnnouncement() {
-    NYPLAnnouncementManager.addPresentedAnnouncement(id: announcementId)
-    XCTAssertFalse(NYPLAnnouncementManager.shouldPresentAnnouncement(id:announcementId))
+    NYPLAnnouncementBusinessLogic.shared.addPresentedAnnouncement(id: announcementId)
+    XCTAssertFalse(NYPLAnnouncementBusinessLogic.shared.testing_shouldPresentAnnouncement(id:announcementId))
   }
   
   func testDeletePresentedAnnouncement() {
-    NYPLAnnouncementManager.deletePresentedAnnouncement(id: announcementId)
-    XCTAssertTrue(NYPLAnnouncementManager.shouldPresentAnnouncement(id:announcementId))
+    NYPLAnnouncementBusinessLogic.shared.testing_deletePresentedAnnouncement(id: announcementId)
+    XCTAssertTrue(NYPLAnnouncementBusinessLogic.shared.testing_shouldPresentAnnouncement(id:announcementId))
   }
 }

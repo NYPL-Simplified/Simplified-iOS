@@ -10,7 +10,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
 
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
-@objcMembers final class AccountsManager: NSObject, NYPLUserAccountProvider
+@objcMembers final class AccountsManager: NSObject, NYPLSignedInStateProvider
 {
   static let NYPLAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949", //NYPL proper
@@ -140,7 +140,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       // note: `currentAccount` computed property feeds off of `accountSets`, so
       // changing the `accountsSets` dictionary will also change `currentAccount`
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument(userAccountProvider: self) { success in
+        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { (success) in
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
@@ -160,7 +160,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
               resolveFn()
             }
           }
-        }
+        })
       } else {
         // we pass `true` because at this point we know the catalogs loaded
         // successfully

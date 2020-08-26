@@ -402,3 +402,9 @@ extension Notification.Name {
     removeBarcodeAndPIN()
   }
 }
+
+extension NYPLUserAccount: NYPLSignedInStateProvider {
+  func isSignedIn() -> Bool {
+    return hasBarcodeAndPIN()
+  }
+}

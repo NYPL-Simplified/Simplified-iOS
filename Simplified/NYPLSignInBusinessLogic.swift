@@ -28,7 +28,7 @@ import NYPLCardCreator
 extension NYPLADEPT: NYPLDRMAuthorizing {}
 extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 
-class NYPLSignInBusinessLogic: NSObject {
+class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   @objc let libraryAccountID: String
   private let permissionsCheckLock = NSLock()

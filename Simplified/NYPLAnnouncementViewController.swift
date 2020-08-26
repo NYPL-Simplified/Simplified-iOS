@@ -50,7 +50,7 @@ class NYPLAnnouncementViewController: UIViewController {
     
     @objc func dismissView() {
       self.dismiss(animated: true) {
-        NYPLAnnouncementManager.addPresentedAnnouncement(id: self.announcement.id)
+        NYPLAnnouncementBusinessLogic.shared.addPresentedAnnouncement(id: self.announcement.id)
       }
     }
 }
