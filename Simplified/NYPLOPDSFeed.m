@@ -106,7 +106,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
 
         [NYPLErrorLogger logNetworkError:error
                                     code:NYPLErrorCodeApiCall
-                                 summary:@"NYPLOPDSFeed: HTTP status error"
+                                 summary:@"NYPLOPDSFeed: HTTP response error"
                                  request:request
                                 response:response
                                  message:msg

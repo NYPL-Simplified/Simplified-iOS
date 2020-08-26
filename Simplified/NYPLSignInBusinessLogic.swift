@@ -272,7 +272,8 @@ class NYPLSignInBusinessLogic: NSObject {
                           userInfo: [
                             NSLocalizedDescriptionKey: description,
                             NSLocalizedRecoverySuggestionErrorKey: recoveryMsg])
-      NYPLErrorLogger.logError(error)
+      NYPLErrorLogger.logError(error,
+                               summary: "Juvenile Card Creation: Parent barcode missing");
       eligibilityCompletion(nil, error)
       juvenileAuthIsOngoing = false
       juvenileAuthLock.unlock()
@@ -294,7 +295,8 @@ class NYPLSignInBusinessLogic: NSObject {
       case .success(let navVC):
         eligibilityCompletion(navVC, nil)
       case .fail(let error):
-        NYPLErrorLogger.logError(error)
+        NYPLErrorLogger.logError(error,
+                                 summary: "Juvenile Card Creation error")
         self?.juvenileCardCreationCoordinator = nil
         eligibilityCompletion(nil, error)
       }
