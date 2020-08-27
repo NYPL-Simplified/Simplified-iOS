@@ -207,7 +207,7 @@ Authenticating with any of those barcodes should work.
     [self.view addSubview:activityIndicator];
     [activityIndicator startAnimating];
     self.loading = true;
-    [self.selectedAccount loadAuthenticationDocumentWithCompletion:^(BOOL success) {
+    [self.selectedAccount loadAuthenticationDocumentUsingSignedInStateProvider:self.businessLogic completion:^(BOOL success) {
       dispatch_async(dispatch_get_main_queue(), ^{
         [activityIndicator removeFromSuperview];
         if (success) {
