@@ -57,7 +57,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
   //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession, didBecomeInvalidWithError err: Error?) {
     if let err = err {
-      NYPLErrorLogger.logError(err, message: "URLSession became invalid")
+      NYPLErrorLogger.logError(err, summary: "URLSession became invalid")
     } else {
       NYPLErrorLogger.logError(withCode: .invalidURLSession,
                                summary: "URLSessionDelegate: session became invalid")
@@ -154,6 +154,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
         logMetadata["urlSessionError"] = error
       }
       NYPLErrorLogger.logNetworkError(parseError,
+                                      code: NYPLErrorCode.parseProblemDocFail,
                                       request: task.originalRequest,
                                       response: task.response,
                                       message: "Network request for task \(taskID)  failed. A Problem Document was returned.",

@@ -168,7 +168,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       }
     } catch (let error) {
       NYPLErrorLogger.logError(error, 
-                               message: "An error was thrown during loadAccountSetsAndAuthDoc")
+                               summary: "Error while parsing catalog feed")
       completion(false)
     }
   }

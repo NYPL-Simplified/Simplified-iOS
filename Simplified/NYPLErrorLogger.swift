@@ -3,6 +3,7 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
+import CFNetwork
 import Foundation
 import Firebase
 
@@ -90,6 +91,8 @@ fileprivate let nullString = "null"
   case noTaskInfoAvailable = 907
   case downloadFail = 908
   case responseFail = 909
+  case clientSideTransientError = 910
+  case clientSideUserInterruption = 911
 
   // DRM
   case epubDecodingError = 1000
@@ -134,7 +137,7 @@ fileprivate let nullString = "null"
   ///   - message: A string for further context.
   ///   - metadata: Any additional metadata to be logged.
   class func logError(_ error: Error,
-                      summary: String? = nil,
+                      summary: String,
                       message: String? = nil,
                       metadata: [String: Any]? = nil) {
     logError(error,
@@ -177,43 +180,20 @@ fileprivate let nullString = "null"
   ///   report, to ensure privacy.
   ///   - response: Useful to understand if the error originated on the server.
   ///   - message: A string for further context.
-  /// - Returns: The error that was logged.
-  @discardableResult
   class func logNetworkError(_ originalError: Error? = nil,
                              code: NYPLErrorCode = .ignore,
                              summary: String? = nil,
                              request: URLRequest?,
                              response: URLResponse? = nil,
                              message: String? = nil,
-                             metadata: [String: Any]? = nil) -> Error {
-    // compute metadata
-    var metadata = metadata ?? [String : Any]()
-    if let request = request {
-      metadata["request"] = request.loggableString
-    }
-    if let response = response {
-      metadata["response"] = response
-    }
-    if let originalError = originalError {
-      metadata[NSUnderlyingErrorKey] = originalError
-    }
-    addAccountInfoToMetadata(&metadata)
-
-    let userInfo = additionalInfo(severity: .error,
-                                  message: message,
-                                  metadata: metadata)
-    let error = NSError(
-      domain: summary ?? "Network error",
-      code: (code != .ignore ? code : NYPLErrorCode.apiCall).rawValue,
-      userInfo: userInfo)
-
-    Log.error(#file, """
-      Request \(request?.loggableString ?? "") failed. \
-      Message: \(message ?? "<>"). Error: \(originalError ?? error)
-      """)
-
-    Crashlytics.sharedInstance().recordError(error)
-    return error
+                             metadata: [String: Any]? = nil) {
+    logError(originalError,
+             code: (code != .ignore ? code : NYPLErrorCode.apiCall),
+             summary: summary ?? "Network error",
+             request: request,
+             response: response,
+             message: message,
+             metadata: metadata)
   }
 
   //----------------------------------------------------------------------------
@@ -475,46 +455,149 @@ fileprivate let nullString = "null"
   /// Helper to log a generic error to Crashlytics.
   /// - Parameters:
   ///   - originalError: Any originating error that occurred, if available.
-  ///   - code: A code identifying the error situation. This is ignored if
-  ///   `error` is not nil.
+  ///   - code: A code identifying the error situation.
   ///   - summary: Operating context to help identify where the error occurred.
+  ///   - request: The request that returned the error.
+  ///   - response: The response that returned the error.
   ///   - message: A string for further context.
   ///   - metadata: Any additional metadata to be logged.
   private class func logError(_ originalError: Error?,
                               code: NYPLErrorCode = .ignore,
-                              summary: String? = nil,
+                              summary: String,
+                              request: URLRequest? = nil,
+                              response: URLResponse? = nil,
                               message: String? = nil,
                               metadata: [String: Any]? = nil) {
-    if let message = message {
-      Log.error(#file, message)
+    // compute metadata
+    var metadata = metadata ?? [String : Any]()
+    addAccountInfoToMetadata(&metadata)
+    if let request = request {
+      Log.error(#file, "Request \(request.loggableString) failed.")
+      metadata["request"] = request.loggableString
     }
-
-    var moreMetadata = metadata ?? [String : Any]()
-    addAccountInfoToMetadata(&moreMetadata)
-
+    if let response = response {
+      metadata["response"] = response
+    }
     if let originalError = originalError {
       Log.error(#file, "Error: \(originalError)")
-      moreMetadata[NSUnderlyingErrorKey] = originalError
+      metadata[NSUnderlyingErrorKey] = originalError
     }
 
-    let userInfo = additionalInfo(severity: .error,
+    // compute final summary and code, plus severity
+    let (finalSummary, finalCode, severity) = fixUpSummary(summary,
+                                                           code: code,
+                                                           with: originalError)
+
+    // build error report
+    let userInfo = additionalInfo(severity: severity,
                                   message: message,
-                                  metadata: moreMetadata)
+                                  metadata: metadata)
+    let err = NSError(domain: finalSummary,
+                      code: finalCode,
+                      userInfo: userInfo)
+    Crashlytics.sharedInstance().recordError(err)
+  }
+
+  /// Fixes up summary and code inspecting the domain and code of a given
+  /// error, isolating error reasons that are user-dependent, such as
+  /// no internet connection or other device limitations.
+  /// - Parameters:
+  ///   - summary: The currently proposed summary for the Crashlytics report.
+  ///   - code: The currently proposed code for the Crashlytics report.
+  ///   - err: The error to inspect.
+  /// - Returns: A tuple with the final suggested summary and code to use
+  /// to file a report on Crashlytics.
+  private class func fixUpSummary(_ summary: String,
+                                  code: NYPLErrorCode,
+                                  with err: Error?) -> (summary: String, code: Int, severity: NYPLSeverity) {
+    if let nserr = err as NSError? {
+      if let (finalSummary, finalCode) = customSummaryAndCode(from: nserr) {
+        return (summary: finalSummary, code: finalCode.rawValue, severity: .warning)
+      }
+    }
 
     let finalCode: Int
     if code != .ignore {
       finalCode = code.rawValue
-    } else if let nserror = originalError as NSError? {
-      finalCode = nserror.code
+    } else if let nserr = err as NSError? {
+      finalCode = nserr.code
     } else {
       finalCode = NYPLErrorCode.ignore.rawValue
     }
 
-    let err = NSError(domain: summary ?? NYPLSimplyEDomain,
-                      code: finalCode,
-                      userInfo: userInfo)
+    return (summary: summary, code: finalCode, severity: .error)
+  }
 
-    Crashlytics.sharedInstance().recordError(err)
+  /// Derive a custom summary and code to categorize certain error that are
+  /// related to particular user conditions for which there's not much we can
+  /// do, such as lack of internet connection or timeouts.
+  /// - Parameter err: The error that was reported.
+  /// - Returns: A tuple with a custom summary and code that will group these
+  /// errors together on Crashlytics, separating them from the rest of "actual"
+  /// errors.
+  private class func customSummaryAndCode(from err: NSError) -> (summary: String, code: NYPLErrorCode)? {
+    let cfErrorDomainNetwork = (kCFErrorDomainCFNetwork as String)
+
+    switch err.domain {
+
+    case NSURLErrorDomain:
+      switch err.code {
+      case NSURLErrorUserCancelledAuthentication:
+        return (summary: "User Cancelled Authentication", code: .clientSideUserInterruption)
+      case NSURLErrorCancelled:
+        return (summary: "Request Cancelled", code: .clientSideUserInterruption)
+      case NSURLErrorTimedOut:
+        return (summary: "Request Timeout", code: .clientSideTransientError)
+      case NSURLErrorNetworkConnectionLost:
+        return (summary: "Connection Lost/Severed", code: .clientSideTransientError)
+      case NSURLErrorInternationalRoamingOff:
+        fallthrough
+      case NSURLErrorNotConnectedToInternet:
+        return (summary: "No Internet Connection", code: .clientSideTransientError)
+      case NSURLErrorCallIsActive:
+        fallthrough
+      case NSURLErrorDataNotAllowed:
+        return (summary: "User Device Cannot Connect", code: .clientSideTransientError)
+      default:
+        break
+      }
+
+    case cfErrorDomainNetwork:
+      let code = err.code
+
+      if code == CFNetworkErrors.cfurlErrorUserCancelledAuthentication.rawValue {
+        return (summary: "User Cancelled Authentication",
+                code: .clientSideUserInterruption)
+
+      } else if code == CFNetworkErrors.cfurlErrorCancelled.rawValue
+        || code == CFNetworkErrors.cfNetServiceErrorCancel.rawValue {
+        return (summary: "Request Cancelled",
+                code: .clientSideUserInterruption)
+
+      } else if code == CFNetworkErrors.cfurlErrorTimedOut.rawValue
+        || code == CFNetworkErrors.cfNetServiceErrorTimeout.rawValue {
+        return (summary: "Request Timeout",
+                code: .clientSideTransientError)
+
+      } else if code == CFNetworkErrors.cfurlErrorNetworkConnectionLost.rawValue {
+        return (summary: "Connection Lost/Severed",
+                code: .clientSideTransientError)
+
+      } else if code == CFNetworkErrors.cfurlErrorNotConnectedToInternet.rawValue
+        || code == CFNetworkErrors.cfurlErrorInternationalRoamingOff.rawValue {
+        return (summary: "No Internet Connection",
+                code: .clientSideTransientError)
+
+      } else if code == CFNetworkErrors.cfurlErrorCallIsActive.rawValue
+        || code == CFNetworkErrors.cfurlErrorDataNotAllowed.rawValue {
+        return (summary: "User Device Cannot Connect", code: .clientSideTransientError)
+      }
+
+    default:
+      break
+    }
+
+    return nil
   }
 
   /**
@@ -544,10 +627,10 @@ fileprivate let nullString = "null"
 
     dict["severity"] = severity.stringValue()
     if let message = message {
+      Log.error(#file, message)
       dict["message"] = message
     }
 
     return dict
   }
-
 }
