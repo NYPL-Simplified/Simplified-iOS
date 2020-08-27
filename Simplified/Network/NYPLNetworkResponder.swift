@@ -56,11 +56,10 @@ extension NYPLNetworkResponder: URLSessionDelegate {
   //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession, didBecomeInvalidWithError err: Error?) {
     if let err = err {
-      NYPLErrorLogger.logError(err, message: "URLSession became invalid")
+      NYPLErrorLogger.logError(err, summary: "URLSession became invalid")
     } else {
       NYPLErrorLogger.logError(withCode: .invalidURLSession,
-                               context: NYPLErrorLogger.Context.infrastructure.rawValue,
-                               message: "URLSession became invalid")
+                               summary: "URLSessionDelegate: session became invalid")
     }
 
     taskInfoLock.lock()
@@ -156,6 +155,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
         logMetadata["urlSessionError"] = error
       }
       NYPLErrorLogger.logNetworkError(parseError,
+                                      code: NYPLErrorCode.parseProblemDocFail,
                                       request: task.originalRequest,
                                       response: task.response,
                                       message: "Network request for task \(taskID)  failed. A Problem Document was returned.",
@@ -183,7 +183,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
       guard !httpResponse.isFailure() else {
         logMetadata["response"] = httpResponse
         logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("UnknownRequestError", comment: "A generic error message for when a network request fails")
-        let err = NSError(domain: NYPLErrorLogger.Context.infrastructure.rawValue,
+        let err = NSError(domain: "Api call with failure HTTP status",
                           code: NYPLErrorCode.responseFail.rawValue,
                           userInfo: logMetadata)
         currentTaskInfo.completion(.failure(err, task.response))
@@ -215,7 +215,7 @@ extension URLSessionTask {
 
     let err = NSError.makeFromProblemDocument(
       problemDoc,
-      domain: NYPLErrorLogger.Context.infrastructure.rawValue,
+      domain: "Api call failure: problem document available",
       code: NYPLErrorCode.apiCall.rawValue,
       userInfo: userInfo)
 

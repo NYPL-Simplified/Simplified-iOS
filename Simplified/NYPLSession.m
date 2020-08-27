@@ -100,7 +100,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
         }
         [NYPLErrorLogger logNetworkError:error
                                     code:NYPLErrorCodeApiCall
-                                 context:NSStringFromClass([self class])
+                                 summary:NSStringFromClass([self class])
                                  request:req
                                 response:response
                                  message:@"NYPLSession error"

@@ -31,7 +31,7 @@ extension NYPLADEPT: NYPLDRMAuthorizing {}
 extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 
 @objcMembers
-class NYPLSignInBusinessLogic: NSObject {
+class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   let libraryAccountID: String
   private let permissionsCheckLock = NSLock()
@@ -200,13 +200,11 @@ class NYPLSignInBusinessLogic: NSObject {
     // below) we'll run into an error soon after, at the 1st screen of the flow.
     if NYPLSecrets.cardCreatorUsername == nil {
       NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
-                               context: NYPLErrorLogger.Context.signUp.rawValue,
-                               message: "Unable to decode cardCreator username")
+                               summary: "CardCreator username decode error from NYPLSecrets")
     }
     if NYPLSecrets.cardCreatorPassword == nil {
       NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
-                               context: NYPLErrorLogger.Context.signUp.rawValue,
-                               message: "Unable to decode cardCreator password")
+                               summary:"CardCreator password decode error from NYPLSecrets")
     }
 
     return (username: NYPLSecrets.cardCreatorUsername ?? "",
@@ -302,7 +300,8 @@ class NYPLSignInBusinessLogic: NSObject {
                           userInfo: [
                             NSLocalizedDescriptionKey: description,
                             NSLocalizedRecoverySuggestionErrorKey: recoveryMsg])
-      NYPLErrorLogger.logError(error)
+      NYPLErrorLogger.logError(error,
+                               summary: "Juvenile Card Creation: Parent barcode missing");
       eligibilityCompletion(nil, error)
       juvenileAuthIsOngoing = false
       juvenileAuthLock.unlock()
@@ -324,7 +323,8 @@ class NYPLSignInBusinessLogic: NSObject {
       case .success(let navVC):
         eligibilityCompletion(navVC, nil)
       case .fail(let error):
-        NYPLErrorLogger.logError(error)
+        NYPLErrorLogger.logError(error,
+                                 summary: "Juvenile Card Creation error")
         self?.juvenileCardCreationCoordinator = nil
         eligibilityCompletion(nil, error)
       }

@@ -83,7 +83,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
 
     if (data == nil) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedNoData
-                                context:@"NYPLOPDSFeed: no data from server"
+                                summary:@"NYPLOPDSFeed: no data from server"
                                 message:nil
                                metadata:@{
                                  @"Request": [request loggableString],
@@ -111,7 +111,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
 
         [NYPLErrorLogger logNetworkError:error
                                     code:NYPLErrorCodeApiCall
-                                 context:@"NYPLOPDSFeed: HTTP status error"
+                                 summary:@"NYPLOPDSFeed: HTTP response error"
                                  request:request
                                 response:response
                                  message:msg
@@ -130,7 +130,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
     if(!feedXML) {
       NYPLLOG(@"Failed to parse data as XML.");
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeFeedParseFail
-                                context:@"NYPLOPDSFeed: Failed to parse data as XML"
+                                summary:@"NYPLOPDSFeed: Failed to parse data as XML"
                                 message:@"Error in NYPLOPDSFeed::withURL:"
                                metadata:@{
                                  @"request": request.loggableString,
@@ -146,7 +146,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
     if(!feed) {
       NYPLLOG(@"Could not interpret XML as OPDS.");
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedParseFail
-                                context:@"NYPLOPDSFeed: Failed to parse XML as OPDS"
+                                summary:@"NYPLOPDSFeed: Failed to parse XML as OPDS"
                                 message:@"Error in NYPLOPDSFeed::withURL:"
                                metadata:@{
                                  @"request": request.loggableString,

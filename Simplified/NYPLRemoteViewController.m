@@ -109,7 +109,7 @@
   // address this as well.
   if (self.URL == nil) {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              context:@"RemoteViewController"
+                              summary:@"RemoteViewController"
                               message:@"Prevented attempt to load without a URL."
                              metadata:@{
                                @"ChildVCs": self.childViewControllers
@@ -150,7 +150,7 @@
           @"connection.originalRequest": dataTaskCopy.originalRequest ?: @"none",
         };
         [NYPLErrorLogger logError:error
-                          context:@"RemoteViewController"
+                          summary:@"RemoteViewController"
                           message:@"Server-side api call (likely related to Catalog loading) failed"
                          metadata:metadata];
 
@@ -190,13 +190,13 @@
         [viewController didMoveToParentViewController:self];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnableToMakeVCAfterLoading
-                                  context:@"RemoteViewController"
+                                  summary:@"RemoteViewController"
                                   message:@"Failed to create VC after loading from server"
                                  metadata:@{
                                    @"HTTPstatusCode": @(httpResponse.statusCode ?: -1),
                                    @"mimeType": response.MIMEType ?: @"N/A",
                                    @"URL": self.URL ?: @"N/A",
-                                   @"response.URL": response.URL ?: @"N/A"
+                                   @"response": response ?: @"N/A"
                                  }];
         self.reloadView.hidden = NO;
       }
@@ -215,7 +215,7 @@
         [self load];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                                  context:@"RemoteViewController"
+                                  summary:@"RemoteViewController"
                                   message:@"Failed to reload accounts after having found nil URL"
                                  metadata:@{
                                    @"currentURL": self.URL ?: @"N/A",
@@ -297,7 +297,7 @@
                                 problemDocumentData:data
                                             barcode:nil
                                                 url:httpResponse.URL
-                                            context:@"RemoteViewController"
+                                            summary:@"Catalog api fail: Problem Doc parse error"
                                             message:@"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"];
       alert = [NYPLAlertUtils
                alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
@@ -305,7 +305,7 @@
                                          @"Message for a problem document error")];
     } else {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeProblemDocMessageDisplayed
-                                context:@"RemoteViewController"
+                                summary:@"Catalog api fail: Problem Doc returned"
                                 message:@"Server-side api call (likely related to Catalog loading) failed"
                                metadata:pDoc.debugDictionary];
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
@@ -315,7 +315,7 @@
     // not a 200 but also no problem doc: this could be an error or not
     // depending on the mimeType and the data
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnexpectedHTTPCodeWarning
-                              context:@"RemoteViewController"
+                              summary:@"Catalog api fail"
                               message:@"Server-side api call (likely related to Catalog loading) returned a non-200 HTTP status"
                              metadata:@{
                                @"HTTPstatusCode": @(httpResponse.statusCode),

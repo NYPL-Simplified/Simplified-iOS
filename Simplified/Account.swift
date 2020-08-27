@@ -23,6 +23,10 @@ class OPDS2SamlIDP: NSObject, Codable {
   }
 }
 
+@objc protocol NYPLSignedInStateProvider {
+  func isSignedIn() -> Bool
+}
+
 // MARK: AccountDetails
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
@@ -396,14 +400,17 @@ class OPDS2SamlIDP: NSObject, Codable {
 
 
   /// Load authentication documents from the network or cache.
+  /// Providing the signedInStateProvider might lead to presentation of announcements
+  /// - Parameter signedInStateProvider: The object providing user signed in state for presenting announcement. nil means no announcements will be present
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
   /// thread or not. This closure is not retained by `self`.
-  func loadAuthenticationDocument(completion: @escaping (Bool) -> ()) {
+  @objc(loadAuthenticationDocumentUsingSignedInStateProvider:completion:)
+  func loadAuthenticationDocument(using signedInStateProvider: NYPLSignedInStateProvider? = nil, completion: @escaping (Bool) -> ()) {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       NYPLErrorLogger.logError(
         withCode: .noURL,
-        context: NYPLErrorLogger.Context.accountManagement.rawValue,
+        summary: "Authentication Document Load Error",
         message: "Failed to load authentication document because its URL is invalid",
         metadata: ["self.uuid": uuid]
       )
@@ -417,12 +424,19 @@ class OPDS2SamlIDP: NSObject, Codable {
         do {
           self.authenticationDocument = try
             OPDS2AuthenticationDocument.fromData(serverData)
+          if let provider = signedInStateProvider,
+            provider.isSignedIn(),
+            let announcements = self.authenticationDocument?.announcements {
+            DispatchQueue.main.async {
+              NYPLAnnouncementBusinessLogic.shared.presentAnnouncements(announcements)
+            }
+          }
           completion(true)
         } catch (let error) {
           let responseBody = String(data: serverData, encoding: .utf8)
           NYPLErrorLogger.logError(
             withCode: .authDocParseFail,
-            context: NYPLErrorLogger.Context.accountManagement.rawValue,
+            summary: "Authentication Document Load Error",
             message: "Failed to parse authentication document data obtained from \(url)",
             metadata: [
               "underlyingError": error,
@@ -434,7 +448,7 @@ class OPDS2SamlIDP: NSObject, Codable {
       case .failure(let error, _):
         NYPLErrorLogger.logError(
           withCode: .authDocLoadFail,
-          context: NYPLErrorLogger.Context.accountManagement.rawValue,
+          summary: "Authentication Document Load Error",
           message: "Request to load authentication document at \(url) failed.",
           metadata: ["underlyingError": error]
         )

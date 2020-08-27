@@ -478,3 +478,9 @@ private enum StorageKey: String {
     }
   }
 }
+
+extension NYPLUserAccount: NYPLSignedInStateProvider {
+  func isSignedIn() -> Bool {
+    return hasBarcodeAndPIN()
+  }
+}
