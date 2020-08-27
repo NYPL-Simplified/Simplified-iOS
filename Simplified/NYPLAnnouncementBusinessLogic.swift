@@ -2,6 +2,7 @@ import Foundation
 
 private let announcementsFilename: String = "NYPLPresentedAnnouncementsList"
 
+/// This class is not thread safe
 class NYPLAnnouncementBusinessLogic {
   static let shared = NYPLAnnouncementBusinessLogic()
 
@@ -24,7 +25,7 @@ class NYPLAnnouncementBusinessLogic {
   
   // MARK: - Read
     
-  fileprivate func restorePresentedAnnouncements() {
+  private func restorePresentedAnnouncements() {
     guard let filePathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(announcementsFilename),
       let filePathData = try? Data(contentsOf: filePathURL),
       let unarchived = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(filePathData),
@@ -34,27 +35,25 @@ class NYPLAnnouncementBusinessLogic {
     presentedAnnouncements = presented
   }
     
-  fileprivate func shouldPresentAnnouncement(id: String) -> Bool {
+  private func shouldPresentAnnouncement(id: String) -> Bool {
     return !presentedAnnouncements.contains(id)
   }
   
   // MARK: - Write
-    
-  /// Add presented announcement to storage
-  /// No guarantees are being made about whether this is called on the main thread or not
+
   func addPresentedAnnouncement(id: String) {
     presentedAnnouncements.insert(id)
     
     storePresentedAnnouncementsToFile()
   }
 
-  fileprivate func deletePresentedAnnouncement(id: String) {
+  private func deletePresentedAnnouncement(id: String) {
     presentedAnnouncements.remove(id)
     
     storePresentedAnnouncementsToFile()
   }
     
-  fileprivate func storePresentedAnnouncementsToFile() {
+  private func storePresentedAnnouncementsToFile() {
     guard let filePathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(announcementsFilename) else {
         NYPLErrorLogger.logError(withCode: .directoryURLCreateFail, summary: "Unable to create directory URL for storing presented announcements")
       return

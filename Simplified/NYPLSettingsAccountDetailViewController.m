@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLLogOutExecutor, NYPLSignedInStateProvider>
+@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLLogOutExecutor>
 
 // State machine
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
@@ -400,12 +400,6 @@ Authenticating with any of those barcodes should work.
       self.loggingInAfterBarcodeScan = YES;
     }
   }];
-}
-
-#pragma mark - NYPLUserAccountProvider Protocol
-
-- (BOOL)isSignedIn {
-  return self.businessLogic.isSignedIn;
 }
 
 #pragma mark - NYPLSettingsAccountUIDelegate

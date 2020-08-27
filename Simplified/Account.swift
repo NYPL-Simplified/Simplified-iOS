@@ -325,6 +325,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
 
   /// Load authentication documents from the network or cache.
+  /// Providing the signedInStateProvider might lead to presentation of announcements
   /// - Parameter signedInStateProvider: The object providing user signed in state for presenting announcement. nil means no announcements will be present
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
