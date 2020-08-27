@@ -352,7 +352,9 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
           if let provider = signedInStateProvider,
             provider.isSignedIn(),
             let announcements = self.authenticationDocument?.announcements {
-            NYPLAnnouncementBusinessLogic.shared.presentAnnouncements(announcements)
+            DispatchQueue.main.async {
+              NYPLAnnouncementBusinessLogic.shared.presentAnnouncements(announcements)
+            }
           }
           completion(true)
         } catch (let error) {

@@ -12,13 +12,13 @@ class NYPLAnnouncementBusinessLogic {
     restorePresentedAnnouncements()
   }
     
+  /// Present the announcement in a view controller
+  /// This method should be called on main thread
   func presentAnnouncements(_ announcements: [Announcement]) {
     for announcement in announcements {
       if shouldPresentAnnouncement(id: announcement.id) {
-        DispatchQueue.main.async {
-          let vc = NYPLAnnouncementViewController(announcement: announcement)
-          NYPLRootTabBarController.shared()?.safelyPresentViewController(vc, animated: true, completion: nil)
-        }
+        let vc = NYPLAnnouncementViewController(announcement: announcement)
+        NYPLRootTabBarController.shared()?.safelyPresentViewController(vc, animated: true, completion: nil)
       }
     }
   }
