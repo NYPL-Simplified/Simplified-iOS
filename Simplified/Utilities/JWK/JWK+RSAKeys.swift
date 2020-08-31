@@ -26,8 +26,8 @@ extension JWK {
       let qi = qi?.base64URLDecode()
       else { return nil }
     // Make RSA components
+    // https://tools.ietf.org/html/rfc8017#page-55
     // Version 0 = v1
-    // found in https://github.com/Brightspace/node-jwk-to-pem/blob/master/src/rsa.js
     let version = ASN1.Integer(data: Data([0]))
     let modulus = ASN1.Integer(data: n)
     let publicExponent = ASN1.Integer(data: e)
