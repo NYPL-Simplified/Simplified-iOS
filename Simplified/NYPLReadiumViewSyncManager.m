@@ -148,69 +148,77 @@ const double RequestTimeInterval = 120;
       return;
     }
       
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      NSDictionary *spineItemDetails = weakSelf.bookMapDictionary[responseJSON[@"idref"]];
-      NSString *elementTitle = spineItemDetails[@"tocElementTitle"];
-      if (!elementTitle) {
-        elementTitle = @"";
-      }
-                  
-      NSString *message = NSLocalizedString(@"Do you want to move to the page on which you left off?", nil);
-      NSAttributedString *atrString;
-      if (![elementTitle isEqualToString:@"Current Chapter"]) {
-        message = [message stringByAppendingString:[NSString stringWithFormat:@"<br><br>Chapter:\n&ldquo;%@&ldquo;", elementTitle]];
-        atrString = [[NSAttributedString alloc] initWithData:[message dataUsingEncoding:NSUTF8StringEncoding]
-                                                                         options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                                                                   NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
-                                                              documentAttributes:nil error:nil];
-      }
+    [self presentSyncReadingPositionAlertForResponse:responseJSON
+                                      serverLocation:serverLocationString
+                                         withPackage:dictionary];
+  }];
+}
 
-      UIAlertController *alertController = [UIAlertController
-                                            alertControllerWithTitle:NSLocalizedString(@"Sync Reading Position", nil)
-                                            message:(atrString != nil) ? [atrString string] : message
-                                            preferredStyle:UIAlertControllerStyleAlert];
+- (void)presentSyncReadingPositionAlertForResponse:(NSDictionary *)response
+                                    serverLocation:(NSString *)location
+                                       withPackage:(NSMutableDictionary *)dictionary {
+  NSDictionary *spineItemDetails = self.bookMapDictionary[response[@"idref"]];
+  NSString *elementTitle = spineItemDetails[@"tocElementTitle"];
+  if (!elementTitle) {
+    elementTitle = @"";
+  }
+    
+  NSString *message = NSLocalizedString(@"Do you want to move to the page on which you left off?", nil);
+  NSAttributedString *atrString;
+  if (![elementTitle isEqualToString:@"Current Chapter"]) {
+    message = [message stringByAppendingString:[NSString stringWithFormat:@"<br><br>Chapter:\n&ldquo;%@&ldquo;", elementTitle]];
+    atrString = [[NSAttributedString alloc] initWithData:[message dataUsingEncoding:NSUTF8StringEncoding]
+                                                                     options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                               NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
+                                                          documentAttributes:nil error:nil];
+  }
 
-      UIAlertAction *stayAction =
-       [UIAlertAction actionWithTitle:NSLocalizedString(@"Stay", nil)
-                                style:UIAlertActionStyleCancel
-                              handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
-                                if ([weakSelf.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
-                                  [weakSelf.delegate patronDecidedNavigation:NO withNavDict:nil];
-                                }
-                                weakSelf.shouldPostLastRead = YES;
-                              }];
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    UIAlertController *alertController = [UIAlertController
+                                          alertControllerWithTitle:NSLocalizedString(@"Sync Reading Position", nil)
+                                          message:(atrString != nil) ? [atrString string] : message
+                                          preferredStyle:UIAlertControllerStyleAlert];
 
-      UIAlertAction *moveAction =
-       [UIAlertAction actionWithTitle:NSLocalizedString(@"Move", nil)
-                                style:UIAlertActionStyleDefault
-                              handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
+    UIAlertAction *stayAction =
+     [UIAlertAction actionWithTitle:NSLocalizedString(@"Stay", nil)
+                              style:UIAlertActionStyleCancel
+                            handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
+                              if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
+                                [self.delegate patronDecidedNavigation:NO withNavDict:nil];
+                              }
+                              self.shouldPostLastRead = YES;
+                            }];
 
-                                weakSelf.shouldPostLastRead = YES;
+    UIAlertAction *moveAction =
+     [UIAlertAction actionWithTitle:NSLocalizedString(@"Move", nil)
+                              style:UIAlertActionStyleDefault
+                            handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
 
-                                NSDictionary *const locationDictionary =
-                                NYPLJSONObjectFromData([serverLocationString dataUsingEncoding:NSUTF8StringEncoding]);
+                              self.shouldPostLastRead = YES;
 
-                                NSString *contentCFI = locationDictionary[@"contentCFI"];
-                                if (!contentCFI) {
-                                  contentCFI = @"";
-                                }
-                                dictionary[@"openPageRequest"] =
-                                @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
+                              NSDictionary *const locationDictionary =
+                              NYPLJSONObjectFromData([location dataUsingEncoding:NSUTF8StringEncoding]);
 
-                                if ([weakSelf.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
-                                  [weakSelf.delegate patronDecidedNavigation:YES withNavDict:dictionary];
-                                }
-                              }];
+                              NSString *contentCFI = locationDictionary[@"contentCFI"];
+                              if (!contentCFI) {
+                                contentCFI = @"";
+                              }
+                              dictionary[@"openPageRequest"] =
+                              @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
 
-      [alertController addAction: stayAction];
-      [alertController addAction: moveAction];
+                              if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
+                                [self.delegate patronDecidedNavigation:YES withNavDict:dictionary];
+                              }
+                            }];
 
-      if (@available (iOS 9.0, *)) {
-        alertController.preferredAction = moveAction;
-      }
+    [alertController addAction: stayAction];
+    [alertController addAction: moveAction];
 
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
-    }];
+    if (@available (iOS 9.0, *)) {
+      alertController.preferredAction = moveAction;
+    }
+
+    [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
   }];
 }
 
