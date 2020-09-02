@@ -39,7 +39,7 @@ extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
     guard string.canBeConverted(to: .ascii) else { return false }
 
     if textField == userInputProvider.usernameTextField,
-      businessLogic?.libraryAccount?.details?.patronIDKeyboard != .email {
+      businessLogic?.selectedAuthentication?.patronIDKeyboard != .email {
 
       // Barcodes are numeric and usernames are alphanumeric including punctuation
       let allowedCharacters = CharacterSet.alphanumerics.union(.punctuationCharacters)
@@ -62,10 +62,10 @@ extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
       let allowedCharacters = CharacterSet.decimalDigits
       let bannedCharacters = allowedCharacters.inverted
 
-      let alphanumericPin = businessLogic?.libraryAccount?.details?.pinKeyboard != .numeric
+      let alphanumericPin = businessLogic?.selectedAuthentication?.pinKeyboard != .numeric
       let containsNonNumeric = !(string.rangeOfCharacter(from: bannedCharacters)?.isEmpty ?? true)
       let abovePinCharLimit: Bool
-      let passcodeLength = businessLogic?.libraryAccount?.details?.authPasscodeLength ?? 0
+      let passcodeLength = businessLogic?.selectedAuthentication?.authPasscodeLength ?? 0
 
       if let text = textField.text,
         let textRange = Range(range, in: text) {

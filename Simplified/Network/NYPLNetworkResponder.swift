@@ -21,12 +21,10 @@ fileprivate struct NYPLNetworkTaskInfo {
   }
 }
 
-// MARK: -
-
 /// This class responds to URLSession events related to the tasks being
 /// issued on the URLSession, keeping a tally of the related completion
 /// handlers in a thread-safe way.
-class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate {
+class NYPLNetworkResponder: NSObject {
   typealias TaskID = Int
 
   private var taskInfo: [TaskID: NYPLNetworkTaskInfo]
@@ -51,9 +49,10 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
 
     taskInfo[taskID] = NYPLNetworkTaskInfo(completion: completion)
   }
+}
 
-  // MARK: - URLSessionDelegate
-
+// MARK: - URLSessionDelegate
+extension NYPLNetworkResponder: URLSessionDelegate {
   //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession, didBecomeInvalidWithError err: Error?) {
     if let err = err {
@@ -70,8 +69,10 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
 
     taskInfo.removeAll()
   }
+}
 
-  // MARK: - URLSessionDataDelegate
+// MARK: - URLSessionDataDelegate
+extension NYPLNetworkResponder: URLSessionDataDelegate {
 
   //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession,
@@ -143,12 +144,12 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
         let err = task.makeErrorFromProblemDocument(problemDoc)
         parseError = nil
         logMetadata["problemDocument"] = problemDoc
-        currentTaskInfo.completion(.failure(err))
+        currentTaskInfo.completion(.failure(err, task.response))
       } catch (let error) {
         parseError = error
         let responseString = String(data: responseData, encoding: .utf8) ?? "N/A"
         logMetadata["problemDocumentBody"] = responseString
-        currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError))
+        currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError, task.response))
       }
       if let error = error {
         logMetadata["urlSessionError"] = error
@@ -164,7 +165,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
 
     // no problem document, but if we have an error it's still a failure
     if let error = error {
-      currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError))
+      currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError, task.response))
 
       // logging the error after the completion call so that the error report
       // will include any eventual logging done in the completion handler.
@@ -185,7 +186,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
         let err = NSError(domain: "Api call with failure HTTP status",
                           code: NYPLErrorCode.responseFail.rawValue,
                           userInfo: logMetadata)
-        currentTaskInfo.completion(.failure(err))
+        currentTaskInfo.completion(.failure(err, task.response))
         NYPLErrorLogger.logNetworkError(code: NYPLErrorCode.responseFail,
                                         request: task.originalRequest,
                                         message: "Network request for task \(taskID) failed.",
@@ -194,7 +195,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
       }
     }
 
-    currentTaskInfo.completion(.success(responseData))
+    currentTaskInfo.completion(.success(responseData, task.response))
   }
 }
 
@@ -219,5 +220,21 @@ extension URLSessionTask {
       userInfo: userInfo)
 
     return err
+  }
+}
+
+//----------------------------------------------------------------------------
+// MARK: - URLSessionTaskDelegate
+extension NYPLNetworkResponder: URLSessionTaskDelegate {
+  func urlSession(_ session: URLSession,
+                  task: URLSessionTask,
+                  didReceive challenge: URLAuthenticationChallenge,
+                  completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+  {
+    //        NYPLLOG_F(@"NSURLSessionTask: %@. Challenge Received: %@",
+    //                   task.currentRequest.URL.absoluteString,
+    //                   challenge.protectionSpace.authenticationMethod);
+    
+    NYPLBasicAuth.authHandler(challenge: challenge, completionHandler: completionHandler)
   }
 }

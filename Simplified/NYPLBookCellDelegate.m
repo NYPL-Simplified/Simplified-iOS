@@ -83,7 +83,7 @@
     // Try to prevent blank books bug
     if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID]
                                            withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) &&
-        ([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN])) {
+        ([[NYPLUserAccount sharedAccount] hasCredentials])) {
       [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
         [self openBook:book];   // with successful DRM activation
       }];

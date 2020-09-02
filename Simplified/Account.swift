@@ -3,6 +3,26 @@ private let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
+/// This class is used for mapping details of SAML Identity Provider received in authentication document
+@objcMembers
+class OPDS2SamlIDP: NSObject, Codable {
+  /// url to begin SAML login process with a given IDP
+  let url: URL
+
+  private let displayNames: [String: String]?
+  private let descriptions: [String: String]?
+
+  var displayName: String? { displayNames?["en"] }
+  var idpDescription: String? { descriptions?["en"] }
+
+  init?(opdsLink: OPDS2Link) {
+    guard let url = URL(string: opdsLink.href) else { return nil }
+    self.url = url
+    self.displayNames = opdsLink.displayNames?.reduce(into: [String: String]()) { $0[$1.language] = $1.value }
+    self.descriptions = opdsLink.descriptions?.reduce(into: [String: String]()) { $0[$1.language] = $1.value }
+  }
+}
+
 @objc protocol NYPLSignedInStateProvider {
   func isSignedIn() -> Bool
 }
@@ -10,14 +30,18 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 // MARK: AccountDetails
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
-  enum AuthType: String {
+  enum AuthType: String, Codable {
     case basic = "http://opds-spec.org/auth/basic"
     case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa"
     case anonymous = "http://librarysimplified.org/rel/auth/anonymous"
+    case oauthIntermediary = "http://librarysimplified.org/authtype/OAuth-with-intermediary"
+    case saml = "http://librarysimplified.org/authtype/SAML-2.0"
     case none
   }
   
-  struct Authentication {
+  @objc(AccountDetailsAuthentication)
+  @objcMembers
+  class Authentication: NSObject, Codable, NSCoding {
     let authType:AuthType
     let authPasscodeLength:UInt
     let patronIDKeyboard:LoginKeyboard
@@ -28,81 +52,126 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     let supportsBarcodeDisplay:Bool
     let coppaUnderUrl:URL?
     let coppaOverUrl:URL?
-    
+    let oauthIntermediaryUrl:URL?
+    let methodDescription: String?
+
+    let samlIdps: [OPDS2SamlIDP]?
+
     init(auth: OPDS2AuthenticationDocument.Authentication) {
-      authType = AuthType(rawValue: auth.type) ?? .none
+      let authType = AuthType(rawValue: auth.type) ?? .none
+      self.authType = authType
       authPasscodeLength = auth.inputs?.password.maximumLength ?? 99
       patronIDKeyboard = LoginKeyboard.init(auth.inputs?.login.keyboard) ?? .standard
       pinKeyboard = LoginKeyboard.init(auth.inputs?.password.keyboard) ?? .standard
       patronIDLabel = auth.labels?.login
       pinLabel = auth.labels?.password
+      methodDescription = auth.description
       supportsBarcodeScanner = auth.inputs?.login.barcodeFormat == "Codabar"
       supportsBarcodeDisplay = supportsBarcodeScanner
-      coppaUnderUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-not-met" })?.href ?? "")
-      coppaOverUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-met" })?.href ?? "")
+
+      switch authType {
+      case .coppa:
+        coppaUnderUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-not-met" })?.href ?? "")
+        coppaOverUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-met" })?.href ?? "")
+        oauthIntermediaryUrl = nil
+        samlIdps = nil
+
+      case .oauthIntermediary:
+        oauthIntermediaryUrl = URL.init(string: auth.links?.first(where: { $0.rel == "authenticate" })?.href ?? "")
+        coppaUnderUrl = nil
+        coppaOverUrl = nil
+        samlIdps = nil
+
+      case .saml:
+        samlIdps = auth.links?.filter { $0.rel == "authenticate" }.compactMap { OPDS2SamlIDP(opdsLink: $0) }
+        oauthIntermediaryUrl = nil
+        coppaUnderUrl = nil
+        coppaOverUrl = nil
+
+      case .none, .basic, .anonymous:
+        oauthIntermediaryUrl = nil
+        coppaUnderUrl = nil
+        coppaOverUrl = nil
+        samlIdps = nil
+
+      }
+    }
+
+    var needsAuth:Bool {
+      return authType == .basic || authType == .oauthIntermediary || authType == .saml
+    }
+
+    var needsAgeCheck:Bool {
+      return authType == .coppa
+    }
+
+    func coppaURL(isOfAge: Bool) -> URL? {
+      isOfAge ? coppaOverUrl : coppaUnderUrl
+    }
+
+    // use for Objective-C only, authType is the prefered way to do it in Swift
+    var isOauth: Bool {
+      return authType == .oauthIntermediary
+    }
+
+    // use for Objective-C only, authType is the prefered way to do it in Swift
+    var isSaml: Bool {
+      return authType == .saml
+    }
+
+    /// secured catalog would require user to log in prior to accessing it
+    var isCatalogSecured: Bool {
+      // you need an oauth token in order to access catalogs if authentication type is either oauth with intermediary (ex. Clever), or SAML
+      return authType == .oauthIntermediary || authType == .saml
+    }
+
+    func encode(with coder: NSCoder) {
+      let jsonEncoder = JSONEncoder()
+      guard let data = try? jsonEncoder.encode(self) else { return }
+      coder.encode(data as NSData)
+    }
+
+    required init?(coder: NSCoder) {
+      guard let data = coder.decodeData() else { return nil }
+      let jsonDecoder = JSONDecoder()
+      guard let authentication = try? jsonDecoder.decode(Authentication.self, from: data) else { return nil }
+
+      authType = authentication.authType
+      authPasscodeLength = authentication.authPasscodeLength
+      patronIDKeyboard = authentication.patronIDKeyboard
+      pinKeyboard = authentication.pinKeyboard
+      patronIDLabel = authentication.patronIDLabel
+      pinLabel = authentication.pinLabel
+      supportsBarcodeScanner = authentication.supportsBarcodeScanner
+      supportsBarcodeDisplay = authentication.supportsBarcodeDisplay
+      coppaUnderUrl = authentication.coppaUnderUrl
+      coppaOverUrl = authentication.coppaOverUrl
+      oauthIntermediaryUrl = authentication.oauthIntermediaryUrl
+      methodDescription = authentication.methodDescription
+      samlIdps = authentication.samlIdps
     }
   }
-  
+
   let defaults:UserDefaults
   let uuid:String
   let supportsSimplyESync:Bool
   let supportsCardCreator:Bool
   let supportsReservations:Bool
   let auths: [Authentication]
-  
+
   let mainColor:String?
   let userProfileUrl:String?
   let signUpUrl:URL?
   let loansUrl:URL?
-  
-  var authType: AuthType {
-    return auths.first?.authType ?? .none
+  var defaultAuth: Authentication? {
+    guard auths.count > 1 else { return auths.first }
+    return auths.first(where: { !$0.isCatalogSecured }) ?? auths.first
   }
-  
-  var authPasscodeLength: UInt {
-    return auths.first?.authPasscodeLength ?? 99
-  }
-  
-  var patronIDKeyboard: LoginKeyboard {
-    return auths.first?.patronIDKeyboard ?? .standard
-  }
-  
-  var pinKeyboard: LoginKeyboard {
-    return auths.first?.pinKeyboard ?? .standard
-  }
-  
-  var supportsBarcodeScanner: Bool {
-    return auths.first?.supportsBarcodeScanner ?? false
-  }
-  
-  var supportsBarcodeDisplay: Bool {
-    return auths.first?.supportsBarcodeDisplay ?? false
-  }
-  
-  var coppaUnderUrl: URL? {
-    return auths.first?.coppaUnderUrl
-  }
-  
-  var coppaOverUrl: URL? {
-    return auths.first?.coppaOverUrl
+  var needsAgeCheck: Bool {
+    // this will tell if any authentication method requires age check
+    return auths.reduce(false) { $0 || $1.needsAgeCheck }
   }
 
-  var patronIDLabel: String? {
-    return auths.first?.patronIDLabel
-  }
-  
-  var pinLabel: String? {
-    return auths.first?.pinLabel
-  }
-  
-  var needsAuth:Bool {
-    return authType == .basic
-  }
-  
-  var needsAgeCheck:Bool {
-    return authType == .coppa
-  }
-  
   fileprivate var urlAnnotations:URL?
   fileprivate var urlAcknowledgements:URL?
   fileprivate var urlContentLicenses:URL?
@@ -140,11 +209,17 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   init(authenticationDocument: OPDS2AuthenticationDocument, uuid: String) {
     defaults = .standard
     self.uuid = uuid
-    
+
     auths = authenticationDocument.authentication?.map({ (opdsAuth) -> Authentication in
       return Authentication.init(auth: opdsAuth)
     }) ?? []
-    
+
+//    // TODO: Code below will remove all oauth only auth methods, this behaviour wasn't tested though
+//    // and may produce undefined results in viewcontrollers that do present auth methods if none are available
+//    auths = authenticationDocument.authentication?.map({ (opdsAuth) -> Authentication in
+//      return Authentication.init(auth: opdsAuth)
+//    }).filter { $0.authType != .oauthIntermediary } ?? []
+
     supportsReservations = authenticationDocument.features?.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
     userProfileUrl = authenticationDocument.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
     loansUrl = URL.init(string: authenticationDocument.links?.first(where: { $0.rel == "http://opds-spec.org/shelf" })?.href ?? "")
@@ -345,7 +420,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
     NYPLNetworkExecutor.shared.GET(url) { result in
       switch result {
-      case .success(let serverData):
+      case .success(let serverData, _):
         do {
           self.authenticationDocument = try
             OPDS2AuthenticationDocument.fromData(serverData)
@@ -370,7 +445,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
           )
           completion(false)
         }
-      case .failure(let error):
+      case .failure(let error, _):
         NYPLErrorLogger.logError(
           withCode: .authDocLoadFail,
           summary: "Authentication Document Load Error",
@@ -415,7 +490,7 @@ extension Account {
 }
 
 // MARK: LoginKeyboard
-@objc enum LoginKeyboard: Int {
+@objc enum LoginKeyboard: Int, Codable {
   case standard
   case email
   case numeric

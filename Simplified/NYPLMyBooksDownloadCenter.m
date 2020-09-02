@@ -3,7 +3,6 @@
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccountSignInViewController.h"
-#import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -121,16 +120,16 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
   // We update the rights management status based on the MIME type given to us by the server. We do
   // this only once at the point when we first start receiving data.
   if(bytesWritten == totalBytesWritten) {
-    if([downloadTask.response.MIMEType isEqualToString:@"application/vnd.adobe.adept+xml"]) {
+    if([downloadTask.response.MIMEType isEqualToString:ContentTypeAdobeAdept]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
-    } else if([downloadTask.response.MIMEType isEqualToString:@"application/epub+zip"]) {
+    } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeEpubZip]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
     } else if ([downloadTask.response.MIMEType
-                isEqualToString:@"application/vnd.librarysimplified.bearer-token+json"]) {
+                isEqualToString:ContentTypeBearerToken]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
          withRightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
@@ -139,7 +138,8 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
          self.bookIdentifierToDownloadInfo[book.identifier] =
            [[self downloadInfoForBookIdentifier:book.identifier]
             withRightsManagement:NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON];
-    } else {
+    } else if ([NYPLBookAcquisitionPath.supportedTypes containsObject:downloadTask.response.MIMEType]) {
+      // if response type represents supported type of book, proceed
       NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".", downloadTask.response.MIMEType);
       NYPLMyBooksDownloadInfo *info =
       [[self downloadInfoForBookIdentifier:book.identifier]
@@ -147,6 +147,12 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       if (info) {
         self.bookIdentifierToDownloadInfo[book.identifier] = info;
       }
+    } else {
+      NYPLLOG(@"Authentication might be needed after all");
+      [downloadTask cancel];
+      [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadFailed forIdentifier:book.identifier];
+      [self broadcastUpdate];
+      return;
     }
   }
   
@@ -181,6 +187,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   [self.taskIdentifierToRedirectAttempts removeObjectForKey:@(downloadTask.taskIdentifier)];
   
   BOOL success = YES;
+  BOOL needsAuth = NO;
   NYPLProblemDocument *problemDocument = nil;
   NYPLMyBooksDownloadRightsManagement rights = [self downloadInfoForBookIdentifier:book.identifier].rightsManagement;
 
@@ -206,8 +213,15 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
 
     [[NSFileManager defaultManager] removeItemAtURL:tmpSavedFileURL error:NULL];
     success = NO;
-  } else {
-    // we did NOT get a problem document
+  }
+
+  if (![NYPLBookAcquisitionPath.supportedTypes containsObject:downloadTask.response.MIMEType]) {
+    [[NSFileManager defaultManager] removeItemAtURL:tmpSavedFileURL error:NULL];
+    success = NO;
+    needsAuth = YES;
+  }
+  
+  if (success) {
     switch(rights) {
       case NYPLMyBooksDownloadRightsManagementUnknown:
         [self logBookDownloadFailure:book
@@ -215,7 +229,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                         downloadTask:downloadTask
                             metadata:nil];
         @throw NSInternalInconsistencyException;
-            
+
       case NYPLMyBooksDownloadRightsManagementAdobe:
       {
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -337,20 +351,36 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   
   if (!success) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
-      UIAlertController *alert = [NYPLAlertUtils
-                                  alertWithTitle:@"DownloadFailed"
-                                  message:formattedMessage];
       if (problemDocument) {
-        [[NYPLProblemDocumentCacheManager sharedInstance] cacheProblemDocument:problemDocument key:book.identifier];
-        [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
-        
-        if ([problemDocument.type isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
-          [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
-        }
-      }
+        if ([problemDocument.type isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+          NYPLLOG(@"Invalid credentials problem when downloading a book, present sign in VC");
+          [NYPLAccountSignInViewController
+           requestCredentialsUsingExistingBarcode:NO
+           completionHandler:^{
+            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+          }];
+        } else {
+          NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
+          UIAlertController *alert = [NYPLAlertUtils
+                                      alertWithTitle:@"DownloadFailed"
+                                      message:formattedMessage];
+          [[NYPLProblemDocumentCacheManager sharedInstance] cacheProblemDocument:problemDocument key:book.identifier];
+          [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
 
-      [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+          if ([problemDocument.type isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
+            [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
+          }
+
+          [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+        }
+      } else if (needsAuth) {
+        NYPLLOG(@"Present sign in VC");
+        [NYPLAccountSignInViewController
+         requestCredentialsUsingExistingBarcode:NO
+         completionHandler:^{
+            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+        }];
+      }
     });
     
     [[NYPLBookRegistry sharedRegistry]
@@ -372,7 +402,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  NYPLBasicAuthHandler(challenge, completionHandler);
+  [NYPLBasicAuth authHandlerWithChallenge:challenge completionHandler:completionHandler];
 }
 
 // This is implemented in order to be able to handle redirects when using
@@ -535,7 +565,7 @@ didCompleteWithError:(NSError *)error
   // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
-  if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].details.needsAuth) {
+  if (fulfillmentId && NYPLUserAccount.sharedAccount.authDefinition.needsAuth) {
     NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLUserAccount sharedAccount] userID]);
     [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
                                     userID:[[NYPLUserAccount sharedAccount] userID]
@@ -572,11 +602,18 @@ didCompleteWithError:(NSError *)error
           NYPLLOG(@"Failed to create book from entry. Book not removed from registry.");
         }
       } else {
-        if([error[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
+        if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
           if(downloaded) {
             [self deleteLocalContentForBookIdentifier:identifier];
           }
           [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+        } else if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+          NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
+          [NYPLAccountSignInViewController
+           requestCredentialsUsingExistingBarcode:NO
+           completionHandler:^{
+            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] returnBookWithIdentifier:identifier];
+          }];
         } else {
           [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"ReturnCouldNotBeCompletedFormat", nil), bookTitle];
@@ -712,6 +749,14 @@ didCompleteWithError:(NSError *)error
             formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
                                                                             comment: @"When book is already checked out on patron's other device(s), they will get this message"), book.title];
             alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
+          } if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+            NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
+            [NYPLAccountSignInViewController
+             requestCredentialsUsingExistingBarcode:NO
+             completionHandler:^{
+              [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+            }];
+            return;
           } else {
             [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:YES];
           }
@@ -772,6 +817,11 @@ didCompleteWithError:(NSError *)error
 
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
+  [self startDownloadForBook:book withRequest:nil];
+}
+
+- (void)startDownloadForBook:(NYPLBook *const)book withRequest:(NSURLRequest *)initedRequest
+{
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry]
                          stateForIdentifier:book.identifier];
   
@@ -779,7 +829,7 @@ didCompleteWithError:(NSError *)error
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].details.needsAuth)) {
+      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth)) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
@@ -800,6 +850,8 @@ didCompleteWithError:(NSError *)error
       break;
     case NYPLBookStateHolding:
       break;
+    case NYPLBookStateSAMLStarted:
+      break;
     case NYPLBookStateDownloadSuccessful:
       // fallthrough
     case NYPLBookStateUsed:
@@ -809,7 +861,7 @@ didCompleteWithError:(NSError *)error
       return;
   }
   
-  if([NYPLUserAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
+  if([NYPLUserAccount sharedAccount].hasCredentials || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
@@ -883,8 +935,14 @@ didCompleteWithError:(NSError *)error
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
-      NSURLRequest *const request = [NSURLRequest requestWithURL:URL];
-        
+
+      NSURLRequest *request;
+      if (initedRequest) {
+        request = initedRequest;
+      } else {
+        request = [[NYPLNetworkExecutor bearerAuthorizedWithRequest:[NSURLRequest requestWithURL:URL]] mutableCopy];
+      }
+
       if(!request.URL) {
         // Originally this code just let the request fail later on, but apparently resuming an
         // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
@@ -901,8 +959,62 @@ didCompleteWithError:(NSError *)error
         [self failDownloadForBook:book];
         return;
       }
-      
-      [self addDownloadTaskWithRequest:request book:book];
+
+      if (NYPLUserAccount.sharedAccount.cookies && state != NYPLBookStateSAMLStarted) {
+        [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateSAMLStarted forIdentifier:book.identifier];
+
+        NSMutableArray *someCookies = NYPLUserAccount.sharedAccount.cookies.mutableCopy;
+        NSMutableURLRequest *mutableRequest = request.mutableCopy;
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+          __weak NYPLMyBooksDownloadCenter *weakSelf = self;
+
+          mutableRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+
+          void (^loginCancelHandler)(void) = ^{
+            [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:book.identifier];
+            [weakSelf cancelDownloadForBookIdentifier:book.identifier];
+          };
+
+          void (^bookFoundHandler)(NSURLRequest * _Nullable, NSArray<NSHTTPCookie *> * _Nonnull) = ^(NSURLRequest * _Nullable request, NSArray<NSHTTPCookie *> * _Nonnull cookies) {
+            [NYPLUserAccount.sharedAccount setCookies:cookies];
+            [weakSelf startDownloadForBook:book withRequest:request];
+          };
+
+          void (^problemFoundHandler)(NYPLProblemDocument * _Nullable) = ^(__unused NYPLProblemDocument * _Nullable problemDocument) {
+            [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:book.identifier];
+            [NYPLAccountSignInViewController
+             requestCredentialsUsingExistingBarcode:NO
+             completionHandler:^{
+              [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+            }];
+          };
+
+          NYPLCookiesWebViewModel *model = [[NYPLCookiesWebViewModel alloc] initWithCookies:someCookies
+                                                                                    request:mutableRequest
+                                                                     loginCompletionHandler:nil
+                                                                         loginCancelHandler:loginCancelHandler
+                                                                           bookFoundHandler:bookFoundHandler
+                                                                        problemFoundHandler:problemFoundHandler
+                                                                        autoPresentIfNeeded:YES]; // <- this will cause a web view to retain a cycle
+
+          NYPLCookiesWebViewController *cookiesVC = [[NYPLCookiesWebViewController alloc] initWithModel:model];
+          [cookiesVC loadViewIfNeeded];
+        });
+      } else {
+        // clear all cookies
+        NSHTTPCookieStorage *cookieStorage = self.session.configuration.HTTPCookieStorage;
+        for (NSHTTPCookie *each in cookieStorage.cookies) {
+          [cookieStorage deleteCookie:each];
+        }
+
+        // set new cookies
+        for (NSHTTPCookie *cookie in NYPLUserAccount.sharedAccount.cookies) {
+          [self.session.configuration.HTTPCookieStorage setCookie:cookie];
+        }
+
+        [self addDownloadTaskWithRequest:request book:book];
+      }
     }
   } else {
     [NYPLAccountSignInViewController

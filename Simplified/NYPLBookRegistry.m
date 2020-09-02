@@ -178,7 +178,7 @@ static NSString *const RecordsKey = @"records";
         continue;
       }
       // If a download was still in progress when we quit, it must now be failed.
-      if(record.state == NYPLBookStateDownloading) {
+      if(record.state == NYPLBookStateDownloading || record.state == NYPLBookStateSAMLStarted) {
         self.identifiersToRecords[record.book.identifier] =
         [record recordWithState:NYPLBookStateDownloadFailed];
       } else {
@@ -284,8 +284,8 @@ static NSString *const RecordsKey = @"records";
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
       }];
       return;
-    } else if (![[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
-      NYPLLOG(@"[syncWithCompletionHandler] No barcode and PIN");
+    } else if (!NYPLUserAccount.sharedAccount.hasCredentials || !AccountsManager.shared.currentAccount.loansUrl) {
+      NYPLLOG(@"[syncWithCompletionHandler] No valid credentials");
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(completion) completion(NO);
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
@@ -807,6 +807,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   return [self booksMatchingStates:@[@(NYPLBookStateDownloadNeeded),
                                      @(NYPLBookStateDownloading),
+                                     @(NYPLBookStateSAMLStarted),
                                      @(NYPLBookStateDownloadFailed),
                                      @(NYPLBookStateDownloadSuccessful),
                                      @(NYPLBookStateUsed)]];

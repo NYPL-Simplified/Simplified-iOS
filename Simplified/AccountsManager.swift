@@ -77,7 +77,13 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       object: nil
     )
 
-    self.loadCatalogs(completion: {_ in })
+    // It needs to be done asynchronously, so that init returns prior to calling it
+    // Otherwise it would try to access itself before intialization is finished
+    // Network executor will try to access shared accounts manager, as it needs it to get headers data
+    // Thik of this async block as you would about viewDidLoad which is triggered after a view is loaded
+    OperationQueue.current?.underlyingQueue?.async {
+      self.loadCatalogs(completion: {_ in })
+    }
   }
   
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
@@ -149,10 +155,16 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
               NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
               completion(true)
             }
+
+            // TODO: Test if this is still necessary
+            // In past, there was a support for only 1 authenticationmethod, so there was no issue from which of them to pick needsAgeCheck value
+            // currently we do support multiple auth methods, and age check is dependant on which of them does user select
+            // there is a logic in NYPLUserAcccount authDefinition setter to perform an age check, but it wasn't tested
+            // most probably you can delete this check from here
             if self.currentAccount?.details?.needsAgeCheck ?? false {
-              AgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
+              NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
                 DispatchQueue.main.async {
-                  mainFeed = meetsAgeRequirement ? self.currentAccount?.details?.coppaOverUrl : self.currentAccount?.details?.coppaUnderUrl
+                  mainFeed = self.currentAccount?.details?.defaultAuth?.coppaURL(isOfAge: meetsAgeRequirement)
                   resolveFn()
                 }
               }
@@ -187,18 +199,16 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       .trimmingCharacters(in: ["="])
     
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
-    if wasAlreadyLoading {
-      return
-    }
+    guard !wasAlreadyLoading else { return }
 
     NYPLNetworkExecutor.shared.GET(targetUrl) { result in
       switch result {
-      case .success(let data):
+      case .success(let data, _):
         self.loadAccountSetsAndAuthDoc(fromCatalogData: data, key: hash) { success in
           self.callAndClearLoadingCompletionHandlers(key: hash, success)
           NotificationCenter.default.post(name: NSNotification.Name.NYPLCatalogDidLoad, object: nil)
         }
-      case .failure(let error):
+      case .failure(let error, _):
         NYPLErrorLogger.logError(
           withCode: .libraryListLoadFail,
           summary: "Unable to load libraries list",

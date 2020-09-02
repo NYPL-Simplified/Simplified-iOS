@@ -12,10 +12,8 @@
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) UILabel *activityIndicatorLabel;
 @property (nonatomic) NYPLReloadView *reloadView;
-@property (nonatomic) NSURLConnection *connection;
-@property (nonatomic) NSMutableData *data;
+@property (nonatomic, strong) NSURLSessionDataTask *dataTask;
 @property (nonatomic, copy) UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
-@property (nonatomic, strong) NSURLResponse *response;
 @property (atomic, readwrite) NSURL *URL;
 
 @end
@@ -54,7 +52,7 @@
   [self.activityIndicatorView stopAnimating];
 }
 
-- (void)loadWithURL:(NSURL*)url
+- (void)loadWithURL:(NSURL* _Nonnull)url
 {
   self.URL = url;
   [self load];
@@ -71,7 +69,16 @@
     [childViewController didMoveToParentViewController:nil];
   }
   
-  [self.connection cancel];
+  [self.dataTask cancel];
+  
+  NSTimeInterval timeoutInterval = 30.0;
+  NSTimeInterval activityLabelTimer = 10.0;
+
+  // NSURLRequestUseProtocolCachePolicy originally, but pull to refresh on a catalog
+  NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
+                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                             timeoutInterval:timeoutInterval];
+
 
   [self.activityIndicatorView startAnimating];
 
@@ -101,30 +108,100 @@
   // Obviously this level of coupling is dreadful, and SIMPLY-2862 should
   // address this as well.
   if (self.URL == nil) {
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              summary:@"RemoteViewController"
+                              message:@"Prevented attempt to load without a URL."
+                             metadata:@{
+                               @"ChildVCs": self.childViewControllers
+                             }];
     [self reloadAccountsAndAuthenticationDocument];
     return;
   }
-
-  NSTimeInterval timeoutInterval = 30.0;
-  NSTimeInterval activityLabelTimer = 10.0;
-
-  NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
-                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                             timeoutInterval:timeoutInterval];
 
   // show "slow loading" label after `activityLabelTimer` seconds
   self.activityIndicatorLabel.hidden = YES;
   [NSTimer scheduledTimerWithTimeInterval: activityLabelTimer target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  // TODO: SIMPLY-2589 Replace with NSURLSession
-  self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-#pragma clang diagnostic pop
-  self.data = [NSMutableData data];
-  
-  [self.connection start];
+  self.dataTask = [NYPLNetworkExecutor.shared addBearerAndExecute:request
+                           completion:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.activityIndicatorView stopAnimating];
+      self.activityIndicatorLabel.hidden = YES;
+      NSURLSessionDataTask *dataTaskCopy = self.dataTask;
+      self.dataTask = nil;
+
+      if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
+        self.reloadView.hidden = false;
+        [NYPLAccountSignInViewController
+         requestCredentialsUsingExistingBarcode:([NYPLUserAccount sharedAccount].barcode != nil)
+         completionHandler:^{
+          [self load];
+        }];
+        return;
+      }
+
+      if (error) {
+        self.reloadView.hidden = NO;
+        NSDictionary<NSString*, NSObject*> *metadata = @{
+          @"remoteVC.URL": self.URL ?: @"none",
+          @"connection.currentRequest": dataTaskCopy.currentRequest ?: @"none",
+          @"connection.originalRequest": dataTaskCopy.originalRequest ?: @"none",
+        };
+        [NYPLErrorLogger logError:error
+                          summary:@"RemoteViewController"
+                          message:@"Server-side api call (likely related to Catalog loading) failed"
+                         metadata:metadata];
+
+        return;
+      }
+
+      NSHTTPURLResponse *httpResponse;
+      if ([response isKindOfClass: [NSHTTPURLResponse class]]) {
+        httpResponse = (NSHTTPURLResponse *) response;
+        if (httpResponse.statusCode != 200) {
+          [self handleErrorResponse:httpResponse withData:data];
+        }
+      }
+
+      UIViewController *const viewController = self.handler(self, data, response);
+
+      if (viewController) {
+        [self addChildViewController:viewController];
+        viewController.view.frame = self.view.bounds;
+        [self.view addSubview:viewController.view];
+
+        // If `viewController` has its own bar button items or title, use whatever
+        // has been set by default.
+        if(viewController.navigationItem.rightBarButtonItems) {
+          self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
+        }
+        if(viewController.navigationItem.leftBarButtonItems) {
+          self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
+        }
+        if(viewController.navigationItem.backBarButtonItem) {
+          self.navigationItem.backBarButtonItem = viewController.navigationItem.backBarButtonItem;
+        }
+        if(viewController.navigationItem.title) {
+          self.navigationItem.title = viewController.navigationItem.title;
+        }
+
+        [viewController didMoveToParentViewController:self];
+      } else {
+        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnableToMakeVCAfterLoading
+                                  summary:@"RemoteViewController"
+                                  message:@"Failed to create VC after loading from server"
+                                 metadata:@{
+                                   @"HTTPstatusCode": @(httpResponse.statusCode ?: -1),
+                                   @"mimeType": response.MIMEType ?: @"N/A",
+                                   @"URL": self.URL ?: @"N/A",
+                                   @"response": response ?: @"N/A"
+                                 }];
+        self.reloadView.hidden = NO;
+      }
+    });
+  }];
 }
 
 // TODO: SIMPLY-2862 This method should be removed as part of this ticket
@@ -142,7 +219,6 @@
                                   message:@"Failed to reload accounts after having found nil URL"
                                  metadata:@{
                                    @"currentURL": self.URL ?: @"N/A",
-                                   @"Response": self.response ?: @"N/A",
                                    @"ChildVCs": self.childViewControllers
                                  }];
         [self showReloadViewWithMessage:nil];
@@ -172,7 +248,7 @@
   [self.activityIndicatorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.activityIndicatorView withOffset:8.0];
   
   // We always nil out the connection when not in use so this is reliable.
-  if(self.connection) {
+  if(self.dataTask) {
     [self.activityIndicatorView startAnimating];
   }
   
@@ -207,112 +283,20 @@
   [timer invalidate];
 }
 
-#pragma mark NSURLConnectionDataDelegate
-
-- (void)connection:(__attribute__((unused)) NSURLConnection *)connection
-    didReceiveData:(NSData *const)data
-{
-  [self.data appendData:data];
-}
-
-- (void)connection:(__attribute__((unused)) NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-  self.response = response;
-}
-
-- (void)connectionDidFinishLoading:(__attribute__((unused)) NSURLConnection *)connection
-{
-  [self.activityIndicatorView stopAnimating];
-  self.activityIndicatorLabel.hidden = YES;
-
-  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)self.response;
-  if ([httpResponse statusCode] != 200) {
-    [self handleErrorResponse:httpResponse];
-  }
-  
-  UIViewController *const vc = self.handler(self, self.data, self.response);
-  
-  if (vc) {
-    [self addChildViewController:vc];
-    vc.view.frame = self.view.bounds;
-    [self.view addSubview:vc.view];
-
-    // If `vc` has its own bar button items or title, use whatever
-    // has been set by default.
-    if(vc.navigationItem.rightBarButtonItems) {
-      self.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems;
-    }
-    if(vc.navigationItem.leftBarButtonItems) {
-      self.navigationItem.leftBarButtonItems = vc.navigationItem.leftBarButtonItems;
-    }
-    if(vc.navigationItem.backBarButtonItem) {
-      self.navigationItem.backBarButtonItem = vc.navigationItem.backBarButtonItem;
-    }
-    if(vc.navigationItem.title) {
-      self.navigationItem.title = vc.navigationItem.title;
-    }
-
-    [vc didMoveToParentViewController:self];
-  } else {
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnableToMakeVCAfterLoading
-                              summary:@"RemoteViewController"
-                              message:@"Failed to create VC after loading from server"
-                             metadata:@{
-                               @"HTTPstatusCode": @(httpResponse.statusCode),
-                               @"response.mimeType": httpResponse.MIMEType ?: @"N/A",
-                               @"URL": self.URL ?: @"N/A",
-                               @"response": httpResponse ?: @"N/A"
-                             }];
-    self.reloadView.hidden = NO;
-  }
-
-  [self resetConnectionInfo];
-}
-
-#pragma mark NSURLConnectionDelegate
-
-- (void)connection:(NSURLConnection *)connection
-  didFailWithError:(NSError *)error
-{
-  [self.activityIndicatorView stopAnimating];
-  self.activityIndicatorLabel.hidden = YES;
-  
-  self.reloadView.hidden = NO;
-  
-  NSDictionary<NSString*, NSObject*> *metadata = @{
-    @"remoteVC.URL": self.URL ?: @"none",
-    @"connection.currentRequest": connection.currentRequest.loggableString ?: @"none",
-    @"connection.originalRequest": connection.originalRequest.loggableString ?: @"none",
-  };
-  [NYPLErrorLogger logError:error
-                    summary:@"RemoteViewController"
-                    message:@"Server-side api call (likely related to Catalog loading) did fail with network error"
-                   metadata:metadata];
-
-  [self resetConnectionInfo];
-}
-
 #pragma mark Private Helpers
 
-- (void)resetConnectionInfo
+- (void)handleErrorResponse:(NSHTTPURLResponse *)httpResponse withData:(NSData * _Nullable) data
 {
-  self.response = nil;
-  self.connection = nil;
-  self.data = [NSMutableData data];
-}
-
-- (void)handleErrorResponse:(NSHTTPURLResponse *)httpResponse
-{
-  if (httpResponse.isProblemDocument) {
+  if ([httpResponse isProblemDocument]) {
     NSError *problemDocumentParseError = nil;
-    NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
+    NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
     UIAlertController *alert;
 
     if (problemDocumentParseError) {
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                problemDocumentData:self.data
+                                problemDocumentData:data
                                             barcode:nil
-                                                url:[self.response URL]
+                                                url:httpResponse.URL
                                             summary:@"Catalog api fail: Problem Doc parse error"
                                             message:@"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"];
       alert = [NYPLAlertUtils

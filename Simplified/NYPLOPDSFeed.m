@@ -65,10 +65,15 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
   }
 
   __block NSURLRequest *request = nil;
-  request = [[NYPLSession sharedSession]
-             withURL:URL
-             shouldResetCache:shouldResetCache
-             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+  NSURLRequestCachePolicy cachePolicy;
+  if (shouldResetCache) {
+    cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+  } else {
+    cachePolicy = NSURLRequestUseProtocolCachePolicy;
+  }
+  request = [[[NYPLNetworkExecutor shared] GET:URL
+                                   cachePolicy:cachePolicy
+                                    completion:^(NSData *data, NSURLResponse *response, NSError *error) {
 
     if (error != nil) {
       // NYPLSession already logged this.
@@ -152,7 +157,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
     }
     
     NYPLAsyncDispatch(^{handler(feed, nil);});
-  }];
+  }] originalRequest];
 }
 
 - (instancetype)initWithXML:(NYPLXML *const)feedXML
