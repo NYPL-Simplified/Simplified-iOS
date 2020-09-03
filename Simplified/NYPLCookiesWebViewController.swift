@@ -170,9 +170,8 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
     decisionHandler(.allow)
   }
 
-  // use for ios < 11 only
-  // it injects cookies into the request
-  @available(*, deprecated, message: "Use for ios < 11 only")
+  /// Injects cookies into the given request.
+  /// - Important: Use only on iOS < 11.
   private func loadWebPage(request: URLRequest)  {
     var mutableRequest = request
 
