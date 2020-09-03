@@ -222,14 +222,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       NYPLReadiumBookmark *bookmark = self.bookmarks[indexPath.row];
       [self.bookmarks removeObjectAtIndex:indexPath.row];
       [self.delegate TOCViewController:self didDeleteBookmark:bookmark];
-    } else { // This is to catch SIMPLY-740. Remove if we haven't seen such a problem.
-      NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-      [metadataParams setObject:[NSNumber numberWithLong:indexPath.row] forKey:@"rowIndex"];
-      [metadataParams setObject:[NSNumber numberWithLong:self.bookmarks.count] forKey:@"bookmarkCount"];
-      [NYPLErrorLogger logDeleteBookmarkErrorWithMessage:@"Attempting to delete bookmark out of bounds."
-                                                 context:@"NYPLReaderTOCViewController"
-                                                metadata:metadataParams];
     }
+    
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
   }
 }

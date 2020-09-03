@@ -43,4 +43,23 @@
           rightsManagement:rightsManagement];
 }
 
+- (NSString *)rightsManagementString
+{
+  switch (self.rightsManagement) {
+    case NYPLMyBooksDownloadRightsManagementUnknown:
+      return @"Unknown";
+    case NYPLMyBooksDownloadRightsManagementNone:
+      return @"None";
+    case NYPLMyBooksDownloadRightsManagementAdobe:
+      return @"Adobe";
+    case NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON:
+      return @"SimplifiedBearerTokenJSON";
+    case NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON:
+      return @"OverdriveManifestJSON";
+    default:
+      return [NSString stringWithFormat:@"Unexpected value: %ld",
+              (long)self.rightsManagement];
+  }
+}
+
 @end

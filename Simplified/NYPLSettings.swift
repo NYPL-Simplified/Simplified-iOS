@@ -39,6 +39,9 @@ let Version = 1
     return NYPLSettings.shared
   }
 
+  // used to handle saml and oauth login. In case of the later, it needs to be configured as universal link
+  @objc var authenticationUniversalLink: URL = URL(string: "https://librarysimplified.org/login")!
+
   // Set to nil (the default) if no custom feed should be used.
   var customMainFeedURL: URL? {
     get {

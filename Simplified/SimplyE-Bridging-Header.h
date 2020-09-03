@@ -33,6 +33,7 @@
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReadiumViewSyncManager.h"
+#import "NYPLAccountSignInViewController.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 #if FEATURE_DRM_CONNECTOR

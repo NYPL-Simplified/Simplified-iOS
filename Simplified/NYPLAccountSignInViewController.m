@@ -9,7 +9,6 @@
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLBarcodeScanningViewController.h"
-#import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
@@ -18,8 +17,8 @@
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLSettingsAccountURLSessionChallengeHandler.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLUserAccountFrontEndValidation.h"
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -40,7 +39,7 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NSURLSessionDelegate, NYPLUserAccountInputProvider>
+@interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate>
 
 // state machine
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
@@ -57,10 +56,13 @@ typedef NS_ENUM(NSInteger, Section) {
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
 @property (nonatomic) NYPLSignInBusinessLogic *businessLogic;
+@property (nonatomic) NSString *authToken;
+@property (nonatomic) NSDictionary *patron;
+@property (nonatomic) NSArray *cookies;
 
 // networking
 @property (nonatomic) NSURLSession *session;
-@property (nonatomic, copy) void (^completionHandler)(void);
+@property (nonatomic) NYPLSettingsAccountURLSessionChallengeHandler *urlSessionDelegate;
 
 @end
 
@@ -85,10 +87,17 @@ CGFloat const marginPadding = 2.0;
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
 
+#if FEATURE_DRM_CONNECTOR
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
                         drmAuthorizer:[NYPLADEPT sharedInstance]];
+#else
+  self.businessLogic = [[NYPLSignInBusinessLogic alloc]
+                        initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
+                        bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        drmAuthorizer:nil];
+#endif
 
   self.title = NSLocalizedString(@"SignIn", nil);
 
@@ -120,14 +129,18 @@ CGFloat const marginPadding = 2.0;
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
   configuration.timeoutIntervalForResource = 15.0;
-  
+
+  _urlSessionDelegate = [[NYPLSettingsAccountURLSessionChallengeHandler alloc]
+                           initWithUIDelegate:self];
+
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
-                  delegate:self
+                  delegate:_urlSessionDelegate
                   delegateQueue:[NSOperationQueue mainQueue]];
-  
+
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
                             initWithAccount:self.currentAccount
+                            businessLogic:self.businessLogic
                             inputProvider:self];
   return self;
 }
@@ -150,7 +163,7 @@ CGFloat const marginPadding = 2.0;
   self.usernameTextField.delegate = self.frontEndValidator;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
 
-  switch (self.currentAccount.details.patronIDKeyboard) {
+  switch (self.businessLogic.selectedAuthentication.patronIDKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -173,7 +186,7 @@ CGFloat const marginPadding = 2.0;
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
 
-  switch (self.currentAccount.details.pinKeyboard) {
+  switch (self.businessLogic.selectedAuthentication.pinKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -213,26 +226,93 @@ CGFloat const marginPadding = 2.0;
   [self setupTableData];
 }
 
+- (NSArray *) cellsForAuthMethod:(AccountDetailsAuthentication *)authenticationMethod {
+  NSArray *authCells;
+
+  if (authenticationMethod.isOauth) {
+    // if authentication method is Oauth, just insert login/logout button, it will decide what to do by itself
+    authCells = @[@(CellKindLogInSignOut)];
+  } else if (authenticationMethod.isSaml && self.businessLogic.isSignedIn) {
+    // if authentication method is SAML and user is already logged, the only possible action is to logout
+    // add login/logout button, it will detect by itself that it should be log out in this case
+    authCells = @[@(CellKindLogInSignOut)];
+  } else if (authenticationMethod.isSaml) {
+    // if authentication method is SAML and previous case wasn't fullfilled, make a list of all possible IDPs to login
+    NSMutableArray *multipleCells = @[].mutableCopy;
+    for (OPDS2SamlIDP *idp in authenticationMethod.samlIdps) {
+      NYPLSamlIdpCellType *idpCell = [[NYPLSamlIdpCellType alloc] initWithIdp:idp];
+      [multipleCells addObject:idpCell];
+    }
+    authCells = multipleCells;
+  } else if (authenticationMethod.pinKeyboard != LoginKeyboardNone) {
+    // if authentication method has an information about pin keyboard, the login method is requires a pin
+    authCells = @[@(CellKindBarcode), @(CellKindPIN), @(CellKindLogInSignOut)];
+  } else {
+    // if all other cases failed, it means that server expects just a barcode, with a blank pin
+    self.PINTextField.text = @"";
+    authCells = @[@(CellKindBarcode), @(CellKindLogInSignOut)];
+  }
+
+  return authCells;
+}
+
+- (NSArray *) accountInfoSection {
+  NSMutableArray *workingSection = @[].mutableCopy;
+  if (!self.businessLogic.selectedAuthentication.needsAuth) {
+    // no authentication needed, empty section
+
+  } else if (self.businessLogic.selectedAuthentication && self.businessLogic.isSignedIn) {
+    // user already logged in
+    // show only the selected auth method
+
+    [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
+  } else if (!self.businessLogic.isSignedIn && self.businessLogic.userAccount.needsAuth) {
+    // user needs to sign in
+
+    if (self.businessLogic.isSamlPossible) {
+      // TODO: SIMPLY-2884 add an information header that authentication is required
+      NSString *libraryInfo = [NSString stringWithFormat:@"Log in to %@ required to download books.", self.businessLogic.libraryAccount.name];
+      [workingSection addObject:[[NYPLInfoHeaderCellType alloc] initWithInformation:libraryInfo]];
+    }
+
+    if (self.businessLogic.libraryAccount.details.auths.count > 1) {
+      // multiple authentication methods
+      for (AccountDetailsAuthentication *authenticationMethod in self.businessLogic.libraryAccount.details.auths) {
+        // show all possible login methods
+        NYPLAuthMethodCellType *autheticationCell = [[NYPLAuthMethodCellType alloc] initWithAuthenticationMethod:authenticationMethod];
+        [workingSection addObject:autheticationCell];
+        if (authenticationMethod.methodDescription == self.businessLogic.selectedAuthentication.methodDescription) {
+          // selected method, unfold
+          [workingSection addObjectsFromArray:[self cellsForAuthMethod:authenticationMethod]];
+        }
+      }
+    } else if (self.businessLogic.libraryAccount.details.auths.count == 1) {
+      // only 1 authentication method
+      // no method header needed
+      [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.libraryAccount.details.auths[0]]];
+    } else if (self.businessLogic.selectedAuthentication) {
+      // only 1 authentication method
+      // no method header needed
+      [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
+    }
+  } else {
+    [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
+  }
+  return workingSection;
+}
+
 - (void)setupTableData
 {
-  NSArray *section0;
-  if (self.currentAccount.details.pinKeyboard != LoginKeyboardNone) {
-    section0 = @[@(CellKindBarcode),
-                 @(CellKindPIN),
-                 @(CellKindLogInSignOut)];
-  } else {
-    //Server expects a blank string. Passes local textfield validation.
-    self.PINTextField.text = @"";
-    section0 = @[@(CellKindBarcode),
-                 @(CellKindLogInSignOut)];
-  }
+  NSArray *section0AcctInfo = [self accountInfoSection];
+
   NSArray *section1;
   if ([self.businessLogic registrationIsPossible]) {
     section1 = @[@(CellKindRegistration)];
   } else {
     section1 = @[];
   }
-  self.tableData = @[section0, section1];
+  self.tableData = @[section0AcctInfo, section1];
+  [self.tableView reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -246,7 +326,6 @@ CGFloat const marginPadding = 2.0;
   } else {
     self.hiddenPIN = YES;
     [self accountDidChange];
-    [self.tableView reloadData];
     [self updateShowHidePINState];
   }
 }
@@ -271,6 +350,27 @@ CGFloat const marginPadding = 2.0;
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
+
+  if ([sectionArray[indexPath.row] isKindOfClass:[NYPLAuthMethodCellType class]]) {
+    NYPLAuthMethodCellType *methodCell = sectionArray[indexPath.row];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    self.businessLogic.selectedIDP = nil;
+    self.businessLogic.selectedAuthentication = methodCell.authenticationMethod;
+    [self setupTableData];
+    return;
+  } else if ([sectionArray[indexPath.row] isKindOfClass:[NYPLSamlIdpCellType class]]) {
+    NYPLSamlIdpCellType *idpCell = sectionArray[indexPath.row];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    self.businessLogic.selectedIDP = idpCell.idp;
+    [self logIn];
+    return;
+  } else if ([sectionArray[indexPath.row] isKindOfClass:[NYPLInfoHeaderCellType class]]) {
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    return;
+  }
+
   CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
 
   switch(cellKind) {
@@ -295,8 +395,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
             // Dismiss CardCreator & SignInVC when user finishes Credential Review
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+            [weakSelf.presentingViewController dismissViewControllerAnimated:YES completion:nil];
           } else {
             weakSelf.usernameTextField.text = username;
             weakSelf.PINTextField.text = PIN;
@@ -320,9 +419,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       {
         if (self.currentAccount.details.signUpUrl == nil) {
           // this situation should be impossible, but let's log it if it happens
-          [NYPLErrorLogger logSignUpError:nil
-                                     code:NYPLErrorCodeNilSignUpURL
-                                  message:@"signUpUrl from current account is nil"];
+          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilSignUpURL
+                                    summary:@"SignUp Error in modal: nil signUp URL"
+                                    message:nil
+                                   metadata:nil];
           return;
         }
 
@@ -355,6 +455,27 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
+
+  if ([sectionArray[indexPath.row] isKindOfClass:[NYPLAuthMethodCellType class]]) {
+    NYPLAuthMethodCellType *methodCell = sectionArray[indexPath.row];
+    UITableViewCell *cell = [[UITableViewCell alloc]
+                             initWithStyle:UITableViewCellStyleDefault
+                             reuseIdentifier:nil];
+    cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+    cell.textLabel.text = methodCell.authenticationMethod.methodDescription;
+    return cell;
+  } else if ([sectionArray[indexPath.row] isKindOfClass:[NYPLSamlIdpCellType class]]) {
+    NYPLSamlIdpCellType *idpCell = sectionArray[indexPath.row];
+    NYPLSamlIDPCell *cell = [[NYPLSamlIDPCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    cell.idpName.text = idpCell.idp.displayName;
+    return cell;
+  } else if ([sectionArray[indexPath.row] isKindOfClass:[NYPLInfoHeaderCellType class]]) {
+    NYPLInfoHeaderCellType *infoCell = sectionArray[indexPath.row];
+    NYPLLibraryDescriptionCell *cell = [[NYPLLibraryDescriptionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    cell.descriptionLabel.text = infoCell.information;
+    return cell;
+  }
+
   CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
 
   switch(cellKind) {
@@ -376,7 +497,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                ofView:[self.usernameTextField superview]
                                            withOffset:-marginPadding];
 
-        if (self.currentAccount.details.supportsBarcodeScanner) {
+        if (self.businessLogic.selectedAuthentication.supportsBarcodeScanner) {
           [cell.contentView addSubview:self.barcodeScanButton];
           CGFloat rightMargin = cell.layoutMargins.right;
           self.barcodeScanButton.contentEdgeInsets = UIEdgeInsetsMake(0, rightMargin * 2, 0, rightMargin);
@@ -512,25 +633,22 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-#pragma mark NSURLSessionDelegate
+#pragma mark - NYPLSettingsAccountUIDelegate
 
-- (void)URLSession:(__attribute__((unused)) NSURLSession *)session
-              task:(__attribute__((unused)) NSURLSessionTask *)task
-didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
- completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
-                             NSURLCredential *credential))completionHandler
+- (NSString *)username
 {
-  NYPLBasicAuthCustomHandler(challenge,
-                             completionHandler,
-                             self.usernameTextField.text,
-                             self.PINTextField.text);
+    return self.usernameTextField.text;
+}
+
+- (NSString *)pin
+{
+    return self.PINTextField.text;
 }
 
 #pragma mark - Class Methods
 
-
 + (void)
-requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
+requestCredentialsUsingExistingBarcode:(BOOL const)useExistingCredentials
 authorizeImmediately:(BOOL)authorizeImmediately
 completionHandler:(void (^)(void))handler
 {
@@ -542,14 +660,24 @@ completionHandler:(void (^)(void))handler
     // Tell |accountViewController| to create its text fields so we can set their properties.
     [accountViewController view];
 
-    if(useExistingBarcode) {
-      NSString *const barcode = [NYPLUserAccount sharedAccount].barcode;
-      if(!barcode) {
-        @throw NSInvalidArgumentException;
+    if (NYPLUserAccount.sharedAccount.authDefinition.isSaml) {
+      if (!useExistingCredentials) {
+        // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
+        // this is for the case when we were logged in, but IDP expired our session
+        // and if this happens, we want the user to pick the idp to begin reauthentication
+        accountViewController.businessLogic.forceLogIn = true;
+        accountViewController.businessLogic.selectedAuthentication = nil;
       }
-      accountViewController.usernameTextField.text = barcode;
     } else {
-      accountViewController.usernameTextField.text = @"";
+      if(useExistingCredentials) {
+        NSString *const barcode = [NYPLUserAccount sharedAccount].barcode;
+        if(!barcode) {
+          @throw NSInvalidArgumentException;
+        }
+        accountViewController.usernameTextField.text = barcode;
+      } else {
+        accountViewController.usernameTextField.text = @"";
+      }
     }
 
     accountViewController.PINTextField.text = @"";
@@ -572,10 +700,17 @@ completionHandler:(void (^)(void))handler
       completion:nil];
 
     if (authorizeImmediately && [NYPLUserAccount sharedAccount].hasBarcodeAndPIN) {
-      accountViewController.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
-      [accountViewController logIn];
+        accountViewController.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
+        [accountViewController logIn];
+    } else if (NYPLUserAccount.sharedAccount.authDefinition.isOauth) {
+      if (authorizeImmediately) {
+        [accountViewController logIn];
+      }
+    } else if (NYPLUserAccount.sharedAccount.authDefinition.isSaml) {
+      // there's no extra logic to do for SAML
+      // this exists as we don't want the textfield to become responder
     } else {
-      if(useExistingBarcode) {
+      if(useExistingCredentials) {
         [accountViewController.PINTextField becomeFirstResponder];
       } else {
         [accountViewController.usernameTextField becomeFirstResponder];
@@ -704,7 +839,7 @@ completionHandler:(void (^)(void))handler
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if([NYPLUserAccount sharedAccount].hasBarcodeAndPIN) {
+    if(self.businessLogic.isSignedIn) {
       self.usernameTextField.text = [NYPLUserAccount sharedAccount].barcode;
       self.usernameTextField.enabled = NO;
       self.usernameTextField.textColor = [UIColor grayColor];
@@ -718,8 +853,7 @@ completionHandler:(void (^)(void))handler
       self.PINTextField.textColor = [UIColor defaultLabelColor];
     }
     
-    [self.tableView reloadData];
-    
+    [self setupTableData];
     [self updateLoginLogoutCellAppearance];
   }];
 }
@@ -736,7 +870,7 @@ completionHandler:(void (^)(void))handler
   if (self.isCurrentlySigningIn) {
     return;
   }
-  if([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
+  if(self.businessLogic.isSignedIn) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", @"Title for sign out action");
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -747,18 +881,100 @@ completionHandler:(void (^)(void))handler
                                  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
     BOOL const pinHasText = [self.PINTextField.text
                              stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinIsNotRequired = self.currentAccount.details.pinKeyboard == LoginKeyboardNone;
-    if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired)) {
-      self.logInSignOutCell.userInteractionEnabled = YES;
-      self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
+    BOOL const pinIsNotRequired = self.businessLogic.selectedAuthentication.pinKeyboard == LoginKeyboardNone;
+    BOOL const oauthLogin = self.businessLogic.selectedAuthentication.isOauth;
+
+    if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired) || oauthLogin) {
+        self.logInSignOutCell.userInteractionEnabled = YES;
+        self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {
-      self.logInSignOutCell.userInteractionEnabled = NO;
-      self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
+        self.logInSignOutCell.userInteractionEnabled = NO;
+        if (@available(iOS 13.0, *)) {
+            self.logInSignOutCell.textLabel.textColor = [UIColor systemGray2Color];
+        } else {
+            self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
+        }
     }
   }
 }
 
 - (void)logIn
+{
+  if (self.businessLogic.selectedAuthentication.isOauth) {
+    // oauth
+    [self oauthLogIn];
+  } else if (self.businessLogic.selectedAuthentication.isSaml) {
+    // SAML
+    [self samlLogIn];
+  } else {
+    // bar and pin
+    [self barcodeLogIn];
+  }
+}
+
+- (void)oauthLogIn
+{
+  // for this kind of authentication, we want to redirect user to Safari to conduct the process
+  NSURL *oauthURL = self.businessLogic.selectedAuthentication.oauthIntermediaryUrl;
+
+  NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:oauthURL resolvingAgainstBaseURL:true];
+
+  // add params
+  NSURLQueryItem *redirect_uri = [[NSURLQueryItem alloc] initWithName:@"redirect_uri" value:NYPLSettings.shared.authenticationUniversalLink.absoluteString];
+  urlComponents.queryItems = [urlComponents.queryItems arrayByAddingObject:redirect_uri];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(handleRedirectURL:)
+                                               name: @"NYPLAppDelegateDidReceiveCleverRedirectURL"
+                                             object:nil];
+
+  [UIApplication.sharedApplication openURL: urlComponents.URL];
+  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+}
+
+- (void)samlLogIn
+{
+
+  // for this kind of authentication, we want user to authenticate in a built in webview, as we need to access the cookies later on
+
+  // get the url of IDP that user selected
+  NSURL *idpURL = self.businessLogic.selectedIDP.url;
+
+  NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:idpURL resolvingAgainstBaseURL:true];
+
+  // add redirect uri param
+  NSURLQueryItem *redirect_uri = [[NSURLQueryItem alloc] initWithName:@"redirect_uri" value:NYPLSettings.shared.authenticationUniversalLink.absoluteString];
+  urlComponents.queryItems = [urlComponents.queryItems arrayByAddingObject:redirect_uri];
+  NSURL *url = urlComponents.URL;
+
+  void (^loginCompletionHandler)(NSURL * _Nonnull, NSArray<NSHTTPCookie *> * _Nonnull) = ^(NSURL * _Nonnull url, NSArray<NSHTTPCookie *> * _Nonnull cookies) {
+    // when user login successfully, get cookies
+    self.cookies = cookies;
+
+    // process the last redirection url to get the oauth token
+    [self handleRedirectURL:[NSNotification notificationWithName:@"NYPLAppDelegateDidReceiveCleverRedirectURL"
+                                                          object:url
+                                                        userInfo:nil]];
+
+    // and close the webview
+    [self dismissViewControllerAnimated:YES completion:nil];
+  };
+
+  // create a model for webview authentication process
+  NYPLCookiesWebViewModel *model = [[NYPLCookiesWebViewModel alloc] initWithCookies:@[]
+                                                                            request:[[NSURLRequest alloc] initWithURL:url]
+                                                             loginCompletionHandler:loginCompletionHandler
+                                                                 loginCancelHandler:nil
+                                                                   bookFoundHandler:nil
+                                                                problemFoundHandler:nil
+                                                                autoPresentIfNeeded:NO];
+
+  NYPLCookiesWebViewController *cookiesVC = [[NYPLCookiesWebViewController alloc] initWithModel:model];
+  UINavigationController *navigationWrapper = [[UINavigationController alloc] initWithRootViewController:cookiesVC];
+  [self presentViewController:navigationWrapper animated:YES completion:nil];
+}
+
+- (void)barcodeLogIn
 {
   assert(self.usernameTextField.text.length > 0);
   assert(self.PINTextField.text.length > 0 || [self.PINTextField.text isEqualToString:@""]);
@@ -767,10 +983,93 @@ completionHandler:(void (^)(void))handler
   [self.PINTextField resignFirstResponder];
 
   [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-  
+
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  
+
   [self validateCredentials];
+}
+
+- (void) handleRedirectURL: (NSNotification *) notification
+{
+  [NSNotificationCenter.defaultCenter removeObserver: self name: @"NYPLAppDelegateDidReceiveCleverRedirectURL" object: nil];
+
+  NSURL *url = notification.object;
+  if (![url.absoluteString hasPrefix:NYPLSettings.shared.authenticationUniversalLink.absoluteString]
+      || !([url.absoluteString containsString:@"error"] || ([url.absoluteString containsString:@"access_token"] && [url.absoluteString containsString:@"patron_info"])))
+  {
+    // received neither error, nor login data, something's wrong
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnrecognizedLoginUniversalLink
+                              summary:@"SignIn-modal"
+                              message:@"App received login finished universal link, but no necessary data inside."
+                             metadata:@{
+                               @"loginUrl": url.absoluteString
+                             }];
+
+    // TODO: SIMPLY-2884 validate this string with product
+    [self displayErrorMessage:
+     NSLocalizedString(@"An error occurred during the authentication process",
+                       @"Generic error message while handling sign-in redirection during authentication")];
+    return;
+  }
+
+  NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
+  // This handles both Oauth2 Intermediate and SAML, one of them provides data in fragment, the other in query parameter
+  NSString *responseData = url.fragment != nil ? url.fragment : url.query;
+  for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
+    NSArray *elts = [param componentsSeparatedByString:@"="];
+    if([elts count] < 2) continue;
+    [kvpairs setObject:[elts lastObject] forKey:[elts firstObject]];
+  }
+
+  NSString *rawError = kvpairs[@"error"];
+
+  if (rawError) {
+    NSString *error = [[rawError stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
+
+    NSDictionary *parsedError = [error parseJSONString];
+
+    if (parsedError) {
+      [self displayErrorMessage:parsedError[@"title"]];
+    }
+
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeSignInRedirectError
+                              summary:NSStringFromClass([self class])
+                              message:@"An error was encountered while handling Sign-In redirection"
+                             metadata:@{
+                               NSUnderlyingErrorKey: rawError ?: @"N/A",
+                               @"redirectURL": url ?: @"N/A"
+                             }];
+  }
+
+  NSString *auth_token = kvpairs[@"access_token"];
+  NSString *patron_info = kvpairs[@"patron_info"];
+
+  if (auth_token != nil && patron_info != nil) {
+    NSString *patron = [[patron_info stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
+
+    NSDictionary *parsedPatron = [patron parseJSONString];
+    if (parsedPatron) {
+      self.authToken = auth_token;
+      self.patron = parsedPatron;
+      [self validateCredentials];
+    } else {
+      // login succeeded, but I couldn't parse the patron info
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOauthPatronInfoDecodeFail
+                                summary:@"SignIn-modal"
+                                message:@"App couldn't parse the patron info delivered in oauth/saml redirection."
+                               metadata:@{
+                                 @"patronInfo": patron
+                               }];
+    }
+  }
+}
+
+- (void)displayErrorMessage:(NSString *)errorMessage {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.text = errorMessage;
+    [label sizeToFit];
+    label.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
+    [self.view addSubview:label];
 }
 
 - (void)setActivityTitleWithText:(NSString *)text
@@ -821,6 +1120,19 @@ completionHandler:(void (^)(void))handler
   
   request.timeoutInterval = 20.0;
 
+  if (self.businessLogic.selectedAuthentication.isOauth || self.businessLogic.selectedAuthentication.isSaml) {
+    if (self.authToken) {
+      NSString *authenticationValue = [@"Bearer " stringByAppendingString: self.authToken];
+      [request addValue:authenticationValue forHTTPHeaderField:@"Authorization"];
+    } else {
+      NYPLLOG(@"Auth token expected, but none is available.");
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeValidationWithoutAuthToken
+                                summary:@"SignIn-modal"
+                                message:@"There is no token available during oauth/saml authentication validation."
+                               metadata:nil];
+    }
+  }
+
   NSString * const barcode = self.usernameTextField.text;
   self.isCurrentlySigningIn = YES;
   NSURLSessionDataTask *const task =
@@ -840,7 +1152,7 @@ completionHandler:(void (^)(void))handler
          UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
          if (!pDoc) {
            [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                                    context:@"SignIn-modal"
+                                                    summary:@"SignIn-modal: unable to parse user profile doc"
                                                     barcode:barcode];
            [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
            return;
@@ -850,7 +1162,7 @@ completionHandler:(void (^)(void))handler
            } else {
              NYPLLOG(@"Authorization ID (Barcode String) was nil.");
              [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
-                                       context:@"SignIn-modal"
+                                       summary:@"SignIn-modal: no auth-id in user profile doc"
                                        message:@"The UserProfileDocument obtained from the server contained no authorization identifier."
                                       metadata:@{
                                         @"hashedBarcode": barcode.md5String
@@ -861,7 +1173,7 @@ completionHandler:(void (^)(void))handler
            } else {
              NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
              [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
-                                       context:@"SignIn-modal"
+                                       summary:@"SignIn-modal"
                                        message:@"The UserProfileDocument obtained from the server contained no licensor token."
                                       metadata:@{
                                         @"hashedBarcode": barcode.md5String
@@ -959,7 +1271,7 @@ completionHandler:(void (^)(void))handler
                                   problemDocumentData:data
                                               barcode:barcode
                                                   url:request.URL
-                                              context:@"AccountSignInVC-validateCreds"
+                                              summary:@"AccountSignInVC-validateCreds: Problem Doc parse error"
                                               message:@"Sign-in failed via SignIn-modal, problem doc parsing failed"];
       } else {
         [NYPLErrorLogger logLoginError:error
@@ -1050,14 +1362,31 @@ completionHandler:(void (^)(void))handler
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      [[NYPLUserAccount sharedAccount] setBarcode:self.usernameTextField.text
-                                              PIN:self.PINTextField.text];
-      if (!self.isLoggingInAfterSignUp) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+      self.businessLogic.forceLogIn = false; // no need to force a login, as I just logged successfully
+      if (self.businessLogic.selectedAuthentication.isOauth) {
+        [self.businessLogic.userAccount setAuthToken:self.authToken];
+        [self.businessLogic.userAccount setPatron:self.patron];
+      } else if (self.businessLogic.selectedAuthentication.isSaml) {
+        [self.businessLogic.userAccount setAuthToken:self.authToken];
+        [self.businessLogic.userAccount setPatron:self.patron];
+        if (self.cookies) {
+          [self.businessLogic.userAccount setCookies:self.cookies];
+        }
+      } else {
+        [self.businessLogic.userAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
       }
+
+      self.businessLogic.userAccount.authDefinition = self.businessLogic.selectedAuthentication;
+
       void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
-      if(handler) handler();
+      if (!self.isLoggingInAfterSignUp) {
+        [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
+          if (handler) handler();
+        }];
+      } else {
+        if(handler) handler();
+      }
       [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
         if (success) {
           [[NYPLBookRegistry sharedRegistry] save];

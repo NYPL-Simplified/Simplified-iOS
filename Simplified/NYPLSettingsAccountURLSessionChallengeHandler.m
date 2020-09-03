@@ -7,7 +7,7 @@
 //
 
 #import "NYPLSettingsAccountURLSessionChallengeHandler.h"
-#import "NYPLBasicAuth.h"
+#import "SimplyE-Swift.h"
 
 @implementation NYPLSettingsAccountURLSessionChallengeHandler
 
@@ -30,10 +30,14 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                               NSURLCredential *credential))completionHandler
 {
-  NYPLBasicAuthCustomHandler(challenge,
-                             completionHandler,
-                             self.uiDelegate.username,
-                             self.uiDelegate.pin);
+    if (self.uiDelegate.username && self.uiDelegate.pin) {
+        [NYPLBasicAuth authCustomHandlerWithChallenge:challenge
+                                    completionHandler:completionHandler
+                                             username:self.uiDelegate.username
+                                             password:self.uiDelegate.pin];
+    } else {
+        @throw NSInvalidArgumentException;
+    }
 }
 
 @end

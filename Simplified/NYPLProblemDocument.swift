@@ -8,6 +8,8 @@ import Foundation
     "http://librarysimplified.org/terms/problem/no-active-loan";
   static let TypeLoanAlreadyExists =
     "http://librarysimplified.org/terms/problem/loan-already-exists";
+  static let TypeInvalidCredentials =
+    "http://librarysimplified.org/terms/problem/credentials-invalid";
   static let noStatus: Int = -1
 
   /// Per RFC7807, this identifies the type of problem.

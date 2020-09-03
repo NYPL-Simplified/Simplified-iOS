@@ -25,4 +25,6 @@ typedef NS_ENUM(NSInteger, NYPLMyBooksDownloadRightsManagement) {
 
 - (instancetype)withRightsManagement:(NYPLMyBooksDownloadRightsManagement)rightsManagement;
 
+- (NSString *)rightsManagementString;
+
 @end

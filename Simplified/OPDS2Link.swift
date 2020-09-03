@@ -13,4 +13,12 @@ struct OPDS2Link: Codable {
   let type: String?
   let rel: String?
   let templated: Bool?
+
+  let displayNames: [OPDS2InternationalVariable]?
+  let descriptions: [OPDS2InternationalVariable]?
+}
+
+struct OPDS2InternationalVariable: Codable {
+  let language: String
+  let value: String
 }
