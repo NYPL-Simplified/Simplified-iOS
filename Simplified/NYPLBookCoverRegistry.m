@@ -252,7 +252,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (UIImage *)cachedThumbnailImageForBook:(NYPLBook *const)book
 {
-  if(!book.imageThumbnailURL) {
+  if(!book.imageThumbnailURL || !self.session.configuration.URLCache) {
     return nil;
   }
   
