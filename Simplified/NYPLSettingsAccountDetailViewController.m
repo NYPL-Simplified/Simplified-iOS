@@ -1485,12 +1485,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                           superviewWidth:self.tableView.bounds.size.width
                                                     type:NYPLBarcodeTypeCodabar];
 
-        NSString *barcodeText = self.selectedUserAccount.authorizationIdentifier;
         if (barcodeImage) {
           self.barcodeImageView = [[UIImageView alloc] initWithImage:barcodeImage];
           self.barcodeImageLabel = [[UILabel alloc] init];
           self.barcodeTextLabel = [[UILabel alloc] init];
-          self.barcodeTextLabel.text = barcodeText;
+          self.barcodeTextLabel.text = self.selectedUserAccount.barcode;
           self.barcodeTextLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
           self.barcodeTextLabel.textAlignment = NSTextAlignmentCenter;
           self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
