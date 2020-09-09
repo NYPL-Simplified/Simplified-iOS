@@ -4,7 +4,11 @@
 #import "NYPLMyBooksViewController.h"
 #import "NYPLReaderViewController.h"
 
+#ifdef SIMPLYE
+// TODO: SIMPLY-3053 this #ifdef can be removed once this ticket is done
 #import "NYPLSettingsSplitViewController.h"
+#endif
+
 #import "NYPLRootTabBarController.h"
 #import "SimplyE-Swift.h"
 
@@ -47,9 +51,9 @@
   self.myBooksNavigationController = [[NYPLMyBooksNavigationController alloc] init];
   self.holdsNavigationController = [[NYPLHoldsNavigationController alloc] init];
   self.settingsSplitViewController = [[NYPLSettingsSplitViewController alloc] init];
-  
+
   [self setTabViewControllers];
-  
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(setTabViewControllers)
                                                name:NSNotification.NYPLCurrentAccountDidChange
@@ -69,13 +73,9 @@
 
 - (void)setTabViewControllers
 {
-  if (![NSThread isMainThread]) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [self setTabViewControllersInternal];
-    });
-  } else {
+  [NYPLMainThreadRun asyncIfNeeded:^{
     [self setTabViewControllersInternal];
-  }
+  }];
 }
 
 - (void)setTabViewControllersInternal

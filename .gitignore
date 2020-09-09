@@ -7,7 +7,7 @@ DerivedData
 .vscode
 Build
 adobe-rmsdk
-Simplified/ReaderClientCert.sig
+**/ReaderClientCert.sig
 Simplified/APIKeys.swift
 AudioEngine.json
 Carthage

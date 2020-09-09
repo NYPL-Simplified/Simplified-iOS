@@ -237,3 +237,12 @@
 "Delete Server Data" = "Rimuovi dati dal server";
 "Please wait..." = "Attendere, prego...";
 "Delete all the bookmarks you have saved in the cloud." = "Tutti i segnalibri salvati sul server saranno rimossi.";
+
+// Open eBooks
+"TutorialWelcomeViewControllerDescription" = "Benvenuti a Open eBooks.";
+"TutorialEligibilityViewControllerDescription" =
+"Open eBooks fornisce libri gratuitamente ai bambini che ne hanno più bisogno.\n\nLa collezione include migliaia di titoli popolari e rinomati, e centinaia di lavori nel dominio pubblico.\n\nBambini provenienti da aree disagiate possono accedere in vari modi.";
+"TutorialChoiceViewControllerDescription" = "Scegli la modalità di accesso alla collezione.";
+"TutorialChoiceUseExistingCode" = "Usa un codice esistente";
+"TutorialChoiceUseClever" = "Accedi via Clever";
+"TutorialChoiceRequestCodes" = "Richiedi codici di accesso";
