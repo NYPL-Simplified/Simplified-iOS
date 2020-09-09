@@ -194,6 +194,8 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
   /// No guarantees are being made about whether this is called on the main
   /// thread or not.
   func loadCatalogs(completion: @escaping (Bool) -> ()) {
+    // TODO: SIMPLY-3057 these URLs should be factored out because they are
+    // different for Open eBooks or SimplyE
     let targetUrl = NYPLSettings.shared.useBetaLibraries ? betaUrl : prodUrl
     let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
       .trimmingCharacters(in: ["="])

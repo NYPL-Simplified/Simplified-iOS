@@ -1,0 +1,62 @@
+{
+  "catalogs": [
+    {
+      "links": [
+        {
+          "href": "https://circulation.openebooks.us/USOEI/",
+          "type": "application/atom+xml;profile=opds-catalog;kind=acquisition",
+          "rel": "http://opds-spec.org/catalog"
+        },
+        {
+          "href": "http://openebooks.net/app_user_agreement.html",
+          "type": "text/html",
+          "rel": "terms-of-service"
+        },
+        {
+          "href": "https://circulation.openebooks.us/USOEI/authentication_document",
+          "type": "application/vnd.opds.authentication.v1.0+json"
+        },
+        {
+          "href": "http://openebooks.net/app_privacy.html",
+          "type": "text/html",
+          "rel": "privacy-policy"
+        },
+        {
+          "href": "http://openebooks.net/app_acknowledgments.html",
+          "type": "text/html",
+          "rel": "copyright"
+        },
+        {
+          "href": "https://circulation.openebooks.us/USOEI/",
+          "type": "application/atom+xml;profile=opds-catalog;kind=acquisition",
+          "rel": "start"
+        },
+        {
+          "href": "https://circulation.openebooks.us/USOEI/loans/",
+          "type": "application/atom+xml;profile=opds-catalog;kind=acquisition",
+          "rel": "http://opds-spec.org/shelf"
+        },
+        {
+          "href": "https://circulation.openebooks.us/USOEI/patrons/me/",
+          "type": "vnd.librarysimplified/user-profile+json",
+          "rel": "http://librarysimplified.org/terms/rel/user-profile"
+        },
+        {
+          "href": "https://openebooks.net/",
+          "type": "text/html",
+          "rel": "alternate"
+        }
+      ],
+      "metadata": {
+        "updated": "2019-10-23T17:51:51Z",
+        "description": "Open EBooks",
+        "id": "urn:uuid:e1a01c16-04e7-4781-89fd-b442dd1be001",
+        "title": "Open EBooks"
+      }
+    }
+  ],
+  "links": [],
+  "metadata": {
+    "title": "Libraries"
+  }
+}

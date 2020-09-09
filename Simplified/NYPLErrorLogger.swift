@@ -110,6 +110,7 @@ fileprivate let nullString = "null"
   case missingSystemPaths = 1200
   case fileMoveFail = 1201
   case directoryURLCreateFail = 1202
+  case missingExpectedObject = 1203
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
