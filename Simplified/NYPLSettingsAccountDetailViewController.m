@@ -1493,7 +1493,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           self.barcodeImageView = [[UIImageView alloc] initWithImage:barcodeImage];
           self.barcodeImageLabel = [[UILabel alloc] init];
           self.barcodeTextLabel = [[UILabel alloc] init];
-          self.barcodeTextLabel.text = self.selectedUserAccount.barcode;
+          self.barcodeTextLabel.text = self.selectedUserAccount.authorizationIdentifier;
           self.barcodeTextLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
           self.barcodeTextLabel.textAlignment = NSTextAlignmentCenter;
           self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
