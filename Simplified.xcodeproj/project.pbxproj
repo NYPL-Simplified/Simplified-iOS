@@ -121,6 +121,8 @@
 		17CE5305243C020800315E63 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		17D08381248E938000092AA9 /* OverdriveProcessor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */; };
 		21196605250956C000A6D0EF /* JWKResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2199020724FD35DC001BC727 /* JWKResponse.swift */; };
+		2198F910250A90EE000D9DAB /* AudiobookCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2198F90F250A90EE000D9DAB /* AudiobookCertificate.swift */; };
+		2198F911250A90EE000D9DAB /* AudiobookCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2198F90F250A90EE000D9DAB /* AudiobookCertificate.swift */; };
 		219901F424FD2DE9001BC727 /* jwk.json in Resources */ = {isa = PBXBuildFile; fileRef = 219901F324FD2DE9001BC727 /* jwk.json */; };
 		219901F524FD2DE9001BC727 /* jwk.json in Resources */ = {isa = PBXBuildFile; fileRef = 219901F324FD2DE9001BC727 /* jwk.json */; };
 		219901FA24FD2E56001BC727 /* jwk_private in Resources */ = {isa = PBXBuildFile; fileRef = 219901F924FD2E56001BC727 /* jwk_private */; };
@@ -763,6 +765,7 @@
 		179699D024131BA500EC309F /* UIColor+LabelColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+LabelColor.swift"; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OverdriveProcessor.framework; path = Carthage/Build/iOS/OverdriveProcessor.framework; sourceTree = "<group>"; };
+		2198F90F250A90EE000D9DAB /* AudiobookCertificate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookCertificate.swift; sourceTree = "<group>"; };
 		219901F324FD2DE9001BC727 /* jwk.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = jwk.json; sourceTree = "<group>"; };
 		219901F924FD2E56001BC727 /* jwk_private */ = {isa = PBXFileReference; lastKnownFileType = text; path = jwk_private; sourceTree = "<group>"; };
 		2199020524FD3334001BC727 /* NYPLJWKConversionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLJWKConversionTest.swift; sourceTree = "<group>"; };
@@ -1375,6 +1378,7 @@
 			children = (
 				21E7E07924FEA7D700189224 /* DPLA */,
 				21EC1B8E2501538600A12384 /* AudioBookVendors+Extensions.swift */,
+				2198F90F250A90EE000D9DAB /* AudiobookCertificate.swift */,
 			);
 			path = Audiobooks;
 			sourceTree = "<group>";
@@ -2143,6 +2147,7 @@
 				2199020624FD3334001BC727 /* NYPLJWKConversionTest.swift in Sources */,
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
 				7307A5F423FF2A6000DE53DE /* NYPLStringAdditionsTests.swift in Sources */,
+				2198F911250A90EE000D9DAB /* AudiobookCertificate.swift in Sources */,
 				2D8790A520129AF200E2763F /* NYPLBookAcquisitionPathTests.swift in Sources */,
 				735350B724918432006021BD /* URLRequest+NYPLTests.swift in Sources */,
 				7384C804242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift in Sources */,
@@ -2408,6 +2413,7 @@
 				1183F33B194B775900DC322F /* NYPLCatalogLaneCell.m in Sources */,
 				7340DA6224B7E45C00361387 /* URLResponse+NYPL.swift in Sources */,
 				E6202A021DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m in Sources */,
+				2198F910250A90EE000D9DAB /* AudiobookCertificate.swift in Sources */,
 				113137E71A48DAB90082954E /* NYPLReaderReadiumView.m in Sources */,
 				E68CCFC51F9F80CF003DDA6C /* NYPLBarcode.swift in Sources */,
 				118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */,

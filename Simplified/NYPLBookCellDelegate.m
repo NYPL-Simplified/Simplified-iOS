@@ -176,7 +176,7 @@
   }
   
   // Check vendor's DRM key and update it if necessary
-  [NYPLSecrets updateVendorKeyWithBook:json completion:^{
+  [AudiobookCertificate updateVendorKeyWithBook:json completion:^{
     
     id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
 
