@@ -52,8 +52,11 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 // UI
 @property (nonatomic) UIImageView *barcodeImageView;
+@property (nonatomic) UILabel *barcodeTextLabel;
 @property (nonatomic) UILabel *barcodeImageLabel;
 @property (nonatomic) NSLayoutConstraint *barcodeHeightConstraint;
+@property (nonatomic) NSLayoutConstraint *barcodeTextHeightConstraint;
+@property (nonatomic) NSLayoutConstraint *barcodeTextLabelSpaceConstraint;
 @property (nonatomic) NSLayoutConstraint *barcodeLabelSpaceConstraint;
 @property (nonatomic) float userBrightnessSetting;
 @property (nonatomic) NSMutableArray *tableData;
@@ -86,6 +89,10 @@ static const CGFloat sVerticalMarginPadding = 2.0;
 // table view sections indeces
 static const NSInteger sSection0AccountInfo = 0;
 static const NSInteger sSection1Sync = 1;
+
+// Constraint constants
+static const CGFloat sConstantZero = 0.0;
+static const CGFloat sConstantSpacing = 12.0;
 
 @implementation NYPLSettingsAccountDetailViewController
 
@@ -1273,14 +1280,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindBarcodeImage: {
       [self.tableView beginUpdates];
       // Collapse barcode by adjusting certain constraints
-      if (self.barcodeImageView.bounds.size.height > 0) {
-        self.barcodeHeightConstraint.constant = 0.0;
-        self.barcodeLabelSpaceConstraint.constant = 0.0;
+      if (self.barcodeImageView.bounds.size.height > sConstantZero) {
+        self.barcodeHeightConstraint.constant = sConstantZero;
+        self.barcodeTextHeightConstraint.constant = sConstantZero;
+        self.barcodeTextLabelSpaceConstraint.constant = sConstantZero;
+        self.barcodeLabelSpaceConstraint.constant = sConstantZero;
         self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
         [[UIScreen mainScreen] setBrightness:self.userBrightnessSetting];
       } else {
         self.barcodeHeightConstraint.constant = 100.0;
-        self.barcodeLabelSpaceConstraint.constant = -12.0;
+        self.barcodeTextHeightConstraint.constant = 30.0;
+        self.barcodeTextLabelSpaceConstraint.constant = -sConstantSpacing;
+        self.barcodeLabelSpaceConstraint.constant = -sConstantSpacing;
         self.barcodeImageLabel.text = NSLocalizedString(@"Hide Barcode", nil);
         self.userBrightnessSetting = [[UIScreen mainScreen] brightness];
         [[UIScreen mainScreen] setBrightness:1.0];
@@ -1481,20 +1492,29 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         if (barcodeImage) {
           self.barcodeImageView = [[UIImageView alloc] initWithImage:barcodeImage];
           self.barcodeImageLabel = [[UILabel alloc] init];
+          self.barcodeTextLabel = [[UILabel alloc] init];
+          self.barcodeTextLabel.text = self.selectedUserAccount.authorizationIdentifier;
+          self.barcodeTextLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+          self.barcodeTextLabel.textAlignment = NSTextAlignmentCenter;
           self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
           self.barcodeImageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
           self.barcodeImageLabel.textColor = [NYPLConfiguration mainColor];
 
           [cell.contentView addSubview:self.barcodeImageView];
+          [cell.contentView addSubview:self.barcodeTextLabel];
           [cell.contentView addSubview:self.barcodeImageLabel];
+          [self.barcodeTextLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+          [self.barcodeTextLabel autoSetDimension:ALDimensionWidth toSize:self.tableView.bounds.size.width];
           [self.barcodeImageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
           [self.barcodeImageView autoSetDimension:ALDimensionWidth toSize:self.tableView.bounds.size.width];
           [NSLayoutConstraint autoSetPriority:UILayoutPriorityRequired forConstraints:^{
             // Hidden to start
             self.barcodeHeightConstraint = [self.barcodeImageView autoSetDimension:ALDimensionHeight toSize:0];
-            self.barcodeLabelSpaceConstraint = [self.barcodeImageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.barcodeImageLabel withOffset:0];
+            self.barcodeTextHeightConstraint = [self.barcodeTextLabel autoSetDimension:ALDimensionHeight toSize:0];
+            self.barcodeLabelSpaceConstraint = [self.barcodeImageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.barcodeTextLabel withOffset:0];
+            self.barcodeTextLabelSpaceConstraint = [self.barcodeTextLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.barcodeImageLabel withOffset:0];
           }];
-          [self.barcodeImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:12.0];
+          [self.barcodeImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:sConstantSpacing];
           [self.barcodeImageLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
           [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
         }
