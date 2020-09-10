@@ -168,53 +168,11 @@ import NYPLAudiobookToolkit
   }
     
   private class func manageFeedbookDrmPrivateKey() {
-    // DEBUG: Load one key
-    DPLAAudiobooks.drmKey { data, error in
-      if let error = error {
-        Log.error(#file, "Could not receive drm private key from \(DPLAAudiobooks.certificateUrl): \(error.localizedDescription)")
-      }
-      if let privateKeyData = data {
-        let tag = "\(FeedbookDRMPrivateKeyTag)\(AudioBookVendors.cantook.rawValue)".data(using: .utf8)
-        let addQuery: [String: Any] = [
-          kSecClass as String: kSecClassKey,
-          kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
-          kSecAttrApplicationTag as String: tag,
-          kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
-          kSecValueData as String: privateKeyData,
-          kSecAttrKeyClass as String: kSecAttrKeyClassPrivate
-        ]
-          
-        let status = SecItemAdd(addQuery as CFDictionary, nil)
-        if status != errSecSuccess && status != errSecDuplicateItem {
-          logKeychainError(forVendor: AudioBookVendors.cantook.rawValue, status: status, message: "FeedbookDrmPrivateKeyManagement Error:")
-        }
+    // Request DRM certificates for all vendors
+    for vendor in AudioBookVendors.allCases {
+      vendor.updateDrmCertificate {
       }
     }
-
-//    for vendor in AudioBookVendors.allCases {
-//      // Header of PEM key needed to be stripped in order to create SecKey in NYPLAudiobookToolkit
-//      // Performing the strip here to avoid converting the data to string back and forth after retrieval
-//      guard let privateKeyString = NYPLSecrets.drmCertificate(forVendor: vendor),
-//        let privateKeyData = Data(base64Encoded: RSAUtils.stripPEMKeyHeader(privateKeyString)),
-//        let tag = "\(FeedbookDRMPrivateKeyTag)\(vendor.rawValue)".data(using: .utf8) else {
-//          Log.error(#file, "Could not load drm private key for vendor: \(vendor.rawValue)")
-//          continue
-//      }
-//
-//      let addQuery: [String: Any] = [
-//        kSecClass as String: kSecClassKey,
-//        kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
-//        kSecAttrApplicationTag as String: tag,
-//        kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
-//        kSecValueData as String: privateKeyData,
-//        kSecAttrKeyClass as String: kSecAttrKeyClassPrivate
-//      ]
-//
-//      let status = SecItemAdd(addQuery as CFDictionary, nil)
-//      if status != errSecSuccess && status != errSecDuplicateItem {
-//        logKeychainError(forVendor: vendor.rawValue, status: status, message: "FeedbookDrmPrivateKeyManagement Error:")
-//      }
-//    }
   }
     
   private class func logKeychainError(forVendor vendor:String, status: OSStatus, message: String) {
