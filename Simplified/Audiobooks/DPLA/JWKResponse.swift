@@ -18,7 +18,6 @@ struct JWK: Codable {
   private enum JWKKeys: String, CodingKey {
     case publickKeyEncoded = "http://www.feedbooks.com/audiobooks/signature/pem-key"
   }
-  /// Public key data
   let publicKeyData: Data?
   // Need to manually parse the key with the Url as the key
   init(from decoder: Decoder) throws {
