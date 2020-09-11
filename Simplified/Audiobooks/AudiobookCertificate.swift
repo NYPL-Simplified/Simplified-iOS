@@ -16,7 +16,7 @@ import Foundation
   /// Get vendor for the book JSON data
   /// - Parameter book: Book JSON dictionary
   /// - Returns: AudioBookVendors vendor item, if found, `nil` otherwise
-  static func feedbookVendor(for book: [String: Any]) -> AudioBookVendors? {
+  private static func feedbookVendor(for book: [String: Any]) -> AudioBookVendors? {
     guard let metadata = book["metadata"] as? [String: Any],
       let signature = metadata["http://www.feedbooks.com/audiobooks/signature"] as? [String: Any],
       let issuer = signature["issuer"] as? String
