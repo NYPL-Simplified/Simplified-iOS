@@ -50,13 +50,13 @@ extension AudioBookVendors {
           } else {
             Log.error(#file, "Could not receive DRM public key, URL: \(DPLAAudiobooks.certificateUrl): \(error.localizedDescription)")
           }
-          completion?(error)
+          completion?(DPLAAudiobooks.DPLAError.drmKeyError(NSLocalizedString("Error accessing DRM server", comment: "Error accessing DRM server")))
           return
         }
         // drmKey completion handler returns either non-empty data value or an error
         guard let keyData = data else {
           Log.error(#file, "Public key data is empty, URL: \(DPLAAudiobooks.certificateUrl)")
-          completion?(nil)
+          completion?(DPLAAudiobooks.DPLAError.drmKeyError(NSLocalizedString("DRM key data is empty", comment: "DRM key data is empty")))
           return
         }
         // Check if we have a valid date
