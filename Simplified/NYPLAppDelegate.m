@@ -164,6 +164,11 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 -(void)applicationDidBecomeActive:(__unused UIApplication *)app
 {
   [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
+#ifdef OPENEBOOKS
+  if (![NYPLUserAccount.sharedAccount isSignedIn]) {
+    [OETutorialChoiceViewController showLoginPickerWithHandler:nil];
+  }
+#endif
 }
 
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application
