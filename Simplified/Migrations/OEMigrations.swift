@@ -14,15 +14,32 @@ extension NYPLMigrationManager {
     let appVersionTokens = appVersion.split(separator: ".").compactMap({ Int($0) })
 
     // Run through migration stages
+    if versionIsLessThan(appVersionTokens, [1, 7, 7]) { // v1.7.7
+      //migrate_1_7_7();
+    }
+
     if versionIsLessThan(appVersionTokens, [1, 8, 1]) { // v1.8.1
       migrate_1_8_1();
     }
   }
 
-  // v1.8.1
-  // Adept API changed to allow multiple accounts
-  // userID and deviceID will be nil
-  // Need to make transition smooth to multi-account
+  /// v1.7.7
+  /// Account IDs are changing, so we need to migrate resources accordingly
+  /// - Note: this was taken from original Open eBooks PR: https://bit.ly/32cPlt8
+  private static func migrate_1_7_7() -> Void {
+    Log.info(#file, "Running 1.7.7 migration")
+
+    // Translate account to Simplified
+    AccountsManager.shared.loadCatalogs { success in
+      Log.debug(#file, "Ran 1.7.7 migration call: \(success)")
+      AccountsManager.shared.currentAccount = AccountsManager.shared.account(NYPLConfiguration.OpenEBooksUUID)
+    }
+  }
+
+  /// v1.8.1
+  /// Adept API changed to allow multiple accounts
+  /// userID and deviceID will be nil
+  /// Need to make transition smooth to multi-account
   /// - Note: this was taken from Open eBooks repo: https://bit.ly/2DHP5sF
   private static func migrate_1_8_1() -> Void {
     Log.info(#file, "Running 1.8.1 migration")
