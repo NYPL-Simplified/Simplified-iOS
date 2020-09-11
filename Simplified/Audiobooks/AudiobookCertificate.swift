@@ -33,13 +33,13 @@ import Foundation
   /// - Parameters:
   ///   - book: Book JSON dictionary
   ///   - completion: completion
-  @objc public static func updateVendorKey(book: [String: Any], completion: @escaping () -> ()) {
+  @objc public static func updateVendorKey(book: [String: Any], completion: @escaping (_ error: Error?) -> ()) {
     if let vendor = self.feedbookVendor(for: book) {
-      vendor.updateDrmCertificate {
-        completion()
+      vendor.updateDrmCertificate { error in
+        completion(error)
       }
     } else {
-      completion()
+      completion(nil)
     }
   }
 }

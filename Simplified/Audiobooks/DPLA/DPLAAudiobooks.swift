@@ -30,6 +30,11 @@ class DPLAAudiobooks {
   
   /// Requests and returns a private key for audiobooks DRM
   /// - Parameter completion: private key data
+  /// - Parameter keyData: Public RSA key data
+  /// - Parameter validThrough: The last date the key is valid
+  /// - Parameter error: Error object
+  ///
+  /// `completion` either returns `keyData` value or an `error`.  `validThrough` date is optional even when `keyData` is not nil.
   static func drmKey(completion: @escaping (_ keyData: Data?, _ validThrough: Date?, _ error: Error?) -> ()) {
     let task = URLSession.shared.dataTask(with: DPLAAudiobooks.certificateUrl) { (data, response, error) in
       // In case of an error
@@ -37,24 +42,10 @@ class DPLAAudiobooks {
         completion(nil, nil, DPLAError.drmKeyError("Error accessing \(DPLAAudiobooks.certificateUrl): \(error)"))
         return
       }
-      // If data can't be parsed, return its content in error message
-      var dataString: String = ""
-      if data != nil {
-        dataString = String(data: data!, encoding: .utf8) ?? ""
-      }
-      guard let data = data,
-        let response = response as? HTTPURLResponse,
-        let jwkResponse = try? JSONDecoder().decode(JWKResponse.self, from: data),
-        let jwk = jwkResponse.keys.first,
-        let keyData = jwk.publicKeyData
-        else {
-          completion(nil, nil, DPLAError.drmKeyError("Error decoding \(DPLAAudiobooks.certificateUrl) response:\n\(dataString)"))
-          return
-        }
       // DRM is valid during a certain period of time
       // Check "Cache-Control" header for max-age value in seconds
       var validThroughDate: Date?
-      if let cacheControlHeader = response.allHeaderFields[cacheControlField] as? String {
+      if let response = response as? HTTPURLResponse,  let cacheControlHeader = response.allHeaderFields[cacheControlField] as? String {
         let cacheControlComponents = cacheControlHeader.components(separatedBy: "=").map { $0.trimmingCharacters(in: .whitespaces) }
         if cacheControlComponents.count == 2 && cacheControlComponents[0].lowercased() == maxAge {
           if let seconds = Int(cacheControlComponents[1]) {
@@ -62,6 +53,20 @@ class DPLAAudiobooks {
           }
         }
       }
+      // Decode JWK data
+      guard let jwkData = data else {
+        completion(nil, nil, DPLAError.drmKeyError("Error decoding \(DPLAAudiobooks.certificateUrl): response data is empty"))
+        return
+      }
+      guard let jwkResponse = try? JSONDecoder().decode(JWKResponse.self, from: jwkData),
+        let jwk = jwkResponse.keys.first,
+        let keyData = jwk.publicKeyData
+        else {
+          // If data can't be parsed or the key is missing, return its content in error message
+          let dataString: String = String(data: jwkData, encoding: .utf8) ?? ""
+          completion(nil, nil, DPLAError.drmKeyError("Error decoding \(DPLAAudiobooks.certificateUrl) response:\n\(dataString)"))
+          return
+        }
       // All is good
       completion(keyData, validThroughDate, nil)
     }

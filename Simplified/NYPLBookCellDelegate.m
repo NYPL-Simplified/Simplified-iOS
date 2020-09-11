@@ -175,13 +175,16 @@
     dict[@"id"] = book.identifier;
   }
   
-  // Check vendor's DRM key and update it if necessary
-  [AudiobookCertificate updateVendorKeyWithBook:json completion:^{
+  [AudiobookCertificate updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     
     id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
 
     if (!audiobook) {
-      [self presentUnsupportedItemError];
+      if (error) {
+        [self presentDRMKeyError:error];
+      } else {
+        [self presentUnsupportedItemError];
+      }
       return;
     }
 
@@ -303,6 +306,13 @@
   [[NYPLBookRegistry sharedRegistry]
    setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
    forIdentifier:self.book.identifier];
+}
+
+- (void)presentDRMKeyError:(NSError *) error {
+  NSString *title = NSLocalizedString(@"DRM Error", nil);
+  NSString *message = error.localizedDescription;
+  UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
+  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 }
 
 - (void)presentUnsupportedItemError
