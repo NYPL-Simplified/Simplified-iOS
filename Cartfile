@@ -1,8 +1,8 @@
 binary "Crashlytics.json"
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"
 github "NYPL-Simplified/CardCreator-iOS" ~> 1.2
-github "NYPL-Simplified/NYPLAEToolkit" "dpla/develop"
-github "NYPL-Simplified/NYPLAudiobookToolkit" "dpla/develop"
+github "NYPL-Simplified/NYPLAEToolkit" "master"
+github "NYPL-Simplified/NYPLAudiobookToolkit" "master"
 github "PureLayout/PureLayout" ~> 3.1.2
 github "TheLevelUp/ZXingObjC" ~> 3.3
 github "stephencelis/SQLite.swift" ~> 0.11.5
