@@ -1096,7 +1096,7 @@
 		5DD567B422B97344001F0C83 /* Data+Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Base64.swift"; sourceTree = "<group>"; };
 		7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOpenSearchDescriptionTests.swift; sourceTree = "<group>"; };
 		7307A5F323FF2A6000DE53DE /* NYPLStringAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLStringAdditionsTests.swift; sourceTree = "<group>"; };
-		73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OETutorialChoiceViewController.swift; path = OpenEbooks/OETutorialChoiceViewController.swift; sourceTree = "<group>"; };
+		73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialChoiceViewController.swift; sourceTree = "<group>"; };
 		73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLPresentationUtils.swift; sourceTree = "<group>"; };
 		73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = OpenEBooks_OPDS2_Catalog_Feed.json; path = OpenEbooks/Resources/OpenEBooks_OPDS2_Catalog_Feed.json; sourceTree = "<group>"; };
 		73085E232502EDEE008F6244 /* NYPLSettingsPrimaryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsPrimaryTableViewController.swift; sourceTree = "<group>"; };
@@ -1118,7 +1118,7 @@
 		7347F132245A508400558D7F /* NYPLCardCreator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NYPLCardCreator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		735350B624918432006021BD /* URLRequest+NYPLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+NYPLTests.swift"; sourceTree = "<group>"; };
 		735394012508161A0043C800 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
-		7353940B250854A90043C800 /* OESettingsSetUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OESettingsSetUp.swift; path = OpenEbooks/OESettingsSetUp.swift; sourceTree = "<group>"; };
+		7353940B250854A90043C800 /* OESettingsSetUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OESettingsSetUp.swift; sourceTree = "<group>"; };
 		7358EE7B250062BD00DDA0CC /* OEImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = OEImages.xcassets; path = OpenEbooks/Resources/OEImages.xcassets; sourceTree = "<group>"; };
 		7358EE902500642900DDA0CC /* OELaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = OELaunchScreen.xib; path = OpenEbooks/Resources/OELaunchScreen.xib; sourceTree = "<group>"; };
 		7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Open-eBooks-Info.plist"; path = "OpenEbooks/Open-eBooks-Info.plist"; sourceTree = "<group>"; };
@@ -1723,15 +1723,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		73085E172502DE6D008F6244 /* OpenEbooks */ = {
-			isa = PBXGroup;
-			children = (
-				73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */,
-				7353940B250854A90043C800 /* OESettingsSetUp.swift */,
-			);
-			name = OpenEbooks;
-			sourceTree = "<group>";
-		};
 		73085E222502EDC6008F6244 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1740,6 +1731,7 @@
 				73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */,
 				738CB1FF2509A61E00891F31 /* NYPLConfiguration+OpenEbooks.swift */,
 				738CB2052509A87700891F31 /* NYPLConfiguration+SimplyE.swift */,
+				7353940B250854A90043C800 /* OESettingsSetUp.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1814,6 +1806,14 @@
 				1114A6AC1958B215007507A2 /* NYPLLOG.h */,
 			);
 			name = Logging;
+			sourceTree = "<group>";
+		};
+		738CB2092509AD3B00891F31 /* Tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */,
+			);
+			path = Tutorial;
 			sourceTree = "<group>";
 		};
 		73E84FBD24464FF3009071D8 /* Authentication */ = {
@@ -1999,11 +1999,11 @@
 				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
 				B51C1DF42285FD51003B49A5 /* OPDS2 */,
-				73085E172502DE6D008F6244 /* OpenEbooks */,
 				145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */,
 				119504051994061E009FB788 /* Reader */,
 				73085E222502EDC6008F6244 /* Settings */,
 				11C5DCEE1976D19E005A9945 /* Settings Tab */,
+				738CB2092509AD3B00891F31 /* Tutorial */,
 				2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */,
 				2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */,
 				7327A88D23EE00FE00954748 /* Utilities */,

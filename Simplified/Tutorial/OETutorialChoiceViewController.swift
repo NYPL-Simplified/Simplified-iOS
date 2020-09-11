@@ -125,10 +125,10 @@ class OETutorialChoiceViewController : UIViewController {
   }
   
   @objc func didSelectRequestCodes() {
-    UIApplication.shared.openURL(OEConfiguration.oeShared.openEBooksRequestCodesURL)
+    UIApplication.shared.openURL(NYPLConfiguration.openEBooksRequestCodesURL)
   }
   
-  class func showLoginPicker(handler: (()->Void)?) {
+  @objc class func showLoginPicker(handler: (()->Void)?) {
     let choiceVC = OETutorialChoiceViewController()
     choiceVC.completionHandler = handler
     let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: choiceVC, action: #selector(didSelectCancel))
