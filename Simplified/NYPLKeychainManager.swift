@@ -174,7 +174,7 @@ import NYPLAudiobookToolkit
     }
   }
     
-  private class func logKeychainError(forVendor vendor:String, status: OSStatus, message: String) {
+  class func logKeychainError(forVendor vendor:String, status: OSStatus, message: String) {
     // This is unexpected
     var errMsg = ""
     if #available(iOS 11.3, *) {
