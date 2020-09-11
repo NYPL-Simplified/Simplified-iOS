@@ -33,13 +33,31 @@ import Foundation
   /// - Parameters:
   ///   - book: Book JSON dictionary
   ///   - completion: completion
-  @objc public static func updateVendorKey(book: [String: Any], completion: @escaping (_ error: Error?) -> ()) {
+  @objc public static func updateVendorKey(book: [String: Any], completion: @escaping (_ error: NSError?) -> ()) {
     if let vendor = self.feedbookVendor(for: book) {
       vendor.updateDrmCertificate { error in
-        completion(error)
+        completion(self.nsError(for: error))
       }
     } else {
       completion(nil)
     }
+  }
+  
+  /// Creates an NSError for Objective-C code providing a readable error message for `DPLAError` errors
+  /// - Parameter error: Error object
+  /// - Returns: NSError object
+  private static func nsError(for error: Error?) -> NSError? {
+    guard let error = error else {
+      return nil
+    }
+    let domain = "SimplyE.AudiobookCertificate"
+    let code = 0
+    var description = error.localizedDescription
+    if let dplaError = error as? DPLAAudiobooks.DPLAError {
+      description = dplaError.readableError
+    }
+    return NSError(domain: domain, code: code, userInfo: [
+      NSLocalizedDescriptionKey: description
+    ])
   }
 }

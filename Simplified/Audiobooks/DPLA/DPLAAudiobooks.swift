@@ -12,11 +12,20 @@ import Foundation
 class DPLAAudiobooks {
   
   enum DPLAError: Error {
+    case requestError(_ url: URL, _ error: Error)
     case drmKeyError(_ message: String)
     
     var localisedDescription: String {
       switch self {
+      case .requestError(let url, let error): return "Error requesting key data from \(url): \(error.localizedDescription)"
       case .drmKeyError(let message): return message
+      }
+    }
+    
+    var readableError: String {
+      switch self {
+      case .requestError: return "Error receiving DRM key."
+      case .drmKeyError: return "Error decoding DRM key data."
       }
     }
   }
@@ -39,7 +48,7 @@ class DPLAAudiobooks {
     let task = URLSession.shared.dataTask(with: DPLAAudiobooks.certificateUrl) { (data, response, error) in
       // In case of an error
       if let error = error {
-        completion(nil, nil, DPLAError.drmKeyError("Error accessing \(DPLAAudiobooks.certificateUrl): \(error)"))
+        completion(nil, nil, DPLAError.requestError(DPLAAudiobooks.certificateUrl, error))
         return
       }
       // DRM is valid during a certain period of time
