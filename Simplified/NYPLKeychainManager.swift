@@ -170,8 +170,7 @@ import NYPLAudiobookToolkit
   private class func manageFeedbookDrmPrivateKey() {
     // Request DRM certificates for all vendors
     for vendor in AudioBookVendors.allCases {
-      vendor.updateDrmCertificate {
-      }
+      vendor.updateDrmCertificate()
     }
   }
     

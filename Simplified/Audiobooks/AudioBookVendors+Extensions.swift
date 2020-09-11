@@ -23,7 +23,7 @@ extension AudioBookVendors {
   
   /// Update vendor's DRM key
   /// - Parameter completion: Completion
-  func updateDrmCertificate(completion: @escaping () -> ()) {
+  func updateDrmCertificate(completion: (() -> ())? = nil) {
     switch self {
     case .cantook: updateCantookDRMCertificate(completion: completion)
     }
@@ -33,11 +33,11 @@ extension AudioBookVendors {
   ///
   /// If the key is saved and its saved expiration date is later than today, the function doesn't request a new public key.
   /// - Parameter completion: Completion
-  private func updateCantookDRMCertificate(completion: @escaping () -> ()) {
+  private func updateCantookDRMCertificate(completion: (() -> ())? = nil) {
     // Check if we have a valid key
     if let date = UserDefaults.standard.value(forKey: validThroughDateKey) as? Date, Date() < date {
       // we have a certificate with a valid date
-      completion()
+      completion?()
       return
     }
     
@@ -50,12 +50,12 @@ extension AudioBookVendors {
           } else {
             Log.error(#file, "Could not receive DRM public key, URL: \(DPLAAudiobooks.certificateUrl): \(error.localizedDescription)")
           }
-          completion()
+          completion?()
           return
         }
         guard let keyData = data else {
           Log.error(#file, "Public key data is empty, URL: \(DPLAAudiobooks.certificateUrl)")
-          completion()
+          completion?()
           return
         }
         // Check if we have a valid date
@@ -81,7 +81,7 @@ extension AudioBookVendors {
           self.logKeychainError(forVendor: self.rawValue, status: status, message: "FeedbookDrmPrivateKeyManagement Error:")
         }
         
-        completion()
+        completion?()
       }
     }
   }
