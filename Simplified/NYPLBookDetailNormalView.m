@@ -1,3 +1,6 @@
+@import PureLayout;
+#import "SimplyE-Swift.h"
+
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLConfiguration.h"
@@ -6,7 +9,6 @@
 #import "NYPLOPDS.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
-#import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailNormalView.h"
 
