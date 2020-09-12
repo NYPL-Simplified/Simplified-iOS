@@ -276,7 +276,9 @@
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
-  
+
+  // TODO: SIMPLY-3048 refactor better in a extension
+#ifdef SIMPLYE
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   
   if (settings.userHasSeenWelcomeScreen == NO) {
@@ -318,6 +320,7 @@
       completion();
     }
   }
+#endif
 }
 
 -(void) welcomeScreenCompletionHandlerForAccount:(Account *const)account
