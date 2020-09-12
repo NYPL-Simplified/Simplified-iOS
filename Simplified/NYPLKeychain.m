@@ -107,7 +107,7 @@
   }
   
   OSStatus status = SecItemDelete((__bridge CFDictionaryRef) dictionary);
-  if (status != noErr) {
+  if (status != noErr && status != errSecItemNotFound) {
     NYPLLOG_F(@"Failed to REMOVE object from keychain group: %@. error: %d", groupID, (int)status);
   }
 }
