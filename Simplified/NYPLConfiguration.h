@@ -14,8 +14,6 @@
 
 + (NSURL *)minimumVersionURL;
 
-+ (UIColor *)mainColor;
-
 + (UIColor *)accentColor;
 
 + (UIColor *)backgroundColor;

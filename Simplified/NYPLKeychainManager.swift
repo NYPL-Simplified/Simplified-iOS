@@ -15,10 +15,16 @@ import Foundation
     kSecClassIdentity as String
   ]
 
+  #if SIMPLYE
   private static let secAttrAccessGroups: [String] = [
     KeychainGroups.groupKeychainID.rawValue,
     KeychainGroups.legacyKeychainID.rawValue
   ]
+  #elseif OPENEBOOKS
+  private static let secAttrAccessGroups: [String] = [
+    KeychainGroups.groupKeychainID.rawValue
+  ]
+  #endif
 
   class func validateKeychain() {
     removeItemsFromPreviousInstalls()
@@ -70,10 +76,9 @@ import Foundation
 
   private class func getAllKeyChainItemsOfClass(_ secClass: String) -> [String:AnyObject] {
 
-    let groupID = "NLJ22T6E9W.org.nypl.labs.SimplyE"
     let query: [String: AnyObject] = [
       kSecClass as String : secClass as AnyObject,
-      kSecAttrAccessGroup as String : groupID as AnyObject,
+      kSecAttrAccessGroup as String : KeychainGroups.legacyKeychainID as AnyObject,
       kSecReturnData as String  : kCFBooleanTrue,
       kSecReturnAttributes as String : kCFBooleanTrue,
       kSecReturnRef as String : kCFBooleanTrue,

@@ -1,10 +1,11 @@
+@import PureLayout;
+#import "SimplyE-Swift.h"
+
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
-#import <PureLayout/PureLayout.h>
-
 #import "NYPLBookDetailDownloadFailedView.h"
 
 @interface NYPLBookDetailDownloadFailedView ()

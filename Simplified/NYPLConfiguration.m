@@ -34,17 +34,6 @@
   return [NSURL URLWithString:@"http://www.librarysimplified.org/simplye-client/minimum-version"];
 }
 
-+ (UIColor *)mainColor
-{
-  Account *const account = [AccountsManager shared].currentAccount;
-
-  if (account.details.mainColor) {
-    return [NYPLAppTheme themeColorFromStringWithName:account.details.mainColor];
-  } else {
-    return [UIColor defaultLabelColor];
-  }
-}
-
 + (UIColor *)accentColor
 {
   return [UIColor colorWithRed:0.0/255.0 green:144/255.0 blue:196/255.0 alpha:1.0];
