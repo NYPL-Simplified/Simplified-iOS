@@ -3,7 +3,9 @@ import Foundation
 @objcMembers final class NYPLKeychainManager: NSObject {
 
   private enum KeychainGroups: String {
+    #if SIMPLYE
     case legacyKeychainID = "NLJ22T6E9W.org.nypl.labs.SimplyE"
+    #endif
     case groupKeychainID = "7262U6ST2R.org.nypl.labs.SharedKeychainGroup"
   }
 
@@ -28,7 +30,9 @@ import Foundation
 
   class func validateKeychain() {
     removeItemsFromPreviousInstalls()
-    migrateItemsFromOldKeychain()
+    #if SIMPLYE
+    migrateItemsFromOldSimplyEKeychain()
+    #endif
     updateKeychainForBackgroundFetch()
     manageFeedbooksData()
   }
@@ -56,13 +60,14 @@ import Foundation
     }
   }
 
+  #if SIMPLYE
   // Any keychain items in NLJ22T6E9W.org.nypl.labs.SimplyE must be moved to the
   // new shared keychain with a valid, non-wildcard prefix/App ID in order to ensure
   // access in 2.1.0 and beyond. This migration can be phased out and removed
   // from the prov. profile entitlement at a sufficient time that users have moved over (~1 yr).
-  private class func migrateItemsFromOldKeychain() {
+  private class func migrateItemsFromOldSimplyEKeychain() {
     for secClass in secClassItems {
-      let values = getAllKeyChainItemsOfClass(secClass)
+      let values = getAllKeyChainItemsOfClass(secClass, group: KeychainGroups.legacyKeychainID)
       for (key, value) in values {
         NYPLKeychain.shared().setObject(value,
                                         forKey: key,
@@ -73,12 +78,14 @@ import Foundation
       }
     }
   }
+  #endif
 
-  private class func getAllKeyChainItemsOfClass(_ secClass: String) -> [String:AnyObject] {
+  private class func getAllKeyChainItemsOfClass(_ secClass: String,
+                                                group: KeychainGroups) -> [String:AnyObject] {
 
     let query: [String: AnyObject] = [
       kSecClass as String : secClass as AnyObject,
-      kSecAttrAccessGroup as String : KeychainGroups.legacyKeychainID as AnyObject,
+      kSecAttrAccessGroup as String : group as AnyObject,
       kSecReturnData as String  : kCFBooleanTrue,
       kSecReturnAttributes as String : kCFBooleanTrue,
       kSecReturnRef as String : kCFBooleanTrue,

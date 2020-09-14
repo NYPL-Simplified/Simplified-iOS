@@ -48,7 +48,7 @@ class OETutorialChoiceViewController : UIViewController {
     descriptionLabel.sizeToFit()
     
     firstBookLoginButton.setImage(UIImage(named: "FirstbookLoginButton"), for: .normal)
-    firstBookLoginButton.addTarget(self, action: #selector(didSelectEnterCodes), for: .touchUpInside)
+    firstBookLoginButton.addTarget(self, action: #selector(didSelectFirstBook), for: .touchUpInside)
     firstBookLoginButton.sizeToFit()
     
     loginWithCleverButton.setImage(UIImage(named: "CleverLoginButton"), for: .normal)
@@ -100,7 +100,7 @@ class OETutorialChoiceViewController : UIViewController {
     oldCompletionHandler?.self()
   }
   
-  @objc func didSelectEnterCodes() {
+  @objc func didSelectFirstBook() {
     let libAccount = AccountsManager.shared.currentAccount
     let userAccount = NYPLUserAccount.sharedAccount()
     userAccount.removeBarcodeAndPIN()

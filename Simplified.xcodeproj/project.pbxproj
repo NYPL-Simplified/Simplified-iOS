@@ -581,7 +581,6 @@
 		73FCA32025005BA4001B0C5D /* NYPLProblemReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */; };
 		73FCA32125005BA4001B0C5D /* NYPLHoldsNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF11976D1E0005A9945 /* NYPLHoldsNavigationController.m */; };
 		73FCA32225005BA4001B0C5D /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
-		73FCA32325005BA4001B0C5D /* NYPLWelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6202A031DD52B8600C99553 /* NYPLWelcomeScreen.swift */; };
 		73FCA32425005BA4001B0C5D /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */; };
 		73FCA32525005BA4001B0C5D /* NYPLOPDSAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AD83B19E497D6005724C3 /* NYPLOPDSAttribute.m */; };
 		73FCA32625005BA4001B0C5D /* NYPLCatalogUngroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogUngroupedFeed.m */; };
@@ -2943,7 +2942,6 @@
 				73FCA32025005BA4001B0C5D /* NYPLProblemReportViewController.m in Sources */,
 				73FCA32125005BA4001B0C5D /* NYPLHoldsNavigationController.m in Sources */,
 				73FCA32225005BA4001B0C5D /* NYPLRemoteViewController.m in Sources */,
-				73FCA32325005BA4001B0C5D /* NYPLWelcomeScreen.swift in Sources */,
 				73FCA32425005BA4001B0C5D /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */,
 				73FCA32525005BA4001B0C5D /* NYPLOPDSAttribute.m in Sources */,
 				73FCA32625005BA4001B0C5D /* NYPLCatalogUngroupedFeed.m in Sources */,

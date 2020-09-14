@@ -24,10 +24,6 @@
 
 + (UIColor *)readerBackgroundSepiaColor;
 
-+ (UIColor *)iconLogoBlueColor;
-
-+ (UIColor *)iconLogoGreenColor;
-
 + (NSString *)systemFontName;
 
 + (NSString *)systemFontFamilyName;
