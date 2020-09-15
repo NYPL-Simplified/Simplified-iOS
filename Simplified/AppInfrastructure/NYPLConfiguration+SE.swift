@@ -1,5 +1,5 @@
 //
-//  NYPLConfiguration+SimplyE.swift
+//  NYPLConfiguration+SE.swift
 //  Simplified
 //
 //  Created by Ettore Pasquini on 9/9/20.

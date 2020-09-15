@@ -8,6 +8,16 @@
 
 import Foundation
 
+extension NYPLRootTabBarController {
+  @objc func setInitialSelectedTab() {
+    if NYPLUserAccount.sharedAccount().isSignedIn() {
+      self.selectedIndex = 0
+    } else {
+      self.selectedIndex = 2
+    }
+  }
+}
+
 extension NYPLRootTabBarController: UITabBarControllerDelegate {
 
   @objc(tabBarController:didSelectViewController:)
@@ -19,3 +29,4 @@ extension NYPLRootTabBarController: UITabBarControllerDelegate {
     }
   }
 }
+

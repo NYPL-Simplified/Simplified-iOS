@@ -1,5 +1,5 @@
 //
-//  NYPLConfiguration+OpenEbooks.swift
+//  NYPLConfiguration+OE.swift
 //  Open eBooks
 //
 //  Created by Ettore Pasquini on 9/9/20.
