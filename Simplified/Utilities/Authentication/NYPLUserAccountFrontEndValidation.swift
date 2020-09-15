@@ -19,14 +19,17 @@ protocol NYPLUserAccountInputProvider {
 }
 
 @objcMembers class NYPLUserAccountFrontEndValidation: NSObject {
-  let userInputProvider: NYPLUserAccountInputProvider
   let account: Account
   private weak var businessLogic: NYPLSignInBusinessLogic?
+  private weak var userInputProvider: NYPLUserAccountInputProvider?
 
-  init(account: Account, businessLogic: NYPLSignInBusinessLogic?, inputProvider: NYPLUserAccountInputProvider) {
-    self.userInputProvider = inputProvider
+  init(account: Account,
+       businessLogic: NYPLSignInBusinessLogic?,
+       inputProvider: NYPLUserAccountInputProvider) {
+
     self.account = account
     self.businessLogic = businessLogic
+    self.userInputProvider = inputProvider
   }
 }
 
@@ -38,7 +41,7 @@ extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
   func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
     guard string.canBeConverted(to: .ascii) else { return false }
 
-    if textField == userInputProvider.usernameTextField,
+    if textField == userInputProvider?.usernameTextField,
       businessLogic?.selectedAuthentication?.patronIDKeyboard != .email {
 
       // Barcodes are numeric and usernames are alphanumeric including punctuation
@@ -58,7 +61,7 @@ extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
       }
     }
 
-    if textField == userInputProvider.PINTextField {
+    if textField == userInputProvider?.PINTextField {
       let allowedCharacters = CharacterSet.decimalDigits
       let bannedCharacters = allowedCharacters.inverted
 
