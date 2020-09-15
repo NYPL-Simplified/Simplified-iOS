@@ -124,13 +124,13 @@ NYPLReaderSettingsFontFace fontFaceFromString(NSString *const stringKey)
     @"OpenDyslexic": @(NYPLReaderSettingsFontFaceOpenDyslexic),
     @"OpenDyslexic3": @(NYPLReaderSettingsFontFaceOpenDyslexic)
   };
-  NSNumber *const fontFaceNumber = possibleValues[stringKey];
+  NSNumber *fontFaceNumber = possibleValues[stringKey];
   
   if(fontFaceNumber == nil) {
 #if DEBUG
     @throw NSInternalInconsistencyException;
 #else
-    fontFaceNumber = NYPLReaderSettingsFontFaceSans;
+    fontFaceNumber = @(NYPLReaderSettingsFontFaceSans);
 #endif
   }
   
