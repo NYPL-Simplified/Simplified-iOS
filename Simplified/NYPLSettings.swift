@@ -1,25 +1,5 @@
 import Foundation
 
-extension Notification.Name {
-  static let NYPLSettingsDidChange = Notification.Name("NYPLSettingsDidChange")
-  static let NYPLCurrentAccountDidChange = Notification.Name("NYPLCurrentAccountDidChange")
-  static let NYPLCatalogDidLoad = Notification.Name("NYPLCatalogDidLoad")
-  static let NYPLSyncBegan = Notification.Name("NYPLSyncBegan")
-  static let NYPLSyncEnded = Notification.Name("NYPLSyncEnded")
-  static let NYPLUseBetaDidChange = Notification.Name("NYPLUseBetaDidChange")
-}
-
-@objc extension NSNotification {
-  public static let NYPLSettingsDidChange = Notification.Name.NYPLSettingsDidChange
-  public static let NYPLCurrentAccountDidChange = Notification.Name.NYPLCurrentAccountDidChange
-  public static let NYPLCatalogDidLoad = Notification.Name.NYPLCatalogDidLoad
-  public static let NYPLSyncBegan = Notification.Name.NYPLSyncBegan
-  public static let NYPLSyncEnded = Notification.Name.NYPLSyncEnded
-  public static let NYPLUseBetaDidChange = Notification.Name.NYPLUseBetaDidChange
-}
-
-let Version = 1
-
 @objcMembers class NYPLSettings: NSObject {
   static let shared = NYPLSettings()
   

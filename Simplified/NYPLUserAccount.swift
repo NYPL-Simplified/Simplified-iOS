@@ -1,15 +1,5 @@
 import Foundation
 
-extension Notification.Name {
-  static let NYPLUserAccountDidChange = Notification.Name("NYPLUserAccountDidChangeNotification")
-  static let NYPLUserAccountLoginDidChange = Notification.Name("NYPLUserAccountLoginDidChangeNotification")
-}
-
-@objc extension NSNotification {
-  public static let NYPLUserAccountDidChange = Notification.Name.NYPLUserAccountDidChange
-  public static let NYPLUserAccountLoginDidChange = Notification.Name.NYPLUserAccountLoginDidChange
-}
-
 private enum StorageKey: String {
   // .barcode, .PIN, .authToken became legacy, as storage for those types was moved into .credentials enum
 
