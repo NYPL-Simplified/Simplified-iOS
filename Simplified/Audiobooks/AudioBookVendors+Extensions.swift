@@ -45,9 +45,9 @@ extension AudioBookVendors {
     DPLAAudiobooks.drmKey { (data, date, error) in
       if let error = error {
         if error is DPLAAudiobooks.DPLAError {
-          Log.error(#file, error.localizedDescription)
+          Log.error(#file, error.localizedDescription, error: error)
         } else {
-          Log.error(#file, "Could not receive DRM public key, URL: \(DPLAAudiobooks.certificateUrl): \(error.localizedDescription)")
+          Log.error(#file, "Could not receive DRM public key, URL: \(DPLAAudiobooks.certificateUrl): \(error.localizedDescription)", error: error)
         }
         completion?(error)
         return
