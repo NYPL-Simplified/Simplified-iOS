@@ -452,6 +452,9 @@ private enum StorageKey: String {
       _authToken.write(nil)
 
       notifyAccountDidChange()
+
+      NotificationCenter.default.post(name: Notification.Name.NYPLDidSignOut,
+                                      object: nil)
     }
   }
 

@@ -709,6 +709,10 @@ Authenticating with any of those barcodes should work.
            NYPLLOG_F(@"\nLicensor Token Invalid: %@", [pDoc toJson])
          }
          [self deauthorizeDevice]; // will call endIgnoringInteractionEvents
+
+#ifdef OPENEBOOKS
+         [NYPLSettings sharedSettings].accountMainFeedURL = nil;
+#endif
        }
      } else {
        if (statusCode == 401) {

@@ -457,6 +457,9 @@
 		739ECB2425101CCE00691A70 /* NSNotification+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */; };
 		739ECB2525101CCE00691A70 /* NSNotification+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */; };
 		739ECB2625101CCE00691A70 /* NSNotification+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */; };
+		739ECB292510207E00691A70 /* NYPLCatalogNavigationController+OE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB282510207E00691A70 /* NYPLCatalogNavigationController+OE.swift */; };
+		739ECB2B25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2A25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift */; };
+		739ECB2C25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2A25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift */; };
 		739ECB2E25108EE800691A70 /* NYPLRootTabBarController+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2D25108EE800691A70 /* NYPLRootTabBarController+SE.swift */; };
 		739ECB2F25108EE800691A70 /* NYPLRootTabBarController+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2D25108EE800691A70 /* NYPLRootTabBarController+SE.swift */; };
 		73A3EAED2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */; };
@@ -1153,6 +1156,8 @@
 		738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransportCCTSupport.framework; path = Carthage/Build/iOS/GoogleDataTransportCCTSupport.framework; sourceTree = "<group>"; };
 		738EF2EB2405EC5900F388FB /* PromisesObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromisesObjC.framework; path = Carthage/Build/iOS/PromisesObjC.framework; sourceTree = "<group>"; };
 		739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSNotification+NYPL.swift"; sourceTree = "<group>"; };
+		739ECB282510207E00691A70 /* NYPLCatalogNavigationController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLCatalogNavigationController+OE.swift"; sourceTree = "<group>"; };
+		739ECB2A25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLCatalogNavigationController+SE.swift"; sourceTree = "<group>"; };
 		739ECB2D25108EE800691A70 /* NYPLRootTabBarController+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+SE.swift"; sourceTree = "<group>"; };
 		73A3EAEB2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountURLSessionChallengeHandler.h; sourceTree = "<group>"; };
 		73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountURLSessionChallengeHandler.m; sourceTree = "<group>"; };
@@ -1834,6 +1839,15 @@
 			path = Tutorial;
 			sourceTree = "<group>";
 		};
+		739ECB2725101F1600691A70 /* Catalog */ = {
+			isa = PBXGroup;
+			children = (
+				739ECB282510207E00691A70 /* NYPLCatalogNavigationController+OE.swift */,
+				739ECB2A25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift */,
+			);
+			path = Catalog;
+			sourceTree = "<group>";
+		};
 		73E84FBD24464FF3009071D8 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
@@ -1955,6 +1969,7 @@
 				110AF8891961D66C004887C3 /* Additions */,
 				110AF8901961D822004887C3 /* Book */,
 				0345BFEE1DBF031B00398B6F /* CardCreator */,
+				739ECB2725101F1600691A70 /* Catalog */,
 				1183F349194F74EF00DC322F /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
 				7360891B240DFB93007EE66F /* Logging */,
@@ -2684,6 +2699,7 @@
 				7347F059245A4DE200558D7F /* NYPLReaderTOCElement.m in Sources */,
 				7347F05A245A4DE200558D7F /* UpdateCheck.swift in Sources */,
 				7347F05B245A4DE200558D7F /* NYPLReaderTOCViewController.m in Sources */,
+				739ECB2C25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift in Sources */,
 				7347F05C245A4DE200558D7F /* OPDS2CatalogsFeed.swift in Sources */,
 				7347F05D245A4DE200558D7F /* BundledHTMLViewController.swift in Sources */,
 				7347F05E245A4DE200558D7F /* NYPLBookDetailView.m in Sources */,
@@ -2871,6 +2887,7 @@
 				73FCA2CE25005BA4001B0C5D /* NYPLOpenSearchDescription.m in Sources */,
 				73FCA2CF25005BA4001B0C5D /* NYPLReaderTOCElement.m in Sources */,
 				73FCA2D025005BA4001B0C5D /* UpdateCheck.swift in Sources */,
+				739ECB292510207E00691A70 /* NYPLCatalogNavigationController+OE.swift in Sources */,
 				73FCA2D125005BA4001B0C5D /* NYPLReaderTOCViewController.m in Sources */,
 				73FCA2D225005BA4001B0C5D /* OPDS2CatalogsFeed.swift in Sources */,
 				739ECB2625101CCE00691A70 /* NSNotification+NYPL.swift in Sources */,
@@ -3126,6 +3143,7 @@
 				7384C802242BCC4800D5F960 /* Date+NYPLAdditions.swift in Sources */,
 				086C45D624AE77CA00F5108E /* NYPLBasicAuth.swift in Sources */,
 				B51C1E0422861C1A003B49A5 /* OPDS2AuthenticationDocument.swift in Sources */,
+				739ECB2B25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
 				5DD5674522B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift in Sources */,
 				E627B554216D4A9700A7D1D5 /* NYPLBookContentType.m in Sources */,

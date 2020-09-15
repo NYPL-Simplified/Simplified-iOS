@@ -15,6 +15,8 @@
 #import "NYPLCatalogUngroupedFeed.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
+#import "NYPLCatalogFeedViewController.h"
+#import "NYPLCatalogNavigationController.h"
 #import "NYPLCatalogGroupedFeed.h"
 #import "NYPLKeychain.h"
 #import "NYPLBarcodeScanningViewController.h"
