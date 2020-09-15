@@ -102,9 +102,6 @@ fileprivate let nullString = "null"
   case epubDecodingError = 1000
   case adobeDRMFulfillmentFail = 1001
 
-  // DRM
-  case epubDecodingError = 1000
-
   // wrong content
   case unknownRightsManagement = 1100
   case unexpectedFormat = 1101
@@ -113,6 +110,7 @@ fileprivate let nullString = "null"
   case missingSystemPaths = 1200
   case fileMoveFail = 1201
   case directoryURLCreateFail = 1202
+  case missingExpectedObject = 1203
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {

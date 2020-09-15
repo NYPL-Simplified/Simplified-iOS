@@ -46,7 +46,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   // Perform data migrations as early as possible before anything has a chance to access them
   [NYPLKeychainManager validateKeychain];
-  [MigrationManager migrate];
+  [NYPLMigrationManager migrate];
   
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
@@ -73,6 +73,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
 #if !TARGET_OS_SIMULATOR
   [NYPLErrorLogger logNewAppLaunch];
+#endif
+#ifdef OPENEBOOKS
+  if (![NYPLUserAccount.sharedAccount isSignedIn]) {
+    [OETutorialChoiceViewController showLoginPickerWithHandler:nil];
+  }
 #endif
 
   return YES;

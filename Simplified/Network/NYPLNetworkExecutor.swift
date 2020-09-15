@@ -103,14 +103,18 @@ extension NYPLNetworkExecutor {
 // Objective-C compatibility
 extension NYPLNetworkExecutor {
   @objc class func bearerAuthorized(request: URLRequest) -> URLRequest {
-    var request = request
-    var headers: [String: String] = ["Authorization" : "",
-                                     "Content-Type" : "application/json"]
+    let headers: [String: String]
     if let authToken = NYPLUserAccount.sharedAccount().authToken {
-      let authenticationValue = "Bearer \(authToken)"
-      headers = ["Authorization" : "\(authenticationValue)",
+      headers = [
+        "Authorization" : "Bearer \(authToken)",
+        "Content-Type" : "application/json"]
+    } else {
+      headers = [
+        "Authorization" : "",
         "Content-Type" : "application/json"]
     }
+
+    var request = request
     for (headerKey, headerValue) in headers {
       request.setValue(headerValue, forHTTPHeaderField: headerKey)
     }

@@ -9,7 +9,10 @@
 #import "NYPLMyBooksNavigationController.h"
 #import "NYPLMyBooksViewController.h"
 #import "NYPLHoldsNavigationController.h"
+#ifdef SIMPLYE
+// TODO: SIMPLY-3053 this #ifdef can be removed once this ticket is done
 #import "NYPLSettingsPrimaryTableViewController.h"
+#endif
 #import "SimplyE-Swift.h"
 #import "NYPLAppDelegate.h"
 #import "NSString+NYPLStringAdditions.h"
@@ -53,6 +56,8 @@
                          initWithURL:urlToLoad];
   
   self.viewController.title = NSLocalizedString(@"Catalog", nil);
+
+#ifdef SIMPLYE
   self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
   
   // The top-level view controller uses the same image used for the tab bar in place of the usual
@@ -64,7 +69,8 @@
   self.viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
   
   self.viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
-  
+#endif
+
   self.viewControllers = @[self.viewController];
 }
 
@@ -82,7 +88,8 @@
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NSNotification.NYPLCurrentAccountDidChange object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncBegan) name:NSNotification.NYPLSyncBegan object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncEnded) name:NSNotification.NYPLSyncEnded object:nil];
-  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSignOut) name:NSNotification.NYPLDidSignOut object:nil];
+
   return self;
 }
 
@@ -108,6 +115,7 @@
   self.viewController.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
+#ifdef SIMPLYE
 - (void)switchLibrary
 {
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
@@ -185,6 +193,7 @@
    animated:YES
    completion:nil];
 }
+#endif
 
 
 - (void)updateFeedAndRegistryOnAccountChange
@@ -268,7 +277,9 @@
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
-  
+
+  // TODO: SIMPLY-3048 refactor better in a extension
+#ifdef SIMPLYE
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   
   if (settings.userHasSeenWelcomeScreen == NO) {
@@ -310,6 +321,7 @@
       completion();
     }
   }
+#endif
 }
 
 -(void) welcomeScreenCompletionHandlerForAccount:(Account *const)account

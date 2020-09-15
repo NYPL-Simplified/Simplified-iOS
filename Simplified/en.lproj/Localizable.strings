@@ -255,3 +255,12 @@
 "Delete Server Data" = "Delete Server Data";
 "Please wait..." = "Please wait...";
 "Delete all the bookmarks you have saved in the cloud." = "Delete all the bookmarks you have saved in the cloud.";
+
+// Open eBooks
+"TutorialWelcomeViewControllerDescription" = "Welcome to Open eBooks.";
+"TutorialEligibilityViewControllerDescription" =
+"The Open eBooks app provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works.\n\nChildren from low-income areas may qualify for access in several ways.";
+"TutorialChoiceViewControllerDescription" = "You need to login to access the collection.";
+"TutorialChoiceUseExistingCode" = "Use Existing Code";
+"TutorialChoiceUseClever" = "Login With Clever";
+"TutorialChoiceRequestCodes" = "Request New Codes";

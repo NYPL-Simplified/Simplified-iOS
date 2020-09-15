@@ -2,12 +2,6 @@ import Foundation
 
 let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
-private let betaUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries/qa")!
-private let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries")!
-private let betaUrlHash = betaUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
-private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
-
-
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
 @objcMembers final class AccountsManager: NSObject
@@ -66,7 +60,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
   }
 
   private override init() {
-    self.accountSet = NYPLSettings.shared.useBetaLibraries ? betaUrlHash : prodUrlHash
+    self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
     
     super.init()
     
@@ -126,7 +120,8 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
    self.accounts, and load the auth document for the current account if
    necessary.
    - parameter data: The library catalog list data obtained from fetching either
-   `prodUrl` or `betaUrl`. This is parsed assuming it's in the OPDS2 format.
+   `NYPLConfiguration.prodUrl` or `NYPLConfiguration.betaUrl`. This is parsed
+   assuming it's in the OPDS2 format.
    - parameter key: The key to enter the `accountSets` dictionary with.
    - parameter completion: Always invoked at the end no matter what, providing
    `true` in case of success and `false` otherwise. No guarantees are being made
@@ -194,7 +189,9 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
   /// No guarantees are being made about whether this is called on the main
   /// thread or not.
   func loadCatalogs(completion: @escaping (Bool) -> ()) {
-    let targetUrl = NYPLSettings.shared.useBetaLibraries ? betaUrl : prodUrl
+    // TODO: SIMPLY-3057 these URLs should be factored out because they are
+    // different for Open eBooks or SimplyE
+    let targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
     let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
       .trimmingCharacters(in: ["="])
     
@@ -267,7 +264,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
 
   func updateAccountSet(completion: @escaping (Bool) -> () = { _ in }) {
     accountSetsWorkQueue.sync(flags: .barrier) {
-      self.accountSet = NYPLSettings.shared.useBetaLibraries ? betaUrlHash : prodUrlHash
+      self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
     }
 
     if self.accounts().isEmpty {

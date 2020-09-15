@@ -5,7 +5,12 @@
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLCatalogNavigationController.h"
+
+#ifdef SIMPLYE
+// TODO: SIMPLY-3053 this #ifdef can be removed once this ticket is done
 #import "NYPLSettingsPrimaryTableViewController.h"
+#endif
+
 #import "SimplyE-Swift.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -25,6 +30,7 @@
   
   self.tabBarItem.image = [UIImage imageNamed:@"MyBooks"];
 
+#ifdef SIMPLYE
   vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
                                          initWithImage:[UIImage imageNamed:@"Catalog"]
                                          style:(UIBarButtonItemStylePlain)
@@ -32,6 +38,7 @@
                                          action:@selector(switchLibrary)];
   vc.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
   vc.navigationItem.leftBarButtonItem.enabled = YES;
+#endif
   
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(currentAccountChanged)
@@ -66,6 +73,7 @@
   }
 }
 
+#ifdef SIMPLYE
 - (void) switchLibrary
 {
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
@@ -127,6 +135,7 @@
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
   
 }
+#endif
 
 - (void)reloadSelected
 {

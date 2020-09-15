@@ -1,10 +1,11 @@
+@import PureLayout;
+#import "SimplyE-Swift.h"
+
 #import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLLocalization.h"
-#import <PureLayout/PureLayout.h>
-
 #import "NYPLBookDetailDownloadingView.h"
 
 @interface NYPLBookDetailDownloadingView ()

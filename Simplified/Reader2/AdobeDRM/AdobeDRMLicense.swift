@@ -31,7 +31,9 @@ class AdobeDRMLicense: DRMLicense {
       if let errorMessage = adobeDRMContainer?.epubDecodingError {
         // TODO: SIMPLY-2656
         // There may be a better logger method for this
-        NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
+        NYPLErrorLogger.logError(withCode: .epubDecodingError,
+                                 summary: "Unable to initialize Adobe DRM license",
+                                 message: errorMessage)
       }
     } catch {
       // This is not an error, container doesn't have a method to check the file existance
@@ -49,7 +51,9 @@ class AdobeDRMLicense: DRMLicense {
     if let errorMessage = adobeDRMContainer?.epubDecodingError {
       // TODO: SIMPLY-2656
       // There may be a better logger method for this
-      NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
+      NYPLErrorLogger.logError(withCode: .epubDecodingError,
+                               summary: "Unable to decrype Adobe DRM license",
+                               message: errorMessage)
     }
     return decodedData
   }

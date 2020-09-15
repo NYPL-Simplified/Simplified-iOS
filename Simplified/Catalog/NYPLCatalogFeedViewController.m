@@ -133,9 +133,8 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  NYPLSettings *settings = [NYPLSettings sharedSettings];
   
-  if (settings.userHasSeenWelcomeScreen == YES) {
+  if ([self shouldLoad]) {
     [self load];
   }
 

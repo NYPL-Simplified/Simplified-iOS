@@ -63,7 +63,9 @@ class AdobeDRMLibraryService: DRMLibraryService {
     guard let container = container else {
       // TODO: SIMPLY-2656
       // There may be a better logger method for this
-      NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: "AdobeDRMLibraryService container is not initialized")
+      NYPLErrorLogger.logError(withCode: .epubDecodingError,
+                               summary: "Unable to retrieve Adobe DRM license: container not initialized",
+                               message: "AdobeDRMLibraryService container is not initialized")
       completion(nil, nil)
       return
     }

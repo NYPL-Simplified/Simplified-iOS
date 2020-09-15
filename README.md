@@ -21,7 +21,7 @@ git submodule update --init --recursive
 ```bash
 ./build-3rd-parties-dependencies.sh <Debug | Release>
 ```
-04. Open Simplified.xcodeproj and Build!
+04. Open Simplified.xcodeproj and build the SimplyE target.
 
 ## Building Dependencies Individually
 
@@ -95,23 +95,31 @@ Then finally build Carthage for SimplyE (for a faster build, you can remove the 
 ```
 Finally, open the workspace and use the `SimplyE-R2dev` target to build the app.
 
+# Building Secondary Targets
+
+The Xcode project contains 3 additional targets beside the main one referenced earlier:
+
+- **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace.
+- **Open eBooks**: This is related to a project currently under development. It is not functional at the moment.
+- **SimplyETests**: Suite of unit tests.
+
 # Contributing
 
-This codebase follows [Google's Objective-C Style Guide](https://google.github.io/styleguide/objcguide.xml)
-including the use of two-space indentation. Both Objective-C and Swift may be
-used for new code.
+This codebase follows Google's  [Swift](https://google.github.io/swift/) and [Objective-C](https://google.github.io/styleguide/objcguide.xml) style guides,
+including the use of two-space indentation. More details are available in [our wiki](https://github.com/NYPL-Simplified/Simplified/wiki/Mobile-client-applications#code-style-1).
 
 The primary services/singletons within the program are as follows:
 
-* `NYPLAccount`
-* `NYPLBookCoverRegistry` (used directly only by `NYPLBookRegistry`)
+* `AccountsManager`
+* `NYPLUserAccount`
 * `NYPLBookRegistry`
-* `NYPLConfiguration`
 * `NYPLKeychain`
 * `NYPLMyBooksDownloadCenter`
 * `NYPLMigrationManager`
+* `NYPLSettings`
+* `NYPLSettingsNYPLProblemDocumentCacheManager`
 
-All of the above contain appropriate documentation in the header files.
+Most of the above contain appropriate documentation in the header files.
 
 The rest of the program follows Apple's usual pattern of passive views,
 relatively passive models, and one-off controllers for integrating everything.
