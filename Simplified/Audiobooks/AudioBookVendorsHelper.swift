@@ -1,5 +1,5 @@
 //
-//  AudiobookCertificate.swift
+//  AudioBookVendorsHelper.swift
 //  Simplified
 //
 //  Created by Vladimir Fedorov on 10.09.2020.
@@ -10,8 +10,7 @@ import Foundation
 
 
 /// This is a helper class to use with Objective-C code
-/// Swift `enum`s are not accessible in Objective-C code
-@objc public class AudiobookCertificate: NSObject {
+@objc public class AudioBookVendorsHelper: NSObject {
   
   /// Get vendor for the book JSON data
   /// - Parameter book: Book JSON dictionary
@@ -50,7 +49,7 @@ import Foundation
     guard let error = error else {
       return nil
     }
-    let domain = "SimplyE.AudiobookCertificate"
+    let domain = "SimplyE.AudioBookVendorsHelper"
     let code = 0
     var description = error.localizedDescription
     if let dplaError = error as? DPLAAudiobooks.DPLAError {

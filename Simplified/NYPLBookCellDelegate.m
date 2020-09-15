@@ -175,7 +175,7 @@
     dict[@"id"] = book.identifier;
   }
   
-  [AudiobookCertificate updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
+  [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
       id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
 
