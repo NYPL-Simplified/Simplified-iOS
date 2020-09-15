@@ -129,7 +129,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 
   self.collectionView.alwaysBounceVertical = YES;
   self.refreshControl = [[UIRefreshControl alloc] init];
-  [self.refreshControl addTarget:self action:@selector(didSelectSync) forControlEvents:UIControlEventValueChanged];
+  [self.refreshControl addTarget:self action:@selector(didPullToRefresh) forControlEvents:UIControlEventValueChanged];
   [self.collectionView addSubview:self.refreshControl];
   
   self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
@@ -193,11 +193,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   }
   self.collectionView.contentInset = contentInset;
   self.collectionView.scrollIndicatorInsets = contentInset;
-}
-
-- (void)pullToRefresh:(UIRefreshControl *)__unused refreshControl
-{
-  [self didSelectSync];
 }
 
 #pragma mark UICollectionViewDelegate
@@ -368,11 +363,10 @@ OK:
 
 #pragma mark -
 
-- (void)didSelectSync
+- (void)didPullToRefresh
 {
-  Account *const account = [AccountsManager shared].currentAccount;
-  if (account.details.needsAuth) {
-    if([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
+  if ([NYPLUserAccount sharedAccount].needsAuth) {
+    if([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
       [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO completionHandler:nil];

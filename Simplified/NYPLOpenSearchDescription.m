@@ -17,6 +17,7 @@
 @implementation NYPLOpenSearchDescription
 
 + (void)withURL:(NSURL *const)URL
+shouldResetCache:(BOOL)shouldResetCache
 completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
 {
   if(!handler) {
@@ -25,6 +26,7 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
   
   [[NYPLSession sharedSession]
    withURL:URL
+   shouldResetCache:shouldResetCache
    completionHandler:^(NSData *const data, __unused NSURLResponse *response, __unused NSError *error) {
      if(!data) {
        NYPLLOG(@"Failed to retrieve data.");

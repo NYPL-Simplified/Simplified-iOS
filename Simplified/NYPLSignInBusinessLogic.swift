@@ -12,7 +12,8 @@ import NYPLCardCreator
 @objc protocol NYPLBookRegistrySyncing: NSObjectProtocol {
   var syncing: Bool {get}
   func reset(_ libraryAccountUUID: String)
-  func sync(completionHandler: ((_ success: Bool) -> Void)?)
+  func syncResettingCache(_ resetCache: Bool,
+                          completionHandler: ((_ success: Bool) -> Void)?)
   func save()
 }
 
@@ -24,14 +25,17 @@ import NYPLCardCreator
   func performLogOut()
 }
 
+#if FEATURE_DRM_CONNECTOR
 extension NYPLADEPT: NYPLDRMAuthorizing {}
+#endif
 extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 
-class NYPLSignInBusinessLogic: NSObject {
+@objcMembers
+class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
-  @objc let libraryAccountID: String
+  let libraryAccountID: String
   private let permissionsCheckLock = NSLock()
-  @objc let requestTimeoutInterval: TimeInterval = 25.0
+  let requestTimeoutInterval: TimeInterval = 25.0
 
   private let juvenileAuthLock = NSLock()
   @objc private(set) var juvenileAuthIsOngoing = false
@@ -57,24 +61,49 @@ class NYPLSignInBusinessLogic: NSObject {
     return NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
   }
 
-  @objc var userAccount: NYPLUserAccount {
+  var selectedIDP: OPDS2SamlIDP?
+
+  // this overrides the sign in view controller logic to behave as if user isn't authenticated
+  // it's useful if we already have credentials, but the session expired
+  var forceLogIn: Bool = false
+  private var _selectedAuthentication: AccountDetails.Authentication?
+  var selectedAuthentication: AccountDetails.Authentication? {
+    get {
+      guard _selectedAuthentication == nil else { return _selectedAuthentication }
+      guard userAccount.authDefinition == nil else { return userAccount.authDefinition }
+      guard let auths = libraryAccount?.details?.auths else { return nil }
+      guard auths.count > 1 else { return auths.first }
+
+      return nil
+    }
+    set {
+      _selectedAuthentication = newValue
+    }
+  }
+
+  var userAccount: NYPLUserAccount {
     return NYPLUserAccount.sharedAccount(libraryUUID: libraryAccountID)
   }
 
-  @objc func librarySupportsBarcodeDisplay() -> Bool {
+  func librarySupportsBarcodeDisplay() -> Bool {
     // For now, only supports libraries granted access in Accounts.json,
     // is signed in, and has an authorization ID returned from the loans feed.
     return userAccount.hasBarcodeAndPIN() &&
       userAccount.authorizationIdentifier != nil &&
-      (libraryAccount?.details?.supportsBarcodeDisplay ?? false)
+      (selectedAuthentication?.supportsBarcodeDisplay ?? false)
   }
 
-  @objc func isSignedIn() -> Bool {
-    return userAccount.hasBarcodeAndPIN()
+  func isSignedIn() -> Bool {
+    guard !forceLogIn else { return false }
+    return userAccount.hasCredentials()
   }
 
-  @objc func registrationIsPossible() -> Bool {
+  func registrationIsPossible() -> Bool {
     return !isSignedIn() && NYPLConfiguration.cardCreationEnabled() && libraryAccount?.details?.signUpUrl != nil
+  }
+
+  func isSamlPossible() -> Bool {
+    libraryAccount?.details?.auths.contains { $0.isSaml } ?? false
   }
 
   @objc func juvenileCardsManagementIsPossible() -> Bool {
@@ -102,7 +131,7 @@ class NYPLSignInBusinessLogic: NSObject {
 
     return libraryDetails.supportsSimplyESync &&
       libraryDetails.getLicenseURL(.annotations) != nil &&
-      userAccount.hasBarcodeAndPIN() &&
+      userAccount.hasCredentials() &&
       libraryAccountID == AccountsManager.shared.currentAccount?.uuid
   }
 
@@ -171,13 +200,11 @@ class NYPLSignInBusinessLogic: NSObject {
     // below) we'll run into an error soon after, at the 1st screen of the flow.
     if NYPLSecrets.cardCreatorUsername == nil {
       NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
-                               context: NYPLErrorLogger.Context.signUp.rawValue,
-                               message: "Unable to decode cardCreator username")
+                               summary: "CardCreator username decode error from NYPLSecrets")
     }
     if NYPLSecrets.cardCreatorPassword == nil {
       NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
-                               context: NYPLErrorLogger.Context.signUp.rawValue,
-                               message: "Unable to decode cardCreator password")
+                               summary:"CardCreator password decode error from NYPLSecrets")
     }
 
     return (username: NYPLSecrets.cardCreatorUsername ?? "",
@@ -273,7 +300,8 @@ class NYPLSignInBusinessLogic: NSObject {
                           userInfo: [
                             NSLocalizedDescriptionKey: description,
                             NSLocalizedRecoverySuggestionErrorKey: recoveryMsg])
-      NYPLErrorLogger.logError(error)
+      NYPLErrorLogger.logError(error,
+                               summary: "Juvenile Card Creation: Parent barcode missing");
       eligibilityCompletion(nil, error)
       juvenileAuthIsOngoing = false
       juvenileAuthLock.unlock()
@@ -295,7 +323,8 @@ class NYPLSignInBusinessLogic: NSObject {
       case .success(let navVC):
         eligibilityCompletion(navVC, nil)
       case .fail(let error):
-        NYPLErrorLogger.logError(error)
+        NYPLErrorLogger.logError(error,
+                                 summary: "Juvenile Card Creation error")
         self?.juvenileCardCreationCoordinator = nil
         eligibilityCompletion(nil, error)
       }

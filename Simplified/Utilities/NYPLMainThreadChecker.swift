@@ -38,7 +38,7 @@ import Dispatch
   /// - See: https://github.com/apple/swift-corelibs-libdispatch/commit/e64e4b962e1f356d7561e7a6103b424f335d85f6
   /// - Parameters:
   ///   - work: The block to run on the main thread.
-  static func asyncIfNeeded(_ work: @escaping () -> Void) {
+  @objc static func asyncIfNeeded(_ work: @escaping () -> Void) {
     if Thread.isMainThread {
       work()
     } else {

@@ -38,6 +38,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   
   [NYPLOPDSFeed
    withURL:URL
+   shouldResetCache:NO
    completionHandler:^(NYPLOPDSFeed *const ungroupedFeed, __unused NSDictionary *error) {
      if(!ungroupedFeed) {
        handler(nil);

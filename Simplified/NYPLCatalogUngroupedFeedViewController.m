@@ -217,7 +217,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   } else {
     NSString *msg = [NSString stringWithFormat:@"Facet %@ is missing the `href` URL to load", facet.title];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              context:NSStringFromClass([self class])
+                              summary:NSStringFromClass([self class])
                               message:msg
                              metadata:@{@"methodName": @"facetView:didSelectFacetAtIndexPath:"}];
     [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
@@ -235,7 +235,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   } else {
     NSString *msg = [NSString stringWithFormat:@"Facet %@ is missing the `href` URL to load", entryPointFacet.title];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              context:NSStringFromClass([self class])
+                              summary:NSStringFromClass([self class])
                               message:msg
                              metadata:@{@"methodName": @"entryPointViewDidSelectWithEntryPointFacet:"}];
     [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
@@ -315,6 +315,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
   [NYPLOpenSearchDescription
    withURL:self.feed.openSearchURL
+   shouldResetCache:NO
    completionHandler:^(NYPLOpenSearchDescription *const description) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.searchDescription = description;

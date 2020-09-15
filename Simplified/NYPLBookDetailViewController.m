@@ -181,7 +181,7 @@
     NSString *msg = [NSString stringWithFormat:@"Lane %@ has no subsection URL to display more books",
                      lane.title];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              context:NSStringFromClass([self class])
+                              summary:NSStringFromClass([self class])
                               message:msg
                              metadata:@{
                                @"methodName": @"didSelectMoreBooksForLane:"

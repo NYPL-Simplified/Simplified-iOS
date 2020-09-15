@@ -73,21 +73,20 @@ import WebKit
   }
   
   func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-    if navigationAction.navigationType == .linkActivated,
-    let url = navigationAction.request.url {
-      if !UIApplication.shared.canOpenURL(url) {
-        decisionHandler(.cancel)
-      } else {
-        if #available(iOS 10.0, *) {
-          UIApplication.shared.open(url)
-        } else {
-          UIApplication.shared.openURL(url)
-        }
-        decisionHandler(.cancel)
-      }
-    } else {
+
+    guard navigationAction.navigationType == .linkActivated, let url = navigationAction.request.url else {
       decisionHandler(.allow)
+      return
     }
+
+    if UIApplication.shared.canOpenURL(url) {
+      if #available(iOS 10.0, *) {
+        UIApplication.shared.open(url)
+      } else {
+        UIApplication.shared.openURL(url)
+      }
+    }
+    decisionHandler(.cancel)
   }
   
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

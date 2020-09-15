@@ -6,7 +6,6 @@
 @interface NYPLConfiguration : NSObject
 
 + (id)new NS_UNAVAILABLE;
-- (id)init NS_UNAVAILABLE;
 
 + (BOOL)cardCreationEnabled;
 
@@ -14,8 +13,6 @@
 + (NSURL *)mainFeedURL;
 
 + (NSURL *)minimumVersionURL;
-
-+ (UIColor *)mainColor;
 
 + (UIColor *)accentColor;
 
@@ -26,10 +23,6 @@
 + (UIColor *)readerBackgroundDarkColor;
 
 + (UIColor *)readerBackgroundSepiaColor;
-
-+ (UIColor *)iconLogoBlueColor;
-
-+ (UIColor *)iconLogoGreenColor;
 
 + (NSString *)systemFontName;
 

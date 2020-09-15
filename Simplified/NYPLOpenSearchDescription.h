@@ -19,6 +19,7 @@
 - (id)init NS_UNAVAILABLE;
 
 + (void)withURL:(NSURL *)URL
+shouldResetCache:(BOOL)shouldResetCache
 completionHandler:(void (^)(NYPLOpenSearchDescription *description))handler;
 
 - (instancetype)initWithXML:(NYPLXML *)OSDXML;

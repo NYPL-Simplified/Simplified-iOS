@@ -39,7 +39,8 @@
   if (![response.MIMEType isEqualToString:@"application/atom+xml"]) {
     NYPLLOG(@"Did not receive XML atom feed, cannot initialize");
     [NYPLErrorLogger
-     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidResponseMimeType];
+     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidResponseMimeType
+     response:response metadata:nil];
     return nil;
   }
 
@@ -47,7 +48,8 @@
   if(!XML) {
     NYPLLOG(@"Cannot initialize due to invalid XML.");
     [NYPLErrorLogger
-     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidXML];
+     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidXML
+     response:response metadata:nil];
     return nil;
   }
 
@@ -55,7 +57,8 @@
   if(!feed) {
     NYPLLOG(@"Cannot initialize due to XML not representing an OPDS feed.");
     [NYPLErrorLogger
-     logCatalogInitErrorWithCode:NYPLErrorCodeOpdsFeedParseFail];
+     logCatalogInitErrorWithCode:NYPLErrorCodeOpdsFeedParseFail
+     response:response metadata:nil];
     return nil;
   }
 
@@ -72,7 +75,10 @@
               remoteViewController:remoteVC];
     case NYPLOPDSFeedTypeInvalid:
       NYPLLOG(@"Cannot initialize due to invalid feed.");
-      [NYPLErrorLogger logCatalogInitErrorWithCode:NYPLErrorCodeInvalidFeedType];
+      [NYPLErrorLogger
+       logCatalogInitErrorWithCode:NYPLErrorCodeInvalidFeedType
+       response:response
+       metadata:@{ @"feedType": @(feed.type)}];
       return nil;
     case NYPLOPDSFeedTypeNavigation: {
       return [NYPLCatalogFeedViewController navigationFeedWithData:XML
@@ -90,13 +96,13 @@
   if (!gatedXML) {
     NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAgeGateElement
-                              context:NSStringFromClass([self class])
+                              summary:NSStringFromClass([self class])
                               message:@"Data received from Server lacks `gate` element for age-check."
                              metadata:nil];
     return nil;
   }
 
-  [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL ageAboveLimit) {
+  [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL ageAboveLimit) {
     dispatch_async(dispatch_get_main_queue(), ^{
       NSURL *url;
       if (ageAboveLimit) {
@@ -108,7 +114,7 @@
         [remoteVC loadWithURL:url];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                                  context:NSStringFromClass([self class])
+                                  summary:NSStringFromClass([self class])
                                   message:@"Server response for age verification lacks a URL to load."
                                  metadata:@{
                                    @"ageAboveLimit": @(ageAboveLimit),
@@ -157,12 +163,12 @@
   UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
   if (applicationState == UIApplicationStateActive) {
     __weak __auto_type wSelf = self;
-    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
       if (success) {
         [[NYPLBookRegistry sharedRegistry] save];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeRegistrySyncFailure
-                                  context:@"NYPLCatalogFeedViewController"
+                                  summary:@"NYPLCatalogFeedViewController"
                                   message:@"Book registry sync failed"
                                  metadata:@{@"Catalog feed URL": wSelf.URL ?: @"N/A"}];
       }

@@ -8,6 +8,11 @@
 
 import Foundation
 
+struct Announcement: Codable {
+  let id: String
+  let content: String
+}
+
 struct OPDS2AuthenticationDocument: Codable {
   struct Features: Codable {
     let disabled: [String]?
@@ -44,6 +49,7 @@ struct OPDS2AuthenticationDocument: Codable {
   let authentication: [Authentication]?
   let serviceDescription: String?
   let colorScheme: String?
+  let announcements: [Announcement]?
   let id: String
   
   static func fromData(_ data: Data) throws -> OPDS2AuthenticationDocument {

@@ -4,7 +4,9 @@ import NYPLAudiobookToolkit
 @objcMembers final class NYPLKeychainManager: NSObject {
 
   private enum KeychainGroups: String {
+    #if SIMPLYE
     case legacyKeychainID = "NLJ22T6E9W.org.nypl.labs.SimplyE"
+    #endif
     case groupKeychainID = "7262U6ST2R.org.nypl.labs.SharedKeychainGroup"
   }
 
@@ -16,14 +18,22 @@ import NYPLAudiobookToolkit
     kSecClassIdentity as String
   ]
 
+  #if SIMPLYE
   private static let secAttrAccessGroups: [String] = [
     KeychainGroups.groupKeychainID.rawValue,
     KeychainGroups.legacyKeychainID.rawValue
   ]
+  #elseif OPENEBOOKS
+  private static let secAttrAccessGroups: [String] = [
+    KeychainGroups.groupKeychainID.rawValue
+  ]
+  #endif
 
   class func validateKeychain() {
     removeItemsFromPreviousInstalls()
-    migrateItemsFromOldKeychain()
+    #if SIMPLYE
+    migrateItemsFromOldSimplyEKeychain()
+    #endif
     updateKeychainForBackgroundFetch()
     manageFeedbooksData()
     manageFeedbookDrmPrivateKey()
@@ -52,13 +62,14 @@ import NYPLAudiobookToolkit
     }
   }
 
+  #if SIMPLYE
   // Any keychain items in NLJ22T6E9W.org.nypl.labs.SimplyE must be moved to the
   // new shared keychain with a valid, non-wildcard prefix/App ID in order to ensure
   // access in 2.1.0 and beyond. This migration can be phased out and removed
   // from the prov. profile entitlement at a sufficient time that users have moved over (~1 yr).
-  private class func migrateItemsFromOldKeychain() {
+  private class func migrateItemsFromOldSimplyEKeychain() {
     for secClass in secClassItems {
-      let values = getAllKeyChainItemsOfClass(secClass)
+      let values = getAllKeyChainItemsOfClass(secClass, group: KeychainGroups.legacyKeychainID)
       for (key, value) in values {
         NYPLKeychain.shared().setObject(value,
                                         forKey: key,
@@ -69,13 +80,14 @@ import NYPLAudiobookToolkit
       }
     }
   }
+  #endif
 
-  private class func getAllKeyChainItemsOfClass(_ secClass: String) -> [String:AnyObject] {
+  private class func getAllKeyChainItemsOfClass(_ secClass: String,
+                                                group: KeychainGroups) -> [String:AnyObject] {
 
-    let groupID = "NLJ22T6E9W.org.nypl.labs.SimplyE"
     let query: [String: AnyObject] = [
       kSecClass as String : secClass as AnyObject,
-      kSecAttrAccessGroup as String : groupID as AnyObject,
+      kSecAttrAccessGroup as String : group as AnyObject,
       kSecReturnData as String  : kCFBooleanTrue,
       kSecReturnAttributes as String : kCFBooleanTrue,
       kSecReturnRef as String : kCFBooleanTrue,

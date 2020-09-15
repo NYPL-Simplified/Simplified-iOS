@@ -46,7 +46,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   // Perform data migrations as early as possible before anything has a chance to access them
   [NYPLKeychainManager validateKeychain];
-  [MigrationManager migrate];
+  [NYPLMigrationManager migrate];
   
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
@@ -87,7 +87,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
     NYPLLOG_F(@"[Background Fetch] Starting book registry sync. "
               "ElapsedTime=%f", -startDate.timeIntervalSinceNow);
     // Only the "current library" account syncs during a background fetch.
-    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
       if (success) {
         [[NYPLBookRegistry sharedRegistry] save];
       }
@@ -103,10 +103,24 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   }
 }
 
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+{
+    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] && [userActivity.webpageURL.host isEqualToString:NYPLSettings.shared.authenticationUniversalLink.host]) {
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"NYPLAppDelegateDidReceiveCleverRedirectURL"
+         object:userActivity.webpageURL];
+
+        return YES;
+    }
+
+    return NO;
+}
+
 - (BOOL)application:(__unused UIApplication *)app
             openURL:(NSURL *)url
             options:(__unused NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
+
   // URLs should be a permalink to a feed URL
   NSURL *entryURL = [url URLBySwappingForScheme:@"http"];
   NSData *data = [NSData dataWithContentsOfURL:entryURL];
@@ -150,6 +164,11 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 -(void)applicationDidBecomeActive:(__unused UIApplication *)app
 {
   [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
+#ifdef OPENEBOOKS
+  if (![NYPLUserAccount.sharedAccount isSignedIn]) {
+    [OETutorialChoiceViewController showLoginPickerWithHandler:nil];
+  }
+#endif
 }
 
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application

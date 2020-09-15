@@ -22,7 +22,7 @@ git submodule update --init --recursive
 ./build-3rd-parties-dependencies.sh <Debug | Release>
 ```
 
-04. Open Simplified.xcodeproj and Build!
+04. Open Simplified.xcodeproj and build the SimplyE target.
 
 
 ## Building Dependencies Individually
@@ -56,7 +56,7 @@ Both scripts must be run from the Simplified-iOS repo root.
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
 10. `cp Accounts.json.example Simplified/Accounts.json`.
 11. `cp GoogleService-Info.plist.example GoogleService-Info.plist` and edit with you firebase project config.
-12. `cp ReaderClientCert.sig.example Simplified/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file. 
+12. `cp ReaderClientCert.sig.example Simplified/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file.
 13. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 14. `open Simplified.xcodeproj`
 15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
@@ -66,23 +66,31 @@ Both scripts must be run from the Simplified-iOS repo root.
 19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
 20. Build.
 
+# Building Secondary Targets
+
+The Xcode project contains 3 additional targets beside the main one referenced earlier:
+
+- **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace.
+- **Open eBooks**: This is related to a project currently under development. It is not functional at the moment.
+- **SimplyETests**: Suite of unit tests.
+
 # Contributing
 
-This codebase follows [Google's Objective-C Style Guide](https://google.github.io/styleguide/objcguide.xml)
-including the use of two-space indentation. Both Objective-C and Swift may be
-used for new code.
+This codebase follows Google's  [Swift](https://google.github.io/swift/) and [Objective-C](https://google.github.io/styleguide/objcguide.xml) style guides,
+including the use of two-space indentation. More details are available in [our wiki](https://github.com/NYPL-Simplified/Simplified/wiki/Mobile-client-applications#code-style-1).
 
 The primary services/singletons within the program are as follows:
 
-* `NYPLAccount`
-* `NYPLBookCoverRegistry` (used directly only by `NYPLBookRegistry`)
+* `AccountsManager`
+* `NYPLUserAccount`
 * `NYPLBookRegistry`
-* `NYPLConfiguration`
 * `NYPLKeychain`
 * `NYPLMyBooksDownloadCenter`
 * `NYPLMigrationManager`
+* `NYPLSettings`
+* `NYPLSettingsNYPLProblemDocumentCacheManager`
 
-All of the above contain appropriate documentation in the header files.
+Most of the above contain appropriate documentation in the header files.
 
 The rest of the program follows Apple's usual pattern of passive views,
 relatively passive models, and one-off controllers for integrating everything.
