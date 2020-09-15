@@ -1586,37 +1586,6 @@
 			name = UI;
 			sourceTree = "<group>";
 		};
-		1183F349194F74EF00DC322F /* Catalog */ = {
-			isa = PBXGroup;
-			children = (
-				11F3773119E0876F00487769 /* NYPLCatalogFacet.h */,
-				11F3773219E0876F00487769 /* NYPLCatalogFacet.m */,
-				112C684D19EF003300106973 /* NYPLCatalogFacetGroup.h */,
-				112C684E19EF003300106973 /* NYPLCatalogFacetGroup.m */,
-				A42E0DF21B40F4E00095EBAE /* NYPLCatalogFeedViewController.h */,
-				A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */,
-				A4BA1D111B43046B006F83DF /* NYPLCatalogGroupedFeed.h */,
-				A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */,
-				A4BA1D0C1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.h */,
-				A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */,
-				1183F33F194F723D00DC322F /* NYPLCatalogLane.h */,
-				1183F340194F723D00DC322F /* NYPLCatalogLane.m */,
-				1183F339194B775900DC322F /* NYPLCatalogLaneCell.h */,
-				1183F33A194B775900DC322F /* NYPLCatalogLaneCell.m */,
-				E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */,
-				11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */,
-				11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */,
-				118A0B1919915BDF00792DDE /* NYPLCatalogSearchViewController.h */,
-				118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */,
-				1114A69F195884CB007507A2 /* NYPLCatalogUngroupedFeed.h */,
-				1114A6A0195884CB007507A2 /* NYPLCatalogUngroupedFeed.m */,
-				11A16E67195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.h */,
-				11A16E68195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m */,
-				E683953A217663B100371072 /* NYPLFacetViewDefaultDataSource.swift */,
-			);
-			name = Catalog;
-			sourceTree = "<group>";
-		};
 		1183F34D194F775400DC322F /* OPDS */ = {
 			isa = PBXGroup;
 			children = (
@@ -1842,8 +1811,32 @@
 		739ECB2725101F1600691A70 /* Catalog */ = {
 			isa = PBXGroup;
 			children = (
+				11F3773119E0876F00487769 /* NYPLCatalogFacet.h */,
+				11F3773219E0876F00487769 /* NYPLCatalogFacet.m */,
+				112C684D19EF003300106973 /* NYPLCatalogFacetGroup.h */,
+				112C684E19EF003300106973 /* NYPLCatalogFacetGroup.m */,
+				A42E0DF21B40F4E00095EBAE /* NYPLCatalogFeedViewController.h */,
+				A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */,
+				A4BA1D111B43046B006F83DF /* NYPLCatalogGroupedFeed.h */,
+				A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */,
+				A4BA1D0C1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.h */,
+				A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */,
+				1183F33F194F723D00DC322F /* NYPLCatalogLane.h */,
+				1183F340194F723D00DC322F /* NYPLCatalogLane.m */,
+				1183F339194B775900DC322F /* NYPLCatalogLaneCell.h */,
+				1183F33A194B775900DC322F /* NYPLCatalogLaneCell.m */,
+				E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */,
+				11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */,
+				11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */,
 				739ECB282510207E00691A70 /* NYPLCatalogNavigationController+OE.swift */,
 				739ECB2A25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift */,
+				118A0B1919915BDF00792DDE /* NYPLCatalogSearchViewController.h */,
+				118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */,
+				1114A69F195884CB007507A2 /* NYPLCatalogUngroupedFeed.h */,
+				1114A6A0195884CB007507A2 /* NYPLCatalogUngroupedFeed.m */,
+				11A16E67195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.h */,
+				11A16E68195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m */,
+				E683953A217663B100371072 /* NYPLFacetViewDefaultDataSource.swift */,
 			);
 			path = Catalog;
 			sourceTree = "<group>";
@@ -1970,7 +1963,6 @@
 				110AF8901961D822004887C3 /* Book */,
 				0345BFEE1DBF031B00398B6F /* CardCreator */,
 				739ECB2725101F1600691A70 /* Catalog */,
-				1183F349194F74EF00DC322F /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
 				7360891B240DFB93007EE66F /* Logging */,
 				73085E3325030CFC008F6244 /* Migrations */,
