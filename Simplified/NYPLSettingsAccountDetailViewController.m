@@ -1520,7 +1520,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           }];
           [self.barcodeImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:sConstantSpacing];
           [self.barcodeImageLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-          [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
+          [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
+            [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
+          }];
         }
       }
       return cell;
