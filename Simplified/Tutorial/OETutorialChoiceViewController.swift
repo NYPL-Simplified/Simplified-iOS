@@ -103,7 +103,6 @@ class OETutorialChoiceViewController : UIViewController {
   @objc func didSelectFirstBook() {
     let libAccount = AccountsManager.shared.currentAccount
     let userAccount = NYPLUserAccount.sharedAccount()
-    userAccount.removeBarcodeAndPIN()
     if libAccount?.details == nil {
       libAccount?.loadAuthenticationDocument(using: userAccount) { success in
         if success {

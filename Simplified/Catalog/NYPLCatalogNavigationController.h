@@ -11,5 +11,9 @@
 
 // designated initializer
 - (instancetype)init;
+
 - (void)updateFeedAndRegistryOnAccountChange;
+
+- (void)loadTopLevelCatalogViewController;
+
 @end
