@@ -1450,14 +1450,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0345BFEE1DBF031B00398B6F /* CardCreator */ = {
-			isa = PBXGroup;
-			children = (
-				0345BFD61DBF002E00398B6F /* APIKeys.swift */,
-			);
-			name = CardCreator;
-			sourceTree = "<group>";
-		};
 		089E430724A2456E00310360 /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -1728,6 +1720,7 @@
 		73085E3325030CFC008F6244 /* Migrations */ = {
 			isa = PBXGroup;
 			children = (
+				5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */,
 				73085E3425030D27008F6244 /* SEMigrations.swift */,
 				73085E3725030D66008F6244 /* OEMigrations.swift */,
 			);
@@ -1779,6 +1772,10 @@
 		7338755E2423E108000FEB67 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				2DB436361D4C049200F8E69D /* NYPLReachability.h */,
+				2DB436371D4C049200F8E69D /* NYPLReachability.m */,
+				E69404081E4A789800E566ED /* NYPLReachabilityManager.h */,
+				E69404091E4A789800E566ED /* NYPLReachabilityManager.m */,
 				733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */,
 				733875662423E540000FEB67 /* NYPLCaching.swift */,
 				735FED252427494900144C97 /* NYPLNetworkResponder.swift */,
@@ -1970,25 +1967,24 @@
 		A823D816192BABA400B55DE2 /* Simplified */ = {
 			isa = PBXGroup;
 			children = (
-				73225DE5250B46CE00EF1877 /* AppInfrastructure */,
-				089E430724A2456E00310360 /* Login */,
 				110AF8891961D66C004887C3 /* Additions */,
+				73225DE5250B46CE00EF1877 /* AppInfrastructure */,
 				110AF8901961D822004887C3 /* Book */,
-				0345BFEE1DBF031B00398B6F /* CardCreator */,
 				739ECB2725101F1600691A70 /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
+				089E430724A2456E00310360 /* Login */,
 				7360891B240DFB93007EE66F /* Logging */,
 				73085E3325030CFC008F6244 /* Migrations */,
 				110AF8881961D652004887C3 /* My Books */,
 				7338755E2423E108000FEB67 /* Network */,
-				17CE5304243C020800315E63 /* NYPLUserAccount.swift */,
-				0857A0F62478337D00C7984E /* NYPLSessionCredentials.swift */,
 				0857A0FE247835FF00C7984E /* KeychainStoredVariable.swift */,
 				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
 				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
 				E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */,
 				5D1B142922CC179F0006C964 /* NYPLAlertUtils.swift */,
 				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
+				175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */,
+				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
 				A93F9F9621CDACF700BD3B0C /* NYPLAppReviewPrompt.swift */,
@@ -2009,16 +2005,11 @@
 				E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */,
 				1111973A19880E8D0014462F /* NYPLLinearView.h */,
 				1111973B19880E8D0014462F /* NYPLLinearView.m */,
-				5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */,
 				E671FF7C1E3A7068002AB13F /* NYPLNetworkQueue.swift */,
 				119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */,
 				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
 				5D1B141422CBE3570006C964 /* NYPLProblemDocument.swift */,
 				8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */,
-				2DB436361D4C049200F8E69D /* NYPLReachability.h */,
-				2DB436371D4C049200F8E69D /* NYPLReachability.m */,
-				E69404081E4A789800E566ED /* NYPLReachabilityManager.h */,
-				E69404091E4A789800E566ED /* NYPLReachabilityManager.m */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
 				A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */,
@@ -2030,11 +2021,11 @@
 				114C8CD919BF55F900719B72 /* NYPLRoundedButton.m */,
 				118B7ABD195CBF72005CE3E7 /* NYPLSession.h */,
 				118B7ABE195CBF72005CE3E7 /* NYPLSession.m */,
+				0857A0F62478337D00C7984E /* NYPLSessionCredentials.swift */,
+				17CE5304243C020800315E63 /* NYPLUserAccount.swift */,
 				5D3A28CB22D3DA850042B3BD /* NYPLUserProfileDocument.swift */,
 				E6C91BC01FD5F63B00A32F42 /* NYPLZXingEncoder.h */,
 				E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */,
-				175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */,
-				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
 				B51C1DF42285FD51003B49A5 /* OPDS2 */,
 				145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */,
@@ -2054,6 +2045,7 @@
 			isa = PBXGroup;
 			children = (
 				7358EE722500617E00DDA0CC /* OpenEbooks-specific */,
+				0345BFD61DBF002E00398B6F /* APIKeys.swift */,
 				17071060242A923400E2648F /* NYPLSecrets.swift */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
 				A823D822192BABA400B55DE2 /* Images.xcassets */,
