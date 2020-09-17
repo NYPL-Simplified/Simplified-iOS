@@ -65,19 +65,23 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
-  
-  NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
-  self.window.rootViewController = vc;
+
+  //TODO: SIMPLY-3091 refactor this better in 2 source files
+#ifdef OPENEBOOKS
+  if ([[NYPLSettings shared] userHasSeenWelcomeScreen]) {
+    self.window.rootViewController = [NYPLRootTabBarController sharedController];
+  } else {
+    self.window.rootViewController = [[OETutorialViewController alloc] init];
+  }
+#else
+  //    self.window.rootViewController = SETutorialViewController()
+  self.window.rootViewController = [NYPLRootTabBarController sharedController];
+#endif
 
   [self beginCheckingForUpdates];
 
 #if !TARGET_OS_SIMULATOR
   [NYPLErrorLogger logNewAppLaunch];
-#endif
-#ifdef OPENEBOOKS
-  if (![NYPLUserAccount.sharedAccount isSignedIn]) {
-    [OETutorialChoiceViewController showLoginPickerWithHandler:nil];
-  }
 #endif
 
   return YES;

@@ -10,15 +10,16 @@ import Foundation
 extension NYPLMigrationManager {
   static func runMigrations() {
     // Fetch and parse app version
-    let appVersion = NYPLSettings.shared.appVersion ?? ""
-    let appVersionTokens = appVersion.split(separator: ".").compactMap({ Int($0) })
+    let appVersionInUserDefaults = NYPLSettings.shared.appVersion ?? ""
+    let appVersionInUserDefaultsTokens = appVersionInUserDefaults.split(separator: ".").compactMap({ Int($0) })
 
     // Run through migration stages
-    if versionIsLessThan(appVersionTokens, [1, 7, 7]) { // v1.7.7
-      //migrate_1_7_7();
+    Log.info(#file, "AppVersion in UserDefaults: \(appVersionInUserDefaultsTokens)")
+    if versionIsLessThan(appVersionInUserDefaultsTokens, [1, 7, 7]) {
+      migrate_1_7_7();
     }
 
-    if versionIsLessThan(appVersionTokens, [1, 8, 1]) { // v1.8.1
+    if versionIsLessThan(appVersionInUserDefaultsTokens, [1, 8, 1]) {
       migrate_1_8_1();
     }
   }

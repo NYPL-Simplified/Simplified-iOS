@@ -5,7 +5,7 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-class NYPLPresentationUtils {
+class NYPLPresentationUtils: NSObject {
   /// Presents the given view controller on top of the topmost currently
   /// displayed view controller.
   ///
@@ -17,9 +17,9 @@ class NYPLPresentationUtils {
   ///   - vc: The view controller to be presented.
   ///   - animated: Whether to animate the presentation of not.
   ///   - completion: Completion handler to be called when the presentation ends.
-  class func safelyPresent(_ vc: UIViewController,
-                           animated: Bool = true,
-                           completion: (()->Void)? = nil) {
+  @objc class func safelyPresent(_ vc: UIViewController,
+                                 animated: Bool = true,
+                                 completion: (()->Void)? = nil) {
 
     let delegate = UIApplication.shared.delegate
     guard var base = delegate?.window??.rootViewController else {

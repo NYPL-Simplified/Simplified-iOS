@@ -25,11 +25,14 @@ class NYPLMigrationManager: NSObject {
   static func versionIsLessThan(_ a: [Int], _ b:[Int]) -> Bool {
     var i = 0
     while i < a.count && i < b.count {
-      if (a[i] < b[i]) {
-        return true
+      guard a[i] == b[i] else {
+        return a[i] < b[i]
       }
+
       i += 1
     }
+
+    // e.g.: 1.1 < 1.1.x
     return a.count < b.count && b[i] > 0
   }
 }
