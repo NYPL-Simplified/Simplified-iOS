@@ -6,21 +6,21 @@ import Foundation
   static let NYPLAboutSimplyEURLString = "https://librarysimplified.org/simplye/"
   static let NYPLUserAgreementURLString = "https://www.librarysimplified.org/EULA/"
   
-  static fileprivate let customMainFeedURLKey = "NYPLSettingsCustomMainFeedURL"
-  static fileprivate let accountMainFeedURLKey = "NYPLSettingsAccountMainFeedURL"
-  static fileprivate let userHasSeenWelcomeScreenKey = "NYPLUserHasSeenWelcomeScreenKey"
-  static fileprivate let userPresentedAgeCheckKey = "NYPLUserPresentedAgeCheckKey"
-  static fileprivate let userSeenFirstTimeSyncMessageKey = "userSeenFirstTimeSyncMessageKey"
-  static fileprivate let useBetaLibrariesKey = "NYPLUseBetaLibrariesKey"
-  static fileprivate let settingsLibraryAccountsKey = "NYPLSettingsLibraryAccountsKey"
-  static fileprivate let versionKey = "NYPLSettingsVersionKey"
+  static private let customMainFeedURLKey = "NYPLSettingsCustomMainFeedURL"
+  static private let accountMainFeedURLKey = "NYPLSettingsAccountMainFeedURL"
+  static private let userHasSeenWelcomeScreenKey = "NYPLUserHasSeenWelcomeScreenKey"
+  static private let userPresentedAgeCheckKey = "NYPLUserPresentedAgeCheckKey"
+  static private let userSeenFirstTimeSyncMessageKey = "userSeenFirstTimeSyncMessageKey"
+  static private let useBetaLibrariesKey = "NYPLUseBetaLibrariesKey"
+  static let settingsLibraryAccountsKey = "NYPLSettingsLibraryAccountsKey"
+  static private let versionKey = "NYPLSettingsVersionKey"
   
   @objc class func sharedSettings() -> NYPLSettings {
     return NYPLSettings.shared
   }
 
   // used to handle saml and oauth login. In case of the later, it needs to be configured as universal link
-  @objc var authenticationUniversalLink: URL = URL(string: "https://librarysimplified.org/login")!
+  @objc var authenticationUniversalLink = URL(string: "https://librarysimplified.org/login")!
 
   // Set to nil (the default) if no custom feed should be used.
   var customMainFeedURL: URL? {

@@ -1,3 +1,5 @@
+@class NYPLCatalogNavigationController;
+
 @interface NYPLRootTabBarController : UITabBarController
 
 + (id)new NS_UNAVAILABLE;
@@ -6,6 +8,8 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
 + (instancetype)sharedController;
+
+@property(nonatomic, readonly) NYPLCatalogNavigationController *catalogNavigationController;
 
 /// This method will present a view controller from the receiver, or from the
 /// controller currently being presented from the receiver, or from the
