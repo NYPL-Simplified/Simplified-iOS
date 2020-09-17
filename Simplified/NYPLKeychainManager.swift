@@ -218,7 +218,7 @@ import NYPLAudiobookToolkit
     }
     
     NYPLErrorLogger.logError(withCode: .keychainItemAddFail,
-                             summary: "\(NYPLErrorLogger.Context.keychainManagement.rawValue) \(vendor)",
+                             summary: "Keychan \(errMsg) error for vendor \(vendor)",
                              message: "\(message) \(errMsg)",
                             metadata: nil)
   }

@@ -136,51 +136,6 @@ fileprivate let nullString = "null"
     }
   }
 
-  /// Broad areas providing some kind of operating context for error reporting.
-  /// These are meant to be related to the code base more than functionality,
-  /// (e.g. an error related to audiobooks may happen in different classes)
-  /// although the two things may obviously overlap.
-  enum Context: String {
-    case accountManagement
-    case audiobooks
-    case bookDownload
-    case catalog
-    case ereader
-    case infrastructure
-    case myBooks
-    case opds
-    case signIn
-    case signOut
-    case signUp
-    case errorHandling
-    case keychainManagement
-  }
-
-  // MARK:- Generic helpers
-
-  /// Creates a dictionary with information to be logged in relation to an event.
-  /// - Parameters:
-  ///   - severity: How severe the event is.
-  ///   - message: An optional message.
-  ///   - context: Page/VC name or anything that can help identify the in-code location where the error occurred.
-  ///   - metadata: Any additional metadata.
-  private class func additionalInfo(severity: NYPLSeverity,
-                                    message: String? = nil,
-                                    context: String? = nil,
-                                    metadata: [String: Any]? = nil) -> [String: Any] {
-    var dict = metadata ?? [:]
-
-    dict["severity"] = severity.stringValue()
-    if let message = message {
-      dict["message"] = message
-    }
-    if let context = context {
-      dict["context"] = context
-    }
-
-    return dict
-  }
-
   //----------------------------------------------------------------------------
   // MARK:- Generic methods for error logging
 
