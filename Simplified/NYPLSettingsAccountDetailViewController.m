@@ -709,6 +709,10 @@ Authenticating with any of those barcodes should work.
            NYPLLOG_F(@"\nLicensor Token Invalid: %@", [pDoc toJson])
          }
          [self deauthorizeDevice]; // will call endIgnoringInteractionEvents
+
+#ifdef OPENEBOOKS
+         [NYPLSettings sharedSettings].accountMainFeedURL = nil;
+#endif
        }
      } else {
        if (statusCode == 401) {
@@ -1516,7 +1520,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           }];
           [self.barcodeImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:sConstantSpacing];
           [self.barcodeImageLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-          [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
+          [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
+            [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
+          }];
         }
       }
       return cell;

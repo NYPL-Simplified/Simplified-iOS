@@ -74,6 +74,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 #if !TARGET_OS_SIMULATOR
   [NYPLErrorLogger logNewAppLaunch];
 #endif
+#ifdef OPENEBOOKS
+  if (![NYPLUserAccount.sharedAccount isSignedIn]) {
+    [OETutorialChoiceViewController showLoginPickerWithHandler:nil];
+  }
+#endif
 
   return YES;
 }
@@ -164,11 +169,6 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 -(void)applicationDidBecomeActive:(__unused UIApplication *)app
 {
   [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
-#ifdef OPENEBOOKS
-  if (![NYPLUserAccount.sharedAccount isSignedIn]) {
-    [OETutorialChoiceViewController showLoginPickerWithHandler:nil];
-  }
-#endif
 }
 
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application
