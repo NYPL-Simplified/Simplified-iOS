@@ -158,21 +158,6 @@ fileprivate let nullString = "null"
 
   // MARK:- Generic helpers
 
-  /**
-   Helper method for other logging functions that adds relevant account info
-   to our crash reporting system.
-   - parameter metadata: report metadata dictionary
-   */
-  private class func addAccountInfoToMetadata(_ metadata: inout [String: Any]) {
-    let currentLibrary = AccountsManager.shared.currentAccount
-    metadata["currentAccountName"] = currentLibrary?.name ?? nullString
-    metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
-    metadata["currentAccountCatalogURL"] = currentLibrary?.catalogUrl ?? nullString
-    metadata["currentAccountAuthDocURL"] = currentLibrary?.authenticationDocumentUrl ?? nullString
-    metadata["currentAccountLoansURL"] = currentLibrary?.loansUrl ?? nullString
-    metadata["numAccounts"] = AccountsManager.shared.accounts().count
-  }
-
   /// Creates a dictionary with information to be logged in relation to an event.
   /// - Parameters:
   ///   - severity: How severe the event is.
