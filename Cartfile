@@ -8,3 +8,4 @@ github "TheLevelUp/ZXingObjC" ~> 3.3
 github "stephencelis/SQLite.swift" ~> 0.11.5
 github "NYPL-Simplified/PDFRendererProvider-iOS" "master"
 github "NYPL-Simplified/audiobook-ios-overdrive" "master"
+binary "https://liblcp.dita.digital/readium/liblcp/ios/carthage/test/liblcp.json" ~> 1.0.0
