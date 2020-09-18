@@ -37,7 +37,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 
 #pragma mark UIApplicationDelegate
 
-- (BOOL)application:(__attribute__((unused)) UIApplication *)application
+- (BOOL)application:(UIApplication *)app
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
 #if !TARGET_OS_SIMULATOR
@@ -51,7 +51,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
 
-  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MinimumBackgroundFetchInterval];
+  [app setMinimumBackgroundFetchInterval:MinimumBackgroundFetchInterval];
 
   if (@available (iOS 10.0, *)) {
     self.notificationsManager = [[NYPLUserNotifications alloc] init];
@@ -116,7 +116,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 {
     if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] && [userActivity.webpageURL.host isEqualToString:NYPLSettings.shared.authenticationUniversalLink.host]) {
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"NYPLAppDelegateDidReceiveCleverRedirectURL"
+         postNotificationName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
          object:userActivity.webpageURL];
 
         return YES;

@@ -1788,6 +1788,8 @@
 			isa = PBXGroup;
 			children = (
 				739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */,
+				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
+				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
 				738CB1FF2509A61E00891F31 /* NYPLConfiguration+OE.swift */,
 				738CB2052509A87700891F31 /* NYPLConfiguration+SE.swift */,
 				739ECB2D25108EE800691A70 /* NYPLRootTabBarController+SE.swift */,
@@ -2043,8 +2045,6 @@
 				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 				175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */,
 				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
-				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
-				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
 				A93F9F9621CDACF700BD3B0C /* NYPLAppReviewPrompt.swift */,
 				E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
