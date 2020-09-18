@@ -1,5 +1,5 @@
 //
-//  OESettingsSetUp.swift
+//  NYPLSettingsSplitViewController+OE.swift
 //  Open eBooks
 //
 //  Created by Kyle Sakai.

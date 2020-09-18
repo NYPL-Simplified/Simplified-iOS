@@ -66,17 +66,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
 
-  //TODO: SIMPLY-3091 refactor this better in 2 source files
-#ifdef OPENEBOOKS
-  if ([[NYPLSettings shared] userHasSeenWelcomeScreen]) {
-    self.window.rootViewController = [NYPLRootTabBarController sharedController];
-  } else {
-    self.window.rootViewController = [[OETutorialViewController alloc] init];
-  }
-#else
-  //    self.window.rootViewController = SETutorialViewController()
-  self.window.rootViewController = [NYPLRootTabBarController sharedController];
-#endif
+  [self setUpRootVC];
 
   [self beginCheckingForUpdates];
 
@@ -129,6 +119,9 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
             openURL:(NSURL *)url
             options:(__unused NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
+  if ([self shouldHandleAppSpecificCustomURLSchemesForURL:url]) {
+    return YES;
+  }
 
   // URLs should be a permalink to a feed URL
   NSURL *entryURL = [url URLBySwappingForScheme:@"http"];
