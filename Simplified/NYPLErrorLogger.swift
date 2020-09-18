@@ -109,6 +109,10 @@ fileprivate let nullString = "null"
   // low-level / system related
   case missingSystemPaths = 1200
   case fileMoveFail = 1201
+    
+  // keychain
+  case keychainItemAddFail = 1300
+
   case directoryURLCreateFail = 1202
   case missingExpectedObject = 1203
 }
