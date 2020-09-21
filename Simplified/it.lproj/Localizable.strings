@@ -37,6 +37,8 @@
 "Hide" = "nascondere";
 "Information" = "Informazioni";
 "LibraryCard" = "Tessera della biblioteca";
+"Error Loading Library" = "Errore di accesso alla biblioteca";
+"LibraryLoadError" = "Non è possibile accedere alla tua biblioteca in questo momento. Prova a chiudere e riaprire l'app, oppure se il problema persiste riprova tra qualche minuto.";
 "LogIn" = "Accedi";
 "More..." = "Di Più…";
 "MoreBooks" = "Più %@ libri";

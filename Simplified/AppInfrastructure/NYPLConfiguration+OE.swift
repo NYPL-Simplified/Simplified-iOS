@@ -12,7 +12,7 @@ extension NYPLConfiguration {
   static let OpenEBooksUUID = "urn:uuid:e1a01c16-04e7-4781-89fd-b442dd1be001"
 
   static let circulationBaseURLProduction = "https://circulation.openebooks.us"
-  static let circulationBaseURLBeta = "http://qa.circulation.openebooks.us"
+  static let circulationBaseURLBeta = "http://qa-circulation.openebooks.us"
   static let circulationURL = URL(string: circulationBaseURLProduction)!
 
   static let openEBooksRequestCodesURL = URL(string: "http://openebooks.net/getstarted.html")!

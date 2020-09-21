@@ -524,7 +524,7 @@ Authenticating with any of those barcodes should work.
 
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(handleRedirectURL:)
-                                               name: @"NYPLAppDelegateDidReceiveCleverRedirectURL"
+                                               name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
                                              object:nil];
 
   [UIApplication.sharedApplication openURL: urlComponents.URL];
@@ -551,7 +551,7 @@ Authenticating with any of those barcodes should work.
     self.cookies = cookies;
 
     // process the last redirection url to get the oauth token
-    [self handleRedirectURL:[NSNotification notificationWithName:@"NYPLAppDelegateDidReceiveCleverRedirectURL"
+    [self handleRedirectURL:[NSNotification notificationWithName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
                                                           object:url
                                                         userInfo:nil]];
 
@@ -588,7 +588,7 @@ Authenticating with any of those barcodes should work.
 
 - (void) handleRedirectURL: (NSNotification *) notification
 {
-  [NSNotificationCenter.defaultCenter removeObserver: self name: @"NYPLAppDelegateDidReceiveCleverRedirectURL" object: nil];
+  [NSNotificationCenter.defaultCenter removeObserver: self name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL object: nil];
 
   NSURL *url = notification.object;
   if (![url.absoluteString hasPrefix:NYPLSettings.shared.authenticationUniversalLink.absoluteString]
@@ -1520,7 +1520,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           }];
           [self.barcodeImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:sConstantSpacing];
           [self.barcodeImageLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-          [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
+          [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
+            [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
+          }];
         }
       }
       return cell;

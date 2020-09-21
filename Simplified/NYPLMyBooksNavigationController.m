@@ -74,9 +74,9 @@
 }
 
 #ifdef SIMPLYE
-- (void) switchLibrary
+- (void)switchLibrary
 {
-  NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
+  UIViewController *viewController = self.visibleViewController;
 
   UIAlertControllerStyle style;
   if (viewController && viewController.navigationItem.leftBarButtonItem) {
@@ -88,9 +88,9 @@
   UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:style];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-  
+
   NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
-  
+
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:accounts[i]];
     if (!account) {
@@ -99,14 +99,14 @@
 
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
 
-      BOOL workflowsInProgress = false;
-    #if defined(FEATURE_DRM_CONNECTOR)
+      BOOL workflowsInProgress;
+#if defined(FEATURE_DRM_CONNECTOR)
       workflowsInProgress = ([NYPLADEPT sharedInstance].workflowsInProgress || [NYPLBookRegistry sharedRegistry].syncing == YES);
-    #else
+#else
       workflowsInProgress = ([NYPLBookRegistry sharedRegistry].syncing == YES);
-    #endif
+#endif
 
-      if(workflowsInProgress) {
+      if (workflowsInProgress) {
         [self presentViewController:[NYPLAlertUtils
                                      alertWithTitle:@"PleaseWait"
                                      message:@"PleaseWaitMessage"]
@@ -114,12 +114,11 @@
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [AccountsManager shared].currentAccount = account;
-        [self reloadSelected];
+        [self updateCatalogFeedSettingCurrentAccount:account];
       }
     }]];
   }
-  
+
   [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ManageAccounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
     NSUInteger tabCount = [[[NYPLRootTabBarController sharedController] viewControllers] count];
     UISplitViewController *splitViewVC = [[[NYPLRootTabBarController sharedController] viewControllers] lastObject];
@@ -129,21 +128,21 @@
     NYPLSettingsPrimaryTableViewController *tableVC = [[masterNavVC viewControllers] firstObject];
     [tableVC.delegate settingsPrimaryTableViewController:tableVC didSelectItem:NYPLSettingsPrimaryTableViewControllerItemAccount];
   }]];
-  
-  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:(UIAlertActionStyleCancel) handler:nil]];
-  
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
-  
-}
-#endif
 
-- (void)reloadSelected
+  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:(UIAlertActionStyleCancel) handler:nil]];
+
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
+}
+
+- (void)updateCatalogFeedSettingCurrentAccount:(Account *)account
 {
+  [AccountsManager shared].currentAccount = account;
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
   [catalog updateFeedAndRegistryOnAccountChange];
-  
-  NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
-  viewController.navigationItem.title =  [AccountsManager shared].currentAccount.name;
+
+  UIViewController *visibleVC = self.visibleViewController;
+  visibleVC.navigationItem.title = [AccountsManager shared].currentAccount.name;
 }
+#endif
 
 @end

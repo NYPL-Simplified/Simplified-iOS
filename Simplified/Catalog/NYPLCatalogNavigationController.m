@@ -118,7 +118,7 @@
 #ifdef SIMPLYE
 - (void)switchLibrary
 {
-  NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
+  UIViewController *viewController = self.visibleViewController;
 
   UIAlertControllerStyle style;
   if (viewController && viewController.navigationItem.leftBarButtonItem) {
@@ -130,9 +130,9 @@
   UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:style];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-  
+
   NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
-  
+
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:accounts[i]];
     if (!account) {
@@ -142,36 +142,21 @@
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
 
       BOOL workflowsInProgress;
-    #if defined(FEATURE_DRM_CONNECTOR)
+#if defined(FEATURE_DRM_CONNECTOR)
       workflowsInProgress = ([NYPLADEPT sharedInstance].workflowsInProgress || [NYPLBookRegistry sharedRegistry].syncing == YES);
-    #else
+#else
       workflowsInProgress = ([NYPLBookRegistry sharedRegistry].syncing == YES);
-    #endif
+#endif
 
       if (workflowsInProgress) {
-        UIAlertController *alert = [NYPLAlertUtils
-                                    alertWithTitle:@"PleaseWait"
-                                    message:@"PleaseWaitMessage"];
-        [self presentViewController:alert
+        [self presentViewController:[NYPLAlertUtils
+                                     alertWithTitle:@"PleaseWait"
+                                     message:@"PleaseWaitMessage"]
                            animated:YES
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [account loadAuthenticationDocumentUsingSignedInStateProvider:nil completion:^(BOOL success) {
-          dispatch_async(dispatch_get_main_queue(), ^{
-            if (success) {
-              [AccountsManager shared].currentAccount = account;
-              [self updateFeedAndRegistryOnAccountChange];
-            } else {
-              UIAlertController *alert = [NYPLAlertUtils
-                                          alertWithTitle:@""
-                                          message:@"LibraryLoadError"];
-              [self presentViewController:alert
-                                 animated:YES
-                               completion:nil];
-            }
-          });
-        }];
+        [self updateCatalogFeedSettingCurrentAccount:account];
       }
     }]];
   }
@@ -188,13 +173,30 @@
 
   [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:(UIAlertActionStyleCancel) handler:nil]];
 
-  [[NYPLRootTabBarController sharedController]
-   safelyPresentViewController:alert
-   animated:YES
-   completion:nil];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
+}
+
+- (void)updateCatalogFeedSettingCurrentAccount:(Account *)account
+{
+  [account loadAuthenticationDocumentUsingSignedInStateProvider:nil completion:^(BOOL success) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (success) {
+        [AccountsManager shared].currentAccount = account;
+        [self updateFeedAndRegistryOnAccountChange];
+      } else {
+        NSString *title = NSLocalizedString(@"Error Loading Library", @"Title for alert related to error loading library authentication doc");
+        NSString *msg = NSLocalizedString(@"LibraryLoadError", @"Message for alert related to error loading library authentication doc");
+        UIAlertController *alert = [NYPLAlertUtils
+                                    alertWithTitle:title
+                                    message:msg];
+        [self presentViewController:alert
+                           animated:YES
+                         completion:nil];
+      }
+    });
+  }];
 }
 #endif
-
 
 - (void)updateFeedAndRegistryOnAccountChange
 {

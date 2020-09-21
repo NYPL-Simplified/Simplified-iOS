@@ -1,4 +1,5 @@
 import Foundation
+import NYPLAudiobookToolkit
 
 @objcMembers final class NYPLKeychainManager: NSObject {
 
@@ -35,6 +36,7 @@ import Foundation
     #endif
     updateKeychainForBackgroundFetch()
     manageFeedbooksData()
+    manageFeedbookDrmPrivateKey()
   }
 
   // The app does not handle DRM Authentication logic when assuming a user
@@ -172,38 +174,52 @@ import Foundation
       ]
       let status = SecItemAdd(addQuery as CFDictionary, nil)
       if status != errSecSuccess && status != errSecDuplicateItem {
-        // This is unexpected
-        var errMsg = ""
-        if #available(iOS 11.3, *) {
-          errMsg = (SecCopyErrorMessageString(status, nil) as String?) ?? ""
-        }
-        if errMsg.isEmpty {
-          switch status {
-          case errSecUnimplemented:
-            errMsg = "errSecUnimplemented"
-          case errSecDiskFull:
-            errMsg = "errSecDiskFull"
-          case errSecIO:
-            errMsg = "errSecIO"
-          case errSecOpWr:
-            errMsg = "errSecOpWr"
-          case errSecParam:
-            errMsg = "errSecParam"
-          case errSecWrPerm:
-            errMsg = "errSecWrPerm"
-          case errSecAllocate:
-            errMsg = "errSecAllocate"
-          case errSecUserCanceled:
-            errMsg = "errSecUserCanceled"
-          case errSecBadReq:
-            errMsg = "errSecBadReq"
-          default:
-            errMsg = "Unknown OSStatus: \(status)"
-          }
-        }
-        
-        Log.error(#file, "FeedbookKeyManagement Error: \(errMsg)")
+        logKeychainError(forVendor: vendor.rawValue, status: status, message: "FeedbookKeyManagement Error:")
       }
     }
+  }
+    
+  private class func manageFeedbookDrmPrivateKey() {
+    // Request DRM certificates for all vendors
+    for vendor in AudioBookVendors.allCases {
+      vendor.updateDrmCertificate()
+    }
+  }
+    
+  class func logKeychainError(forVendor vendor:String, status: OSStatus, message: String) {
+    // This is unexpected
+    var errMsg = ""
+    if #available(iOS 11.3, *) {
+      errMsg = (SecCopyErrorMessageString(status, nil) as String?) ?? ""
+    }
+    if errMsg.isEmpty {
+      switch status {
+      case errSecUnimplemented:
+        errMsg = "errSecUnimplemented"
+      case errSecDiskFull:
+        errMsg = "errSecDiskFull"
+      case errSecIO:
+        errMsg = "errSecIO"
+      case errSecOpWr:
+        errMsg = "errSecOpWr"
+      case errSecParam:
+        errMsg = "errSecParam"
+      case errSecWrPerm:
+        errMsg = "errSecWrPerm"
+      case errSecAllocate:
+        errMsg = "errSecAllocate"
+      case errSecUserCanceled:
+        errMsg = "errSecUserCanceled"
+      case errSecBadReq:
+        errMsg = "errSecBadReq"
+      default:
+        errMsg = "Unknown OSStatus: \(status)"
+      }
+    }
+    
+    NYPLErrorLogger.logError(withCode: .keychainItemAddFail,
+                             summary: "Keychan error for vendor \(vendor)",
+                             message: "\(message) \(errMsg)",
+                            metadata: nil)
   }
 }

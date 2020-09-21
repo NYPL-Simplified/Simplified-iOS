@@ -18,15 +18,3 @@ extension NYPLRootTabBarController {
   }
 }
 
-extension NYPLRootTabBarController: UITabBarControllerDelegate {
-
-  @objc(tabBarController:didSelectViewController:)
-  func tabBarController(_ tabBarController: UITabBarController,
-                        didSelect vc: UIViewController) {
-    guard NYPLUserAccount.sharedAccount().isSignedIn() else {
-      OETutorialChoiceViewController.showLoginPicker(handler: nil)
-      return
-    }
-  }
-}
-

@@ -39,6 +39,7 @@
 "Hide" = "Hide";
 "Information" = "Information";
 "LibraryCard" = "Library Card";
+"Error Loading Library" = "Error Loading Library";
 "LibraryLoadError" = "We can’t get your library right now. Please close and reopen the app to try again.";
 "LogIn" = "Log In";
 "ManageAccounts" = "Manage Accounts";
