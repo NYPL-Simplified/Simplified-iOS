@@ -17,6 +17,10 @@ extension Notification.Name {
   static let NYPLUseBetaDidChange = Notification.Name("NYPLUseBetaDidChange")
   static let NYPLUserAccountDidChange = Notification.Name("NYPLUserAccountDidChangeNotification")
   static let NYPLDidSignOut = Notification.Name("NYPLDidSignOut")
+
+  // TODO: i think this was called "OEAppDelegateDidReceiveCleverRedirectURL"
+  // in kyle's branch
+  static let NYPLAppDelegateDidReceiveCleverRedirectURL = Notification.Name("NYPLAppDelegateDidReceiveCleverRedirectURL")
 }
 
 @objc extension NSNotification {
@@ -28,4 +32,5 @@ extension Notification.Name {
   public static let NYPLUseBetaDidChange = Notification.Name.NYPLUseBetaDidChange
   public static let NYPLUserAccountDidChange = Notification.Name.NYPLUserAccountDidChange
   public static let NYPLDidSignOut = Notification.Name.NYPLDidSignOut
+  public static let NYPLAppDelegateDidReceiveCleverRedirectURL = Notification.Name.NYPLAppDelegateDidReceiveCleverRedirectURL
 }
