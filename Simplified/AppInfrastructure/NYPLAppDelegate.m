@@ -37,7 +37,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 
 #pragma mark UIApplicationDelegate
 
-- (BOOL)application:(__attribute__((unused)) UIApplication *)application
+- (BOOL)application:(UIApplication *)app
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
 #if !TARGET_OS_SIMULATOR
@@ -51,7 +51,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
 
-  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MinimumBackgroundFetchInterval];
+  [app setMinimumBackgroundFetchInterval:MinimumBackgroundFetchInterval];
 
   if (@available (iOS 10.0, *)) {
     self.notificationsManager = [[NYPLUserNotifications alloc] init];
@@ -66,17 +66,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
 
-  //TODO: SIMPLY-3091 refactor this better in 2 source files
-#ifdef OPENEBOOKS
-  if ([[NYPLSettings shared] userHasSeenWelcomeScreen]) {
-    self.window.rootViewController = [NYPLRootTabBarController sharedController];
-  } else {
-    self.window.rootViewController = [[OETutorialViewController alloc] init];
-  }
-#else
-  //    self.window.rootViewController = SETutorialViewController()
-  self.window.rootViewController = [NYPLRootTabBarController sharedController];
-#endif
+  [self setUpRootVC];
 
   [self beginCheckingForUpdates];
 
@@ -116,7 +106,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 {
     if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] && [userActivity.webpageURL.host isEqualToString:NYPLSettings.shared.authenticationUniversalLink.host]) {
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"NYPLAppDelegateDidReceiveCleverRedirectURL"
+         postNotificationName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
          object:userActivity.webpageURL];
 
         return YES;
@@ -129,6 +119,9 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
             openURL:(NSURL *)url
             options:(__unused NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
+  if ([self shouldHandleAppSpecificCustomURLSchemesForURL:url]) {
+    return YES;
+  }
 
   // URLs should be a permalink to a feed URL
   NSURL *entryURL = [url URLBySwappingForScheme:@"http"];

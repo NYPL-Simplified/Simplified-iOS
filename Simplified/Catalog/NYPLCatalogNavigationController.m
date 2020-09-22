@@ -1,25 +1,11 @@
+#import "SimplyE-Swift.h"
 #import "NYPLCatalogFeedViewController.h"
 #import "NYPLConfiguration.h"
-
 #import "NYPLCatalogNavigationController.h"
-
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLMyBooksNavigationController.h"
-#import "NYPLMyBooksViewController.h"
-#import "NYPLHoldsNavigationController.h"
-#ifdef SIMPLYE
-// TODO: SIMPLY-3053 this #ifdef can be removed once this ticket is done
-#import "NYPLSettingsPrimaryTableViewController.h"
-#endif
-#import "SimplyE-Swift.h"
-#import "NYPLAppDelegate.h"
 #import "NSString+NYPLStringAdditions.h"
-
-#if defined(FEATURE_DRM_CONNECTOR)
-#import <ADEPT/ADEPT.h>
-#endif
 
 @interface NYPLCatalogNavigationController()
 
@@ -59,17 +45,10 @@
 
 #ifdef SIMPLYE
   self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
-  
-  // The top-level view controller uses the same image used for the tab bar in place of the usual
-  // title text.
-  self.viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-                                                          initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
-                                                          target:self
-                                                          action:@selector(switchLibrary)];
-  self.viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
-  
-  self.viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
+  [self setNavigationLeftBarButtonForVC:self.viewController];
 #endif
+
+  self.viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
 
   self.viewControllers = @[self.viewController];
 }
@@ -116,85 +95,27 @@
 }
 
 #ifdef SIMPLYE
-- (void)switchLibrary
+- (void)updateCatalogFeedSettingCurrentAccount:(Account *)account
 {
-  NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
-
-  UIAlertControllerStyle style;
-  if (viewController && viewController.navigationItem.leftBarButtonItem) {
-    style = UIAlertControllerStyleActionSheet;
-  } else {
-    style = UIAlertControllerStyleAlert;
-  }
-
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:style];
-  alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
-  alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-  
-  NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
-  
-  for (int i = 0; i < (int)accounts.count; i++) {
-    Account *account = [[AccountsManager sharedInstance] account:accounts[i]];
-    if (!account) {
-      continue;
-    }
-
-    [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
-
-      BOOL workflowsInProgress;
-    #if defined(FEATURE_DRM_CONNECTOR)
-      workflowsInProgress = ([NYPLADEPT sharedInstance].workflowsInProgress || [NYPLBookRegistry sharedRegistry].syncing == YES);
-    #else
-      workflowsInProgress = ([NYPLBookRegistry sharedRegistry].syncing == YES);
-    #endif
-
-      if (workflowsInProgress) {
+  [account loadAuthenticationDocumentUsingSignedInStateProvider:nil completion:^(BOOL success) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (success) {
+        [AccountsManager shared].currentAccount = account;
+        [self updateFeedAndRegistryOnAccountChange];
+      } else {
+        NSString *title = NSLocalizedString(@"Error Loading Library", @"Title for alert related to error loading library authentication doc");
+        NSString *msg = NSLocalizedString(@"LibraryLoadError", @"Message for alert related to error loading library authentication doc");
         UIAlertController *alert = [NYPLAlertUtils
-                                    alertWithTitle:@"PleaseWait"
-                                    message:@"PleaseWaitMessage"];
+                                    alertWithTitle:title
+                                    message:msg];
         [self presentViewController:alert
                            animated:YES
                          completion:nil];
-      } else {
-        [[NYPLBookRegistry sharedRegistry] save];
-        [account loadAuthenticationDocumentUsingSignedInStateProvider:nil completion:^(BOOL success) {
-          dispatch_async(dispatch_get_main_queue(), ^{
-            if (success) {
-              [AccountsManager shared].currentAccount = account;
-              [self updateFeedAndRegistryOnAccountChange];
-            } else {
-              UIAlertController *alert = [NYPLAlertUtils
-                                          alertWithTitle:@""
-                                          message:@"LibraryLoadError"];
-              [self presentViewController:alert
-                                 animated:YES
-                               completion:nil];
-            }
-          });
-        }];
       }
-    }]];
-  }
-  
-  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ManageAccounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
-    NSUInteger tabCount = [[[NYPLRootTabBarController sharedController] viewControllers] count];
-    UISplitViewController *splitViewVC = [[[NYPLRootTabBarController sharedController] viewControllers] lastObject];
-    UINavigationController *masterNavVC = [[splitViewVC viewControllers] firstObject];
-    [masterNavVC popToRootViewControllerAnimated:NO];
-    [[NYPLRootTabBarController sharedController] setSelectedIndex:tabCount-1];
-    NYPLSettingsPrimaryTableViewController *tableVC = [[masterNavVC viewControllers] firstObject];
-    [tableVC.delegate settingsPrimaryTableViewController:tableVC didSelectItem:NYPLSettingsPrimaryTableViewControllerItemAccount];
-  }]];
-
-  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:(UIAlertActionStyleCancel) handler:nil]];
-
-  [[NYPLRootTabBarController sharedController]
-   safelyPresentViewController:alert
-   animated:YES
-   completion:nil];
+    });
+  }];
 }
 #endif
-
 
 - (void)updateFeedAndRegistryOnAccountChange
 {
