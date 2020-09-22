@@ -1,7 +1,9 @@
 // Despite the name, this class has nothing to do with OPDS navigation feeds. It's simply the
 // UINavigationController for the catalog portion of the application.
 
-@interface NYPLCatalogNavigationController : UINavigationController
+#import "NYPLLibraryNavigationController.h"
+
+@interface NYPLCatalogNavigationController : NYPLLibraryNavigationController
 
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNavigationBarClass:(Class)navigationBarClass
