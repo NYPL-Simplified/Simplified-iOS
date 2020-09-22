@@ -1,4 +1,6 @@
-@interface NYPLMyBooksNavigationController : UINavigationController
+#import "NYPLLibraryNavigationController.h"
+
+@interface NYPLMyBooksNavigationController : NYPLLibraryNavigationController
 
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNavigationBarClass:(Class)navigationBarClass
