@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -122,7 +122,6 @@
 		145DA49621544A430055DB93 /* PureLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA49521544A420055DB93 /* PureLayout.framework */; };
 		148B1C2D21768EAA00FF64AB /* NYPLAEToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1721710C6800FF64AB /* NYPLAEToolkit.framework */; };
 		148B1C2E21768EAA00FF64AB /* NYPLAudiobookToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1C21710C6800FF64AB /* NYPLAudiobookToolkit.framework */; };
-		148B1C392176900F00FF64AB /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C342176900E00FF64AB /* AudioEngine.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		17071065242A923400E2648F /* NYPLSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17071060242A923400E2648F /* NYPLSecrets.swift */; };
 		171966A924170819007BB87E /* NYPLBookState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171966A824170819007BB87E /* NYPLBookState.swift */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
@@ -130,9 +129,15 @@
 		175E480824EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */; };
 		175E480E24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */; };
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
+		176F8A812519684D00CE5BFB /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		176F8A842519718100CE5BFB /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		177D48AF251971BA00AADFEC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		179699D124131BA500EC309F /* UIColor+LabelColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179699D024131BA500EC309F /* UIColor+LabelColor.swift */; };
 		17CE5305243C020800315E63 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		17D08381248E938000092AA9 /* OverdriveProcessor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */; };
+		17DB53F6251A9DC900161341 /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		17DB53F8251AA11F00161341 /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		17DB53F9251AA50700161341 /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		21196605250956C000A6D0EF /* JWKResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2199020724FD35DC001BC727 /* JWKResponse.swift */; };
 		2198F910250A90EE000D9DAB /* AudioBookVendorsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2198F90F250A90EE000D9DAB /* AudioBookVendorsHelper.swift */; };
 		2198F911250A90EE000D9DAB /* AudioBookVendorsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2198F90F250A90EE000D9DAB /* AudioBookVendorsHelper.swift */; };
@@ -386,7 +391,6 @@
 		7347F0D8245A4DE200558D7F /* NYPLOPDSType.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */; };
 		7347F0D9245A4DE200558D7F /* NYPLPDFViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */; };
 		7347F0DB245A4DE200558D7F /* PDFRendererProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */; };
-		7347F0DC245A4DE200558D7F /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C342176900E00FF64AB /* AudioEngine.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7347F0DD245A4DE200558D7F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922F1E78871A00AD338D /* MediaPlayer.framework */; };
 		7347F0DE245A4DE200558D7F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092271E78859E00AD338D /* CoreMedia.framework */; };
 		7347F0DF245A4DE200558D7F /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922D1E7886ED00AD338D /* CoreVideo.framework */; };
@@ -670,7 +674,6 @@
 		73FCA35825005BA4001B0C5D /* NYPLPDFViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */; };
 		73FCA35925005BA4001B0C5D /* NYPLUserAccountFrontEndValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */; };
 		73FCA35B25005BA4001B0C5D /* PDFRendererProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */; };
-		73FCA35C25005BA4001B0C5D /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C342176900E00FF64AB /* AudioEngine.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		73FCA35D25005BA4001B0C5D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922F1E78871A00AD338D /* MediaPlayer.framework */; };
 		73FCA35E25005BA4001B0C5D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092271E78859E00AD338D /* CoreMedia.framework */; };
 		73FCA35F25005BA4001B0C5D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922D1E7886ED00AD338D /* CoreVideo.framework */; };
@@ -840,12 +843,33 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		17DB53F5251A9DBE00161341 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				17DB53F6251A9DC900161341 /* AudioEngine.xcframework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		17DB53F7251AA10F00161341 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				17DB53F8251AA11F00161341 /* AudioEngine.xcframework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7347F134245A50A900558D7F /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				17DB53F9251AA50700161341 /* AudioEngine.xcframework in CopyFiles */,
 				7347F135245A50CA00558D7F /* NYPLCardCreator.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1059,13 +1083,13 @@
 		145DA49521544A420055DB93 /* PureLayout.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout.framework; path = Carthage/Build/iOS/PureLayout.framework; sourceTree = "<group>"; };
 		148B1C1721710C6800FF64AB /* NYPLAEToolkit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NYPLAEToolkit.framework; path = Carthage/Build/iOS/NYPLAEToolkit.framework; sourceTree = "<group>"; };
 		148B1C1C21710C6800FF64AB /* NYPLAudiobookToolkit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NYPLAudiobookToolkit.framework; path = Carthage/Build/iOS/NYPLAudiobookToolkit.framework; sourceTree = "<group>"; };
-		148B1C342176900E00FF64AB /* AudioEngine.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioEngine.framework; path = Carthage/Build/iOS/AudioEngine.framework; sourceTree = "<group>"; };
 		17071060242A923400E2648F /* NYPLSecrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSecrets.swift; sourceTree = "<group>"; };
 		171966A824170819007BB87E /* NYPLBookState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookState.swift; sourceTree = "<group>"; };
 		173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookStateTests.swift; sourceTree = "<group>"; };
 		175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementBusinessLogic.swift; sourceTree = "<group>"; };
 		175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementViewController.swift; sourceTree = "<group>"; };
 		1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementManagerTests.swift; sourceTree = "<group>"; };
+		176F8A802519684D00CE5BFB /* AudioEngine.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AudioEngine.xcframework; path = Build/iOS/AudioEngine.xcframework; sourceTree = "<group>"; };
 		179699D024131BA500EC309F /* UIColor+LabelColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+LabelColor.swift"; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OverdriveProcessor.framework; path = Carthage/Build/iOS/OverdriveProcessor.framework; sourceTree = "<group>"; };
@@ -1321,9 +1345,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				176F8A842519718100CE5BFB /* AudioEngine.xcframework in Frameworks */,
 				7347F133245A508400558D7F /* NYPLCardCreator.framework in Frameworks */,
 				7347F0DB245A4DE200558D7F /* PDFRendererProvider.framework in Frameworks */,
-				7347F0DC245A4DE200558D7F /* AudioEngine.framework in Frameworks */,
 				7347F0DD245A4DE200558D7F /* MediaPlayer.framework in Frameworks */,
 				7347F0DE245A4DE200558D7F /* CoreMedia.framework in Frameworks */,
 				7347F0DF245A4DE200558D7F /* CoreVideo.framework in Frameworks */,
@@ -1374,7 +1398,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				73FCA35B25005BA4001B0C5D /* PDFRendererProvider.framework in Frameworks */,
-				73FCA35C25005BA4001B0C5D /* AudioEngine.framework in Frameworks */,
 				73FCA35D25005BA4001B0C5D /* MediaPlayer.framework in Frameworks */,
 				73FCA35E25005BA4001B0C5D /* CoreMedia.framework in Frameworks */,
 				73FCA35F25005BA4001B0C5D /* CoreVideo.framework in Frameworks */,
@@ -1396,6 +1419,7 @@
 				73FCA36F25005BA4001B0C5D /* UIKit.framework in Frameworks */,
 				73FCA37025005BA4001B0C5D /* Foundation.framework in Frameworks */,
 				73FCA37125005BA4001B0C5D /* libTenPrintCover.a in Frameworks */,
+				177D48AF251971BA00AADFEC /* AudioEngine.xcframework in Frameworks */,
 				73FCA37225005BA4001B0C5D /* libz.dylib in Frameworks */,
 				73FCA37325005BA4001B0C5D /* libxml2.dylib in Frameworks */,
 				73FCA37425005BA4001B0C5D /* ZXingObjC.framework in Frameworks */,
@@ -1427,7 +1451,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9AD99402225D4AF009FF54A /* PDFRendererProvider.framework in Frameworks */,
-				148B1C392176900F00FF64AB /* AudioEngine.framework in Frameworks */,
 				03B092301E78871A00AD338D /* MediaPlayer.framework in Frameworks */,
 				03B092281E78859E00AD338D /* CoreMedia.framework in Frameworks */,
 				03B0922E1E7886ED00AD338D /* CoreVideo.framework in Frameworks */,
@@ -1449,6 +1472,7 @@
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
+				176F8A812519684D00CE5BFB /* AudioEngine.xcframework in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
 				145DA48E215441A70055DB93 /* ZXingObjC.framework in Frameworks */,
@@ -1966,6 +1990,7 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				176F8A802519684D00CE5BFB /* AudioEngine.xcframework */,
 				7347F132245A508400558D7F /* NYPLCardCreator.framework */,
 				17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */,
 				731DA5FB240711F5009CC191 /* Fabric.framework */,
@@ -1983,7 +2008,6 @@
 				738EF2D82405EA6000F388FB /* GoogleUtilities.framework */,
 				738EF2D72405EA6000F388FB /* nanopb.framework */,
 				A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */,
-				148B1C342176900E00FF64AB /* AudioEngine.framework */,
 				148B1C1721710C6800FF64AB /* NYPLAEToolkit.framework */,
 				148B1C1C21710C6800FF64AB /* NYPLAudiobookToolkit.framework */,
 				145DA49521544A420055DB93 /* PureLayout.framework */,
@@ -2280,6 +2304,7 @@
 				73FCA35A25005BA4001B0C5D /* Frameworks */,
 				73FCA38925005BA4001B0C5D /* Resources */,
 				73FCA39F25005BA4001B0C5D /* Copy Frameworks (Carthage) */,
+				17DB53F7251AA10F00161341 /* CopyFiles */,
 				73FCA3A025005BA4001B0C5D /* Crashlytics */,
 			);
 			buildRules = (
@@ -2299,6 +2324,7 @@
 				A823D80A192BABA400B55DE2 /* Frameworks */,
 				A823D80B192BABA400B55DE2 /* Resources */,
 				145DA48C215441260055DB93 /* Copy Frameworks (Carthage) */,
+				17DB53F5251A9DBE00161341 /* CopyFiles */,
 				73DA43AD2404CA9500985482 /* Crashlytics */,
 			);
 			buildRules = (
@@ -2542,7 +2568,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLCardCreator.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAEToolkit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAudiobookToolkit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AudioEngine.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PDFRendererProvider.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/OverdriveProcessor.framework",
 			);
@@ -2556,7 +2581,6 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLCardCreator.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAEToolkit.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAudiobookToolkit.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AudioEngine.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PDFRendererProvider.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2576,7 +2600,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/PureLayout.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAEToolkit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAudiobookToolkit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AudioEngine.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PDFRendererProvider.framework",
 			);
 			name = "Copy Frameworks (Carthage)";
@@ -2588,7 +2611,6 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PureLayout.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAEToolkit.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAudiobookToolkit.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AudioEngine.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PDFRendererProvider.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2651,7 +2673,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLCardCreator.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAEToolkit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAudiobookToolkit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AudioEngine.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PDFRendererProvider.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/OverdriveProcessor.framework",
 			);
@@ -2665,7 +2686,6 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLCardCreator.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAEToolkit.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAudiobookToolkit.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AudioEngine.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PDFRendererProvider.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3360,7 +3380,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = SimplyETests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3391,7 +3415,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = SimplyETests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3424,7 +3452,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 3.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = SimplyE;
@@ -3475,7 +3506,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 3.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = SimplyE;
@@ -3521,7 +3555,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OPENEBOOKS=1";
 				INFOPLIST_FILE = "Simplified/OpenEbooks/Open-eBooks-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.OpenEbooks;
 				PRODUCT_NAME = "Open eBooks";
@@ -3574,7 +3611,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OPENEBOOKS=1";
 				INFOPLIST_FILE = "Simplified/OpenEbooks/Open-eBooks-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.OpenEbooks;
 				PRODUCT_NAME = "Open eBooks";
@@ -3713,7 +3753,8 @@
 				);
 				PRODUCT_NAME = SimplyE;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -3742,7 +3783,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 3.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3794,7 +3838,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 3.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
