@@ -119,11 +119,12 @@
 {
   // TODO: SIMPLY-2472
   // R1
-//  NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
-//  [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
+  NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
+  [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
 
   // R2
-  [[NYPLRootTabBarController sharedController] presentBook:book];
+  // TODO: SIMPLY-3102
+//  [[NYPLRootTabBarController sharedController] presentBook:book];
 
   [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {
