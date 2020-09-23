@@ -1241,10 +1241,10 @@ didFinishDownload:(BOOL)didFinishDownload
                                metadata:@{
                                  @"adeptError": adeptError ?: @"N/A",
                                  @"fileURLToRemove": adeptToURL ?: @"N/A",
-                                 @"book": book.loggableDictionary,
-                                 @"AdobeFulfilmmentID": fulfillmentID,
-                                 @"AdobeRights": rights,
-                                 @"AdobeTag": tag
+                                 @"book": book.loggableDictionary ?: @"N/A",
+                                 @"AdobeFulfilmmentID": fulfillmentID ?: @"N/A",
+                                 @"AdobeRights": rights ?: @"N/A",
+                                 @"AdobeTag": tag ?: @"N/A"
                                }];
       [self failDownloadForBook:book];
       return;
@@ -1267,10 +1267,10 @@ didFinishDownload:(BOOL)didFinishDownload
                                  @"copyError": copyError ?: @"N/A",
                                  @"fromURL": adeptToURL ?: @"N/A",
                                  @"destURL": destURL ?: @"N/A",
-                                 @"book": book.loggableDictionary,
-                                 @"AdobeFulfilmmentID": fulfillmentID,
-                                 @"AdobeRights": rights,
-                                 @"AdobeTag": tag
+                                 @"book": book.loggableDictionary ?: @"N/A",
+                                 @"AdobeFulfilmmentID": fulfillmentID ?: @"N/A",
+                                 @"AdobeRights": rights ?: @"N/A",
+                                 @"AdobeTag": tag ?: @"N/A"
                                }];
     }
   } else {
@@ -1280,10 +1280,10 @@ didFinishDownload:(BOOL)didFinishDownload
                              metadata:@{
                                @"adeptError": adeptError ?: @"N/A",
                                @"adeptToURL": adeptToURL ?: @"N/A",
-                               @"book": book.loggableDictionary,
-                               @"AdobeFulfilmmentID": fulfillmentID,
-                               @"AdobeRights": rights,
-                               @"AdobeTag": tag
+                               @"book": book.loggableDictionary ?: @"N/A",
+                               @"AdobeFulfilmmentID": fulfillmentID ?: @"N/A",
+                               @"AdobeRights": rights ?: @"N/A",
+                               @"AdobeTag": tag ?: @"N/A"
                              }];
   }
 
