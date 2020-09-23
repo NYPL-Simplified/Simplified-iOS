@@ -39,6 +39,7 @@
 "Hide" = "Hide";
 "Information" = "Information";
 "LibraryCard" = "Library Card";
+"Error Loading Library" = "Error Loading Library";
 "LibraryLoadError" = "We can’t get your library right now. Please close and reopen the app to try again.";
 "LogIn" = "Log In";
 "ManageAccounts" = "Manage Accounts";
@@ -145,8 +146,7 @@
 "MyBooksViewControllerGroupShow" = "Show";
 "MyBooksViewControllerGroupSortBy" = "Sort By";
 
-// NYPLReaderViewController
-
+// NYPLReaderViewController (R1)
 "ReaderViewControllerCorruptTitle" = "Could Not Display Book";
 "ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
 "ReaderViewControllerCurrentChapter" = "Current Chapter";
@@ -154,8 +154,12 @@
 "leftin" = "left in";
 "TOC" = "Table of contents";
 
-// NYPLReaderReadiumView
+// NYPLReaderReadiumView (R1)
 "chapter" = "chapter";
+
+// ReaderViewController (R2)
+"Previous Chapter" = "Previous Chapter";
+"Next Chapter" = "Next Chapter";
 
 // NYPLReaderSettingsView
 "SansFont" = "Sans font";
@@ -172,13 +176,12 @@
 // NYPLReaderSettingsViewController
 "ReaderViewControllerToggleReaderSettings" = "Toggle reader settings";
 
-// ReaderTOCViewController
-
+// Reader Positions (TOC and Bookmarks)
 "ReaderTOCViewControllerTitle" = "Table of Contents";
+"%@ through chapter" = "%@ through chapter";
+"There are no bookmarks for this book." = "There are no bookmarks for this book.";
 
-// NYPLSettings
-
-"SettingsAboutNoConnection" = "There was an internet connection error and the page could not load.";
+// Settings
 "SettingsConnectionFailureMessage" = "The page could not load due to a connection error.";
 
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController

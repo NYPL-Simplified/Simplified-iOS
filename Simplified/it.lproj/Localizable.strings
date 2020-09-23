@@ -37,6 +37,8 @@
 "Hide" = "nascondere";
 "Information" = "Informazioni";
 "LibraryCard" = "Tessera della biblioteca";
+"Error Loading Library" = "Errore di accesso alla biblioteca";
+"LibraryLoadError" = "Non è possibile accedere alla tua biblioteca in questo momento. Prova a chiudere e riaprire l'app, oppure se il problema persiste riprova tra qualche minuto.";
 "LogIn" = "Accedi";
 "More..." = "Di Più…";
 "MoreBooks" = "Più %@ libri";
@@ -73,7 +75,9 @@
 "UnknownError" = "Si è verificato un errore. Per favore riprova più tardi.";
 "Verifying" = "verifica";
 "Back" = "Indietro";
-"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "Il caricamento di questa pagina è fallito. Prova a chiudere l'app completamente e a riaprirla. Se il problema persiste, contatta l'Help Desk della tua biblioteca.";
+
+// NYPLAccountSignInViewController
+"SigningInAgree" = "Accedendo accosenti al contratto con gli utenti.";
 
 // NYPLAppDelegate
 
@@ -139,8 +143,7 @@
 "MyBooksViewControllerGroupShow" = "Mostra";
 "MyBooksViewControllerGroupSortBy" = "Ordina per";
 
-// NYPLReaderViewController
-
+// NYPLReaderViewController (R1)
 "ReaderViewControllerCorruptTitle" = "Prenota Impossibile visualizzare";
 "ReaderViewControllerCorruptMessage" = "Questo libro è danneggiato e non può essere letto.";
 "ReaderViewControllerCurrentChapter" = "Capitolo corrente";
@@ -148,8 +151,12 @@
 "leftin" = "sinistra";
 "TOC" = "Sommario";
 
-// NYPLReaderReadiumView
+// NYPLReaderReadiumView (R1)
 "chapter" = "capitolo";
+
+// ReaderViewController (R2)
+"Previous Chapter" = "Capitolo precedente";
+"Next Chapter" = "Capitolo successivo";
 
 // NYPLReaderSettingsView
 "SansFont" = "carattere sans";
@@ -166,40 +173,46 @@
 // NYPLReaderSettingsViewController
 "ReaderViewControllerToggleReaderSettings" = "impostazioni del lettore Toggle";
 
-// ReaderTOCViewController
-
+// Reader Positions (TOC and Bookmarks)
 "ReaderTOCViewControllerTitle" = "Sommario";
+"%@ through chapter" = "%@ del capitolo";
+"There are no bookmarks for this book." = "Non ci sono segnalibri per questo libro.";
 
-// NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
-"Add Library" = "Aggiungi";
+// Settings
+"SettingsConnectionFailureMessage" = "Non è stato possibile caricare la pagina per via di un errore nella connessione a internet.";
+
+// NYPLSettingsAccountViewController
+"Add Library" = "Aggiungi Biblioteca";
 "Report an Issue" = "Riferisci un problema";
 "Show Barcode" = "Mostra il codice a barre";
 "Hide Barcode" = "Nascondi il codice a barre";
 "SettingsAccountAgeCheckbox" = "Ho almeno 13 anni";
 "SettingsAccountEULACheckbox" = "Acconsento ai termini del contratto di licenza con l'utente.";
-"SettingsAccountRegistrationTitle" = "Non hai una tessera?";
+"SettingsAccountRegistrationTitle" = "Non hai una tessera della biblioteca?";
 "SettingsBookmarkSyncTitle" = "Sincronizza i segnalibri";
 "SettingsAccountSyncFooterTitle" = "Salva la posizione di lettura e i segnalibri su tutti i tuoi altri dispositivi.";
 "SettingsAccountViewControllerAuthenticationReason" = "Accedi per visualizzare il PIN.";
-"SettingsAccountViewControllerCannotLogOutTitle" = "Disconnessione fallita";
-"SettingsAccountViewControllerCannotLogOutMessage" = "Si prega di attendere finchè gli scaricamenti in corso sono finiti prima di uscire.";
-"SettingsAccountViewControllerInvalidCredentials" = "La combinazione di codice a barre e PIN non è valida. Riprova.";
+"SettingsAccountViewControllerCannotLogOutTitle" =
+  "Disconnessione fallita";
+"SettingsAccountViewControllerCannotLogOutMessage" =
+  "Si prega di attendere finchè gli scaricamenti in corso sono finiti prima di uscire.";
+"SettingsAccountViewControllerInvalidCredentials" =
+  "La combinazione di codice a barre e PIN non è valida. Riprova.";
 "SettingsAccountViewControllerLoginFailed" = "Accesso fallito";
 "SettingsAccountViewControllerLogoutFailed" = "Errore durante la disconnessione";
-"SettingsAccountViewControllerLogoutMessageDefault" = "Se ti disconnetti, tutti i libri scaricati saranno rimossi da questo dispositivo.";
+"SettingsAccountViewControllerLogoutMessageDefault" =
+  "Se ti disconnetti, tutti i libri scaricati saranno rimossi da questo dispositivo.";
 "SettingsAccountViewControllerLogoutMessageSync" = "Se ti disconnetti senza abilitare la sincronizzazione i tuoi libri e i tuoi segnalibri saranno rimossi.";
 "SettingsAccountViewControllerAgeCheckMessage" = "Se hai meno di 13 anni, tutti i tuoi libri saranno rimossi.";
 "SettingsAccountViewControllerMessageLogIn" = "Usa la tua tessera della biblioteca per effettuare l'accesso.";
-"SettingsAccountViewControllerMessageLogInToDownloadBook" = "Ti serve una tessera della biblioteca per scaricare questo libro.";
-"SettingsAccountViewControllerMessageInvalidPIN" = "Il PIN è cambiato. Inserisci il nuovo PIN.";
+"SettingsAccountViewControllerMessageLogInToDownloadBook" =
+  "Ti serve una tessera della biblioteca per scaricare questo libro.";
+"SettingsAccountViewControllerMessageInvalidPIN" =
+  "Il PIN è cambiato. Inserisci il nuovo PIN.";
 "Location" = "Condivisione della posizione";
 "LocationRequiredMessage" = "La convisione della posizione è necessaria per registrarsi. Si prega di consentire l'accesso alla posizione nelle Impostazioni di iOS.";
 "Error parsing user profile document." = "Si è verificato un errore nella decodifica del documento relativo al profilo utente.";
 "Trouble locating DRM in profile document." = "Si è verificato un errore relativo al DRM del documento.";
-"SigningInAgree" = "Accedendo acconsenti al contratto con gli utenti.";
-"Want a card for your child?" = "Vuoi una tessera per i tuoi figli?";
-"Cannot confirm library card eligibility." = "Si è verificato un errore per il quale è impossibile verificare se la tua tessera è idonea.";
-"Please log out and try your card information again." = "Prova a disconnetterti e a riaccedere per cercare di risolvere questo problema.";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accetta";

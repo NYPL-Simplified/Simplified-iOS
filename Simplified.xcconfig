@@ -1,6 +1,6 @@
 #include "Simplified+RMSDK.xcconfig"
 
-HEADER_SEARCH_PATHS = $(inherited) "$(SDKROOT)/usr/include/libxml2" "$(SRCROOT)/readium-sdk/Platform/Apple/RDServices" "$(SRCROOT)/readium-sdk/Platform/Apple/include" "$(SRCROOT)/tenprintcover-ios/TenPrintCover" "$(SRCROOT)/adept-ios" "$(SRCROOT)/adobe-content-filter/public"
+HEADER_SEARCH_PATHS = $(inherited) "$(SDKROOT)/usr/include/libxml2" "$(SRCROOT)/readium-sdk/Platform/Apple/RDServices" "$(SRCROOT)/readium-sdk/Platform/Apple/include" "$(SRCROOT)/tenprintcover-ios/TenPrintCover" "$(SRCROOT)/adept-ios" "$(SRCROOT)/adobe-content-filter/public" "$(SRCROOT)/adobe-rmsdk/dp/public" "$(SRCROOT)/adobe-rmsdk/xml/uft/public"
 
 WARNING_CFLAGS = -Wall -Wextra -Weverything -Wno-objc-missing-property-synthesis -Wno-c11-extensions -Wno-documentation -Wno-c++98-compat-pedantic -Wno-c++98-compat
 

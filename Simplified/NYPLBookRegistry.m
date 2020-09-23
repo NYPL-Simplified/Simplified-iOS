@@ -41,7 +41,7 @@ static NSString *const RecordsKey = @"records";
       @throw NSMallocException;
     }
     
-    [sharedRegistry load];
+    [sharedRegistry justLoad];
   });
   
   return sharedRegistry;
@@ -146,7 +146,7 @@ static NSString *const RecordsKey = @"records";
   }];
 }
 
-- (void)load
+- (void)justLoad
 {
   [self loadWithoutBroadcastingForAccount:[AccountsManager sharedInstance].currentAccount.uuid];
   [self broadcastChange];
@@ -254,12 +254,6 @@ static NSString *const RecordsKey = @"records";
       return;
     }
   }
-}
-
-- (void)justLoad
-{
-  [self load];
-  [self broadcastChange];
 }
 
 - (void)syncResettingCache:(BOOL)shouldResetCache

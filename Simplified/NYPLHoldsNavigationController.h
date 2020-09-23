@@ -1,4 +1,6 @@
-@interface NYPLHoldsNavigationController : UINavigationController
+#import "NYPLLibraryNavigationController.h"
+
+@interface NYPLHoldsNavigationController : NYPLLibraryNavigationController
 
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNavigationBarClass:(Class)navigationBarClass

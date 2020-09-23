@@ -184,18 +184,21 @@ static void generateTOCElements(NSArray *const navigationElements,
 
 - (void)addObservers
 {
+  // TODO: see UserSettingsNavigationController::appearanceDidChange(to:)
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(applyCurrentFlowIndependentSettings)
    name:NYPLReaderSettingsColorSchemeDidChangeNotification
    object:nil];
   
+  // TODO: see UserSettingsNavigationController::fontDidChange(to:)
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(applyCurrentFlowIndependentSettings)
    name:NYPLReaderSettingsFontFaceDidChangeNotification
    object:nil];
-  
+
+  // TODO: see UserSettingsNavigationController::fontSizeDidChange(increase:)
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(applyCurrentFlowDependentSettings)

@@ -21,9 +21,7 @@ git submodule update --init --recursive
 ```bash
 ./build-3rd-parties-dependencies.sh <Debug | Release>
 ```
-
 04. Open Simplified.xcodeproj and build the SimplyE target.
-
 
 ## Building Dependencies Individually
 
@@ -65,6 +63,37 @@ Both scripts must be run from the Simplified-iOS repo root.
 18. Remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
 19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
 20. Build.
+
+# Building for Readium 2 Integration
+
+For working on integrating R2 into SimplyE, use the `feature/readium2` branch. First build the app following the steps above for building with/without DRM.
+
+Then we recommend using the `SimplifiedR2.workspace`. This assumes you have checked out the following frameworks (clone them as siblings of `Simplified-iOS` on the file system):
+```bash
+cd Simplified-iOS/..
+git clone https://github.com/NYPL-Simplified/r2-shared-swift
+git clone https://github.com/NYPL-Simplified/r2-streamer-swift
+git clone https://github.com/readium/r2-navigator-swift
+```
+The first 2 repos contain patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM in Readium 2.
+
+Build their own Carthage dependencies first:
+```bash
+cd r2-shared-swift
+carthage checkout --use-ssh
+carthage build --platform ios
+cd ../r2-streamer-swift
+carthage checkout --use-ssh
+carthage build --platform ios
+cd ../r2-navigator-swift
+carthage checkout --use-ssh
+carthage build --platform ios
+```
+Then finally build Carthage for SimplyE (for a faster build, you can remove the related R2 lines from SimplyE's Cartfile since the `SimplyE-R2dev` target in `SimplifiedR2.workspace` refers to the manually cloned R2 repos):
+```bash
+./carthage-update-simplye.sh Debug
+```
+Finally, open the workspace and use the `SimplyE-R2dev` target to build the app.
 
 # Building Secondary Targets
 

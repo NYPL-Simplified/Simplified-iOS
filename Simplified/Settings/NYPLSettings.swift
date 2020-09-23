@@ -2,7 +2,11 @@ import Foundation
 
 @objcMembers class NYPLSettings: NSObject {
   static let shared = NYPLSettings()
-  
+
+  @objc class func sharedSettings() -> NYPLSettings {
+    return NYPLSettings.shared
+  }
+
   static let NYPLAboutSimplyEURLString = "https://librarysimplified.org/simplye/"
   static let NYPLUserAgreementURLString = "https://www.librarysimplified.org/EULA/"
   
@@ -15,13 +19,6 @@ import Foundation
   static let settingsLibraryAccountsKey = "NYPLSettingsLibraryAccountsKey"
   static private let versionKey = "NYPLSettingsVersionKey"
   
-  @objc class func sharedSettings() -> NYPLSettings {
-    return NYPLSettings.shared
-  }
-
-  // used to handle saml and oauth login. In case of the later, it needs to be configured as universal link
-  @objc var authenticationUniversalLink = URL(string: "https://librarysimplified.org/login")!
-
   // Set to nil (the default) if no custom feed should be used.
   var customMainFeedURL: URL? {
     get {
@@ -89,27 +86,6 @@ import Foundation
       UserDefaults.standard.set(b, forKey: NYPLSettings.useBetaLibrariesKey)
       UserDefaults.standard.synchronize()
       NotificationCenter.default.post(name: NSNotification.Name.NYPLUseBetaDidChange, object: self)
-    }
-  }
-  
-  var settingsAccountsList: [String] {
-    get {
-      if let libraryAccounts = UserDefaults.standard.array(forKey: NYPLSettings.settingsLibraryAccountsKey) {
-        return libraryAccounts as! [String]
-      }
-      
-      // Avoid crash in case currentLibrary isn't set yet
-      var accountsList = [String]()
-      if let currentLibrary = AccountsManager.shared.currentAccount?.uuid {
-        accountsList.append(currentLibrary)
-      }
-      accountsList.append(AccountsManager.NYPLAccountUUIDs[2])
-      self.settingsAccountsList = accountsList
-      return accountsList
-    }
-    set(newAccountsList) {
-      UserDefaults.standard.set(newAccountsList, forKey: NYPLSettings.settingsLibraryAccountsKey)
-      UserDefaults.standard.synchronize()
     }
   }
   

@@ -1,7 +1,4 @@
-//
-//  Use this file to import your target's public headers that you would like to expose to Swift.
-//
-
+#import "NYPLAppDelegate.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
@@ -32,10 +29,14 @@
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLBookLocation.h"
+#import "NYPLReaderSettings.h"
+#import "NYPLReaderSettingsView.h"
+#import "NYPLReadiumViewSyncManager.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 #if FEATURE_DRM_CONNECTOR
 #import "ADEPT/NYPLADEPTErrors.h"
 #import "ADEPT/NYPLADEPT.h"
+#import "AdobeDRMContainer.h"
 #endif

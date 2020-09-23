@@ -36,4 +36,8 @@
 
 + (UIColor *)backgroundMediaOverlayHighlightSepiaColor;
 
++ (CGFloat)defaultTOCRowHeight;
+
++ (CGFloat)defaultBookmarkRowHeight;
+
 @end

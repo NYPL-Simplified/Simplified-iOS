@@ -45,17 +45,20 @@
   NSDictionary *noUnderlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)};
   
   self.sansButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  
-  
   self.sansButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"SansFont", nil)];
   self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
-  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
-                                                                      attributes:noUnderlineAttribute] forState:UIControlStateNormal];
-  
-  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
-                                                                      attributes:underlineAttribute] forState:UIControlStateDisabled];
+  [self.sansButton
+   setAttributedTitle:[[NSAttributedString alloc]
+                       initWithString:NSLocalizedString(@"AlphabetFontType", nil)
+                       attributes:noUnderlineAttribute]
+   forState:UIControlStateNormal];
+  [self.sansButton
+   setAttributedTitle:[[NSAttributedString alloc]
+                       initWithString:NSLocalizedString(@"AlphabetFontType", nil)
+                       attributes:underlineAttribute]
+   forState:UIControlStateDisabled];
   
   [self.sansButton addTarget:self
                       action:@selector(didSelectSans)
@@ -68,13 +71,17 @@
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
-  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
-                                                                      attributes:noUnderlineAttribute] forState:UIControlStateNormal];
-  
-  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
-                                                                      attributes:underlineAttribute] forState:UIControlStateDisabled];
+  [self.serifButton
+   setAttributedTitle:[[NSAttributedString alloc]
+                       initWithString:NSLocalizedString(@"AlphabetFontType", nil)
+                       attributes:noUnderlineAttribute]
+   forState:UIControlStateNormal];
+  [self.serifButton
+   setAttributedTitle:[[NSAttributedString alloc]
+                       initWithString:NSLocalizedString(@"AlphabetFontType", nil)
+                       attributes:underlineAttribute]
+   forState:UIControlStateDisabled];
 
-  
   [self.serifButton addTarget:self
                        action:@selector(didSelectSerif)
              forControlEvents:UIControlEventTouchUpInside];
@@ -86,12 +93,16 @@
   self.openDyslexicButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.openDyslexicButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
-  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
-                                                                       attributes:noUnderlineAttribute] forState:UIControlStateNormal];
-  
-  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
-                                                                       attributes:underlineAttribute] forState:UIControlStateDisabled];
-
+  [self.openDyslexicButton
+   setAttributedTitle:[[NSAttributedString alloc]
+                       initWithString:NSLocalizedString(@"AlphabetFontType", nil)
+                       attributes:noUnderlineAttribute]
+   forState:UIControlStateNormal];
+  [self.openDyslexicButton
+   setAttributedTitle:[[NSAttributedString alloc]
+                       initWithString:NSLocalizedString(@"AlphabetFontType", nil)
+                       attributes:underlineAttribute]
+   forState:UIControlStateDisabled];
   [self.openDyslexicButton setTitleEdgeInsets:UIEdgeInsetsMake(-4.0f, 0.0f, 0.0f, 0.0f)];
   [self.openDyslexicButton addTarget:self
                        action:@selector(didSelectOpenDyslexic)
@@ -105,12 +116,16 @@
   NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
   NSDictionary *whiteColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor whiteColor] };
   
-  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
-                                                                              attributes:whiteColourWithoutUnderline] forState:UIControlStateNormal];
-  
-  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
-                                                                              attributes:whiteColourWithUnderline] forState:UIControlStateDisabled];
-  
+  [self.whiteOnBlackButton
+   setAttributedTitle:[[NSAttributedString alloc]
+                       initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
+                       attributes:whiteColourWithoutUnderline]
+   forState:UIControlStateNormal];
+  [self.whiteOnBlackButton
+   setAttributedTitle:[[NSAttributedString alloc]
+                       initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
+                       attributes:whiteColourWithUnderline]
+   forState:UIControlStateDisabled];
   self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.whiteOnBlackButton addTarget:self
                               action:@selector(didSelectWhiteOnBlack)
@@ -223,54 +238,58 @@
 
 - (void)layoutSubviews
 {
-  CGFloat const padding = 20;
+  [super layoutSubviews];
+
+  CGFloat const padding = 10;
+  CGFloat const topPadding = 16;
   CGFloat const innerWidth = CGRectGetWidth(self.frame) - padding * 2;
+  CGFloat const rowHeight = round((CGRectGetHeight(self.frame) - topPadding) / 4.0);
   
   self.sansButton.frame = CGRectMake(padding,
-                                        0,
+                                     topPadding,
                                      round(innerWidth / 3.0),
-                                     CGRectGetHeight(self.frame) / 4.0);
+                                     rowHeight);
   
   self.serifButton.frame = CGRectMake(CGRectGetMaxX(self.sansButton.frame),
-                                      0,
+                                      topPadding,
                                       round(innerWidth / 3.0),
-                                      CGRectGetHeight(self.frame) / 4.0);
+                                      rowHeight);
 
   self.openDyslexicButton.frame = CGRectMake(CGRectGetMaxX(self.serifButton.frame),
-                                      0,
-                                      round(innerWidth / 3.0),
-                                      CGRectGetHeight(self.frame) / 4.0);
+                                             topPadding,
+                                             round(innerWidth / 3.0),
+                                             rowHeight);
   
   self.whiteOnBlackButton.frame = CGRectMake(padding,
                                              CGRectGetMaxY(self.serifButton.frame),
                                              round(innerWidth / 3.0),
-                                             CGRectGetHeight(self.frame) / 4.0);
+                                             rowHeight);
   
   self.blackOnSepiaButton.frame = CGRectMake(CGRectGetMaxX(self.whiteOnBlackButton.frame),
                                              CGRectGetMaxY(self.serifButton.frame),
                                              round(innerWidth / 3.0),
-                                             CGRectGetHeight(self.frame) / 4.0);
+                                             rowHeight);
   
   self.blackOnWhiteButton.frame = CGRectMake(CGRectGetMaxX(self.blackOnSepiaButton.frame),
                                              CGRectGetMaxY(self.serifButton.frame),
                                              (CGRectGetWidth(self.frame) - padding -
                                               CGRectGetMaxX(self.blackOnSepiaButton.frame)),
-                                             CGRectGetHeight(self.frame) / 4.0);
+                                             rowHeight);
   
   self.decreaseButton.frame = CGRectMake(padding,
                                          CGRectGetMaxY(self.whiteOnBlackButton.frame),
                                          innerWidth / 2.0,
-                                         CGRectGetHeight(self.frame) / 4.0);
+                                         rowHeight);
   
   self.increaseButton.frame = CGRectMake(CGRectGetMaxX(self.decreaseButton.frame),
                                          CGRectGetMaxY(self.whiteOnBlackButton.frame),
                                          innerWidth / 2.0,
-                                         CGRectGetHeight(self.frame) / 4.0);
+                                         rowHeight);
   
   self.brightnessView.frame = CGRectMake(padding,
                                          CGRectGetMaxY(self.decreaseButton.frame),
                                          innerWidth,
-                                         CGRectGetHeight(self.frame) / 4.0);
+                                         rowHeight);
   
   self.brightnessLowImageView.frame =
     CGRectMake(0,
@@ -306,7 +325,7 @@
 - (CGSize)sizeThatFits:(CGSize)size
 {
   CGFloat const defaultWidth = 320;
-  CGFloat const defaultHeight = 200;
+  CGFloat const defaultHeight = 240;
 
   if(CGSizeEqualToSize(size, CGSizeZero)) {
     return CGSizeMake(defaultWidth, defaultHeight);
@@ -519,30 +538,26 @@
 
 - (void)didSelectDecrease
 {
-  NYPLReaderSettingsFontSize newFontSize;
-  
-  if(!NYPLReaderSettingsDecreasedFontSize(self.fontSize, &newFontSize)) {
-    NYPLLOG(@"Ignorning attempt to set font size below the minimum.");
+  if (self.fontSize == NYPLReaderSettingsFontSizeSmallest) {
+    NYPLLOG(@"Ignoring attempt to set font size below the minimum.");
     return;
   }
-  
-  self.fontSize = newFontSize;
-  
-  [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
+
+  self.fontSize = [self.delegate
+                   readerSettingsView:self
+                   didChangeFontSize:NYPLReaderFontSizeChangeDecrease];
 }
 
 - (void)didSelectIncrease
 {
-  NYPLReaderSettingsFontSize newFontSize;
-  
-  if(!NYPLReaderSettingsIncreasedFontSize(self.fontSize, &newFontSize)) {
-    NYPLLOG(@"Ignorning attempt to set font size above the maximum.");
+  if (self.fontSize == NYPLReaderSettingsFontSizeXXXLarge) {
+    NYPLLOG(@"Ignoring attempt to set font size above the max.");
     return;
   }
-  
-  self.fontSize = newFontSize;
-  
-  [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
+
+  self.fontSize = [self.delegate
+                   readerSettingsView:self
+                   didChangeFontSize:NYPLReaderFontSizeChangeIncrease];
 }
 
 - (void)updateLineViews
@@ -554,96 +569,85 @@
   [self.lineViews removeAllObjects];
   
   CGFloat const thin = 1.0 / [UIScreen mainScreen].scale;
-  
-  if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(CGRectGetMinX(self.sansButton.frame),
-                                                   CGRectGetMinY(self.sansButton.frame),
-                                                   (CGRectGetMaxX(self.openDyslexicButton.frame) -
-                                                   CGRectGetMinX(self.sansButton.frame)),
-                                                   thin)];
-    [line setBackgroundColor:[UIColor lightGrayColor]];
-    [self addSubview:line];
-  }
-    
+
   {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(CGRectGetMinX(self.openDyslexicButton.frame),
-                                                   CGRectGetMinY(self.openDyslexicButton.frame),
-                                                   thin,
-                                                   CGRectGetHeight(self.openDyslexicButton.frame))];
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.openDyslexicButton.frame),
+                                     CGRectGetMinY(self.openDyslexicButton.frame),
+                                     thin,
+                                     CGRectGetHeight(self.openDyslexicButton.frame))];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
 
   {
-    UIView *const line = [[UIView alloc]
-                           initWithFrame:CGRectMake(CGRectGetMinX(self.whiteOnBlackButton.frame),
-                                                    CGRectGetMinY(self.whiteOnBlackButton.frame),
-                                                    (CGRectGetMaxX(self.blackOnWhiteButton.frame) -
-                                                     CGRectGetMinX(self.whiteOnBlackButton.frame)),
-                                                    thin)];
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.whiteOnBlackButton.frame),
+                                     CGRectGetMinY(self.whiteOnBlackButton.frame),
+                                     (CGRectGetMaxX(self.blackOnWhiteButton.frame) -
+                                      CGRectGetMinX(self.whiteOnBlackButton.frame)),
+                                     thin)];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
   
   {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(CGRectGetMinX(self.decreaseButton.frame),
-                                                   CGRectGetMinY(self.decreaseButton.frame),
-                                                   (CGRectGetMaxX(self.increaseButton.frame)
-                                                    - CGRectGetMinX(self.decreaseButton.frame)),
-                                                   thin)];
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.decreaseButton.frame),
+                                     CGRectGetMinY(self.decreaseButton.frame),
+                                     (CGRectGetMaxX(self.increaseButton.frame)
+                                      - CGRectGetMinX(self.decreaseButton.frame)),
+                                     thin)];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
   
   {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(CGRectGetMinX(self.brightnessView.frame),
-                                                   CGRectGetMinY(self.brightnessView.frame),
-                                                   CGRectGetWidth(self.brightnessView.frame),
-                                                   thin)];
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.brightnessView.frame),
+                                     CGRectGetMinY(self.brightnessView.frame),
+                                     CGRectGetWidth(self.brightnessView.frame),
+                                     thin)];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
   
   {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(CGRectGetMinX(self.serifButton.frame),
-                                                   CGRectGetMinY(self.serifButton.frame),
-                                                   thin,
-                                                   CGRectGetHeight(self.serifButton.frame))];
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.serifButton.frame),
+                                     CGRectGetMinY(self.serifButton.frame),
+                                     thin,
+                                     CGRectGetHeight(self.serifButton.frame))];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
   
   {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(CGRectGetMinX(self.blackOnSepiaButton.frame),
-                                                   CGRectGetMinY(self.blackOnSepiaButton.frame),
-                                                   thin,
-                                                   CGRectGetHeight(self.blackOnSepiaButton.frame))];
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.blackOnSepiaButton.frame),
+                                     CGRectGetMinY(self.blackOnSepiaButton.frame),
+                                     thin,
+                                     CGRectGetHeight(self.blackOnSepiaButton.frame))];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
 
   {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(CGRectGetMinX(self.blackOnWhiteButton.frame),
-                                                   CGRectGetMinY(self.blackOnWhiteButton.frame),
-                                                   thin,
-                                                   CGRectGetHeight(self.blackOnWhiteButton.frame))];
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.blackOnWhiteButton.frame),
+                                     CGRectGetMinY(self.blackOnWhiteButton.frame),
+                                     thin,
+                                     CGRectGetHeight(self.blackOnWhiteButton.frame))];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
   
   {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(CGRectGetMinX(self.increaseButton.frame),
-                                                   CGRectGetMinY(self.increaseButton.frame),
-                                                   thin,
-                                                   CGRectGetHeight(self.increaseButton.frame))];
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.increaseButton.frame),
+                                     CGRectGetMinY(self.increaseButton.frame),
+                                     thin,
+                                     CGRectGetHeight(self.increaseButton.frame))];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
