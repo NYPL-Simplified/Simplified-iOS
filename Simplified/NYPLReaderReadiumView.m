@@ -24,6 +24,32 @@
 
 #import "SimplyE-Swift.h"
 
+//==============================================================================
+#pragma mark - Web View
+
+@interface NYPLWebView: WKWebView
+@end
+
+@implementation NYPLWebView
+
+// On Open eBooks we have a requirement to not allow copying of book text
+#ifdef OPENEBOOKS
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+  // Note: this does not work on iOS <= 10: the callback is never called for
+  // the copy: action. It is on iOS 11+.
+  if (action == @selector(copy:)) {
+    return NO;
+  }
+  return [super canPerformAction:action withSender:sender];
+}
+#endif
+
+@end
+
+//==============================================================================
+#pragma mark - Backing View Class Extension
+
 @interface NYPLReaderReadiumView ()
   <NYPLReaderRenderer, RDPackageResourceServerDelegate, NYPLReadiumViewSyncManagerDelegate, NYPLBackgroundWorkOwner, WKNavigationDelegate, WKUIDelegate>
 
@@ -39,7 +65,7 @@
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) NSArray *TOCElements;
 @property (nonatomic) NSArray<NYPLReadiumBookmark *> *bookmarkElements;
-@property (nonatomic) WKWebView *webView;
+@property (nonatomic) NYPLWebView *webView;
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
 @property (nonatomic) NSUInteger spineItemPageIndex;
@@ -97,6 +123,9 @@ static void generateTOCElements(NSArray *const navigationElements,
   }
 }
 
+//==============================================================================
+#pragma mark - Backing View
+
 @implementation NYPLReaderReadiumView
 
 - (instancetype)initWithFrame:(CGRect const)frame
@@ -147,7 +176,7 @@ static void generateTOCElements(NSArray *const navigationElements,
     webviewFrame = CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100);
   }
 
-  self.webView = [[WKWebView alloc] initWithFrame:webviewFrame];
+  self.webView = [[NYPLWebView alloc] initWithFrame:webviewFrame];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
   self.webView.navigationDelegate = self;
@@ -235,6 +264,33 @@ static void generateTOCElements(NSArray *const navigationElements,
 
 - (void)didChangePasteboard
 {
+#ifdef OPENEBOOKS
+  if (@available(iOS 11, *)) {
+    // nothing to do because NYPLWebView successfully hides the Copy action
+    // on iOS 11+.
+  } else {
+    // disable notification temporarily to avoid infinite loop
+    [[NSNotificationCenter defaultCenter]
+     removeObserver:self
+     name:UIPasteboardChangedNotification
+     object:nil];
+
+    // This is necessary for iOS <= 10 because of a bug in iOS, where the Copy
+    // action unfortunately is still displayed. The workaround here is to
+    // essentially "copy nothing".
+    // Note: Discarding the previous pasteboard string is consistent with
+    // the user's action because they did effectively select Copy, so they
+    // would have lost the previous pasteboard contents anyway.
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    [pasteboard setString:@""];
+
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(didChangePasteboard)
+     name:UIPasteboardChangedNotification
+     object:nil];
+  }
+#endif
   [self clearTextSelection];
 }
 
