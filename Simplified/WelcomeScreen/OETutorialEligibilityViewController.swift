@@ -31,7 +31,8 @@ class OETutorialEligibilityViewController : UIViewController {
     }
     
     self.descriptionLabel = UILabel(frame: CGRect.zero)
-    self.descriptionLabel.font = UIFont.systemFont(ofSize: 20.0)
+    self.descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),
+                                        size: 20.0)
     self.descriptionLabel.text = NSLocalizedString("TutorialEligibilityViewControllerDescription", comment: "Description of Open eBooks app displayed during 1st launch tutorial")
     self.descriptionLabel.textAlignment = .center
     self.descriptionLabel.numberOfLines = 0

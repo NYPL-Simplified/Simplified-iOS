@@ -41,7 +41,8 @@ class OETutorialChoiceViewController : UIViewController {
     
     title = NSLocalizedString("Log In", comment: "")
     
-    descriptionLabel.font = UIFont.systemFont(ofSize: 20.0)
+    descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),
+                                   size: 20.0)
     descriptionLabel.text = NSLocalizedString("You need to login to access the collection.", comment: "")
     descriptionLabel.textAlignment = .center
     descriptionLabel.numberOfLines = 0
