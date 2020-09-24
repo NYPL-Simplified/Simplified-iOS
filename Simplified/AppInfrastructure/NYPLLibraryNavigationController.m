@@ -39,6 +39,7 @@
   vc.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
 }
 
+// for converting this to Swift, see https://bit.ly/3mM9QoH
 - (void)switchLibrary
 {
   UIViewController *viewController = self.visibleViewController;
