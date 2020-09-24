@@ -1,5 +1,5 @@
 //
-//  NYPLSessionCredentials.swift
+//  NYPLCredentials.swift
 //  SimplyE
 //
 //  Created by Jacek Szyja on 22/05/2020.
