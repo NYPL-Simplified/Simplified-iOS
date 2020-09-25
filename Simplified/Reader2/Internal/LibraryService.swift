@@ -37,7 +37,9 @@ final class LibraryService: NSObject, Loggable {
     drmLibraryServices.append(LCPLibraryService())
     #endif
     
+    #if FEATURE_DRM_CONNECTOR
     drmLibraryServices.append(AdobeDRMLibraryService())
+    #endif
   }
 
   /// Complementary parsing of the publication.
