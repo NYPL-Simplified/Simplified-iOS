@@ -245,7 +245,7 @@
 #endif
 }
 
--(void) welcomeScreenCompletionHandlerForAccount:(Account *const)account
+- (void)welcomeScreenCompletionHandlerForAccount:(Account *const)account
 {
   [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
   [[NYPLBookRegistry sharedRegistry] save];
@@ -253,8 +253,6 @@
   [self dismissViewControllerAnimated:YES completion:^{
     [self updateFeedAndRegistryOnAccountChange];
   }];
-//  [self updateFeedAndRegistryOnAccountChange];
-//  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
