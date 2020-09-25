@@ -14,6 +14,9 @@ extension NYPLAppDelegate {
     window.rootViewController = NYPLRootTabBarController.shared()
   }
 
+  @objc func completeBecomingActive() {
+  }
+
   /// Handle all custom URL schemes specific to SimplyE here.
   /// - Parameter url: The URL to process
   /// - Returns: `true` if the app should handle the URL because it matches a
