@@ -2305,6 +2305,7 @@
 				73FCA2A825005BA4001B0C5D /* Sources */,
 				73FCA35A25005BA4001B0C5D /* Frameworks */,
 				73FCA38925005BA4001B0C5D /* Resources */,
+				732940C7251E75EA0065E362 /* Fix software licenses file */,
 				73FCA39F25005BA4001B0C5D /* Copy Frameworks (Carthage) */,
 				73FCA3A025005BA4001B0C5D /* Crashlytics */,
 			);
@@ -2588,6 +2589,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+		732940C7251E75EA0065E362 /* Fix software licenses file */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"\"$(BUILT_PRODUCTS_DIR)/$(CONTENTS_FOLDER_PATH)\"/software-license.html",
+			);
+			name = "Fix software licenses file";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/\"\nsed -i '' \"s/SimplyE/Open eBooks/\" software-licenses.html\n";
 		};
 		7347F11E245A4DE200558D7F /* Copy Frameworks (Carthage) */ = {
 			isa = PBXShellScriptBuildPhase;
