@@ -9,6 +9,7 @@
 import Foundation
 
 extension NYPLConfiguration {
+  /// The only "library" account ID that Open eBooks will ever handle.
   static let OpenEBooksUUID = "urn:uuid:e1a01c16-04e7-4781-89fd-b442dd1be001"
 
   static let circulationBaseURLProduction = "https://circulation.openebooks.us"
