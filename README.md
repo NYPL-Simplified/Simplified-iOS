@@ -17,9 +17,9 @@ ln -s <rmsdk_path>/DRM_Connector_Prerelease adobe-rmsdk
 git checkout develop
 git submodule update --init --recursive
 ```
-03. Build dependencies (carthage, OpenSSL, cURL). You can also use this script at any other time if you ever need to rebuild them: it should be idempotent. The non-optional parameter specifies which configuration of the AudioEngine framework to use. Note that the Release build of AudioEngine does not contain slices for Simulator architectures, causing a Carthage build failure.
+03. Build dependencies (carthage, OpenSSL, cURL). You can also use this script at any other time if you ever need to rebuild them: it should be idempotent.
 ```bash
-./build-3rd-parties-dependencies.sh <Debug | Release>
+./build-3rd-parties-dependencies.sh
 ```
 
 04. Open Simplified.xcodeproj and build the SimplyE target.
@@ -29,11 +29,11 @@ git submodule update --init --recursive
 
 To build all Carthage dependencies from scratch you can use the following script. Note that this will wipe the Carthage folder if you already have it:
 ```bash
-./build-carthage.sh <Debug | Release>
+./build-carthage.sh
 ```
 To run a `carthage update`, use the following script to avoid AudioEngine errors. Note, this will rebuild all Carthage dependencies:
 ```bash
-./carthage-update-simplye.sh <Debug | Release>
+./carthage-update-simplye.sh
 ```
 To build OpenSSL and cURL from scratch, you can use the following script:
 ```bash
@@ -61,8 +61,8 @@ Both scripts must be run from the Simplified-iOS repo root.
 14. `open Simplified.xcodeproj`
 15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
 16. Remove `FEATURE_DRM_CONNECTOR` entries in _Build Settings_ -> _Swift Compiler - Custom Flags_ -> _Active Compilation Conditions_ in project settings
-17. Delete `NYPLAEToolkit.framework`, `AudioEngine.framework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
-18. Remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
+17. Delete `NYPLAEToolkit.framework`, `AudioEngine.xcframework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
+18. Remove input and output filepaths for  `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
 19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
 20. Build.
 
