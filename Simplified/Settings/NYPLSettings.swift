@@ -12,8 +12,8 @@ import Foundation
   
   static private let customMainFeedURLKey = "NYPLSettingsCustomMainFeedURL"
   static private let accountMainFeedURLKey = "NYPLSettingsAccountMainFeedURL"
-  static private let userHasSeenWelcomeScreenKey = "NYPLUserHasSeenWelcomeScreenKey"
   static private let userPresentedAgeCheckKey = "NYPLUserPresentedAgeCheckKey"
+  static let userHasAcceptedEULAKey = "NYPLSettingsUserAcceptedEULA"
   static private let userSeenFirstTimeSyncMessageKey = "userSeenFirstTimeSyncMessageKey"
   static private let useBetaLibrariesKey = "NYPLUseBetaLibrariesKey"
   static let settingsLibraryAccountsKey = "NYPLSettingsLibraryAccountsKey"
@@ -47,7 +47,8 @@ import Foundation
       NotificationCenter.default.post(name: Notification.Name.NYPLSettingsDidChange, object: self)
     }
   }
-  
+
+  /// Whether the user has seen the welcome screen or completed tutorial
   var userHasSeenWelcomeScreen: Bool {
     get {
       return UserDefaults.standard.bool(forKey: NYPLSettings.userHasSeenWelcomeScreenKey)
@@ -68,6 +69,16 @@ import Foundation
     }
   }
   
+  var userHasAcceptedEULA: Bool {
+    get {
+      return UserDefaults.standard.bool(forKey: NYPLSettings.userHasAcceptedEULAKey)
+    }
+    set(b) {
+      UserDefaults.standard.set(b, forKey: NYPLSettings.userHasAcceptedEULAKey)
+      UserDefaults.standard.synchronize()
+    }
+  }
+
   var userHasSeenFirstTimeSyncMessage: Bool {
     get {
       return UserDefaults.standard.bool(forKey: NYPLSettings.userSeenFirstTimeSyncMessageKey)

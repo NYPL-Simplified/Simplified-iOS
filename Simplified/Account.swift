@@ -1,5 +1,4 @@
 
-private let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
@@ -180,11 +179,12 @@ class OPDS2SamlIDP: NSObject, Codable {
   
   var eulaIsAccepted:Bool {
     get {
-      guard let result = getAccountDictionaryKey(userAcceptedEULAKey) else { return false }
+      guard let result = getAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey) else { return false }
       return result as! Bool
     }
     set {
-      setAccountDictionaryKey(userAcceptedEULAKey, toValue: newValue as AnyObject)
+      setAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey,
+                              toValue: newValue as AnyObject)
     }
   }
   var syncPermissionGranted:Bool {
