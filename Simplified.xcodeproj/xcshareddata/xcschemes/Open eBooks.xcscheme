@@ -56,6 +56,16 @@
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7320AB23251EBC9900E3F04D"
+               BuildableName = "OpenEbooksTests.xctest"
+               BlueprintName = "OpenEbooksTests"
+               ReferencedContainer = "container:Simplified.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -11,6 +11,9 @@
 
 @end
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wgnu"
+
 @implementation NYPLOPDSLinkTests
 
 - (void)setUp
@@ -59,7 +62,6 @@
   XCTAssertNil(link.type);
   XCTAssertNil(link.hreflang);
   XCTAssertNil(link.title);
-  XCTAssertNil(link.length);
 }
 
 - (void)testLink1
@@ -71,7 +73,6 @@
   XCTAssertEqualObjects(link.type, @"application/epub+zip");
   XCTAssertNil(link.hreflang);
   XCTAssertNil(link.title);
-  XCTAssertNil(link.length);
 }
 
 - (void)testLink2
@@ -83,7 +84,6 @@
   XCTAssertNil(link.type);
   XCTAssertNil(link.hreflang);
   XCTAssertNil(link.title);
-  XCTAssertNil(link.length);
 }
 
 - (void)testLink3
@@ -95,7 +95,6 @@
   XCTAssertNil(link.type);
   XCTAssertNil(link.hreflang);
   XCTAssertNil(link.title);
-  XCTAssertNil(link.length);
 }
 
 - (void)testLink4
@@ -106,7 +105,9 @@
   XCTAssertNil(link.type);
   XCTAssertNil(link.hreflang);
   XCTAssertEqualObjects(link.title, @"Nonfiction");
-  XCTAssertNil(link.length);
 }
 
 @end
+
+#pragma GCC diagnostic pop
+

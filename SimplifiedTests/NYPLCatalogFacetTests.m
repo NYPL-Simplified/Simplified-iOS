@@ -13,6 +13,9 @@ static NYPLOPDSLink *scienceFictionXML = nil;
 
 @implementation NYPLCatalogFacetTests
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wgnu"
+
 + (void)setUp
 {
   {
@@ -50,9 +53,7 @@ static NYPLOPDSLink *scienceFictionXML = nil;
   
   XCTAssert(!facet.active);
   
-  XCTAssertEqualObjects(facet.href, [[NSURL alloc] initWithScheme:@"http"
-                                                             host:@"example.com"
-                                                             path:@"/biography"]);
+  XCTAssertEqualObjects(facet.href, [NSURL URLWithString:@"http://example.com/biography"]);
   
   XCTAssertEqualObjects(facet.title, @"Biography");
 }
@@ -65,11 +66,11 @@ static NYPLOPDSLink *scienceFictionXML = nil;
   
   XCTAssert(facet.active);
   
-  XCTAssertEqualObjects(facet.href, [[NSURL alloc] initWithScheme:@"http"
-                                                             host:@"example.com"
-                                                             path:@"/sci-fi"]);
+  XCTAssertEqualObjects(facet.href, [NSURL URLWithString:@"http://example.com/sci-fi"]);
   
   XCTAssertEqualObjects(facet.title, @"Science-Fiction");
 }
+
+#pragma GCC diagnostic pop
 
 @end
