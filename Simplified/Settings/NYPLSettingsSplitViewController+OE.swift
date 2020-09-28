@@ -40,15 +40,6 @@ extension NYPLSettingsSplitViewController {
       }
       ),
       NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 0, section: 1),
-        title: NSLocalizedString("Help", comment: "Title for Help section"),
-        selectionHandler: { (splitVC, tableVC) in
-          // TODO: SIMPLY-3051 figure out if we still want HelpStack
-          //          let hs = HSHelpStack.instance() as! HSHelpStack
-          //          hs.showHelp(splitVC)
-      }
-      ),
-      NYPLSettingsPrimaryTableItem.init(
         indexPath: IndexPath(row: 0, section: 2),
         title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
