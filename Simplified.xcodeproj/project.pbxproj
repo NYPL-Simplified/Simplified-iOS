@@ -124,7 +124,6 @@
 		17071065242A923400E2648F /* NYPLSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17071060242A923400E2648F /* NYPLSecrets.swift */; };
 		171966A924170819007BB87E /* NYPLBookState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171966A824170819007BB87E /* NYPLBookState.swift */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
-		175E47DE24E477710066A6CF /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		175E480824EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */; };
 		175E480E24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */; };
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
@@ -137,7 +136,6 @@
 		17DFC5F2251E80D6003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
 		17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		17DFC5F8251E8644003A19CC /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		21196605250956C000A6D0EF /* JWKResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2199020724FD35DC001BC727 /* JWKResponse.swift */; };
 		2198F910250A90EE000D9DAB /* AudioBookVendorsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2198F90F250A90EE000D9DAB /* AudioBookVendorsHelper.swift */; };
 		219901F424FD2DE9001BC727 /* jwk.json in Resources */ = {isa = PBXBuildFile; fileRef = 219901F324FD2DE9001BC727 /* jwk.json */; };
 		219901F524FD2DE9001BC727 /* jwk.json in Resources */ = {isa = PBXBuildFile; fileRef = 219901F324FD2DE9001BC727 /* jwk.json */; };
@@ -215,8 +213,6 @@
 		73085E3A25030D80008F6244 /* OEMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E3725030D66008F6244 /* OEMigrations.swift */; };
 		730B7868249AB9D7008F28B3 /* StdLib+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* StdLib+NYPLAdditions.swift */; };
 		730B7869249AB9D7008F28B3 /* StdLib+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* StdLib+NYPLAdditions.swift */; };
-		730EDFEA2515378C0038DD9F /* KeychainStoredVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0FE247835FF00C7984E /* KeychainStoredVariable.swift */; };
-		730EDFEF251537AF0038DD9F /* NYPLSessionCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0F62478337D00C7984E /* NYPLSessionCredentials.swift */; };
 		730EDFEA2515378C0038DD9F /* NYPLKeychainStoredVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0FE247835FF00C7984E /* NYPLKeychainStoredVariable.swift */; };
 		730EDFEF251537AF0038DD9F /* NYPLCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0F62478337D00C7984E /* NYPLCredentials.swift */; };
 		730EDFF02515380D0038DD9F /* NYPLAnnouncementBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */; };
@@ -541,6 +537,8 @@
 		7360D0D624BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
 		7364D69C2492A38C0087B056 /* R2+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */; };
 		7364D69D2492A38C0087B056 /* R2+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */; };
+		736CF271252278AA0081D30A /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
+		736CF272252278AA0081D30A /* AudioEngine.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		737DCB8C245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737DCB8B245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift */; };
 		737DCB8D245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737DCB8B245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift */; };
 		7384C800242BB43400D5F960 /* NYPLCachingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C7FF242BB43300D5F960 /* NYPLCachingTests.swift */; };
@@ -740,7 +738,6 @@
 		739E60FA244A0D8600D00301 /* NYPLOPDSType.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */; };
 		739E60FB244A0D8600D00301 /* NYPLPDFViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */; };
 		739E60FE244A0D8600D00301 /* PDFRendererProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */; };
-		739E60FF244A0D8600D00301 /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C342176900E00FF64AB /* AudioEngine.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		739E6100244A0D8600D00301 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922F1E78871A00AD338D /* MediaPlayer.framework */; };
 		739E6101244A0D8600D00301 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092271E78859E00AD338D /* CoreMedia.framework */; };
 		739E6102244A0D8600D00301 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922D1E7886ED00AD338D /* CoreVideo.framework */; };
@@ -830,10 +827,10 @@
 		73B550FA2511723000D05B86 /* NYPLCatalogNavigationController+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2A25102A2B00691A70 /* NYPLCatalogNavigationController+SE.swift */; };
 		73B550FB2511725C00D05B86 /* NSNotification+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */; };
 		73B550FC2511729E00D05B86 /* NYPLBookContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73FB0AC824EB403D0072E430 /* NYPLBookContentType.swift */; };
-		73B550FD251172C900D05B86 /* KeychainStoredVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0FE247835FF00C7984E /* KeychainStoredVariable.swift */; };
-		73B550FE251172CA00D05B86 /* KeychainStoredVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0FE247835FF00C7984E /* KeychainStoredVariable.swift */; };
-		73B550FF251172CF00D05B86 /* NYPLSessionCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0F62478337D00C7984E /* NYPLSessionCredentials.swift */; };
-		73B55100251172CF00D05B86 /* NYPLSessionCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0F62478337D00C7984E /* NYPLSessionCredentials.swift */; };
+		73B550FD251172C900D05B86 /* NYPLKeychainStoredVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0FE247835FF00C7984E /* NYPLKeychainStoredVariable.swift */; };
+		73B550FE251172CA00D05B86 /* NYPLKeychainStoredVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0FE247835FF00C7984E /* NYPLKeychainStoredVariable.swift */; };
+		73B550FF251172CF00D05B86 /* NYPLCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0F62478337D00C7984E /* NYPLCredentials.swift */; };
+		73B55100251172CF00D05B86 /* NYPLCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0857A0F62478337D00C7984E /* NYPLCredentials.swift */; };
 		73B551012511737B00D05B86 /* SEMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E3425030D27008F6244 /* SEMigrations.swift */; };
 		73B551022511738A00D05B86 /* NYPLBasicAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086C45D524AE77CA00F5108E /* NYPLBasicAuth.swift */; };
 		73B55103251173E500D05B86 /* NYPLAnnouncementBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */; };
@@ -1210,18 +1207,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		731B2B24244A2B6C00A7A649 /* Embed Frameworks */ = {
 		17DFC5F5251E84C5003A19CC /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				73E4959D244E5FA500BD8F15 /* R2Streamer.framework in Embed Frameworks */,
-				731B2B23244A2B6C00A7A649 /* R2Navigator.framework in Embed Frameworks */,
-				731B2B26244A2B6F00A7A649 /* R2Shared.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 				17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1234,6 +1225,20 @@
 			files = (
 				17DFC5F8251E8644003A19CC /* AudioEngine.xcframework in CopyFiles */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		731B2B24244A2B6C00A7A649 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				736CF272252278AA0081D30A /* AudioEngine.xcframework in Embed Frameworks */,
+				73E4959D244E5FA500BD8F15 /* R2Streamer.framework in Embed Frameworks */,
+				731B2B23244A2B6C00A7A649 /* R2Navigator.framework in Embed Frameworks */,
+				731B2B26244A2B6F00A7A649 /* R2Shared.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		7347F134245A50A900558D7F /* CopyFiles */ = {
@@ -1815,7 +1820,6 @@
 				731B2B20244A1EB400A7A649 /* CryptoSwift.framework in Frameworks */,
 				731B2B21244A1EB400A7A649 /* Minizip.framework in Frameworks */,
 				739E60FE244A0D8600D00301 /* PDFRendererProvider.framework in Frameworks */,
-				739E60FF244A0D8600D00301 /* AudioEngine.framework in Frameworks */,
 				731B2B22244A2B6C00A7A649 /* R2Navigator.framework in Frameworks */,
 				739E6100244A0D8600D00301 /* MediaPlayer.framework in Frameworks */,
 				739E6101244A0D8600D00301 /* CoreMedia.framework in Frameworks */,
@@ -1848,6 +1852,7 @@
 				739E6119244A0D8600D00301 /* PureLayout.framework in Frameworks */,
 				739E611A244A0D8600D00301 /* SQLite.framework in Frameworks */,
 				739E611B244A0D8600D00301 /* NYPLAEToolkit.framework in Frameworks */,
+				736CF271252278AA0081D30A /* AudioEngine.xcframework in Frameworks */,
 				739E611C244A0D8600D00301 /* NYPLAudiobookToolkit.framework in Frameworks */,
 				739E611D244A0D8600D00301 /* Firebase.framework in Frameworks */,
 				739E611E244A0D8600D00301 /* FirebaseCoreDiagnostics.framework in Frameworks */,
@@ -1959,7 +1964,6 @@
 				7326AB3624BD272200C3BA29 /* R2Navigator.framework in Frameworks */,
 				738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */,
 				738EF2DC2405EA6000F388FB /* FirebaseCoreDiagnostics.framework in Frameworks */,
-				175E47DE24E477710066A6CF /* (null) in Frameworks */,
 				738EF2DD2405EA6000F388FB /* FirebaseCore.framework in Frameworks */,
 				738EF2DE2405EA6000F388FB /* FirebaseAnalytics.framework in Frameworks */,
 				738EF2E02405EA6000F388FB /* nanopb.framework in Frameworks */,
@@ -3307,7 +3311,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLCardCreator.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAEToolkit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAudiobookToolkit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AudioEngine.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PDFRendererProvider.framework",
 				"$(SRCROOT)/../r2-streamer-swift/Carthage/Build/iOS/CryptoSwift.framework",
 				"$(SRCROOT)/../r2-streamer-swift/Carthage/Build/iOS/Fuzi.framework",
@@ -3326,7 +3329,6 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLCardCreator.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAEToolkit.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAudiobookToolkit.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AudioEngine.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PDFRendererProvider.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/CryptoSwift.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Fuzi.framework",
@@ -3502,7 +3504,7 @@
 				7347F04E245A4DE200558D7F /* NSURL+NYPLURLAdditions.m in Sources */,
 				7347F04F245A4DE200558D7F /* NYPLAsync.m in Sources */,
 				7342702524DCB26700A4F605 /* URLResponse+NYPL.swift in Sources */,
-				730EDFEF251537AF0038DD9F /* NYPLSessionCredentials.swift in Sources */,
+				730EDFEF251537AF0038DD9F /* NYPLCredentials.swift in Sources */,
 				730EDFEF251537AF0038DD9F /* NYPLCredentials.swift in Sources */,
 				7347F050245A4DE200558D7F /* NYPLReloadView.m in Sources */,
 				7347F051245A4DE200558D7F /* NYPLReachabilityManager.m in Sources */,
@@ -3559,7 +3561,7 @@
 				7347F077245A4DE200558D7F /* NYPLFacetViewDefaultDataSource.swift in Sources */,
 				738CB2072509A87700891F31 /* NYPLConfiguration+SE.swift in Sources */,
 				7347F078245A4DE200558D7F /* NYPLAppTheme.swift in Sources */,
-				73B550FE251172CA00D05B86 /* KeychainStoredVariable.swift in Sources */,
+				73B550FE251172CA00D05B86 /* NYPLKeychainStoredVariable.swift in Sources */,
 				7347F079245A4DE200558D7F /* UIColor+NYPLColorAdditions.m in Sources */,
 				7342703824DCB31800A4F605 /* NYPLReaderPositionsVC.swift in Sources */,
 				7347F07A245A4DE200558D7F /* URLRequest+NYPL.swift in Sources */,
@@ -3673,7 +3675,7 @@
 				7347F0D1245A4DE200558D7F /* NYPLLocalization.m in Sources */,
 				7347F0D2245A4DE200558D7F /* NYPLSecrets.swift in Sources */,
 				73B55104251173E500D05B86 /* NYPLAnnouncementBusinessLogic.swift in Sources */,
-				73B55100251172CF00D05B86 /* NYPLSessionCredentials.swift in Sources */,
+				73B55100251172CF00D05B86 /* NYPLCredentials.swift in Sources */,
 				7342702F24DCB30B00A4F605 /* EPUBModule.swift in Sources */,
 				7347F0D3245A4DE200558D7F /* NYPLBarcodeScanningViewController.m in Sources */,
 				7342702C24DCB30B00A4F605 /* ReaderError.swift in Sources */,
@@ -3705,7 +3707,7 @@
 				739E6050244A0D8600D00301 /* CancellableResult.swift in Sources */,
 				739E6051244A0D8600D00301 /* NYPLAgeCheck.swift in Sources */,
 				739E6052244A0D8600D00301 /* Log.swift in Sources */,
-				73B550FF251172CF00D05B86 /* NYPLSessionCredentials.swift in Sources */,
+				73B550FF251172CF00D05B86 /* NYPLCredentials.swift in Sources */,
 				739E6053244A0D8600D00301 /* NYPLBookRegistry.m in Sources */,
 				739E6054244A0D8600D00301 /* UILabel+NYPLAppearanceAdditions.m in Sources */,
 				739E6055244A0D8600D00301 /* NYPLUserSettingsVC.swift in Sources */,
@@ -3851,7 +3853,7 @@
 				739E60C7244A0D8600D00301 /* NYPLSettingsAccountsList.swift in Sources */,
 				739E60C8244A0D8600D00301 /* Data+Base64.swift in Sources */,
 				739E60C9244A0D8600D00301 /* NYPLAppDelegate.m in Sources */,
-				73B550FD251172C900D05B86 /* KeychainStoredVariable.swift in Sources */,
+				73B550FD251172C900D05B86 /* NYPLKeychainStoredVariable.swift in Sources */,
 				739E60CB244A0D8600D00301 /* NYPLCatalogFacetGroup.m in Sources */,
 				739E60CC244A0D8600D00301 /* NYPLOPDSAcquisition.m in Sources */,
 				739E60CD244A0D8600D00301 /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
@@ -4463,13 +4465,11 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.7.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.6.0;
+				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = SimplyE;
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
@@ -4519,7 +4519,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = SimplyE;
@@ -4567,7 +4570,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = SimplyE;
@@ -4620,8 +4626,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.7.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -4886,7 +4890,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -4903,7 +4907,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.6.1;
+				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
@@ -4937,7 +4941,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -4958,7 +4962,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.6.1;
+				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
