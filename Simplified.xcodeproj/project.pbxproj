@@ -199,7 +199,6 @@
 		5DD567B522B97344001F0C83 /* Data+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD567B422B97344001F0C83 /* Data+Base64.swift */; };
 		7307A5ED23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */; };
 		7307A5F223FF22EC00DE53DE /* ZXingObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA48D215441A70055DB93 /* ZXingObjC.framework */; };
-		7307A5F423FF2A6000DE53DE /* NYPLStringAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7307A5F323FF2A6000DE53DE /* NYPLStringAdditionsTests.swift */; };
 		73085E1A2502DE88008F6244 /* OETutorialChoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */; };
 		73085E1B2502DE88008F6244 /* NYPLPresentationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */; };
 		73085E212502E2CE008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json in Resources */ = {isa = PBXBuildFile; fileRef = 73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */; };
@@ -501,7 +500,6 @@
 		735DD0C82522A0540096D1F9 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
 		735DD0C92522A0590096D1F9 /* NYPLCatalogFacetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */; };
 		735DD0CA2522A0610096D1F9 /* NYPLOpenSearchDescriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */; };
-		735DD0CB2522A0660096D1F9 /* NYPLStringAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7307A5F323FF2A6000DE53DE /* NYPLStringAdditionsTests.swift */; };
 		735DD0CC2522A06C0096D1F9 /* OPDS2CatalogsFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1DFD22860563003B49A5 /* OPDS2CatalogsFeedTests.swift */; };
 		735DD0CD2522A0730096D1F9 /* String+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735F41A2243E381D00046182 /* String+NYPLAdditionsTests.swift */; };
 		735DD0CE2522A0730096D1F9 /* UIColor+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735DD0BD252299A90096D1F9 /* UIColor+NYPLAdditionsTests.swift */; };
@@ -1044,7 +1042,6 @@
 		11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLRootTabBarController.m; sourceTree = "<group>"; };
 		11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogNavigationController.h; sourceTree = "<group>"; };
 		11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogNavigationController.m; sourceTree = "<group>"; };
-		1157E92D19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+NYPLStringAdditionsTests.m"; sourceTree = "<group>"; };
 		11580AC61986A77B00949A15 /* NYPLBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookCell.h; sourceTree = "<group>"; };
 		11580AC71986A77B00949A15 /* NYPLBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NYPLBookCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAccountSignInViewController.h; sourceTree = "<group>"; };
@@ -1210,7 +1207,6 @@
 		5DD567AE22B95A30001F0C83 /* String+MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+MD5.swift"; sourceTree = "<group>"; };
 		5DD567B422B97344001F0C83 /* Data+Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Base64.swift"; sourceTree = "<group>"; };
 		7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOpenSearchDescriptionTests.swift; sourceTree = "<group>"; };
-		7307A5F323FF2A6000DE53DE /* NYPLStringAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLStringAdditionsTests.swift; sourceTree = "<group>"; };
 		73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialChoiceViewController.swift; sourceTree = "<group>"; };
 		73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLPresentationUtils.swift; sourceTree = "<group>"; };
 		73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = OpenEBooks_OPDS2_Catalog_Feed.json; path = OpenEbooks/Resources/OpenEBooks_OPDS2_Catalog_Feed.json; sourceTree = "<group>"; };
@@ -1533,7 +1529,6 @@
 				2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */,
 				08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */,
 				08A352241BDE8E640040BF1D /* Security.framework in Frameworks */,
-				732940DF251E849C0065E362 /* (null) in Frameworks */,
 				08A352201BDE8E410040BF1D /* CFNetwork.framework in Frameworks */,
 				84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
@@ -2254,7 +2249,6 @@
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 				7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */,
 				219901F224FD2DBE001BC727 /* JWK */,
-				1157E92D19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m */,
 				1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */,
 				2D8790A420129AF200E2763F /* NYPLBookAcquisitionPathTests.swift */,
 				173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */,
@@ -2264,7 +2258,6 @@
 				11C5DD171977335E005A9945 /* NYPLKeychainTests.m */,
 				5D73DA3D22A07B9A00162CB8 /* NYPLMyBooksDownloadCenterTests.swift */,
 				7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */,
-				7307A5F323FF2A6000DE53DE /* NYPLStringAdditionsTests.swift */,
 				111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */,
 				1183F34D194F775400DC322F /* OPDS */,
 				B51C1DFD22860563003B49A5 /* OPDS2CatalogsFeedTests.swift */,
@@ -2881,7 +2874,6 @@
 				2199020624FD3334001BC727 /* NYPLJWKConversionTest.swift in Sources */,
 				1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */,
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
-				7307A5F423FF2A6000DE53DE /* NYPLStringAdditionsTests.swift in Sources */,
 				2D8790A520129AF200E2763F /* NYPLBookAcquisitionPathTests.swift in Sources */,
 				735350B724918432006021BD /* URLRequest+NYPLTests.swift in Sources */,
 				7384C804242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift in Sources */,
@@ -2906,7 +2898,6 @@
 				735DD0D12522A0730096D1F9 /* URLRequest+NYPLTests.swift in Sources */,
 				7320AB2B251EBC9900E3F04D /* JWKResponse.swift in Sources */,
 				735DD0AE2522935B0096D1F9 /* NYPLCachingTests.swift in Sources */,
-				735DD0CB2522A0660096D1F9 /* NYPLStringAdditionsTests.swift in Sources */,
 				7320AB30251EBC9900E3F04D /* NYPLJWKConversionTest.swift in Sources */,
 				735DD0CC2522A06C0096D1F9 /* OPDS2CatalogsFeedTests.swift in Sources */,
 				735DD0CE2522A0730096D1F9 /* UIColor+NYPLAdditionsTests.swift in Sources */,
