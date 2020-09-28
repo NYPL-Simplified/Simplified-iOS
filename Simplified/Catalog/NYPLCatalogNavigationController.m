@@ -38,6 +38,7 @@
   // ideal, in my observations this seems to always be followed by
   // another `load` command once the authentication document is received.
   NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
+  NYPLLOG_F(@"urlToLoad for NYPLCatalogFeedViewController: %@", urlToLoad);
   self.viewController = [[NYPLCatalogFeedViewController alloc]
                          initWithURL:urlToLoad];
   
