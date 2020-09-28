@@ -54,6 +54,7 @@
 
 - (void)loadWithURL:(NSURL* _Nonnull)url
 {
+  NYPLLOG_F(@"url=%@", url);
   self.URL = url;
   [self load];
 }
@@ -123,6 +124,7 @@
   [NSTimer scheduledTimerWithTimeInterval: activityLabelTimer target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
 
+  NYPLLOG_F(@"RemoteVC: issueing request [%@]", [request loggableString]);
   self.dataTask = [NYPLNetworkExecutor.shared addBearerAndExecute:request
                            completion:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 
@@ -137,6 +139,7 @@
         [NYPLAccountSignInViewController
          requestCredentialsUsingExistingBarcode:([NYPLUserAccount sharedAccount].barcode != nil)
          completionHandler:^{
+          NYPLLOG(@"Re-loading from RemoteVC because got response w/ MIMEtype == application/vnd.opds.authentication.v1.0+json and then authenticated");
           [self load];
         }];
         return;

@@ -16,6 +16,8 @@ extension NYPLSettings {
     return URL(string: "https://www.librarysimplified.org/callbacks/SimplyE")!
   }
 
+  static let userHasSeenWelcomeScreenKey = "NYPLUserHasSeenWelcomeScreenKey"
+  
   var settingsAccountsList: [String] {
     get {
       if let libraryAccounts = UserDefaults.standard.array(forKey: NYPLSettings.settingsLibraryAccountsKey) {

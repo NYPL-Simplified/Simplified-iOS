@@ -1,5 +1,4 @@
 
-private let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
@@ -180,11 +179,12 @@ class OPDS2SamlIDP: NSObject, Codable {
   
   var eulaIsAccepted:Bool {
     get {
-      guard let result = getAccountDictionaryKey(userAcceptedEULAKey) else { return false }
+      guard let result = getAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey) else { return false }
       return result as! Bool
     }
     set {
-      setAccountDictionaryKey(userAcceptedEULAKey, toValue: newValue as AnyObject)
+      setAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey,
+                              toValue: newValue as AnyObject)
     }
   }
   var syncPermissionGranted:Bool {
@@ -407,6 +407,7 @@ class OPDS2SamlIDP: NSObject, Codable {
   /// thread or not. This closure is not retained by `self`.
   @objc(loadAuthenticationDocumentUsingSignedInStateProvider:completion:)
   func loadAuthenticationDocument(using signedInStateProvider: NYPLSignedInStateProvider? = nil, completion: @escaping (Bool) -> ()) {
+    Log.debug(#function, "Entering...")
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       NYPLErrorLogger.logError(
         withCode: .noURL,
@@ -418,6 +419,7 @@ class OPDS2SamlIDP: NSObject, Codable {
       return
     }
 
+    Log.info(#function, "GETting auth doc at \(url)")
     NYPLNetworkExecutor.shared.GET(url) { result in
       switch result {
       case .success(let serverData, _):

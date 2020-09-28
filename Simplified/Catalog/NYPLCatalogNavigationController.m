@@ -38,6 +38,7 @@
   // ideal, in my observations this seems to always be followed by
   // another `load` command once the authentication document is received.
   NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
+  NYPLLOG_F(@"urlToLoad for NYPLCatalogFeedViewController: %@", urlToLoad);
   self.viewController = [[NYPLCatalogFeedViewController alloc]
                          initWithURL:urlToLoad];
   
@@ -245,7 +246,7 @@
 #endif
 }
 
--(void) welcomeScreenCompletionHandlerForAccount:(Account *const)account
+- (void)welcomeScreenCompletionHandlerForAccount:(Account *const)account
 {
   [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
   [[NYPLBookRegistry sharedRegistry] save];
@@ -253,8 +254,6 @@
   [self dismissViewControllerAnimated:YES completion:^{
     [self updateFeedAndRegistryOnAccountChange];
   }];
-//  [self updateFeedAndRegistryOnAccountChange];
-//  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

@@ -17,6 +17,14 @@ extension NYPLAppDelegate {
     }
   }
 
+  @objc func completeBecomingActive() {
+    if !NYPLUserAccount.sharedAccount().hasCredentials()
+      && NYPLSettings.shared.userHasSeenWelcomeScreen {
+      
+      OETutorialChoiceViewController.showLoginPicker(handler: nil)
+    }
+  }
+
   /// Handle all custom URL schemes specific to Open eBooks here.
   /// - Parameter url: The URL to process.
   /// - Returns: `true` if the app should handle the URL because it matches a

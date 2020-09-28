@@ -48,15 +48,23 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       return account(uuid)
     }
     set {
-      UserDefaults.standard.set(newValue?.uuid,
-                                forKey: currentAccountIdentifierKey)
+      Log.debug(#file, "Setting currentAccount to <\(newValue?.name ?? "[name N/A]") LibUUID=\(newValue?.uuid ?? "[UUID N/A]")>")
+      currentAccountId = newValue?.uuid
       NYPLErrorLogger.setUserID(NYPLUserAccount.sharedAccount().barcode)
-      NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
+      NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange,
+                                      object: nil)
     }
   }
   
-  var currentAccountId: String? {
-    return UserDefaults.standard.string(forKey: currentAccountIdentifierKey)
+  private(set) var currentAccountId: String? {
+    get {
+      return UserDefaults.standard.string(forKey: currentAccountIdentifierKey)
+    }
+    set {
+      Log.debug(#file, "Setting currentAccountId to \(newValue ?? "N/A")>")
+      UserDefaults.standard.set(newValue,
+                                forKey: currentAccountIdentifierKey)
+    }
   }
 
   private override init() {
@@ -71,12 +79,22 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       object: nil
     )
 
+    #if OPENEBOOKS
+    // This must be set up otherwise the rest of catalog loading logic gets
+    // really confused. This is somewhat the closest parallel to setting the
+    // Simplified library as default in SimplyE.
+    currentAccountId = NYPLConfiguration.OpenEBooksUUID
+    #endif
+
     // It needs to be done asynchronously, so that init returns prior to calling it
     // Otherwise it would try to access itself before intialization is finished
     // Network executor will try to access shared accounts manager, as it needs it to get headers data
-    // Thik of this async block as you would about viewDidLoad which is triggered after a view is loaded
+    // Think of this async block as you would about viewDidLoad which is
+    // triggered after a view is loaded.
     OperationQueue.current?.underlyingQueue?.async {
-      self.loadCatalogs(completion: {_ in })
+      // on OE this ends up loading the OPDS2_Catalog_feed.json file stored
+      // in the app bundle
+      self.loadCatalogs { _ in }
     }
   }
   
@@ -132,6 +150,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
                                          completion: @escaping (Bool) -> ()) {
     do {
       let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
+      Log.debug(#function, "catalogsFeed data=\(String(describing: String(data: data, encoding: .utf8)))")
       let hadAccount = self.currentAccount != nil
 
       accountSetsWorkQueue.sync(flags: .barrier) {
@@ -140,11 +159,13 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
       // note: `currentAccount` computed property feeds off of `accountSets`, so
       // changing the `accountsSets` dictionary will also change `currentAccount`
+      Log.debug(#function, "hadAccount=\(hadAccount) currentAccountID=\(currentAccountId ?? "N/A") currentAcct=\(String(describing: currentAccount))")
       if hadAccount != (self.currentAccount != nil) {
         self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { (success) in
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
+              Log.debug(#function, "mainFeedURL=\(String(describing: mainFeed))")
               NYPLSettings.shared.accountMainFeedURL = mainFeed
               UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
               NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
@@ -189,8 +210,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   /// No guarantees are being made about whether this is called on the main
   /// thread or not.
   func loadCatalogs(completion: @escaping (Bool) -> ()) {
-    // TODO: SIMPLY-3057 these URLs should be factored out because they are
-    // different for Open eBooks or SimplyE
+    Log.debug(#file, "Entering loadCatalog...")
     let targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
     let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
       .trimmingCharacters(in: ["="])
@@ -198,6 +218,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     guard !wasAlreadyLoading else { return }
 
+    Log.debug(#file, "loadCatalog:: GETting \(targetUrl)...")
     NYPLNetworkExecutor.shared.GET(targetUrl) { result in
       switch result {
       case .success(let data, _):

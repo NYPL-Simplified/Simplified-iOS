@@ -14,17 +14,7 @@ extension NYPLSettings {
     return URL(string: "https://www.librarysimplified.org/callbacks/OpenEbooks")!
   }
 
-  static let userHasAcceptedEULAKey = "OEUserHasAcceptedEULA"
-
-  var userHasAcceptedEULA: Bool {
-    get {
-      return UserDefaults.standard.bool(forKey: NYPLSettings.userHasAcceptedEULAKey)
-    }
-    set(b) {
-      UserDefaults.standard.set(b, forKey: NYPLSettings.userHasAcceptedEULAKey)
-      UserDefaults.standard.synchronize()
-    }
-  }
+  static let userHasSeenWelcomeScreenKey = "NYPLSettingsUserFinishedTutorial"
 
   var settingsAccountsList: [String] {
     get {

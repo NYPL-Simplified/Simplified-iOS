@@ -222,7 +222,7 @@
     self.present(alert, animated: true, completion: nil)
   }
   
-  func updateSettingsAccountList() {
+  private func updateSettingsAccountList() {
     guard let uuid = manager.currentAccount?.uuid else {
       showLoadingUI(loadState: .failure)
       return

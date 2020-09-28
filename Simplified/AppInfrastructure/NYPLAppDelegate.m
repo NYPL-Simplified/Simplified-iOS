@@ -166,6 +166,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 -(void)applicationDidBecomeActive:(__unused UIApplication *)app
 {
   [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
+  [self completeBecomingActive];
 }
 
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application
