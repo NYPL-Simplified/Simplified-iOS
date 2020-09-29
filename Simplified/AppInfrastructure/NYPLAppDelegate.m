@@ -209,7 +209,9 @@ completionHandler:(void (^const)(void))completionHandler
          actionWithTitle:NSLocalizedString(@"AppDelegateUpdateNow", nil)
          style:UIAlertActionStyleDefault
          handler:^(__unused UIAlertAction *_Nonnull action) {
-           [[UIApplication sharedApplication] openURL:updateURL];
+           [[UIApplication sharedApplication] openURL:updateURL
+                                              options:@{}
+                                    completionHandler:nil];
          }]];
        [alertController addAction:
         [UIAlertAction

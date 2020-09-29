@@ -769,11 +769,17 @@ completionHandler:(void (^)(void))handler
                                                                                message:NSLocalizedString(@"LocationRequiredMessage", nil)
                                                                         preferredStyle:UIAlertControllerStyleAlert];
 
-      UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
-                                                               style:UIAlertActionStyleDefault
-                                                             handler:^(UIAlertAction *action) {
-                                                               if (action)[UIApplication.sharedApplication openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                                             }];
+      UIAlertAction *settingsAction = [UIAlertAction
+                                       actionWithTitle:NSLocalizedString(@"Settings", nil)
+                                       style:UIAlertActionStyleDefault
+                                       handler:^(UIAlertAction *action) {
+        if (action) {
+          [UIApplication.sharedApplication
+           openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+           options:@{}
+           completionHandler:nil];
+        }
+      }];
 
       UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                              style:UIAlertActionStyleDestructive
@@ -927,7 +933,10 @@ completionHandler:(void (^)(void))handler
                                                name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
                                              object:nil];
 
-  [UIApplication.sharedApplication openURL: urlComponents.URL];
+  [UIApplication.sharedApplication openURL:urlComponents.URL
+                                   options:@{}
+                         completionHandler:nil];
+  
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 }
 
