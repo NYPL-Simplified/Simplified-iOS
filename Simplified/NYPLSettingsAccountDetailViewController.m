@@ -527,7 +527,10 @@ Authenticating with any of those barcodes should work.
                                                name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
                                              object:nil];
 
-  [UIApplication.sharedApplication openURL: urlComponents.URL];
+  [UIApplication.sharedApplication openURL:urlComponents.URL
+                                   options:@{}
+                         completionHandler:nil];
+
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 
 }

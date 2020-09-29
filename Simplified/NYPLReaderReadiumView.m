@@ -499,7 +499,9 @@ createWebViewWithConfiguration:(__unused WKWebViewConfiguration *)configuration
   
   // Since this is very likely a link to a web page, a mailto: URL, or similar, let
   // Safari handle it.
-  [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+  [[UIApplication sharedApplication] openURL:navigationAction.request.URL
+                                     options:@{}
+                           completionHandler:nil];
   
   // Cancel the request.
   return nil;
@@ -560,7 +562,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   else {
     if (request.URL.isNYPLExternal) {
-      [[UIApplication sharedApplication] openURL:(NSURL *__nonnull)request.URL];
+      [[UIApplication sharedApplication] openURL:(NSURL *__nonnull)request.URL
+                                         options:@{}
+                               completionHandler:nil];
       decisionHandler(WKNavigationActionPolicyCancel);
       return;
     }

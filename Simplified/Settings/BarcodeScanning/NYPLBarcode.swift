@@ -84,7 +84,7 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
                                comment: "A title for a button that will open the Settings app"),
       style: .default,
       handler: {_ in
-        UIApplication.shared.openURL(URL(string:UIApplication.openSettingsURLString)!)
+        UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
     }))
     alertController.addAction(UIAlertAction(
       title: NSLocalizedString("Cancel", comment: ""),
