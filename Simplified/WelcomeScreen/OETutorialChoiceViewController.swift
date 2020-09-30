@@ -125,7 +125,7 @@ class OETutorialChoiceViewController : UIViewController {
   }
   
   @objc func didSelectRequestCodes() {
-    UIApplication.shared.openURL(NYPLConfiguration.openEBooksRequestCodesURL)
+    UIApplication.shared.open(NYPLConfiguration.openEBooksRequestCodesURL)
   }
   
   @objc class func showLoginPicker(handler: (()->Void)?) {
