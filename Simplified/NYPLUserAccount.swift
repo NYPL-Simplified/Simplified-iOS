@@ -126,7 +126,9 @@ private enum StorageKey: String {
       return credentials
     }
     set {
-      guard let newValue = newValue else { return }
+      guard let newValue = newValue else {
+        return
+      }
 
       _credentials.write(newValue)
 
@@ -141,14 +143,17 @@ private enum StorageKey: String {
     }
   }
 
-  @objc class func sharedAccount() -> NYPLUserAccount
-  {
-    return sharedAccount(libraryUUID: AccountsManager.shared.currentAccount?.uuid)
+  @objc class func sharedAccount() -> NYPLUserAccount {
+    // Note: it's important to use `currentAccountId` instead of
+    // `currentAccount.uuid` because the former is immediately available
+    // (being saved into the UserDefaults) while the latter is only available
+    // after the app startup sequence is complete (i.e. authentication
+    // document has been loaded.
+    return sharedAccount(libraryUUID: AccountsManager.shared.currentAccountId)
   }
     
   @objc(sharedAccount:)
-  class func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
-  {
+  class func sharedAccount(libraryUUID: String?) -> NYPLUserAccount {
     shared.accountInfoLock.lock()
     defer {
       shared.accountInfoLock.unlock()
