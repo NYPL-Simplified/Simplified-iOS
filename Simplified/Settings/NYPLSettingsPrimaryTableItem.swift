@@ -41,9 +41,9 @@ class NYPLSettingsPrimaryTableItem {
     return vc
   }
   
-  class func generateRemoteView(title: String, url: String) -> UIViewController {
+  class func generateRemoteView(title: String, url: URL) -> UIViewController {
     let remoteView = RemoteHTMLViewController.init(
-      URL: URL.init(string: url)!,
+      URL: url,
       title: title,
       failureMessage: NSLocalizedString("SettingsConnectionFailureMessage", comment: "")
     )

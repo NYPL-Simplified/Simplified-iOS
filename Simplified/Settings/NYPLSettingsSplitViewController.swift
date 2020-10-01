@@ -8,11 +8,14 @@
 
 /// Currently used only by Open eBooks, but extendable for use in SimplyE.
 /// - Seealso: https://github.com/NYPL-Simplified/Simplified-iOS/pull/1070
+/// TODO: SIMPLY-3053
 class NYPLSettingsSplitViewController : UISplitViewController, UISplitViewControllerDelegate {
   private var isFirstLoad: Bool
+  private var currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
   
-  init() {
+  @objc init(currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider) {
     self.isFirstLoad = true
+    self.currentLibraryAccountProvider = currentLibraryAccountProvider
     let navVC = UINavigationController.init(rootViewController: NYPLSettingsPrimaryTableViewController())
     super.init(nibName: nil, bundle: nil)
     
@@ -21,7 +24,6 @@ class NYPLSettingsSplitViewController : UISplitViewController, UISplitViewContro
     self.tabBarItem.image = UIImage.init(named: "Settings")
     self.viewControllers = [navVC]
     self.presentsWithGesture = false
-    configSettingsTab()
   }
   
   @available(*, unavailable)
@@ -39,11 +41,17 @@ class NYPLSettingsSplitViewController : UISplitViewController, UISplitViewContro
   override func viewDidLoad() {
     super.viewDidLoad()
     self.preferredDisplayMode = .allVisible
+
+    configPrimaryVCItems(using:
+      NYPLLibraryAccountURLsProvider(account:
+        currentLibraryAccountProvider.currentAccount))
   }
   
   // MARK: UISplitViewControllerDelegate
 
-  func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+  func splitViewController(_ splitVC: UISplitViewController,
+                           collapseSecondary secondaryVC: UIViewController,
+                           onto primaryVC: UIViewController) -> Bool {
     let rVal = self.isFirstLoad
     self.isFirstLoad = false
     return rVal

@@ -31,9 +31,9 @@ class OETutorialViewController : UIPageViewController, UIPageViewControllerDataS
     }
     
     let pageControl = UIPageControl.appearance(whenContainedInInstancesOf: [OETutorialViewController.self])
-    pageControl.pageIndicatorTintColor = .black
+    pageControl.pageIndicatorTintColor = .lightGray
     pageControl.currentPageIndicatorTintColor = NYPLConfiguration.mainColor()
-    pageControl.backgroundColor = .white
+    pageControl.backgroundColor = .clear
     
     self.viewControllersList = [
       OETutorialWelcomeViewController(),
