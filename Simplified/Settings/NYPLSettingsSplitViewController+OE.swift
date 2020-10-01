@@ -40,7 +40,7 @@ extension NYPLSettingsSplitViewController {
       }
       ),
       NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 0, section: 2),
+        indexPath: IndexPath(row: 0, section: 1),
         title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
           title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
@@ -48,7 +48,7 @@ extension NYPLSettingsSplitViewController {
         )
       ),
       NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 1, section: 2),
+        indexPath: IndexPath(row: 1, section: 1),
         title: NSLocalizedString("User Agreement", comment: "Title for User Agreement section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
           title: NSLocalizedString("User Agreement", comment: "Title for User Agreement section"),
@@ -56,7 +56,7 @@ extension NYPLSettingsSplitViewController {
         )
       ),
       NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 2, section: 2),
+        indexPath: IndexPath(row: 2, section: 1),
         title: NSLocalizedString("Privacy Policy", comment: "Title for Privacy Policy section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
           title: NSLocalizedString("Privacy Policy", comment: "Title for Privacy Policy section"),
