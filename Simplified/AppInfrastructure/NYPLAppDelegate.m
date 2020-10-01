@@ -53,10 +53,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   [app setMinimumBackgroundFetchInterval:MinimumBackgroundFetchInterval];
 
-  if (@available (iOS 10.0, *)) {
-    self.notificationsManager = [[NYPLUserNotifications alloc] init];
-    [self.notificationsManager authorizeIfNeeded];
-  }
+  self.notificationsManager = [[NYPLUserNotifications alloc] init];
+  [self.notificationsManager authorizeIfNeeded];
 
   [[NetworkQueue shared] addObserverForOfflineQueue];
   self.reachabilityManager = [NYPLReachability sharedReachability];
