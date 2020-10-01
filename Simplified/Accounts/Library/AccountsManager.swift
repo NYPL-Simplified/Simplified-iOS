@@ -2,9 +2,13 @@ import Foundation
 
 let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
+@objc protocol NYPLCurrentLibraryAccountProvider: NSObjectProtocol {
+  var currentAccount: Account? {get}
+}
+
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
-@objcMembers final class AccountsManager: NSObject
+@objcMembers final class AccountsManager: NSObject, NYPLCurrentLibraryAccountProvider
 {
   static let NYPLAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949", //NYPL proper
@@ -13,18 +17,18 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   ]
 
   static let NYPLAccountUUID = NYPLAccountUUIDs[0]
-  
+
   static let shared = AccountsManager()
 
   // For Objective-C classes
   class func sharedInstance() -> AccountsManager {
     return shared
   }
-  
+
   private var accountSet: String
   private var accountSets = [String: [Account]]()
   private var accountSetsWorkQueue = DispatchQueue(label: "org.nypl.labs.SimplyE.AccountsManager.workQueue", attributes: .concurrent)
-  
+
   var accountsHaveLoaded: Bool {
     var accounts: [Account]?
     accountSetsWorkQueue.sync {
@@ -36,9 +40,9 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     }
     return false
   }
-  
+
   private var loadingCompletionHandlers = [String: [(Bool) -> ()]]()
-  
+
   var currentAccount: Account? {
     get {
       guard let uuid = currentAccountId else {
@@ -55,7 +59,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
                                       object: nil)
     }
   }
-  
+
   private(set) var currentAccountId: String? {
     get {
       return UserDefaults.standard.string(forKey: currentAccountIdentifierKey)
@@ -69,9 +73,9 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
   private override init() {
     self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
-    
+
     super.init()
-    
+
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(updateAccountSetFromNotification(_:)),
@@ -97,7 +101,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       self.loadCatalogs { _ in }
     }
   }
-  
+
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
 
   // Returns whether loading was happening already
@@ -113,7 +117,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     }
     return !wasEmpty
   }
-  
+
   /**
    Resolves any complation handlers that may have been queued waiting for a registry fetch
    and clears the queue.
@@ -195,7 +199,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
         completion(true)
       }
     } catch (let error) {
-      NYPLErrorLogger.logError(error, 
+      NYPLErrorLogger.logError(error,
                                summary: "Error while parsing catalog feed")
       completion(false)
     }
@@ -214,7 +218,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     let targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
     let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
       .trimmingCharacters(in: ["="])
-    
+
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     guard !wasAlreadyLoading else { return }
 
@@ -238,7 +242,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       }
     }
   }
-  
+
   func account(_ uuid:String) -> Account? {
     // get accountSets dictionary first for thread-safety
     var accountSetsCopy = [String: [Account]]()
@@ -267,7 +271,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
     return nil
   }
-  
+
   func accounts(_ key: String? = nil) -> [Account] {
     var accounts: [Account]? = []
 
