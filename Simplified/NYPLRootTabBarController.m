@@ -50,7 +50,9 @@
   self.catalogNavigationController = [[NYPLCatalogNavigationController alloc] init];
   self.myBooksNavigationController = [[NYPLMyBooksNavigationController alloc] init];
   self.holdsNavigationController = [[NYPLHoldsNavigationController alloc] init];
-  self.settingsSplitViewController = [[NYPLSettingsSplitViewController alloc] init];
+  self.settingsSplitViewController = [[NYPLSettingsSplitViewController alloc]
+                                      initWithCurrentLibraryAccountProvider:
+                                      AccountsManager.shared];
 
   [self setTabViewControllers];
 
