@@ -41,7 +41,8 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.over
       ContentTypeOpenAccessAudiobook,
       ContentTypeOpenAccessPDF,
       ContentTypeFeedbooksAudiobook,
-      ContentTypeOverdriveAudiobook
+      ContentTypeOverdriveAudiobook,
+      ContentTypeOctetStream
     ]];
   }
 
@@ -62,7 +63,8 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.over
         ContentTypeOpenAccessPDF,
         ContentTypeOpenAccessAudiobook,
         ContentTypeFeedbooksAudiobook,
-        ContentTypeOverdriveAudiobook
+        ContentTypeOverdriveAudiobook,
+        ContentTypeOctetStream
       ]],
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
       ContentTypeBearerToken: [NSSet setWithArray:@[
