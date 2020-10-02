@@ -761,7 +761,6 @@
 		73FCA38C25005BA4001B0C5D /* NYPLProblemReportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */; };
 		73FCA38D25005BA4001B0C5D /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		73FCA38F25005BA4001B0C5D /* software-licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 2D6256901D41582A0080A81F /* software-licenses.html */; };
-		73FCA39025005BA4001B0C5D /* NYPL_Launch_Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */; };
 		73FCA39225005BA4001B0C5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A823D819192BABA400B55DE2 /* InfoPlist.strings */; };
 		73FCA39325005BA4001B0C5D /* reader.html in Resources */ = {isa = PBXBuildFile; fileRef = 11C113CF19F842B9005B3F63 /* reader.html */; };
 		73FCA39425005BA4001B0C5D /* DetailSummaryTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */; };
@@ -1201,7 +1200,7 @@
 		7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOpenSearchDescriptionTests.swift; sourceTree = "<group>"; };
 		73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialChoiceViewController.swift; sourceTree = "<group>"; };
 		73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLPresentationUtils.swift; sourceTree = "<group>"; };
-		73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = OpenEBooks_OPDS2_Catalog_Feed.json; path = OpenEbooks/Resources/OpenEBooks_OPDS2_Catalog_Feed.json; sourceTree = "<group>"; };
+		73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = OpenEBooks_OPDS2_Catalog_Feed.json; sourceTree = "<group>"; };
 		73085E232502EDEE008F6244 /* NYPLSettingsPrimaryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsPrimaryTableViewController.swift; sourceTree = "<group>"; };
 		73085E242502EDEF008F6244 /* NYPLSettingsPrimaryTableItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsPrimaryTableItem.swift; sourceTree = "<group>"; };
 		73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsSplitViewController.swift; sourceTree = "<group>"; };
@@ -1231,22 +1230,22 @@
 		735350B624918432006021BD /* URLRequest+NYPLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+NYPLTests.swift"; sourceTree = "<group>"; };
 		735394012508161A0043C800 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		7353940B250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSettingsSplitViewController+OE.swift"; sourceTree = "<group>"; };
-		7358EE7B250062BD00DDA0CC /* OEImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = OEImages.xcassets; path = OpenEbooks/Resources/OEImages.xcassets; sourceTree = "<group>"; };
-		7358EE902500642900DDA0CC /* OELaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = OELaunchScreen.xib; path = OpenEbooks/Resources/OELaunchScreen.xib; sourceTree = "<group>"; };
-		7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Open-eBooks-Info.plist"; path = "OpenEbooks/Open-eBooks-Info.plist"; sourceTree = "<group>"; };
+		7358EE7B250062BD00DDA0CC /* OEImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = OEImages.xcassets; sourceTree = "<group>"; };
+		7358EE902500642900DDA0CC /* OELaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OELaunchScreen.xib; sourceTree = "<group>"; };
+		7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Open-eBooks-Info.plist"; sourceTree = "<group>"; };
 		735DD0BD252299A90096D1F9 /* UIColor+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
 		735F41A2243E381D00046182 /* String+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
-		735FCB392506FACF009A8C95 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ReaderClientCert.sig; path = OpenEbooks/Resources/ReaderClientCert.sig; sourceTree = "<group>"; };
+		735FCB392506FACF009A8C95 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
 		735FED252427494900144C97 /* NYPLNetworkResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkResponder.swift; sourceTree = "<group>"; };
-		73609AD8245B53CB00F0E08B /* update-certificates.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "update-certificates.sh"; sourceTree = SOURCE_ROOT; };
+		73609AD8245B53CB00F0E08B /* update-certificates.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "update-certificates.sh"; path = "scripts/update-certificates.sh"; sourceTree = SOURCE_ROOT; };
 		7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserFriendlyError.swift; sourceTree = "<group>"; };
-		738170142526504800BA2C44 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "OpenEbooks/Resources/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		738170142526504800BA2C44 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7384C7FF242BB43300D5F960 /* NYPLCachingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCachingTests.swift; sourceTree = "<group>"; };
 		7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+NYPLAdditions.swift"; sourceTree = "<group>"; };
 		7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
 		738CB1FF2509A61E00891F31 /* NYPLConfiguration+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLConfiguration+OE.swift"; sourceTree = "<group>"; };
 		738CB2052509A87700891F31 /* NYPLConfiguration+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLConfiguration+SE.swift"; sourceTree = "<group>"; };
-		738EF2CB2405E38800F388FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		738EF2CB2405E38800F388FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "SimplyE/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		738EF2D12405E3D900F388FB /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCoreDiagnostics.framework; path = Carthage/Build/iOS/FirebaseCoreDiagnostics.framework; sourceTree = "<group>"; };
 		738EF2D42405EA5F00F388FB /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCore.framework; path = Carthage/Build/iOS/FirebaseCore.framework; sourceTree = "<group>"; };
@@ -1265,15 +1264,18 @@
 		73A3EAEB2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountURLSessionChallengeHandler.h; sourceTree = "<group>"; };
 		73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountURLSessionChallengeHandler.m; sourceTree = "<group>"; };
 		73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountFrontEndValidation.swift; sourceTree = "<group>"; };
-		73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "carthage-update-simplye.sh"; sourceTree = SOURCE_ROOT; };
+		73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "carthage-update-simplye.sh"; path = "scripts/carthage-update-simplye.sh"; sourceTree = SOURCE_ROOT; };
 		73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+NYPL.swift"; sourceTree = "<group>"; };
 		73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCrashlytics.framework; path = Carthage/Build/iOS/FirebaseCrashlytics.framework; sourceTree = "<group>"; };
+		73CEF8352526FE80006B2820 /* run */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run; sourceTree = "<group>"; };
+		73CEF8362526FE80006B2820 /* upload-symbols */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "upload-symbols"; sourceTree = "<group>"; };
+		73CEF83E25270F38006B2820 /* adobe-rmsdk-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "adobe-rmsdk-build.sh"; path = "scripts/adobe-rmsdk-build.sh"; sourceTree = SOURCE_ROOT; };
 		73DA43A12404B4A900985482 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
 		73DA43A32404B92E00985482 /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = SOURCE_ROOT; };
-		73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-3rd-parties-dependencies.sh"; sourceTree = SOURCE_ROOT; };
-		73DA43A62404BA5600985482 /* build-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-carthage.sh"; sourceTree = SOURCE_ROOT; };
-		73DA43A72404BA5600985482 /* build_curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_curl.sh; sourceTree = SOURCE_ROOT; };
-		73DA43A82404BA5600985482 /* build-openssl-curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-openssl-curl.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-3rd-parties-dependencies.sh"; path = "scripts/build-3rd-parties-dependencies.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A62404BA5600985482 /* build-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-carthage.sh"; path = "scripts/build-carthage.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A72404BA5600985482 /* build_curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = build_curl.sh; path = scripts/build_curl.sh; sourceTree = SOURCE_ROOT; };
+		73DA43A82404BA5600985482 /* build-openssl-curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-openssl-curl.sh"; path = "scripts/build-openssl-curl.sh"; sourceTree = SOURCE_ROOT; };
 		73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibraryAccountURLsProvider.swift; sourceTree = "<group>"; };
 		73FB0AC824EB403D0072E430 /* NYPLBookContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLBookContentType.swift; path = Models/NYPLBookContentType.swift; sourceTree = "<group>"; };
 		73FCA3A425005BA4001B0C5D /* Open eBooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open eBooks.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1840,6 +1842,10 @@
 		73225DE5250B46CE00EF1877 /* AppInfrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				A823D81C192BABA400B55DE2 /* main.m */,
+				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
+				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
+				0345BFD61DBF002E00398B6F /* APIKeys.swift */,
 				739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
@@ -1944,19 +1950,6 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
-		7358EE722500617E00DDA0CC /* OpenEbooks-specific */ = {
-			isa = PBXGroup;
-			children = (
-				7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */,
-				7358EE902500642900DDA0CC /* OELaunchScreen.xib */,
-				7358EE7B250062BD00DDA0CC /* OEImages.xcassets */,
-				73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */,
-				735FCB392506FACF009A8C95 /* ReaderClientCert.sig */,
-				738170142526504800BA2C44 /* GoogleService-Info.plist */,
-			);
-			name = "OpenEbooks-specific";
-			sourceTree = "<group>";
-		};
 		7360891B240DFB93007EE66F /* Logging */ = {
 			isa = PBXGroup;
 			children = (
@@ -2011,6 +2004,55 @@
 			);
 			path = Catalog;
 			sourceTree = "<group>";
+		};
+		73CEF8332526FE80006B2820 /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				73CEF8342526FE80006B2820 /* firebase */,
+				73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */,
+				73609AD8245B53CB00F0E08B /* update-certificates.sh */,
+				73DA43A62404BA5600985482 /* build-carthage.sh */,
+				73DA43A82404BA5600985482 /* build-openssl-curl.sh */,
+				73DA43A72404BA5600985482 /* build_curl.sh */,
+				73CEF83E25270F38006B2820 /* adobe-rmsdk-build.sh */,
+				73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */,
+			);
+			path = scripts;
+			sourceTree = SOURCE_ROOT;
+		};
+		73CEF8342526FE80006B2820 /* firebase */ = {
+			isa = PBXGroup;
+			children = (
+				73CEF8352526FE80006B2820 /* run */,
+				73CEF8362526FE80006B2820 /* upload-symbols */,
+			);
+			path = firebase;
+			sourceTree = "<group>";
+		};
+		73CEF839252706E3006B2820 /* SimplyE */ = {
+			isa = PBXGroup;
+			children = (
+				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
+				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
+				738EF2CB2405E38800F388FB /* GoogleService-Info.plist */,
+				A823D822192BABA400B55DE2 /* Images.xcassets */,
+				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
+			);
+			path = SimplyE;
+			sourceTree = SOURCE_ROOT;
+		};
+		73CEF83B25270929006B2820 /* OpenEbooks */ = {
+			isa = PBXGroup;
+			children = (
+				7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */,
+				735FCB392506FACF009A8C95 /* ReaderClientCert.sig */,
+				738170142526504800BA2C44 /* GoogleService-Info.plist */,
+				73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */,
+				7358EE7B250062BD00DDA0CC /* OEImages.xcassets */,
+				7358EE902500642900DDA0CC /* OELaunchScreen.xib */,
+			);
+			path = OpenEbooks;
+			sourceTree = SOURCE_ROOT;
 		};
 		73DE53292525A2AD003E2C56 /* Accounts */ = {
 			isa = PBXGroup;
@@ -2229,33 +2271,20 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				7358EE722500617E00DDA0CC /* OpenEbooks-specific */,
-				0345BFD61DBF002E00398B6F /* APIKeys.swift */,
+				73CEF839252706E3006B2820 /* SimplyE */,
+				73CEF83B25270929006B2820 /* OpenEbooks */,
+				73CEF8332526FE80006B2820 /* scripts */,
 				17071060242A923400E2648F /* NYPLSecrets.swift */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
-				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				A823D819192BABA400B55DE2 /* InfoPlist.strings */,
 				032A31071DC02E8E0001E4AF /* Localizable.strings */,
-				A823D81C192BABA400B55DE2 /* main.m */,
-				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
 				84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */,
 				11C113D319F842E2005B3F63 /* Reader */,
-				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
-				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
-				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
-				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
 				E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */,
 				2D6256901D41582A0080A81F /* software-licenses.html */,
 				738EF2D12405E3D900F388FB /* .gitignore */,
-				73DA43A72404BA5600985482 /* build_curl.sh */,
-				73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */,
-				73DA43A62404BA5600985482 /* build-carthage.sh */,
-				73DA43A82404BA5600985482 /* build-openssl-curl.sh */,
-				73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */,
-				73609AD8245B53CB00F0E08B /* update-certificates.sh */,
 				73DA43A12404B4A900985482 /* Cartfile */,
 				73DA43A32404B92E00985482 /* Cartfile.resolved */,
-				738EF2CB2405E38800F388FB /* GoogleService-Info.plist */,
 				735394012508161A0043C800 /* README.md */,
 			);
 			name = "Supporting Files";
@@ -2642,7 +2671,6 @@
 				73085E212502E2CE008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json in Resources */,
 				735FCB3A2506FAD0009A8C95 /* ReaderClientCert.sig in Resources */,
 				73FCA38F25005BA4001B0C5D /* software-licenses.html in Resources */,
-				73FCA39025005BA4001B0C5D /* NYPL_Launch_Screen.storyboard in Resources */,
 				73FCA39225005BA4001B0C5D /* InfoPlist.strings in Resources */,
 				73FCA39325005BA4001B0C5D /* reader.html in Resources */,
 				73FCA39425005BA4001B0C5D /* DetailSummaryTemplate.html in Resources */,
@@ -3714,9 +3742,9 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
-				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3729,7 +3757,7 @@
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Development";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FEATURE_DRM_CONNECTOR SIMPLYE";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
@@ -3766,13 +3794,13 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=0",
 					"$(inherited)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
-				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3785,7 +3813,7 @@
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
 				PROVISIONING_PROFILE_SPECIFIER = NYPL_AdHoc_Wildcard;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FEATURE_DRM_CONNECTOR SIMPLYE";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
@@ -3821,9 +3849,9 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OPENEBOOKS=1";
-				INFOPLIST_FILE = "Simplified/OpenEbooks/Open-eBooks-Info.plist";
+				INFOPLIST_FILE = "OpenEbooks/Open-eBooks-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3837,7 +3865,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "Open eBooks Development";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FEATURE_DRM_CONNECTOR OPENEBOOKS";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
@@ -3874,13 +3902,13 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=0",
 					"$(inherited)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OPENEBOOKS=1";
-				INFOPLIST_FILE = "Simplified/OpenEbooks/Open-eBooks-Info.plist";
+				INFOPLIST_FILE = "OpenEbooks/Open-eBooks-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3894,7 +3922,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "Open eBooks Distribution";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FEATURE_DRM_CONNECTOR OPENEBOOKS";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
@@ -4051,9 +4079,9 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
-				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4066,7 +4094,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Development";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FEATURE_DRM_CONNECTOR SIMPLYE";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
@@ -4102,13 +4130,13 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=0",
 					"$(inherited)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
-				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4121,7 +4149,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FEATURE_DRM_CONNECTOR SIMPLYE";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
