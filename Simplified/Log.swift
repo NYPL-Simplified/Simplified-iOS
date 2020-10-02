@@ -49,12 +49,12 @@ final class Log: NSObject {
     NSLog(formattedMsg)
     #elseif DEBUG
     if level != .debug {
-      CLSNSLogv("%@", getVaList([formattedMsg]))
+      Crashlytics.crashlytics().log(format: "%@", arguments: getVaList([formattedMsg]))
     } else {
       NSLog(formattedMsg)
     }
     #else
-    CLSLogv("%@", getVaList([formattedMsg]))
+    Crashlytics.crashlytics().log("\(formattedMsg)")
     #endif
   }
   
