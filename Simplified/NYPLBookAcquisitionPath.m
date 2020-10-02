@@ -2,6 +2,15 @@
 
 #import "NYPLBookAcquisitionPath.h"
 
+NSString * const _Nonnull ContentTypeOPDSCatalog = @"application/atom+xml;type=entry;profile=opds-catalog";
+NSString * const _Nonnull ContentTypeAdobeAdept = @"application/vnd.adobe.adept+xml";
+NSString * const _Nonnull ContentTypeBearerToken = @"application/vnd.librarysimplified.bearer-token+json";
+NSString * const _Nonnull ContentTypeEpubZip = @"application/epub+zip";
+NSString * const _Nonnull ContentTypeFindaway = @"application/vnd.librarysimplified.findaway.license+json";
+NSString * const _Nonnull ContentTypeOpenAccessAudiobook = @"application/audiobook+json";
+NSString * const _Nonnull ContentTypeOpenAccessPDF = @"application/pdf";
+NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/audiobook+json;profile=\"http://www.feedbooks.com/audiobooks/access-restriction\"";
+NSString * const _Nonnull ContentTypeOctetStream = @"application/octet-stream";
 NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.overdrive.circulation.api+json;profile=audiobook";
 
 @interface NYPLBookAcquisitionPath ()
