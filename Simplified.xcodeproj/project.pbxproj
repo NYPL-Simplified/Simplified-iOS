@@ -125,7 +125,6 @@
 		17071065242A923400E2648F /* NYPLSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17071060242A923400E2648F /* NYPLSecrets.swift */; };
 		171966A924170819007BB87E /* NYPLBookState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171966A824170819007BB87E /* NYPLBookState.swift */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
-		175E47DE24E477710066A6CF /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		175E480824EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */; };
 		175E480E24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */; };
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
@@ -228,8 +227,6 @@
 		730FC05B2512911E004D7C2D /* NYPLWelcomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6202A031DD52B8600C99553 /* NYPLWelcomeScreenViewController.swift */; };
 		731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */; };
 		731A5B1324621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */; };
-		731DA5FA2407105F009CC191 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5F52407105E009CC191 /* Crashlytics.framework */; };
-		731DA5FC240711F5009CC191 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5FB240711F5009CC191 /* Fabric.framework */; };
 		7320AB28251EBC9900E3F04D /* DPLAAudiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E7E07A24FEA7E800189224 /* DPLAAudiobooks.swift */; };
 		7320AB2B251EBC9900E3F04D /* JWKResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2199020724FD35DC001BC727 /* JWKResponse.swift */; };
 		7320AB30251EBC9900E3F04D /* NYPLJWKConversionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2199020524FD3334001BC727 /* NYPLJWKConversionTest.swift */; };
@@ -450,7 +447,6 @@
 		7347F0F7245A4DE200558D7F /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA4912154464F0055DB93 /* SQLite.framework */; };
 		7347F0F8245A4DE200558D7F /* NYPLAEToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1721710C6800FF64AB /* NYPLAEToolkit.framework */; };
 		7347F0F9245A4DE200558D7F /* NYPLAudiobookToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1C21710C6800FF64AB /* NYPLAudiobookToolkit.framework */; };
-		7347F0FA245A4DE200558D7F /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D22405EA5F00F388FB /* Firebase.framework */; };
 		7347F0FB245A4DE200558D7F /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */; };
 		7347F0FC245A4DE200558D7F /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D42405EA5F00F388FB /* FirebaseCore.framework */; };
 		7347F0FD245A4DE200558D7F /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D52405EA5F00F388FB /* FirebaseAnalytics.framework */; };
@@ -459,11 +455,8 @@
 		7347F100245A4DE200558D7F /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */; };
 		7347F101245A4DE200558D7F /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */; };
 		7347F102245A4DE200558D7F /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */; };
-		7347F103245A4DE200558D7F /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		7347F104245A4DE200558D7F /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */; };
 		7347F105245A4DE200558D7F /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2EB2405EC5900F388FB /* PromisesObjC.framework */; };
-		7347F106245A4DE200558D7F /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5FB240711F5009CC191 /* Fabric.framework */; };
-		7347F107245A4DE200558D7F /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5F52407105E009CC191 /* Crashlytics.framework */; };
 		7347F109245A4DE200558D7F /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3431B84E8FE00584FB2 /* OFL.txt */; };
 		7347F10A245A4DE200558D7F /* simplified.js in Resources */ = {isa = PBXBuildFile; fileRef = 11C113D519F84613005B3F63 /* simplified.js */; };
 		7347F10B245A4DE200558D7F /* NYPLProblemReportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */; };
@@ -519,7 +512,6 @@
 		738CB2062509A87700891F31 /* NYPLConfiguration+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738CB2052509A87700891F31 /* NYPLConfiguration+SE.swift */; };
 		738CB2072509A87700891F31 /* NYPLConfiguration+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738CB2052509A87700891F31 /* NYPLConfiguration+SE.swift */; };
 		738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738EF2CB2405E38800F388FB /* GoogleService-Info.plist */; };
-		738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D22405EA5F00F388FB /* Firebase.framework */; };
 		738EF2DC2405EA6000F388FB /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */; };
 		738EF2DD2405EA6000F388FB /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D42405EA5F00F388FB /* FirebaseCore.framework */; };
 		738EF2DE2405EA6000F388FB /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D52405EA5F00F388FB /* FirebaseAnalytics.framework */; };
@@ -544,6 +536,9 @@
 		73B501C524F48D4C00FBAD7D /* NYPLUserAccountFrontEndValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */; };
 		73B501C624F48D4C00FBAD7D /* NYPLUserAccountFrontEndValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */; };
 		73CDA121243EDAD8009CC6A6 /* URLRequest+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */; };
+		73CEF830252699CA006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
+		73CEF831252699DD006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
+		73CEF832252699DD006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
 		73DE53312525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */; };
 		73FB0AC924EB403D0072E430 /* NYPLBookContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73FB0AC824EB403D0072E430 /* NYPLBookContentType.swift */; };
 		73FB0ACA24EB403D0072E430 /* NYPLBookContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73FB0AC824EB403D0072E430 /* NYPLBookContentType.swift */; };
@@ -751,7 +746,6 @@
 		73FCA37825005BA4001B0C5D /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA4912154464F0055DB93 /* SQLite.framework */; };
 		73FCA37925005BA4001B0C5D /* NYPLAEToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1721710C6800FF64AB /* NYPLAEToolkit.framework */; };
 		73FCA37A25005BA4001B0C5D /* NYPLAudiobookToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1C21710C6800FF64AB /* NYPLAudiobookToolkit.framework */; };
-		73FCA37B25005BA4001B0C5D /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D22405EA5F00F388FB /* Firebase.framework */; };
 		73FCA37C25005BA4001B0C5D /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */; };
 		73FCA37D25005BA4001B0C5D /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D42405EA5F00F388FB /* FirebaseCore.framework */; };
 		73FCA37E25005BA4001B0C5D /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D52405EA5F00F388FB /* FirebaseAnalytics.framework */; };
@@ -760,17 +754,13 @@
 		73FCA38125005BA4001B0C5D /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */; };
 		73FCA38225005BA4001B0C5D /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */; };
 		73FCA38325005BA4001B0C5D /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */; };
-		73FCA38425005BA4001B0C5D /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		73FCA38525005BA4001B0C5D /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */; };
 		73FCA38625005BA4001B0C5D /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2EB2405EC5900F388FB /* PromisesObjC.framework */; };
-		73FCA38725005BA4001B0C5D /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5FB240711F5009CC191 /* Fabric.framework */; };
-		73FCA38825005BA4001B0C5D /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5F52407105E009CC191 /* Crashlytics.framework */; };
 		73FCA38A25005BA4001B0C5D /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3431B84E8FE00584FB2 /* OFL.txt */; };
 		73FCA38B25005BA4001B0C5D /* simplified.js in Resources */ = {isa = PBXBuildFile; fileRef = 11C113D519F84613005B3F63 /* simplified.js */; };
 		73FCA38C25005BA4001B0C5D /* NYPLProblemReportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */; };
 		73FCA38D25005BA4001B0C5D /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		73FCA38F25005BA4001B0C5D /* software-licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 2D6256901D41582A0080A81F /* software-licenses.html */; };
-		73FCA39025005BA4001B0C5D /* NYPL_Launch_Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */; };
 		73FCA39225005BA4001B0C5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A823D819192BABA400B55DE2 /* InfoPlist.strings */; };
 		73FCA39325005BA4001B0C5D /* reader.html in Resources */ = {isa = PBXBuildFile; fileRef = 11C113CF19F842B9005B3F63 /* reader.html */; };
 		73FCA39425005BA4001B0C5D /* DetailSummaryTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */; };
@@ -1210,7 +1200,7 @@
 		7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOpenSearchDescriptionTests.swift; sourceTree = "<group>"; };
 		73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialChoiceViewController.swift; sourceTree = "<group>"; };
 		73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLPresentationUtils.swift; sourceTree = "<group>"; };
-		73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = OpenEBooks_OPDS2_Catalog_Feed.json; path = OpenEbooks/Resources/OpenEBooks_OPDS2_Catalog_Feed.json; sourceTree = "<group>"; };
+		73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = OpenEBooks_OPDS2_Catalog_Feed.json; sourceTree = "<group>"; };
 		73085E232502EDEE008F6244 /* NYPLSettingsPrimaryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsPrimaryTableViewController.swift; sourceTree = "<group>"; };
 		73085E242502EDEF008F6244 /* NYPLSettingsPrimaryTableItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsPrimaryTableItem.swift; sourceTree = "<group>"; };
 		73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsSplitViewController.swift; sourceTree = "<group>"; };
@@ -1223,8 +1213,6 @@
 		730FC05525128D64004D7C2D /* OETutorialEligibilityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialEligibilityViewController.swift; sourceTree = "<group>"; };
 		730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialWelcomeViewController.swift; sourceTree = "<group>"; };
 		731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogic.swift; sourceTree = "<group>"; };
-		731DA5F52407105E009CC191 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Carthage/Build/iOS/Crashlytics.framework; sourceTree = "<group>"; };
-		731DA5FB240711F5009CC191 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Carthage/Build/iOS/Fabric.framework; sourceTree = "<group>"; };
 		7320AB48251EBC9900E3F04D /* OpenEbooksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenEbooksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73225DEA250B471400EF1877 /* NYPLRootTabBarController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+OE.swift"; sourceTree = "<group>"; };
 		732327B12478504500A041E6 /* NSError+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSError+NYPLAdditions.swift"; sourceTree = "<group>"; };
@@ -1242,24 +1230,23 @@
 		735350B624918432006021BD /* URLRequest+NYPLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+NYPLTests.swift"; sourceTree = "<group>"; };
 		735394012508161A0043C800 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		7353940B250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSettingsSplitViewController+OE.swift"; sourceTree = "<group>"; };
-		7358EE7B250062BD00DDA0CC /* OEImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = OEImages.xcassets; path = OpenEbooks/Resources/OEImages.xcassets; sourceTree = "<group>"; };
-		7358EE902500642900DDA0CC /* OELaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = OELaunchScreen.xib; path = OpenEbooks/Resources/OELaunchScreen.xib; sourceTree = "<group>"; };
-		7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Open-eBooks-Info.plist"; path = "OpenEbooks/Open-eBooks-Info.plist"; sourceTree = "<group>"; };
+		7358EE7B250062BD00DDA0CC /* OEImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = OEImages.xcassets; sourceTree = "<group>"; };
+		7358EE902500642900DDA0CC /* OELaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OELaunchScreen.xib; sourceTree = "<group>"; };
+		7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Open-eBooks-Info.plist"; sourceTree = "<group>"; };
 		735DD0BD252299A90096D1F9 /* UIColor+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
 		735F41A2243E381D00046182 /* String+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
-		735FCB392506FACF009A8C95 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ReaderClientCert.sig; path = OpenEbooks/Resources/ReaderClientCert.sig; sourceTree = "<group>"; };
+		735FCB392506FACF009A8C95 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
 		735FED252427494900144C97 /* NYPLNetworkResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkResponder.swift; sourceTree = "<group>"; };
-		73609AD8245B53CB00F0E08B /* update-certificates.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "update-certificates.sh"; sourceTree = SOURCE_ROOT; };
+		73609AD8245B53CB00F0E08B /* update-certificates.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "update-certificates.sh"; path = "scripts/update-certificates.sh"; sourceTree = SOURCE_ROOT; };
 		7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserFriendlyError.swift; sourceTree = "<group>"; };
-		738170142526504800BA2C44 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "OpenEbooks/Resources/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		738170142526504800BA2C44 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7384C7FF242BB43300D5F960 /* NYPLCachingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCachingTests.swift; sourceTree = "<group>"; };
 		7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+NYPLAdditions.swift"; sourceTree = "<group>"; };
 		7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
 		738CB1FF2509A61E00891F31 /* NYPLConfiguration+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLConfiguration+OE.swift"; sourceTree = "<group>"; };
 		738CB2052509A87700891F31 /* NYPLConfiguration+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLConfiguration+SE.swift"; sourceTree = "<group>"; };
-		738EF2CB2405E38800F388FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		738EF2CB2405E38800F388FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "SimplyE/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		738EF2D12405E3D900F388FB /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
-		738EF2D22405EA5F00F388FB /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = Carthage/Build/iOS/Firebase.framework; sourceTree = "<group>"; };
 		738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCoreDiagnostics.framework; path = Carthage/Build/iOS/FirebaseCoreDiagnostics.framework; sourceTree = "<group>"; };
 		738EF2D42405EA5F00F388FB /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCore.framework; path = Carthage/Build/iOS/FirebaseCore.framework; sourceTree = "<group>"; };
 		738EF2D52405EA5F00F388FB /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseAnalytics.framework; path = Carthage/Build/iOS/FirebaseAnalytics.framework; sourceTree = "<group>"; };
@@ -1269,7 +1256,6 @@
 		738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FIRAnalyticsConnector.framework; path = Carthage/Build/iOS/FIRAnalyticsConnector.framework; sourceTree = "<group>"; };
 		738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstallations.framework; path = Carthage/Build/iOS/FirebaseInstallations.framework; sourceTree = "<group>"; };
 		738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransport.framework; path = Carthage/Build/iOS/GoogleDataTransport.framework; sourceTree = "<group>"; };
-		738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransportCCTSupport.framework; path = Carthage/Build/iOS/GoogleDataTransportCCTSupport.framework; sourceTree = "<group>"; };
 		738EF2EB2405EC5900F388FB /* PromisesObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromisesObjC.framework; path = Carthage/Build/iOS/PromisesObjC.framework; sourceTree = "<group>"; };
 		739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSNotification+NYPL.swift"; sourceTree = "<group>"; };
 		739ECB282510207E00691A70 /* NYPLCatalogNavigationController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLCatalogNavigationController+OE.swift"; sourceTree = "<group>"; };
@@ -1278,15 +1264,18 @@
 		73A3EAEB2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountURLSessionChallengeHandler.h; sourceTree = "<group>"; };
 		73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountURLSessionChallengeHandler.m; sourceTree = "<group>"; };
 		73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountFrontEndValidation.swift; sourceTree = "<group>"; };
-		73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "carthage-update-simplye.sh"; sourceTree = SOURCE_ROOT; };
+		73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "carthage-update-simplye.sh"; path = "scripts/carthage-update-simplye.sh"; sourceTree = SOURCE_ROOT; };
 		73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+NYPL.swift"; sourceTree = "<group>"; };
-		73DA43A02404B4A900985482 /* Crashlytics.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Crashlytics.json; sourceTree = SOURCE_ROOT; };
+		73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCrashlytics.framework; path = Carthage/Build/iOS/FirebaseCrashlytics.framework; sourceTree = "<group>"; };
+		73CEF8352526FE80006B2820 /* run */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run; sourceTree = "<group>"; };
+		73CEF8362526FE80006B2820 /* upload-symbols */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "upload-symbols"; sourceTree = "<group>"; };
+		73CEF83E25270F38006B2820 /* adobe-rmsdk-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "adobe-rmsdk-build.sh"; path = "scripts/adobe-rmsdk-build.sh"; sourceTree = SOURCE_ROOT; };
 		73DA43A12404B4A900985482 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
 		73DA43A32404B92E00985482 /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = SOURCE_ROOT; };
-		73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-3rd-parties-dependencies.sh"; sourceTree = SOURCE_ROOT; };
-		73DA43A62404BA5600985482 /* build-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-carthage.sh"; sourceTree = SOURCE_ROOT; };
-		73DA43A72404BA5600985482 /* build_curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_curl.sh; sourceTree = SOURCE_ROOT; };
-		73DA43A82404BA5600985482 /* build-openssl-curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-openssl-curl.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-3rd-parties-dependencies.sh"; path = "scripts/build-3rd-parties-dependencies.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A62404BA5600985482 /* build-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-carthage.sh"; path = "scripts/build-carthage.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A72404BA5600985482 /* build_curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = build_curl.sh; path = scripts/build_curl.sh; sourceTree = SOURCE_ROOT; };
+		73DA43A82404BA5600985482 /* build-openssl-curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-openssl-curl.sh"; path = "scripts/build-openssl-curl.sh"; sourceTree = SOURCE_ROOT; };
 		73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibraryAccountURLsProvider.swift; sourceTree = "<group>"; };
 		73FB0AC824EB403D0072E430 /* NYPLBookContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLBookContentType.swift; path = Models/NYPLBookContentType.swift; sourceTree = "<group>"; };
 		73FCA3A425005BA4001B0C5D /* Open eBooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open eBooks.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1432,6 +1421,7 @@
 				7347F0EE245A4DE200558D7F /* CoreLocation.framework in Frameworks */,
 				7347F0EF245A4DE200558D7F /* UIKit.framework in Frameworks */,
 				7347F0F0245A4DE200558D7F /* Foundation.framework in Frameworks */,
+				73CEF831252699DD006B2820 /* FirebaseCrashlytics.framework in Frameworks */,
 				7347F0F1245A4DE200558D7F /* libTenPrintCover.a in Frameworks */,
 				7347F0F2245A4DE200558D7F /* libz.dylib in Frameworks */,
 				7347F0F3245A4DE200558D7F /* libxml2.dylib in Frameworks */,
@@ -1441,7 +1431,6 @@
 				7347F0F7245A4DE200558D7F /* SQLite.framework in Frameworks */,
 				7347F0F8245A4DE200558D7F /* NYPLAEToolkit.framework in Frameworks */,
 				7347F0F9245A4DE200558D7F /* NYPLAudiobookToolkit.framework in Frameworks */,
-				7347F0FA245A4DE200558D7F /* Firebase.framework in Frameworks */,
 				7347F0FB245A4DE200558D7F /* FirebaseCoreDiagnostics.framework in Frameworks */,
 				7347F0FC245A4DE200558D7F /* FirebaseCore.framework in Frameworks */,
 				7347F0FD245A4DE200558D7F /* FirebaseAnalytics.framework in Frameworks */,
@@ -1450,11 +1439,8 @@
 				7347F100245A4DE200558D7F /* GoogleAppMeasurement.framework in Frameworks */,
 				7347F101245A4DE200558D7F /* FIRAnalyticsConnector.framework in Frameworks */,
 				7347F102245A4DE200558D7F /* GoogleDataTransport.framework in Frameworks */,
-				7347F103245A4DE200558D7F /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				7347F104245A4DE200558D7F /* FirebaseInstallations.framework in Frameworks */,
 				7347F105245A4DE200558D7F /* PromisesObjC.framework in Frameworks */,
-				7347F106245A4DE200558D7F /* Fabric.framework in Frameworks */,
-				7347F107245A4DE200558D7F /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1494,7 +1480,6 @@
 				73FCA37825005BA4001B0C5D /* SQLite.framework in Frameworks */,
 				73FCA37925005BA4001B0C5D /* NYPLAEToolkit.framework in Frameworks */,
 				73FCA37A25005BA4001B0C5D /* NYPLAudiobookToolkit.framework in Frameworks */,
-				73FCA37B25005BA4001B0C5D /* Firebase.framework in Frameworks */,
 				73FCA37C25005BA4001B0C5D /* FirebaseCoreDiagnostics.framework in Frameworks */,
 				73FCA37D25005BA4001B0C5D /* FirebaseCore.framework in Frameworks */,
 				73FCA37E25005BA4001B0C5D /* FirebaseAnalytics.framework in Frameworks */,
@@ -1503,11 +1488,9 @@
 				73FCA38125005BA4001B0C5D /* GoogleAppMeasurement.framework in Frameworks */,
 				73FCA38225005BA4001B0C5D /* FIRAnalyticsConnector.framework in Frameworks */,
 				73FCA38325005BA4001B0C5D /* GoogleDataTransport.framework in Frameworks */,
-				73FCA38425005BA4001B0C5D /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				73FCA38525005BA4001B0C5D /* FirebaseInstallations.framework in Frameworks */,
+				73CEF830252699CA006B2820 /* FirebaseCrashlytics.framework in Frameworks */,
 				73FCA38625005BA4001B0C5D /* PromisesObjC.framework in Frameworks */,
-				73FCA38725005BA4001B0C5D /* Fabric.framework in Frameworks */,
-				73FCA38825005BA4001B0C5D /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1538,6 +1521,7 @@
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				17DFC5ED251E7FBC003A19CC /* AudioEngine.xcframework in Frameworks */,
+				73CEF832252699DD006B2820 /* FirebaseCrashlytics.framework in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
 				145DA48E215441A70055DB93 /* ZXingObjC.framework in Frameworks */,
@@ -1547,9 +1531,7 @@
 				145DA4922154464F0055DB93 /* SQLite.framework in Frameworks */,
 				148B1C2D21768EAA00FF64AB /* NYPLAEToolkit.framework in Frameworks */,
 				148B1C2E21768EAA00FF64AB /* NYPLAudiobookToolkit.framework in Frameworks */,
-				738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */,
 				738EF2DC2405EA6000F388FB /* FirebaseCoreDiagnostics.framework in Frameworks */,
-				175E47DE24E477710066A6CF /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				738EF2DD2405EA6000F388FB /* FirebaseCore.framework in Frameworks */,
 				738EF2DE2405EA6000F388FB /* FirebaseAnalytics.framework in Frameworks */,
 				738EF2E02405EA6000F388FB /* nanopb.framework in Frameworks */,
@@ -1559,8 +1541,6 @@
 				738EF2E72405EBAD00F388FB /* GoogleDataTransport.framework in Frameworks */,
 				738EF2EA2405EC1100F388FB /* FirebaseInstallations.framework in Frameworks */,
 				738EF2EC2405EC5900F388FB /* PromisesObjC.framework in Frameworks */,
-				731DA5FC240711F5009CC191 /* Fabric.framework in Frameworks */,
-				731DA5FA2407105F009CC191 /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1862,6 +1842,10 @@
 		73225DE5250B46CE00EF1877 /* AppInfrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				A823D81C192BABA400B55DE2 /* main.m */,
+				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
+				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
+				0345BFD61DBF002E00398B6F /* APIKeys.swift */,
 				739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
@@ -1966,19 +1950,6 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
-		7358EE722500617E00DDA0CC /* OpenEbooks-specific */ = {
-			isa = PBXGroup;
-			children = (
-				7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */,
-				7358EE902500642900DDA0CC /* OELaunchScreen.xib */,
-				7358EE7B250062BD00DDA0CC /* OEImages.xcassets */,
-				73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */,
-				735FCB392506FACF009A8C95 /* ReaderClientCert.sig */,
-				738170142526504800BA2C44 /* GoogleService-Info.plist */,
-			);
-			name = "OpenEbooks-specific";
-			sourceTree = "<group>";
-		};
 		7360891B240DFB93007EE66F /* Logging */ = {
 			isa = PBXGroup;
 			children = (
@@ -2033,6 +2004,55 @@
 			);
 			path = Catalog;
 			sourceTree = "<group>";
+		};
+		73CEF8332526FE80006B2820 /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				73CEF8342526FE80006B2820 /* firebase */,
+				73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */,
+				73609AD8245B53CB00F0E08B /* update-certificates.sh */,
+				73DA43A62404BA5600985482 /* build-carthage.sh */,
+				73DA43A82404BA5600985482 /* build-openssl-curl.sh */,
+				73DA43A72404BA5600985482 /* build_curl.sh */,
+				73CEF83E25270F38006B2820 /* adobe-rmsdk-build.sh */,
+				73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */,
+			);
+			path = scripts;
+			sourceTree = SOURCE_ROOT;
+		};
+		73CEF8342526FE80006B2820 /* firebase */ = {
+			isa = PBXGroup;
+			children = (
+				73CEF8352526FE80006B2820 /* run */,
+				73CEF8362526FE80006B2820 /* upload-symbols */,
+			);
+			path = firebase;
+			sourceTree = "<group>";
+		};
+		73CEF839252706E3006B2820 /* SimplyE */ = {
+			isa = PBXGroup;
+			children = (
+				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
+				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
+				738EF2CB2405E38800F388FB /* GoogleService-Info.plist */,
+				A823D822192BABA400B55DE2 /* Images.xcassets */,
+				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
+			);
+			path = SimplyE;
+			sourceTree = SOURCE_ROOT;
+		};
+		73CEF83B25270929006B2820 /* OpenEbooks */ = {
+			isa = PBXGroup;
+			children = (
+				7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */,
+				735FCB392506FACF009A8C95 /* ReaderClientCert.sig */,
+				738170142526504800BA2C44 /* GoogleService-Info.plist */,
+				73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */,
+				7358EE7B250062BD00DDA0CC /* OEImages.xcassets */,
+				7358EE902500642900DDA0CC /* OELaunchScreen.xib */,
+			);
+			path = OpenEbooks;
+			sourceTree = SOURCE_ROOT;
 		};
 		73DE53292525A2AD003E2C56 /* Accounts */ = {
 			isa = PBXGroup;
@@ -2154,17 +2174,14 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */,
 				176F8A802519684D00CE5BFB /* AudioEngine.xcframework */,
 				7347F132245A508400558D7F /* NYPLCardCreator.framework */,
 				17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */,
-				731DA5FB240711F5009CC191 /* Fabric.framework */,
-				731DA5F52407105E009CC191 /* Crashlytics.framework */,
 				738EF2EB2405EC5900F388FB /* PromisesObjC.framework */,
-				738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */,
 				738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */,
 				738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */,
 				738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */,
-				738EF2D22405EA5F00F388FB /* Firebase.framework */,
 				738EF2D52405EA5F00F388FB /* FirebaseAnalytics.framework */,
 				738EF2D42405EA5F00F388FB /* FirebaseCore.framework */,
 				738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */,
@@ -2254,34 +2271,20 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				7358EE722500617E00DDA0CC /* OpenEbooks-specific */,
-				0345BFD61DBF002E00398B6F /* APIKeys.swift */,
+				73CEF839252706E3006B2820 /* SimplyE */,
+				73CEF83B25270929006B2820 /* OpenEbooks */,
+				73CEF8332526FE80006B2820 /* scripts */,
 				17071060242A923400E2648F /* NYPLSecrets.swift */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
-				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				A823D819192BABA400B55DE2 /* InfoPlist.strings */,
 				032A31071DC02E8E0001E4AF /* Localizable.strings */,
-				A823D81C192BABA400B55DE2 /* main.m */,
-				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
 				84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */,
 				11C113D319F842E2005B3F63 /* Reader */,
-				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
-				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
-				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
-				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
 				E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */,
 				2D6256901D41582A0080A81F /* software-licenses.html */,
 				738EF2D12405E3D900F388FB /* .gitignore */,
-				73DA43A72404BA5600985482 /* build_curl.sh */,
-				73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */,
-				73DA43A62404BA5600985482 /* build-carthage.sh */,
-				73DA43A82404BA5600985482 /* build-openssl-curl.sh */,
-				73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */,
-				73609AD8245B53CB00F0E08B /* update-certificates.sh */,
 				73DA43A12404B4A900985482 /* Cartfile */,
 				73DA43A32404B92E00985482 /* Cartfile.resolved */,
-				73DA43A02404B4A900985482 /* Crashlytics.json */,
-				738EF2CB2405E38800F388FB /* GoogleService-Info.plist */,
 				735394012508161A0043C800 /* README.md */,
 			);
 			name = "Supporting Files";
@@ -2668,7 +2671,6 @@
 				73085E212502E2CE008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json in Resources */,
 				735FCB3A2506FAD0009A8C95 /* ReaderClientCert.sig in Resources */,
 				73FCA38F25005BA4001B0C5D /* software-licenses.html in Resources */,
-				73FCA39025005BA4001B0C5D /* NYPL_Launch_Screen.storyboard in Resources */,
 				73FCA39225005BA4001B0C5D /* InfoPlist.strings in Resources */,
 				73FCA39325005BA4001B0C5D /* reader.html in Resources */,
 				73FCA39425005BA4001B0C5D /* DetailSummaryTemplate.html in Resources */,
@@ -2813,7 +2815,7 @@
 			inputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 				"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist",
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 			);
 			name = Crashlytics;
 			outputFileListPaths = (
@@ -2822,7 +2824,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/run\"\n";
+			shellScript = "\"${PROJECT_DIR}/scripts/firebase/run\"\n";
 		};
 		73DA43AD2404CA9500985482 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2834,7 +2836,7 @@
 			inputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 				"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist",
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 			);
 			name = Crashlytics;
 			outputFileListPaths = (
@@ -2843,7 +2845,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/run\"\n";
+			shellScript = "\"${PROJECT_DIR}/scripts/firebase/run\"\n";
 		};
 		73FCA39F25005BA4001B0C5D /* Copy Frameworks (Carthage) */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2888,7 +2890,7 @@
 			inputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 				"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist",
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 			);
 			name = Crashlytics;
 			outputFileListPaths = (
@@ -2897,7 +2899,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/run\"\n";
+			shellScript = "\"${PROJECT_DIR}/scripts/firebase/run\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3740,9 +3742,9 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
-				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3755,7 +3757,7 @@
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Development";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FEATURE_DRM_CONNECTOR SIMPLYE";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
@@ -3792,13 +3794,13 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=0",
 					"$(inherited)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
-				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3811,7 +3813,7 @@
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
 				PROVISIONING_PROFILE_SPECIFIER = NYPL_AdHoc_Wildcard;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FEATURE_DRM_CONNECTOR SIMPLYE";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
@@ -3838,7 +3840,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3847,9 +3849,9 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OPENEBOOKS=1";
-				INFOPLIST_FILE = "Simplified/OpenEbooks/Open-eBooks-Info.plist";
+				INFOPLIST_FILE = "OpenEbooks/Open-eBooks-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3863,7 +3865,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "Open eBooks Development";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FEATURE_DRM_CONNECTOR OPENEBOOKS";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
@@ -3891,7 +3893,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3900,13 +3902,13 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=0",
 					"$(inherited)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OPENEBOOKS=1";
-				INFOPLIST_FILE = "Simplified/OpenEbooks/Open-eBooks-Info.plist";
+				INFOPLIST_FILE = "OpenEbooks/Open-eBooks-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3920,7 +3922,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "Open eBooks Distribution";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FEATURE_DRM_CONNECTOR OPENEBOOKS";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
@@ -4077,9 +4079,9 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
-				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4092,7 +4094,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Development";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FEATURE_DRM_CONNECTOR SIMPLYE";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
@@ -4128,13 +4130,13 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=0",
 					"$(inherited)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "SIMPLYE=1";
-				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4147,7 +4149,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FEATURE_DRM_CONNECTOR SIMPLYE";
-				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";

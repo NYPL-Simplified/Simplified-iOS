@@ -8,7 +8,7 @@ DerivedData
 Build
 adobe-rmsdk
 **/ReaderClientCert.sig
-Simplified/APIKeys.swift
+**/APIKeys.swift
 Carthage
-GoogleService-Info.plist
-Simplified/NYPLSecrets.swift
+**/GoogleService-Info.plist
+**/NYPLSecrets.swift
