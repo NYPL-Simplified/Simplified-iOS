@@ -6,9 +6,7 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-/// Currently used only by Open eBooks, but extendable for use in SimplyE.
-/// - Seealso: https://github.com/NYPL-Simplified/Simplified-iOS/pull/1070
-/// TODO: SIMPLY-3053
+
 class NYPLSettingsSplitViewController : UISplitViewController, UISplitViewControllerDelegate {
   private var isFirstLoad: Bool
   private var currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider

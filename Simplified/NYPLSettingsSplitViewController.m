@@ -8,7 +8,7 @@
 
 #import "NYPLSettingsSplitViewController.h"
 
-@interface NYPLSettingsSplitViewController ()
+@interface NYPLSettingsSplitViewControllerOld ()
   <UISplitViewControllerDelegate, NYPLSettingsPrimaryTableViewControllerDelegate>
 
 @property (nonatomic) NYPLSettingsPrimaryNavigationController *primaryNavigationController;
@@ -16,7 +16,7 @@
 @property (nonatomic) id<NYPLCurrentLibraryAccountProvider> currentLibraryAccountProvider;
 @end
 
-@implementation NYPLSettingsSplitViewController
+@implementation NYPLSettingsSplitViewControllerOld
 
 #pragma mark NSObject
 

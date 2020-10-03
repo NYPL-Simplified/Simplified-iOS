@@ -5,7 +5,7 @@
 
 #ifdef SIMPLYE
 // TODO: SIMPLY-3053 this #ifdef can be removed once this ticket is done
-#import "NYPLSettingsSplitViewController.h"
+//#import "NYPLSettingsSplitViewController.h"
 #endif
 
 #import "NYPLRootTabBarController.h"

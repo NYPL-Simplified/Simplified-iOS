@@ -998,6 +998,14 @@
 		73BF0CCE245769D80009FC61 /* NYPLReaderTOCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F9245276CA004C78BD /* NYPLReaderTOCCell.swift */; };
 		73C8F84B252F9E4500AE514F /* NYPLBook+DistributorChecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C756252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift */; };
 		73CCB6F724588C9000ADD3AD /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
+		73C10A552527F789001D2D77 /* NYPLSettingsSplitViewController+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C10A542527F789001D2D77 /* NYPLSettingsSplitViewController+SE.swift */; };
+		73C10A562527F789001D2D77 /* NYPLSettingsSplitViewController+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C10A542527F789001D2D77 /* NYPLSettingsSplitViewController+SE.swift */; };
+		73C10A5B2527F808001D2D77 /* NYPLSettingsPrimaryTableItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E242502EDEF008F6244 /* NYPLSettingsPrimaryTableItem.swift */; };
+		73C10A5C2527F808001D2D77 /* NYPLSettingsPrimaryTableItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E242502EDEF008F6244 /* NYPLSettingsPrimaryTableItem.swift */; };
+		73C10A5D2527FA98001D2D77 /* NYPLSettingsSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */; };
+		73C10A5E2527FA99001D2D77 /* NYPLSettingsSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */; };
+		73C10A5F2527FD93001D2D77 /* NYPLLibraryAccountURLsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */; };
+		73C10A602527FD94001D2D77 /* NYPLLibraryAccountURLsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */; };
 		73CDA121243EDAD8009CC6A6 /* URLRequest+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */; };
 		73CE0C6E2519806900BC4DFE /* NYPLLibraryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730EE000251567820038DD9F /* NYPLLibraryNavigationController.m */; };
 		73CEF830252699CA006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
@@ -2135,6 +2143,8 @@
 		73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountFrontEndValidation.swift; sourceTree = "<group>"; };
 		73B72F10254C5A8B008725CA /* NYPLSignInURLSessionChallengeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInURLSessionChallengeHandler.swift; sourceTree = "<group>"; };
 		73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+CardCreation.swift"; sourceTree = "<group>"; };
+		73C10A542527F789001D2D77 /* NYPLSettingsSplitViewController+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSettingsSplitViewController+SE.swift"; sourceTree = "<group>"; };
+		73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "carthage-update-simplye.sh"; path = "scripts/carthage-update-simplye.sh"; sourceTree = SOURCE_ROOT; };
 		73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+NYPL.swift"; sourceTree = "<group>"; };
 		73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCrashlytics.framework; path = Carthage/Build/iOS/FirebaseCrashlytics.framework; sourceTree = "<group>"; };
 		73CEF8352526FE80006B2820 /* run */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run; sourceTree = "<group>"; };
@@ -2884,6 +2894,7 @@
 				73085E242502EDEF008F6244 /* NYPLSettingsPrimaryTableItem.swift */,
 				73085E232502EDEE008F6244 /* NYPLSettingsPrimaryTableViewController.swift */,
 				73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */,
+				73C10A542527F789001D2D77 /* NYPLSettingsSplitViewController+SE.swift */,
 				7353940B250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift */,
 			);
 			path = Settings;
@@ -4535,6 +4546,7 @@
 				7347F04D245A4DE200558D7F /* NYPLBookCell.m in Sources */,
 				7342702D24DCB30B00A4F605 /* LibraryModule.swift in Sources */,
 				7347F04E245A4DE200558D7F /* NSURL+NYPLURLAdditions.m in Sources */,
+				73C10A5C2527F808001D2D77 /* NYPLSettingsPrimaryTableItem.swift in Sources */,
 				7347F04F245A4DE200558D7F /* NYPLAsync.m in Sources */,
 				7342702524DCB26700A4F605 /* URLResponse+NYPL.swift in Sources */,
 				730EDFEF251537AF0038DD9F /* NYPLCredentials.swift in Sources */,
@@ -4614,6 +4626,7 @@
 				7347F084245A4DE200558D7F /* NYPLSettingsAccountDetailViewController.m in Sources */,
 				7347F085245A4DE200558D7F /* NYPLReaderReadiumView.m in Sources */,
 				7342702B24DCB30B00A4F605 /* CancellableResult.swift in Sources */,
+				73C10A5E2527FA99001D2D77 /* NYPLSettingsSplitViewController.swift in Sources */,
 				7347F086245A4DE200558D7F /* NYPLBarcode.swift in Sources */,
 				7347F087245A4DE200558D7F /* NYPLSession.m in Sources */,
 				7347F088245A4DE200558D7F /* NYPLSettingsEULAViewController.m in Sources */,
@@ -4666,6 +4679,7 @@
 				7380E71C254B40C2004613B1 /* StdLib+NYPLAdditions.swift in Sources */,
 				7347F0B0245A4DE200558D7F /* NYPLOPDSAcquisition.m in Sources */,
 				7342703724DCB31800A4F605 /* NYPLUserSettingsVC.swift in Sources */,
+				73C10A602527FD94001D2D77 /* NYPLLibraryAccountURLsProvider.swift in Sources */,
 				7347F0B1245A4DE200558D7F /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
 				7380E703254B3E77004613B1 /* NYPLBookContentMetadataFilesHelper.swift in Sources */,
 				7347F0B2245A4DE200558D7F /* NYPLRootTabBarController.m in Sources */,
@@ -4698,6 +4712,7 @@
 				7347F0C5245A4DE200558D7F /* NYPLMyBooksDownloadCenter.m in Sources */,
 				7347F0C6245A4DE200558D7F /* NYPLProblemDocumentCacheManager.swift in Sources */,
 				7347F0C7245A4DE200558D7F /* NYPLBookDetailButtonsView.m in Sources */,
+				73C10A562527F789001D2D77 /* NYPLSettingsSplitViewController+SE.swift in Sources */,
 				7347F0C8245A4DE200558D7F /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,
 				7347F0C9245A4DE200558D7F /* NYPLAnnotations.swift in Sources */,
 				7347F0CA245A4DE200558D7F /* RemoteHTMLViewController.swift in Sources */,
@@ -5468,6 +5483,7 @@
 				731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */,
 				11580AC81986A77B00949A15 /* NYPLBookCell.m in Sources */,
 				738CB2062509A87700891F31 /* NYPLConfiguration+SE.swift in Sources */,
+				73C10A5B2527F808001D2D77 /* NYPLSettingsPrimaryTableItem.swift in Sources */,
 				085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */,
 				1183F35B194F847100DC322F /* NYPLAsync.m in Sources */,
 				11B20E6E19D9F6DD00877A23 /* NYPLReloadView.m in Sources */,
@@ -5542,6 +5558,7 @@
 				7340DA6224B7E45C00361387 /* URLResponse+NYPL.swift in Sources */,
 				7347312925142FE200BE3D2C /* NYPLSettings+SE.swift in Sources */,
 				E6202A021DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m in Sources */,
+				73C10A5D2527FA98001D2D77 /* NYPLSettingsSplitViewController.swift in Sources */,
 				2198F910250A90EE000D9DAB /* AudioBookVendorsHelper.swift in Sources */,
 				113137E71A48DAB90082954E /* NYPLReaderReadiumView.m in Sources */,
 				E68CCFC51F9F80CF003DDA6C /* NYPLBarcode.swift in Sources */,
@@ -5596,6 +5613,7 @@
 				112C684F19EF003300106973 /* NYPLCatalogFacetGroup.m in Sources */,
 				2D754BBB2002E2FB0061D34F /* NYPLOPDSAcquisition.m in Sources */,
 				085D31DF1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
+				73C10A5F2527FD93001D2D77 /* NYPLLibraryAccountURLsProvider.swift in Sources */,
 				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,
 				E63F2C6C1EAA81B3002B6373 /* ExtendedNavBarView.swift in Sources */,
 				73F713562417200F00C63B81 /* NYPLEPUBViewController.swift in Sources */,
@@ -5634,6 +5652,7 @@
 				2DEF10BA201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,
 				2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */,
 				21EC1B8F2501538600A12384 /* AudioBookVendors+Extensions.swift in Sources */,
+				73C10A552527F789001D2D77 /* NYPLSettingsSplitViewController+SE.swift in Sources */,
 				730EE001251567820038DD9F /* NYPLLibraryNavigationController.m in Sources */,
 				E6BA02B81DE4B6F600F76404 /* RemoteHTMLViewController.swift in Sources */,
 				8CE9C471237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,

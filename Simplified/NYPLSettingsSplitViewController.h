@@ -1,6 +1,6 @@
 @protocol NYPLCurrentLibraryAccountProvider;
 
-@interface NYPLSettingsSplitViewController : UISplitViewController
+@interface NYPLSettingsSplitViewControllerOld : UISplitViewController
 
 - (instancetype)initWithCurrentLibraryAccountProvider: (id<NYPLCurrentLibraryAccountProvider>)currentAccountProvider;
 

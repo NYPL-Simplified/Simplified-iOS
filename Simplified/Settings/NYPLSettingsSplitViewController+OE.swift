@@ -8,11 +8,28 @@
 
 import Foundation
 
+extension NYPLLibraryAccountURLsProvider{
+
+  func fallback(forURLType urlType: URLType) -> URL {
+    // provide some reasonable defaults if we can't find a URL
+    switch urlType {
+    case .acknowledgements:
+      return URL(string: "https://openebooks.net/app_acknowledgments.html")!
+    case .eula:
+      return URL(string: "https://openebooks.net/app_user_agreement.html")!
+    case .privacyPolicy:
+      return URL(string: "https://firstbook.org/about/privacy-compliance-policies/")!
+    default:
+      // should never happen for OE
+      return URL(string: "https://openebooks.net")!
+    }
+  }
+}
+
 // The reason why this is here instead of directly inside the same source file
 // of NYPLSettingsSplitViewController is because the latter is meant as a
 // foundation for both SimplyE and Open eBooks, while this extension is
 // only meant for Open eBooks.
-// - See: https://github.com/NYPL-Simplified/Simplified-iOS/pull/1070
 extension NYPLSettingsSplitViewController {
 
   /// Sets up the items of the `primaryTableVC`.

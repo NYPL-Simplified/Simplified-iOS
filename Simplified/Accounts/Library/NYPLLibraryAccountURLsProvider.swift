@@ -20,18 +20,8 @@ class NYPLLibraryAccountURLsProvider {
       return url
     }
 
-    // provide some reasonable defaults if we can't find a URL
-    switch urlType {
-    case .acknowledgements:
-      return URL(string: "https://openebooks.net/app_acknowledgments.html")!
-    case .eula:
-      return URL(string: "https://openebooks.net/app_user_agreement.html")!
-    case .privacyPolicy:
-      return URL(string: "https://firstbook.org/about/privacy-compliance-policies/")!
-    default:
-      // should never happen for OE
-      return URL(string: "https://openebooks.net")!
-    }
+    return fallback(forURLType: urlType)
   }
 }
+
 
