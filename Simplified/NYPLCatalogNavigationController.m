@@ -3,12 +3,16 @@
 
 #import "NYPLCatalogNavigationController.h"
 
+#import "NYPLAccountSignInViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLMyBooksNavigationController.h"
 #import "NYPLMyBooksViewController.h"
 #import "NYPLHoldsNavigationController.h"
+#ifdef SIMPLYE
+// TODO: SIMPLY-3053 this #ifdef can be removed once this ticket is done
 #import "NYPLSettingsPrimaryTableViewController.h"
+#endif
 #import "SimplyE-Swift.h"
 #import "NYPLAppDelegate.h"
 #import "NSString+NYPLStringAdditions.h"
@@ -52,6 +56,8 @@
                          initWithURL:urlToLoad];
   
   self.viewController.title = NSLocalizedString(@"Catalog", nil);
+
+#ifdef SIMPLYE
   self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
   
   // The top-level view controller uses the same image used for the tab bar in place of the usual
@@ -63,7 +69,8 @@
   self.viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
   
   self.viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
-  
+#endif
+
   self.viewControllers = @[self.viewController];
 }
 
@@ -107,6 +114,7 @@
   self.viewController.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
+#ifdef SIMPLYE
 - (void)switchLibrary
 {
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
@@ -148,7 +156,7 @@
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [account loadAuthenticationDocumentWithCompletion:^(BOOL success) {
+        [account loadAuthenticationDocumentUsingSignedInStateProvider:nil completion:^(BOOL success) {
           dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
               [AccountsManager shared].currentAccount = account;
@@ -184,6 +192,7 @@
    animated:YES
    completion:nil];
 }
+#endif
 
 
 - (void)updateFeedAndRegistryOnAccountChange
@@ -205,10 +214,17 @@
      postNotificationName:NSNotification.NYPLCurrentAccountDidChange
      object:nil];
   };
-  if (account.details.needsAgeCheck) {
-    [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+  if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
+    [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        mainFeedUrl = isOfAge ? account.details.coppaOverUrl : account.details.coppaUnderUrl;
+        mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
+        completion();
+      });
+    }];
+  } else if (NYPLUserAccount.sharedAccount.isCatalogSecured && !NYPLUserAccount.sharedAccount.hasCredentials) {
+    // sign in
+    [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO authorizeImmediately:YES completionHandler:^{
+      dispatch_async(dispatch_get_main_queue(), ^{
         completion();
       });
     }];
@@ -240,10 +256,10 @@
       object:nil];
     };
 
-    if (account.details.needsAgeCheck) {
-      [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+    if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
+      [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
         dispatch_async(dispatch_get_main_queue(), ^{
-          mainFeedUrl = isOfAge ? account.details.coppaOverUrl : account.details.coppaUnderUrl;
+          mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
           completion();
         });
       }];
@@ -293,9 +309,9 @@
       NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
       [vc safelyPresentViewController:navController animated:YES completion:nil];
     };
-    if (currentAccount.details.needsAgeCheck) {
-      [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
-        mainFeedUrl = isOfAge ? currentAccount.details.coppaOverUrl : currentAccount.details.coppaUnderUrl;
+    if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
+      [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+        mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
         completion();
       }];
     } else {
@@ -309,8 +325,11 @@
   [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
   [[NYPLBookRegistry sharedRegistry] save];
   [AccountsManager sharedInstance].currentAccount = account;
-  [self updateFeedAndRegistryOnAccountChange];
-  [self dismissViewControllerAnimated:YES completion:nil];
+  [self dismissViewControllerAnimated:YES completion:^{
+    [self updateFeedAndRegistryOnAccountChange];
+  }];
+//  [self updateFeedAndRegistryOnAccountChange];
+//  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

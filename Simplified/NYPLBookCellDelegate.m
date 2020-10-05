@@ -83,7 +83,7 @@
     // Try to prevent blank books bug
     if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID]
                                            withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) &&
-        ([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN])) {
+        ([[NYPLUserAccount sharedAccount] hasCredentials])) {
       [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
         [self openBook:book];   // with successful DRM activation
       }];
@@ -255,7 +255,7 @@
                                  message:msg];
     } else {
       if (level > LogLevelDebug) {
-        NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
+        NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:NYPLErrorCodeAudiobookExternalError userInfo:nil];
 
         NYPLSeverity severity = level == LogLevelInfo ? NYPLSeverityInfo : level == LogLevelWarn ? NYPLSeverityWarning : NYPLSeverityError;
         [NYPLErrorLogger logAudiobookIssue:error
@@ -316,7 +316,7 @@
 
   NSString *logMsg = [NSString stringWithFormat:@"bookID: %@; fileURL: %@", book.identifier, url];
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
-                            context:@"audiobooks"
+                            summary:@"Audiobooks: corrupted audiobook"
                             message:logMsg
                            metadata:nil];
 }

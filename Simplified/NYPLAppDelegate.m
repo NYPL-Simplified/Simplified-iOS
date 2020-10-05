@@ -46,7 +46,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   // Perform data migrations as early as possible before anything has a chance to access them
   [NYPLKeychainManager validateKeychain];
-  [MigrationManager migrate];
+  [NYPLMigrationManager migrate];
   
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
@@ -103,10 +103,24 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   }
 }
 
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+{
+    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] && [userActivity.webpageURL.host isEqualToString:NYPLSettings.shared.authenticationUniversalLink.host]) {
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"NYPLAppDelegateDidReceiveCleverRedirectURL"
+         object:userActivity.webpageURL];
+
+        return YES;
+    }
+
+    return NO;
+}
+
 - (BOOL)application:(__unused UIApplication *)app
             openURL:(NSURL *)url
             options:(__unused NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
+
   // URLs should be a permalink to a feed URL
   NSURL *entryURL = [url URLBySwappingForScheme:@"http"];
   NSData *data = [NSData dataWithContentsOfURL:entryURL];

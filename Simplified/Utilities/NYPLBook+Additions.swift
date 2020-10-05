@@ -25,7 +25,9 @@ extension NYPLBook {
       "bookTitle": title ?? "",
       "bookID": identifier ?? "",
       "bookDistributor": distributor ?? "",
-      "acquisitions": acquisitions
+      "acquisitions": acquisitions,
+      "alternateURL": alternateURL ?? "N/A",
+      "contentType": NYPLBookContentTypeConverter.stringValue(of: defaultBookContentType())
     ]
   }
 }

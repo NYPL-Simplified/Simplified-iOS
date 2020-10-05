@@ -10,8 +10,8 @@ import Foundation
 
 /// Use this enum to express either-or semantics in a result.
 enum NYPLResult<SuccessInfo> {
-  case success(SuccessInfo)
-  case failure(NYPLUserFriendlyError)
+  case success(SuccessInfo, URLResponse?)
+  case failure(NYPLUserFriendlyError, URLResponse?)
 }
 
 /// A class that is capable of executing network requests in a thread-safe way.
@@ -22,7 +22,7 @@ enum NYPLResult<SuccessInfo> {
 /// header if present, otherwise defaults to 3 hours.
 ///
 /// The cache lives on both memory and disk.
-class NYPLNetworkExecutor {
+@objc class NYPLNetworkExecutor: NSObject {
   private let urlSession: URLSession
 
   /// The delegate of the URLSession.
@@ -49,7 +49,7 @@ class NYPLNetworkExecutor {
   }
 
   /// A shared generic executor with enabled fallback caching.
-  static let shared = NYPLNetworkExecutor(shouldEnableFallbackCaching: true)
+  @objc static let shared = NYPLNetworkExecutor(shouldEnableFallbackCaching: true)
 
   /// Performs a GET request using the specified URL
   /// - Parameters:
@@ -67,21 +67,133 @@ class NYPLNetworkExecutor {
   ///   - req: The request to perform.
   ///   - completion: Always called when the resource is either fetched from
   /// the network or from the cache.
+  @discardableResult
   func executeRequest(_ req: URLRequest,
-                      completion: @escaping (_: NYPLResult<Data>) -> Void) {
+           completion: @escaping (_: NYPLResult<Data>) -> Void) -> URLSessionDataTask {
     let task = urlSession.dataTask(with: req)
     responder.addCompletion(completion, taskID: task.taskIdentifier)
     task.resume()
+    return task
   }
 }
 
 extension NYPLNetworkExecutor {
-  private func request(for url: URL) -> URLRequest {
-    return URLRequest(url: url,
-                      cachePolicy: urlSession.configuration.requestCachePolicy)
+  func request(for url: URL) -> URLRequest {
+
+    var urlRequest = URLRequest(url: url,
+                                cachePolicy: urlSession.configuration.requestCachePolicy)
+
+    if let authToken = NYPLUserAccount.sharedAccount().authToken {
+      let headers = [
+        "Authorization" : "Bearer \(authToken)",
+        "Content-Type" : "application/json"
+      ]
+
+      headers.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
+    }
+
+    return urlRequest
   }
 
-  func clearCache() {
+  @objc func clearCache() {
     urlSession.configuration.urlCache?.removeAllCachedResponses()
+  }
+}
+
+// Objective-C compatibility
+extension NYPLNetworkExecutor {
+  @objc class func bearerAuthorized(request: URLRequest) -> URLRequest {
+    let headers: [String: String]
+    if let authToken = NYPLUserAccount.sharedAccount().authToken {
+      headers = [
+        "Authorization" : "Bearer \(authToken)",
+        "Content-Type" : "application/json"]
+    } else {
+      headers = [
+        "Authorization" : "",
+        "Content-Type" : "application/json"]
+    }
+
+    var request = request
+    for (headerKey, headerValue) in headers {
+      request.setValue(headerValue, forHTTPHeaderField: headerKey)
+    }
+    return request
+  }
+
+  /// Performs a GET request using the specified URL
+  /// - Parameters:
+  ///   - reqURL: URL of the resource to GET.
+  ///   - completion: Always called when the resource is either fetched from
+  /// the network or from the cache.
+  @objc func download(_ reqURL: URL,
+                      completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDownloadTask {
+    let req = request(for: reqURL)
+    let completionWrapper: (_ result: NYPLResult<Data>) -> Void = { result in
+      switch result {
+      case let .success(data, response): completion(data, response, nil)
+      case let .failure(error, response): completion(nil, response, error)
+      }
+    }
+
+    let task = urlSession.downloadTask(with: req)
+    responder.addCompletion(completionWrapper, taskID: task.taskIdentifier)
+    task.resume()
+
+    return task
+  }
+
+  /// Performs a GET request using the specified URL, if oauth token is available, it is added to the request
+  /// - Parameters:
+  ///   - reqURL: URL of the resource to GET.
+  ///   - completion: Always called when the resource is either fetched from
+  /// the network or from the cache.
+  @objc func addBearerAndExecute(_ request: URLRequest,
+                     completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask {
+    let req = NYPLNetworkExecutor.bearerAuthorized(request: request)
+    let completionWrapper: (_ result: NYPLResult<Data>) -> Void = { result in
+      switch result {
+      case let .success(data, response): completion(data, response, nil)
+      case let .failure(error, response): completion(nil, response, error)
+      }
+    }
+    return executeRequest(req, completion: completionWrapper)
+  }
+
+  /// Performs a GET request using the specified URL
+  /// - Parameters:
+  ///   - reqURL: URL of the resource to GET.
+  ///   - completion: Always called when the resource is either fetched from
+  /// the network or from the cache.
+  @objc func GET(_ reqURL: URL,
+                 cachePolicy: NSURLRequest.CachePolicy = .useProtocolCachePolicy,
+                 completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask {
+    var req = request(for: reqURL)
+    req.cachePolicy = cachePolicy
+    let completionWrapper: (_ result: NYPLResult<Data>) -> Void = { result in
+      switch result {
+      case let .success(data, response): completion(data, response, nil)
+      case let .failure(error, response): completion(nil, response, error)
+      }
+    }
+    return executeRequest(req, completion: completionWrapper)
+  }
+
+  /// Performs a PUT request using the specified URL
+  /// - Parameters:
+  ///   - reqURL: URL of the resource to PUT.
+  ///   - completion: Always called when the resource is either fetched from
+  /// the network or from the cache.
+  @objc func PUT(_ reqURL: URL,
+                 completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask {
+    var req = request(for: reqURL)
+    req.httpMethod = "PUT"
+    let completionWrapper: (_ result: NYPLResult<Data>) -> Void = { result in
+      switch result {
+      case let .success(data, response): completion(data, response, nil)
+      case let .failure(error, response): completion(nil, response, error)
+      }
+    }
+    return executeRequest(req, completion: completionWrapper)
   }
 }
