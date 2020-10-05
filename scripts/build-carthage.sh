@@ -5,10 +5,12 @@
 
 # Usage: run this script from the root of Simplified-iOS repo.
 #
-#     build-carthage.sh
+#     ./scripts/build-carthage.sh
 #
 # Description: This scripts wipes your Carthage folder, checks out and rebuilds
 #              all dependencies.
+
+echo "Building Carthage..."
 
 # deep clean to avoid any caching issues
 rm -rf ~/Library/Caches/org.carthage.CarthageKit

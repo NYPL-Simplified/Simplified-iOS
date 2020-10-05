@@ -14,7 +14,7 @@
 # /Applications, you'll need to update the $DEVELOPER env variable mentioned
 # at the top of both the build.sh / build_curl.sh scripts below.
 
-cp build_curl.sh adobe-rmsdk/thirdparty/curl/iOS-libcurl/
+cp scripts/build_curl.sh adobe-rmsdk/thirdparty/curl/iOS-libcurl/
 SDKVERSION=`xcodebuild -version -sdk iphoneos | grep SDKVersion | sed 's/SDKVersion[: ]*//'`
 
 # edit as required if OpenSSL and cURL need updating or retargeting
