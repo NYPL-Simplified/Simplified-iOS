@@ -71,6 +71,18 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
   } else {
     cachePolicy = NSURLRequestUseProtocolCachePolicy;
   }
+
+  if (URL == nil) {
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              summary:@"NYPLOPDSFeed: nil URL"
+                              message:nil
+                             metadata:@{
+                               @"shouldResetCache": @(shouldResetCache)
+                             }];
+    NYPLAsyncDispatch(^{handler(nil, nil);});
+    return;
+  }
+
   request = [[[NYPLNetworkExecutor shared] GET:URL
                                    cachePolicy:cachePolicy
                                     completion:^(NSData *data, NSURLResponse *response, NSError *error) {
