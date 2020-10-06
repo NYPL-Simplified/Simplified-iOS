@@ -12,7 +12,6 @@ import XCTest
 class NYPLJWKConversionTest: XCTestCase {
   
   var jwkResponseData: Data!
-  var expectedPrivateKeyData: Data!
   var expectedPublicKeyData: Data!
 
   override func setUp() {
@@ -21,28 +20,26 @@ class NYPLJWKConversionTest: XCTestCase {
     let bundle = Bundle(for: NYPLJWKConversionTest.self)
     // JWK response data - data received from https://listen.cantookaudio.com/.well-known/jwks.json
     jwkResponseData = try! Data(contentsOf: bundle.url(forResource: "jwk", withExtension: "json")!)
-    // Expected private key data - extracted from PEM file,
-    // content between -----BEGIN RSA PRIVATE KEY----- and -----END RSA PRIVATE KEY-----
-    let expectedPrivateKeyString = try! String(contentsOf: bundle.url(forResource: "jwk_private", withExtension: nil)!)
-    expectedPrivateKeyData = expectedPrivateKeyString.replacingOccurrences(of: "\n", with: "").data(using: .utf8, allowLossyConversion: false)?.base64EncodedData()
+    // Expected public key data - extracted from PEM file,
+    // content between -----BEGIN PUBLIC KEY----- and -----END PUBLIC KEY-----
+    let expectedPublicKeyString = try! String(contentsOf: bundle.url(forResource: "jwk_public", withExtension: nil)!)
+    expectedPublicKeyData = Data(base64Encoded: expectedPublicKeyString.replacingOccurrences(of: "\n", with: ""))
   }
 
   override func tearDown() {
     super.tearDown()
     jwkResponseData = nil
     expectedPublicKeyData = nil
-    expectedPrivateKeyData = nil
   }
 
-  // TODO: SIMPLY-3131
-//  func testJWKConversion() throws {
-//    let jwkResponse = try? JSONDecoder().decode(JWKResponse.self, from: jwkResponseData)
-//    XCTAssertNotNil(jwkResponse)
-//    let jwk = jwkResponse?.keys.first
-//    XCTAssertNotNil(jwk)
-//    let publicKey = jwk?.publicKeyData
-//    XCTAssertNotNil(publicKey)
-//    XCTAssertEqual(publicKey!, expectedPrivateKeyData)
-//  }
+  func testJWKConversion() throws {
+    let jwkResponse = try? JSONDecoder().decode(JWKResponse.self, from: jwkResponseData)
+    XCTAssertNotNil(jwkResponse)
+    let jwk = jwkResponse?.keys.first
+    XCTAssertNotNil(jwk)
+    let publicKeyData = jwk?.publicKeyData
+    XCTAssertNotNil(publicKeyData)
+    XCTAssertEqual(publicKeyData!, expectedPublicKeyData)
+  }
 
 }
