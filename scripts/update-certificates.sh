@@ -10,7 +10,7 @@ cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/AppInfrastructure/
 
 # SimplyE-specific stuff
 cp ../Certificates/SimplyE/iOS/GoogleService-Info.plist SimplyE/
-cp ../Certificates/SimplyE/iOS/ReaderClientCertProduction.sig SimplyE/Simplified/ReaderClientCert.sig
+cp ../Certificates/SimplyE/iOS/ReaderClientCertProduction.sig SimplyE/ReaderClientCert.sig
 
 # OpenEbooks-specific stuff
 cp ../Certificates/OpenEbooks/iOS/ReaderClientCert.sig OpenEbooks/
