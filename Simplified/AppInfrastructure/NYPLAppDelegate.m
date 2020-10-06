@@ -68,9 +68,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   [self beginCheckingForUpdates];
 
-#if !TARGET_OS_SIMULATOR
   [NYPLErrorLogger logNewAppLaunch];
-#endif
 
   return YES;
 }
