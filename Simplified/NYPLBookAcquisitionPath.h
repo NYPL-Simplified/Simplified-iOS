@@ -4,14 +4,15 @@
 // enum.
 #import "NYPLOPDSAcquisition.h"
 
-static NSString * const _Nonnull ContentTypeOPDSCatalog = @"application/atom+xml;type=entry;profile=opds-catalog";
-static NSString * const _Nonnull ContentTypeAdobeAdept = @"application/vnd.adobe.adept+xml";
-static NSString * const _Nonnull ContentTypeBearerToken = @"application/vnd.librarysimplified.bearer-token+json";
-static NSString * const _Nonnull ContentTypeEpubZip = @"application/epub+zip";
-static NSString * const _Nonnull ContentTypeFindaway = @"application/vnd.librarysimplified.findaway.license+json";
-static NSString * const _Nonnull ContentTypeOpenAccessAudiobook = @"application/audiobook+json";
-static NSString * const _Nonnull ContentTypeOpenAccessPDF = @"application/pdf";
-static NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/audiobook+json;profile=\"http://www.feedbooks.com/audiobooks/access-restriction\"";
+extern NSString * const _Nonnull ContentTypeOPDSCatalog;
+extern NSString * const _Nonnull ContentTypeAdobeAdept;
+extern NSString * const _Nonnull ContentTypeBearerToken;
+extern NSString * const _Nonnull ContentTypeEpubZip;
+extern NSString * const _Nonnull ContentTypeFindaway;
+extern NSString * const _Nonnull ContentTypeOpenAccessAudiobook;
+extern NSString * const _Nonnull ContentTypeOpenAccessPDF;
+extern NSString * const _Nonnull ContentTypeFeedbooksAudiobook;
+extern NSString * const _Nonnull ContentTypeOctetStream;
 extern NSString * const _Nonnull ContentTypeOverdriveAudiobook;
 
 
