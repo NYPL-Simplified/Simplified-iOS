@@ -4,17 +4,29 @@
 // enum.
 #import "NYPLOPDSAcquisition.h"
 
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeOPDSCatalog;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeAdobeAdept;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeBearerToken;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeEpubZip;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeFindaway;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeOpenAccessAudiobook;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeOpenAccessPDF;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeFeedbooksAudiobook;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeOctetStream;
+/// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeOverdriveAudiobook;
-
+/// The actual Content-Type returned from Overdrive in the HTTP response for a
+/// download request. The constant value is fully lowercased.
+extern NSString * const _Nonnull ContentTypeOverdriveAudiobookActual;
 
 /// Represents a single path the application can take through an acquisition
 /// process.

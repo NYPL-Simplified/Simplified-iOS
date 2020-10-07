@@ -190,9 +190,10 @@ fileprivate let nullString = "null"
   ///   report, to ensure privacy.
   ///   - response: Useful to understand if the error originated on the server.
   ///   - message: A string for further context.
+  ///   - metadata: Free-form dictionary for additional metadata to be logged.
   class func logNetworkError(_ originalError: Error? = nil,
                              code: NYPLErrorCode = .ignore,
-                             summary: String? = nil,
+                             summary: String?,
                              request: URLRequest?,
                              response: URLResponse? = nil,
                              message: String? = nil,
@@ -218,8 +219,7 @@ fileprivate let nullString = "null"
   ///   - request: The request issued that returned the error.
   ///   - response: The response that returned the error.
   ///   - problemDocument: A structured error description returned by the server.
-  ///   - message: A dev-friendly message to concisely explain what's
-  ///  happening.
+  ///   - metadata: Free-form dictionary for additional metadata to be logged.
   class func logLoginError(_ error: NSError?,
                            barcode: String?,
                            library: Account?,

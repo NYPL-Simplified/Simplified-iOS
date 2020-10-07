@@ -12,6 +12,7 @@ NSString * const _Nonnull ContentTypeOpenAccessPDF = @"application/pdf";
 NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/audiobook+json;profile=\"http://www.feedbooks.com/audiobooks/access-restriction\"";
 NSString * const _Nonnull ContentTypeOctetStream = @"application/octet-stream";
 NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.overdrive.circulation.api+json;profile=audiobook";
+NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/json";
 
 @interface NYPLBookAcquisitionPath ()
 

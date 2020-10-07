@@ -115,6 +115,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     let taskID = task.taskIdentifier
     var logMetadata: [String: Any] = [
       "currentRequest": task.currentRequest?.loggableString ?? "N/A",
+      "taskID": taskID,
     ]
 
     taskInfoLock.lock()
@@ -123,6 +124,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
       NYPLErrorLogger.logNetworkError(
         error,
         code: .noTaskInfoAvailable,
+        summary: "Network layer error: task info unavailable",
         request: task.originalRequest,
         response: task.response,
         message: "No task info available for task \(taskID). Completion closure could not be called.",
@@ -143,7 +145,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
         let problemDoc = try NYPLProblemDocument.fromData(responseData)
         let err = task.makeErrorFromProblemDocument(problemDoc)
         parseError = nil
-        logMetadata["problemDocument"] = problemDoc
+        logMetadata["problemDocument"] = problemDoc.debugDictionary
         currentTaskInfo.completion(.failure(err, task.response))
       } catch (let error) {
         parseError = error
@@ -156,9 +158,9 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
       }
       NYPLErrorLogger.logNetworkError(parseError,
                                       code: NYPLErrorCode.parseProblemDocFail,
+                                      summary: "Network request failed: Problem Document available",
                                       request: task.originalRequest,
                                       response: task.response,
-                                      message: "Network request for task \(taskID)  failed. A Problem Document was returned.",
                                       metadata: logMetadata)
       return
     }
@@ -171,9 +173,9 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
       // will include any eventual logging done in the completion handler.
       NYPLErrorLogger.logNetworkError(
         error,
+        summary: "Network task completed with error",
         request: task.originalRequest,
         response: task.response,
-        message: "Network task \(taskID) completed with error",
         metadata: logMetadata)
       return
     }
@@ -188,8 +190,8 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
                           userInfo: logMetadata)
         currentTaskInfo.completion(.failure(err, task.response))
         NYPLErrorLogger.logNetworkError(code: NYPLErrorCode.responseFail,
+                                        summary: "Network request failed: server error response",
                                         request: task.originalRequest,
-                                        message: "Network request for task \(taskID) failed.",
                                         metadata: logMetadata)
         return
       }
