@@ -97,6 +97,7 @@ fileprivate let nullString = "null"
   case responseFail = 909
   case clientSideTransientError = 910
   case clientSideUserInterruption = 911
+  case problemDocAvailable = 912
 
   // DRM
   case epubDecodingError = 1000
@@ -248,7 +249,7 @@ fileprivate let nullString = "null"
     }
     let errorCode: Int
     if let problemDocument = problemDocument {
-      metadata["problemDocument"] = problemDocument.debugDictionary
+      metadata["problemDocument"] = problemDocument.dictionaryValue
       errorCode = NYPLErrorCode.loginErrorWithProblemDoc.rawValue
     } else {
       errorCode = NYPLErrorCode.remoteLoginError.rawValue

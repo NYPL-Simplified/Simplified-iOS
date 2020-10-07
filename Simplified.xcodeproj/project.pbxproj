@@ -2840,7 +2840,7 @@
 		};
 		73DA43AD2404CA9500985482 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -2855,7 +2855,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "\"${PROJECT_DIR}/scripts/firebase/run\"\n";
 		};

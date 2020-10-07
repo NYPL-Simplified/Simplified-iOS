@@ -210,7 +210,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                           reason:@"Got problem document"
                     downloadTask:downloadTask
                         metadata:@{@"problemDocument":
-                                     problemDocument.debugDictionary}];
+                                     problemDocument.dictionaryValue}];
 
     [[NSFileManager defaultManager] removeItemAtURL:tmpSavedFileURL error:NULL];
     success = NO;
@@ -759,7 +759,7 @@ didCompleteWithError:(NSError *)error
             }];
             return;
           } else {
-            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:YES];
+            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:NO];
           }
         }
 

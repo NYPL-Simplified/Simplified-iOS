@@ -88,8 +88,8 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
                                     completion:^(NSData *data, NSURLResponse *response, NSError *error) {
 
     if (error != nil) {
-      // NYPLSession already logged this.
-      NYPLAsyncDispatch(^{handler(nil, nil);});
+      // Note: NYPLNetworkExecutor already logged this error
+      NYPLAsyncDispatch(^{handler(nil, error.problemDocument.dictionaryValue);});
       return;
     }
 
