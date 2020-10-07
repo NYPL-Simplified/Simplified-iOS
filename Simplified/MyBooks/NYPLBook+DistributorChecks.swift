@@ -18,8 +18,10 @@ extension NYPLBook {
   /// - returns `true` if the download should be completed.
   @objc(canCompleteDownloadWithContentType:)
   func canCompleteDownload(withContentType downloadedContentType: String) -> Bool {
+    let downloadedType = downloadedContentType.lowercased()
+
     // if the content type matches one of the supported types exactly, go ahead
-    if NYPLBookAcquisitionPath.supportedTypes().contains(downloadedContentType) {
+    if NYPLBookAcquisitionPath.supportedTypes().contains(downloadedType) {
       return true
     }
 
@@ -27,14 +29,14 @@ extension NYPLBook {
     // one that was promised in this book's OPDS document
     if distributor.lowercased() == OverdriveDistributorKey.lowercased() {
       // if we original acquisition for this book matches, that's good enough
-      if defaultAcquisition()?.type == ContentTypeOverdriveAudiobook {
+      if defaultAcquisition()?.type.lowercased() == ContentTypeOverdriveAudiobook {
         return true
       }
 
       // This is a last resort added from empirical observations. Overdrive
       // seems to return `application/json` and in that case the download
       // appears to be correct and it is playable.
-      if downloadedContentType == ContentTypeOverdriveAudiobookActual {
+      if downloadedType == ContentTypeOverdriveAudiobookActual {
         return true
       }
     }
