@@ -111,7 +111,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
   //----------------------------------------------------------------------------
   func urlSession(_ session: URLSession,
                   task: URLSessionTask,
-                  didCompleteWithError error: Error?) {
+                  didCompleteWithError networkError: Error?) {
     let taskID = task.taskIdentifier
     var logMetadata: [String: Any] = [
       "currentRequest": task.currentRequest?.loggableString ?? "N/A",
@@ -122,7 +122,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     guard let currentTaskInfo = taskInfo.removeValue(forKey: taskID) else {
       taskInfoLock.unlock()
       NYPLErrorLogger.logNetworkError(
-        error,
+        networkError,
         code: .noTaskInfoAvailable,
         summary: "Network layer error: task info unavailable",
         request: task.originalRequest,
@@ -144,20 +144,24 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
       let code: NYPLErrorCode
       do {
         let problemDoc = try NYPLProblemDocument.fromData(responseData)
-        let err = task.makeErrorFromProblemDocument(problemDoc)
+        let errorFromProblemDoc = task.makeErrorFromProblemDocument(problemDoc)
         parseError = nil
         code = NYPLErrorCode.problemDocAvailable
         logMetadata["problemDocument"] = problemDoc.dictionaryValue
-        currentTaskInfo.completion(.failure(err, task.response))
-      } catch (let error) {
-        parseError = error
+        currentTaskInfo.completion(.failure(errorFromProblemDoc, task.response))
+      } catch (let caughtParseError) {
+        parseError = caughtParseError
         code = NYPLErrorCode.parseProblemDocFail
         let responseString = String(data: responseData, encoding: .utf8) ?? "N/A"
-        logMetadata["problemDocumentBody"] = responseString
-        currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError, task.response))
+        logMetadata["problemDocument (parse failed)"] = responseString
+        if let networkError = networkError as NYPLUserFriendlyError? {
+          currentTaskInfo.completion(.failure(networkError, task.response))
+        } else {
+          currentTaskInfo.completion(.failure(caughtParseError as NYPLUserFriendlyError, task.response))
+        }
       }
-      if let error = error {
-        logMetadata["urlSessionError"] = error
+      if let networkError = networkError {
+        logMetadata["urlSessionError"] = networkError
       }
       NYPLErrorLogger.logNetworkError(parseError,
                                       code: code,
@@ -169,13 +173,13 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     }
 
     // no problem document, but if we have an error it's still a failure
-    if let error = error {
-      currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError, task.response))
+    if let networkError = networkError {
+      currentTaskInfo.completion(.failure(networkError as NYPLUserFriendlyError, task.response))
 
       // logging the error after the completion call so that the error report
       // will include any eventual logging done in the completion handler.
       NYPLErrorLogger.logNetworkError(
-        error,
+        networkError,
         summary: "Network task completed with error",
         request: task.originalRequest,
         response: task.response,
