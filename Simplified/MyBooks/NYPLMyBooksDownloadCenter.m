@@ -759,7 +759,7 @@ didCompleteWithError:(NSError *)error
             }];
             return;
           } else {
-            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:YES];
+            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:NO];
           }
         }
 
