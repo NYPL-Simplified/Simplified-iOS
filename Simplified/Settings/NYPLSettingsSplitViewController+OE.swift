@@ -16,7 +16,7 @@ import Foundation
 extension NYPLSettingsSplitViewController {
 
   /// Sets up the items of the `primaryTableVC`.
-  func configSettingsTab() {
+  func configPrimaryVCItems(using URLsProvider: NYPLLibraryAccountURLsProvider) {
     let splitVC = self
     splitVC.primaryTableVC?.items = [
       NYPLSettingsPrimaryTableItem.init(
@@ -41,35 +41,26 @@ extension NYPLSettingsSplitViewController {
       ),
       NYPLSettingsPrimaryTableItem.init(
         indexPath: IndexPath(row: 0, section: 1),
-        title: NSLocalizedString("Help", comment: "Title for Help section"),
-        selectionHandler: { (splitVC, tableVC) in
-          // TODO: SIMPLY-3051 figure out if we still want HelpStack
-          //          let hs = HSHelpStack.instance() as! HSHelpStack
-          //          hs.showHelp(splitVC)
-      }
-      ),
-      NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 0, section: 2),
         title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
           title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
-          url: "http://www.librarysimplified.org/openebooksacknowledgments.html"
+          url: URLsProvider.accountURL(forType: .acknowledgements)
         )
       ),
       NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 1, section: 2),
+        indexPath: IndexPath(row: 1, section: 1),
         title: NSLocalizedString("User Agreement", comment: "Title for User Agreement section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
           title: NSLocalizedString("User Agreement", comment: "Title for User Agreement section"),
-          url: "http://www.librarysimplified.org/openebookseula.html"
+          url: URLsProvider.accountURL(forType: .eula)
         )
       ),
       NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 2, section: 2),
+        indexPath: IndexPath(row: 2, section: 1),
         title: NSLocalizedString("Privacy Policy", comment: "Title for Privacy Policy section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
           title: NSLocalizedString("Privacy Policy", comment: "Title for Privacy Policy section"),
-          url: "http://www.librarysimplified.org/oeiprivacy.html"
+          url: URLsProvider.accountURL(forType: .privacyPolicy)
         )
       )
     ]

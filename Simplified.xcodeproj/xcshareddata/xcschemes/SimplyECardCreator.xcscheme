@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7347F036245A4DE200558D7F"
-               BuildableName = "SimplyE.app"
+               BuildableName = "SimplyECardCreator.app"
                BlueprintName = "SimplyECardCreator"
                ReferencedContainer = "container:Simplified.xcodeproj">
             </BuildableReference>
@@ -26,8 +26,46 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <AdditionalOptions>
+         <AdditionalOption
+            key = "MallocStackLogging"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "PrefersMallocStackLoggingLite"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "MallocScribble"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+      </AdditionalOptions>
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "7347F036245A4DE200558D7F"
+            BuildableName = "SimplyECardCreator.app"
+            BlueprintName = "SimplyECardCreator"
+            ReferencedContainer = "container:Simplified.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2D2B47711D08F807007F7764"
+               BuildableName = "SimplyETests.xctest"
+               BlueprintName = "SimplyETests"
+               ReferencedContainer = "container:Simplified.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -45,11 +83,18 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7347F036245A4DE200558D7F"
-            BuildableName = "SimplyE.app"
+            BuildableName = "SimplyECardCreator.app"
             BlueprintName = "SimplyECardCreator"
             ReferencedContainer = "container:Simplified.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <AdditionalOptions>
+         <AdditionalOption
+            key = "MallocScribble"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -62,7 +107,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7347F036245A4DE200558D7F"
-            BuildableName = "SimplyE.app"
+            BuildableName = "SimplyECardCreator.app"
             BlueprintName = "SimplyECardCreator"
             ReferencedContainer = "container:Simplified.xcodeproj">
          </BuildableReference>

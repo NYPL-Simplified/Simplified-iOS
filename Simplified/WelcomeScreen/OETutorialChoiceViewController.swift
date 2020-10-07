@@ -41,7 +41,8 @@ class OETutorialChoiceViewController : UIViewController {
     
     title = NSLocalizedString("Log In", comment: "")
     
-    descriptionLabel.font = UIFont.systemFont(ofSize: 20.0)
+    descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),
+                                   size: 20.0)
     descriptionLabel.text = NSLocalizedString("You need to login to access the collection.", comment: "")
     descriptionLabel.textAlignment = .center
     descriptionLabel.numberOfLines = 0
@@ -124,7 +125,7 @@ class OETutorialChoiceViewController : UIViewController {
   }
   
   @objc func didSelectRequestCodes() {
-    UIApplication.shared.openURL(NYPLConfiguration.openEBooksRequestCodesURL)
+    UIApplication.shared.open(NYPLConfiguration.openEBooksRequestCodesURL)
   }
   
   @objc class func showLoginPicker(handler: (()->Void)?) {

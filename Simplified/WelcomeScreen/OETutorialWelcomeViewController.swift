@@ -34,7 +34,8 @@ class OETutorialWelcomeViewController : UIViewController {
     
     self.view.addSubview(self.logoImageView)
     
-    self.descriptionLabel.font = UIFont.systemFont(ofSize: 20.0)
+    self.descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),
+                                        size: 20.0)
     self.descriptionLabel.text = NSLocalizedString("TutorialWelcomeViewControllerDescription", comment: "Welcome text for Open eBooks")
     self.descriptionLabel.textAlignment = .center
     self.descriptionLabel.numberOfLines = 0
@@ -45,18 +46,20 @@ class OETutorialWelcomeViewController : UIViewController {
     super.viewWillLayoutSubviews()
     // Make the logo and text as wide as possible up to iPhone 6 Plus size. We cap
     // it there be able to have a reasonable text width and size.
-    let minSize = min(self.view.frame.width, 414)
-    let logoImageViewSize = CGSize.init(width: minSize, height: minSize)
-    let descriptionLabelSize = self.descriptionLabel.sizeThatFits(CGSize.init(width: logoImageViewSize.width, height: CGFloat.greatestFiniteMagnitude))
-    
+    let minSize = min(view.frame.width,
+                      logoImageView.image?.size.width ?? 480.0)
+    let logoImageViewSize = CGSize(width: minSize, height: minSize)
+    let descriptionLabelSize = descriptionLabel.sizeThatFits(
+      CGSize(width: logoImageViewSize.width,
+             height: CGFloat.greatestFiniteMagnitude))
+
     self.logoImageView.frame = CGRect.init(
-      x: (self.view.frame.width - logoImageViewSize.width) / 2.0,
-      y: (self.view.frame.height - (logoImageViewSize.height + descriptionLabelSize.height)) / 2.0,
+      x: ((view.frame.width - logoImageViewSize.width) / 2.0).rounded(),
+      y: ((view.frame.height - (logoImageViewSize.height + descriptionLabelSize.height)) / 2.0).rounded(),
       width: logoImageViewSize.width,
       height: logoImageViewSize.height
     )
-    self.logoImageView.integralizeFrame()
-    
+
     self.descriptionLabel.frame = CGRect.init(
       x: (self.view.frame.width - descriptionLabelSize.width) / 2.0,
       y: self.logoImageView.frame.maxY,

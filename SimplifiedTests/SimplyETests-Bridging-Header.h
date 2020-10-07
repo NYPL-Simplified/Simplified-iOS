@@ -17,3 +17,7 @@
 @interface NSDate ()
 + (NSDate *)dateWithISO8601DateStringDeprecated:(NSString *const)string;
 @end
+
+@interface UIColor ()
+- (NSString *)javascriptHexString;
+@end

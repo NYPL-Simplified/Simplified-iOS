@@ -124,15 +124,16 @@ fileprivate let nullString = "null"
   class func configureCrashAnalytics() {
     FirebaseApp.configure()
 
-    let deviceID = UIDevice.current.identifierForVendor
-    Crashlytics.sharedInstance().setObjectValue(deviceID, forKey: "NYPLDeviceID")
+    if let deviceID = UIDevice.current.identifierForVendor?.uuidString {
+      Crashlytics.crashlytics().setCustomValue(deviceID, forKey: "NYPLDeviceID")
+    }
   }
 
   class func setUserID(_ userID: String?) {
     if let userIDmd5 = userID?.md5hex() {
-      Crashlytics.sharedInstance().setUserIdentifier(userIDmd5)
+      Crashlytics.crashlytics().setUserID(userIDmd5)
     } else {
-      Crashlytics.sharedInstance().setUserIdentifier(nil)
+      Crashlytics.crashlytics().setUserID("SIGNED_OUT_USER")
     }
   }
 
@@ -259,7 +260,7 @@ fileprivate let nullString = "null"
                       code: errorCode,
                       userInfo: userInfo)
 
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
 
   /**
@@ -290,7 +291,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.adeptAuthFail.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
 
   /**
@@ -310,7 +311,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.invalidLicensor.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
 
   /// Report when there's an issue parsing a user profile document obtained
@@ -337,7 +338,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.userProfileDocFail.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
 
   //----------------------------------------------------------------------------
@@ -346,14 +347,17 @@ fileprivate let nullString = "null"
   class func logAudiobookIssue(_ error: NSError,
                                severity: NYPLSeverity,
                                message: String? = nil) {
-    var metadata = [String : Any]()
+    var metadata = error.userInfo
     addAccountInfoToMetadata(&metadata)
 
     let userInfo = additionalInfo(severity: severity,
                                   message: message,
                                   metadata: metadata)
-    Crashlytics.sharedInstance().recordError(error,
-                                             withAdditionalUserInfo: userInfo)
+    let newErr = NSError(domain: error.domain,
+                         code: error.code,
+                         userInfo: userInfo)
+
+    Crashlytics.crashlytics().record(error: newErr)
   }
 
   class func logAudiobookInfoEvent(message: String) {
@@ -361,7 +365,7 @@ fileprivate let nullString = "null"
     let err = NSError(domain: "Audiobooks",
                       code: NYPLErrorCode.audiobookUserEvent.rawValue,
                       userInfo: userInfo)
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
 
   //----------------------------------------------------------------------------
@@ -379,7 +383,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.appLaunch.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
 
   /**
@@ -402,7 +406,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.barcodeException.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
 
   class func logCatalogInitError(withCode code: NYPLErrorCode,
@@ -455,7 +459,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.parseProblemDocFail.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
   
   //----------------------------------------------------------------------------
@@ -504,7 +508,7 @@ fileprivate let nullString = "null"
     let err = NSError(domain: finalSummary,
                       code: finalCode,
                       userInfo: userInfo)
-    Crashlytics.sharedInstance().recordError(err)
+    Crashlytics.crashlytics().record(error: err)
   }
 
   /// Fixes up summary and code inspecting the domain and code of a given

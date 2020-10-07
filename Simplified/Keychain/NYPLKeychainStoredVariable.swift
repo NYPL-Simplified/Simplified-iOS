@@ -78,7 +78,11 @@ class NYPLKeychainCodableVariable<VariableType: Codable>: NYPLKeychainVariable<V
   override func read() -> VariableType? {
     transaction.perform {
       guard !alreadyInited else { return }
-      guard let data = NYPLKeychain.shared()?.object(forKey: key) as? Data else { cachedValue = nil; alreadyInited = true; return }
+      guard let data = NYPLKeychain.shared()?.object(forKey: key) as? Data else {
+        cachedValue = nil;
+        alreadyInited = true;
+        return
+      }
       cachedValue = try? JSONDecoder().decode(VariableType.self, from: data)
       alreadyInited = true
     }

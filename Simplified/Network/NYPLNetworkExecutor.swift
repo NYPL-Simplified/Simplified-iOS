@@ -72,6 +72,7 @@ enum NYPLResult<SuccessInfo> {
            completion: @escaping (_: NYPLResult<Data>) -> Void) -> URLSessionDataTask {
     let task = urlSession.dataTask(with: req)
     responder.addCompletion(completion, taskID: task.taskIdentifier)
+    Log.info(#file, "Starting request \(req.loggableString)")
     task.resume()
     return task
   }

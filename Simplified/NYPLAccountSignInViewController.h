@@ -7,7 +7,6 @@
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
-// Present sign in view controller to begin a login process
 /**
  * Present sign in view controller to begin a login process.
  *

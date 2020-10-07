@@ -53,10 +53,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   [app setMinimumBackgroundFetchInterval:MinimumBackgroundFetchInterval];
 
-  if (@available (iOS 10.0, *)) {
-    self.notificationsManager = [[NYPLUserNotifications alloc] init];
-    [self.notificationsManager authorizeIfNeeded];
-  }
+  self.notificationsManager = [[NYPLUserNotifications alloc] init];
+  [self.notificationsManager authorizeIfNeeded];
 
   [[NetworkQueue shared] addObserverForOfflineQueue];
   self.reachabilityManager = [NYPLReachability sharedReachability];
@@ -166,6 +164,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 -(void)applicationDidBecomeActive:(__unused UIApplication *)app
 {
   [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
+  [self completeBecomingActive];
 }
 
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application
@@ -208,7 +207,9 @@ completionHandler:(void (^const)(void))completionHandler
          actionWithTitle:NSLocalizedString(@"AppDelegateUpdateNow", nil)
          style:UIAlertActionStyleDefault
          handler:^(__unused UIAlertAction *_Nonnull action) {
-           [[UIApplication sharedApplication] openURL:updateURL];
+           [[UIApplication sharedApplication] openURL:updateURL
+                                              options:@{}
+                                    completionHandler:nil];
          }]];
        [alertController addAction:
         [UIAlertAction
