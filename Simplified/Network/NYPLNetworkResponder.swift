@@ -140,35 +140,10 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
 
     // attempt parsing of Problem Document
     if task.response?.isProblemDocument() ?? false {
-      let parseError: Error?
-      let code: NYPLErrorCode
-      do {
-        let problemDoc = try NYPLProblemDocument.fromData(responseData)
-        let errorFromProblemDoc = task.makeErrorFromProblemDocument(problemDoc)
-        parseError = nil
-        code = NYPLErrorCode.problemDocAvailable
-        logMetadata["problemDocument"] = problemDoc.dictionaryValue
-        currentTaskInfo.completion(.failure(errorFromProblemDoc, task.response))
-      } catch (let caughtParseError) {
-        parseError = caughtParseError
-        code = NYPLErrorCode.parseProblemDocFail
-        let responseString = String(data: responseData, encoding: .utf8) ?? "N/A"
-        logMetadata["problemDocument (parse failed)"] = responseString
-        if let networkError = networkError as NYPLUserFriendlyError? {
-          currentTaskInfo.completion(.failure(networkError, task.response))
-        } else {
-          currentTaskInfo.completion(.failure(caughtParseError as NYPLUserFriendlyError, task.response))
-        }
-      }
-      if let networkError = networkError {
-        logMetadata["urlSessionError"] = networkError
-      }
-      NYPLErrorLogger.logNetworkError(parseError,
-                                      code: code,
-                                      summary: "Network request failed: Problem Document available",
-                                      request: task.originalRequest,
-                                      response: task.response,
-                                      metadata: logMetadata)
+      let problemDocError = task.parseAndLogError(fromProblemDocumentData: responseData,
+                                                  networkError: networkError,
+                                                  logMetadata: logMetadata)
+      currentTaskInfo.completion(.failure(problemDocError, task.response))
       return
     }
 
@@ -208,9 +183,53 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
   }
 }
 
+//------------------------------------------------------------------------------
+// MARK: - URLSessionTask extensions
+
 extension URLSessionTask {
   //----------------------------------------------------------------------------
-  func makeErrorFromProblemDocument(_ problemDoc: NYPLProblemDocument) -> NSError {
+  fileprivate func parseAndLogError(fromProblemDocumentData responseData: Data,
+                                    networkError: Error?,
+                                    logMetadata: [String: Any]) -> NYPLUserFriendlyError {
+    let parseError: Error?
+    let code: NYPLErrorCode
+    let returnedError: NYPLUserFriendlyError
+    var logMetadata = logMetadata
+
+    do {
+      let problemDoc = try NYPLProblemDocument.fromData(responseData)
+      returnedError = error(fromProblemDocument: problemDoc)
+      parseError = nil
+      code = NYPLErrorCode.problemDocAvailable
+      logMetadata["problemDocument"] = problemDoc.dictionaryValue
+    } catch (let caughtParseError) {
+      parseError = caughtParseError
+      code = NYPLErrorCode.parseProblemDocFail
+      let responseString = String(data: responseData, encoding: .utf8) ?? "N/A"
+      logMetadata["problemDocument (parse failed)"] = responseString
+      if let networkError = networkError as NYPLUserFriendlyError? {
+        returnedError = networkError
+      } else {
+        returnedError = caughtParseError as NYPLUserFriendlyError
+      }
+    }
+
+    if let networkError = networkError {
+      logMetadata["urlSessionError"] = networkError
+    }
+
+    NYPLErrorLogger.logNetworkError(parseError,
+                                    code: code,
+                                    summary: "Network request failed: Problem Document available",
+                                    request: originalRequest,
+                                    response: response,
+                                    metadata: logMetadata)
+
+    return returnedError
+  }
+
+  //----------------------------------------------------------------------------
+  func error(fromProblemDocument problemDoc: NYPLProblemDocument) -> NSError {
     var userInfo = [String: Any]()
     if let currentRequest = currentRequest {
       userInfo["taskCurrentRequest"] = currentRequest
