@@ -141,14 +141,17 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     // attempt parsing of Problem Document
     if task.response?.isProblemDocument() ?? false {
       let parseError: Error?
+      let code: NYPLErrorCode
       do {
         let problemDoc = try NYPLProblemDocument.fromData(responseData)
         let err = task.makeErrorFromProblemDocument(problemDoc)
         parseError = nil
+        code = NYPLErrorCode.problemDocAvailable
         logMetadata["problemDocument"] = problemDoc.debugDictionary
         currentTaskInfo.completion(.failure(err, task.response))
       } catch (let error) {
         parseError = error
+        code = NYPLErrorCode.parseProblemDocFail
         let responseString = String(data: responseData, encoding: .utf8) ?? "N/A"
         logMetadata["problemDocumentBody"] = responseString
         currentTaskInfo.completion(.failure(error as NYPLUserFriendlyError, task.response))
@@ -157,7 +160,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
         logMetadata["urlSessionError"] = error
       }
       NYPLErrorLogger.logNetworkError(parseError,
-                                      code: NYPLErrorCode.parseProblemDocFail,
+                                      code: code,
                                       summary: "Network request failed: Problem Document available",
                                       request: task.originalRequest,
                                       response: task.response,

@@ -97,6 +97,7 @@ fileprivate let nullString = "null"
   case responseFail = 909
   case clientSideTransientError = 910
   case clientSideUserInterruption = 911
+  case problemDocAvailable = 912
 
   // DRM
   case epubDecodingError = 1000
