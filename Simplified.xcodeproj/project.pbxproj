@@ -505,6 +505,9 @@
 		7360D0D524BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
 		7360D0D624BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
 		738170152526504800BA2C44 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738170142526504800BA2C44 /* GoogleService-Info.plist */; };
+		7384C757252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C756252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift */; };
+		7384C758252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C756252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift */; };
+		7384C759252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C756252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift */; };
 		7384C800242BB43400D5F960 /* NYPLCachingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C7FF242BB43300D5F960 /* NYPLCachingTests.swift */; };
 		7384C802242BCC4800D5F960 /* Date+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */; };
 		7384C804242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */; };
@@ -1242,6 +1245,7 @@
 		73609AD8245B53CB00F0E08B /* update-certificates.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "update-certificates.sh"; path = "scripts/update-certificates.sh"; sourceTree = SOURCE_ROOT; };
 		7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserFriendlyError.swift; sourceTree = "<group>"; };
 		738170142526504800BA2C44 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7384C756252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBook+DistributorChecks.swift"; sourceTree = "<group>"; };
 		7384C7FF242BB43300D5F960 /* NYPLCachingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCachingTests.swift; sourceTree = "<group>"; };
 		7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+NYPLAdditions.swift"; sourceTree = "<group>"; };
 		7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
@@ -1964,6 +1968,14 @@
 			name = Logging;
 			sourceTree = "<group>";
 		};
+		7384C751252D1F720012C2DD /* MyBooks */ = {
+			isa = PBXGroup;
+			children = (
+				7384C756252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift */,
+			);
+			path = MyBooks;
+			sourceTree = "<group>";
+		};
 		738CB2092509AD3B00891F31 /* WelcomeScreen */ = {
 			isa = PBXGroup;
 			children = (
@@ -2246,6 +2258,7 @@
 				7360891B240DFB93007EE66F /* Logging */,
 				73085E3325030CFC008F6244 /* Migrations */,
 				110AF8881961D652004887C3 /* My Books */,
+				7384C751252D1F720012C2DD /* MyBooks */,
 				7338755E2423E108000FEB67 /* Network */,
 				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
 				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
@@ -3138,6 +3151,7 @@
 				7347F0CA245A4DE200558D7F /* RemoteHTMLViewController.swift in Sources */,
 				7347F0CB245A4DE200558D7F /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,
 				7347F0CC245A4DE200558D7F /* NYPLCatalogGroupedFeed.m in Sources */,
+				7384C758252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */,
 				7347F0CD245A4DE200558D7F /* NYPLCatalogFacet.m in Sources */,
 				7347F0CE245A4DE200558D7F /* NYPLAccountSignInViewController.m in Sources */,
 				7347F0CF245A4DE200558D7F /* NYPLUserProfileDocument.swift in Sources */,
@@ -3190,6 +3204,7 @@
 				73FCA2BC25005BA4001B0C5D /* String+MD5.swift in Sources */,
 				73FCA2BD25005BA4001B0C5D /* NYPLNetworkQueue.swift in Sources */,
 				73FCA2BE25005BA4001B0C5D /* NYPLMyBooksNavigationController.m in Sources */,
+				7384C759252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */,
 				73FCA2BF25005BA4001B0C5D /* NYPLBookCellCollectionViewController.m in Sources */,
 				73FCA2C025005BA4001B0C5D /* NYPLKeychainStoredVariable.swift in Sources */,
 				73FCA2C125005BA4001B0C5D /* NYPLXML.m in Sources */,
@@ -3538,6 +3553,7 @@
 				8CE9C471237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,
 				A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
+				7384C757252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */,
 				089E430C24A2459100310360 /* NYPLLoginCellTypes.swift in Sources */,
 				1158812E1A894F4E008672C3 /* NYPLAccountSignInViewController.m in Sources */,
 				5D3A28CC22D3DA850042B3BD /* NYPLUserProfileDocument.swift in Sources */,

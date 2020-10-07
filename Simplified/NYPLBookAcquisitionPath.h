@@ -14,7 +14,7 @@ extern NSString * const _Nonnull ContentTypeOpenAccessPDF;
 extern NSString * const _Nonnull ContentTypeFeedbooksAudiobook;
 extern NSString * const _Nonnull ContentTypeOctetStream;
 extern NSString * const _Nonnull ContentTypeOverdriveAudiobook;
-
+extern NSString * const _Nonnull ContentTypeOverdriveAudiobookActual;
 
 /// Represents a single path the application can take through an acquisition
 /// process.
