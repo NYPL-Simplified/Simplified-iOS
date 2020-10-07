@@ -147,7 +147,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
         let err = task.makeErrorFromProblemDocument(problemDoc)
         parseError = nil
         code = NYPLErrorCode.problemDocAvailable
-        logMetadata["problemDocument"] = problemDoc.debugDictionary
+        logMetadata["problemDocument"] = problemDoc.dictionaryValue
         currentTaskInfo.completion(.failure(err, task.response))
       } catch (let error) {
         parseError = error

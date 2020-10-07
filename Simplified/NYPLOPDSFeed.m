@@ -89,7 +89,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
 
     if (error != nil) {
       // Note: NYPLNetworkExecutor already logged this error
-      NYPLAsyncDispatch(^{handler(nil, error.problemDocument.debugDictionary);});
+      NYPLAsyncDispatch(^{handler(nil, error.problemDocument.dictionaryValue);});
       return;
     }
 

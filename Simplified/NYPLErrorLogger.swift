@@ -249,7 +249,7 @@ fileprivate let nullString = "null"
     }
     let errorCode: Int
     if let problemDocument = problemDocument {
-      metadata["problemDocument"] = problemDocument.debugDictionary
+      metadata["problemDocument"] = problemDocument.dictionaryValue
       errorCode = NYPLErrorCode.loginErrorWithProblemDoc.rawValue
     } else {
       errorCode = NYPLErrorCode.remoteLoginError.rawValue

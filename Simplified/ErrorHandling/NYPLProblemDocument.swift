@@ -66,7 +66,7 @@ import Foundation
     return NYPLProblemDocument(dict)
   }
 
-  @objc var debugDictionary: [String: Any] {
+  @objc var dictionaryValue: [String: Any] {
     return [
       NYPLProblemDocument.typeKey: type ?? "",
       NYPLProblemDocument.titleKey: title ?? "",
