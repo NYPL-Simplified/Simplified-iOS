@@ -1677,6 +1677,7 @@
 		119504051994061E009FB788 /* Reader */ = {
 			isa = PBXGroup;
 			children = (
+				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				03690E281EB2B44300F75D5F /* NYPLReadiumBookmark.swift */,
 				03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */,
@@ -1857,7 +1858,6 @@
 		7327A88D23EE00FE00954748 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				73E84FBD24464FF3009071D8 /* Authentication */,
 				7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */,
 				732327B12478504500A041E6 /* NSError+NYPLAdditions.swift */,
 				0824D44D24B8DFE400C85A7E /* NSString+JSONParse.swift */,
@@ -1924,8 +1924,10 @@
 			children = (
 				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
 				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
+				086C45D524AE77CA00F5108E /* NYPLBasicAuth.swift */,
 				089E42C5249A823800310360 /* NYPLCookiesWebViewController.swift */,
 				731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */,
+				73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */,
 			);
 			path = SignInLogic;
 			sourceTree = "<group>";
@@ -1991,6 +1993,15 @@
 				730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */,
 			);
 			path = WelcomeScreen;
+			sourceTree = "<group>";
+		};
+		7394FBD8252F936E00037515 /* Announcements */ = {
+			isa = PBXGroup;
+			children = (
+				175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */,
+				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
+			);
+			path = Announcements;
 			sourceTree = "<group>";
 		};
 		739ECB2725101F1600691A70 /* Catalog */ = {
@@ -2139,15 +2150,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		73E84FBD24464FF3009071D8 /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-				086C45D524AE77CA00F5108E /* NYPLBasicAuth.swift */,
-				73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */,
-			);
-			path = Authentication;
-			sourceTree = "<group>";
-		};
 		84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */ = {
 			isa = PBXGroup;
 			children = (
@@ -2254,6 +2256,7 @@
 			children = (
 				73DE53292525A2AD003E2C56 /* Accounts */,
 				110AF8891961D66C004887C3 /* Additions */,
+				7394FBD8252F936E00037515 /* Announcements */,
 				73225DE5250B46CE00EF1877 /* AppInfrastructure */,
 				21E7E07424FEA7C100189224 /* Audiobooks */,
 				110AF8901961D822004887C3 /* Book */,
@@ -2265,9 +2268,6 @@
 				73085E3325030CFC008F6244 /* Migrations */,
 				7384C751252D1F720012C2DD /* MyBooks */,
 				7338755E2423E108000FEB67 /* Network */,
-				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
-				175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */,
-				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
