@@ -1,6 +1,6 @@
 import WebKit
 
-class NYPLEULAViewController : UIViewController {
+class NYPLWelcomeEULAViewController : UIViewController {
   private static let offlineEULAPathComponent = "eula.html"
 
   private let onlineEULAURL: URL
@@ -90,13 +90,13 @@ class NYPLEULAViewController : UIViewController {
     // prevent possible infinite loop
     attemptedLoadFromBundle = true
 
-    guard let filePath = Bundle.main.path(forResource: NYPLEULAViewController.offlineEULAPathComponent, ofType: nil) else {
+    guard let filePath = Bundle.main.path(forResource: NYPLWelcomeEULAViewController.offlineEULAPathComponent, ofType: nil) else {
 
       NYPLErrorLogger.logError(
         withCode: .noURL,
         summary: "Fallback EULA file not Present in Bundle",
         metadata: [
-          "hardcodedFileName": NYPLEULAViewController.offlineEULAPathComponent
+          "hardcodedFileName": NYPLWelcomeEULAViewController.offlineEULAPathComponent
         ]
       )
 
@@ -128,13 +128,13 @@ class NYPLEULAViewController : UIViewController {
 
 // MARK:- WKNavigationDelegate
 
-extension NYPLEULAViewController: WKNavigationDelegate {
+extension NYPLWelcomeEULAViewController: WKNavigationDelegate {
   func webView(_ webView: WKWebView,
                decidePolicyFor navigationAction: WKNavigationAction,
                decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     if navigationAction.request.url == onlineEULAURL {
       return decisionHandler(.allow)
-    } else if navigationAction.request.url?.lastPathComponent == NYPLEULAViewController.offlineEULAPathComponent {
+    } else if navigationAction.request.url?.lastPathComponent == NYPLWelcomeEULAViewController.offlineEULAPathComponent {
       return decisionHandler(.allow)
     }
     return decisionHandler(.cancel)
