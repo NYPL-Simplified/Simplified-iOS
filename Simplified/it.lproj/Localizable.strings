@@ -105,7 +105,7 @@
 
 // NYPLBookCellDelegate
 "Unsupported Item" = "Formato non supportato";
-"The item you are trying to open is not currently supported by SimplyE." = "Il libro che stai cercando di aprire non è ancora supportato da SimplyE.";
+"The item you are trying to open is not currently supported." = "Il libro che stai cercando di aprire non è ancora supportato.";
 "Corrupted Audiobook" = "Audiobook compromesso";
 "The audiobook you are trying to open appears to be corrupted. Try downloading it again." = "L'audiobook che stai cercando di ascoltare sembra avere dei problemi. Prova a scaricarlo di nuovo.";
 
