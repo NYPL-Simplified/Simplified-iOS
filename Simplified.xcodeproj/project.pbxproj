@@ -1740,8 +1740,6 @@
 				111E75821A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m */,
 				111E75781A80165C00718AD7 /* NYPLSettingsSplitViewController.h */,
 				111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */,
-				731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */,
-				089E42C5249A823800310360 /* NYPLCookiesWebViewController.swift */,
 			);
 			name = "Settings Tab";
 			sourceTree = "<group>";
@@ -1860,11 +1858,17 @@
 			isa = PBXGroup;
 			children = (
 				73E84FBD24464FF3009071D8 /* Authentication */,
+				7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */,
+				732327B12478504500A041E6 /* NSError+NYPLAdditions.swift */,
+				0824D44D24B8DFE400C85A7E /* NSString+JSONParse.swift */,
 				1183F359194F847100DC322F /* NYPLAsync.h */,
 				1183F35A194F847100DC322F /* NYPLAsync.m */,
 				114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */,
 				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
 				732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */,
+				7340DA6724B7F27900361387 /* NYPLBook+Additions.swift */,
+				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
+				111197331986D7550014462F /* NYPLDismissibleViewController.m */,
 				11369D46199527C200BB11F8 /* NYPLJSON.h */,
 				11369D47199527C200BB11F8 /* NYPLJSON.m */,
 				52592BBB21220A4F00587288 /* NYPLLocalization.h */,
@@ -1876,12 +1880,8 @@
 				111559EB19B8FA530003BE94 /* NYPLXML.h */,
 				111559EC19B8FA590003BE94 /* NYPLXML.m */,
 				179699D024131BA500EC309F /* UIColor+LabelColor.swift */,
-				7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */,
 				73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */,
-				732327B12478504500A041E6 /* NSError+NYPLAdditions.swift */,
-				0824D44D24B8DFE400C85A7E /* NSString+JSONParse.swift */,
 				7340DA6124B7E45C00361387 /* URLResponse+NYPL.swift */,
-				7340DA6724B7F27900361387 /* NYPLBook+Additions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1917,6 +1917,17 @@
 				E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */,
 			);
 			path = BarcodeScanning;
+			sourceTree = "<group>";
+		};
+		7332E143252F756E0043F2E1 /* SignInLogic */ = {
+			isa = PBXGroup;
+			children = (
+				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
+				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
+				089E42C5249A823800310360 /* NYPLCookiesWebViewController.swift */,
+				731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */,
+			);
+			path = SignInLogic;
 			sourceTree = "<group>";
 		};
 		7338755E2423E108000FEB67 /* Network */ = {
@@ -2006,6 +2017,8 @@
 				739ECB2A25102A2B00691A70 /* NYPLCatalogs+SE.swift */,
 				118A0B1919915BDF00792DDE /* NYPLCatalogSearchViewController.h */,
 				118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */,
+				119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */,
+				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
 				1114A69F195884CB007507A2 /* NYPLCatalogUngroupedFeed.h */,
 				1114A6A0195884CB007507A2 /* NYPLCatalogUngroupedFeed.m */,
 				11A16E67195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.h */,
@@ -2252,18 +2265,12 @@
 				73085E3325030CFC008F6244 /* Migrations */,
 				7384C751252D1F720012C2DD /* MyBooks */,
 				7338755E2423E108000FEB67 /* Network */,
-				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
-				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
 				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 				175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */,
 				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */,
-				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
-				111197331986D7550014462F /* NYPLDismissibleViewController.m */,
-				119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */,
-				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
 				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
 				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
@@ -2271,6 +2278,7 @@
 				119504051994061E009FB788 /* Reader */,
 				73085E222502EDC6008F6244 /* Settings */,
 				11C5DCEE1976D19E005A9945 /* Settings Tab */,
+				7332E143252F756E0043F2E1 /* SignInLogic */,
 				7327A88D23EE00FE00954748 /* Utilities */,
 				73DE53332525A83F003E2C56 /* Views */,
 				738CB2092509AD3B00891F31 /* WelcomeScreen */,
