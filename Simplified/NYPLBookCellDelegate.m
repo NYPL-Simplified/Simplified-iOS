@@ -318,7 +318,7 @@
 - (void)presentUnsupportedItemError
 {
   NSString *title = NSLocalizedString(@"Unsupported Item", nil);
-  NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
+  NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported.", nil);
   UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
   [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 }
