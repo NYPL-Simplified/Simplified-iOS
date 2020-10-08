@@ -65,20 +65,23 @@ static NSString *const RecordsKey = @"records";
 
 - (NSURL *)registryDirectory
 {
-  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"registry"];
+  NSURL *URL = [[NYPLBookContentMetadataFilesHelper currentAccountDirectory]
+                URLByAppendingPathComponent:@"registry"];
 
   return URL;
 }
 - (NSURL *)registryDirectory:(NSString *)account
 {
-  NSURL *URL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"registry"];
+  NSURL *URL = [[NYPLBookContentMetadataFilesHelper directoryFor:account]
+                URLByAppendingPathComponent:@"registry"];
   
   return URL;
 }
 
 - (NSArray<NSString *> *__nonnull)bookIdentifiersForAccount:(NSString * const)account
 {
-  NSURL *const url = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"registry/registry.json"];
+  NSURL *const url = [[NYPLBookContentMetadataFilesHelper directoryFor:account]
+                      URLByAppendingPathComponent:@"registry/registry.json"];
   NSData *const data = [NSData dataWithContentsOfURL:url];
   if (!data) {
     return @[];

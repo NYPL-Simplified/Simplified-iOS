@@ -61,7 +61,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (NSURL *)pinnedThumbnailImageDirectoryURL
 {
-  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"pinned-thumbnail-images"];
+  NSURL *URL = [[NYPLBookContentMetadataFilesHelper currentAccountDirectory] URLByAppendingPathComponent:@"pinned-thumbnail-images"];
 
   if (URL != nil) {
     @synchronized(self) {
