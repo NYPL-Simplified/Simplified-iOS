@@ -106,26 +106,42 @@ import UIKit
       return
     }
 
+    var titleWasAdded = false
+    var detailWasAdded = false
     if append == false {
-      alert.title = document.title
-      alert.message = document.detail
-      return
+      if let problemDocTitle = document.title, !problemDocTitle.isEmpty {
+        alert.title = document.title
+        titleWasAdded = true
+      }
+      if let problemDocDetail = document.detail, !problemDocDetail.isEmpty {
+        alert.message = document.detail
+        detailWasAdded = true
+        if titleWasAdded {
+          // now we know we set both the alert's title and message, and since
+          // we are not appending (i.e. we are replacing what was on the
+          // existing alert), we are done.
+          return
+        }
+      }
     }
 
-    var titleWasAdded = false
+    // at this point either the alert's title or message could be empty.
+    // Let's fill that up with what we have, either from the existing alert
+    // or from the problem document.
+
     if alert.title?.isEmpty ?? true {
       alert.title = document.title
       titleWasAdded = true
     }
 
     let existingMsg: String = {
-      if let existingMsg = alert.message, !existingMsg.isEmpty {
-        return existingMsg + "\n"
+      if let alertMsg = alert.message, !alertMsg.isEmpty {
+        return alertMsg + "\n"
       }
       return ""
     }()
 
-    let docDetail: String = document.detail ?? ""
+    let docDetail = detailWasAdded ? "" : (document.detail ?? "")
 
     if !titleWasAdded, let docTitle = document.title, !docTitle.isEmpty {
       alert.message = "\(existingMsg)\(docTitle)\n\(docDetail)"

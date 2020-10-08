@@ -310,7 +310,7 @@
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeProblemDocMessageDisplayed
                                 summary:@"Catalog api fail: Problem Doc returned"
                                 message:@"Server-side api call (likely related to Catalog loading) failed"
-                               metadata:pDoc.debugDictionary];
+                               metadata:pDoc.dictionaryValue];
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
     }
     [self presentViewController:alert animated:YES completion:nil];

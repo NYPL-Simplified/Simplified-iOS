@@ -8,10 +8,12 @@
 
 import Foundation
 
-extension NYPLCatalogFeedViewController {
+extension NYPLCatalogNavigationController {
   @objc func didSignOut() {
   }
+}
 
+extension NYPLCatalogFeedViewController {
   @objc func shouldLoad() -> Bool {
     return NYPLSettings.shared.userHasSeenWelcomeScreen
   }

@@ -10,7 +10,14 @@ import Foundation
     "http://librarysimplified.org/terms/problem/loan-already-exists";
   static let TypeInvalidCredentials =
     "http://librarysimplified.org/terms/problem/credentials-invalid";
-  static let noStatus: Int = -1
+
+  private static let noStatus: Int = -1
+
+  private static let typeKey = "type"
+  private static let titleKey = "title"
+  private static let statusKey = "status"
+  private static let detailKey = "detail"
+  private static let instanceKey = "instance"
 
   /// Per RFC7807, this identifies the type of problem.
   let type: String?
@@ -29,15 +36,15 @@ import Foundation
   /// the problem.
   let instance: String?
   
-  fileprivate init(_ dict: [String : Any]) {
-    self.type = dict["type"] as? String
-    self.title = dict["title"] as? String
-    self.status = dict["status"] as? Int
-    self.detail = dict["detail"] as? String
-    self.instance = dict["instance"] as? String
+  private init(_ dict: [String : Any]) {
+    self.type = dict[NYPLProblemDocument.typeKey] as? String
+    self.title = dict[NYPLProblemDocument.titleKey] as? String
+    self.status = dict[NYPLProblemDocument.statusKey] as? Int
+    self.detail = dict[NYPLProblemDocument.detailKey] as? String
+    self.instance = dict[NYPLProblemDocument.instanceKey] as? String
     super.init()
   }
-  
+
   /**
     Factory method that creates a ProblemDocument from data
     @param data data with which to populate the ProblemDocument
@@ -59,13 +66,13 @@ import Foundation
     return NYPLProblemDocument(dict)
   }
 
-  @objc var debugDictionary: [String: Any] {
+  @objc var dictionaryValue: [String: Any] {
     return [
-      "type": type ?? "",
-      "title": title ?? "",
-      "status": status ?? NYPLProblemDocument.noStatus,
-      "detail": detail ?? "",
-      "instance": instance ?? "",
+      NYPLProblemDocument.typeKey: type ?? "",
+      NYPLProblemDocument.titleKey: title ?? "",
+      NYPLProblemDocument.statusKey: status ?? NYPLProblemDocument.noStatus,
+      NYPLProblemDocument.detailKey: detail ?? "",
+      NYPLProblemDocument.instanceKey: instance ?? "",
     ]
   }
 }

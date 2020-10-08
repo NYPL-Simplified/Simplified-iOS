@@ -26,6 +26,7 @@ import WebKit
   }
   
   override func viewDidLoad() {
+    super.viewDidLoad()
     webView.frame = self.view.frame
     webView.navigationDelegate = self
     webView.backgroundColor = UIColor.white
@@ -37,11 +38,11 @@ import WebKit
     let request = URLRequest.init(url: fileURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
     webView.load(request)
     
-    activityView(true)
+    activityViewShouldShow(true)
   }
   
-  func activityView(_ animated: Bool) -> Void {
-    if animated == true {
+  func activityViewShouldShow(_ shouldShow: Bool) -> Void {
+    if shouldShow == true {
       activityView = UIActivityIndicatorView.init(style: .gray)
       view.addSubview(activityView)
       activityView.autoCenterInSuperview()
@@ -53,7 +54,7 @@ import WebKit
   }
 
   func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-    activityView(false)
+    activityViewShouldShow(false)
     let alert = UIAlertController.init(title: NSLocalizedString(
       "Connection Failed",
       comment: "Title for alert that explains that the page could not download the information"),
@@ -80,16 +81,18 @@ import WebKit
     }
 
     if UIApplication.shared.canOpenURL(url) {
-      if #available(iOS 10.0, *) {
-        UIApplication.shared.open(url)
-      } else {
-        UIApplication.shared.openURL(url)
-      }
+      UIApplication.shared.open(url)
     }
     decisionHandler(.cancel)
   }
   
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-    activityView(false)
+    activityViewShouldShow(false)
+  }
+
+  func webView(_ webView: WKWebView,
+               didFail navigation: WKNavigation!,
+               withError error: Error) {
+    activityViewShouldShow(false)
   }
 }

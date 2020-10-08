@@ -1,5 +1,6 @@
 import XCTest
 
+import OverdriveProcessor
 @testable import SimplyE
 
 class NYPLMyBooksDownloadCenterTests: XCTestCase {
@@ -76,5 +77,22 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
       NYPLMyBooksDownloadCenter.shared()?.deleteLocalContent(forBookIdentifier: fakeBook.identifier)
       XCTAssert(!fileManager.fileExists(atPath: bookUrl!.path))
     }
+  }
+
+  func testDownloadedContentType() {
+    let optBook = NYPLBook(dictionary: [
+      "title": "Tractatus",
+      "categories": "some cat",
+      "id": "123",
+      "updated": "2020-10-06T17:13:51Z",
+      "distributor": OverdriveDistributorKey])
+    XCTAssertNotNil(optBook)
+    let book = optBook!
+
+    for contentType in NYPLBookAcquisitionPath.supportedTypes() {
+      XCTAssert(book.canCompleteDownload(withContentType: contentType))
+    }
+
+    XCTAssert(book.canCompleteDownload(withContentType: "application/json"))
   }
 }

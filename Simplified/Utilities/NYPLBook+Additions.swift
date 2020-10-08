@@ -17,15 +17,11 @@ extension NYPLBook {
   /// An informative dictionary detailing all aspects of the book that could
   /// be interesting for logging purposes.
   @objc func loggableDictionary() -> [String: Any] {
-    let acquisitions = self.acquisitions.compactMap {
-      $0.dictionaryRepresentation()
-    }
-
     return [
       "bookTitle": title ?? "",
       "bookID": identifier ?? "",
       "bookDistributor": distributor ?? "",
-      "acquisitions": acquisitions,
+      "defaultAcquisitionType": defaultAcquisition()?.type ?? "N/A",
       "alternateURL": alternateURL ?? "N/A",
       "contentType": NYPLBookContentTypeConverter.stringValue(of: defaultBookContentType())
     ]

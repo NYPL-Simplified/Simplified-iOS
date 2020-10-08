@@ -209,18 +209,19 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
     [self logBookDownloadFailure:book
                           reason:@"Got problem document"
                     downloadTask:downloadTask
-                        metadata:@{@"problemDocument": problemDocument}];
+                        metadata:@{@"problemDocument":
+                                     problemDocument.dictionaryValue}];
 
     [[NSFileManager defaultManager] removeItemAtURL:tmpSavedFileURL error:NULL];
     success = NO;
   }
 
-  if (![NYPLBookAcquisitionPath.supportedTypes containsObject:downloadTask.response.MIMEType]) {
+  if (![book canCompleteDownloadWithContentType:downloadTask.response.MIMEType]) {
     [[NSFileManager defaultManager] removeItemAtURL:tmpSavedFileURL error:NULL];
     success = NO;
-    needsAuth = YES;
+    needsAuth = ![NYPLUserAccount.sharedAccount hasCredentials];
   }
-  
+
   if (success) {
     switch(rights) {
       case NYPLMyBooksDownloadRightsManagementUnknown:
@@ -357,7 +358,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
           [NYPLAccountSignInViewController
            requestCredentialsUsingExistingBarcode:NO
            completionHandler:^{
-            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+            [self startDownloadForBook:book];
           }];
         } else {
           NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
@@ -378,7 +379,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
         [NYPLAccountSignInViewController
          requestCredentialsUsingExistingBarcode:NO
          completionHandler:^{
-            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+          [self startDownloadForBook:book];
         }];
       }
     });
@@ -758,7 +759,7 @@ didCompleteWithError:(NSError *)error
             }];
             return;
           } else {
-            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:YES];
+            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:NO];
           }
         }
 
