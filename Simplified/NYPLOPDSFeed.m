@@ -71,13 +71,25 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
   } else {
     cachePolicy = NSURLRequestUseProtocolCachePolicy;
   }
+
+  if (URL == nil) {
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              summary:@"NYPLOPDSFeed: nil URL"
+                              message:nil
+                             metadata:@{
+                               @"shouldResetCache": @(shouldResetCache)
+                             }];
+    NYPLAsyncDispatch(^{handler(nil, nil);});
+    return;
+  }
+
   request = [[[NYPLNetworkExecutor shared] GET:URL
                                    cachePolicy:cachePolicy
                                     completion:^(NSData *data, NSURLResponse *response, NSError *error) {
 
     if (error != nil) {
-      // NYPLSession already logged this.
-      NYPLAsyncDispatch(^{handler(nil, nil);});
+      // Note: NYPLNetworkExecutor already logged this error
+      NYPLAsyncDispatch(^{handler(nil, error.problemDocument.dictionaryValue);});
       return;
     }
 

@@ -29,15 +29,21 @@ extension NYPLUserFriendlyError {
 }
 
 extension NSError: NYPLUserFriendlyError {
-  private static let userFriendlyTitleKey = "userFriendlyTitle"
-  private static let userFriendlyMessageKey = "userFriendlyMessage"
+  private static let problemDocumentKey = "problemDocument"
 
-  var userFriendlyTitle: String? {
-    return userInfo[NSError.userFriendlyTitleKey] as? String
+  @objc var problemDocument: NYPLProblemDocument? {
+    return userInfo[NSError.problemDocumentKey] as? NYPLProblemDocument
   }
 
-  var userFriendlyMessage: String? {
-    return (userInfo[NSError.userFriendlyMessageKey] ?? userInfo[NSLocalizedDescriptionKey]) as? String
+  /// Feeds off of the `problemDocument` computed property
+  @objc var userFriendlyTitle: String? {
+    return problemDocument?.title
+  }
+
+  /// Feeds off of the `problemDocument` computed property or the localized
+  /// error description.
+  @objc var userFriendlyMessage: String? {
+    return (problemDocument?.detail ?? userInfo[NSLocalizedDescriptionKey]) as? String
   }
 
   /// Builds an NSError using the given problem document for its user-friendly
@@ -54,13 +60,7 @@ extension NSError: NYPLUserFriendlyError {
                                       code: Int,
                                       userInfo: [String: Any]?) -> NSError {
     var userInfo = userInfo ?? [String: Any]()
-    if let title = problemDoc.title {
-      userInfo[NSError.userFriendlyTitleKey] = title
-    }
-    if let detail = problemDoc.detail {
-      userInfo[NSError.userFriendlyMessageKey] = detail
-    }
-    
+    userInfo[NSError.problemDocumentKey] = problemDoc
     return NSError(domain: domain, code: code, userInfo: userInfo)
   }
 }

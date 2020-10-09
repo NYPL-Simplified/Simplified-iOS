@@ -10,10 +10,27 @@ import Foundation
 
 extension NYPLAppDelegate {
   @objc func setUpRootVC() {
-    if NYPLSettings.shared.userHasSeenWelcomeScreen {
-      window.rootViewController = NYPLRootTabBarController.shared()
+    if NYPLSettings.shared.userHasAcceptedEULA {
+      if NYPLSettings.shared.userHasSeenWelcomeScreen {
+        window.rootViewController = NYPLRootTabBarController.shared()
+      } else {
+        window.rootViewController = OETutorialViewController()
+      }
     } else {
-      window.rootViewController = OETutorialViewController()
+      let eulaURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
+      let eulaVC = NYPLWelcomeEULAViewController(onlineEULAURL: eulaURL) {
+        UIView.transition(
+          with: self.window,
+          duration: 0.5,
+          options: [.transitionCurlUp, .allowAnimatedContent, .layoutSubviews],
+          animations: {
+            self.window?.rootViewController = OETutorialViewController()
+        },
+          completion: nil
+        )
+      }
+      let eulaNavController = UINavigationController(rootViewController: eulaVC)
+      self.window?.rootViewController = eulaNavController
     }
   }
 
