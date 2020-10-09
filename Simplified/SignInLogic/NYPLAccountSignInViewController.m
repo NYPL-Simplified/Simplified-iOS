@@ -1144,6 +1144,8 @@ completionHandler:(void (^)(void))handler
 
   NSString * const barcode = self.usernameTextField.text;
   self.isCurrentlySigningIn = YES;
+
+  __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
@@ -1151,7 +1153,7 @@ completionHandler:(void (^)(void))handler
                          NSURLResponse *const response,
                          NSError *const error) {
        
-       self.isCurrentlySigningIn = NO;
+       weakSelf.isCurrentlySigningIn = NO;
 
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
        
@@ -1163,7 +1165,7 @@ completionHandler:(void (^)(void))handler
            [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                                     summary:@"SignIn-modal: unable to parse user profile doc"
                                                     barcode:barcode];
-           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
+           [weakSelf authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
            return;
          } else {
            if (pDoc.authorizationIdentifier) {
@@ -1188,7 +1190,7 @@ completionHandler:(void (^)(void))handler
                                         @"hashedBarcode": barcode.md5String
                                       }];
 
-             [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"No credentials were received to authorize access to books with DRM." }]];
+             [weakSelf authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"No credentials were received to authorize access to books with DRM." }]];
              return;
            }
            
@@ -1209,7 +1211,9 @@ completionHandler:(void (^)(void))handler
             completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
 
               [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [NSObject cancelPreviousPerformRequestsWithTarget:self];
+                if (weakSelf) {
+                  [NSObject cancelPreviousPerformRequestsWithTarget:weakSelf];
+                }
               }];
 
               NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
@@ -1225,32 +1229,32 @@ completionHandler:(void (^)(void))handler
                 }];
               } else {
                 [NYPLErrorLogger logLocalAuthFailedWithError:error
-                                                     library:self.currentAccount
+                                                     library:weakSelf.currentAccount
                                                     metadata:@{
                                                       @"hashedBarcode": barcode.md5String
                                                     }];
               }
               
-              [self authorizationAttemptDidFinish:success error:error];
+              [weakSelf authorizationAttemptDidFinish:success error:error];
             }];
 
-           [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];
+           [weakSelf performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:weakSelf afterDelay:25];
          }
 #else
-         [self authorizationAttemptDidFinish:YES error:nil];
+         [weakSelf authorizationAttemptDidFinish:YES error:nil];
 #endif
          return;
        }
        
-       [self removeActivityTitle];
+       [weakSelf removeActivityTitle];
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        
        if (error.code == NSURLErrorCancelled) {
          // We cancelled the request when asked to answer the server's challenge a second time
          // because we don't have valid credentials.
-         self.PINTextField.text = @"";
-         [self textFieldsDidChange];
-         [self.PINTextField becomeFirstResponder];
+         weakSelf.PINTextField.text = @"";
+         [weakSelf textFieldsDidChange];
+         [weakSelf.PINTextField becomeFirstResponder];
        }
 
       NYPLProblemDocument *problemDocument = nil;
@@ -1285,7 +1289,7 @@ completionHandler:(void (^)(void))handler
       } else {
         [NYPLErrorLogger logLoginError:error
                                barcode:barcode
-                               library:self.currentAccount
+                               library:weakSelf.currentAccount
                                request:request
                               response:response
                        problemDocument:problemDocument
