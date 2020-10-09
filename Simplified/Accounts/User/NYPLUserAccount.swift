@@ -158,7 +158,7 @@ private enum StorageKey: String {
     defer {
       shared.accountInfoLock.unlock()
     }
-    if let uuid = libraryUUID, uuid != AccountsManager.NYPLAccountUUID {
+    if let uuid = libraryUUID, uuid != AccountsManager.shared.NYPLAccountUUID {
       shared.libraryUUID = uuid
     } else {
       shared.libraryUUID = nil

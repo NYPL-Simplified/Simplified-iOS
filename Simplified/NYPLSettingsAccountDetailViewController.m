@@ -150,6 +150,7 @@ Authenticating with any of those barcodes should work.
 
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:libraryUUID
+                        libraryAccountsProvider:AccountsManager.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
                         drmAuthorizer:drmAuthorizer];
 
@@ -589,7 +590,7 @@ Authenticating with any of those barcodes should work.
   [self validateCredentials];
 }
 
-- (void) handleRedirectURL: (NSNotification *) notification
+- (void)handleRedirectURL:(NSNotification *)notification
 {
   [NSNotificationCenter.defaultCenter removeObserver: self name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL object: nil];
 
@@ -613,8 +614,8 @@ Authenticating with any of those barcodes should work.
   }
 
   NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
-  // Oauth2Intermediate auth method may provide the auth token in fragment
-  // instead of query parameter
+  // Oauth method provides the auth token as a fragment while SAML as a
+  // query parameter
   NSString *responseData = url.fragment != nil ? url.fragment : url.query;
   for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
     NSArray *elts = [param componentsSeparatedByString:@"="];
@@ -1067,28 +1068,11 @@ Authenticating with any of those barcodes should work.
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if (success) {
-      if (self.businessLogic.selectedAuthentication.isOauth) {
-        [self.businessLogic.userAccount setAuthToken:self.authToken];
-        [self.businessLogic.userAccount setPatron:self.patron];
-      } else if (self.businessLogic.selectedAuthentication.isSaml) {
-        [self.businessLogic.userAccount setAuthToken:self.authToken];
-        [self.businessLogic.userAccount setPatron:self.patron];
-        if (self.cookies) {
-          [self.businessLogic.userAccount setCookies:self.cookies];
-        }
-      } else {
-        [self.businessLogic.userAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
-      }
-
-      self.businessLogic.userAccount.authDefinition = self.businessLogic.selectedAuthentication;
-
-      if ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]) {
-        [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-          if (success) {
-            [[NYPLBookRegistry sharedRegistry] save];
-          }
-        }];
-      }
+      [self.businessLogic updateUserAccountWithBarcode:self.usernameTextField.text
+                                                   pin:self.PINTextField.text
+                                             authToken:self.authToken
+                                                patron:self.patron
+                                               cookies:self.cookies];
     } else {
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
 

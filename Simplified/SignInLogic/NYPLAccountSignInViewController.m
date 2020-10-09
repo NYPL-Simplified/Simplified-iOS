@@ -88,7 +88,8 @@ CGFloat const marginPadding = 2.0;
   if(!self) return nil;
 
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
-                        initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
+                        initWithLibraryAccountID:AccountsManager.shared.currentAccountId
+                        libraryAccountsProvider:AccountsManager.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
                         drmAuthorizer:
 #if FEATURE_DRM_CONNECTOR
@@ -686,7 +687,7 @@ completionHandler:(void (^)(void))handler
       // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
       // this is for the case when we were logged in, but IDP expired our session
       // and if this happens, we want the user to pick the idp to begin reauthentication
-      self.businessLogic.forceLogIn = true;
+      self.businessLogic.ignoreSignedInState = true;
       self.businessLogic.selectedAuthentication = nil;
     }
   } else {
@@ -910,13 +911,10 @@ completionHandler:(void (^)(void))handler
 - (void)logIn
 {
   if (self.businessLogic.selectedAuthentication.isOauth) {
-    // oauth
     [self oauthLogIn];
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
-    // SAML
     [self samlLogIn];
   } else {
-    // bar and pin
     [self barcodeLogIn];
   }
 }
@@ -1025,7 +1023,8 @@ completionHandler:(void (^)(void))handler
   }
 
   NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
-  // This handles both Oauth2 Intermediate and SAML, one of them provides data in fragment, the other in query parameter
+  // Oauth method provides the auth token as a fragment while SAML as a
+  // query parameter
   NSString *responseData = url.fragment != nil ? url.fragment : url.query;
   for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
     NSArray *elts = [param componentsSeparatedByString:@"="];
@@ -1034,12 +1033,10 @@ completionHandler:(void (^)(void))handler
   }
 
   NSString *rawError = kvpairs[@"error"];
-
   if (rawError) {
     NSString *error = [[rawError stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
 
     NSDictionary *parsedError = [error parseJSONString];
-
     if (parsedError) {
       [self displayErrorMessage:parsedError[@"title"]];
     }
@@ -1374,21 +1371,14 @@ completionHandler:(void (^)(void))handler
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      self.businessLogic.forceLogIn = false; // no need to force a login, as I just logged successfully
-      if (self.businessLogic.selectedAuthentication.isOauth) {
-        [self.businessLogic.userAccount setAuthToken:self.authToken];
-        [self.businessLogic.userAccount setPatron:self.patron];
-      } else if (self.businessLogic.selectedAuthentication.isSaml) {
-        [self.businessLogic.userAccount setAuthToken:self.authToken];
-        [self.businessLogic.userAccount setPatron:self.patron];
-        if (self.cookies) {
-          [self.businessLogic.userAccount setCookies:self.cookies];
-        }
-      } else {
-        [self.businessLogic.userAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
-      }
+      // no need to force a login, as I just logged successfully
+      self.businessLogic.ignoreSignedInState = false;
 
-      self.businessLogic.userAccount.authDefinition = self.businessLogic.selectedAuthentication;
+      [self.businessLogic updateUserAccountWithBarcode:self.usernameTextField.text
+                                                   pin:self.PINTextField.text
+                                             authToken:self.authToken
+                                                patron:self.patron
+                                               cookies:self.cookies];
 
       void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
@@ -1399,12 +1389,6 @@ completionHandler:(void (^)(void))handler
       } else {
         if(handler) handler();
       }
-      [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-        if (success) {
-          [[NYPLBookRegistry sharedRegistry] save];
-        }
-      }];
-
     } else {
       [[NYPLUserAccount sharedAccount] removeAll];
       [self accountDidChange];

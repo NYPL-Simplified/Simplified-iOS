@@ -41,31 +41,32 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   @objc private(set) var juvenileAuthIsOngoing = false
   private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
 
+  private let libraryAccountsProvider: NYPLLibraryAccountsProvider
   private let bookRegistry: NYPLBookRegistrySyncing
   weak private var drmAuthorizer: NYPLDRMAuthorizing?
 
   @objc init(libraryAccountID: String,
+             libraryAccountsProvider: NYPLLibraryAccountsProvider,
              bookRegistry: NYPLBookRegistrySyncing,
              drmAuthorizer: NYPLDRMAuthorizing?) {
     self.libraryAccountID = libraryAccountID
+    self.libraryAccountsProvider = libraryAccountsProvider
     self.bookRegistry = bookRegistry
     self.drmAuthorizer = drmAuthorizer
     super.init()
   }
 
-  private static func sharedLibraryAccount(_ libAccountID: String) -> Account? {
-    return AccountsManager.shared.account(libAccountID)
-  }
-
   @objc var libraryAccount: Account? {
-    return NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
+    return libraryAccountsProvider.account(libraryAccountID)
   }
 
   var selectedIDP: OPDS2SamlIDP?
 
-  // this overrides the sign in view controller logic to behave as if user isn't authenticated
-  // it's useful if we already have credentials, but the session expired
-  var forceLogIn: Bool = false
+  /// This overrides the sign in state logic to behave as if user isn't
+  /// authenticated. This is useful if we already have credentials, but
+  /// the session expired (e.g. SAML flow).
+  var ignoreSignedInState: Bool = false
+
   private var _selectedAuthentication: AccountDetails.Authentication?
   var selectedAuthentication: AccountDetails.Authentication? {
     get {
@@ -85,6 +86,50 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     return NYPLUserAccount.sharedAccount(libraryUUID: libraryAccountID)
   }
 
+  func updateUserAccount(withBarcode barcode: String?,
+                         pin: String?,
+                         authToken: String?,
+                         patron: [String:Any]?,
+                         cookies: [HTTPCookie]?) {
+
+    if let selectedAuthentication = selectedAuthentication {
+      if selectedAuthentication.isOauth || selectedAuthentication.isSaml {
+        if let authToken = authToken {
+          userAccount.setAuthToken(authToken)
+        }
+        if let patron = patron {
+          userAccount.setPatron(patron)
+        }
+      } else {
+        setBarcode(barcode, pin: pin)
+      }
+
+      if selectedAuthentication.isSaml {
+        if let cookies = cookies {
+          userAccount.setCookies(cookies)
+        }
+      }
+    } else {
+      setBarcode(barcode, pin: pin)
+    }
+
+    userAccount.authDefinition = selectedAuthentication
+
+    if libraryAccountID == libraryAccountsProvider.currentAccountId {
+      bookRegistry.syncResettingCache(false) { [weak bookRegistry] success in
+        if success {
+          bookRegistry?.save()
+        }
+      }
+    }
+  }
+
+  func setBarcode(_ barcode: String?, pin: String?) {
+    if let barcode = barcode, let pin = pin {
+      userAccount.setBarcode(barcode, PIN:pin)
+    }
+  }
+
   func librarySupportsBarcodeDisplay() -> Bool {
     // For now, only supports libraries granted access in Accounts.json,
     // is signed in, and has an authorization ID returned from the loans feed.
@@ -94,7 +139,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   }
 
   func isSignedIn() -> Bool {
-    guard !forceLogIn else { return false }
+    if ignoreSignedInState {
+      return false
+    }
     return userAccount.hasCredentials()
   }
 
@@ -113,7 +160,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     guard libraryAccount?.details?.supportsCardCreator ?? false else {
       return false
     }
-    guard libraryAccountID == AccountsManager.NYPLAccountUUID else {
+    guard libraryAccountID == AccountsManager.shared.NYPLAccountUUID else {
       return false
     }
 
@@ -214,8 +261,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// Factory method.
   /// - Returns: A configuration to be used in the regular card creation flow.
   @objc func makeRegularCardCreationConfiguration() -> CardCreatorConfiguration {
-    let libAcct = NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
-    let simplifiedBaseURL = libAcct?.details?.signUpUrl ?? APIKeys.cardCreatorEndpointURL
+    let simplifiedBaseURL = libraryAccount?.details?.signUpUrl ?? APIKeys.cardCreatorEndpointURL
 
     let credentials = cardCreatorCredentials()
     let cardCreatorConfiguration = CardCreatorConfiguration(
@@ -235,8 +281,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// - Returns: A coordinator instance to handle the juvenile card creator flow.
   private func makeJuvenileCardCreationCoordinator(using parentBarcode: String) -> JuvenileFlowCoordinator {
 
-    let libAcct = NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
-    let simplifiedBaseURL = libAcct?.details?.signUpUrl ?? APIKeys.cardCreatorEndpointURL
+    let simplifiedBaseURL = libraryAccount?.details?.signUpUrl ?? APIKeys.cardCreatorEndpointURL
     let credentials = cardCreatorCredentials()
     let platformAPI = NYPLPlatformAPIInfo(
       oauthTokenURL: APIKeys.PlatformAPI.oauthTokenURL,
@@ -261,7 +306,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   private func userBarcode() -> String? {
     // For NYPL specifically, the authorizationIdentifier is always a valid
     // barcode.
-    if libraryAccountID == AccountsManager.NYPLAccountUUID {
+    if libraryAccountID == AccountsManager.shared.NYPLAccountUUID {
       return userAccount.authorizationIdentifier ?? userAccount.barcode
     }
 
