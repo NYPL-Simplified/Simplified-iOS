@@ -78,7 +78,7 @@ extension NYPLMigrationManager {
         continue
       }
 
-      guard let oldDirectoryPath = DirectoryManager.directory("\(accountId)") else {
+      guard let oldDirectoryPath = NYPLBookContentMetadataFilesHelper.directory(for: "\(accountId)") else {
         Log.error(#file, "Could not get a directory path for accountId \(accountId)")
         continue
       }
@@ -87,7 +87,7 @@ extension NYPLMigrationManager {
           Log.error(#file, "Could not find mapping from accountID \(accountId) to uuid")
           continue
         }
-        guard let newDirectoryPath = DirectoryManager.directory(accountUuid) else {
+        guard let newDirectoryPath = NYPLBookContentMetadataFilesHelper.directory(for: accountUuid) else {
           Log.error(#file, "Could not get a directory path for accountUuid \(accountUuid)")
           continue
         }

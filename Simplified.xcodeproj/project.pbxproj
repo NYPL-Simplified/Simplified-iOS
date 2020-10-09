@@ -364,7 +364,7 @@
 		7347F09E245A4DE200558D7F /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		7347F09F245A4DE200558D7F /* NYPLBookDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */; };
 		7347F0A0245A4DE200558D7F /* NYPLReaderTOCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB38199C117B00378691 /* NYPLReaderTOCCell.m */; };
-		7347F0A1245A4DE200558D7F /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
+		7347F0A1245A4DE200558D7F /* NYPLBookContentMetadataFilesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift */; };
 		7347F0A2245A4DE200558D7F /* NYPLContentTypeBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */; };
 		7347F0A3245A4DE200558D7F /* NYPLZXingEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */; };
 		7347F0A4245A4DE200558D7F /* NYPLProblemReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */; };
@@ -660,7 +660,7 @@
 		73FCA31A25005BA4001B0C5D /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		73FCA31B25005BA4001B0C5D /* NYPLBookDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */; };
 		73FCA31C25005BA4001B0C5D /* NYPLReaderTOCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB38199C117B00378691 /* NYPLReaderTOCCell.m */; };
-		73FCA31D25005BA4001B0C5D /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
+		73FCA31D25005BA4001B0C5D /* NYPLBookContentMetadataFilesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift */; };
 		73FCA31E25005BA4001B0C5D /* NYPLContentTypeBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */; };
 		73FCA31F25005BA4001B0C5D /* NYPLZXingEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */; };
 		73FCA32025005BA4001B0C5D /* NYPLProblemReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */; };
@@ -670,7 +670,6 @@
 		73FCA32525005BA4001B0C5D /* NYPLOPDSAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AD83B19E497D6005724C3 /* NYPLOPDSAttribute.m */; };
 		73FCA32625005BA4001B0C5D /* NYPLCatalogUngroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogUngroupedFeed.m */; };
 		73FCA32725005BA4001B0C5D /* NYPLHoldsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF41976D22F005A9945 /* NYPLHoldsViewController.m */; };
-		73FCA32825005BA4001B0C5D /* NYPLSettingsAccountsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B1F4FA1DD20EA900D73CA1 /* NYPLSettingsAccountsList.swift */; };
 		73FCA32925005BA4001B0C5D /* Data+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD567B422B97344001F0C83 /* Data+Base64.swift */; };
 		73FCA32A25005BA4001B0C5D /* NYPLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */; };
 		73FCA32B25005BA4001B0C5D /* NYPLCatalogFacetGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C684E19EF003300106973 /* NYPLCatalogFacetGroup.m */; };
@@ -842,7 +841,7 @@
 		E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */; };
 		E6D848E32171334800CEC142 /* NYPLContentTypeBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */; };
 		E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */; };
-		E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
+		E6F26E731DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1382,7 +1381,7 @@
 		E6D775431F9FE0C400C0B722 /* NYPLBarcodeScanningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBarcodeScanningViewController.h; sourceTree = "<group>"; };
 		E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLContentTypeBadge.swift; sourceTree = "<group>"; };
 		E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookAuthor.swift; sourceTree = "<group>"; };
-		E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDirectoryManager.swift; sourceTree = "<group>"; };
+		E6F26E721DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookContentMetadataFilesHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1678,6 +1677,7 @@
 		119504051994061E009FB788 /* Reader */ = {
 			isa = PBXGroup;
 			children = (
+				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				03690E281EB2B44300F75D5F /* NYPLReadiumBookmark.swift */,
 				03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */,
@@ -1841,6 +1841,7 @@
 				734731252514236A00BE3D2C /* NYPLAppDelegate+OE.swift */,
 				734731222514235900BE3D2C /* NYPLAppDelegate+SE.swift */,
 				E6207B642118973800864143 /* NYPLAppTheme.swift */,
+				E6F26E721DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift */,
 				738CB1FF2509A61E00891F31 /* NYPLConfiguration+OE.swift */,
 				738CB2052509A87700891F31 /* NYPLConfiguration+SE.swift */,
 				73225DEA250B471400EF1877 /* NYPLRootTabBarController+OE.swift */,
@@ -1857,7 +1858,6 @@
 		7327A88D23EE00FE00954748 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				73E84FBD24464FF3009071D8 /* Authentication */,
 				7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */,
 				732327B12478504500A041E6 /* NSError+NYPLAdditions.swift */,
 				0824D44D24B8DFE400C85A7E /* NSString+JSONParse.swift */,
@@ -1924,8 +1924,10 @@
 			children = (
 				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
 				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
+				086C45D524AE77CA00F5108E /* NYPLBasicAuth.swift */,
 				089E42C5249A823800310360 /* NYPLCookiesWebViewController.swift */,
 				731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */,
+				73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */,
 			);
 			path = SignInLogic;
 			sourceTree = "<group>";
@@ -1991,6 +1993,15 @@
 				730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */,
 			);
 			path = WelcomeScreen;
+			sourceTree = "<group>";
+		};
+		7394FBD8252F936E00037515 /* Announcements */ = {
+			isa = PBXGroup;
+			children = (
+				175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */,
+				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
+			);
+			path = Announcements;
 			sourceTree = "<group>";
 		};
 		739ECB2725101F1600691A70 /* Catalog */ = {
@@ -2139,15 +2150,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		73E84FBD24464FF3009071D8 /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-				086C45D524AE77CA00F5108E /* NYPLBasicAuth.swift */,
-				73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */,
-			);
-			path = Authentication;
-			sourceTree = "<group>";
-		};
 		84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */ = {
 			isa = PBXGroup;
 			children = (
@@ -2254,6 +2256,7 @@
 			children = (
 				73DE53292525A2AD003E2C56 /* Accounts */,
 				110AF8891961D66C004887C3 /* Additions */,
+				7394FBD8252F936E00037515 /* Announcements */,
 				73225DE5250B46CE00EF1877 /* AppInfrastructure */,
 				21E7E07424FEA7C100189224 /* Audiobooks */,
 				110AF8901961D822004887C3 /* Book */,
@@ -2265,12 +2268,8 @@
 				73085E3325030CFC008F6244 /* Migrations */,
 				7384C751252D1F720012C2DD /* MyBooks */,
 				7338755E2423E108000FEB67 /* Network */,
-				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
-				175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */,
-				175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
-				E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */,
 				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
 				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
@@ -3102,7 +3101,7 @@
 				7347F09E245A4DE200558D7F /* NYPLBookDownloadFailedCell.m in Sources */,
 				7347F09F245A4DE200558D7F /* NYPLBookDetailViewController.m in Sources */,
 				7347F0A0245A4DE200558D7F /* NYPLReaderTOCCell.m in Sources */,
-				7347F0A1245A4DE200558D7F /* NYPLDirectoryManager.swift in Sources */,
+				7347F0A1245A4DE200558D7F /* NYPLBookContentMetadataFilesHelper.swift in Sources */,
 				7347F0A2245A4DE200558D7F /* NYPLContentTypeBadge.swift in Sources */,
 				7347F0A3245A4DE200558D7F /* NYPLZXingEncoder.m in Sources */,
 				730EDFEA2515378C0038DD9F /* NYPLKeychainStoredVariable.swift in Sources */,
@@ -3307,7 +3306,7 @@
 				730FC05925128D64004D7C2D /* OETutorialWelcomeViewController.swift in Sources */,
 				73FCA31B25005BA4001B0C5D /* NYPLBookDetailViewController.m in Sources */,
 				73FCA31C25005BA4001B0C5D /* NYPLReaderTOCCell.m in Sources */,
-				73FCA31D25005BA4001B0C5D /* NYPLDirectoryManager.swift in Sources */,
+				73FCA31D25005BA4001B0C5D /* NYPLBookContentMetadataFilesHelper.swift in Sources */,
 				73FCA31E25005BA4001B0C5D /* NYPLContentTypeBadge.swift in Sources */,
 				73FCA31F25005BA4001B0C5D /* NYPLZXingEncoder.m in Sources */,
 				73FCA32025005BA4001B0C5D /* NYPLProblemReportViewController.m in Sources */,
@@ -3317,7 +3316,6 @@
 				73FCA32525005BA4001B0C5D /* NYPLOPDSAttribute.m in Sources */,
 				73FCA32625005BA4001B0C5D /* NYPLCatalogUngroupedFeed.m in Sources */,
 				73FCA32725005BA4001B0C5D /* NYPLHoldsViewController.m in Sources */,
-				73FCA32825005BA4001B0C5D /* NYPLSettingsAccountsList.swift in Sources */,
 				73FCA32925005BA4001B0C5D /* Data+Base64.swift in Sources */,
 				73FCA32A25005BA4001B0C5D /* NYPLAppDelegate.m in Sources */,
 				730FC05825128D64004D7C2D /* OETutorialEligibilityViewController.swift in Sources */,
@@ -3504,7 +3502,7 @@
 				11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */,
 				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */,
 				11BFDB39199C117B00378691 /* NYPLReaderTOCCell.m in Sources */,
-				E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */,
+				E6F26E731DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift in Sources */,
 				E6D848E32171334800CEC142 /* NYPLContentTypeBadge.swift in Sources */,
 				E6C91BC21FD5F63B00A32F42 /* NYPLZXingEncoder.m in Sources */,
 				085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */,
