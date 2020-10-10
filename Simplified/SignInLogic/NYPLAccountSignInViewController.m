@@ -938,8 +938,6 @@ completionHandler:(void (^)(void))handler
   [UIApplication.sharedApplication openURL:urlComponents.URL
                                    options:@{}
                          completionHandler:nil];
-  
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 }
 
 - (void)samlLogIn
@@ -993,8 +991,6 @@ completionHandler:(void (^)(void))handler
   [self.PINTextField resignFirstResponder];
 
   [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 
   [self validateCredentials];
 }
@@ -1247,8 +1243,7 @@ completionHandler:(void (^)(void))handler
        }
        
        [weakSelf removeActivityTitle];
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-       
+
        if (error.code == NSURLErrorCancelled) {
          // We cancelled the request when asked to answer the server's challenge a second time
          // because we don't have valid credentials.
@@ -1372,7 +1367,6 @@ completionHandler:(void (^)(void))handler
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
       // no need to force a login, as I just logged successfully

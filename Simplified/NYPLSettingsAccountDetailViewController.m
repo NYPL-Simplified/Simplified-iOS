@@ -531,9 +531,6 @@ Authenticating with any of those barcodes should work.
   [UIApplication.sharedApplication openURL:urlComponents.URL
                                    options:@{}
                          completionHandler:nil];
-
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-
 }
 
 - (void)samlLogIn
@@ -677,9 +674,7 @@ Authenticating with any of those barcodes should work.
 #if defined(FEATURE_DRM_CONNECTOR)
 
   [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  
-  
+
   // Get a fresh licensor token before attempting to deauthorize
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
@@ -704,7 +699,6 @@ Authenticating with any of those barcodes should work.
                                                   barcode:currentBarcode];
          [self showLogoutAlertWithError:pDocError responseCode:statusCode];
          [self removeActivityTitle];
-         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        } else {
          if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
            [self.selectedUserAccount setLicensor:[pDoc.drm[0] licensor]];
@@ -712,7 +706,7 @@ Authenticating with any of those barcodes should work.
          } else {
            NYPLLOG_F(@"\nLicensor Token Invalid: %@", [pDoc toJson])
          }
-         [self deauthorizeDevice]; // will call endIgnoringInteractionEvents
+         [self deauthorizeDevice];
 
 #ifdef OPENEBOOKS
          [NYPLSettings sharedSettings].accountMainFeedURL = nil;
@@ -734,7 +728,6 @@ Authenticating with any of those barcodes should work.
                                metadata:nil];
        [self showLogoutAlertWithError:error responseCode:statusCode];
        [self removeActivityTitle];
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
      }
    }];
 
@@ -755,7 +748,6 @@ Authenticating with any of those barcodes should work.
     self.businessLogic.selectedIDP = nil;
     [self setupTableData];
     [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
   }
 
 #endif
@@ -767,8 +759,7 @@ Authenticating with any of those barcodes should work.
 
   void (^afterDeauthorization)(void) = ^() {
     [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    
+
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
     [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
     
@@ -831,7 +822,9 @@ Authenticating with any of those barcodes should work.
 
 - (void)validateCredentials
 {
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+  });
 
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
@@ -860,7 +853,6 @@ Authenticating with any of those barcodes should work.
                        NSError *const error) {
     NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
 
-    // all methods methods below call UIApplication::endIgnoringInteractionEvents
     if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
       [weakSelf processCredsValidationSuccessUsingDRMWithData:data];
@@ -873,14 +865,16 @@ Authenticating with any of those barcodes should work.
                                            forRequest:request
                                              response:response];
     }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    });
   }];
   
   [task resume];
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
-// This will call UIApplication::endIgnoringInteractionEvents although it may
-// do so asynchronously.
 - (void)processCredsValidationSuccessUsingDRMWithData:(NSData*)data
 {
   NSError *pDocError = nil;
@@ -971,7 +965,6 @@ Authenticating with any of those barcodes should work.
 {
   NSString * const barcode = self.usernameTextField.text;
   [self removeActivityTitle];
-  [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 
   if (error.code == NSURLErrorCancelled) {
     // We cancelled the request when asked to answer the server's challenge a second time
@@ -1065,8 +1058,7 @@ Authenticating with any of those barcodes should work.
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    
+
     if (success) {
       [self.businessLogic updateUserAccountWithBarcode:self.usernameTextField.text
                                                    pin:self.PINTextField.text
