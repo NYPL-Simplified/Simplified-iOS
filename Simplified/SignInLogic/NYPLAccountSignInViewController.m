@@ -87,17 +87,16 @@ CGFloat const marginPadding = 2.0;
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
 
+  self.businessLogic = [[NYPLSignInBusinessLogic alloc]
+                        initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
+                        bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        drmAuthorizer:
 #if FEATURE_DRM_CONNECTOR
-  self.businessLogic = [[NYPLSignInBusinessLogic alloc]
-                        initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
-                        bookRegistry:[NYPLBookRegistry sharedRegistry]
-                        drmAuthorizer:[NYPLADEPT sharedInstance]];
+                        [NYPLADEPT sharedInstance]
 #else
-  self.businessLogic = [[NYPLSignInBusinessLogic alloc]
-                        initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
-                        bookRegistry:[NYPLBookRegistry sharedRegistry]
-                        drmAuthorizer:nil];
+                        nil
 #endif
+                        ];
 
   self.title = NSLocalizedString(@"SignIn", nil);
 
@@ -277,13 +276,13 @@ CGFloat const marginPadding = 2.0;
 
     if (self.businessLogic.libraryAccount.details.auths.count > 1) {
       // multiple authentication methods
-      for (AccountDetailsAuthentication *authenticationMethod in self.businessLogic.libraryAccount.details.auths) {
+      for (AccountDetailsAuthentication *authMethod in self.businessLogic.libraryAccount.details.auths) {
         // show all possible login methods
-        NYPLAuthMethodCellType *autheticationCell = [[NYPLAuthMethodCellType alloc] initWithAuthenticationMethod:authenticationMethod];
-        [workingSection addObject:autheticationCell];
-        if (authenticationMethod.methodDescription == self.businessLogic.selectedAuthentication.methodDescription) {
+        NYPLAuthMethodCellType *authType = [[NYPLAuthMethodCellType alloc] initWithAuthenticationMethod:authMethod];
+        [workingSection addObject:authType];
+        if (authMethod.methodDescription == self.businessLogic.selectedAuthentication.methodDescription) {
           // selected method, unfold
-          [workingSection addObjectsFromArray:[self cellsForAuthMethod:authenticationMethod]];
+          [workingSection addObjectsFromArray:[self cellsForAuthMethod:authMethod]];
         }
       }
     } else if (self.businessLogic.libraryAccount.details.auths.count == 1) {
@@ -648,73 +647,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 #pragma mark - Class Methods
 
 + (void)
-requestCredentialsUsingExistingBarcode:(BOOL const)useExistingCredentials
+requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
 authorizeImmediately:(BOOL)authorizeImmediately
 completionHandler:(void (^)(void))handler
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-    NYPLAccountSignInViewController *const accountViewController = [[self alloc] init];
-
-    accountViewController.completionHandler = handler;
-
-    // Tell |accountViewController| to create its text fields so we can set their properties.
-    [accountViewController view];
-
-    if (NYPLUserAccount.sharedAccount.authDefinition.isSaml) {
-      if (!useExistingCredentials) {
-        // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
-        // this is for the case when we were logged in, but IDP expired our session
-        // and if this happens, we want the user to pick the idp to begin reauthentication
-        accountViewController.businessLogic.forceLogIn = true;
-        accountViewController.businessLogic.selectedAuthentication = nil;
-      }
-    } else {
-      if(useExistingCredentials) {
-        NSString *const barcode = [NYPLUserAccount sharedAccount].barcode;
-        if(!barcode) {
-          @throw NSInvalidArgumentException;
-        }
-        accountViewController.usernameTextField.text = barcode;
-      } else {
-        accountViewController.usernameTextField.text = @"";
-      }
-    }
-
-    accountViewController.PINTextField.text = @"";
-
-    UIBarButtonItem *const cancelBarButtonItem =
-    [[UIBarButtonItem alloc]
-     initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-     target:accountViewController
-     action:@selector(didSelectCancel)];
-
-    accountViewController.navigationItem.leftBarButtonItem = cancelBarButtonItem;
-
-    UIViewController *const viewController = [[UINavigationController alloc]
-                                              initWithRootViewController:accountViewController];
-    viewController.modalPresentationStyle = UIModalPresentationFormSheet;
-
-    [NYPLPresentationUtils safelyPresent:viewController
-                                animated:YES
-                              completion:nil];
-
-    if (authorizeImmediately && [NYPLUserAccount sharedAccount].hasBarcodeAndPIN) {
-        accountViewController.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
-        [accountViewController logIn];
-    } else if (NYPLUserAccount.sharedAccount.authDefinition.isOauth) {
-      if (authorizeImmediately) {
-        [accountViewController logIn];
-      }
-    } else if (NYPLUserAccount.sharedAccount.authDefinition.isSaml) {
-      // there's no extra logic to do for SAML
-      // this exists as we don't want the textfield to become responder
-    } else {
-      if(useExistingCredentials) {
-        [accountViewController.PINTextField becomeFirstResponder];
-      } else {
-        [accountViewController.usernameTextField becomeFirstResponder];
-      }
-    }
+    NYPLAccountSignInViewController *signInVC = [[self alloc] init];
+    [signInVC presentUsingExistingBarcode:useExistingBarcode
+                     authorizeImmediately:authorizeImmediately
+                        completionHandler:handler];
   });
 }
 
@@ -730,6 +671,69 @@ completionHandler:(void (^)(void))handler
 }
 
 #pragma mark -
+
+- (void)presentUsingExistingBarcode:(BOOL const)useExistingBarcode
+               authorizeImmediately:(BOOL)authorizeImmediately
+                  completionHandler:(void (^)(void))handler
+{
+  self.completionHandler = handler;
+
+  // Tell the VC to create its text fields so we can set their properties.
+  [self view];
+
+  if (NYPLUserAccount.sharedAccount.authDefinition.isSaml) {
+    if (!useExistingBarcode) {
+      // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
+      // this is for the case when we were logged in, but IDP expired our session
+      // and if this happens, we want the user to pick the idp to begin reauthentication
+      self.businessLogic.forceLogIn = true;
+      self.businessLogic.selectedAuthentication = nil;
+    }
+  } else {
+    if(useExistingBarcode) {
+      NSString *const barcode = [NYPLUserAccount sharedAccount].barcode;
+      if(!barcode) {
+        @throw NSInvalidArgumentException;
+      }
+      self.usernameTextField.text = barcode;
+    } else {
+      self.usernameTextField.text = @"";
+    }
+  }
+
+  self.PINTextField.text = @"";
+
+  UIBarButtonItem *const cancelBarButtonItem =
+  [[UIBarButtonItem alloc]
+   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+   target:self
+   action:@selector(didSelectCancel)];
+
+  self.navigationItem.leftBarButtonItem = cancelBarButtonItem;
+  UINavigationController *const navVC = [[UINavigationController alloc]
+                                         initWithRootViewController:self];
+  navVC.modalPresentationStyle = UIModalPresentationFormSheet;
+
+  [NYPLPresentationUtils safelyPresent:navVC animated:YES completion:nil];
+
+  if (authorizeImmediately && [NYPLUserAccount sharedAccount].hasBarcodeAndPIN) {
+    self.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
+    [self logIn];
+  } else if (NYPLUserAccount.sharedAccount.authDefinition.isOauth) {
+    if (authorizeImmediately) {
+      [self logIn];
+    }
+  } else if (NYPLUserAccount.sharedAccount.authDefinition.isSaml) {
+    // there's no extra logic to do for SAML
+    // this exists as we don't want the textfield to become responder
+  } else {
+    if(useExistingBarcode) {
+      [self.PINTextField becomeFirstResponder];
+    } else {
+      [self.usernameTextField becomeFirstResponder];
+    }
+  }
+}
 
 - (void)textFieldsDidChange
 {
