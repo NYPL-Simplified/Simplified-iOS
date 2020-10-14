@@ -100,30 +100,39 @@ class OETutorialChoiceViewController : UIViewController {
     completionHandler = nil
     oldCompletionHandler?.self()
   }
-  
+
   @objc func didSelectFirstBook() {
+    didSelectAuthenticationMethod(.firstBook)
+  }
+
+  @objc func didSelectClever() {
+    didSelectAuthenticationMethod(.clever)
+  }
+
+  private func didSelectAuthenticationMethod(_ loginChoice: LoginChoice) {
     let libAccount = AccountsManager.shared.currentAccount
     let userAccount = NYPLUserAccount.sharedAccount()
     if libAccount?.details == nil {
       libAccount?.loadAuthenticationDocument(using: userAccount) { success in
         if success {
-          NYPLAccountSignInViewController.requestCredentials(usingExistingBarcode: false, completionHandler: self.loginCompletionHandler)
+          self.presentSignInVC(for: loginChoice)
         } else {
-          let alert = NYPLAlertUtils.alert(title: "Bad Account Info", message: "Could not resolve OpenEBooks account data")
+          let alert = NYPLAlertUtils.alert(title: "Sign-in Error", message: "We could not find a match for the credentials provided.")
           self.present(alert, animated: true, completion: nil)
         }
       }
     } else {
-      NYPLAccountSignInViewController.requestCredentials(usingExistingBarcode: false, completionHandler: loginCompletionHandler)
+      presentSignInVC(for: loginChoice)
     }
   }
-  
-  @objc func didSelectClever() {
-    // TODO: SIMPLY-3050
-//    NYPLUserAccount.shared()?.removeAll()
-//    CleverLoginViewController.loginWithCompletionHandler(loginCompletionHandler)
+
+  private func presentSignInVC(for loginChoice: LoginChoice) {
+    let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
+    signInVC.present(usingExistingBarcode: false,
+                     authorizeImmediately: false,
+                     completionHandler: self.loginCompletionHandler)
   }
-  
+
   @objc func didSelectRequestCodes() {
     UIApplication.shared.open(NYPLConfiguration.openEBooksRequestCodesURL)
   }

@@ -8,14 +8,14 @@
 
 import Foundation
 
-extension NYPLSettings {
-  /// Used to handle OAuth sign-ins. For example, Clever authentication uses
-  /// this URL for redirecting to the app after authenticating in Safari.
-  /// This requires configurion setting Universal Links on the server.
+extension NYPLSettings: NYPLUniversalLinksSettings {
+  /// Used to handle Clever and SAML sign-ins in SimplyE.
   @objc var authenticationUniversalLink: URL {
     return URL(string: "https://www.librarysimplified.org/callbacks/SimplyE")!
   }
+}
 
+extension NYPLSettings {
   static let userHasSeenWelcomeScreenKey = "NYPLUserHasSeenWelcomeScreenKey"
   
   var settingsAccountsList: [String] {

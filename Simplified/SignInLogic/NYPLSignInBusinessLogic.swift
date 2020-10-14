@@ -42,6 +42,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
 
   private let libraryAccountsProvider: NYPLLibraryAccountsProvider
+  let universalLinksSettings: NYPLUniversalLinksSettings
   private let bookRegistry: NYPLBookRegistrySyncing
 
   /// Provides the user account for a given library.
@@ -54,6 +55,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   @objc init(libraryAccountID: String,
              libraryAccountsProvider: NYPLLibraryAccountsProvider,
+             universalLinksSettings: NYPLUniversalLinksSettings,
              bookRegistry: NYPLBookRegistrySyncing,
              userAccountProvider: NYPLUserAccountProvider.Type,
              uiDelegate: NYPLSignInBusinessLogicUIDelegate?,
@@ -61,6 +63,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     self.uiDelegate = uiDelegate
     self.libraryAccountID = libraryAccountID
     self.libraryAccountsProvider = libraryAccountsProvider
+    self.universalLinksSettings = universalLinksSettings
     self.bookRegistry = bookRegistry
     self.userAccountProvider = userAccountProvider
     self.drmAuthorizer = drmAuthorizer
@@ -142,6 +145,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
         }
       }
     }
+
+    NotificationCenter.default.post(name: .NYPLIsSigningIn, object: false)
   }
 
   func setBarcode(_ barcode: String?, pin: String?) {

@@ -34,7 +34,7 @@ extension NYPLSignInBusinessLogic {
 
     let redirectParam = URLQueryItem(
       name: "redirect_uri",
-      value: NYPLSettings.shared.authenticationUniversalLink.absoluteString)
+      value: universalLinksSettings.authenticationUniversalLink.absoluteString)
     urlComponents.queryItems?.append(redirectParam)
 
     guard let finalURL = urlComponents.url else {
@@ -78,8 +78,7 @@ extension NYPLSignInBusinessLogic {
     }
 
     let urlStr = url.absoluteString
-    // TODO: SIMPLY-3092 inject this NYPLSettings url
-    guard urlStr.hasPrefix(NYPLSettings.shared.authenticationUniversalLink.absoluteString),
+    guard urlStr.hasPrefix(universalLinksSettings.authenticationUniversalLink.absoluteString),
       universalLinkRedirectURLContainsPayload(urlStr) else {
 
       NYPLErrorLogger.logError(withCode: .unrecognizedUniversalLink,

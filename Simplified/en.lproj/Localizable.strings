@@ -216,6 +216,8 @@
 "Want a card for your child?" = "Want a card for your child?";
 "Cannot confirm library card eligibility." = "Cannot confirm library card eligibility.";
 "Please log out and try your card information again." = "Please log out and try your card information again.";
+"Sign-in Error" = "Sign-in Error";
+"We could not find a match for the credentials provided." = "We could not find a match for the credentials provided.";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accept";

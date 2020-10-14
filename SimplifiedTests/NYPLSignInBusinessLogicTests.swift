@@ -19,6 +19,7 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
     businessLogic = NYPLSignInBusinessLogic(
       libraryAccountID: libraryAccountMock.NYPLAccountUUID,
       libraryAccountsProvider: libraryAccountMock,
+      universalLinksSettings: NYPLUniversalLinksSettingsMock(),
       bookRegistry: NYPLBookRegistryMock(),
       userAccountProvider: NYPLUserAccountMock.self,
       uiDelegate: nil,
