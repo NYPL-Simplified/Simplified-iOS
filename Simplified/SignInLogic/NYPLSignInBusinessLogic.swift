@@ -45,10 +45,15 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   private let bookRegistry: NYPLBookRegistrySyncing
   weak private var drmAuthorizer: NYPLDRMAuthorizing?
 
+  /// The primary way for the business logic to communicate with the UI.
+  weak var uiDelegate: NYPLSignInBusinessLogicUIDelegate?
+
   @objc init(libraryAccountID: String,
              libraryAccountsProvider: NYPLLibraryAccountsProvider,
              bookRegistry: NYPLBookRegistrySyncing,
+             uiDelegate: NYPLSignInBusinessLogicUIDelegate?,
              drmAuthorizer: NYPLDRMAuthorizing?) {
+    self.uiDelegate = uiDelegate
     self.libraryAccountID = libraryAccountID
     self.libraryAccountsProvider = libraryAccountsProvider
     self.bookRegistry = bookRegistry

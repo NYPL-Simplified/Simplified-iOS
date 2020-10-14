@@ -51,7 +51,7 @@ fileprivate let nullString = "null"
   case missingParentBarcodeForJuvenile = 311
   case cardCreatorCredentialsDecodeFail = 312
   case oauthPatronInfoDecodeFail = 313
-  case unrecognizedLoginUniversalLink = 314
+  case unrecognizedUniversalLink = 314
   case validationWithoutAuthToken = 315
   case signInRedirectError = 316
 
@@ -74,6 +74,7 @@ fileprivate let nullString = "null"
   case authDocParseFail = 607
   case parseProblemDocFail = 608
   case overdriveFulfillResponseParseFail = 609
+  case authDataParseFail = 610
 
   // account management
   case authDocLoadFail = 700
@@ -98,6 +99,7 @@ fileprivate let nullString = "null"
   case clientSideTransientError = 910
   case clientSideUserInterruption = 911
   case problemDocAvailable = 912
+  case malformedURL = 913
 
   // DRM
   case epubDecodingError = 1000
