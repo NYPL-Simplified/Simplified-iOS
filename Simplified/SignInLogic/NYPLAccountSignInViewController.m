@@ -88,7 +88,8 @@ CGFloat const marginPadding = 2.0;
   if(!self) return nil;
 
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
-                        initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
+                        initWithLibraryAccountID:AccountsManager.shared.currentAccountId
+                        libraryAccountsProvider:AccountsManager.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
                         drmAuthorizer:
 #if FEATURE_DRM_CONNECTOR
@@ -686,7 +687,7 @@ completionHandler:(void (^)(void))handler
       // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
       // this is for the case when we were logged in, but IDP expired our session
       // and if this happens, we want the user to pick the idp to begin reauthentication
-      self.businessLogic.forceLogIn = true;
+      self.businessLogic.ignoreSignedInState = true;
       self.businessLogic.selectedAuthentication = nil;
     }
   } else {
@@ -910,13 +911,10 @@ completionHandler:(void (^)(void))handler
 - (void)logIn
 {
   if (self.businessLogic.selectedAuthentication.isOauth) {
-    // oauth
     [self oauthLogIn];
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
-    // SAML
     [self samlLogIn];
   } else {
-    // bar and pin
     [self barcodeLogIn];
   }
 }
@@ -940,8 +938,6 @@ completionHandler:(void (^)(void))handler
   [UIApplication.sharedApplication openURL:urlComponents.URL
                                    options:@{}
                          completionHandler:nil];
-  
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 }
 
 - (void)samlLogIn
@@ -996,8 +992,6 @@ completionHandler:(void (^)(void))handler
 
   [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
 
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-
   [self validateCredentials];
 }
 
@@ -1025,7 +1019,8 @@ completionHandler:(void (^)(void))handler
   }
 
   NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
-  // This handles both Oauth2 Intermediate and SAML, one of them provides data in fragment, the other in query parameter
+  // Oauth method provides the auth token as a fragment while SAML as a
+  // query parameter
   NSString *responseData = url.fragment != nil ? url.fragment : url.query;
   for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
     NSArray *elts = [param componentsSeparatedByString:@"="];
@@ -1034,12 +1029,10 @@ completionHandler:(void (^)(void))handler
   }
 
   NSString *rawError = kvpairs[@"error"];
-
   if (rawError) {
     NSString *error = [[rawError stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
 
     NSDictionary *parsedError = [error parseJSONString];
-
     if (parsedError) {
       [self displayErrorMessage:parsedError[@"title"]];
     }
@@ -1147,6 +1140,8 @@ completionHandler:(void (^)(void))handler
 
   NSString * const barcode = self.usernameTextField.text;
   self.isCurrentlySigningIn = YES;
+
+  __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
@@ -1154,7 +1149,7 @@ completionHandler:(void (^)(void))handler
                          NSURLResponse *const response,
                          NSError *const error) {
        
-       self.isCurrentlySigningIn = NO;
+       weakSelf.isCurrentlySigningIn = NO;
 
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
        
@@ -1166,7 +1161,7 @@ completionHandler:(void (^)(void))handler
            [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                                     summary:@"SignIn-modal: unable to parse user profile doc"
                                                     barcode:barcode];
-           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
+           [weakSelf authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
            return;
          } else {
            if (pDoc.authorizationIdentifier) {
@@ -1191,7 +1186,7 @@ completionHandler:(void (^)(void))handler
                                         @"hashedBarcode": barcode.md5String
                                       }];
 
-             [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"No credentials were received to authorize access to books with DRM." }]];
+             [weakSelf authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"No credentials were received to authorize access to books with DRM." }]];
              return;
            }
            
@@ -1212,7 +1207,9 @@ completionHandler:(void (^)(void))handler
             completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
 
               [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [NSObject cancelPreviousPerformRequestsWithTarget:self];
+                if (weakSelf) {
+                  [NSObject cancelPreviousPerformRequestsWithTarget:weakSelf];
+                }
               }];
 
               NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
@@ -1228,32 +1225,31 @@ completionHandler:(void (^)(void))handler
                 }];
               } else {
                 [NYPLErrorLogger logLocalAuthFailedWithError:error
-                                                     library:self.currentAccount
+                                                     library:weakSelf.currentAccount
                                                     metadata:@{
                                                       @"hashedBarcode": barcode.md5String
                                                     }];
               }
               
-              [self authorizationAttemptDidFinish:success error:error];
+              [weakSelf authorizationAttemptDidFinish:success error:error];
             }];
 
-           [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];
+           [weakSelf performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:weakSelf afterDelay:25];
          }
 #else
-         [self authorizationAttemptDidFinish:YES error:nil];
+         [weakSelf authorizationAttemptDidFinish:YES error:nil];
 #endif
          return;
        }
        
-       [self removeActivityTitle];
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-       
+       [weakSelf removeActivityTitle];
+
        if (error.code == NSURLErrorCancelled) {
          // We cancelled the request when asked to answer the server's challenge a second time
          // because we don't have valid credentials.
-         self.PINTextField.text = @"";
-         [self textFieldsDidChange];
-         [self.PINTextField becomeFirstResponder];
+         weakSelf.PINTextField.text = @"";
+         [weakSelf textFieldsDidChange];
+         [weakSelf.PINTextField becomeFirstResponder];
        }
 
       NYPLProblemDocument *problemDocument = nil;
@@ -1288,7 +1284,7 @@ completionHandler:(void (^)(void))handler
       } else {
         [NYPLErrorLogger logLoginError:error
                                barcode:barcode
-                               library:self.currentAccount
+                               library:weakSelf.currentAccount
                                request:request
                               response:response
                        problemDocument:problemDocument
@@ -1371,24 +1367,16 @@ completionHandler:(void (^)(void))handler
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      self.businessLogic.forceLogIn = false; // no need to force a login, as I just logged successfully
-      if (self.businessLogic.selectedAuthentication.isOauth) {
-        [self.businessLogic.userAccount setAuthToken:self.authToken];
-        [self.businessLogic.userAccount setPatron:self.patron];
-      } else if (self.businessLogic.selectedAuthentication.isSaml) {
-        [self.businessLogic.userAccount setAuthToken:self.authToken];
-        [self.businessLogic.userAccount setPatron:self.patron];
-        if (self.cookies) {
-          [self.businessLogic.userAccount setCookies:self.cookies];
-        }
-      } else {
-        [self.businessLogic.userAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
-      }
+      // no need to force a login, as I just logged successfully
+      self.businessLogic.ignoreSignedInState = false;
 
-      self.businessLogic.userAccount.authDefinition = self.businessLogic.selectedAuthentication;
+      [self.businessLogic updateUserAccountWithBarcode:self.usernameTextField.text
+                                                   pin:self.PINTextField.text
+                                             authToken:self.authToken
+                                                patron:self.patron
+                                               cookies:self.cookies];
 
       void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
@@ -1399,12 +1387,6 @@ completionHandler:(void (^)(void))handler
       } else {
         if(handler) handler();
       }
-      [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-        if (success) {
-          [[NYPLBookRegistry sharedRegistry] save];
-        }
-      }];
-
     } else {
       [[NYPLUserAccount sharedAccount] removeAll];
       [self accountDidChange];
