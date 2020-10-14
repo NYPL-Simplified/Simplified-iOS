@@ -165,7 +165,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     guard libraryAccount?.details?.supportsCardCreator ?? false else {
       return false
     }
-    guard libraryAccountID == AccountsManager.shared.NYPLAccountUUID else {
+    guard libraryAccountID == libraryAccountsProvider.NYPLAccountUUID else {
       return false
     }
 
@@ -184,7 +184,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     return libraryDetails.supportsSimplyESync &&
       libraryDetails.getLicenseURL(.annotations) != nil &&
       userAccount.hasCredentials() &&
-      libraryAccountID == AccountsManager.shared.currentAccount?.uuid
+      libraryAccountID == libraryAccountsProvider.currentAccount?.uuid
   }
 
   /// Updates server sync setting for the currently selected library.
@@ -311,7 +311,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   private func userBarcode() -> String? {
     // For NYPL specifically, the authorizationIdentifier is always a valid
     // barcode.
-    if libraryAccountID == AccountsManager.shared.NYPLAccountUUID {
+    if libraryAccountID == libraryAccountsProvider.NYPLAccountUUID {
       return userAccount.authorizationIdentifier ?? userAccount.barcode
     }
 
