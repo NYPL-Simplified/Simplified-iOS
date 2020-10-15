@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate>
+@interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLSignInBusinessLogicUIDelegate>
 
 // state machine
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
@@ -56,8 +56,6 @@ typedef NS_ENUM(NSInteger, Section) {
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
 @property (nonatomic) NYPLSignInBusinessLogic *businessLogic;
-@property (nonatomic) NSString *authToken;
-@property (nonatomic) NSDictionary *patron;
 @property (nonatomic) NSArray *cookies;
 
 // networking
@@ -72,6 +70,16 @@ typedef NS_ENUM(NSInteger, Section) {
 @synthesize PINTextField;
 
 CGFloat const marginPadding = 2.0;
+
+#pragma mark - NYPLSignInBusinessLogicUIDelegate properties
+
+@synthesize authToken;
+@synthesize patron;
+
+- (NSString *)context
+{
+  return @"SignIn-modal";
+}
 
 #pragma mark - Computed variables
 
@@ -91,6 +99,8 @@ CGFloat const marginPadding = 2.0;
                         initWithLibraryAccountID:AccountsManager.shared.currentAccountId
                         libraryAccountsProvider:AccountsManager.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        userAccountProvider:[NYPLUserAccount class]
+                        uiDelegate:self
                         drmAuthorizer:
 #if FEATURE_DRM_CONNECTOR
                         [NYPLADEPT sharedInstance]
@@ -911,7 +921,7 @@ completionHandler:(void (^)(void))handler
 - (void)logIn
 {
   if (self.businessLogic.selectedAuthentication.isOauth) {
-    [self oauthLogIn];
+    [self.businessLogic oauthLogIn];
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
     [self samlLogIn];
   } else {
@@ -919,30 +929,8 @@ completionHandler:(void (^)(void))handler
   }
 }
 
-- (void)oauthLogIn
-{
-  // for this kind of authentication, we want to redirect user to Safari to conduct the process
-  NSURL *oauthURL = self.businessLogic.selectedAuthentication.oauthIntermediaryUrl;
-
-  NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:oauthURL resolvingAgainstBaseURL:true];
-
-  // add params
-  NSURLQueryItem *redirect_uri = [[NSURLQueryItem alloc] initWithName:@"redirect_uri" value:NYPLSettings.shared.authenticationUniversalLink.absoluteString];
-  urlComponents.queryItems = [urlComponents.queryItems arrayByAddingObject:redirect_uri];
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleRedirectURL:)
-                                               name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
-                                             object:nil];
-
-  [UIApplication.sharedApplication openURL:urlComponents.URL
-                                   options:@{}
-                         completionHandler:nil];
-}
-
 - (void)samlLogIn
 {
-
   // for this kind of authentication, we want user to authenticate in a built in webview, as we need to access the cookies later on
 
   // get the url of IDP that user selected
@@ -960,9 +948,11 @@ completionHandler:(void (^)(void))handler
     self.cookies = cookies;
 
     // process the last redirection url to get the oauth token
-    [self handleRedirectURL:[NSNotification notificationWithName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
-                                                          object:url
-                                                        userInfo:nil]];
+    [self.businessLogic handleRedirectURL:
+     [NSNotification
+      notificationWithName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
+      object:url
+      userInfo:nil]];
 
     // and close the webview
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -993,80 +983,6 @@ completionHandler:(void (^)(void))handler
   [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
 
   [self validateCredentials];
-}
-
-- (void)handleRedirectURL:(NSNotification *)notification
-{
-  [NSNotificationCenter.defaultCenter removeObserver: self name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL object: nil];
-
-  NSURL *url = notification.object;
-  if (![url.absoluteString hasPrefix:NYPLSettings.shared.authenticationUniversalLink.absoluteString]
-      || !([url.absoluteString containsString:@"error"] || ([url.absoluteString containsString:@"access_token"] && [url.absoluteString containsString:@"patron_info"])))
-  {
-    // received neither error, nor login data, something's wrong
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnrecognizedLoginUniversalLink
-                              summary:@"SignIn-modal"
-                              message:@"App received login finished universal link, but no necessary data inside."
-                             metadata:@{
-                               @"loginUrl": url.absoluteString
-                             }];
-
-    // TODO: SIMPLY-2884 validate this string with product
-    [self displayErrorMessage:
-     NSLocalizedString(@"An error occurred during the authentication process",
-                       @"Generic error message while handling sign-in redirection during authentication")];
-    return;
-  }
-
-  NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
-  // Oauth method provides the auth token as a fragment while SAML as a
-  // query parameter
-  NSString *responseData = url.fragment != nil ? url.fragment : url.query;
-  for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
-    NSArray *elts = [param componentsSeparatedByString:@"="];
-    if([elts count] < 2) continue;
-    [kvpairs setObject:[elts lastObject] forKey:[elts firstObject]];
-  }
-
-  NSString *rawError = kvpairs[@"error"];
-  if (rawError) {
-    NSString *error = [[rawError stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
-
-    NSDictionary *parsedError = [error parseJSONString];
-    if (parsedError) {
-      [self displayErrorMessage:parsedError[@"title"]];
-    }
-
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeSignInRedirectError
-                              summary:NSStringFromClass([self class])
-                              message:@"An error was encountered while handling Sign-In redirection"
-                             metadata:@{
-                               NSUnderlyingErrorKey: rawError ?: @"N/A",
-                               @"redirectURL": url ?: @"N/A"
-                             }];
-  }
-
-  NSString *auth_token = kvpairs[@"access_token"];
-  NSString *patron_info = kvpairs[@"patron_info"];
-
-  if (auth_token != nil && patron_info != nil) {
-    NSString *patron = [[patron_info stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
-
-    NSDictionary *parsedPatron = [patron parseJSONString];
-    if (parsedPatron) {
-      self.authToken = auth_token;
-      self.patron = parsedPatron;
-      [self validateCredentials];
-    } else {
-      // login succeeded, but I couldn't parse the patron info
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOauthPatronInfoDecodeFail
-                                summary:@"SignIn-modal"
-                                message:@"App couldn't parse the patron info delivered in oauth/saml redirection."
-                               metadata:@{
-                                 @"patronInfo": patron ?: @"N/A"
-                               }];
-    }
-  }
 }
 
 - (void)displayErrorMessage:(NSString *)errorMessage {
