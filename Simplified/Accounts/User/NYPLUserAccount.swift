@@ -99,7 +99,7 @@ private enum StorageKey: String {
     }
   }
 
-  public private(set) var credentials: NYPLCredentials? {
+  var credentials: NYPLCredentials? {
     get {
       var credentials = _credentials.read()
 
@@ -447,24 +447,6 @@ private enum StorageKey: String {
   }
     
   // MARK: - Remove
-  func removeBarcodeAndPIN() {
-    keychainTransaction.perform {
-      _authDefinition.write(nil)
-      _credentials.write(nil)
-      _cookies.write(nil)
-      _authorizationIdentifier.write(nil)
-
-      // remove legacy, just in case
-      _barcode.write(nil)
-      _pin.write(nil)
-      _authToken.write(nil)
-
-      notifyAccountDidChange()
-
-      NotificationCenter.default.post(name: Notification.Name.NYPLDidSignOut,
-                                      object: nil)
-    }
-  }
 
   func removeAll() {
     keychainTransaction.perform {
@@ -475,7 +457,22 @@ private enum StorageKey: String {
       _userID.write(nil)
       _deviceID.write(nil)
 
-      removeBarcodeAndPIN()
+      keychainTransaction.perform {
+        _authDefinition.write(nil)
+        _credentials.write(nil)
+        _cookies.write(nil)
+        _authorizationIdentifier.write(nil)
+
+        // remove legacy, just in case
+        _barcode.write(nil)
+        _pin.write(nil)
+        _authToken.write(nil)
+
+        notifyAccountDidChange()
+
+        NotificationCenter.default.post(name: Notification.Name.NYPLDidSignOut,
+                                        object: nil)
+      }
     }
   }
 }

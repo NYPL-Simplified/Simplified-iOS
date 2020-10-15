@@ -98,6 +98,14 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     return userAccountProvider.sharedAccount(libraryUUID: libraryAccountID)
   }
 
+
+  /// Updates the user account for the library we are signing in to.
+  /// - Parameters:
+  ///   - barcode: The new barcode, if available.
+  ///   - pin: The new PIN, if barcode is provided.
+  ///   - authToken: the token if `selectedAuthentication` is OAuth or SAML. 
+  ///   - patron: The patron info for OAuth / SAML authentication.
+  ///   - cookies: Cookies for SAML authentication.
   func updateUserAccount(withBarcode barcode: String?,
                          pin: String?,
                          authToken: String?,
