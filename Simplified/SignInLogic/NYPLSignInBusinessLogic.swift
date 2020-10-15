@@ -43,6 +43,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   private let libraryAccountsProvider: NYPLLibraryAccountsProvider
   private let bookRegistry: NYPLBookRegistrySyncing
+
+  /// Provides the user account for a given library.
+  private let userAccountProvider: NYPLUserAccountProvider.Type
+
   weak private var drmAuthorizer: NYPLDRMAuthorizing?
 
   /// The primary way for the business logic to communicate with the UI.
@@ -51,12 +55,14 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   @objc init(libraryAccountID: String,
              libraryAccountsProvider: NYPLLibraryAccountsProvider,
              bookRegistry: NYPLBookRegistrySyncing,
+             userAccountProvider: NYPLUserAccountProvider.Type,
              uiDelegate: NYPLSignInBusinessLogicUIDelegate?,
              drmAuthorizer: NYPLDRMAuthorizing?) {
     self.uiDelegate = uiDelegate
     self.libraryAccountID = libraryAccountID
     self.libraryAccountsProvider = libraryAccountsProvider
     self.bookRegistry = bookRegistry
+    self.userAccountProvider = userAccountProvider
     self.drmAuthorizer = drmAuthorizer
     super.init()
   }
@@ -87,8 +93,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     }
   }
 
+  /// The user account for the library we are signing in to.
   var userAccount: NYPLUserAccount {
-    return NYPLUserAccount.sharedAccount(libraryUUID: libraryAccountID)
+    return userAccountProvider.sharedAccount(libraryUUID: libraryAccountID)
   }
 
   func updateUserAccount(withBarcode barcode: String?,

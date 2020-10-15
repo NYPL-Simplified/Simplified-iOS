@@ -99,6 +99,7 @@ CGFloat const marginPadding = 2.0;
                         initWithLibraryAccountID:AccountsManager.shared.currentAccountId
                         libraryAccountsProvider:AccountsManager.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
                         drmAuthorizer:
 #if FEATURE_DRM_CONNECTOR

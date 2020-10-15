@@ -24,7 +24,11 @@ private enum StorageKey: String {
   }
 }
 
-@objcMembers class NYPLUserAccount : NSObject {
+@objc protocol NYPLUserAccountProvider: NSObjectProtocol {
+  static func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
+}
+
+@objcMembers class NYPLUserAccount : NSObject, NYPLUserAccountProvider {
   static private let shared = NYPLUserAccount()
   private let accountInfoLock = NSRecursiveLock()
   private lazy var keychainTransaction = NYPLKeychainVariableTransaction(accountInfoLock: accountInfoLock)
@@ -152,7 +156,6 @@ private enum StorageKey: String {
     return sharedAccount(libraryUUID: AccountsManager.shared.currentAccountId)
   }
     
-  @objc(sharedAccount:)
   class func sharedAccount(libraryUUID: String?) -> NYPLUserAccount {
     shared.accountInfoLock.lock()
     defer {

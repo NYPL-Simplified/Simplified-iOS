@@ -160,6 +160,7 @@ Authenticating with any of those barcodes should work.
                         initWithLibraryAccountID:libraryUUID
                         libraryAccountsProvider:AccountsManager.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
                         drmAuthorizer:drmAuthorizer];
 
