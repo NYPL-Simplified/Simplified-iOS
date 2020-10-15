@@ -589,18 +589,35 @@ Authenticating with any of those barcodes should work.
   }
 }
 
+- (NSURLRequest *)makeRequestForIntent:(NSString *)intent
+{
+  NSMutableURLRequest *const request =
+  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
+  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
+
+  if (self.businessLogic.selectedAuthentication.isOauth || self.businessLogic.selectedAuthentication.isSaml) {
+    if (self.authToken) {
+      NSString *authorization = [@"Bearer " stringByAppendingString:self.authToken];
+      [request addValue:authorization forHTTPHeaderField:@"Authorization"];
+    } else {
+      NYPLLOG(@"Auth token expected, but none is available.");
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeValidationWithoutAuthToken
+                                summary:[intent stringByAppendingString:@"-settingsTab"]
+                                message:@"There is no token available during oauth/saml authentication validation."
+                               metadata:nil];
+    }
+  }
+
+  return request;
+}
+
 - (void)performLogOut
 {
 #if defined(FEATURE_DRM_CONNECTOR)
 
   [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
 
-  // Get a fresh licensor token before attempting to deauthorize
-  NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
-  
-  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
-  
+  NSURLRequest *const request = [self makeRequestForIntent:@"SignOut"];
   NSString * const currentBarcode = [[self selectedUserAccount] barcode];
   NSURLSessionDataTask *const task =
   [self.session
@@ -637,20 +654,18 @@ Authenticating with any of those barcodes should work.
          [self deauthorizeDevice];
        }
 
-       if (!self.businessLogic.selectedAuthentication.isOauth) {
-         NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
-                          currentBarcode.md5String];
-         [NYPLErrorLogger logNetworkError:error
-                                     code:NYPLErrorCodeApiCall
-                                  summary:@"signOut"
-                                  request:request
-                                 response:response
-                                  message:msg
-                                 metadata:@{
-                                   @"authMethod": self.businessLogic.selectedAuthentication.methodDescription ?: @"N/A"
-                                 }];
-         [self showLogoutAlertWithError:error responseCode:statusCode];
-       }
+       NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
+                        currentBarcode.md5String];
+       [NYPLErrorLogger logNetworkError:error
+                                   code:NYPLErrorCodeApiCall
+                                summary:@"signOut"
+                                request:request
+                               response:response
+                                message:msg
+                               metadata:@{
+                                 @"authMethod": self.businessLogic.selectedAuthentication.methodDescription ?: @"N/A"
+                               }];
+       [self showLogoutAlertWithError:error responseCode:statusCode];
 
        [self removeActivityTitle];
      }
@@ -751,23 +766,7 @@ Authenticating with any of those barcodes should work.
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   });
 
-  NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
-
-  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
-
-  if (self.businessLogic.selectedAuthentication.isOauth || self.businessLogic.selectedAuthentication.isSaml) {
-    if (self.authToken) {
-      NSString *authenticationValue = [@"Bearer " stringByAppendingString: self.authToken];
-      [request addValue:authenticationValue forHTTPHeaderField:@"Authorization"];
-    } else {
-      NYPLLOG(@"Auth token expected, but none is available.");
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeValidationWithoutAuthToken
-                                summary:@"SignIn-settingsTab"
-                                message:@"There is no token available during oauth/saml authentication validation."
-                               metadata:nil];
-    }
-  }
+  NSURLRequest *const request = [self makeRequestForIntent:@"SignIn"];
 
   __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
