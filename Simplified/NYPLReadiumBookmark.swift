@@ -6,9 +6,9 @@
   var chapter:String?
   var page:String?
 
-  var location:String
+  var location:String?
   var idref:String
-  var contentCFI:String
+  var contentCFI:String?
   var progressWithinChapter:Float = 0.0
   var progressWithinBook:Float = 0.0
 
@@ -36,7 +36,7 @@
         device:String?)
   {
     //Obj-C Nil Check
-    guard let contentCFI = contentCFI, let idref = idref, let location = location else {
+    guard let idref = idref else {
       Log.error(#file, "Bookmark failed init due to nil parameter.")
       return nil
     }
@@ -84,11 +84,11 @@
 
   var dictionaryRepresentation:NSDictionary {
     return ["annotationId":self.annotationId ?? "",
-            "contentCFI":self.contentCFI,
+            "contentCFI":self.contentCFI ?? "",
             "idref":self.idref,
             "chapter":self.chapter ?? "",
             "page":self.page ?? "",
-            "location":self.location,
+            "location":self.location ?? "",
             "time":self.time,
             "device":self.device ?? "",
             "progressWithinChapter":self.progressWithinChapter,

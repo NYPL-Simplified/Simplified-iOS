@@ -46,9 +46,14 @@ extension NYPLReadiumBookmark {
       return nil
     }
 
+    var position: Int? = nil
+    if let page = page, let pos = Int(page) {
+      position = pos
+    }
+    
     let locations = Locator.Locations(progression: Double(progressWithinChapter),
                                       totalProgression: Double(progressWithinBook),
-                                      position: nil)
+                                      position: position)
     let locator = Locator(href: link.href,
                           type: publication.metadata.type ?? MediaType.xhtml.string,
                           title: self.chapter,

@@ -90,6 +90,11 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       return nil
     }
     let totalProgress = Float(total)
+    
+    var page: String? = nil
+    if let position = bookmarkLoc.locator.locations.position {
+      page = "\(position)"
+    }
 
     let registry = NYPLBookRegistry.shared()
     let registryLoc = registry.location(forIdentifier: book.identifier)
@@ -126,7 +131,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       contentCFI: cfi,
       idref: idref,
       chapter: chapter,
-      page: nil,
+      page: page,
       location: registryLoc?.locationString,
       progressWithinChapter: chapterProgress,
       progressWithinBook: totalProgress,

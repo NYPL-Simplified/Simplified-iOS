@@ -252,10 +252,6 @@ class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, L
     guard let bookmark = bookmarksBusinessLogic.addBookmark(location) else {
       let alert = NYPLAlertUtils.alert(title: "Bookmarking Error",
                                        message: "A bookmark could not be created on the current page.")
-      let action = UIAlertAction(title: NSLocalizedString("OK", comment: ""),
-                                 style: .default,
-                                 handler: nil)
-      alert.addAction(action)
       NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert,
                                                     viewController: self,
                                                     animated: true,
