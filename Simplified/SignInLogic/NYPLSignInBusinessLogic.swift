@@ -9,6 +9,11 @@
 import UIKit
 import NYPLCardCreator
 
+@objc enum NYPLAuthRequestType: Int {
+  case signIn = 1
+  case signOut = 2
+}
+
 @objc protocol NYPLBookRegistrySyncing: NSObjectProtocol {
   var syncing: Bool {get}
   func reset(_ libraryAccountUUID: String)
@@ -96,11 +101,62 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     }
   }
 
+  /// Creates a request object for signing in or out, depending on
+  /// on which authentication mechanism is currently selected.
+  /// - Parameters:
+  ///   - authType: What kind of authentication request should be created.
+  ///   - context: A string for further context for error reporting.
+  /// - Returns: A request for signing in or signing out.
+  @objc func makeRequest(for authType: NYPLAuthRequestType,
+                         context: String) -> URLRequest? {
+
+    let authTypeStr = (authType == .signOut ? "signing out" : "signing in")
+
+    guard
+      let urlStr = libraryAccount?.details?.userProfileUrl,
+      let url = URL(string: urlStr) else {
+        NYPLErrorLogger.logError(withCode: .noURL,
+                                 summary: "Error \(authTypeStr)",
+                                 message: "Unable to create URL for \(authTypeStr)",
+                                 metadata: nil)
+        return nil
+    }
+
+    var req = URLRequest(url: url)
+    req.timeoutInterval = requestTimeoutInterval
+
+    if let selectedAuth = selectedAuthentication,
+      (selectedAuth.isOauth || selectedAuth.isSaml) {
+
+      if let uiDelegate = uiDelegate, let authToken = uiDelegate.authToken {
+        // Note: this is officially unsupported by the URL loading system
+        // in iOS but it does work. It is necessary because the officially
+        // supported method of providing authorization info to a request is via
+        // `URLAuthenticationChallenge`, which has no api for Bearer token
+        // authentication. Basic auth via username + password works fine with
+        // challenges (see `NYPLSettingsAccountURLSessionChallengeHandler`).
+        let authorization = "Bearer \(authToken)"
+        req.addValue(authorization, forHTTPHeaderField: "Authorization")
+      } else {
+        Log.info(#file, "Auth token expected, but none is available.")
+        NYPLErrorLogger.logError(withCode: .validationWithoutAuthToken,
+                                 summary: "Error \(authTypeStr)",
+                                 message: "There is no token available during oauth/saml authentication validation.",
+                                 metadata: [
+                                  "isSAML": selectedAuth.isSaml,
+                                  "isOAuth": selectedAuth.isOauth,
+                                  "context": context,
+                                  "uiDelegate nil?": uiDelegate == nil ? "y" : "n"])
+      }
+    }
+
+    return req
+  }
+
   /// The user account for the library we are signing in to.
   var userAccount: NYPLUserAccount {
     return userAccountProvider.sharedAccount(libraryUUID: libraryAccountID)
   }
-
 
   /// Updates the user account for the library we are signing in to.
   /// - Parameters:
