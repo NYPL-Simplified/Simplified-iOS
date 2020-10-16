@@ -6,14 +6,15 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-extension NYPLSettings {
-  /// Used to handle OAuth sign-ins. For example, Clever authentication uses
-  /// this URL for redirecting to the app after authenticating in Safari.
-  /// This requires configurion setting Universal Links on the server.
+extension NYPLSettings: NYPLUniversalLinksSettings {
+  /// Used to handle Clever sign-ins via OAuth in Open eBooks. 
   @objc var authenticationUniversalLink: URL {
-    return URL(string: "https://www.librarysimplified.org/callbacks/OpenEbooks")!
+    // TODO: SIMPLY-3050 this is a dev URL. Replace with production one.
+    return URL(string: "https://dev-librarysimplified.pantheonsite.io/callbacks/OpenEbooks")!
   }
+}
 
+extension NYPLSettings {
   static let userHasSeenWelcomeScreenKey = "NYPLSettingsUserFinishedTutorial"
 
   var settingsAccountsList: [String] {

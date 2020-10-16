@@ -28,7 +28,7 @@
 @property (nonatomic) AudiobookLifecycleManager *audiobookLifecycleManager;
 @property (nonatomic) NYPLReachability *reachabilityManager;
 @property (nonatomic) NYPLUserNotifications *notificationsManager;
-
+@property (nonatomic, readwrite) BOOL isSigningIn;
 @end
 
 @implementation NYPLAppDelegate
@@ -55,6 +55,10 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   self.notificationsManager = [[NYPLUserNotifications alloc] init];
   [self.notificationsManager authorizeIfNeeded];
+  [NSNotificationCenter.defaultCenter addObserver:self
+                                         selector:@selector(signingIn:)
+                                             name:NSNotification.NYPLIsSigningIn
+                                           object:nil];
 
   [[NetworkQueue shared] addObserverForOfflineQueue];
   self.reachabilityManager = [NYPLReachability sharedReachability];
@@ -176,6 +180,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   [self.audiobookLifecycleManager willTerminate];
   [[NYPLBookRegistry sharedRegistry] save];
   [[NYPLReaderSettings sharedSettings] save];
+  [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void)application:(__unused UIApplication *)application
@@ -188,6 +193,11 @@ completionHandler:(void (^const)(void))completionHandler
 }
 
 #pragma mark -
+
+- (void)signingIn:(NSNotification *)notif
+{
+  self.isSigningIn = [notif.object boolValue];
+}
 
 - (void)beginCheckingForUpdates
 {

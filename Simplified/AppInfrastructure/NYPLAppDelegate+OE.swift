@@ -36,7 +36,8 @@ extension NYPLAppDelegate {
 
   @objc func completeBecomingActive() {
     if !NYPLUserAccount.sharedAccount().hasCredentials()
-      && NYPLSettings.shared.userHasSeenWelcomeScreen {
+      && NYPLSettings.shared.userHasSeenWelcomeScreen
+      && !isSigningIn {
       
       OETutorialChoiceViewController.showLoginPicker(handler: nil)
     }

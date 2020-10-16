@@ -159,6 +159,7 @@ Authenticating with any of those barcodes should work.
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:libraryUUID
                         libraryAccountsProvider:AccountsManager.shared
+                        universalLinksSettings: NYPLSettings.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
@@ -510,6 +511,10 @@ Authenticating with any of those barcodes should work.
 
 - (void)logIn
 {
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NSNotification.NYPLIsSigningIn
+   object:@(YES)];
+  
   if (self.businessLogic.selectedAuthentication.isOauth) {
     [self.businessLogic oauthLogIn];
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
@@ -632,16 +637,21 @@ Authenticating with any of those barcodes should work.
          [self deauthorizeDevice];
        }
 
-       NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
-                        currentBarcode.md5String];
-       [NYPLErrorLogger logNetworkError:error
-                                   code:NYPLErrorCodeApiCall
-                                summary:@"signOut"
-                                request:request
-                               response:response
-                                message:msg
-                               metadata:nil];
-       [self showLogoutAlertWithError:error responseCode:statusCode];
+       if (!self.businessLogic.selectedAuthentication.isOauth) {
+         NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
+                          currentBarcode.md5String];
+         [NYPLErrorLogger logNetworkError:error
+                                     code:NYPLErrorCodeApiCall
+                                  summary:@"signOut"
+                                  request:request
+                                 response:response
+                                  message:msg
+                                 metadata:@{
+                                   @"authMethod": self.businessLogic.selectedAuthentication.methodDescription ?: @"N/A"
+                                 }];
+         [self showLogoutAlertWithError:error responseCode:statusCode];
+       }
+
        [self removeActivityTitle];
      }
    }];

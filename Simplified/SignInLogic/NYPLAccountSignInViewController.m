@@ -98,6 +98,7 @@ CGFloat const marginPadding = 2.0;
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:AccountsManager.shared.currentAccountId
                         libraryAccountsProvider:AccountsManager.shared
+                        universalLinksSettings: NYPLSettings.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
@@ -920,6 +921,10 @@ completionHandler:(void (^)(void))handler
 
 - (void)logIn
 {
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NSNotification.NYPLIsSigningIn
+   object:@(YES)];
+
   if (self.businessLogic.selectedAuthentication.isOauth) {
     [self.businessLogic oauthLogIn];
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
