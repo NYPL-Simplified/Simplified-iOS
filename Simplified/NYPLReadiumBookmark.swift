@@ -6,6 +6,8 @@
   var chapter:String?
   var page:String?
 
+  // location and contentCFI are location information generated from R1 reader
+  // which are not available in R2, therefore they are now optionals
   var location:String?
   var idref:String
   var contentCFI:String?
