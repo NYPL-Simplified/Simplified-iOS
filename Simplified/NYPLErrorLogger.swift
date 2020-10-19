@@ -51,9 +51,8 @@ fileprivate let nullString = "null"
   case missingParentBarcodeForJuvenile = 311
   case cardCreatorCredentialsDecodeFail = 312
   case oauthPatronInfoDecodeFail = 313
-  case unrecognizedLoginUniversalLink = 314
+  case unrecognizedUniversalLink = 314
   case validationWithoutAuthToken = 315
-  case signInRedirectError = 316
 
   // audiobooks
   case audiobookUserEvent = 400
@@ -74,6 +73,7 @@ fileprivate let nullString = "null"
   case authDocParseFail = 607
   case parseProblemDocFail = 608
   case overdriveFulfillResponseParseFail = 609
+  case authDataParseFail = 610
 
   // account management
   case authDocLoadFail = 700
@@ -98,6 +98,7 @@ fileprivate let nullString = "null"
   case clientSideTransientError = 910
   case clientSideUserInterruption = 911
   case problemDocAvailable = 912
+  case malformedURL = 913
 
   // DRM
   case epubDecodingError = 1000
@@ -324,8 +325,9 @@ fileprivate let nullString = "null"
   ///   hashed.
   class func logUserProfileDocumentAuthError(_ error: NSError?,
                                              summary: String,
-                                             barcode: String?) {
-    var userInfo = [String : Any]()
+                                             barcode: String?,
+                                             metadata: [String: Any]? = nil) {
+    var userInfo = metadata ?? [String : Any]()
     addAccountInfoToMetadata(&userInfo)
     userInfo = additionalInfo(severity: .error, metadata: userInfo)
     if let barcode = barcode {

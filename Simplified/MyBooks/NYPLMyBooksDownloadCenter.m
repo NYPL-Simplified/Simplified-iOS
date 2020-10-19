@@ -644,7 +644,7 @@ didCompleteWithError:(NSError *)error
 
 - (NSURL *)contentDirectoryURL:(NSString *)account
 {
-  NSURL *directoryURL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"content"];
+  NSURL *directoryURL = [[NYPLBookContentMetadataFilesHelper directoryFor:account] URLByAppendingPathComponent:@"content"];
   
   if (directoryURL != nil) {
     NSError *error = nil;

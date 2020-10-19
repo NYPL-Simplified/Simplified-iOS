@@ -42,7 +42,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLLogOutExecutor>
+@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
 
 // State machine
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
@@ -73,8 +73,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
 @property (nonatomic) NYPLSignInBusinessLogic *businessLogic;
-@property (nonatomic) NSString *authToken;
-@property (nonatomic) NSDictionary *patron;
 @property (nonatomic) NSArray *cookies;
 
 // networking
@@ -110,6 +108,16 @@ Authenticating with any of those barcodes should work.
 @synthesize usernameTextField;
 
 @synthesize PINTextField;
+
+#pragma mark - NYPLSignInBusinessLogicUIDelegate properties
+
+@synthesize authToken;
+@synthesize patron;
+
+- (NSString *)context
+{
+  return @"SignIn-settingsTab";
+}
 
 #pragma mark - Computed variables
 
@@ -150,7 +158,11 @@ Authenticating with any of those barcodes should work.
 
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:libraryUUID
+                        libraryAccountsProvider:AccountsManager.shared
+                        universalLinksSettings: NYPLSettings.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        userAccountProvider:[NYPLUserAccount class]
+                        uiDelegate:self
                         drmAuthorizer:drmAuthorizer];
 
   self.title = NSLocalizedString(@"Account", nil);
@@ -499,42 +511,20 @@ Authenticating with any of those barcodes should work.
 
 - (void)logIn
 {
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NSNotification.NYPLIsSigningIn
+   object:@(YES)];
+  
   if (self.businessLogic.selectedAuthentication.isOauth) {
-    // oauth
-    [self oauthLogIn];
+    [self.businessLogic oauthLogIn];
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
-    // SAML
     [self samlLogIn];
   } else {
-    // bar and pin
     [self barcodeLogIn];
   }
 }
 
-- (void)oauthLogIn
-{
-  // for this kind of authentication, we want to redirect user to Safari to conduct the process
-  NSURL *oauthURL = self.businessLogic.selectedAuthentication.oauthIntermediaryUrl;
-
-  NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:oauthURL resolvingAgainstBaseURL:true];
-
-  // add params
-  NSURLQueryItem *redirect_uri = [[NSURLQueryItem alloc] initWithName:@"redirect_uri" value:NYPLSettings.shared.authenticationUniversalLink.absoluteString];
-  urlComponents.queryItems = [urlComponents.queryItems arrayByAddingObject:redirect_uri];
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleRedirectURL:)
-                                               name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
-                                             object:nil];
-
-  [UIApplication.sharedApplication openURL:urlComponents.URL
-                                   options:@{}
-                         completionHandler:nil];
-
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-
-}
-
+// TODO: SIMPLY-2510 move to NYPLSignInBusinesLogic
 - (void)samlLogIn
 {
   // for this kind of authentication, we want user to authenticate in a built in webview, as we need to access the cookies later on
@@ -554,9 +544,11 @@ Authenticating with any of those barcodes should work.
     self.cookies = cookies;
 
     // process the last redirection url to get the oauth token
-    [self handleRedirectURL:[NSNotification notificationWithName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
-                                                          object:url
-                                                        userInfo:nil]];
+    [self.businessLogic handleRedirectURL:
+     [NSNotification
+      notificationWithName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
+      object:url
+      userInfo:nil]];
 
     // and close the webview
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -589,80 +581,6 @@ Authenticating with any of those barcodes should work.
   [self validateCredentials];
 }
 
-- (void) handleRedirectURL: (NSNotification *) notification
-{
-  [NSNotificationCenter.defaultCenter removeObserver: self name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL object: nil];
-
-  NSURL *url = notification.object;
-  if (![url.absoluteString hasPrefix:NYPLSettings.shared.authenticationUniversalLink.absoluteString]
-      || !([url.absoluteString containsString:@"error"] || ([url.absoluteString containsString:@"access_token"] && [url.absoluteString containsString:@"patron_info"])))
-  {
-    // received neither error, nor login data, something's wrong
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnrecognizedLoginUniversalLink
-                              summary:@"SignIn-settingsTab"
-                              message:@"App received login finished universal link, but no necessary data inside."
-                             metadata:@{
-                               @"loginUrl": url.absoluteString
-                             }];
-
-    // TODO: SIMPLY-2884 validate this string with product
-    [self displayErrorMessage:
-     NSLocalizedString(@"An error occurred during the authentication process",
-                       @"Generic error message while handling sign-in redirection during authentication")];
-    return;
-  }
-
-  NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
-  // Oauth2Intermediate auth method may provide the auth token in fragment
-  // instead of query parameter
-  NSString *responseData = url.fragment != nil ? url.fragment : url.query;
-  for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
-    NSArray *elts = [param componentsSeparatedByString:@"="];
-    if([elts count] < 2) continue;
-    [kvpairs setObject:[elts lastObject] forKey:[elts firstObject]];
-  }
-
-  NSString *rawError = kvpairs[@"error"];
-  if (rawError) {
-    NSString *error = [[rawError stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
-
-    NSDictionary *parsedError = [error parseJSONString];
-    if (parsedError) {
-      [self displayErrorMessage:parsedError[@"title"]];
-    }
-
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeSignInRedirectError
-                              summary:NSStringFromClass([self class])
-                              message:@"An error was encountered while handling Sign-In redirection"
-                             metadata:@{
-                               NSUnderlyingErrorKey: rawError ?: @"N/A",
-                               @"redirectURL": url ?: @"N/A"
-                             }];
-  }
-
-  NSString *auth_token = kvpairs[@"access_token"];
-  NSString *patron_info = kvpairs[@"patron_info"];
-
-  if (auth_token != nil && patron_info != nil) {
-    NSString *patron = [[patron_info stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
-
-    NSDictionary *parsedPatron = [patron parseJSONString];
-    if (parsedPatron) {
-      self.authToken = auth_token;
-      self.patron = parsedPatron;
-      [self validateCredentials];
-    } else {
-      // login succeeded, but I couldn't parse the patron info
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOauthPatronInfoDecodeFail
-                                summary:@"SignIn-settingsTab"
-                                message:@"App couldn't parse the patron info delivered in oauth/saml redirection."
-                               metadata:@{
-                                 @"patronInfo": patron
-                               }];
-    }
-  }
-}
-
 - (void)logOut
 {
   UIAlertController *alert = [self.businessLogic logOutOrWarnUsing:self];
@@ -676,15 +594,13 @@ Authenticating with any of those barcodes should work.
 #if defined(FEATURE_DRM_CONNECTOR)
 
   [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  
-  
-  // Get a fresh licensor token before attempting to deauthorize
-  NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
-  
-  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
-  
+
+  // we need to make this request (which is identical to the sign-in request)
+  // because in order for the Adobe deactivation to be successful, it has
+  // to use a fresh Adobe token provided by the CM, since it may have expired.
+  NSURLRequest *const request = [self.businessLogic
+                                 makeRequestFor:NYPLAuthRequestTypeSignOut
+                                 context:@"Settings Tab"];
   NSString * const currentBarcode = [[self selectedUserAccount] barcode];
   NSURLSessionDataTask *const task =
   [self.session
@@ -698,20 +614,26 @@ Authenticating with any of those barcodes should work.
        NSError *pDocError = nil;
        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
        if (!pDoc) {
+         NYPLLOG_F(@"Unable to parse user profile at sign out (HTTP: %ld): Adobe device deauthorization won't be possible.", (long)statusCode);
          [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                                  summary:@"signOut: unable to parse user profile doc"
-                                                  barcode:currentBarcode];
+                                                  summary:@"SignOut: unable to parse user profile doc"
+                                                  barcode:currentBarcode
+                                                 metadata:@{
+                                                   @"Request": request.loggableString,
+                                                   @"Response": response ?: @"N/A",
+                                                 }];
          [self showLogoutAlertWithError:pDocError responseCode:statusCode];
          [self removeActivityTitle];
-         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        } else {
          if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
+           // Set the fresh Adobe token info into the user account so that the
+           // following `deauthorizeDevice` call can use it.
            [self.selectedUserAccount setLicensor:[pDoc.drm[0] licensor]];
            NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@", pDoc.drm[0].clientToken, self.selectedUserAccount.userID);
          } else {
            NYPLLOG_F(@"\nLicensor Token Invalid: %@", [pDoc toJson])
          }
-         [self deauthorizeDevice]; // will call endIgnoringInteractionEvents
+         [self deauthorizeDevice];
 
 #ifdef OPENEBOOKS
          [NYPLSettings sharedSettings].accountMainFeedURL = nil;
@@ -730,10 +652,12 @@ Authenticating with any of those barcodes should work.
                                 request:request
                                response:response
                                 message:msg
-                               metadata:nil];
+                               metadata:@{
+                                 @"authMethod": self.businessLogic.selectedAuthentication.methodDescription ?: @"N/A"
+                               }];
        [self showLogoutAlertWithError:error responseCode:statusCode];
+
        [self removeActivityTitle];
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
      }
    }];
 
@@ -754,7 +678,6 @@ Authenticating with any of those barcodes should work.
     self.businessLogic.selectedIDP = nil;
     [self setupTableData];
     [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
   }
 
 #endif
@@ -766,8 +689,7 @@ Authenticating with any of those barcodes should work.
 
   void (^afterDeauthorization)(void) = ^() {
     [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    
+
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
     [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
     
@@ -830,25 +752,13 @@ Authenticating with any of those barcodes should work.
 
 - (void)validateCredentials
 {
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+  });
 
-  NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
-
-  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
-
-  if (self.businessLogic.selectedAuthentication.isOauth || self.businessLogic.selectedAuthentication.isSaml) {
-    if (self.authToken) {
-      NSString *authenticationValue = [@"Bearer " stringByAppendingString: self.authToken];
-      [request addValue:authenticationValue forHTTPHeaderField:@"Authorization"];
-    } else {
-      NYPLLOG(@"Auth token expected, but none is available.");
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeValidationWithoutAuthToken
-                                summary:@"SignIn-settingsTab"
-                                message:@"There is no token available during oauth/saml authentication validation."
-                               metadata:nil];
-    }
-  }
+  NSURLRequest *const request = [self.businessLogic
+                                 makeRequestFor:NYPLAuthRequestTypeSignIn
+                                 context:@"Settings Tab"];
 
   __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
@@ -859,7 +769,6 @@ Authenticating with any of those barcodes should work.
                        NSError *const error) {
     NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
 
-    // all methods methods below call UIApplication::endIgnoringInteractionEvents
     if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
       [weakSelf processCredsValidationSuccessUsingDRMWithData:data];
@@ -872,14 +781,16 @@ Authenticating with any of those barcodes should work.
                                            forRequest:request
                                              response:response];
     }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    });
   }];
   
   [task resume];
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
-// This will call UIApplication::endIgnoringInteractionEvents although it may
-// do so asynchronously.
 - (void)processCredsValidationSuccessUsingDRMWithData:(NSData*)data
 {
   NSError *pDocError = nil;
@@ -891,7 +802,8 @@ Authenticating with any of those barcodes should work.
                            errorMessage:@"Error parsing user profile document"];
     [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                              summary:@"SignIn-settingsTab: unable to parse user profile doc"
-                                             barcode:barcode];
+                                             barcode:barcode
+                                            metadata:nil];
     return;
   }
 
@@ -970,7 +882,6 @@ Authenticating with any of those barcodes should work.
 {
   NSString * const barcode = self.usernameTextField.text;
   [self removeActivityTitle];
-  [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 
   if (error.code == NSURLErrorCancelled) {
     // We cancelled the request when asked to answer the server's challenge a second time
@@ -1064,31 +975,13 @@ Authenticating with any of those barcodes should work.
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    
+
     if (success) {
-      if (self.businessLogic.selectedAuthentication.isOauth) {
-        [self.businessLogic.userAccount setAuthToken:self.authToken];
-        [self.businessLogic.userAccount setPatron:self.patron];
-      } else if (self.businessLogic.selectedAuthentication.isSaml) {
-        [self.businessLogic.userAccount setAuthToken:self.authToken];
-        [self.businessLogic.userAccount setPatron:self.patron];
-        if (self.cookies) {
-          [self.businessLogic.userAccount setCookies:self.cookies];
-        }
-      } else {
-        [self.businessLogic.userAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
-      }
-
-      self.businessLogic.userAccount.authDefinition = self.businessLogic.selectedAuthentication;
-
-      if ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]) {
-        [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-          if (success) {
-            [[NYPLBookRegistry sharedRegistry] save];
-          }
-        }];
-      }
+      [self.businessLogic updateUserAccountWithBarcode:self.usernameTextField.text
+                                                   pin:self.PINTextField.text
+                                             authToken:self.authToken
+                                                patron:self.patron
+                                               cookies:self.cookies];
     } else {
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
 

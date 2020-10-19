@@ -6,9 +6,15 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   var currentAccount: Account? {get}
 }
 
+@objc protocol NYPLLibraryAccountsProvider: NYPLCurrentLibraryAccountProvider {
+  var NYPLAccountUUID: String {get}
+  var currentAccountId: String? {get}
+  func account(_ uuid: String) -> Account?
+}
+
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
-@objcMembers final class AccountsManager: NSObject, NYPLCurrentLibraryAccountProvider
+@objcMembers final class AccountsManager: NSObject, NYPLLibraryAccountsProvider
 {
   static let NYPLAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949", //NYPL proper
@@ -16,7 +22,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     "urn:uuid:56906f26-2c9a-4ae9-bd02-552557720b99"  //Simplified Instant Classics
   ]
 
-  static let NYPLAccountUUID = NYPLAccountUUIDs[0]
+  let NYPLAccountUUID = AccountsManager.NYPLAccountUUIDs[0]
 
   static let shared = AccountsManager()
 
@@ -243,7 +249,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     }
   }
 
-  func account(_ uuid:String) -> Account? {
+  func account(_ uuid: String) -> Account? {
     // get accountSets dictionary first for thread-safety
     var accountSetsCopy = [String: [Account]]()
     var accountSetKey = ""
