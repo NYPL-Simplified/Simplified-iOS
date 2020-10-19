@@ -595,12 +595,12 @@ Authenticating with any of those barcodes should work.
 
   [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
 
-  // Get a fresh licensor token before attempting to deauthorize
-  NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
-  
-  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
-  
+  // we need to make this request (which is identical to the sign-in request)
+  // because in order for the Adobe deactivation to be successful, it has
+  // to use a fresh Adobe token provided by the CM, since it may have expired.
+  NSURLRequest *const request = [self.businessLogic
+                                 makeRequestFor:NYPLAuthRequestTypeSignOut
+                                 context:@"Settings Tab"];
   NSString * const currentBarcode = [[self selectedUserAccount] barcode];
   NSURLSessionDataTask *const task =
   [self.session
@@ -614,13 +614,20 @@ Authenticating with any of those barcodes should work.
        NSError *pDocError = nil;
        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
        if (!pDoc) {
+         NYPLLOG_F(@"Unable to parse user profile at sign out (HTTP: %ld): Adobe device deauthorization won't be possible.", (long)statusCode);
          [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                                  summary:@"signOut: unable to parse user profile doc"
-                                                  barcode:currentBarcode];
+                                                  summary:@"SignOut: unable to parse user profile doc"
+                                                  barcode:currentBarcode
+                                                 metadata:@{
+                                                   @"Request": request.loggableString,
+                                                   @"Response": response ?: @"N/A",
+                                                 }];
          [self showLogoutAlertWithError:pDocError responseCode:statusCode];
          [self removeActivityTitle];
        } else {
          if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
+           // Set the fresh Adobe token info into the user account so that the
+           // following `deauthorizeDevice` call can use it.
            [self.selectedUserAccount setLicensor:[pDoc.drm[0] licensor]];
            NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@", pDoc.drm[0].clientToken, self.selectedUserAccount.userID);
          } else {
@@ -637,20 +644,18 @@ Authenticating with any of those barcodes should work.
          [self deauthorizeDevice];
        }
 
-       if (!self.businessLogic.selectedAuthentication.isOauth) {
-         NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
-                          currentBarcode.md5String];
-         [NYPLErrorLogger logNetworkError:error
-                                     code:NYPLErrorCodeApiCall
-                                  summary:@"signOut"
-                                  request:request
-                                 response:response
-                                  message:msg
-                                 metadata:@{
-                                   @"authMethod": self.businessLogic.selectedAuthentication.methodDescription ?: @"N/A"
-                                 }];
-         [self showLogoutAlertWithError:error responseCode:statusCode];
-       }
+       NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
+                        currentBarcode.md5String];
+       [NYPLErrorLogger logNetworkError:error
+                                   code:NYPLErrorCodeApiCall
+                                summary:@"signOut"
+                                request:request
+                               response:response
+                                message:msg
+                               metadata:@{
+                                 @"authMethod": self.businessLogic.selectedAuthentication.methodDescription ?: @"N/A"
+                               }];
+       [self showLogoutAlertWithError:error responseCode:statusCode];
 
        [self removeActivityTitle];
      }
@@ -751,23 +756,9 @@ Authenticating with any of those barcodes should work.
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   });
 
-  NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
-
-  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
-
-  if (self.businessLogic.selectedAuthentication.isOauth || self.businessLogic.selectedAuthentication.isSaml) {
-    if (self.authToken) {
-      NSString *authenticationValue = [@"Bearer " stringByAppendingString: self.authToken];
-      [request addValue:authenticationValue forHTTPHeaderField:@"Authorization"];
-    } else {
-      NYPLLOG(@"Auth token expected, but none is available.");
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeValidationWithoutAuthToken
-                                summary:@"SignIn-settingsTab"
-                                message:@"There is no token available during oauth/saml authentication validation."
-                               metadata:nil];
-    }
-  }
+  NSURLRequest *const request = [self.businessLogic
+                                 makeRequestFor:NYPLAuthRequestTypeSignIn
+                                 context:@"Settings Tab"];
 
   __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
@@ -811,7 +802,8 @@ Authenticating with any of those barcodes should work.
                            errorMessage:@"Error parsing user profile document"];
     [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                              summary:@"SignIn-settingsTab: unable to parse user profile doc"
-                                             barcode:barcode];
+                                             barcode:barcode
+                                            metadata:nil];
     return;
   }
 

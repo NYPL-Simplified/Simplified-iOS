@@ -325,8 +325,9 @@ fileprivate let nullString = "null"
   ///   hashed.
   class func logUserProfileDocumentAuthError(_ error: NSError?,
                                              summary: String,
-                                             barcode: String?) {
-    var userInfo = [String : Any]()
+                                             barcode: String?,
+                                             metadata: [String: Any]? = nil) {
+    var userInfo = metadata ?? [String : Any]()
     addAccountInfoToMetadata(&userInfo)
     userInfo = additionalInfo(severity: .error, metadata: userInfo)
     if let barcode = barcode {

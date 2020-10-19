@@ -1040,25 +1040,10 @@ completionHandler:(void (^)(void))handler
 
 - (void)validateCredentials
 {
-  NSMutableURLRequest *const request =
-    [NSMutableURLRequest requestWithURL:[NSURL URLWithString:
-                                         [self.currentAccount.details userProfileUrl]]];
+  NSURLRequest *const request = [self.businessLogic
+                                 makeRequestFor:NYPLAuthRequestTypeSignIn
+                                 context:@"Sign-In modal"];
   
-  request.timeoutInterval = 20.0;
-
-  if (self.businessLogic.selectedAuthentication.isOauth || self.businessLogic.selectedAuthentication.isSaml) {
-    if (self.authToken) {
-      NSString *authenticationValue = [@"Bearer " stringByAppendingString: self.authToken];
-      [request addValue:authenticationValue forHTTPHeaderField:@"Authorization"];
-    } else {
-      NYPLLOG(@"Auth token expected, but none is available.");
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeValidationWithoutAuthToken
-                                summary:@"SignIn-modal"
-                                message:@"There is no token available during oauth/saml authentication validation."
-                               metadata:nil];
-    }
-  }
-
   NSString * const barcode = self.usernameTextField.text;
   self.isCurrentlySigningIn = YES;
 
@@ -1081,7 +1066,11 @@ completionHandler:(void (^)(void))handler
          if (!pDoc) {
            [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                                     summary:@"SignIn-modal: unable to parse user profile doc"
-                                                    barcode:barcode];
+                                                    barcode:barcode
+                                                   metadata:@{
+                                                     @"Request": request.loggableString,
+                                                     @"Response": response ?: @"N/A",
+                                                   }];
            [weakSelf authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
            return;
          } else {
