@@ -1851,6 +1851,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)setActivityTitleWithText:(NSString *)text
 {
+  // since we are adding a subview to self.logInSignOutCell.contentView, there
+  // is no point in continuing if for some reason logInSignOutCell is nil.
+  if (self.logInSignOutCell.contentView == nil) {
+    return;
+  }
+
   UIActivityIndicatorView *aiv;
   if (@available(iOS 13.0, *)) {
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
@@ -1859,7 +1865,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   }
   UIActivityIndicatorView *const activityIndicatorView = aiv;
-  
   [activityIndicatorView startAnimating];
   
   UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -1887,7 +1892,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [linearView autoCenterInSuperview];
 }
 
-- (void)removeActivityTitle {
+- (void)removeActivityTitle
+{
   UIView *view = [self.logInSignOutCell.contentView viewWithTag:sLinearViewTag];
   [view removeFromSuperview];
   [self updateLoginLogoutCellAppearance];
