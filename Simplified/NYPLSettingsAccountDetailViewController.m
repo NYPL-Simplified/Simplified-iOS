@@ -598,6 +598,7 @@ Authenticating with any of those barcodes should work.
   // we need to make this request (which is identical to the sign-in request)
   // because in order for the Adobe deactivation to be successful, it has
   // to use a fresh Adobe token provided by the CM, since it may have expired.
+  // These tokens are very short lived (1 hour).
   NSURLRequest *const request = [self.businessLogic
                                  makeRequestFor:NYPLAuthRequestTypeSignOut
                                  context:@"Settings Tab"];

@@ -128,7 +128,12 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     if let selectedAuth = selectedAuthentication,
       (selectedAuth.isOauth || selectedAuth.isSaml) {
 
-      if let uiDelegate = uiDelegate, let authToken = uiDelegate.authToken {
+      // The nil-coalescing on the authToken covers 2 cases:
+      // - sign in, where uiDelegate has the token because we just obtained it
+      // externally (via OAuth) but user account may not have been updated yet;
+      // - sign out, where the uiDelegate may not have the token unless the user
+      // just signed in, but the user account will definitely have it.
+      if let uiDelegate = uiDelegate, let authToken = (uiDelegate.authToken ?? userAccount.authToken) {
         // Note: this is officially unsupported by the URL loading system
         // in iOS but it does work. It is necessary because the officially
         // supported method of providing authorization info to a request is via
