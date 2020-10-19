@@ -6,12 +6,10 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-import Foundation
-
 extension NYPLSettings: NYPLUniversalLinksSettings {
   /// Used to handle Clever and SAML sign-ins in SimplyE.
   @objc var authenticationUniversalLink: URL {
-    return URL(string: "https://www.librarysimplified.org/callbacks/SimplyE")!
+    return URL(string: "https://librarysimplified.org/callbacks/SimplyE")!
   }
 }
 
