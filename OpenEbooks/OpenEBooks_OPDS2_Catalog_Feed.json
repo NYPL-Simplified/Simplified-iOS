@@ -1,0 +1,32 @@
+{
+  "catalogs": [
+    {
+      "links": [
+        {
+          "href": "https://circulation.openebooks.us/USOEI/",
+          "type": "application/atom+xml;profile=opds-catalog;kind=acquisition",
+          "rel": "http://opds-spec.org/catalog"
+        },
+        {
+          "href": "https://circulation.openebooks.us/USOEI/authentication_document",
+          "type": "application/vnd.opds.authentication.v1.0+json"
+        },
+        {
+          "href": "https://openebooks.net/",
+          "type": "text/html",
+          "rel": "alternate"
+        }
+      ],
+      "metadata": {
+        "updated": "2019-10-23T17:51:51Z",
+        "description": "Open eBooks",
+        "id": "urn:uuid:e1a01c16-04e7-4781-89fd-b442dd1be001",
+        "title": "Open eBooks"
+      }
+    }
+  ],
+  "links": [],
+  "metadata": {
+    "title": "Libraries"
+  }
+}

@@ -50,7 +50,9 @@
   self.catalogNavigationController = [[NYPLCatalogNavigationController alloc] init];
   self.myBooksNavigationController = [[NYPLMyBooksNavigationController alloc] init];
   self.holdsNavigationController = [[NYPLHoldsNavigationController alloc] init];
-  self.settingsSplitViewController = [[NYPLSettingsSplitViewController alloc] init];
+  self.settingsSplitViewController = [[NYPLSettingsSplitViewController alloc]
+                                      initWithCurrentLibraryAccountProvider:
+                                      AccountsManager.shared];
 
   [self setTabViewControllers];
 
@@ -90,7 +92,7 @@
     self.viewControllers = @[self.catalogNavigationController,
                              self.myBooksNavigationController,
                              self.settingsSplitViewController];
-    [self setSelectedIndex:0];
+    [self setInitialSelectedTab];
   }
 }
 

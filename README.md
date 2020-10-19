@@ -17,9 +17,9 @@ ln -s <rmsdk_path>/DRM_Connector_Prerelease adobe-rmsdk
 git checkout develop
 git submodule update --init --recursive
 ```
-03. Build dependencies (carthage, OpenSSL, cURL). You can also use this script at any other time if you ever need to rebuild them: it should be idempotent. The non-optional parameter specifies which configuration of the AudioEngine framework to use. Note that the Release build of AudioEngine does not contain slices for Simulator architectures, causing a Carthage build failure.
+03. Build dependencies (carthage, OpenSSL, cURL). You can also use this script at any other time if you ever need to rebuild them: it should be idempotent.
 ```bash
-./build-3rd-parties-dependencies.sh <Debug | Release>
+./scripts/build-3rd-parties-dependencies.sh
 ```
 
 04. Open Simplified.xcodeproj and build the SimplyE target.
@@ -29,15 +29,15 @@ git submodule update --init --recursive
 
 To build all Carthage dependencies from scratch you can use the following script. Note that this will wipe the Carthage folder if you already have it:
 ```bash
-./build-carthage.sh <Debug | Release>
+./scripts/build-carthage.sh
 ```
 To run a `carthage update`, use the following script to avoid AudioEngine errors. Note, this will rebuild all Carthage dependencies:
 ```bash
-./carthage-update-simplye.sh <Debug | Release>
+./scripts/carthage-update-simplye.sh
 ```
 To build OpenSSL and cURL from scratch, you can use the following script:
 ```bash
-./build-openssl-curl.sh
+./scripts/build-openssl-curl.sh
 ```
 Both scripts must be run from the Simplified-iOS repo root.
 
@@ -53,16 +53,16 @@ Both scripts must be run from the Simplified-iOS repo root.
 06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
 07. Remove "NYPL-Simplified/NYPLAEToolkit" from `Cartfile` and `Cartfile.resolved`.
 08. `carthage bootstrap --platform ios --use-ssh`
-09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-10. `cp Accounts.json.example Simplified/Accounts.json`.
-11. `cp GoogleService-Info.plist.example GoogleService-Info.plist` and edit with you firebase project config.
-12. `cp ReaderClientCert.sig.example Simplified/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file.
+09. `cp Simplified/AppInfrastructure/APIKeys.swift.example Simplified/AppInfrastructure/APIKeys.swift` and edit accordingly.
+10. `cp Simplified/Accounts/Library/Accounts.json.example Simplified/Accounts/Library/Accounts.json`.
+11. `cp SimplyE/GoogleService-Info.plist.example SimplyE/GoogleService-Info.plist` and edit with you firebase project config.
+12. `cp SimplyE/ReaderClientCert.sig.example SimplyE/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file.
 13. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 14. `open Simplified.xcodeproj`
 15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
 16. Remove `FEATURE_DRM_CONNECTOR` entries in _Build Settings_ -> _Swift Compiler - Custom Flags_ -> _Active Compilation Conditions_ in project settings
-17. Delete `NYPLAEToolkit.framework`, `AudioEngine.framework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
-18. Remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
+17. Delete `NYPLAEToolkit.framework`, `AudioEngine.xcframework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
+18. Remove input and output filepaths for  `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
 19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
 20. Build.
 

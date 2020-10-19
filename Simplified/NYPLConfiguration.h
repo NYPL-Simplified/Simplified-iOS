@@ -14,8 +14,6 @@
 
 + (NSURL *)minimumVersionURL;
 
-+ (UIColor *)mainColor;
-
 + (UIColor *)accentColor;
 
 + (UIColor *)backgroundColor;
@@ -25,10 +23,6 @@
 + (UIColor *)readerBackgroundDarkColor;
 
 + (UIColor *)readerBackgroundSepiaColor;
-
-+ (UIColor *)iconLogoBlueColor;
-
-+ (UIColor *)iconLogoGreenColor;
 
 + (NSString *)systemFontName;
 

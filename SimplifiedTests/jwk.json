@@ -1,0 +1,5 @@
+{
+  "keys": [
+    {"kty":"RSA","e":"AQAB","kid":"d82fcf13-96ba-47a3-b9bf-332b5d9dac89","n":"7GcBZtUVccXneZdDu5KjhxUOo6cxqM718Uaiw6kZns-AGz_2B0MUs8rvh4EEkHK-w3BZu6ZjARAJlkQPy13dARZ35IXKpw7NSftVUPpsGxFJLbgZ3QLFAPsmecodLTW4S_zqzkbbw4iOGTj2hhMtqoGBss-MHu2Ng04cVfkQAe4rhCZou3sSTljxj18rCyR840Y6TB9g9j2MFk9QbM3e-N_LdQrOeRgvuU_3HhPXgVb7T2qMksWqaV_kEC3_FammKJNbZ0MxaDX5dNuUeJXCVVcYPrpKdrRlJjDCbcEyo2bZHmpmO0-hP0xbcig-EMP5NGBBmvejOl5UhwdW0UEWcw", "http://www.feedbooks.com/audiobooks/signature/pem-key": "-----BEGIN PUBLIC KEY-----\n MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7GcBZtUVccXneZdDu5Kj\nhxUOo6cxqM718Uaiw6kZns+AGz/2B0MUs8rvh4EEkHK+w3BZu6ZjARAJlkQPy13d\nARZ35IXKpw7NSftVUPpsGxFJLbgZ3QLFAPsmecodLTW4S/zqzkbbw4iOGTj2hhMt\nqoGBss+MHu2Ng04cVfkQAe4rhCZou3sSTljxj18rCyR840Y6TB9g9j2MFk9QbM3e\n+N/LdQrOeRgvuU/3HhPXgVb7T2qMksWqaV/kEC3/FammKJNbZ0MxaDX5dNuUeJXC\nVVcYPrpKdrRlJjDCbcEyo2bZHmpmO0+hP0xbcig+EMP5NGBBmvejOl5UhwdW0UEW\ncwIDAQAB\n-----END PUBLIC KEY-----"}
+  ]
+}

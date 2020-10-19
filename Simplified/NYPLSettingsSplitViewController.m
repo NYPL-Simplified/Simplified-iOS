@@ -13,20 +13,21 @@
 
 @property (nonatomic) NYPLSettingsPrimaryNavigationController *primaryNavigationController;
 @property (nonatomic) bool isFirstLoad;
-
+@property (nonatomic) id<NYPLCurrentLibraryAccountProvider> currentLibraryAccountProvider;
 @end
 
 @implementation NYPLSettingsSplitViewController
 
 #pragma mark NSObject
 
-- (instancetype)init
+- (instancetype)initWithCurrentLibraryAccountProvider: (id<NYPLCurrentLibraryAccountProvider>)currentAccountProvider
 {
   self = [super init];
   if(!self) return nil;
   
   self.delegate = self;
-  
+  self.currentLibraryAccountProvider = currentAccountProvider;
+
   self.title = NSLocalizedString(@"Settings", nil);
   self.tabBarItem.image = [UIImage imageNamed:@"Settings"];
   

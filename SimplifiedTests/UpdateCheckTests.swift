@@ -27,7 +27,7 @@ class UpdateCheckTests: XCTestCase {
       expectation.fulfill()
     }
     
-    waitForExpectations(timeout: 1.0, handler: nil)
+    waitForExpectations(timeout: 2.0, handler: nil)
   }
   
   func testNeedsUpdate() {
@@ -45,7 +45,7 @@ class UpdateCheckTests: XCTestCase {
       expectation.fulfill()
     }
     
-    waitForExpectations(timeout: 1.0, handler: nil)
+    waitForExpectations(timeout: 2.0, handler: nil)
   }
   
   func testUnknown0() {
@@ -63,7 +63,7 @@ class UpdateCheckTests: XCTestCase {
       expectation.fulfill()
     }
     
-    waitForExpectations(timeout: 1.0, handler: nil)
+    waitForExpectations(timeout: 2.0, handler: nil)
   }
   
   func testUnknown1() {
@@ -81,6 +81,6 @@ class UpdateCheckTests: XCTestCase {
       expectation.fulfill()
     }
     
-    waitForExpectations(timeout: 1.0, handler: nil)
+    waitForExpectations(timeout: 2.0, handler: nil)
   }
 }

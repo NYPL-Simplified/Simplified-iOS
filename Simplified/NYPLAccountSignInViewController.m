@@ -694,10 +694,9 @@ completionHandler:(void (^)(void))handler
                                               initWithRootViewController:accountViewController];
     viewController.modalPresentationStyle = UIModalPresentationFormSheet;
 
-    [[NYPLRootTabBarController sharedController]
-      safelyPresentViewController:viewController
-      animated:YES
-      completion:nil];
+    [NYPLPresentationUtils safelyPresent:viewController
+                                animated:YES
+                              completion:nil];
 
     if (authorizeImmediately && [NYPLUserAccount sharedAccount].hasBarcodeAndPIN) {
         accountViewController.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
@@ -770,11 +769,17 @@ completionHandler:(void (^)(void))handler
                                                                                message:NSLocalizedString(@"LocationRequiredMessage", nil)
                                                                         preferredStyle:UIAlertControllerStyleAlert];
 
-      UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
-                                                               style:UIAlertActionStyleDefault
-                                                             handler:^(UIAlertAction *action) {
-                                                               if (action)[UIApplication.sharedApplication openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                                             }];
+      UIAlertAction *settingsAction = [UIAlertAction
+                                       actionWithTitle:NSLocalizedString(@"Settings", nil)
+                                       style:UIAlertActionStyleDefault
+                                       handler:^(UIAlertAction *action) {
+        if (action) {
+          [UIApplication.sharedApplication
+           openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+           options:@{}
+           completionHandler:nil];
+        }
+      }];
 
       UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                              style:UIAlertActionStyleDestructive
@@ -925,10 +930,13 @@ completionHandler:(void (^)(void))handler
 
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(handleRedirectURL:)
-                                               name: @"NYPLAppDelegateDidReceiveCleverRedirectURL"
+                                               name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
                                              object:nil];
 
-  [UIApplication.sharedApplication openURL: urlComponents.URL];
+  [UIApplication.sharedApplication openURL:urlComponents.URL
+                                   options:@{}
+                         completionHandler:nil];
+  
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 }
 
@@ -952,7 +960,7 @@ completionHandler:(void (^)(void))handler
     self.cookies = cookies;
 
     // process the last redirection url to get the oauth token
-    [self handleRedirectURL:[NSNotification notificationWithName:@"NYPLAppDelegateDidReceiveCleverRedirectURL"
+    [self handleRedirectURL:[NSNotification notificationWithName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
                                                           object:url
                                                         userInfo:nil]];
 
@@ -989,9 +997,9 @@ completionHandler:(void (^)(void))handler
   [self validateCredentials];
 }
 
-- (void) handleRedirectURL: (NSNotification *) notification
+- (void)handleRedirectURL:(NSNotification *)notification
 {
-  [NSNotificationCenter.defaultCenter removeObserver: self name: @"NYPLAppDelegateDidReceiveCleverRedirectURL" object: nil];
+  [NSNotificationCenter.defaultCenter removeObserver: self name: NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL object: nil];
 
   NSURL *url = notification.object;
   if (![url.absoluteString hasPrefix:NYPLSettings.shared.authenticationUniversalLink.absoluteString]
@@ -1058,7 +1066,7 @@ completionHandler:(void (^)(void))handler
                                 summary:@"SignIn-modal"
                                 message:@"App couldn't parse the patron info delivered in oauth/saml redirection."
                                metadata:@{
-                                 @"patronInfo": patron
+                                 @"patronInfo": patron ?: @"N/A"
                                }];
     }
   }
