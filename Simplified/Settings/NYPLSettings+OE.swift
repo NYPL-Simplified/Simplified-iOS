@@ -9,8 +9,7 @@
 extension NYPLSettings: NYPLUniversalLinksSettings {
   /// Used to handle Clever sign-ins via OAuth in Open eBooks. 
   @objc var authenticationUniversalLink: URL {
-    // TODO: SIMPLY-3050 this is a dev URL. Replace with production one.
-    return URL(string: "https://dev-librarysimplified.pantheonsite.io/callbacks/OpenEbooks")!
+    return URL(string: "https://librarysimplified.org/callbacks/OpenEbooks")!
   }
 }
 
