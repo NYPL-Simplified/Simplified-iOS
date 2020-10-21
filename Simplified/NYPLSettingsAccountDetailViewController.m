@@ -598,6 +598,7 @@ Authenticating with any of those barcodes should work.
   // we need to make this request (which is identical to the sign-in request)
   // because in order for the Adobe deactivation to be successful, it has
   // to use a fresh Adobe token provided by the CM, since it may have expired.
+  // These tokens are very short lived (1 hour).
   NSURLRequest *const request = [self.businessLogic
                                  makeRequestFor:NYPLAuthRequestTypeSignOut
                                  context:@"Settings Tab"];
@@ -1851,6 +1852,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)setActivityTitleWithText:(NSString *)text
 {
+  // since we are adding a subview to self.logInSignOutCell.contentView, there
+  // is no point in continuing if for some reason logInSignOutCell is nil.
+  if (self.logInSignOutCell.contentView == nil) {
+    return;
+  }
+
   UIActivityIndicatorView *aiv;
   if (@available(iOS 13.0, *)) {
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
@@ -1859,7 +1866,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   }
   UIActivityIndicatorView *const activityIndicatorView = aiv;
-  
   [activityIndicatorView startAnimating];
   
   UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -1887,7 +1893,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [linearView autoCenterInSuperview];
 }
 
-- (void)removeActivityTitle {
+- (void)removeActivityTitle
+{
   UIView *view = [self.logInSignOutCell.contentView viewWithTag:sLinearViewTag];
   [view removeFromSuperview];
   [self updateLoginLogoutCellAppearance];

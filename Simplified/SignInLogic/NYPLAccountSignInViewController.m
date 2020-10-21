@@ -1000,6 +1000,12 @@ completionHandler:(void (^)(void))handler
 
 - (void)setActivityTitleWithText:(NSString *)text
 {
+  // since we are adding a subview to self.logInSignOutCell.contentView, there
+  // is no point in continuing if for some reason logInSignOutCell is nil.
+  if (self.logInSignOutCell.contentView == nil) {
+    return;
+  }
+  
   UIActivityIndicatorView *const activityIndicatorView =
   [[UIActivityIndicatorView alloc]
    initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
