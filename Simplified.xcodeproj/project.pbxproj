@@ -1290,7 +1290,6 @@
 		738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstallations.framework; path = Carthage/Build/iOS/FirebaseInstallations.framework; sourceTree = "<group>"; };
 		738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransport.framework; path = Carthage/Build/iOS/GoogleDataTransport.framework; sourceTree = "<group>"; };
 		738EF2EB2405EC5900F388FB /* PromisesObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromisesObjC.framework; path = Carthage/Build/iOS/PromisesObjC.framework; sourceTree = "<group>"; };
-		739062CF25358A3700D0743D /* OpenEbooks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OpenEbooks.entitlements; sourceTree = "<group>"; };
 		739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogicUIDelegate.swift; sourceTree = "<group>"; };
 		739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSNotification+NYPL.swift"; sourceTree = "<group>"; };
 		739ECB282510207E00691A70 /* NYPLCatalogs+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLCatalogs+OE.swift"; sourceTree = "<group>"; };
@@ -2128,7 +2127,6 @@
 			isa = PBXGroup;
 			children = (
 				7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */,
-				739062CF25358A3700D0743D /* OpenEbooks.entitlements */,
 				735FCB392506FACF009A8C95 /* ReaderClientCert.sig */,
 				738170142526504800BA2C44 /* GoogleService-Info.plist */,
 				73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */,
@@ -3901,7 +3899,7 @@
 				PRODUCT_MODULE_NAME = SimplyE;
 				PRODUCT_NAME = SimplyECardCreator;
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
-				PROVISIONING_PROFILE_SPECIFIER = NYPL_AdHoc_Wildcard;
+				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FEATURE_DRM_CONNECTOR SIMPLYE";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "SimplyE-Swift.h";
@@ -3928,7 +3926,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
-				CODE_SIGN_ENTITLEMENTS = OpenEbooks/OpenEbooks.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
@@ -3981,7 +3979,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
-				CODE_SIGN_ENTITLEMENTS = OpenEbooks/OpenEbooks.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
