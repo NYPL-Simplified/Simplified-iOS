@@ -27,4 +27,12 @@ import Foundation
   /// The business logic to validate the current credentials.
   /// - TODO: SIMPLY-2510 Do not use, this is here only temporarily.
   func validateCredentials()
+
+  @objc(dismissViewControllerAnimated:completion:)
+  func dismiss(animated flag: Bool, completion: (() -> Void)?)
+
+  @objc(presentViewController:animated:completion:)
+  func present(_ viewControllerToPresent: UIViewController,
+               animated flag: Bool,
+               completion: (() -> Void)?)
 }
