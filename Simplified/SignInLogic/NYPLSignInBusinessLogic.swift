@@ -38,26 +38,6 @@ extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 @objcMembers
 class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
-  let libraryAccountID: String
-  private let permissionsCheckLock = NSLock()
-  let requestTimeoutInterval: TimeInterval = 25.0
-
-  private let juvenileAuthLock = NSLock()
-  @objc private(set) var juvenileAuthIsOngoing = false
-  private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
-
-  private let libraryAccountsProvider: NYPLLibraryAccountsProvider
-  let universalLinksSettings: NYPLUniversalLinksSettings
-  private let bookRegistry: NYPLBookRegistrySyncing
-
-  /// Provides the user account for a given library.
-  private let userAccountProvider: NYPLUserAccountProvider.Type
-
-  weak private var drmAuthorizer: NYPLDRMAuthorizing?
-
-  /// The primary way for the business logic to communicate with the UI.
-  weak var uiDelegate: NYPLSignInBusinessLogicUIDelegate?
-
   @objc init(libraryAccountID: String,
              libraryAccountsProvider: NYPLLibraryAccountsProvider,
              universalLinksSettings: NYPLUniversalLinksSettings,
@@ -72,19 +52,63 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     self.bookRegistry = bookRegistry
     self.userAccountProvider = userAccountProvider
     self.drmAuthorizer = drmAuthorizer
+    self.samlHelper = NYPLSAMLHelper()
     super.init()
+    self.samlHelper.businessLogic = self
   }
+
+  // Lock for ensure internal state consistency.
+  private let permissionsCheckLock = NSLock()
+
+  /// Signing in and out may imply syncing the book registry.
+  private let bookRegistry: NYPLBookRegistrySyncing
+
+  /// Provides the user account for a given library.
+  private let userAccountProvider: NYPLUserAccountProvider.Type
+
+  /// THe object determining whether there's an ongoing DRM authorization.
+  weak private var drmAuthorizer: NYPLDRMAuthorizing?
+
+  /// The primary way for the business logic to communicate with the UI.
+  @objc weak var uiDelegate: NYPLSignInBusinessLogicUIDelegate?
+
+  // MARK:- OAuth / SAML / Clever Info
+
+  /// Settings used by OAuth sign-in flows.
+  let universalLinksSettings: NYPLUniversalLinksSettings
+
+  /// Cookies used to authenticate. Only required for the SAML flow.
+  @objc var cookies: [HTTPCookie]?
+
+  /// Performs initiation rites for SAML sign-in.
+  let samlHelper: NYPLSAMLHelper
+
+  /// This overrides the sign-in state logic to behave as if the user isn't
+  /// authenticated. This is useful if we already have credentials, but
+  /// the session expired (e.g. SAML flow).
+  var ignoreSignedInState: Bool = false
+
+  // MARK:- Juvenile Card Creation Info
+
+  private let juvenileAuthLock = NSLock()
+  @objc private(set) var juvenileAuthIsOngoing = false
+  private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
+
+  // MARK:- Library Accounts Info
+
+  /// The ID of the library this object is signing in to.
+  /// - Note: This is also provided by `libraryAccountsProvider::currentAccount`
+  /// but that could be returning nil if called too early on.
+  let libraryAccountID: String
+
+  /// The object providing library account information.
+  private let libraryAccountsProvider: NYPLLibraryAccountsProvider
 
   @objc var libraryAccount: Account? {
     return libraryAccountsProvider.account(libraryAccountID)
   }
 
   var selectedIDP: OPDS2SamlIDP?
-
-  /// This overrides the sign in state logic to behave as if user isn't
-  /// authenticated. This is useful if we already have credentials, but
-  /// the session expired (e.g. SAML flow).
-  var ignoreSignedInState: Bool = false
 
   private var _selectedAuthentication: AccountDetails.Authentication?
   var selectedAuthentication: AccountDetails.Authentication? {
@@ -100,6 +124,11 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       _selectedAuthentication = newValue
     }
   }
+
+  // MARK:- Network Requests Logic
+
+  // Time-out to use for sign-in/out network requests.
+  private let requestTimeoutInterval: TimeInterval = 25.0
 
   /// Creates a request object for signing in or out, depending on
   /// on which authentication mechanism is currently selected.
@@ -158,6 +187,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     return req
   }
 
+  // MARK:- User Account Management
+
   /// The user account for the library we are signing in to.
   var userAccount: NYPLUserAccount {
     return userAccountProvider.sharedAccount(libraryUUID: libraryAccountID)
@@ -210,11 +241,13 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     NotificationCenter.default.post(name: .NYPLIsSigningIn, object: false)
   }
 
-  func setBarcode(_ barcode: String?, pin: String?) {
+  private func setBarcode(_ barcode: String?, pin: String?) {
     if let barcode = barcode, let pin = pin {
       userAccount.setBarcode(barcode, PIN:pin)
     }
   }
+
+  // MARK: - Available Features Checks
 
   func librarySupportsBarcodeDisplay() -> Bool {
     // For now, only supports libraries granted access in Accounts.json,
@@ -256,6 +289,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   @objc func shouldShowEULALink() -> Bool {
     return libraryAccount?.details?.getLicenseURL(.eula) != nil
   }
+
+  // MARK: - Bookmark Syncing
 
   @objc func shouldShowSyncButton() -> Bool {
     guard let libraryDetails = libraryAccount?.details else {

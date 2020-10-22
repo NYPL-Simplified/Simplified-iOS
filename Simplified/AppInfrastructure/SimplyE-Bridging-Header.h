@@ -31,6 +31,7 @@
 #import "NYPLBookLocation.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLReloadView.h"
+#import "NYPLSAMLHelper.h"
 #import "UIView+NYPLViewAdditions.h"
 #if FEATURE_DRM_CONNECTOR
 #import "ADEPT/NYPLADEPTErrors.h"
