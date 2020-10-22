@@ -60,8 +60,11 @@ class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, L
     bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(
       book: book,
       r2Publication: publication,
-      drmDeviceID: NYPLUserAccount.sharedAccount().deviceID)
+      drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
+      bookRegistry: NYPLBookRegistry.shared())
 
+    bookmarksBusinessLogic.syncBookmarks { (_, _) in }
+    
     // TODO: SIMPLY-2804
     //backgroundHelper = NYPLBackgroundExecutor(owner: self, taskName: "R2init")
 

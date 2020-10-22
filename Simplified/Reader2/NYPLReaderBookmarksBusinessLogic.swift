@@ -18,13 +18,17 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   private let publication: Publication
   private let syncManager: NYPLReadiumViewSyncManager? = nil
   private let drmDeviceID: String?
+  private let bookRegistry: NYPLBookRegistry
 
-  init(book: NYPLBook, r2Publication: Publication, drmDeviceID: String?) {
+  init(book: NYPLBook,
+       r2Publication: Publication,
+       drmDeviceID: String?,
+       bookRegistry: NYPLBookRegistry) {
     self.book = book
     self.publication = r2Publication
     self.drmDeviceID = drmDeviceID
-    let registry = NYPLBookRegistry.shared()
-    bookmarks = registry.readiumBookmarks(forIdentifier: book.identifier)
+    self.bookRegistry = bookRegistry
+    bookmarks = bookRegistry.readiumBookmarks(forIdentifier: book.identifier)
   }
 
   func bookmark(at index: Int) -> NYPLReadiumBookmark? {
@@ -96,8 +100,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       page = "\(position)"
     }
 
-    let registry = NYPLBookRegistry.shared()
-    let registryLoc = registry.location(forIdentifier: book.identifier)
+    let registryLoc = bookRegistry.location(forIdentifier: book.identifier)
     var cfi: String? = nil
     var idref: String? = nil
     if registryLoc?.locationString != nil,
@@ -143,14 +146,27 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     bookmarks.append(bookmark)
     bookmarks.sort { $0.progressWithinBook < $1.progressWithinBook }
 
-    /*
-     // TODO: SIMPLY-2804 sync with server
-     // this is what happens in R1
-     [self.delegate updateCurrentBookmark:bookmark];
-     [self.syncManager addBookmark:bookmark withCFI:bookmark.location forBook:book.identifier];
-     */
+    addBookmark(bookmark)
 
     return bookmark
+  }
+    
+  private func addBookmark(_ bookmark: NYPLReadiumBookmark) {
+    guard
+      let currentAccount = AccountsManager.shared.currentAccount,
+      let accountDetails = currentAccount.details,
+      accountDetails.syncPermissionGranted else {
+        self.bookRegistry.add(bookmark, forIdentifier: book.identifier)
+        return
+    }
+    
+    NYPLAnnotations.postBookmark(forBook: book.identifier,
+                                 toURL: nil,
+                                 bookmark: bookmark) { (serverAnnotationID) in
+      Log.debug(#function, serverAnnotationID != nil ? "Bookmark upload succeed" : "Bookmark failed to upload")
+      bookmark.annotationId = serverAnnotationID
+      self.bookRegistry.add(bookmark, forIdentifier: self.book.identifier)
+    }
   }
 
   func deleteBookmark(_ bookmark: NYPLReadiumBookmark) {
@@ -180,11 +196,11 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   }
 
   private func didDeleteBookmark(_ bookmark: NYPLReadiumBookmark) {
-    let registry = NYPLBookRegistry.shared()
-    registry.delete(bookmark, forIdentifier: book.identifier)
+    bookRegistry.delete(bookmark, forIdentifier: book.identifier)
 
     // TODO: SIMPLY-2804 (syncing)
     // see NYPLReaderReadiumView::deleteBookmark
+    // delete bookmark on server
   }
 
   var noBookmarksText: String {
@@ -204,20 +220,127 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   // TODO: SIMPLY-2804 not sure how this translates to R2. It might require
   // server side changes
   func refreshBookmarks(inVC vc: NYPLReaderPositionsVC) {
-    // NB: this was taken from R1's NYPLReaderTOCViewController
-//    syncManager.syncBookmarksWithCompletion { [weak self] success, bookmarks in
-//      NYPLMainThreadRun.asyncIfNeeded { [weak self] in
-//        self?.bookmarks = bookmarks
-//        vc.tableView.reloadData()
+    Log.debug(#file, "Refreshing bookmark list...")
+    syncBookmarks { (success, bookmarks) in
+      NYPLMainThreadRun.asyncIfNeeded { [weak self] in
+        self?.bookmarks = bookmarks
+        vc.tableView.reloadData()
 //        vc.bookmarksRefreshControl.endRefreshing()
-//        if !success {
-//          let alert = NYPLAlertUtils.alert(title: "Error Syncing Bookmarks",
-//                                           message: "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.")
-//          vc.present(alert, animated: true)
-//        }
-//      }
-//    }
+        if !success {
+          let alert = NYPLAlertUtils.alert(title: "Error Syncing Bookmarks",
+                                           message: "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.")
+          vc.present(alert, animated: true)
+        }
+      }
+    }
   }
+    
+  func syncBookmarks(completion: @escaping (Bool, [NYPLReadiumBookmark]) -> ()) {
+    NYPLReachability.shared()?.reachability(for: NYPLConfiguration.mainFeedURL(),
+                                            timeoutInternal: 8.0,
+                                            handler: { (reachable) in
+      if (!reachable) {
+        Log.debug(#file, "Error: host was not reachable for bookmark sync attempt.")
+        completion(false, self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier))
+        return
+      }
+                                                
+      // First check for and upload any local bookmarks that have never been saved to the server.
+      // Wait til that's finished, then download the server's bookmark list and filter out any that can be deleted.
+      let localBookmarks = self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier)
+      NYPLAnnotations.uploadLocalBookmarks(localBookmarks, forBook: self.book.identifier) { (bookmarksUploaded, bookmarksFailedToUpload) in
+        for localBookmark in localBookmarks {
+          for uploadedBookmark in bookmarksUploaded {
+            if localBookmark.isEqual(uploadedBookmark) {
+              self.bookRegistry.replace(localBookmark, with: uploadedBookmark, forIdentifier: self.book.identifier)
+            }
+          }
+        }
+        
+        NYPLAnnotations.getServerBookmarks(forBook: self.book.identifier, atURL: self.book.annotationsURL) { (serverBookmarks) in
+          guard let serverBookmarks = serverBookmarks else {
+            Log.debug(#file, "Ending sync without running completion. Returning original list of bookmarks.")
+            completion(false, self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier))
+            return
+          }
+            
+          Log.debug(#file, serverBookmarks.count == 0 ? "No server bookmarks" : "Server bookmarks count: \(serverBookmarks.count)")
+          
+          self.updateLocalBookmarks(serverBookmarks: serverBookmarks,
+                                     localBookmarks: localBookmarks,
+                                     bookmarksFailedToUpload: bookmarksFailedToUpload)
+          {
+            completion(true, self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier))
+          }
+        }
+      }
+      
+    })
+  }
+    
+  private func updateLocalBookmarks(serverBookmarks: [NYPLReadiumBookmark],
+                                     localBookmarks: [NYPLReadiumBookmark],
+                                     bookmarksFailedToUpload: [NYPLReadiumBookmark],
+                                     completion: @escaping () -> ())
+  {
+    // Bookmarks that are present on the client, and have a corresponding version on the server
+    // with matching annotation ID's should be kept on the client.
+    var localBookmarksToKeep = [NYPLReadiumBookmark]()
+    // Bookmarks that are present on the client, have been uploaded before,
+    // but are no longer on the server, should be deleted on the client.
+    var localBookmarksToDelete = [NYPLReadiumBookmark]()
+    // Bookmarks that are present on the server, but not the client, should be added to this
+    // client as long as they were not created on this device originally.
+    var serverBookmarksToKeep = [NYPLReadiumBookmark]()
+    // Bookmarks present on the server, that were originally created on this device,
+    // and are no longer present on the client, should be deleted on the server.
+    var serverBookmarksToDelete = [NYPLReadiumBookmark]()
+    
+    for serverBookmark in serverBookmarks {
+      let matchingBookmarks = localBookmarks.filter { $0.annotationId == serverBookmark.annotationId }
+        
+      localBookmarksToKeep.append(contentsOf: matchingBookmarks)
+        
+      if (matchingBookmarks.count == 0 &&
+          serverBookmark.device != nil &&
+          serverBookmark.device == NYPLUserAccount.sharedAccount().deviceID)
+      {
+        serverBookmarksToDelete.append(serverBookmark)
+        if let indexToRemove = serverBookmarksToKeep.index(of: serverBookmark) {
+          serverBookmarksToKeep.remove(at: indexToRemove)
+        }
+      }
+    }
+    
+    for localBookmark in localBookmarks {
+      if !localBookmarksToKeep.contains(localBookmark) {
+        bookRegistry.delete(localBookmark, forIdentifier: self.book.identifier)
+        localBookmarksToDelete.append(localBookmark)
+      }
+    }
+    
+    var bookmarksToAdd = serverBookmarks
+    bookmarksToAdd.append(contentsOf: bookmarksFailedToUpload)
+        
+    for serverBookmark in serverBookmarksToKeep {
+      for localBookmark in localBookmarksToKeep {
+        if serverBookmark.isEqual(localBookmark), let index = bookmarksToAdd.index(of: localBookmark) {
+          bookmarksToAdd.remove(at: index)
+        }
+      }
+    }
+        
+    for bookmark in bookmarksToAdd {
+      bookRegistry.add(bookmark, forIdentifier: self.book.identifier)
+    }
+    
+    if serverBookmarksToDelete.count > 0 {
+      NYPLAnnotations.deleteBookmarks(serverBookmarksToDelete)
+    }
+    
+    completion()
+  }
+
 
   // MARK: - NYPLReadiumViewSyncManagerDelegate
 
