@@ -64,9 +64,6 @@ class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, L
       bookRegistry: NYPLBookRegistry.shared())
 
     bookmarksBusinessLogic.syncBookmarks { (_, _) in }
-    
-    // TODO: SIMPLY-2804
-    //backgroundHelper = NYPLBackgroundExecutor(owner: self, taskName: "R2init")
 
     super.init(nibName: nil, bundle: nil)
 
@@ -442,7 +439,9 @@ extension NYPLBaseReaderViewController: NYPLReaderPositionsDelegate {
   }
 
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC,
-                   didRequestSyncBookmarksWithCompletion completion: (_ success: Bool, _ bookmarks: [NYPLReadiumBookmark]) -> Void) {
-    // TODO: SIMPLY-2804
+                   didRequestSyncBookmarksWithCompletion completion: @escaping (_ success: Bool, _ bookmarks: [NYPLReadiumBookmark]) -> Void) {
+    bookmarksBusinessLogic.syncBookmarks { (success, bookmarks) in
+      completion(success, bookmarks)
+    }
   }
 }
