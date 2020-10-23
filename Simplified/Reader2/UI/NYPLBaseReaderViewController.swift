@@ -440,8 +440,6 @@ extension NYPLBaseReaderViewController: NYPLReaderPositionsDelegate {
 
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC,
                    didRequestSyncBookmarksWithCompletion completion: @escaping (_ success: Bool, _ bookmarks: [NYPLReadiumBookmark]) -> Void) {
-    bookmarksBusinessLogic.syncBookmarks { (success, bookmarks) in
-      completion(success, bookmarks)
-    }
+    bookmarksBusinessLogic.syncBookmarks(completion: completion)
   }
 }

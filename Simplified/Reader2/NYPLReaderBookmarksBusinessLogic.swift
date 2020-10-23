@@ -201,7 +201,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     guard let currentAccount = AccountsManager.shared.currentAccount,
         let details = currentAccount.details,
         let annotationId = bookmark.annotationId else {
-      Log.debug(#file, "Delete on Server skipped: Sync is not enabled or Annotation ID did not exist for bookmark.")
+      Log.debug(#file, "Delete on Server skipped: Annotation ID did not exist for bookmark.")
       return
     }
     
@@ -233,7 +233,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
                                             timeoutInternal: 8.0,
                                             handler: { (reachable) in
       if (!reachable) {
-        Log.debug(#file, "Error: host was not reachable for bookmark sync attempt.")
+        Log.warn(#file, "Error: host was not reachable for bookmark sync attempt.")
         self.bookmarks = self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier)
         completion(false, self.bookmarks)
         return
@@ -265,7 +265,11 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
           self.updateLocalBookmarks(serverBookmarks: serverBookmarks,
                                      localBookmarks: localBookmarks,
                                      bookmarksFailedToUpload: bookmarksFailedToUpload)
-          {
+          { [weak self] in
+            guard let self = self else {
+              completion(false, localBookmarks)
+              return
+            }
             self.bookmarks = self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier)
             completion(true, self.bookmarks)
           }
