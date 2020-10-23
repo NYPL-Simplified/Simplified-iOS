@@ -509,6 +509,7 @@ Authenticating with any of those barcodes should work.
 
 #pragma mark - Account SignIn/SignOut
 
+// must be called on the main thread
 - (void)logIn
 {
   [[NSNotificationCenter defaultCenter]
@@ -520,21 +521,11 @@ Authenticating with any of those barcodes should work.
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
     [self.businessLogic.samlHelper logIn];
   } else {
-    [self barcodeLogIn];
+    [self.usernameTextField resignFirstResponder];
+    [self.PINTextField resignFirstResponder];
+    [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
+    [self validateCredentials];
   }
-}
-
-- (void)barcodeLogIn
-{
-  assert(self.usernameTextField.text.length > 0);
-  assert(self.PINTextField.text.length > 0 || [self.PINTextField.text isEqualToString:@""]);
-
-  [self.usernameTextField resignFirstResponder];
-  [self.PINTextField resignFirstResponder];
-
-  [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-
-  [self validateCredentials];
 }
 
 - (void)logOut
@@ -709,10 +700,6 @@ Authenticating with any of those barcodes should work.
 
 - (void)validateCredentials
 {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  });
-
   NSURLRequest *const request = [self.businessLogic
                                  makeRequestFor:NYPLAuthRequestTypeSignIn
                                  context:@"Settings Tab"];
@@ -724,43 +711,50 @@ Authenticating with any of those barcodes should work.
    completionHandler:^(NSData *data,
                        NSURLResponse *const response,
                        NSError *const error) {
-    NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
 
+    NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
     if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
-      [weakSelf processCredsValidationSuccessUsingDRMWithData:data];
+      [weakSelf drmAuthorizeUserData:data
+                      loggingContext:@{
+                        @"Request": request.loggableString,
+                        @"Response": response ?: @"N/A",
+                        @"Context": @"Settings Tab",
+                      }];
 #else
       [weakSelf authorizationAttemptDidFinish:YES error:nil errorMessage:nil];
 #endif
     } else {
-      [weakSelf processCredsValidationFailureWithData:data
-                                                error:error
-                                           forRequest:request
-                                             response:response];
+      // note: we are on the main thread because the URLSession is set up
+      // with the main queue as delegate queue.
+      [weakSelf alertUserOfValidationError:error
+                            problemDocData:data
+                                  response:response
+                            loggingContext:@{
+                              @"Request": request.loggableString,
+                              @"Response": response ?: @"N/A",
+                              @"Context": @"Settings Tab",
+                            }];
     }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    });
   }];
   
   [task resume];
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
-- (void)processCredsValidationSuccessUsingDRMWithData:(NSData*)data
+- (void)drmAuthorizeUserData:(NSData*)data
+              loggingContext:(NSDictionary<NSString*, id> *)loggingContext
 {
   NSError *pDocError = nil;
-  NSString * const barcode = self.usernameTextField.text;
   UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
   if (!pDoc) {
     [self authorizationAttemptDidFinish:NO
                                   error:nil
                            errorMessage:@"Error parsing user profile document"];
     [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                             summary:@"SignIn-settingsTab: unable to parse user profile doc"
-                                             barcode:barcode
-                                            metadata:nil];
+                                             summary:@"SignIn: unable to parse user profile doc"
+                                             barcode:nil
+                                            metadata:loggingContext];
     return;
   }
 
@@ -769,23 +763,21 @@ Authenticating with any of those barcodes should work.
   } else {
     NYPLLOG(@"Authorization ID (Barcode String) was nil.");
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
-                              summary:@"SignIn-settingsTab"
-                              message:@"The UserProfileDocument obtained from the server contained no authorization identifier."
-                             metadata:@{
-                               @"hashedBarcode": barcode.md5String
-                             }];
+                              summary:@"SignIn: no authorization ID in user profile doc"
+                              message:nil
+                             metadata:loggingContext];
   }
 
+  NYPLLOG_F(@"\nLicensor: %@",pDoc.drm.firstObject.licensor);
+
   if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
-    [self.selectedUserAccount setLicensor:[pDoc.drm[0] licensor]];
+    [self.businessLogic.userAccount setLicensor:pDoc.drm[0].licensor];
   } else {
     NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
-                              summary:@"SignIn-settingsTab"
-                              message:@"The UserProfileDocument obtained from the server contained no licensor token."
-                             metadata:@{
-                               @"hashedBarcode": barcode.md5String
-                             }];
+                              summary:@"SignIn: no licensor token in user profile doc"
+                              message:nil
+                             metadata:loggingContext];
 
     [self authorizationAttemptDidFinish:NO
                                   error:nil
@@ -798,13 +790,21 @@ Authenticating with any of those barcodes should work.
   [licensorItems removeLastObject];
   NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
 
+  [self drmAuthorizeWithUsername:tokenUsername
+                        password:tokenPassword
+                  loggingContext:loggingContext];
+}
+
+- (void)drmAuthorizeWithUsername:(NSString *)tokenUsername
+                        password:(NSString *)tokenPassword
+                  loggingContext:(NSDictionary<NSString*, id> *)loggingContext
+{
   NYPLLOG(@"***DRM Auth/Activation Attempt***");
-  NYPLLOG_F(@"\nLicensor: %@\n",[pDoc.drm[0] licensor]);
   NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
   NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
 
   [[NYPLADEPT sharedInstance]
-   authorizeWithVendorID:[self.selectedUserAccount licensor][@"vendor"]
+   authorizeWithVendorID:[self.businessLogic.userAccount licensor][@"vendor"]
    username:tokenUsername
    password:tokenPassword
    completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
@@ -816,15 +816,13 @@ Authenticating with any of those barcodes should work.
 
     if (success) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [self.selectedUserAccount setUserID:userID];
-        [self.selectedUserAccount setDeviceID:deviceID];
+        [self.businessLogic.userAccount setUserID:userID];
+        [self.businessLogic.userAccount setDeviceID:deviceID];
       }];
     } else {
       [NYPLErrorLogger logLocalAuthFailedWithError:error
-                                           library:self.selectedAccount
-                                          metadata:@{
-                                            @"hashedBarcode": barcode.md5String
-                                          }];
+                                           library:self.businessLogic.libraryAccount
+                                          metadata:loggingContext];
     }
 
     [self authorizationAttemptDidFinish:success error:error errorMessage:nil];
@@ -832,40 +830,32 @@ Authenticating with any of those barcodes should work.
 }
 #endif
 
-- (void)processCredsValidationFailureWithData:(NSData * const)data
-                                        error:(NSError * const)error
-                                   forRequest:(NSURLRequest * const)request
-                                     response:(NSURLResponse * const)response
+- (void)alertUserOfValidationError:(NSError * const)error
+                    problemDocData:(NSData * const)data
+                          response:(NSURLResponse * const)response
+                    loggingContext:(NSDictionary<NSString*, id> *)loggingContext
 {
-  NSString * const barcode = self.usernameTextField.text;
   [self removeActivityTitle];
 
   if (error.code == NSURLErrorCancelled) {
-    // We cancelled the request when asked to answer the server's challenge a second time
-    // because we don't have valid credentials.
+    // We cancelled the request when asked to answer the server's challenge
+    // a second time because we don't have valid credentials.
     self.PINTextField.text = @"";
     [self textFieldsDidChange];
     [self.PINTextField becomeFirstResponder];
   }
 
-  NYPLProblemDocument *problemDocument = nil;
   UIAlertController *alert = nil;
+
+  // rely on problem document if available
+  NYPLProblemDocument *problemDocument = nil;
   NSError *problemDocumentParseError = nil;
   if (response.isProblemDocument) {
     problemDocument = [NYPLProblemDocument fromData:data
                                               error:&problemDocumentParseError];
     if (problemDocumentParseError == nil && problemDocument != nil) {
-      NSString *msg = NSLocalizedString(@"A server error occurred. Please try again later, and if the problem persists, contact your library's Help Desk.", @"Error message for when a server error occurs.");
-      NSString *errorDetails = (problemDocument.detail ?: problemDocument.title);
-      if (errorDetails) {
-        msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
-               errorDetails];
-      }
-      alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-                                     message:msg];
-      [NYPLAlertUtils setProblemDocumentWithController:alert
-                                              document:problemDocument
-                                                append:YES];
+      alert = [NYPLAlertUtils alertWithTitle:problemDocument.title
+                                     message:problemDocument.detail];
     }
   }
 
@@ -873,20 +863,15 @@ Authenticating with any of those barcodes should work.
   if (problemDocumentParseError != nil) {
     [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
                               problemDocumentData:data
-                                          barcode:barcode
-                                              url:request.URL
-                                          summary:@"SettingsAccountDetailVC-processCreds: Problem Doc parse error"
-                                          message:@"Sign-in failed, got a corrupted problem doc"];
-  } else if (problemDocument) {
+                                              url:nil
+                                          summary:@"Sign-in validation: Problem Doc parse error"
+                                         metadata:loggingContext];
+  } else {
     [NYPLErrorLogger logLoginError:error
-                           barcode:barcode
-                           library:self.selectedAccount
-                           request:request
+                           library:self.businessLogic.libraryAccount
                           response:response
                    problemDocument:problemDocument
-                          metadata:@{
-                            @"message": @"Sign-in failed, got a problem doc"
-                          }];
+                          metadata:loggingContext];
   }
 
   // notify user of error
