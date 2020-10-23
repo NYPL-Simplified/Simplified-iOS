@@ -626,7 +626,7 @@ import UIKit
         "source": bookID,
         "selector": [
           "type": "oa:FragmentSelector",
-          "value": bookmark.location ?? ""
+          "value": bookmark.location
         ]
       ],
       "body": [

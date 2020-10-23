@@ -31,7 +31,7 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var segmentedControl: UISegmentedControl!
   @IBOutlet weak var noBookmarksLabel: UILabel!
-  private var bookmarksRefreshControl: UIRefreshControl?
+  private(set) var bookmarksRefreshControl: UIRefreshControl?
 
   private let reuseIdentifierTOC = "contentCell"
   private let reuseIdentifierBookmark = "bookmarkCell"

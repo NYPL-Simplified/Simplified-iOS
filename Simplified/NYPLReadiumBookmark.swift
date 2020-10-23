@@ -8,7 +8,7 @@
 
   // location and contentCFI are location information generated from R1 reader
   // which are not available in R2, therefore they are now optionals
-  var location:String?
+  var location:String
   var idref:String
   var contentCFI:String?
   var progressWithinChapter:Float = 0.0
@@ -47,7 +47,7 @@
     self.idref = idref
     self.chapter = chapter ?? ""
     self.page = page ?? ""
-    self.location = location
+    self.location = location ?? "{\"idref\":\"\(idref)\",\"contentCFI\":\"\(contentCFI ?? "")\"}"
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook
     self.time = time ?? NSDate().rfc3339String()
@@ -90,7 +90,7 @@
             "idref":self.idref,
             "chapter":self.chapter ?? "",
             "page":self.page ?? "",
-            "location":self.location ?? "",
+            "location":self.location,
             "time":self.time,
             "device":self.device ?? "",
             "progressWithinChapter":self.progressWithinChapter,
@@ -101,14 +101,19 @@
   override func isEqual(_ object: Any?) -> Bool {
     let other = object as! NYPLReadiumBookmark
 
-    if (self.contentCFI == other.contentCFI &&
-      self.idref == other.idref &&
-      self.chapter == other.chapter &&
-      self.location == other.location)
-    {
-      return true
+    if let contentCFI = self.contentCFI,
+      let otherContentCFI = other.contentCFI,
+      contentCFI.count > 0 && otherContentCFI.count > 0 {
+        // R1
+        return self.idref == other.idref
+            && self.contentCFI == other.contentCFI
+            && self.location == other.location
+    } else {
+      // R2
+      return self.idref == other.idref
+        && self.progressWithinBook == other.progressWithinBook
+        && self.progressWithinChapter == other.progressWithinChapter
     }
-    return false
   }
 }
 

@@ -225,7 +225,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       NYPLMainThreadRun.asyncIfNeeded { [weak self] in
         self?.bookmarks = bookmarks
         vc.tableView.reloadData()
-//        vc.bookmarksRefreshControl.endRefreshing()
+        vc.bookmarksRefreshControl?.endRefreshing()
         if !success {
           let alert = NYPLAlertUtils.alert(title: "Error Syncing Bookmarks",
                                            message: "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.")
@@ -291,7 +291,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     var localBookmarksToDelete = [NYPLReadiumBookmark]()
     // Bookmarks that are present on the server, but not the client, should be added to this
     // client as long as they were not created on this device originally.
-    var serverBookmarksToKeep = [NYPLReadiumBookmark]()
+    var serverBookmarksToKeep = serverBookmarks
     // Bookmarks present on the server, that were originally created on this device,
     // and are no longer present on the client, should be deleted on the server.
     var serverBookmarksToDelete = [NYPLReadiumBookmark]()
@@ -301,9 +301,9 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
         
       localBookmarksToKeep.append(contentsOf: matchingBookmarks)
         
-      if (matchingBookmarks.count == 0 &&
-          serverBookmark.device != nil &&
-          serverBookmark.device == NYPLUserAccount.sharedAccount().deviceID)
+      if let deviceID = serverBookmark.device,
+        deviceID == NYPLUserAccount.sharedAccount().deviceID
+        && matchingBookmarks.count == 0
       {
         serverBookmarksToDelete.append(serverBookmark)
         if let indexToRemove = serverBookmarksToKeep.index(of: serverBookmark) {
