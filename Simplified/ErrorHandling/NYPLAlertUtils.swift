@@ -143,7 +143,7 @@ import UIKit
 
     let docDetail = detailWasAdded ? "" : (document.detail ?? "")
 
-    if !titleWasAdded, let docTitle = document.title, !docTitle.isEmpty {
+    if !titleWasAdded, let docTitle = document.title, !docTitle.isEmpty, docTitle != alert.title {
       alert.message = "\(existingMsg)\(docTitle)\n\(docDetail)"
     } else {
       alert.message = "\(existingMsg)\(docDetail)"

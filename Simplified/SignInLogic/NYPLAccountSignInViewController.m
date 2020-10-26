@@ -27,6 +27,8 @@
 #import <ADEPT/ADEPT.h>
 #endif
 
+static NSInteger sLinearViewTag = 1111;
+
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
   CellKindPIN,
@@ -345,10 +347,14 @@ CGFloat const marginPadding = 2.0;
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
-  if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID] withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) {
-    if ([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN] && !self.isCurrentlySigningIn) {
-      self.usernameTextField.text = [NYPLUserAccount sharedAccount].barcode;
-      self.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
+
+  NYPLUserAccount *userAccount = self.businessLogic.userAccount;
+
+  if (![[NYPLADEPT sharedInstance] isUserAuthorized:[userAccount userID]
+                                         withDevice:[userAccount deviceID]]) {
+    if ([userAccount hasBarcodeAndPIN] && !self.isCurrentlySigningIn) {
+      self.usernameTextField.text = userAccount.barcode;
+      self.PINTextField.text = userAccount.PIN;
       [self logIn];
     }
   }
@@ -693,7 +699,7 @@ completionHandler:(void (^)(void))handler
   // Tell the VC to create its text fields so we can set their properties.
   [self view];
 
-  if (NYPLUserAccount.sharedAccount.authDefinition.isSaml) {
+  if (self.businessLogic.userAccount.authDefinition.isSaml) {
     if (!useExistingBarcode) {
       // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
       // this is for the case when we were logged in, but IDP expired our session
@@ -703,7 +709,7 @@ completionHandler:(void (^)(void))handler
     }
   } else {
     if(useExistingBarcode) {
-      NSString *const barcode = [NYPLUserAccount sharedAccount].barcode;
+      NSString *const barcode = self.businessLogic.userAccount.barcode;
       if(!barcode) {
         @throw NSInvalidArgumentException;
       }
@@ -728,14 +734,14 @@ completionHandler:(void (^)(void))handler
 
   [NYPLPresentationUtils safelyPresent:navVC animated:YES completion:nil];
 
-  if (authorizeImmediately && [NYPLUserAccount sharedAccount].hasBarcodeAndPIN) {
-    self.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
+  if (authorizeImmediately && self.businessLogic.userAccount.hasBarcodeAndPIN) {
+    self.PINTextField.text = self.businessLogic.userAccount.PIN;
     [self logIn];
-  } else if (NYPLUserAccount.sharedAccount.authDefinition.isOauth) {
+  } else if (self.businessLogic.userAccount.authDefinition.isOauth) {
     if (authorizeImmediately) {
       [self logIn];
     }
-  } else if (NYPLUserAccount.sharedAccount.authDefinition.isSaml) {
+  } else if (self.businessLogic.userAccount.authDefinition.isSaml) {
     // there's no extra logic to do for SAML
     // this exists as we don't want the textfield to become responder
   } else {
@@ -861,10 +867,10 @@ completionHandler:(void (^)(void))handler
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if(self.businessLogic.isSignedIn) {
-      self.usernameTextField.text = [NYPLUserAccount sharedAccount].barcode;
+      self.usernameTextField.text = self.businessLogic.userAccount.barcode;
       self.usernameTextField.enabled = NO;
       self.usernameTextField.textColor = [UIColor grayColor];
-      self.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
+      self.PINTextField.text = self.businessLogic.userAccount.PIN;
       self.PINTextField.textColor = [UIColor grayColor];
     } else {
       self.usernameTextField.text = nil;
@@ -930,21 +936,11 @@ completionHandler:(void (^)(void))handler
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
     [self.businessLogic.samlHelper logIn];
   } else {
-    [self barcodeLogIn];
+    [self.usernameTextField resignFirstResponder];
+    [self.PINTextField resignFirstResponder];
+    [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
+    [self validateCredentials];
   }
-}
-
-- (void)barcodeLogIn
-{
-  assert(self.usernameTextField.text.length > 0);
-  assert(self.PINTextField.text.length > 0 || [self.PINTextField.text isEqualToString:@""]);
-
-  [self.usernameTextField resignFirstResponder];
-  [self.PINTextField resignFirstResponder];
-
-  [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-
-  [self validateCredentials];
 }
 
 - (void)displayErrorMessage:(NSString *)errorMessage {
@@ -977,10 +973,8 @@ completionHandler:(void (^)(void))handler
   // This view is used to keep the title label centered as in Apple's Settings application.
   UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
 
-  NSInteger linearViewTag = 1;
-  
   NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
-  linearView.tag = linearViewTag;
+  linearView.tag = sLinearViewTag;
   linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
   linearView.padding = 5.0;
   [linearView addSubview:activityIndicatorView];
@@ -990,15 +984,19 @@ completionHandler:(void (^)(void))handler
   [linearView autoSetDimensionsToSize:CGSizeMake(linearView.frame.size.width, linearView.frame.size.height)];
   
   self.logInSignOutCell.textLabel.text = nil;
-  if (![self.logInSignOutCell.contentView viewWithTag:linearViewTag]) {
+  if (![self.logInSignOutCell.contentView viewWithTag:sLinearViewTag]) {
     [self.logInSignOutCell.contentView addSubview:linearView];
   }
-  [linearView autoCenterInSuperview];
+
+  if (linearView.superview) {
+    [linearView autoCenterInSuperview];
+  }
 }
 
 - (void)removeActivityTitle {
-  UIView *view = [self.logInSignOutCell.contentView viewWithTag:1];
+  UIView *view = [self.logInSignOutCell.contentView viewWithTag:sLinearViewTag];
   [view removeFromSuperview];
+  [self updateLoginLogoutCellAppearance];
 }
 
 - (void)validateCredentials
@@ -1007,175 +1005,199 @@ completionHandler:(void (^)(void))handler
                                  makeRequestFor:NYPLAuthRequestTypeSignIn
                                  context:@"Sign-In modal"];
   
-  NSString * const barcode = self.usernameTextField.text;
   self.isCurrentlySigningIn = YES;
 
   __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
-    [self.session
-     dataTaskWithRequest:request
-     completionHandler:^(NSData *data,
-                         NSURLResponse *const response,
-                         NSError *const error) {
-       
-       weakSelf.isCurrentlySigningIn = NO;
+  [self.session
+   dataTaskWithRequest:request
+   completionHandler:^(NSData *data,
+                       NSURLResponse *const response,
+                       NSError *const error) {
 
-       NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
-       
-       if (statusCode == 200) {
+    weakSelf.isCurrentlySigningIn = NO;
+
+    NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
+
+    if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
-         NSError *pDocError = nil;
-         UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
-         if (!pDoc) {
-           [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                                    summary:@"SignIn-modal: unable to parse user profile doc"
-                                                    barcode:barcode
-                                                   metadata:@{
-                                                     @"Request": request.loggableString,
-                                                     @"Response": response ?: @"N/A",
-                                                   }];
-           [weakSelf authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
-           return;
-         } else {
-           if (pDoc.authorizationIdentifier) {
-             [[NYPLUserAccount sharedAccount] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
-           } else {
-             NYPLLOG(@"Authorization ID (Barcode String) was nil.");
-             [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
-                                       summary:@"SignIn-modal: no auth-id in user profile doc"
-                                       message:@"The UserProfileDocument obtained from the server contained no authorization identifier."
-                                      metadata:@{
-                                        @"hashedBarcode": barcode.md5String
-                                      }];
-           }
-           if (pDoc.drm.count > 0 && pDoc.drm[0].clientToken && pDoc.drm[0].vendor) {
-             [[NYPLUserAccount sharedAccount] setLicensor:pDoc.drm[0].licensor];
-           } else {
-             NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-             [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
-                                       summary:@"SignIn-modal"
-                                       message:@"The UserProfileDocument obtained from the server contained no licensor token."
-                                      metadata:@{
-                                        @"hashedBarcode": barcode.md5String
-                                      }];
-
-             [weakSelf authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"No credentials were received to authorize access to books with DRM." }]];
-             return;
-           }
-           
-           NSMutableArray *licensorItems = [[pDoc.drm[0].clientToken stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-           NSString *tokenPassword = [licensorItems lastObject];
-           [licensorItems removeLastObject];
-           NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
-           
-           NYPLLOG(@"***DRM Auth/Activation Attempt***");
-           NYPLLOG_F(@"\nLicensor: %@\n",pDoc.drm[0].licensor);
-           NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
-           NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-           
-           [[NYPLADEPT sharedInstance]
-            authorizeWithVendorID:[[NYPLUserAccount sharedAccount] licensor][@"vendor"]
-            username:tokenUsername
-            password:tokenPassword
-            completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-
-              [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                if (weakSelf) {
-                  [NSObject cancelPreviousPerformRequestsWithTarget:weakSelf];
-                }
-              }];
-
-              NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
-              NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
-              NYPLLOG_F(@"UserID: %@\n",userID);
-              NYPLLOG_F(@"DeviceID: %@\n",deviceID);
-              NYPLLOG(@"***DRM Auth/Activation Completion***");
-              
-              if (success) {
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                  [[NYPLUserAccount sharedAccount] setUserID:userID];
-                  [[NYPLUserAccount sharedAccount] setDeviceID:deviceID];
-                }];
-              } else {
-                [NYPLErrorLogger logLocalAuthFailedWithError:error
-                                                     library:weakSelf.currentAccount
-                                                    metadata:@{
-                                                      @"hashedBarcode": barcode.md5String
-                                                    }];
-              }
-              
-              [weakSelf authorizationAttemptDidFinish:success error:error];
-            }];
-
-           [weakSelf performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:weakSelf afterDelay:25];
-         }
+      [weakSelf drmAuthorizeUserData:data
+                      loggingContext:@{
+                        @"Request": request.loggableString,
+                        @"Response": response ?: @"N/A",
+                        @"Context": @"Sign-In Modal",
+                      }];
 #else
-         [weakSelf authorizationAttemptDidFinish:YES error:nil];
+      [weakSelf authorizationAttemptDidFinish:YES error:nil];
 #endif
-         return;
-       }
-       
-       [weakSelf removeActivityTitle];
+    } else {
+      // note: we are on the main thread because the URLSession is set up
+      // with the main queue as delegate queue.
+      [weakSelf alertUserOfValidationError:error
+                            problemDocData:data
+                                  response:response
+                            loggingContext:@{
+                              @"Request": request.loggableString,
+                              @"Response": response ?: @"N/A",
+                              @"Context": @"Sign-In Modal",
+                            }];
+    }
+  }];
 
-       if (error.code == NSURLErrorCancelled) {
-         // We cancelled the request when asked to answer the server's challenge a second time
-         // because we don't have valid credentials.
-         weakSelf.PINTextField.text = @"";
-         [weakSelf textFieldsDidChange];
-         [weakSelf.PINTextField becomeFirstResponder];
-       }
-
-      NYPLProblemDocument *problemDocument = nil;
-      UIAlertController *alert = nil;
-      NSError *problemDocParseError = nil;
-      if (response.isProblemDocument) {
-        problemDocument = [NYPLProblemDocument fromData:data
-                                                  error:&problemDocParseError];
-        if (problemDocParseError == nil && problemDocument != nil) {
-          NSString *msg = NSLocalizedString(@"A server error occurred. Please try again later, and if the problem persists, contact your library's Help Desk.", @"Error message for when a server error occurs.");
-          NSString *errorDetails = (problemDocument.detail ?: problemDocument.title);
-          if (errorDetails) {
-            msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
-                 errorDetails];
-          }
-          alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-                                         message:msg];
-          [NYPLAlertUtils setProblemDocumentWithController:alert
-                                                  document:problemDocument
-                                                    append:YES];
-        }
-      }
-
-      // error logging
-      if (problemDocParseError) {
-        [NYPLErrorLogger logProblemDocumentParseError:problemDocParseError
-                                  problemDocumentData:data
-                                              barcode:barcode
-                                                  url:request.URL
-                                              summary:@"AccountSignInVC-validateCreds: Problem Doc parse error"
-                                              message:@"Sign-in failed via SignIn-modal, problem doc parsing failed"];
-      } else {
-        [NYPLErrorLogger logLoginError:error
-                               barcode:barcode
-                               library:weakSelf.currentAccount
-                               request:request
-                              response:response
-                       problemDocument:problemDocument
-                              metadata:@{
-                                @"message": @"Sign-in failed via SignIn-modal"
-                              }];
-      }
-
-      // notify user of error
-      if (alert == nil) {
-        alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error];
-      }
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
-                                                                      animated:YES
-                                                                    completion:nil];
-    }];
-  
   [task resume];
+}
+
+#if defined(FEATURE_DRM_CONNECTOR)
+- (void)drmAuthorizeUserData:(NSData*)data
+              loggingContext:(NSDictionary<NSString*, id> *)loggingContext
+{
+  NSError *pDocError = nil;
+  UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
+  if (!pDoc) {
+    [self authorizationAttemptDidFinish:NO
+                                  error:nil
+                           errorMessage:@"Error parsing user profile document"];
+    [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
+                                             summary:@"SignIn: unable to parse user profile doc"
+                                             barcode:nil
+                                            metadata:loggingContext];
+    return;
+  }
+
+  if (pDoc.authorizationIdentifier) {
+    [self.businessLogic.userAccount setAuthorizationIdentifier:pDoc.authorizationIdentifier];
+  } else {
+    NYPLLOG(@"Authorization ID (Barcode String) was nil.");
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
+                              summary:@"SignIn: no authorization ID in user profile doc"
+                              message:nil
+                             metadata:loggingContext];
+  }
+
+  NYPLLOG_F(@"\nLicensor: %@",pDoc.drm.firstObject.licensor);
+
+  if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
+    [self.businessLogic.userAccount setLicensor:pDoc.drm[0].licensor];
+  } else {
+    NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
+                              summary:@"SignIn: no licensor token in user profile doc"
+                              message:nil
+                             metadata:loggingContext];
+
+    [self authorizationAttemptDidFinish:NO
+                                  error:nil
+                           errorMessage:@"No credentials were received to authorize access to books with DRM."];
+    return;
+  }
+
+  NSMutableArray *licensorItems = [[pDoc.drm[0].clientToken stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+  NSString *tokenPassword = [licensorItems lastObject];
+  [licensorItems removeLastObject];
+  NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+
+  [self drmAuthorizeWithUsername:tokenUsername
+                        password:tokenPassword
+                  loggingContext:loggingContext];
+}
+
+- (void)drmAuthorizeWithUsername:(NSString *)tokenUsername
+                        password:(NSString *)tokenPassword
+                  loggingContext:(NSDictionary<NSString*, id> *)loggingContext
+{
+  NYPLLOG(@"***DRM Auth/Activation Attempt***");
+  NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
+  NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
+
+  [[NYPLADEPT sharedInstance]
+   authorizeWithVendorID:[self.businessLogic.userAccount licensor][@"vendor"]
+   username:tokenUsername
+   password:tokenPassword
+   completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      if (self) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self];
+      }
+    }];
+
+    NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
+    NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
+    NYPLLOG_F(@"UserID: %@\n",userID);
+    NYPLLOG_F(@"DeviceID: %@\n",deviceID);
+    NYPLLOG(@"***DRM Auth/Activation Completion***");
+
+    if (success) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self.businessLogic.userAccount setUserID:userID];
+        [self.businessLogic.userAccount setDeviceID:deviceID];
+      }];
+    } else {
+      [NYPLErrorLogger logLocalAuthFailedWithError:error
+                                           library:self.businessLogic.libraryAccount
+                                          metadata:loggingContext];
+    }
+
+    [self authorizationAttemptDidFinish:success error:error errorMessage:nil];
+  }];
+
+  [self performSelector:@selector(dismissAfterUnexpectedDRMDelay)
+             withObject:self afterDelay:25];
+}
+#endif
+
+- (void)alertUserOfValidationError:(NSError * const)error
+                    problemDocData:(NSData * const)data
+                          response:(NSURLResponse * const)response
+                    loggingContext:(NSDictionary<NSString*, id> *)loggingContext
+{
+  [self removeActivityTitle];
+
+  if (error.code == NSURLErrorCancelled) {
+    // We cancelled the request when asked to answer the server's challenge
+    // a second time because we don't have valid credentials.
+    self.PINTextField.text = @"";
+    [self textFieldsDidChange];
+    [self.PINTextField becomeFirstResponder];
+  }
+
+  UIAlertController *alert = nil;
+
+  // rely on problem document if available
+  NYPLProblemDocument *problemDocument = nil;
+  NSError *problemDocumentParseError = nil;
+  if (response.isProblemDocument) {
+    problemDocument = [NYPLProblemDocument fromData:data
+                                              error:&problemDocumentParseError];
+    if (problemDocumentParseError == nil && problemDocument != nil) {
+      alert = [NYPLAlertUtils alertWithTitle:problemDocument.title
+                                     message:problemDocument.detail];
+    }
+  }
+
+  // error logging
+  if (problemDocumentParseError != nil) {
+    [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                              problemDocumentData:data
+                                              url:nil
+                                          summary:@"Sign-in validation: Problem Doc parse error"
+                                         metadata:loggingContext];
+  } else {
+    [NYPLErrorLogger logLoginError:error
+                           library:self.businessLogic.libraryAccount
+                          response:response
+                   problemDocument:problemDocument
+                          metadata:loggingContext];
+  }
+
+  // notify user of error
+  if (alert == nil) {
+    alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+                                     error:error];
+  }
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
+                                                                  animated:YES
+                                                                completion:nil];
 }
 
 - (void)dismissAfterUnexpectedDRMDelay
@@ -1192,15 +1214,6 @@ completionHandler:(void (^)(void))handler
                                             [weakSelf dismissViewControllerAnimated:YES completion:nil];
                                           }]];
   [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
-}
-
-- (void)showLoginAlertWithError:(NSError *)error
-{
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-   [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
-                                                                  animated:YES
-                                                                completion:nil];
-  [self updateLoginLogoutCellAppearance];
 }
 
 - (void)keyboardDidShow:(NSNotification *const)notification
@@ -1236,13 +1249,24 @@ completionHandler:(void (^)(void))handler
    completion:nil];
 }
 
-- (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
+/**
+ @note This method is not doing any logging in case `success` is false.
+
+ @param success Whether Adobe DRM authorization was successful or not.
+ @param error If errorMessage is absent, this will be used to derive a message
+ to present to the user.
+ @param errorMessage Will be presented to the user and will be used as a
+ localization key to attempt to localize it.
+ */
+- (void)authorizationAttemptDidFinish:(BOOL)success
+                                error:(NSError *)error
+                         errorMessage:(NSString*)errorMessage
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
     
     if(success) {
-      // no need to force a login, as I just logged successfully
+      // no need to force a login, as we just logged in successfully
       self.businessLogic.ignoreSignedInState = false;
 
       [self.businessLogic updateUserAccountWithBarcode:self.usernameTextField.text
@@ -1261,10 +1285,25 @@ completionHandler:(void (^)(void))handler
         if(handler) handler();
       }
     } else {
-      [[NYPLUserAccount sharedAccount] removeAll];
+      [self.businessLogic.userAccount removeAll];
       [self accountDidChange];
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-      [self showLoginAlertWithError:error];
+      [self updateLoginLogoutCellAppearance];
+
+      UIAlertController *vc;
+      if (errorMessage) {
+        vc = [NYPLAlertUtils
+              alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+              message:errorMessage];
+      } else {
+        vc = [NYPLAlertUtils
+              alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+              error:error];
+      }
+      [[NYPLRootTabBarController sharedController]
+       safelyPresentViewController:vc
+       animated:YES
+       completion:nil];
     }
   }];
 }

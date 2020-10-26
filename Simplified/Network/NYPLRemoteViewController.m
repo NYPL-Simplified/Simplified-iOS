@@ -296,12 +296,14 @@
     UIAlertController *alert;
 
     if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                problemDocumentData:data
-                                            barcode:nil
-                                                url:httpResponse.URL
-                                            summary:@"Catalog api fail: Problem Doc parse error"
-                                            message:@"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"];
+      [NYPLErrorLogger
+       logProblemDocumentParseError:problemDocumentParseError
+       problemDocumentData:data
+       url:httpResponse.URL
+       summary:@"Catalog api fail: Problem Doc parse error"
+       metadata:@{
+         @"message": @"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"
+       }];
       alert = [NYPLAlertUtils
                alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
                message:NSLocalizedString(@"Unknown error parsing problem document",
