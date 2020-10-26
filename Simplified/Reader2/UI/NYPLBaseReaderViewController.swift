@@ -61,7 +61,8 @@ class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, L
       book: book,
       r2Publication: publication,
       drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
-      bookRegistry: NYPLBookRegistry.shared())
+      bookRegistryProvider: NYPLBookRegistry.shared(),
+      currentLibraryAccountProvider: AccountsManager.shared)
 
     bookmarksBusinessLogic.syncBookmarks { (_, _) in }
 

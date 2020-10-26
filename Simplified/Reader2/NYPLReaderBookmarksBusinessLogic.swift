@@ -18,17 +18,20 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   private let publication: Publication
   private let syncManager: NYPLReadiumViewSyncManager? = nil
   private let drmDeviceID: String?
-  private let bookRegistry: NYPLBookRegistry
+  private let bookRegistryProvider: NYPLBookRegistryProvider
+  private let currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
 
   init(book: NYPLBook,
        r2Publication: Publication,
        drmDeviceID: String?,
-       bookRegistry: NYPLBookRegistry) {
+       bookRegistryProvider: NYPLBookRegistryProvider,
+       currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider) {
     self.book = book
     self.publication = r2Publication
     self.drmDeviceID = drmDeviceID
-    self.bookRegistry = bookRegistry
-    bookmarks = bookRegistry.readiumBookmarks(forIdentifier: book.identifier)
+    self.bookRegistryProvider = bookRegistryProvider
+    bookmarks = bookRegistryProvider.readiumBookmarks(forIdentifier: book.identifier)
+    self.currentLibraryAccountProvider = currentLibraryAccountProvider
   }
 
   func bookmark(at index: Int) -> NYPLReadiumBookmark? {
@@ -100,7 +103,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       page = "\(position)"
     }
 
-    let registryLoc = bookRegistry.location(forIdentifier: book.identifier)
+    let registryLoc = bookRegistryProvider.location(forIdentifier: book.identifier)
     var cfi: String? = nil
     var idref: String? = nil
     if registryLoc?.locationString != nil,
@@ -153,10 +156,10 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     
   private func addBookmark(_ bookmark: NYPLReadiumBookmark) {
     guard
-      let currentAccount = AccountsManager.shared.currentAccount,
+      let currentAccount = currentLibraryAccountProvider.currentAccount,
       let accountDetails = currentAccount.details,
       accountDetails.syncPermissionGranted else {
-        self.bookRegistry.add(bookmark, forIdentifier: book.identifier)
+        self.bookRegistryProvider.add(bookmark, forIdentifier: book.identifier)
         return
     }
     
@@ -165,7 +168,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
                                  bookmark: bookmark) { (serverAnnotationID) in
       Log.debug(#function, serverAnnotationID != nil ? "Bookmark upload succeed" : "Bookmark failed to upload")
       bookmark.annotationId = serverAnnotationID
-      self.bookRegistry.add(bookmark, forIdentifier: self.book.identifier)
+      self.bookRegistryProvider.add(bookmark, forIdentifier: self.book.identifier)
     }
   }
 
@@ -196,9 +199,9 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   }
 
   private func didDeleteBookmark(_ bookmark: NYPLReadiumBookmark) {
-    bookRegistry.delete(bookmark, forIdentifier: book.identifier)
+    bookRegistryProvider.delete(bookmark, forIdentifier: book.identifier)
 
-    guard let currentAccount = AccountsManager.shared.currentAccount,
+    guard let currentAccount = currentLibraryAccountProvider.currentAccount,
         let details = currentAccount.details,
         let annotationId = bookmark.annotationId else {
       Log.debug(#file, "Delete on Server skipped: Annotation ID did not exist for bookmark.")
@@ -234,7 +237,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
                                             handler: { (reachable) in
       if (!reachable) {
         Log.warn(#file, "Error: host was not reachable for bookmark sync attempt.")
-        self.bookmarks = self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier)
+        self.bookmarks = self.bookRegistryProvider.readiumBookmarks(forIdentifier: self.book.identifier)
         completion(false, self.bookmarks)
         return
       }
@@ -242,12 +245,12 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       Log.debug(#file, "Syncing bookmarks...")
       // First check for and upload any local bookmarks that have never been saved to the server.
       // Wait til that's finished, then download the server's bookmark list and filter out any that can be deleted.
-      let localBookmarks = self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier)
+      let localBookmarks = self.bookRegistryProvider.readiumBookmarks(forIdentifier: self.book.identifier)
       NYPLAnnotations.uploadLocalBookmarks(localBookmarks, forBook: self.book.identifier) { (bookmarksUploaded, bookmarksFailedToUpload) in
         for localBookmark in localBookmarks {
           for uploadedBookmark in bookmarksUploaded {
             if localBookmark.isEqual(uploadedBookmark) {
-              self.bookRegistry.replace(localBookmark, with: uploadedBookmark, forIdentifier: self.book.identifier)
+              self.bookRegistryProvider.replace(localBookmark, with: uploadedBookmark, forIdentifier: self.book.identifier)
             }
           }
         }
@@ -255,7 +258,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
         NYPLAnnotations.getServerBookmarks(forBook: self.book.identifier, atURL: self.book.annotationsURL) { (serverBookmarks) in
           guard let serverBookmarks = serverBookmarks else {
             Log.debug(#file, "Ending sync without running completion. Returning original list of bookmarks.")
-            self.bookmarks = self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier)
+            self.bookmarks = self.bookRegistryProvider.readiumBookmarks(forIdentifier: self.book.identifier)
             completion(false, self.bookmarks)
             return
           }
@@ -270,7 +273,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
               completion(false, localBookmarks)
               return
             }
-            self.bookmarks = self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier)
+            self.bookmarks = self.bookRegistryProvider.readiumBookmarks(forIdentifier: self.book.identifier)
             completion(true, self.bookmarks)
           }
         }
@@ -303,7 +306,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       localBookmarksToKeep.append(contentsOf: matchingBookmarks)
         
       if let deviceID = serverBookmark.device,
-        deviceID == NYPLUserAccount.sharedAccount().deviceID
+        let drmDeviceID = drmDeviceID,
+        deviceID == drmDeviceID
         && matchingBookmarks.count == 0
       {
         serverBookmarksToDelete.append(serverBookmark)
@@ -315,7 +319,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     
     for localBookmark in localBookmarks {
       if !localBookmarksToKeep.contains(localBookmark) {
-        bookRegistry.delete(localBookmark, forIdentifier: self.book.identifier)
+        bookRegistryProvider.delete(localBookmark, forIdentifier: self.book.identifier)
         localBookmarksToDelete.append(localBookmark)
       }
     }
@@ -332,7 +336,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     }
         
     for bookmark in bookmarksToAdd {
-      bookRegistry.add(bookmark, forIdentifier: self.book.identifier)
+      bookRegistryProvider.add(bookmark, forIdentifier: self.book.identifier)
     }
     
     if serverBookmarksToDelete.count > 0 {
