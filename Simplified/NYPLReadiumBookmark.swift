@@ -47,6 +47,9 @@
     self.idref = idref
     self.chapter = chapter ?? ""
     self.page = page ?? ""
+    // This location structure originally comes from R1 Reader's Javascript
+    // and its not available in R2, we are mimicking the structure
+    // in order to pass the needed information to the server
     self.location = location ?? "{\"idref\":\"\(idref)\",\"contentCFI\":\"\(contentCFI ?? "")\"}"
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook
@@ -108,11 +111,13 @@
         return self.idref == other.idref
             && self.contentCFI == other.contentCFI
             && self.location == other.location
+            && self.chapter == other.chapter
     } else {
       // R2
       return self.idref == other.idref
         && self.progressWithinBook == other.progressWithinBook
         && self.progressWithinChapter == other.progressWithinChapter
+        && self.chapter == other.chapter
     }
   }
 }
