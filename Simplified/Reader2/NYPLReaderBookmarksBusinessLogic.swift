@@ -235,10 +235,10 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     NYPLReachability.shared()?.reachability(for: NYPLConfiguration.mainFeedURL(),
                                             timeoutInternal: 8.0,
                                             handler: { (reachable) in
-      if (!reachable) {
-        Log.warn(#file, "Error: host was not reachable for bookmark sync attempt.")
-        self.bookmarks = self.bookRegistryProvider.readiumBookmarks(forIdentifier: self.book.identifier)
-        completion(false, self.bookmarks)
+      guard reachable else {
+        self.handleBookmarksSyncFail(level: .warn,
+                                     message: "Error: host was not reachable for bookmark sync attempt.",
+                                     completion: completion)
         return
       }
                     
@@ -257,9 +257,9 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
         
         NYPLAnnotations.getServerBookmarks(forBook: self.book.identifier, atURL: self.book.annotationsURL) { (serverBookmarks) in
           guard let serverBookmarks = serverBookmarks else {
-            Log.debug(#file, "Ending sync without running completion. Returning original list of bookmarks.")
-            self.bookmarks = self.bookRegistryProvider.readiumBookmarks(forIdentifier: self.book.identifier)
-            completion(false, self.bookmarks)
+            self.handleBookmarksSyncFail(level: .debug,
+                                         message: "Ending sync without running completion. Returning original list of bookmarks.",
+                                         completion: completion)
             return
           }
             
@@ -290,9 +290,6 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     // Bookmarks that are present on the client, and have a corresponding version on the server
     // with matching annotation ID's should be kept on the client.
     var localBookmarksToKeep = [NYPLReadiumBookmark]()
-    // Bookmarks that are present on the client, have been uploaded before,
-    // but are no longer on the server, should be deleted on the client.
-    var localBookmarksToDelete = [NYPLReadiumBookmark]()
     // Bookmarks that are present on the server, but not the client, should be added to this
     // client as long as they were not created on this device originally.
     var serverBookmarksToKeep = serverBookmarks
@@ -301,14 +298,14 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     var serverBookmarksToDelete = [NYPLReadiumBookmark]()
     
     for serverBookmark in serverBookmarks {
-      let matchingBookmarks = localBookmarks.filter { $0.annotationId == serverBookmark.annotationId }
+      let matched = localBookmarks.contains{ $0.annotationId == serverBookmark.annotationId }
         
-      localBookmarksToKeep.append(contentsOf: matchingBookmarks)
+      localBookmarksToKeep.append(serverBookmark)
         
       if let deviceID = serverBookmark.device,
         let drmDeviceID = drmDeviceID,
         deviceID == drmDeviceID
-        && matchingBookmarks.count == 0
+        && !matched
       {
         serverBookmarksToDelete.append(serverBookmark)
         if let indexToRemove = serverBookmarksToKeep.index(of: serverBookmark) {
@@ -320,28 +317,20 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     for localBookmark in localBookmarks {
       if !localBookmarksToKeep.contains(localBookmark) {
         bookRegistryProvider.delete(localBookmark, forIdentifier: self.book.identifier)
-        localBookmarksToDelete.append(localBookmark)
       }
     }
     
-    var bookmarksToAdd = serverBookmarks
-    bookmarksToAdd.append(contentsOf: bookmarksFailedToUpload)
+    var bookmarksToAdd = serverBookmarks + bookmarksFailedToUpload
         
-    for serverBookmark in serverBookmarksToKeep {
-      for localBookmark in localBookmarksToKeep {
-        if serverBookmark.isEqual(localBookmark), let index = bookmarksToAdd.index(of: localBookmark) {
-          bookmarksToAdd.remove(at: index)
-        }
-      }
-    }
+    // Look for duplicates in server and local bookmarks, remove them from bookmarksToAdd
+    let duplicatedBookmarks = Set(serverBookmarksToKeep).intersection(Set(localBookmarksToKeep))
+    bookmarksToAdd = Array(Set(bookmarksToAdd).subtracting(duplicatedBookmarks))
         
     for bookmark in bookmarksToAdd {
       bookRegistryProvider.add(bookmark, forIdentifier: self.book.identifier)
     }
     
-    if serverBookmarksToDelete.count > 0 {
-      NYPLAnnotations.deleteBookmarks(serverBookmarksToDelete)
-    }
+    NYPLAnnotations.deleteBookmarks(serverBookmarksToDelete)
     
     completion()
   }
@@ -356,5 +345,16 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
 
   func uploadFinished(for bookmark: NYPLReadiumBookmark!, inBook bookID: String!) {
 
+  }
+    
+  // Helper
+    
+  private func handleBookmarksSyncFail(level: Log.Level,
+                                       message: String,
+                                       completion: @escaping (Bool, [NYPLReadiumBookmark]) -> ()) {
+    Log.log(level, #file, message)
+    
+    self.bookmarks = self.bookRegistryProvider.readiumBookmarks(forIdentifier: self.book.identifier)
+    completion(false, self.bookmarks)
   }
 }
