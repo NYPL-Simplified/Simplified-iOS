@@ -6,7 +6,6 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-import UIKit
 import NYPLCardCreator
 
 @objc enum NYPLAuthRequestType: Int {
@@ -61,16 +60,22 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   private let permissionsCheckLock = NSLock()
 
   /// Signing in and out may imply syncing the book registry.
-  private let bookRegistry: NYPLBookRegistrySyncing
+  let bookRegistry: NYPLBookRegistrySyncing
 
   /// Provides the user account for a given library.
   private let userAccountProvider: NYPLUserAccountProvider.Type
 
   /// THe object determining whether there's an ongoing DRM authorization.
-  weak private var drmAuthorizer: NYPLDRMAuthorizing?
+  weak private(set) var drmAuthorizer: NYPLDRMAuthorizing?
 
   /// The primary way for the business logic to communicate with the UI.
   @objc weak var uiDelegate: NYPLSignInBusinessLogicUIDelegate?
+
+  /// This flag should be set if the instance is used to register new users.
+  @objc var isLoggingInAfterSignUp: Bool = false
+
+  /// A closure to be invoked at the end of the sign-in process.
+  @objc var completionHandler: (() -> Void)? = nil
 
   // MARK:- OAuth / SAML / Clever Info
 
@@ -196,16 +201,25 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   /// Updates the user account for the library we are signing in to.
   /// - Parameters:
+  ///   - drmSuccess: whether the DRM authorization was successful or not.
+  ///   Ignored if the app is built without DRM support.
   ///   - barcode: The new barcode, if available.
   ///   - pin: The new PIN, if barcode is provided.
   ///   - authToken: the token if `selectedAuthentication` is OAuth or SAML. 
   ///   - patron: The patron info for OAuth / SAML authentication.
   ///   - cookies: Cookies for SAML authentication.
-  func updateUserAccount(withBarcode barcode: String?,
+  func updateUserAccount(forDRMAuthorization drmSuccess: Bool,
+                         withBarcode barcode: String?,
                          pin: String?,
                          authToken: String?,
                          patron: [String:Any]?,
                          cookies: [HTTPCookie]?) {
+    #if FEATURE_DRM_CONNECTOR
+    guard drmSuccess else {
+      userAccount.removeAll()
+      return
+    }
+    #endif
 
     if let selectedAuthentication = selectedAuthentication {
       if selectedAuthentication.isOauth || selectedAuthentication.isSaml {
@@ -497,42 +511,5 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       self?.juvenileAuthIsOngoing = false
       self?.juvenileAuthLock.unlock()
     }
-  }
-
-  /// Performs log out using the given executor verifying no book registry
-  /// syncing or book downloads/returns authorizations are in progress.
-  /// - Parameter logOutExecutor: The object actually performing the log out.
-  /// - Returns: An alert the caller needs to present.
-  @objc func logOutOrWarn(using logOutExecutor: NYPLLogOutExecutor) -> UIAlertController? {
-
-    let title = NSLocalizedString("SignOut",
-                                  comment: "Title for sign out action")
-    let msg: String
-    if bookRegistry.syncing {
-      msg = NSLocalizedString("Your bookmarks and reading positions are in the process of being saved to the server. Would you like to stop that and continue logging out?",
-                              comment: "Warning message offering the user the choice of interrupting book registry syncing to log out immediately, or waiting until that finishes.")
-    } else if let drm = drmAuthorizer, drm.workflowsInProgress {
-      msg = NSLocalizedString("It looks like you may have a book download or return in progress. Would you like to stop that and continue logging out?",
-                              comment: "Warning message offering the user the choice of interrupting the download or return of a book to log out immediately, or waiting until that finishes.")
-    } else {
-      logOutExecutor.performLogOut()
-      return nil
-    }
-
-    let alert = UIAlertController(title: title,
-                                  message: msg,
-                                  preferredStyle: .alert)
-    alert.addAction(
-      UIAlertAction(title: title,
-                    style: .destructive,
-                    handler: { _ in
-                      logOutExecutor.performLogOut()
-      }))
-    alert.addAction(
-      UIAlertAction(title: NSLocalizedString("Wait", comment: "button title"),
-                    style: .cancel,
-                    handler: nil))
-
-    return alert
   }
 }
