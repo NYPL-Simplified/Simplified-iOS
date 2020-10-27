@@ -6,64 +6,55 @@
 
 @interface NYPLBook : NSObject
 
-@property (nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;
-@property (nonatomic, readonly) NSString *authors;
-@property (nonatomic, readonly) NSArray<NYPLBookAuthor *> *bookAuthors;
-@property (nonatomic, readonly) NSString *categories;
-@property (nonatomic, readonly) NSArray *categoryStrings;
-@property (nonatomic, readonly) NSString *distributor; // nilable
-@property (nonatomic, readonly) NSString *identifier;
-@property (nonatomic, readonly) NSURL *imageURL; // nilable
-@property (nonatomic, readonly) NSURL *imageThumbnailURL; // nilable
-@property (nonatomic, readonly) NSDate *published; // nilable
-@property (nonatomic, readonly) NSString *publisher; // nilable
-@property (nonatomic, readonly) NSString *subtitle; // nilable
-@property (nonatomic, readonly) NSString *summary; // nilable
-@property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) NSDate *updated;
-@property (nonatomic, readonly) NSURL *annotationsURL; // nilable
-@property (nonatomic, readonly) NSURL *analyticsURL; // nilable
-@property (nonatomic, readonly) NSURL *alternateURL; // nilable
-@property (nonatomic, readonly) NSURL *relatedWorksURL; // nilable
-@property (nonatomic, readonly) NSURL *seriesURL; // nilable
-@property (nonatomic, readonly) NSURL *revokeURL; // nilable
-@property (nonatomic, readonly) NSURL *reportURL; // nilable
+@property (nonnull, nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;
+@property (nullable, nonatomic, readonly) NSString *authors;
+@property (nullable, nonatomic, readonly) NSArray<NYPLBookAuthor *> *bookAuthors;
+@property (nullable, nonatomic, readonly) NSString *categories;
+@property (nonnull, nonatomic, readonly) NSArray *categoryStrings;
+@property (nullable, nonatomic, readonly) NSString *distributor;
+@property (nonnull, nonatomic, readonly) NSString *identifier;
+@property (nullable, nonatomic, readonly) NSURL *imageURL;
+@property (nullable, nonatomic, readonly) NSURL *imageThumbnailURL;
+@property (nullable, nonatomic, readonly) NSDate *published;
+@property (nullable, nonatomic, readonly) NSString *publisher;
+@property (nullable, nonatomic, readonly) NSString *subtitle;
+@property (nullable, nonatomic, readonly) NSString *summary;
+@property (nonnull, nonatomic, readonly) NSString *title;
+@property (nonnull, nonatomic, readonly) NSDate *updated;
+@property (nullable, nonatomic, readonly) NSURL *annotationsURL;
+@property (nullable, nonatomic, readonly) NSURL *analyticsURL;
+@property (nullable, nonatomic, readonly) NSURL *alternateURL;
+@property (nullable, nonatomic, readonly) NSURL *relatedWorksURL;
+@property (nullable, nonatomic, readonly) NSURL *seriesURL;
+@property (nullable, nonatomic, readonly) NSURL *revokeURL;
+@property (nullable, nonatomic, readonly) NSURL *reportURL;
 
-+ (id)new NS_UNAVAILABLE;
-- (id)init NS_UNAVAILABLE;
++ (nonnull id)new NS_UNAVAILABLE;
+- (nonnull id)init NS_UNAVAILABLE;
 
-// Returns nil if the entry is not valid or does not contain a supported format.
-+ (instancetype)bookWithEntry:(NYPLOPDSEntry *)entry;
+/// @brief Factory method to build a NYPLBook object from an OPDS feed entry.
+///
+/// @param entry An OPDS entry to base the book on.
+///
+/// @return @p nil if the entry does not contain non-nil values for the
+/// @p acquisitions, @p categories, @p identifier, @p title, @p updated
+/// properties.
++ (nullable instancetype)bookWithEntry:(nullable NYPLOPDSEntry *)entry;
 
-// Return a new book with the acquisition and availability info from this book,
-// and metadata from the specified book
-- (instancetype)bookWithMetadataFromBook:(NYPLBook *)book;
+/// @brief This is the designated initializer.
+///
+/// @discussion Returns @p nil if either one of the values for the following
+/// keys is nil: @p "categories", @p "id", @p "title", @p "updated". In all other cases
+/// an non-nil instance is returned.
+///
+/// @param dictionary A JSON-style key-value pair string dictionary.
+- (nullable instancetype)initWithDictionary:(nonnull NSDictionary *)dictionary NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithAcquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
-                         bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
-                     categoryStrings:(NSArray *)categoryStrings
-                         distributor:(NSString *)distributor
-                          identifier:(NSString *)identifier
-                            imageURL:(NSURL *)imageURL
-                   imageThumbnailURL:(NSURL *)imageThumbnailURL
-                           published:(NSDate *)published
-                           publisher:(NSString *)publisher
-                            subtitle:(NSString *)subtitle
-                             summary:(NSString *)summary
-                               title:(NSString *)title
-                             updated:(NSDate *)updated
-                      annotationsURL:(NSURL *)annotationsURL
-                        analyticsURL:(NSURL *)analyticsURL
-                        alternateURL:(NSURL *)alternateURL
-                     relatedWorksURL:(NSURL *)relatedWorksURL
-                           seriesURL:(NSURL *)seriesURL
-                           revokeURL:(NSURL *)revokeURL
-                           reportURL:(NSURL *)reportURL
-  NS_DESIGNATED_INITIALIZER;
+/// @return A new book with the @p identifier, @p acquisitions, @p revokeURL
+/// and @p reportURL from this book, and metadata from the specified book.
+- (nonnull instancetype)bookWithMetadataFromBook:(nonnull NYPLBook *)book;
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary NS_DESIGNATED_INITIALIZER;
-
-- (NSDictionary *)dictionaryRepresentation;
+- (nonnull NSDictionary *)dictionaryRepresentation;
 
 /// @discussion
 /// A compatibility method to allow the app to continue to function until the
@@ -74,7 +65,7 @@
 /// @seealso @b https://jira.nypl.org/browse/SIMPLY-2588
 ///
 /// @return An acquisition leading to an EPUB or @c nil.
-- (NYPLOPDSAcquisition *)defaultAcquisition;
+- (nullable NYPLOPDSAcquisition *)defaultAcquisition;
 
 /// @discussion
 /// A compatibility method to allow the app to continue to function until the
@@ -86,7 +77,7 @@
 ///
 /// @return The default acquisition leading to an EPUB if it has a borrow
 /// relation, else @c nil.
-- (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow;
+- (nullable NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow;
 
 /// @discussion
 /// A compatibility method to allow the app to continue to function until the
@@ -98,7 +89,7 @@
 ///
 /// @return The default acquisition leading to an EPUB if it has an open access
 /// relation, else @c nil.
-- (NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess;
+- (nullable NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess;
 
 /// @discussion
 /// Assigns the book content type based on the inner-most type listed
