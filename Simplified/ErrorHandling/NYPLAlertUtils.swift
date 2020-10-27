@@ -3,6 +3,24 @@ import UIKit
 
 @objcMembers class NYPLAlertUtils : NSObject {
   /**
+   Generates an alert view controller. If the `message` is non-nil, it will be
+   used instead of deriving the error message from the `error`.
+
+   - Parameter title: The alert title; can be a localization key.
+   - Parameter error: An error. If the error contains a localizedDescription, that will be used for the alert message.
+   - Returns: The alert controller to be presented.
+   */
+  class func alert(title: String?,
+                   message: String?,
+                   error: NSError?) -> UIAlertController {
+    if let message = message {
+      return alert(title: title, message: message)
+    } else {
+      return alert(title: title, error: error)
+    }
+  }
+
+  /**
     Generates an alert view from errors of domains: NSURLErrorDomain, NYPLADEPTErrorDomain
 
    - Parameter title: The alert title; can be a localization key.

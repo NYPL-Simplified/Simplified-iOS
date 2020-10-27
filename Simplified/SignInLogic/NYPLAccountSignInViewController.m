@@ -44,7 +44,6 @@ typedef NS_ENUM(NSInteger, Section) {
 @interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLSignInBusinessLogicUIDelegate>
 
 // state machine
-@property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) BOOL isCurrentlySigningIn;
 @property (nonatomic) BOOL hiddenPIN;
@@ -334,7 +333,7 @@ CGFloat const marginPadding = 2.0;
   
   // The new credentials are not yet saved after signup or after scanning. As such,
   // reloading the table would lose the values in the barcode and PIN fields.
-  if (self.isLoggingInAfterSignUp || self.loggingInAfterBarcodeScan) {
+  if (self.businessLogic.isLoggingInAfterSignUp || self.loggingInAfterBarcodeScan) {
     return;
   } else {
     self.hiddenPIN = YES;
@@ -417,7 +416,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             weakSelf.usernameTextField.text = username;
             weakSelf.PINTextField.text = PIN;
             [weakSelf updateLoginLogoutCellAppearance];
-            weakSelf.isLoggingInAfterSignUp = YES;
+            weakSelf.businessLogic.isLoggingInAfterSignUp = YES;
             [weakSelf logIn];
           }
         };
@@ -680,21 +679,32 @@ completionHandler:(void (^)(void))handler
 + (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
                              completionHandler:(void (^)(void))handler
 {
-  [self requestCredentialsUsingExistingBarcode:useExistingBarcode authorizeImmediately:NO completionHandler:handler];
+  [self requestCredentialsUsingExistingBarcode:useExistingBarcode
+                          authorizeImmediately:NO
+                             completionHandler:handler];
 }
 
 + (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)(void))handler
 {
-  [self requestCredentialsUsingExistingBarcode:YES authorizeImmediately:YES completionHandler:handler];
+  [self requestCredentialsUsingExistingBarcode:YES
+                          authorizeImmediately:YES
+                             completionHandler:handler];
 }
 
 #pragma mark -
 
+/**
+ * Presents itself to begin the login process.
+ *
+ * @param useExistingBarcode Should the screen be filled with the barcode when available?
+ * @param authorizeImmediately Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview.
+ * @param completionHandler Called upon successful authentication
+ */
 - (void)presentUsingExistingBarcode:(BOOL const)useExistingBarcode
                authorizeImmediately:(BOOL)authorizeImmediately
                   completionHandler:(void (^)(void))handler
 {
-  self.completionHandler = handler;
+  self.businessLogic.completionHandler = handler;
 
   // Tell the VC to create its text fields so we can set their properties.
   [self view];
@@ -999,6 +1009,8 @@ completionHandler:(void (^)(void))handler
   [self updateLoginLogoutCellAppearance];
 }
 
+
+// TODO: SIMPLY-2510 move to business logic
 - (void)validateCredentials
 {
   NSURLRequest *const request = [self.businessLogic
@@ -1028,7 +1040,7 @@ completionHandler:(void (^)(void))handler
                         @"Context": @"Sign-In Modal",
                       }];
 #else
-      [weakSelf authorizationAttemptDidFinish:YES error:nil];
+      [weakSelf finalizeSignInForDRMAuthorization:YES error:nil errorMessage:nil];
 #endif
     } else {
       // note: we are on the main thread because the URLSession is set up
@@ -1048,15 +1060,16 @@ completionHandler:(void (^)(void))handler
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
+// TODO: SIMPLY-2510 move to business logic
 - (void)drmAuthorizeUserData:(NSData*)data
               loggingContext:(NSDictionary<NSString*, id> *)loggingContext
 {
   NSError *pDocError = nil;
   UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
   if (!pDoc) {
-    [self authorizationAttemptDidFinish:NO
-                                  error:nil
-                           errorMessage:@"Error parsing user profile document"];
+    [self finalizeSignInForDRMAuthorization:NO
+                                      error:nil
+                               errorMessage:@"Error parsing user profile document"];
     [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                              summary:@"SignIn: unable to parse user profile doc"
                                              barcode:nil
@@ -1085,9 +1098,9 @@ completionHandler:(void (^)(void))handler
                               message:nil
                              metadata:loggingContext];
 
-    [self authorizationAttemptDidFinish:NO
-                                  error:nil
-                           errorMessage:@"No credentials were received to authorize access to books with DRM."];
+    [self finalizeSignInForDRMAuthorization:NO
+                                      error:nil
+                               errorMessage:@"No credentials were received to authorize access to books with DRM."];
     return;
   }
 
@@ -1101,6 +1114,7 @@ completionHandler:(void (^)(void))handler
                   loggingContext:loggingContext];
 }
 
+// TODO: SIMPLY-2510 move to business logic
 - (void)drmAuthorizeWithUsername:(NSString *)tokenUsername
                         password:(NSString *)tokenPassword
                   loggingContext:(NSDictionary<NSString*, id> *)loggingContext
@@ -1138,7 +1152,7 @@ completionHandler:(void (^)(void))handler
                                           metadata:loggingContext];
     }
 
-    [self authorizationAttemptDidFinish:success error:error errorMessage:nil];
+    [self finalizeSignInForDRMAuthorization:success error:error errorMessage:nil];
   }];
 
   [self performSelector:@selector(dismissAfterUnexpectedDRMDelay)
@@ -1258,53 +1272,22 @@ completionHandler:(void (^)(void))handler
  @param errorMessage Will be presented to the user and will be used as a
  localization key to attempt to localize it.
  */
-- (void)authorizationAttemptDidFinish:(BOOL)success
-                                error:(NSError *)error
-                         errorMessage:(NSString*)errorMessage
+- (void)finalizeSignInForDRMAuthorization:(BOOL)success
+                                    error:(NSError *)error
+                             errorMessage:(NSString*)errorMessage
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
-    
-    if(success) {
-      // no need to force a login, as we just logged in successfully
-      self.businessLogic.ignoreSignedInState = false;
 
-      [self.businessLogic updateUserAccountWithBarcode:self.usernameTextField.text
-                                                   pin:self.PINTextField.text
-                                             authToken:self.authToken
-                                                patron:self.patron
-                                               cookies:self.cookies];
-
-      void (^handler)(void) = self.completionHandler;
-      self.completionHandler = nil;
-      if (!self.isLoggingInAfterSignUp) {
-        [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-          if (handler) handler();
-        }];
-      } else {
-        if(handler) handler();
-      }
-    } else {
-      [self.businessLogic.userAccount removeAll];
-      [self accountDidChange];
-      [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-      [self updateLoginLogoutCellAppearance];
-
-      UIAlertController *vc;
-      if (errorMessage) {
-        vc = [NYPLAlertUtils
-              alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-              message:errorMessage];
-      } else {
-        vc = [NYPLAlertUtils
-              alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-              error:error];
-      }
-      [[NYPLRootTabBarController sharedController]
-       safelyPresentViewController:vc
-       animated:YES
-       completion:nil];
-    }
+    [self.businessLogic
+     finalizeSignInForDRMAuthorization:success
+     error:error
+     errorMessage:errorMessage
+     withBarcode:self.usernameTextField.text
+     pin:self.PINTextField.text
+     authToken:self.authToken
+     patron:self.patron
+     cookies:self.cookies];
   }];
 }
 

@@ -45,7 +45,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
 
 // State machine
-@property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) BOOL loading;
 @property (nonatomic) BOOL hiddenPIN;
@@ -461,7 +460,7 @@ Authenticating with any of those barcodes should work.
 
   // The new credentials are not yet saved after signup or after scanning. As such,
   // reloading the table would lose the values in the barcode and PIN fields.
-  if (self.isLoggingInAfterSignUp || self.loggingInAfterBarcodeScan) {
+  if (self.businessLogic.isLoggingInAfterSignUp || self.loggingInAfterBarcodeScan) {
     return;
   } else {
     self.hiddenPIN = YES;
@@ -698,6 +697,7 @@ Authenticating with any of those barcodes should work.
 
 }
 
+// TODO: SIMPLY-2510 move to business logic
 - (void)validateCredentials
 {
   NSURLRequest *const request = [self.businessLogic
@@ -722,7 +722,7 @@ Authenticating with any of those barcodes should work.
                         @"Context": @"Settings Tab",
                       }];
 #else
-      [weakSelf authorizationAttemptDidFinish:YES error:nil errorMessage:nil];
+      [weakSelf finalizeSignInForDRMAuthorization:YES error:nil errorMessage:nil];
 #endif
     } else {
       // note: we are on the main thread because the URLSession is set up
@@ -742,15 +742,16 @@ Authenticating with any of those barcodes should work.
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
+// TODO: SIMPLY-2510 move to business logic
 - (void)drmAuthorizeUserData:(NSData*)data
               loggingContext:(NSDictionary<NSString*, id> *)loggingContext
 {
   NSError *pDocError = nil;
   UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
   if (!pDoc) {
-    [self authorizationAttemptDidFinish:NO
-                                  error:nil
-                           errorMessage:@"Error parsing user profile document"];
+    [self finalizeSignInForDRMAuthorization:NO
+                                      error:nil
+                               errorMessage:@"Error parsing user profile document"];
     [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                              summary:@"SignIn: unable to parse user profile doc"
                                              barcode:nil
@@ -779,9 +780,9 @@ Authenticating with any of those barcodes should work.
                               message:nil
                              metadata:loggingContext];
 
-    [self authorizationAttemptDidFinish:NO
-                                  error:nil
-                           errorMessage:@"No credentials were received to authorize access to books with DRM."];
+    [self finalizeSignInForDRMAuthorization:NO
+                                      error:nil
+                               errorMessage:@"No credentials were received to authorize access to books with DRM."];
     return;
   }
 
@@ -795,6 +796,7 @@ Authenticating with any of those barcodes should work.
                   loggingContext:loggingContext];
 }
 
+// TODO: SIMPLY-2510 move to business logic
 - (void)drmAuthorizeWithUsername:(NSString *)tokenUsername
                         password:(NSString *)tokenPassword
                   loggingContext:(NSDictionary<NSString*, id> *)loggingContext
@@ -825,7 +827,7 @@ Authenticating with any of those barcodes should work.
                                           metadata:loggingContext];
     }
 
-    [self authorizationAttemptDidFinish:success error:error errorMessage:nil];
+    [self finalizeSignInForDRMAuthorization:success error:error errorMessage:nil];
   }];
 }
 #endif
@@ -911,38 +913,22 @@ Authenticating with any of those barcodes should work.
  @param errorMessage Will be presented to the user and will be used as a
  localization key to attempt to localize it.
  */
-- (void)authorizationAttemptDidFinish:(BOOL)success
-                                error:(NSError *)error
-                         errorMessage:(NSString*)errorMessage
+- (void)finalizeSignInForDRMAuthorization:(BOOL)success
+                                    error:(NSError *)error
+                             errorMessage:(NSString*)errorMessage
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
 
-    if (success) {
-      [self.businessLogic updateUserAccountWithBarcode:self.usernameTextField.text
-                                                   pin:self.PINTextField.text
-                                             authToken:self.authToken
-                                                patron:self.patron
-                                               cookies:self.cookies];
-    } else {
-      [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-
-      UIAlertController *vc;
-      if (errorMessage) {
-        vc = [NYPLAlertUtils
-              alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-              message:errorMessage];
-      } else {
-        vc = [NYPLAlertUtils
-              alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-              error:error];
-      }
-
-      [[NYPLRootTabBarController sharedController]
-       safelyPresentViewController:vc
-       animated:YES
-       completion:nil];
-    }
+    [self.businessLogic
+     finalizeSignInForDRMAuthorization:success
+     error:error
+     errorMessage:errorMessage
+     withBarcode:self.usernameTextField.text
+     pin:self.PINTextField.text
+     authToken:self.authToken
+     patron:self.patron
+     cookies:self.cookies];
   }];
 }
 
@@ -1060,7 +1046,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             weakSelf.usernameTextField.text = username;
             weakSelf.PINTextField.text = PIN;
             [weakSelf updateLoginLogoutCellAppearance];
-            weakSelf.isLoggingInAfterSignUp = YES;
+            weakSelf.businessLogic.isLoggingInAfterSignUp = YES;
             [weakSelf logIn];
           }
         };
