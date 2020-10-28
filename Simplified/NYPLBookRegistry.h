@@ -13,7 +13,25 @@ static NSString *const _Nonnull NYPLBookRegistryDidChangeNotification =
 static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
   @"NYPLBookProcessingDidChangeNotification";
 
-@interface NYPLBookRegistry : NSObject
+@protocol NYPLBookRegistryProvider <NSObject>
+
+- (nonnull NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(nonnull NSString *)identifier;
+
+- (nullable NYPLBookLocation *)locationForIdentifier:(nonnull NSString *)identifier;
+
+- (void)addReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
+             forIdentifier:(nonnull NSString *)identifier;
+  
+- (void)deleteReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
+                forIdentifier:(nonnull NSString *)identifier;
+
+- (void)replaceBookmark:(nonnull NYPLReadiumBookmark *)oldBookmark
+                   with:(nonnull NYPLReadiumBookmark *)newBookmark
+          forIdentifier:(nonnull NSString *)identifier;
+
+@end
+
+@interface NYPLBookRegistry : NSObject <NYPLBookRegistryProvider>
 
 // Returns all registered books.
 @property (atomic, readonly, nonnull) NSArray *allBooks;

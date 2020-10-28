@@ -16,7 +16,7 @@ protocol NYPLReaderPositionsDelegate: class {
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectTOCLocation loc: Any)
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectBookmark bookmark: NYPLReadiumBookmark)
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didDeleteBookmark bookmark: NYPLReadiumBookmark)
-  func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didRequestSyncBookmarksWithCompletion completion: (_ success: Bool, _ bookmarks: [NYPLReadiumBookmark]) -> Void)
+  func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didRequestSyncBookmarksWithCompletion completion: @escaping (_ success: Bool, _ bookmarks: [NYPLReadiumBookmark]) -> Void)
 }
 
 // MARK: -
@@ -247,7 +247,17 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
 
   @objc(userDidRefreshBookmarksWith:)
   private func userDidRefreshBookmarks(with refreshControl: UIRefreshControl) {
-    bookmarksBusinessLogic?.refreshBookmarks(inVC: self)
+    delegate?.positionsVC(self, didRequestSyncBookmarksWithCompletion: { (success, bookmarks) in
+      NYPLMainThreadRun.asyncIfNeeded { [weak self] in
+        self?.tableView.reloadData()
+        self?.bookmarksRefreshControl?.endRefreshing()
+        if !success {
+          let alert = NYPLAlertUtils.alert(title: "Error Syncing Bookmarks",
+                                           message: "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.")
+          self?.present(alert, animated: true)
+        }
+      }
+    })
   }
 
   private func configRefreshControl() {
