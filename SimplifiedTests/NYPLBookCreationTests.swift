@@ -73,13 +73,15 @@ class NYPLBookCreationTests: XCTestCase {
     ])
     XCTAssertNil(bookNoCategories)
 
-    let bookNoAcquisitions = NYPLBook(dictionary: [
-      "categories" : ["Fantasy"],
-      "id": "123",
-      "title": "The Lord of the Rings",
-      "updated": "2020-09-08T09:22:45Z"
-    ])
-    XCTAssertNil(bookNoAcquisitions)
+    /*
+     Note that we do not test the absence of acquisitions. The current code
+     for the dictionary initializer *allows* object creation for a dictionary
+     with no acquisitions. However this is not something we must necessarily
+     ensure because
+     (1) the NYPLBook(entry:) initializer does NOT allow it,
+     (2) a book with no acquisitions is a book the user won't be able to read,
+     so useful only to look at the metadata
+     */
   }
 
   func testBookCreationViaFactoryMethod() {

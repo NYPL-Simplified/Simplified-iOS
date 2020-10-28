@@ -6,7 +6,7 @@
 
 @interface NYPLBook : NSObject
 
-@property (nonnull, nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;
+@property (nullable, nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nullable, nonatomic, readonly) NSString *authors;
 @property (nullable, nonatomic, readonly) NSArray<NYPLBookAuthor *> *bookAuthors;
 @property (nullable, nonatomic, readonly) NSString *categories;
