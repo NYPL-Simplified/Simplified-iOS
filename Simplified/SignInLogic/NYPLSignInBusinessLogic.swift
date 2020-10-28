@@ -93,6 +93,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// the session expired (e.g. SAML flow).
   var ignoreSignedInState: Bool = false
 
+  /// This is `true` during the process of signing in / validating credentials.
+  var isCurrentlySigningIn = false
+
   // MARK:- Juvenile Card Creation Info
 
   private let juvenileAuthLock = NSLock()

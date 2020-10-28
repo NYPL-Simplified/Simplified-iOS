@@ -14,12 +14,14 @@ extension NYPLSignInBusinessLogic {
   /// library we are signing in to and calling the completion handler in
   /// case that was set, as well as dismissing the presented view controller
   /// in case the `uiDelegate` was a modal.
+  /// - Note: This does not log the error/message to Crashlytics.
   /// - Important: This must be called on the main thread.
   /// - Parameters:
   ///   - drmSuccess: whether the DRM authorization was successful or not.
   ///   Ignored if the app is built without DRM support.
   ///   - error: The error encountered during sign-in, if any.
   ///   - errorMessage: Error message to display, taking priority over `error`.
+  ///   This can be a localization key.
   ///   - barcode: The new barcode, if available.
   ///   - pin: The new PIN, if barcode is provided.
   ///   - authToken: the token if `selectedAuthentication` is OAuth or SAML.
