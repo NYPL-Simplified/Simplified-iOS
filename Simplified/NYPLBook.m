@@ -29,6 +29,28 @@
 @property (nonatomic) NSURL *revokeURL;
 @property (nonatomic) NSURL *reportURL;
 
+- (nonnull instancetype)initWithAcquisitions:(nonnull NSArray<NYPLOPDSAcquisition *> *)acquisitions
+                                 bookAuthors:(nullable NSArray<NYPLBookAuthor *> *)authors
+                             categoryStrings:(nullable NSArray *)categoryStrings
+                                 distributor:(nullable NSString *)distributor
+                                  identifier:(nonnull NSString *)identifier
+                                    imageURL:(nullable NSURL *)imageURL
+                           imageThumbnailURL:(nullable NSURL *)imageThumbnailURL
+                                   published:(nullable NSDate *)published
+                                   publisher:(nullable NSString *)publisher
+                                    subtitle:(nullable NSString *)subtitle
+                                     summary:(nullable NSString *)summary
+                                       title:(nonnull NSString *)title
+                                     updated:(nonnull NSDate *)updated
+                              annotationsURL:(nullable NSURL *) annotationsURL
+                                analyticsURL:(nullable NSURL *)analyticsURL
+                                alternateURL:(nullable NSURL *)alternateURL
+                             relatedWorksURL:(nullable NSURL *)relatedWorksURL
+                                   seriesURL:(nullable NSURL *)seriesURL
+                                   revokeURL:(nullable NSURL *)revokeURL
+                                   reportURL:(nullable NSURL *)reportURL
+NS_DESIGNATED_INITIALIZER;
+
 @end
 
 // NOTE: Be cautious of these values!

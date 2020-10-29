@@ -201,10 +201,9 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
       [NYPLErrorLogger
        logProblemDocumentParseError:problemDocumentParseError
        problemDocumentData:problemDocData
-       barcode:NYPLUserAccount.sharedAccount.barcode
        url:tmpSavedFileURL
        summary:[NSString stringWithFormat:@"Error parsing problem doc downloading %@ book", book.distributor]
-       message:[book loggableShortString]];
+       metadata:@{ @"book": [book loggableShortString] }];
     }
     [self logBookDownloadFailure:book
                           reason:@"Got problem document"

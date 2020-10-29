@@ -40,7 +40,8 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
     XCTAssertNotEqual(user.PIN, "newPIN")
 
     // test
-    businessLogic.updateUserAccount(withBarcode: "newBarcode",
+    businessLogic.updateUserAccount(forDRMAuthorization: true,
+                                    withBarcode: "newBarcode",
                                     pin: "newPIN",
                                     authToken: nil,
                                     patron: nil,
@@ -59,7 +60,8 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
     businessLogic.selectedAuthentication = libraryAccountMock.barcodeAuthentication
 
     // test
-    businessLogic.updateUserAccount(withBarcode: "newBarcode",
+    businessLogic.updateUserAccount(forDRMAuthorization: true,
+                                    withBarcode: "newBarcode",
                                     pin: "newPIN",
                                     authToken: nil,
                                     patron: nil,
@@ -80,7 +82,8 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
     let patron = ["name": "ciccio"]
 
     // test
-    businessLogic.updateUserAccount(withBarcode: nil,
+    businessLogic.updateUserAccount(forDRMAuthorization: true,
+                                    withBarcode: nil,
                                     pin: nil,
                                     authToken: "some-great-token",
                                     patron: patron,
@@ -108,7 +111,8 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
     ])!]
 
     // test
-    businessLogic.updateUserAccount(withBarcode: nil,
+    businessLogic.updateUserAccount(forDRMAuthorization: true,
+                                    withBarcode: nil,
                                     pin: nil,
                                     authToken: "some-great-token",
                                     patron: patron,

@@ -6,7 +6,6 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-import UIKit
 import NYPLCardCreator
 
 @objc enum NYPLAuthRequestType: Int {
@@ -38,26 +37,6 @@ extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 @objcMembers
 class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
-  let libraryAccountID: String
-  private let permissionsCheckLock = NSLock()
-  let requestTimeoutInterval: TimeInterval = 25.0
-
-  private let juvenileAuthLock = NSLock()
-  @objc private(set) var juvenileAuthIsOngoing = false
-  private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
-
-  private let libraryAccountsProvider: NYPLLibraryAccountsProvider
-  let universalLinksSettings: NYPLUniversalLinksSettings
-  private let bookRegistry: NYPLBookRegistrySyncing
-
-  /// Provides the user account for a given library.
-  private let userAccountProvider: NYPLUserAccountProvider.Type
-
-  weak private var drmAuthorizer: NYPLDRMAuthorizing?
-
-  /// The primary way for the business logic to communicate with the UI.
-  weak var uiDelegate: NYPLSignInBusinessLogicUIDelegate?
-
   @objc init(libraryAccountID: String,
              libraryAccountsProvider: NYPLLibraryAccountsProvider,
              universalLinksSettings: NYPLUniversalLinksSettings,
@@ -72,19 +51,72 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     self.bookRegistry = bookRegistry
     self.userAccountProvider = userAccountProvider
     self.drmAuthorizer = drmAuthorizer
+    self.samlHelper = NYPLSAMLHelper()
     super.init()
+    self.samlHelper.businessLogic = self
   }
+
+  // Lock for ensure internal state consistency.
+  private let permissionsCheckLock = NSLock()
+
+  /// Signing in and out may imply syncing the book registry.
+  let bookRegistry: NYPLBookRegistrySyncing
+
+  /// Provides the user account for a given library.
+  private let userAccountProvider: NYPLUserAccountProvider.Type
+
+  /// THe object determining whether there's an ongoing DRM authorization.
+  weak private(set) var drmAuthorizer: NYPLDRMAuthorizing?
+
+  /// The primary way for the business logic to communicate with the UI.
+  @objc weak var uiDelegate: NYPLSignInBusinessLogicUIDelegate?
+
+  /// This flag should be set if the instance is used to register new users.
+  @objc var isLoggingInAfterSignUp: Bool = false
+
+  /// A closure to be invoked at the end of the sign-in process.
+  @objc var completionHandler: (() -> Void)? = nil
+
+  // MARK:- OAuth / SAML / Clever Info
+
+  /// Settings used by OAuth sign-in flows.
+  let universalLinksSettings: NYPLUniversalLinksSettings
+
+  /// Cookies used to authenticate. Only required for the SAML flow.
+  @objc var cookies: [HTTPCookie]?
+
+  /// Performs initiation rites for SAML sign-in.
+  let samlHelper: NYPLSAMLHelper
+
+  /// This overrides the sign-in state logic to behave as if the user isn't
+  /// authenticated. This is useful if we already have credentials, but
+  /// the session expired (e.g. SAML flow).
+  var ignoreSignedInState: Bool = false
+
+  /// This is `true` during the process of signing in / validating credentials.
+  var isCurrentlySigningIn = false
+
+  // MARK:- Juvenile Card Creation Info
+
+  private let juvenileAuthLock = NSLock()
+  @objc private(set) var juvenileAuthIsOngoing = false
+  private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
+
+  // MARK:- Library Accounts Info
+
+  /// The ID of the library this object is signing in to.
+  /// - Note: This is also provided by `libraryAccountsProvider::currentAccount`
+  /// but that could be returning nil if called too early on.
+  let libraryAccountID: String
+
+  /// The object providing library account information.
+  private let libraryAccountsProvider: NYPLLibraryAccountsProvider
 
   @objc var libraryAccount: Account? {
     return libraryAccountsProvider.account(libraryAccountID)
   }
 
   var selectedIDP: OPDS2SamlIDP?
-
-  /// This overrides the sign in state logic to behave as if user isn't
-  /// authenticated. This is useful if we already have credentials, but
-  /// the session expired (e.g. SAML flow).
-  var ignoreSignedInState: Bool = false
 
   private var _selectedAuthentication: AccountDetails.Authentication?
   var selectedAuthentication: AccountDetails.Authentication? {
@@ -100,6 +132,11 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       _selectedAuthentication = newValue
     }
   }
+
+  // MARK:- Network Requests Logic
+
+  // Time-out to use for sign-in/out network requests.
+  private let requestTimeoutInterval: TimeInterval = 25.0
 
   /// Creates a request object for signing in or out, depending on
   /// on which authentication mechanism is currently selected.
@@ -158,6 +195,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     return req
   }
 
+  // MARK:- User Account Management
+
   /// The user account for the library we are signing in to.
   var userAccount: NYPLUserAccount {
     return userAccountProvider.sharedAccount(libraryUUID: libraryAccountID)
@@ -165,16 +204,25 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   /// Updates the user account for the library we are signing in to.
   /// - Parameters:
+  ///   - drmSuccess: whether the DRM authorization was successful or not.
+  ///   Ignored if the app is built without DRM support.
   ///   - barcode: The new barcode, if available.
   ///   - pin: The new PIN, if barcode is provided.
   ///   - authToken: the token if `selectedAuthentication` is OAuth or SAML. 
   ///   - patron: The patron info for OAuth / SAML authentication.
   ///   - cookies: Cookies for SAML authentication.
-  func updateUserAccount(withBarcode barcode: String?,
+  func updateUserAccount(forDRMAuthorization drmSuccess: Bool,
+                         withBarcode barcode: String?,
                          pin: String?,
                          authToken: String?,
                          patron: [String:Any]?,
                          cookies: [HTTPCookie]?) {
+    #if FEATURE_DRM_CONNECTOR
+    guard drmSuccess else {
+      userAccount.removeAll()
+      return
+    }
+    #endif
 
     if let selectedAuthentication = selectedAuthentication {
       if selectedAuthentication.isOauth || selectedAuthentication.isSaml {
@@ -210,11 +258,13 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     NotificationCenter.default.post(name: .NYPLIsSigningIn, object: false)
   }
 
-  func setBarcode(_ barcode: String?, pin: String?) {
+  private func setBarcode(_ barcode: String?, pin: String?) {
     if let barcode = barcode, let pin = pin {
       userAccount.setBarcode(barcode, PIN:pin)
     }
   }
+
+  // MARK: - Available Features Checks
 
   func librarySupportsBarcodeDisplay() -> Bool {
     // For now, only supports libraries granted access in Accounts.json,
@@ -256,6 +306,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   @objc func shouldShowEULALink() -> Bool {
     return libraryAccount?.details?.getLicenseURL(.eula) != nil
   }
+
+  // MARK: - Bookmark Syncing
 
   @objc func shouldShowSyncButton() -> Bool {
     guard let libraryDetails = libraryAccount?.details else {
@@ -462,42 +514,5 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       self?.juvenileAuthIsOngoing = false
       self?.juvenileAuthLock.unlock()
     }
-  }
-
-  /// Performs log out using the given executor verifying no book registry
-  /// syncing or book downloads/returns authorizations are in progress.
-  /// - Parameter logOutExecutor: The object actually performing the log out.
-  /// - Returns: An alert the caller needs to present.
-  @objc func logOutOrWarn(using logOutExecutor: NYPLLogOutExecutor) -> UIAlertController? {
-
-    let title = NSLocalizedString("SignOut",
-                                  comment: "Title for sign out action")
-    let msg: String
-    if bookRegistry.syncing {
-      msg = NSLocalizedString("Your bookmarks and reading positions are in the process of being saved to the server. Would you like to stop that and continue logging out?",
-                              comment: "Warning message offering the user the choice of interrupting book registry syncing to log out immediately, or waiting until that finishes.")
-    } else if let drm = drmAuthorizer, drm.workflowsInProgress {
-      msg = NSLocalizedString("It looks like you may have a book download or return in progress. Would you like to stop that and continue logging out?",
-                              comment: "Warning message offering the user the choice of interrupting the download or return of a book to log out immediately, or waiting until that finishes.")
-    } else {
-      logOutExecutor.performLogOut()
-      return nil
-    }
-
-    let alert = UIAlertController(title: title,
-                                  message: msg,
-                                  preferredStyle: .alert)
-    alert.addAction(
-      UIAlertAction(title: title,
-                    style: .destructive,
-                    handler: { _ in
-                      logOutExecutor.performLogOut()
-      }))
-    alert.addAction(
-      UIAlertAction(title: NSLocalizedString("Wait", comment: "button title"),
-                    style: .cancel,
-                    handler: nil))
-
-    return alert
   }
 }

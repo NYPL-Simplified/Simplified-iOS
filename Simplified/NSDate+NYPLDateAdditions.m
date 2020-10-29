@@ -14,10 +14,10 @@
   dispatch_once(&onceToken, ^{
     dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssX5";
     dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
   });
 
+  dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssX5";
   NSDate *const date = [dateFormatter dateFromString:string];
   
   if(!date) {
@@ -36,17 +36,12 @@
   }
 
   NSDate *date;
-  if (@available(iOS 10, *)) {
-    NSISO8601DateFormatter *const ISODateFormatter = [[NSISO8601DateFormatter alloc] init];
+  NSISO8601DateFormatter *const ISODateFormatter = [[NSISO8601DateFormatter alloc] init];
 
-    ISODateFormatter.formatOptions = NSISO8601DateFormatWithFullDate;
-    ISODateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+  ISODateFormatter.formatOptions = NSISO8601DateFormatWithFullDate;
+  ISODateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
 
-    date = [ISODateFormatter dateFromString:string];
-  } else {
-    // remove once we drop support of iOS 9
-    date = [self dateWithISO8601DateStringDeprecated:string];
-  }
+  date = [ISODateFormatter dateFromString:string];
 
   if(!date) {
     NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
@@ -55,21 +50,6 @@
   }
 
   return date;
-}
-
-// remove once we drop support of iOS 9
-+ (NSDate *)dateWithISO8601DateStringDeprecated:(NSString *const)string
-{
-  static NSDateFormatter *formatter;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    formatter = [[NSDateFormatter alloc] init];
-    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-  });
-
-  formatter.dateFormat = @"yyyy-MM-dd";
-  return [formatter dateFromString:string];
 }
 
 - (NSString *)RFC3339String

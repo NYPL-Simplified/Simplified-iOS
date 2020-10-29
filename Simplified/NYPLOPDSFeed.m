@@ -99,7 +99,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
                                 message:nil
                                metadata:@{
                                  @"Request": [request loggableString],
-                                 @"Response": response,
+                                 @"Response": response ?: @"N/A",
                                }];
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
