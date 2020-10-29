@@ -33,12 +33,12 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
         indirectAcquisitions: [NYPLOPDSIndirectAcquisition](),
         availability: NYPLOPDSAcquisitionAvailabilityUnlimited.init()
       )
-      let fakeBook = NYPLBook.init(
+      let fakeBook = NYPLBook(
         acquisitions: [fakeAcquisition],
         bookAuthors: [NYPLBookAuthor](),
         categoryStrings: [String](),
         distributor: "",
-        identifier: config["identifier"],
+        identifier: config["identifier"]!,
         imageURL: emptyUrl,
         imageThumbnailURL: emptyUrl,
         published: Date.init(),
@@ -54,7 +54,7 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
         seriesURL: emptyUrl,
         revokeURL: emptyUrl,
         report: emptyUrl
-      )!
+      )
 
       // Calculate target filepath to use as "book location"
       let bookUrl = NYPLMyBooksDownloadCenter.shared()?.fileURL(forBookIndentifier: fakeBook.identifier)
@@ -80,7 +80,11 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
   }
 
   func testDownloadedContentType() {
+    let acquisitionsDictionaries = NYPLFake.opdsEntry.acquisitions.map {
+      $0.dictionaryRepresentation()
+    }
     let optBook = NYPLBook(dictionary: [
+      "acquisitions": acquisitionsDictionaries,
       "title": "Tractatus",
       "categories": "some cat",
       "id": "123",
