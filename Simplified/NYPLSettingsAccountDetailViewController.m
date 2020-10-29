@@ -511,19 +511,34 @@ Authenticating with any of those barcodes should work.
 // must be called on the main thread
 - (void)logIn
 {
+  [self logInWithContext:@"Settings Tab"];
+}
+
+// TODO: SIMPLY-2510 move to business logic
+- (void)logInWithContext:(NSString *)context
+{
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NSNotification.NYPLIsSigningIn
    object:@(YES)];
-  
+
+  [self businessLogicWillSignIn:self.businessLogic];
+
   if (self.businessLogic.selectedAuthentication.isOauth) {
     [self.businessLogic oauthLogIn];
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
     [self.businessLogic.samlHelper logIn];
   } else {
+    [self validateCredentialsWithContext:context];
+  }
+}
+
+- (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
+{
+  if (!self.businessLogic.selectedAuthentication.isOauth
+      && !self.businessLogic.selectedAuthentication.isSaml) {
     [self.usernameTextField resignFirstResponder];
     [self.PINTextField resignFirstResponder];
     [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-    [self validateCredentials];
   }
 }
 
@@ -698,11 +713,11 @@ Authenticating with any of those barcodes should work.
 }
 
 // TODO: SIMPLY-2510 move to business logic
-- (void)validateCredentials
+- (void)validateCredentialsWithContext:(NSString *)context
 {
   NSURLRequest *const request = [self.businessLogic
                                  makeRequestFor:NYPLAuthRequestTypeSignIn
-                                 context:@"Settings Tab"];
+                                 context:context];
 
   self.businessLogic.isCurrentlySigningIn = YES;
 
@@ -723,7 +738,7 @@ Authenticating with any of those barcodes should work.
                                     loggingContext:@{
                                       @"Request": request.loggableString,
                                       @"Response": response ?: @"N/A",
-                                      @"Context": @"Settings Tab",
+                                      @"Context": context,
                                     }];
 #else
       [weakSelf finalizeSignInForDRMAuthorization:YES error:nil errorMessage:nil];
@@ -737,11 +752,11 @@ Authenticating with any of those barcodes should work.
                             loggingContext:@{
                               @"Request": request.loggableString,
                               @"Response": response ?: @"N/A",
-                              @"Context": @"Settings Tab",
+                              @"Context": context,
                             }];
     }
   }];
-  
+
   [task resume];
 }
 

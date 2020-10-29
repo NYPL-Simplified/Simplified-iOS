@@ -936,19 +936,34 @@ completionHandler:(void (^)(void))handler
 
 - (void)logIn
 {
+  [self logInWithContext:@"Sign-in modal"];
+}
+
+// TODO: SIMPLY-2510 move to business logic
+- (void)logInWithContext:(NSString *)context
+{
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NSNotification.NYPLIsSigningIn
    object:@(YES)];
+
+  [self businessLogicWillSignIn:self.businessLogic];
 
   if (self.businessLogic.selectedAuthentication.isOauth) {
     [self.businessLogic oauthLogIn];
   } else if (self.businessLogic.selectedAuthentication.isSaml) {
     [self.businessLogic.samlHelper logIn];
   } else {
+    [self validateCredentialsWithContext:context];
+  }
+}
+
+- (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
+{
+  if (!self.businessLogic.selectedAuthentication.isOauth
+      && !self.businessLogic.selectedAuthentication.isSaml) {
     [self.usernameTextField resignFirstResponder];
     [self.PINTextField resignFirstResponder];
     [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-    [self validateCredentials];
   }
 }
 
@@ -1008,17 +1023,13 @@ completionHandler:(void (^)(void))handler
   [self updateLoginLogoutCellAppearance];
 }
 
-
-
-
-
 // TODO: SIMPLY-2510 move to business logic
-- (void)validateCredentials
+- (void)validateCredentialsWithContext:(NSString *)context
 {
   NSURLRequest *const request = [self.businessLogic
                                  makeRequestFor:NYPLAuthRequestTypeSignIn
-                                 context:@"Sign-In modal"];
-  
+                                 context:context];
+
   self.businessLogic.isCurrentlySigningIn = YES;
 
   __weak __auto_type weakSelf = self;
@@ -1032,14 +1043,13 @@ completionHandler:(void (^)(void))handler
     weakSelf.businessLogic.isCurrentlySigningIn = NO;
 
     NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
-
     if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
       [weakSelf.businessLogic drmAuthorizeUserData:data
                                     loggingContext:@{
                                       @"Request": request.loggableString,
                                       @"Response": response ?: @"N/A",
-                                      @"Context": @"Sign-In Modal",
+                                      @"Context": context,
                                     }];
 #else
       [weakSelf finalizeSignInForDRMAuthorization:YES error:nil errorMessage:nil];
@@ -1053,7 +1063,7 @@ completionHandler:(void (^)(void))handler
                             loggingContext:@{
                               @"Request": request.loggableString,
                               @"Response": response ?: @"N/A",
-                              @"Context": @"Sign-In Modal",
+                              @"Context": context,
                             }];
     }
   }];
