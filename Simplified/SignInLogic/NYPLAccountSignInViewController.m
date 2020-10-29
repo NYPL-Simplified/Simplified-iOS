@@ -45,7 +45,6 @@ typedef NS_ENUM(NSInteger, Section) {
 
 // state machine
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
-@property (nonatomic) BOOL isCurrentlySigningIn;
 @property (nonatomic) BOOL hiddenPIN;
 
 // UI
@@ -351,7 +350,7 @@ CGFloat const marginPadding = 2.0;
 
   if (![[NYPLADEPT sharedInstance] isUserAuthorized:[userAccount userID]
                                          withDevice:[userAccount deviceID]]) {
-    if ([userAccount hasBarcodeAndPIN] && !self.isCurrentlySigningIn) {
+    if ([userAccount hasBarcodeAndPIN] && !self.businessLogic.isCurrentlySigningIn) {
       self.usernameTextField.text = userAccount.barcode;
       self.PINTextField.text = userAccount.PIN;
       [self logIn];
@@ -904,7 +903,7 @@ completionHandler:(void (^)(void))handler
 
 - (void)updateLoginLogoutCellAppearance
 {
-  if (self.isCurrentlySigningIn) {
+  if (self.businessLogic.isCurrentlySigningIn) {
     return;
   }
   if(self.businessLogic.isSignedIn) {
@@ -1010,6 +1009,9 @@ completionHandler:(void (^)(void))handler
 }
 
 
+
+
+
 // TODO: SIMPLY-2510 move to business logic
 - (void)validateCredentials
 {
@@ -1017,7 +1019,7 @@ completionHandler:(void (^)(void))handler
                                  makeRequestFor:NYPLAuthRequestTypeSignIn
                                  context:@"Sign-In modal"];
   
-  self.isCurrentlySigningIn = YES;
+  self.businessLogic.isCurrentlySigningIn = YES;
 
   __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
@@ -1027,18 +1029,18 @@ completionHandler:(void (^)(void))handler
                        NSURLResponse *const response,
                        NSError *const error) {
 
-    weakSelf.isCurrentlySigningIn = NO;
+    weakSelf.businessLogic.isCurrentlySigningIn = NO;
 
     NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
 
     if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
-      [weakSelf drmAuthorizeUserData:data
-                      loggingContext:@{
-                        @"Request": request.loggableString,
-                        @"Response": response ?: @"N/A",
-                        @"Context": @"Sign-In Modal",
-                      }];
+      [weakSelf.businessLogic drmAuthorizeUserData:data
+                                    loggingContext:@{
+                                      @"Request": request.loggableString,
+                                      @"Response": response ?: @"N/A",
+                                      @"Context": @"Sign-In Modal",
+                                    }];
 #else
       [weakSelf finalizeSignInForDRMAuthorization:YES error:nil errorMessage:nil];
 #endif
@@ -1058,107 +1060,6 @@ completionHandler:(void (^)(void))handler
 
   [task resume];
 }
-
-#if defined(FEATURE_DRM_CONNECTOR)
-// TODO: SIMPLY-2510 move to business logic
-- (void)drmAuthorizeUserData:(NSData*)data
-              loggingContext:(NSDictionary<NSString*, id> *)loggingContext
-{
-  NSError *pDocError = nil;
-  UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
-  if (!pDoc) {
-    [self finalizeSignInForDRMAuthorization:NO
-                                      error:nil
-                               errorMessage:@"Error parsing user profile document"];
-    [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                             summary:@"SignIn: unable to parse user profile doc"
-                                             barcode:nil
-                                            metadata:loggingContext];
-    return;
-  }
-
-  if (pDoc.authorizationIdentifier) {
-    [self.businessLogic.userAccount setAuthorizationIdentifier:pDoc.authorizationIdentifier];
-  } else {
-    NYPLLOG(@"Authorization ID (Barcode String) was nil.");
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
-                              summary:@"SignIn: no authorization ID in user profile doc"
-                              message:nil
-                             metadata:loggingContext];
-  }
-
-  NYPLLOG_F(@"\nLicensor: %@",pDoc.drm.firstObject.licensor);
-
-  if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
-    [self.businessLogic.userAccount setLicensor:pDoc.drm[0].licensor];
-  } else {
-    NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
-                              summary:@"SignIn: no licensor token in user profile doc"
-                              message:nil
-                             metadata:loggingContext];
-
-    [self finalizeSignInForDRMAuthorization:NO
-                                      error:nil
-                               errorMessage:@"No credentials were received to authorize access to books with DRM."];
-    return;
-  }
-
-  NSMutableArray *licensorItems = [[pDoc.drm[0].clientToken stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-  NSString *tokenPassword = [licensorItems lastObject];
-  [licensorItems removeLastObject];
-  NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
-
-  [self drmAuthorizeWithUsername:tokenUsername
-                        password:tokenPassword
-                  loggingContext:loggingContext];
-}
-
-// TODO: SIMPLY-2510 move to business logic
-- (void)drmAuthorizeWithUsername:(NSString *)tokenUsername
-                        password:(NSString *)tokenPassword
-                  loggingContext:(NSDictionary<NSString*, id> *)loggingContext
-{
-  NYPLLOG(@"***DRM Auth/Activation Attempt***");
-  NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
-  NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-
-  [[NYPLADEPT sharedInstance]
-   authorizeWithVendorID:[self.businessLogic.userAccount licensor][@"vendor"]
-   username:tokenUsername
-   password:tokenPassword
-   completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      if (self) {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self];
-      }
-    }];
-
-    NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
-    NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
-    NYPLLOG_F(@"UserID: %@\n",userID);
-    NYPLLOG_F(@"DeviceID: %@\n",deviceID);
-    NYPLLOG(@"***DRM Auth/Activation Completion***");
-
-    if (success) {
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [self.businessLogic.userAccount setUserID:userID];
-        [self.businessLogic.userAccount setDeviceID:deviceID];
-      }];
-    } else {
-      [NYPLErrorLogger logLocalAuthFailedWithError:error
-                                           library:self.businessLogic.libraryAccount
-                                          metadata:loggingContext];
-    }
-
-    [self finalizeSignInForDRMAuthorization:success error:error errorMessage:nil];
-  }];
-
-  [self performSelector:@selector(dismissAfterUnexpectedDRMDelay)
-             withObject:self afterDelay:25];
-}
-#endif
 
 - (void)alertUserOfValidationError:(NSError * const)error
                     problemDocData:(NSData * const)data
@@ -1212,22 +1113,6 @@ completionHandler:(void (^)(void))handler
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
                                                                   animated:YES
                                                                 completion:nil];
-}
-
-- (void)dismissAfterUnexpectedDRMDelay
-{
-  __weak NYPLAccountSignInViewController *const weakSelf = self;
-
-  NSString *title = NSLocalizedString(@"Sign In Error", nil);
-  NSString *message = NSLocalizedString(@"The DRM Library is taking longer than expected. Please wait and try again later.\n\nIf the problem persists, try to sign out and back in again from the Library Settings menu.", nil);
-
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                            style:UIAlertActionStyleDefault
-                                          handler:^(UIAlertAction * _Nonnull __unused action) {
-                                            [weakSelf dismissViewControllerAnimated:YES completion:nil];
-                                          }]];
-  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 }
 
 - (void)keyboardDidShow:(NSNotification *const)notification

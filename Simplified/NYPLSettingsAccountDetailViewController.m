@@ -704,6 +704,8 @@ Authenticating with any of those barcodes should work.
                                  makeRequestFor:NYPLAuthRequestTypeSignIn
                                  context:@"Settings Tab"];
 
+  self.businessLogic.isCurrentlySigningIn = YES;
+
   __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
   [self.session
@@ -712,15 +714,17 @@ Authenticating with any of those barcodes should work.
                        NSURLResponse *const response,
                        NSError *const error) {
 
+    weakSelf.businessLogic.isCurrentlySigningIn = NO;
+
     NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
     if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
-      [weakSelf drmAuthorizeUserData:data
-                      loggingContext:@{
-                        @"Request": request.loggableString,
-                        @"Response": response ?: @"N/A",
-                        @"Context": @"Settings Tab",
-                      }];
+      [weakSelf.businessLogic drmAuthorizeUserData:data
+                                    loggingContext:@{
+                                      @"Request": request.loggableString,
+                                      @"Response": response ?: @"N/A",
+                                      @"Context": @"Settings Tab",
+                                    }];
 #else
       [weakSelf finalizeSignInForDRMAuthorization:YES error:nil errorMessage:nil];
 #endif
@@ -740,97 +744,6 @@ Authenticating with any of those barcodes should work.
   
   [task resume];
 }
-
-#if defined(FEATURE_DRM_CONNECTOR)
-// TODO: SIMPLY-2510 move to business logic
-- (void)drmAuthorizeUserData:(NSData*)data
-              loggingContext:(NSDictionary<NSString*, id> *)loggingContext
-{
-  NSError *pDocError = nil;
-  UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
-  if (!pDoc) {
-    [self finalizeSignInForDRMAuthorization:NO
-                                      error:nil
-                               errorMessage:@"Error parsing user profile document"];
-    [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                             summary:@"SignIn: unable to parse user profile doc"
-                                             barcode:nil
-                                            metadata:loggingContext];
-    return;
-  }
-
-  if (pDoc.authorizationIdentifier) {
-    [self.businessLogic.userAccount setAuthorizationIdentifier:pDoc.authorizationIdentifier];
-  } else {
-    NYPLLOG(@"Authorization ID (Barcode String) was nil.");
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
-                              summary:@"SignIn: no authorization ID in user profile doc"
-                              message:nil
-                             metadata:loggingContext];
-  }
-
-  NYPLLOG_F(@"\nLicensor: %@",pDoc.drm.firstObject.licensor);
-
-  if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
-    [self.businessLogic.userAccount setLicensor:pDoc.drm[0].licensor];
-  } else {
-    NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
-                              summary:@"SignIn: no licensor token in user profile doc"
-                              message:nil
-                             metadata:loggingContext];
-
-    [self finalizeSignInForDRMAuthorization:NO
-                                      error:nil
-                               errorMessage:@"No credentials were received to authorize access to books with DRM."];
-    return;
-  }
-
-  NSMutableArray *licensorItems = [[pDoc.drm[0].clientToken stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-  NSString *tokenPassword = [licensorItems lastObject];
-  [licensorItems removeLastObject];
-  NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
-
-  [self drmAuthorizeWithUsername:tokenUsername
-                        password:tokenPassword
-                  loggingContext:loggingContext];
-}
-
-// TODO: SIMPLY-2510 move to business logic
-- (void)drmAuthorizeWithUsername:(NSString *)tokenUsername
-                        password:(NSString *)tokenPassword
-                  loggingContext:(NSDictionary<NSString*, id> *)loggingContext
-{
-  NYPLLOG(@"***DRM Auth/Activation Attempt***");
-  NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
-  NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-
-  [[NYPLADEPT sharedInstance]
-   authorizeWithVendorID:[self.businessLogic.userAccount licensor][@"vendor"]
-   username:tokenUsername
-   password:tokenPassword
-   completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-    NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
-    NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
-    NYPLLOG_F(@"UserID: %@\n",userID);
-    NYPLLOG_F(@"DeviceID: %@\n",deviceID);
-    NYPLLOG(@"***DRM Auth/Activation Completion***");
-
-    if (success) {
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [self.businessLogic.userAccount setUserID:userID];
-        [self.businessLogic.userAccount setDeviceID:deviceID];
-      }];
-    } else {
-      [NYPLErrorLogger logLocalAuthFailedWithError:error
-                                           library:self.businessLogic.libraryAccount
-                                          metadata:loggingContext];
-    }
-
-    [self finalizeSignInForDRMAuthorization:success error:error errorMessage:nil];
-  }];
-}
-#endif
 
 - (void)alertUserOfValidationError:(NSError * const)error
                     problemDocData:(NSData * const)data
