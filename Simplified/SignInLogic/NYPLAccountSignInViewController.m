@@ -17,7 +17,7 @@
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLSettingsAccountURLSessionChallengeHandler.h"
+#import "NYPLSignInURLSessionChallengeHandler.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -60,7 +60,7 @@ typedef NS_ENUM(NSInteger, Section) {
 
 // networking
 @property (nonatomic) NSURLSession *session;
-@property (nonatomic) NYPLSettingsAccountURLSessionChallengeHandler *urlSessionDelegate;
+@property (nonatomic) NYPLSignInURLSessionChallengeHandler *urlSessionDelegate;
 
 @end
 
@@ -72,9 +72,6 @@ typedef NS_ENUM(NSInteger, Section) {
 CGFloat const marginPadding = 2.0;
 
 #pragma mark - NYPLSignInBusinessLogicUIDelegate properties
-
-@synthesize authToken;
-@synthesize patron;
 
 - (NSString *)context
 {
@@ -141,7 +138,7 @@ CGFloat const marginPadding = 2.0;
   
   configuration.timeoutIntervalForResource = 15.0;
 
-  _urlSessionDelegate = [[NYPLSettingsAccountURLSessionChallengeHandler alloc]
+  _urlSessionDelegate = [[NYPLSignInURLSessionChallengeHandler alloc]
                            initWithUIDelegate:self];
 
   self.session = [NSURLSession
@@ -353,7 +350,7 @@ CGFloat const marginPadding = 2.0;
     if ([userAccount hasBarcodeAndPIN] && !self.businessLogic.isCurrentlySigningIn) {
       self.usernameTextField.text = userAccount.barcode;
       self.PINTextField.text = userAccount.PIN;
-      [self logIn];
+      [self.businessLogic logIn];
     }
   }
 }
@@ -379,7 +376,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     self.businessLogic.selectedIDP = idpCell.idp;
-    [self logIn];
+    [self.businessLogic logIn];
     return;
   } else if ([sectionArray[indexPath.row] isKindOfClass:[NYPLInfoHeaderCellType class]]) {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -397,7 +394,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      [self logIn];
+      [self.businessLogic logIn];
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -416,7 +413,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             weakSelf.PINTextField.text = PIN;
             [weakSelf updateLoginLogoutCellAppearance];
             weakSelf.businessLogic.isLoggingInAfterSignUp = YES;
-            [weakSelf logIn];
+            [weakSelf.businessLogic logIn];
           }
         };
         
@@ -745,10 +742,10 @@ completionHandler:(void (^)(void))handler
 
   if (authorizeImmediately && self.businessLogic.userAccount.hasBarcodeAndPIN) {
     self.PINTextField.text = self.businessLogic.userAccount.PIN;
-    [self logIn];
+    [self.businessLogic logIn];
   } else if (self.businessLogic.userAccount.authDefinition.isOauth) {
     if (authorizeImmediately) {
-      [self logIn];
+      [self.businessLogic logIn];
     }
   } else if (self.businessLogic.userAccount.authDefinition.isSaml) {
     // there's no extra logic to do for SAML
@@ -934,33 +931,10 @@ completionHandler:(void (^)(void))handler
   }
 }
 
-- (void)logIn
-{
-  [self logInWithContext:@"Sign-in modal"];
-}
-
-// TODO: SIMPLY-2510 move to business logic
-- (void)logInWithContext:(NSString *)context
-{
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NSNotification.NYPLIsSigningIn
-   object:@(YES)];
-
-  [self businessLogicWillSignIn:self.businessLogic];
-
-  if (self.businessLogic.selectedAuthentication.isOauth) {
-    [self.businessLogic oauthLogIn];
-  } else if (self.businessLogic.selectedAuthentication.isSaml) {
-    [self.businessLogic.samlHelper logIn];
-  } else {
-    [self validateCredentialsWithContext:context];
-  }
-}
-
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
-  if (!self.businessLogic.selectedAuthentication.isOauth
-      && !self.businessLogic.selectedAuthentication.isSaml) {
+  if (!businessLogic.selectedAuthentication.isOauth
+      && !businessLogic.selectedAuthentication.isSaml) {
     [self.usernameTextField resignFirstResponder];
     [self.PINTextField resignFirstResponder];
     [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
@@ -1021,54 +995,6 @@ completionHandler:(void (^)(void))handler
   UIView *view = [self.logInSignOutCell.contentView viewWithTag:sLinearViewTag];
   [view removeFromSuperview];
   [self updateLoginLogoutCellAppearance];
-}
-
-// TODO: SIMPLY-2510 move to business logic
-- (void)validateCredentialsWithContext:(NSString *)context
-{
-  NSURLRequest *const request = [self.businessLogic
-                                 makeRequestFor:NYPLAuthRequestTypeSignIn
-                                 context:context];
-
-  self.businessLogic.isCurrentlySigningIn = YES;
-
-  __weak __auto_type weakSelf = self;
-  NSURLSessionDataTask *const task =
-  [self.session
-   dataTaskWithRequest:request
-   completionHandler:^(NSData *data,
-                       NSURLResponse *const response,
-                       NSError *const error) {
-
-    weakSelf.businessLogic.isCurrentlySigningIn = NO;
-
-    NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
-    if (statusCode == 200) {
-#if defined(FEATURE_DRM_CONNECTOR)
-      [weakSelf.businessLogic drmAuthorizeUserData:data
-                                    loggingContext:@{
-                                      @"Request": request.loggableString,
-                                      @"Response": response ?: @"N/A",
-                                      @"Context": context,
-                                    }];
-#else
-      [weakSelf finalizeSignInForDRMAuthorization:YES error:nil errorMessage:nil];
-#endif
-    } else {
-      // note: we are on the main thread because the URLSession is set up
-      // with the main queue as delegate queue.
-      [weakSelf alertUserOfValidationError:error
-                            problemDocData:data
-                                  response:response
-                            loggingContext:@{
-                              @"Request": request.loggableString,
-                              @"Response": response ?: @"N/A",
-                              @"Context": context,
-                            }];
-    }
-  }];
-
-  [task resume];
 }
 
 - (void)alertUserOfValidationError:(NSError * const)error
@@ -1180,8 +1106,6 @@ completionHandler:(void (^)(void))handler
      errorMessage:errorMessage
      withBarcode:self.usernameTextField.text
      pin:self.PINTextField.text
-     authToken:self.authToken
-     patron:self.patron
      cookies:self.cookies];
   }];
 }

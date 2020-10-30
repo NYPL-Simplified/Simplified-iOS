@@ -24,16 +24,12 @@ extension NYPLSignInBusinessLogic {
   ///   This can be a localization key.
   ///   - barcode: The new barcode, if available.
   ///   - pin: The new PIN, if barcode is provided.
-  ///   - authToken: the token if `selectedAuthentication` is OAuth or SAML.
-  ///   - patron: The patron info for OAuth / SAML authentication.
   ///   - cookies: Cookies for SAML authentication.
   @objc func finalizeSignIn(forDRMAuthorization drmSuccess: Bool,
                             error: Error?,
                             errorMessage: String?,
                             withBarcode barcode: String?,
                             pin: String?,
-                            authToken: String?,
-                            patron: [String:Any]?,
                             cookies: [HTTPCookie]?) {
 
     updateUserAccount(forDRMAuthorization: drmSuccess,

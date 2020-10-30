@@ -1,15 +1,15 @@
 //
-//  NYPLSettingsAccountURLSessionChallengeHandler.m
+//  NYPLSignInURLSessionChallengeHandler.m
 //  SimplyE
 //
 //  Created by Ettore Pasquini on 2/21/20.
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-#import "NYPLSettingsAccountURLSessionChallengeHandler.h"
+#import "NYPLSignInURLSessionChallengeHandler.h"
 #import "SimplyE-Swift.h"
 
-@implementation NYPLSettingsAccountURLSessionChallengeHandler
+@implementation NYPLSignInURLSessionChallengeHandler
 
 - (instancetype)initWithUIDelegate:(id<NYPLSettingsAccountUIDelegate>)uiDelegate
 {

@@ -136,8 +136,8 @@ extension NYPLSignInBusinessLogic {
         return
     }
 
-    uiDelegate?.authToken = authToken
-    uiDelegate?.patron = parsedPatron
-    uiDelegate?.validateCredentials()
+    self.authToken = authToken
+    self.patron = parsedPatron
+    validateCredentials()
   }
 }
