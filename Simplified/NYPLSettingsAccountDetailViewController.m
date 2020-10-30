@@ -1601,6 +1601,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (void)updateLoginLogoutCellAppearance
 {
   if([self.selectedUserAccount hasCredentials]) {
+    // check if we have added the activity view for signing out
+    if ([self.logInSignOutCell.contentView viewWithTag:sLinearViewTag] != nil) {
+      return;
+    }
+
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", @"Title for sign out action");
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1636,6 +1641,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     return;
   }
 
+  // check if we already added the activity view
+  if ([self.logInSignOutCell.contentView viewWithTag:sLinearViewTag] != nil) {
+    return;
+  }
+
   UIActivityIndicatorView *aiv;
   if (@available(iOS 13.0, *)) {
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
@@ -1665,9 +1675,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [linearView autoSetDimensionsToSize:CGSizeMake(linearView.frame.size.width, linearView.frame.size.height)];
   
   self.logInSignOutCell.textLabel.text = nil;
-  if (![self.logInSignOutCell.contentView viewWithTag:sLinearViewTag]) {
-    [self.logInSignOutCell.contentView addSubview:linearView];
-  }
+  [self.logInSignOutCell.contentView addSubview:linearView];
   [linearView autoCenterInSuperview];
 }
 

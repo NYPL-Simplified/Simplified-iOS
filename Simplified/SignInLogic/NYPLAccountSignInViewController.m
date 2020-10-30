@@ -956,6 +956,11 @@ completionHandler:(void (^)(void))handler
   if (self.logInSignOutCell.contentView == nil) {
     return;
   }
+
+  // check if we already added the activity view
+  if ([self.logInSignOutCell.contentView viewWithTag:sLinearViewTag] != nil) {
+    return;
+  }
   
   UIActivityIndicatorView *const activityIndicatorView =
   [[UIActivityIndicatorView alloc]
@@ -982,13 +987,8 @@ completionHandler:(void (^)(void))handler
   [linearView autoSetDimensionsToSize:CGSizeMake(linearView.frame.size.width, linearView.frame.size.height)];
   
   self.logInSignOutCell.textLabel.text = nil;
-  if (![self.logInSignOutCell.contentView viewWithTag:sLinearViewTag]) {
-    [self.logInSignOutCell.contentView addSubview:linearView];
-  }
-
-  if (linearView.superview) {
-    [linearView autoCenterInSuperview];
-  }
+  [self.logInSignOutCell.contentView addSubview:linearView];
+  [linearView autoCenterInSuperview];
 }
 
 - (void)removeActivityTitle {
