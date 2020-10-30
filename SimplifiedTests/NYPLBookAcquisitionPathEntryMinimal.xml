@@ -1,0 +1,45 @@
+
+<entry schema:additionalType="http://schema.org/Book">
+  <id>urn:librarysimplified.org/terms/id/Bibliotheca%20ID/eyk62g9</id>
+  <title>The Melody Lingers On</title>
+  <updated>2017-11-27T16:07:22Z</updated>
+  <simplified:pwid>45aa132f-3527-6c3a-884b-a2dea8247d79</simplified:pwid>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/borrow" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/epub+zip"/>
+    </opds:indirectAcquisition>
+    <opds:indirectAcquisition type="application/unsupported">
+      <opds:indirectAcquisition type="application/epub+zip"/>
+    </opds:indirectAcquisition>
+    <opds:indirectAcquisition type="application/pdf"/>
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/pdf"/>
+    </opds:indirectAcquisition>
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/pdf"/>
+      <opds:indirectAcquisition type="application/epub+zip"/>
+    </opds:indirectAcquisition>
+    <opds:availability status="available"/>
+    <opds:holds total="0"/>
+    <opds:copies available="1" total="2"/>
+  </link>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/borrow" rel="http://opds-spec.org/acquisition/open-access" type="application/atom+xml;type=entry;profile=opds-catalog">
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/pdf"/>
+    </opds:indirectAcquisition>
+    <opds:availability status="available"/>
+    <opds:holds total="0"/>
+    <opds:copies available="1" total="2"/>
+  </link>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/borrow" rel="http://opds-spec.org/acquisition/sample" type="application/atom+xml;type=entry;profile=opds-catalog">
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/epub+zip"/>
+    </opds:indirectAcquisition>
+    <opds:availability status="available"/>
+    <opds:holds total="0"/>
+    <opds:copies available="1" total="2"/>
+  </link>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="recommendations" title="Recommended Works"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+</entry>

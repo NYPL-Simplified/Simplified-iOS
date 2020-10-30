@@ -63,7 +63,7 @@ import UIKit
     let bodyWithoutBook = "\n\n---\nIdiom: \(idiom)\nHeight: \(nativeHeight)\nOS: \(systemVersion)"
     let body: String
     if let book = book {
-      body = bodyWithoutBook + "\nTitle: \(book.title ?? "unknown")\nID: \(book.identifier ?? "unknown")"
+      body = bodyWithoutBook + "\nTitle: \(book.title)\nID: \(book.identifier)"
     } else {
       body = bodyWithoutBook
     }

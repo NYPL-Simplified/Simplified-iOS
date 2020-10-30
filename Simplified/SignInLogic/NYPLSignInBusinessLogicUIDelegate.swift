@@ -27,4 +27,24 @@ import Foundation
   /// The business logic to validate the current credentials.
   /// - TODO: SIMPLY-2510 Do not use, this is here only temporarily.
   func validateCredentials()
+
+  /// After signing in and authorizing for DRM successfully or not, the
+  /// business logic will let the UI know the result by calling this method.
+  /// - Parameters:
+  ///   - success: Whether DRM authorization succeeded or not.
+  ///   - error: The error that occurred, if any.
+  ///   - errorMessage: A specific error message in case an `error` object is
+  ///   missing.
+  func finalizeSignIn(forDRMAuthorization success: Bool,
+                      error: NSError?,
+                      errorMessage: String?)
+
+  @objc(dismissViewControllerAnimated:completion:)
+  func dismiss(animated flag: Bool, completion: (() -> Void)?)
+
+  @objc(presentViewController:animated:completion:)
+  func present(_ viewControllerToPresent: UIViewController,
+               animated flag: Bool,
+               completion: (() -> Void)?)
+
 }

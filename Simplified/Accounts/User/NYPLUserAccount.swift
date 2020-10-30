@@ -19,7 +19,14 @@ private enum StorageKey: String {
   case cookies = "NYPLAccountAuthCookiesKey"
 
   func keyForLibrary(uuid libraryUUID: String?) -> String {
-    guard let libraryUUID = libraryUUID else { return self.rawValue }
+    guard
+      // historically user data for NYPL has not used keys that contain the
+      // library UUID.
+      let libraryUUID = libraryUUID,
+      libraryUUID != AccountsManager.shared.NYPLAccountUUID else {
+        return self.rawValue
+    }
+
     return "\(self.rawValue)_\(libraryUUID)"
   }
 }
@@ -161,11 +168,8 @@ private enum StorageKey: String {
     defer {
       shared.accountInfoLock.unlock()
     }
-    if let uuid = libraryUUID, uuid != AccountsManager.shared.NYPLAccountUUID {
-      shared.libraryUUID = uuid
-    } else {
-      shared.libraryUUID = nil
-    }
+
+    shared.libraryUUID = libraryUUID
 
     return shared
   }
