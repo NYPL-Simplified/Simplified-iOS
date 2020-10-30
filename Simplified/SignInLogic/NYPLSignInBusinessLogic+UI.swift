@@ -15,7 +15,6 @@ extension NYPLSignInBusinessLogic {
   /// case that was set, as well as dismissing the presented view controller
   /// in case the `uiDelegate` was a modal.
   /// - Note: This does not log the error/message to Crashlytics.
-  /// - Important: This must be called on the main thread.
   /// - Parameters:
   ///   - drmSuccess: whether the DRM authorization was successful or not.
   ///   Ignored if the app is built without DRM support.
@@ -25,42 +24,44 @@ extension NYPLSignInBusinessLogic {
   ///   - barcode: The new barcode, if available.
   ///   - pin: The new PIN, if barcode is provided.
   ///   - cookies: Cookies for SAML authentication.
-  @objc func finalizeSignIn(forDRMAuthorization drmSuccess: Bool,
-                            error: Error?,
-                            errorMessage: String?,
-                            withBarcode barcode: String?,
-                            pin: String?,
-                            cookies: [HTTPCookie]?) {
+  func finalizeSignIn(forDRMAuthorization drmSuccess: Bool,
+                      error: Error?,
+                      errorMessage: String?) {
+    NYPLMainThreadRun.asyncIfNeeded {
+      defer {
+        self.uiDelegate?.businessLogicDidCompleteSignIn(self)
+      }
 
-    updateUserAccount(forDRMAuthorization: drmSuccess,
-                      withBarcode: barcode,
-                      pin: pin,
-                      authToken: authToken,
-                      patron: patron,
-                      cookies: cookies)
+      self.updateUserAccount(forDRMAuthorization: drmSuccess,
+                             withBarcode: self.uiDelegate?.username,
+                             pin: self.uiDelegate?.pin,
+                             authToken: self.authToken,
+                             patron: self.patron,
+                             cookies: self.cookies)
 
-    #if FEATURE_DRM_CONNECTOR
-    guard drmSuccess else {
-      NotificationCenter.default.post(name: .NYPLSyncEnded, object: nil)
+      #if FEATURE_DRM_CONNECTOR
+      guard drmSuccess else {
+        NotificationCenter.default.post(name: .NYPLSyncEnded, object: nil)
 
-      let alert = NYPLAlertUtils.alert(title: "SettingsAccountViewControllerLoginFailed",
-                                       message: errorMessage,
-                                       error: error as NSError?)
-      NYPLRootTabBarController.shared()?
-        .safelyPresentViewController(alert, animated: true, completion: nil)
-      return
-    }
-    #endif
+        let alert = NYPLAlertUtils.alert(title: "SettingsAccountViewControllerLoginFailed",
+                                         message: errorMessage,
+                                         error: error as NSError?)
+        NYPLRootTabBarController.shared()?
+          .safelyPresentViewController(alert, animated: true, completion: nil)
+        return
+      }
+      #endif
 
-    // no need to force a login, as we just logged in successfully
-    ignoreSignedInState = false
+      // no need to force a login, as we just logged in successfully
+      self.ignoreSignedInState = false
 
-    if let completionHandler = completionHandler {
-      self.completionHandler = nil
-      if isLoggingInAfterSignUp {
-        completionHandler()
-      } else {
-        uiDelegate?.dismiss(animated: true, completion: completionHandler)
+      if let completionHandler = self.completionHandler {
+        self.completionHandler = nil
+        if self.isLoggingInAfterSignUp {
+          completionHandler()
+        } else {
+          self.uiDelegate?.dismiss(animated: true, completion: completionHandler)
+        }
       }
     }
   }

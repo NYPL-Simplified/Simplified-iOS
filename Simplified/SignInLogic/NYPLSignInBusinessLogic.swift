@@ -42,7 +42,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
              universalLinksSettings: NYPLUniversalLinksSettings,
              bookRegistry: NYPLBookRegistrySyncing,
              userAccountProvider: NYPLUserAccountProvider.Type,
-             uiDelegate: (NYPLSignInBusinessLogicUIDelegate & NYPLSettingsAccountUIDelegate)?,
+             uiDelegate: NYPLSignInBusinessLogicUIDelegate?,
              drmAuthorizer: NYPLDRMAuthorizing?) {
     self.uiDelegate = uiDelegate
     self.libraryAccountID = libraryAccountID
@@ -220,17 +220,24 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// including those that require negotiation with 3rd parties (such as
   /// Clever and SAML), validate said credentials against the Circulation
   /// Manager servers and call back to the UI once that's concluded.
-  @objc func validateCredentials() {
+  func validateCredentials() {
     isCurrentlySigningIn = true
 
     guard let req = makeRequest(for: .signIn, context: uiContext) else {
       NYPLMainThreadRun.asyncIfNeeded {
-        // this opens a generic alert message, which is about all we can do in
-        // this sort of unrecoverable circumstance
-        self.uiDelegate?.alertUser(ofValidationError: nil,
-                                   problemDocData: nil,
-                                   response: nil,
-                                   loggingContext: ["Context": self.uiContext])
+        let error = NSError(domain: NYPLSimplyEDomain,
+                            code: NYPLErrorCode.noURL.rawValue,
+                            userInfo: [
+                              NSLocalizedDescriptionKey:
+                                NSLocalizedString("Unable to contact server because the server didn't provide a URL for signing in.",
+                                                  comment: "Error message for when the library profile url is missing from the authentication document the server provided."),
+                              NSLocalizedRecoverySuggestionErrorKey:
+                                NSLocalizedString("Try force-quitting the app and repeat the sign-in process.",
+                                                  comment: "Recovery instructions for when the URL to sign in is missing")])
+        self.handleNetworkError(error,
+                                problemDocData: nil,
+                                response: nil,
+                                loggingContext: ["Context": self.uiContext])
       }
       return
     }
@@ -243,6 +250,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       let loggingContext: [String: Any] = [
         "Request": req.loggableString,
         "Response": response ?? "N/A",
+        "Attempted Barcode": self.uiDelegate?.username?.md5hex() ?? "N/A",
         "Data is nil?": "\(data == nil)",
         "Context": self.uiContext]
 
@@ -250,10 +258,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
         let httpResponse = response as? HTTPURLResponse,
         httpResponse.statusCode == 200,
         let responseData = data else {
-          self.uiDelegate?.alertUser(ofValidationError: error as NSError?,
-                                     problemDocData: data,
-                                     response: response,
-                                     loggingContext: loggingContext)
+          self.handleNetworkError(error as NSError?,
+                                  problemDocData: data,
+                                  response: response,
+                                  loggingContext: loggingContext)
           return
       }
 
@@ -272,11 +280,57 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     task.resume()
   }
 
+  private func handleNetworkError(_ error: Error?,
+                                  problemDocData: Data?,
+                                  response: URLResponse?,
+                                  loggingContext: [String: Any]?) {
+    let problemDoc: NYPLProblemDocument?
+    if let problemDocData = problemDocData, response?.isProblemDocument() ?? false {
+      do {
+        problemDoc = try NYPLProblemDocument.fromData(problemDocData)
+      } catch(let parseError) {
+        problemDoc = nil
+        NYPLErrorLogger.logProblemDocumentParseError(parseError as NSError,
+                                                     problemDocumentData: problemDocData,
+                                                     url: nil,
+                                                     summary: "Sign-in validation: Problem Doc parse error",
+                                                     metadata: loggingContext)
+      }
+    } else {
+      problemDoc = nil
+    }
+
+    // if there's no response it's a client-side error that we already logged
+    if response != nil {
+      NYPLErrorLogger.logLoginError(error as NSError?,
+                                    library: libraryAccount,
+                                    response: response,
+                                    problemDocument: problemDoc,
+                                    metadata: loggingContext)
+    }
+
+    let title, message: String?
+    if let problemDoc = problemDoc {
+      title = problemDoc.title
+      message = problemDoc.detail
+    } else {
+      title = "SettingsAccountViewControllerLoginFailed"
+      message = nil
+    }
+
+    uiDelegate?.businessLogic(self,
+                              didEncounterValidationError: error,
+                              userFriendlyErrorTitle: title,
+                              andMessage: message)
+  }
+
   /// Initiates process of signing in with the server.
   @objc func logIn() {
     NotificationCenter.default.post(name: .NYPLIsSigningIn, object: true)
 
-    uiDelegate?.businessLogicWillSignIn(self)
+    NYPLMainThreadRun.asyncIfNeeded {
+      self.uiDelegate?.businessLogicWillSignIn(self)
+    }
 
     if selectedAuthentication?.isOauth ?? false {
       oauthLogIn()
