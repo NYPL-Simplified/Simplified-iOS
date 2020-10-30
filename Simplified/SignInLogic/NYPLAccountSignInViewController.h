@@ -1,3 +1,5 @@
+@import UIKit;
+
 @class NYPLSignInBusinessLogic;
 
 /// This class handles all instances of signing into current account dynamically in many

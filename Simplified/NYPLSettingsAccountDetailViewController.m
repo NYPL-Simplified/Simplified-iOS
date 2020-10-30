@@ -15,7 +15,7 @@
 #import "NYPLOPDS.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettingsAccountDetailViewController.h"
-#import "NYPLSettingsAccountURLSessionChallengeHandler.h"
+#import "NYPLSignInURLSessionChallengeHandler.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLXML.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -76,7 +76,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 // networking
 @property (nonatomic) NSURLSession *session;
-@property (nonatomic) NYPLSettingsAccountURLSessionChallengeHandler *urlSessionDelegate;
+@property (nonatomic) NYPLSignInURLSessionChallengeHandler *urlSessionDelegate;
 
 @end
 
@@ -110,12 +110,9 @@ Authenticating with any of those barcodes should work.
 
 #pragma mark - NYPLSignInBusinessLogicUIDelegate properties
 
-@synthesize authToken;
-@synthesize patron;
-
 - (NSString *)context
 {
-  return @"SignIn-settingsTab";
+  return @"Settings Tab";
 }
 
 #pragma mark - Computed variables
@@ -198,7 +195,7 @@ Authenticating with any of those barcodes should work.
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
 
-  _urlSessionDelegate = [[NYPLSettingsAccountURLSessionChallengeHandler alloc]
+  _urlSessionDelegate = [[NYPLSignInURLSessionChallengeHandler alloc]
                          initWithUIDelegate:self];
 
   self.session = [NSURLSession
@@ -508,22 +505,13 @@ Authenticating with any of those barcodes should work.
 
 #pragma mark - Account SignIn/SignOut
 
-// must be called on the main thread
-- (void)logIn
+- (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NSNotification.NYPLIsSigningIn
-   object:@(YES)];
-  
-  if (self.businessLogic.selectedAuthentication.isOauth) {
-    [self.businessLogic oauthLogIn];
-  } else if (self.businessLogic.selectedAuthentication.isSaml) {
-    [self.businessLogic.samlHelper logIn];
-  } else {
+  if (!businessLogic.selectedAuthentication.isOauth
+      && !businessLogic.selectedAuthentication.isSaml) {
     [self.usernameTextField resignFirstResponder];
     [self.PINTextField resignFirstResponder];
     [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-    [self validateCredentials];
   }
 }
 
@@ -697,54 +685,6 @@ Authenticating with any of those barcodes should work.
 
 }
 
-// TODO: SIMPLY-2510 move to business logic
-- (void)validateCredentials
-{
-  NSURLRequest *const request = [self.businessLogic
-                                 makeRequestFor:NYPLAuthRequestTypeSignIn
-                                 context:@"Settings Tab"];
-
-  self.businessLogic.isCurrentlySigningIn = YES;
-
-  __weak __auto_type weakSelf = self;
-  NSURLSessionDataTask *const task =
-  [self.session
-   dataTaskWithRequest:request
-   completionHandler:^(NSData *data,
-                       NSURLResponse *const response,
-                       NSError *const error) {
-
-    weakSelf.businessLogic.isCurrentlySigningIn = NO;
-
-    NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
-    if (statusCode == 200) {
-#if defined(FEATURE_DRM_CONNECTOR)
-      [weakSelf.businessLogic drmAuthorizeUserData:data
-                                    loggingContext:@{
-                                      @"Request": request.loggableString,
-                                      @"Response": response ?: @"N/A",
-                                      @"Context": @"Settings Tab",
-                                    }];
-#else
-      [weakSelf finalizeSignInForDRMAuthorization:YES error:nil errorMessage:nil];
-#endif
-    } else {
-      // note: we are on the main thread because the URLSession is set up
-      // with the main queue as delegate queue.
-      [weakSelf alertUserOfValidationError:error
-                            problemDocData:data
-                                  response:response
-                            loggingContext:@{
-                              @"Request": request.loggableString,
-                              @"Response": response ?: @"N/A",
-                              @"Context": @"Settings Tab",
-                            }];
-    }
-  }];
-  
-  [task resume];
-}
-
 - (void)alertUserOfValidationError:(NSError * const)error
                     problemDocData:(NSData * const)data
                           response:(NSURLResponse * const)response
@@ -765,7 +705,7 @@ Authenticating with any of those barcodes should work.
   // rely on problem document if available
   NYPLProblemDocument *problemDocument = nil;
   NSError *problemDocumentParseError = nil;
-  if (response.isProblemDocument) {
+  if (data != nil && response.isProblemDocument) {
     problemDocument = [NYPLProblemDocument fromData:data
                                               error:&problemDocumentParseError];
     if (problemDocumentParseError == nil && problemDocument != nil) {
@@ -839,8 +779,6 @@ Authenticating with any of those barcodes should work.
      errorMessage:errorMessage
      withBarcode:self.usernameTextField.text
      pin:self.PINTextField.text
-     authToken:self.authToken
-     patron:self.patron
      cookies:self.cookies];
   }];
 }
@@ -865,7 +803,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     self.businessLogic.selectedIDP = idpCell.idp;
-    [self logIn];
+    [self.businessLogic logIn];
     return;
   } else if ([sectionArray[indexPath.row] isKindOfClass:[NYPLInfoHeaderCellType class]]) {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -939,7 +877,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           alertController.view.tintColor = [NYPLConfiguration mainColor];
         }];
       } else {
-        [self logIn];
+        [self.businessLogic logIn];
       }
       break;
     }
@@ -960,7 +898,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             weakSelf.PINTextField.text = PIN;
             [weakSelf updateLoginLogoutCellAppearance];
             weakSelf.businessLogic.isLoggingInAfterSignUp = YES;
-            [weakSelf logIn];
+            [weakSelf.businessLogic logIn];
           }
         };
 

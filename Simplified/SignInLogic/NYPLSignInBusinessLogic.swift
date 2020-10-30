@@ -42,7 +42,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
              universalLinksSettings: NYPLUniversalLinksSettings,
              bookRegistry: NYPLBookRegistrySyncing,
              userAccountProvider: NYPLUserAccountProvider.Type,
-             uiDelegate: NYPLSignInBusinessLogicUIDelegate?,
+             uiDelegate: (NYPLSignInBusinessLogicUIDelegate & NYPLSettingsAccountUIDelegate)?,
              drmAuthorizer: NYPLDRMAuthorizing?) {
     self.uiDelegate = uiDelegate
     self.libraryAccountID = libraryAccountID
@@ -52,8 +52,16 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     self.userAccountProvider = userAccountProvider
     self.drmAuthorizer = drmAuthorizer
     self.samlHelper = NYPLSAMLHelper()
+    self.urlSessionDelegate = NYPLSignInURLSessionChallengeHandler(uiDelegate: uiDelegate)
+    self.urlSession = URLSession(configuration: .ephemeral,
+                                 delegate: urlSessionDelegate,
+                                 delegateQueue: OperationQueue.main)
     super.init()
     self.samlHelper.businessLogic = self
+  }
+
+  deinit {
+    self.urlSession.finishTasksAndInvalidate()
   }
 
   // Lock for ensure internal state consistency.
@@ -71,6 +79,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// The primary way for the business logic to communicate with the UI.
   @objc weak var uiDelegate: NYPLSignInBusinessLogicUIDelegate?
 
+  private var uiContext: String {
+    return uiDelegate?.context ?? "Unknown"
+  }
+
   /// This flag should be set if the instance is used to register new users.
   @objc var isLoggingInAfterSignUp: Bool = false
 
@@ -78,6 +90,12 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   @objc var completionHandler: (() -> Void)? = nil
 
   // MARK:- OAuth / SAML / Clever Info
+
+  /// The current OAuth token if available.
+  var authToken: String? = nil
+
+  /// The current patron info if available.
+  var patron: [String: Any]? = nil
 
   /// Settings used by OAuth sign-in flows.
   let universalLinksSettings: NYPLUniversalLinksSettings
@@ -138,6 +156,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   // Time-out to use for sign-in/out network requests.
   private let requestTimeoutInterval: TimeInterval = 25.0
 
+  private let urlSession: URLSession
+
+  private let urlSessionDelegate: NYPLSignInURLSessionChallengeHandler
+
   /// Creates a request object for signing in or out, depending on
   /// on which authentication mechanism is currently selected.
   /// - Parameters:
@@ -154,8 +176,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       let url = URL(string: urlStr) else {
         NYPLErrorLogger.logError(withCode: .noURL,
                                  summary: "Error \(authTypeStr)",
-                                 message: "Unable to create URL for \(authTypeStr)",
-                                 metadata: nil)
+                                 message: "Unable to create URL for \(authTypeStr)")
         return nil
     }
 
@@ -170,13 +191,13 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       // externally (via OAuth) but user account may not have been updated yet;
       // - sign out, where the uiDelegate may not have the token unless the user
       // just signed in, but the user account will definitely have it.
-      if let uiDelegate = uiDelegate, let authToken = (uiDelegate.authToken ?? userAccount.authToken) {
+      if let authToken = (authToken ?? userAccount.authToken) {
         // Note: this is officially unsupported by the URL loading system
         // in iOS but it does work. It is necessary because the officially
         // supported method of providing authorization info to a request is via
         // `URLAuthenticationChallenge`, which has no api for Bearer token
         // authentication. Basic auth via username + password works fine with
-        // challenges (see `NYPLSettingsAccountURLSessionChallengeHandler`).
+        // challenges (see `NYPLSignInURLSessionChallengeHandler`).
         let authorization = "Bearer \(authToken)"
         req.addValue(authorization, forHTTPHeaderField: "Authorization")
       } else {
@@ -193,6 +214,77 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     }
 
     return req
+  }
+
+  /// After having obtained the credentials for all authentication methods,
+  /// including those that require negotiation with 3rd parties (such as
+  /// Clever and SAML), validate said credentials against the Circulation
+  /// Manager servers and call back to the UI once that's concluded.
+  @objc func validateCredentials() {
+    isCurrentlySigningIn = true
+
+    guard let req = makeRequest(for: .signIn, context: uiContext) else {
+      NYPLMainThreadRun.asyncIfNeeded {
+        // this opens a generic alert message, which is about all we can do in
+        // this sort of unrecoverable circumstance
+        self.uiDelegate?.alertUser(ofValidationError: nil,
+                                   problemDocData: nil,
+                                   response: nil,
+                                   loggingContext: ["Context": self.uiContext])
+      }
+      return
+    }
+
+    let task = urlSession.dataTask(with: req) { [weak self] data, response, error in
+      guard let self = self else {
+        return
+      }
+
+      let loggingContext: [String: Any] = [
+        "Request": req.loggableString,
+        "Response": response ?? "N/A",
+        "Data is nil?": "\(data == nil)",
+        "Context": self.uiContext]
+
+      guard
+        let httpResponse = response as? HTTPURLResponse,
+        httpResponse.statusCode == 200,
+        let responseData = data else {
+          self.uiDelegate?.alertUser(ofValidationError: error as NSError?,
+                                     problemDocData: data,
+                                     response: response,
+                                     loggingContext: loggingContext)
+          return
+      }
+
+      self.isCurrentlySigningIn = false
+
+      #if FEATURE_DRM_CONNECTOR
+      self.drmAuthorizeUserData(responseData,
+                                loggingContext: loggingContext)
+      #else
+      self.uiDelegate?.finalizeSignIn(forDRMAuthorization: true,
+                                      error: nil,
+                                      errorMessage: nil)
+      #endif
+    }
+
+    task.resume()
+  }
+
+  /// Initiates process of signing in with the server.
+  @objc func logIn() {
+    NotificationCenter.default.post(name: .NYPLIsSigningIn, object: true)
+
+    uiDelegate?.businessLogicWillSignIn(self)
+
+    if selectedAuthentication?.isOauth ?? false {
+      oauthLogIn()
+    } else if selectedAuthentication?.isSaml ?? false {
+      samlHelper.logIn()
+    } else {
+      validateCredentials()
+    }
   }
 
   // MARK:- User Account Management
