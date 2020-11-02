@@ -15,7 +15,6 @@
 #import "NYPLOPDS.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettingsAccountDetailViewController.h"
-#import "NYPLSignInURLSessionChallengeHandler.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLXML.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -42,9 +41,9 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSignInUserProvidedCredentials, NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
 
-// State machine
+// view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) BOOL loading;
 @property (nonatomic) BOOL hiddenPIN;
@@ -72,7 +71,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
 @property (nonatomic) NYPLSignInBusinessLogic *businessLogic;
-@property (nonatomic) NSArray *cookies;
 
 // networking
 @property (nonatomic) NSURLSession *session;
@@ -491,7 +489,7 @@ Authenticating with any of those barcodes should work.
   }];
 }
 
-#pragma mark - NYPLSettingsAccountUIDelegate
+#pragma mark - NYPLSignInUserProvidedCredentials
 
 - (NSString *)username
 {
@@ -685,10 +683,10 @@ Authenticating with any of those barcodes should work.
 
 }
 
-- (void)alertUserOfValidationError:(NSError * const)error
-                    problemDocData:(NSData * const)data
-                          response:(NSURLResponse * const)response
-                    loggingContext:(NSDictionary<NSString*, id> *)loggingContext
+- (void)      businessLogic:(NYPLSignInBusinessLogic *)businessLogic
+didEncounterValidationError:(NSError *)error
+     userFriendlyErrorTitle:(NSString *)title
+       andMessage:(NSString *)serverMessage
 {
   [self removeActivityTitle];
 
@@ -701,39 +699,14 @@ Authenticating with any of those barcodes should work.
   }
 
   UIAlertController *alert = nil;
-
-  // rely on problem document if available
-  NYPLProblemDocument *problemDocument = nil;
-  NSError *problemDocumentParseError = nil;
-  if (data != nil && response.isProblemDocument) {
-    problemDocument = [NYPLProblemDocument fromData:data
-                                              error:&problemDocumentParseError];
-    if (problemDocumentParseError == nil && problemDocument != nil) {
-      alert = [NYPLAlertUtils alertWithTitle:problemDocument.title
-                                     message:problemDocument.detail];
-    }
-  }
-
-  // error logging
-  if (problemDocumentParseError != nil) {
-    [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                              problemDocumentData:data
-                                              url:nil
-                                          summary:@"Sign-in validation: Problem Doc parse error"
-                                         metadata:loggingContext];
+  if (serverMessage != nil) {
+    alert = [NYPLAlertUtils alertWithTitle:title
+                                   message:serverMessage];
   } else {
-    [NYPLErrorLogger logLoginError:error
-                           library:self.businessLogic.libraryAccount
-                          response:response
-                   problemDocument:problemDocument
-                          metadata:loggingContext];
-  }
-
-  // notify user of error
-  if (alert == nil) {
-    alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+    alert = [NYPLAlertUtils alertWithTitle:title
                                      error:error];
   }
+  
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
                                                                   animated:YES
                                                                 completion:nil];
@@ -757,29 +730,10 @@ Authenticating with any of those barcodes should work.
                    completion:nil];
 }
 
-/**
- @note This method is not doing any logging in case `success` is false.
-
- @param success Whether Adobe DRM authorization was successful or not.
- @param error If errorMessage is absent, this will be used to derive a message
- to present to the user.
- @param errorMessage Will be presented to the user and will be used as a
- localization key to attempt to localize it.
- */
-- (void)finalizeSignInForDRMAuthorization:(BOOL)success
-                                    error:(NSError *)error
-                             errorMessage:(NSString*)errorMessage
+- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
-
-    [self.businessLogic
-     finalizeSignInForDRMAuthorization:success
-     error:error
-     errorMessage:errorMessage
-     withBarcode:self.usernameTextField.text
-     pin:self.PINTextField.text
-     cookies:self.cookies];
   }];
 }
 

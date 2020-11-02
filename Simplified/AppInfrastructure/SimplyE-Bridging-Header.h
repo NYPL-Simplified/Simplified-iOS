@@ -33,7 +33,6 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLSAMLHelper.h"
 #import "NYPLSettingsAccountDetailViewController.h"
-#import "NYPLSignInURLSessionChallengeHandler.h"
 #import "NYPLXML.h"
 #import "NYPLZXingEncoder.h"
 #import "UIView+NYPLViewAdditions.h"

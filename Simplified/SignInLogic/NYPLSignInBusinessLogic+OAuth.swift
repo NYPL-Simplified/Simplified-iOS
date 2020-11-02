@@ -10,7 +10,7 @@ import Foundation
 
 extension NYPLSignInBusinessLogic {
   //----------------------------------------------------------------------------
-  @objc func oauthLogIn() {
+  func oauthLogIn() {
     // for this kind of authentication, we want to redirect user to Safari to
     // conduct the process
     guard let oauthURL = selectedAuthentication?.oauthIntermediaryUrl else {
@@ -54,7 +54,9 @@ extension NYPLSignInBusinessLogic {
                    name: .NYPLAppDelegateDidReceiveCleverRedirectURL,
                    object: nil)
 
-    UIApplication.shared.open(finalURL)
+    NYPLMainThreadRun.asyncIfNeeded {
+      UIApplication.shared.open(finalURL)
+    }
   }
 
   //----------------------------------------------------------------------------
@@ -81,16 +83,20 @@ extension NYPLSignInBusinessLogic {
     guard urlStr.hasPrefix(universalLinksSettings.authenticationUniversalLink.absoluteString),
       universalLinkRedirectURLContainsPayload(urlStr) else {
 
-      NYPLErrorLogger.logError(withCode: .unrecognizedUniversalLink,
-                               summary: "Sign-in redirection error: missing payload",
-                               metadata: [
-                                "loginURL": urlStr,
-                                "context": uiDelegate?.context ?? "N/A"])
+        NYPLErrorLogger.logError(withCode: .unrecognizedUniversalLink,
+                                 summary: "Sign-in redirection error: missing payload",
+                                 metadata: [
+                                  "loginURL": urlStr,
+                                  "context": uiDelegate?.context ?? "N/A"])
 
-      uiDelegate?.displayErrorMessage(
-        NSLocalizedString("An error occurred during the authentication process",
-                          comment: "Generic error message while handling sign-in redirection during authentication"))
-      return
+        NYPLMainThreadRun.asyncIfNeeded {
+          self.uiDelegate?.businessLogic(self,
+                                         didEncounterValidationError: nil,
+                                         userFriendlyErrorTitle: NSLocalizedString("SettingsAccountViewControllerLoginFailed", comment: "Title for login error alert"),
+                                         andMessage: NSLocalizedString("An error occurred during the authentication process",
+          comment: "Generic error message while handling sign-in redirection during authentication"))
+        }
+        return
     }
 
     var kvpairs = [String: String]()
@@ -118,7 +124,12 @@ extension NYPLSignInBusinessLogic {
       let error = rawError.replacingOccurrences(of: "+", with: " ").removingPercentEncoding,
       let parsedError = error.parseJSONString as? [String: String] {
 
-      uiDelegate?.displayErrorMessage(parsedError["title"])
+      NYPLMainThreadRun.asyncIfNeeded {
+        self.uiDelegate?.businessLogic(self,
+                                       didEncounterValidationError: nil,
+                                       userFriendlyErrorTitle: NSLocalizedString("SettingsAccountViewControllerLoginFailed", comment: "Title for login error alert"),
+                                       andMessage: parsedError["title"])
+      }
     }
 
     guard

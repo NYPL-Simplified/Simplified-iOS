@@ -17,7 +17,6 @@
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLSignInURLSessionChallengeHandler.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -41,9 +40,9 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLSignInBusinessLogicUIDelegate>
+@interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSignInUserProvidedCredentials, NYPLSignInBusinessLogicUIDelegate>
 
-// state machine
+// view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) BOOL hiddenPIN;
 
@@ -56,11 +55,6 @@ typedef NS_ENUM(NSInteger, Section) {
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
 @property (nonatomic) NYPLSignInBusinessLogic *businessLogic;
-@property (nonatomic) NSArray *cookies;
-
-// networking
-@property (nonatomic) NSURLSession *session;
-@property (nonatomic) NYPLSignInURLSessionChallengeHandler *urlSessionDelegate;
 
 @end
 
@@ -133,19 +127,6 @@ CGFloat const marginPadding = 2.0;
    name:UIApplicationWillEnterForegroundNotification
    object:nil];
   
-  NSURLSessionConfiguration *const configuration =
-    [NSURLSessionConfiguration ephemeralSessionConfiguration];
-  
-  configuration.timeoutIntervalForResource = 15.0;
-
-  _urlSessionDelegate = [[NYPLSignInURLSessionChallengeHandler alloc]
-                           initWithUIDelegate:self];
-
-  self.session = [NSURLSession
-                  sessionWithConfiguration:configuration
-                  delegate:_urlSessionDelegate
-                  delegateQueue:[NSOperationQueue mainQueue]];
-
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
                             initWithAccount:self.currentAccount
                             businessLogic:self.businessLogic
@@ -645,7 +626,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-#pragma mark - NYPLSettingsAccountUIDelegate
+#pragma mark - NYPLSignInUserProvidedCredentials
 
 - (NSString *)username
 {
@@ -997,10 +978,10 @@ completionHandler:(void (^)(void))handler
   [self updateLoginLogoutCellAppearance];
 }
 
-- (void)alertUserOfValidationError:(NSError * const)error
-                    problemDocData:(NSData * const)data
-                          response:(NSURLResponse * const)response
-                    loggingContext:(NSDictionary<NSString*, id> *)loggingContext
+- (void)      businessLogic:(NYPLSignInBusinessLogic *)businessLogic
+didEncounterValidationError:(NSError *)error
+     userFriendlyErrorTitle:(NSString *)title
+       andMessage:(NSString *)serverMessage
 {
   [self removeActivityTitle];
 
@@ -1013,39 +994,14 @@ completionHandler:(void (^)(void))handler
   }
 
   UIAlertController *alert = nil;
-
-  // rely on problem document if available
-  NYPLProblemDocument *problemDocument = nil;
-  NSError *problemDocumentParseError = nil;
-  if (response.isProblemDocument) {
-    problemDocument = [NYPLProblemDocument fromData:data
-                                              error:&problemDocumentParseError];
-    if (problemDocumentParseError == nil && problemDocument != nil) {
-      alert = [NYPLAlertUtils alertWithTitle:problemDocument.title
-                                     message:problemDocument.detail];
-    }
-  }
-
-  // error logging
-  if (problemDocumentParseError != nil) {
-    [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                              problemDocumentData:data
-                                              url:nil
-                                          summary:@"Sign-in validation: Problem Doc parse error"
-                                         metadata:loggingContext];
+  if (serverMessage != nil) {
+    alert = [NYPLAlertUtils alertWithTitle:title
+                                   message:serverMessage];
   } else {
-    [NYPLErrorLogger logLoginError:error
-                           library:self.businessLogic.libraryAccount
-                          response:response
-                   problemDocument:problemDocument
-                          metadata:loggingContext];
-  }
-
-  // notify user of error
-  if (alert == nil) {
-    alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+    alert = [NYPLAlertUtils alertWithTitle:title
                                      error:error];
   }
+
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
                                                                   animated:YES
                                                                 completion:nil];
@@ -1093,20 +1049,10 @@ completionHandler:(void (^)(void))handler
  @param errorMessage Will be presented to the user and will be used as a
  localization key to attempt to localize it.
  */
-- (void)finalizeSignInForDRMAuthorization:(BOOL)success
-                                    error:(NSError *)error
-                             errorMessage:(NSString*)errorMessage
+- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
-
-    [self.businessLogic
-     finalizeSignInForDRMAuthorization:success
-     error:error
-     errorMessage:errorMessage
-     withBarcode:self.usernameTextField.text
-     pin:self.PINTextField.text
-     cookies:self.cookies];
   }];
 }
 
