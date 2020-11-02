@@ -23,6 +23,7 @@ import NYPLCardCreator
 
 @objc protocol NYPLDRMAuthorizing: NSObjectProtocol {
   var workflowsInProgress: Bool {get}
+  func isUserAuthorized(_ userID: String!, withDevice device: String!) -> Bool
 }
 
 @objc protocol NYPLLogOutExecutor: NSObjectProtocol {

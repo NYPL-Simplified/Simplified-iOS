@@ -13,7 +13,6 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
-#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"
 #import "NYPLRootTabBarController.h"
@@ -323,17 +322,7 @@ CGFloat const marginPadding = 2.0;
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
-
-  NYPLUserAccount *userAccount = self.businessLogic.userAccount;
-
-  if (![[NYPLADEPT sharedInstance] isUserAuthorized:[userAccount userID]
-                                         withDevice:[userAccount deviceID]]) {
-    if ([userAccount hasBarcodeAndPIN] && !self.businessLogic.isCurrentlySigningIn) {
-      self.usernameTextField.text = userAccount.barcode;
-      self.PINTextField.text = userAccount.PIN;
-      [self.businessLogic logIn];
-    }
-  }
+  [self.businessLogic logInIfUserAuthorized];
 }
 #endif
 
