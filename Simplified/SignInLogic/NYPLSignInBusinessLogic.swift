@@ -427,8 +427,16 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     return userAccount.hasCredentials()
   }
 
+  /// - Returns: Whether it is possible to sign up for a new account or not.
   func registrationIsPossible() -> Bool {
     return !isSignedIn() && NYPLConfiguration.cardCreationEnabled() && libraryAccount?.details?.signUpUrl != nil
+  }
+
+  /// - Returns: Whether it is possible to sign up using the native card
+  /// creator.
+  func registrationViaCardCreatorIsPossible() -> Bool {
+    return registrationIsPossible() &&
+      (libraryAccount?.details?.supportsCardCreator ?? false)
   }
 
   func isSamlPossible() -> Bool {

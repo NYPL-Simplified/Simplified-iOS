@@ -40,7 +40,7 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSignInUserProvidedCredentials, NYPLSignInBusinessLogicUIDelegate>
+@interface NYPLAccountSignInViewController () <NYPLSignInBusinessLogicUIDelegate>
 
 // view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
@@ -379,63 +379,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      
-      if (self.currentAccount.details.supportsCardCreator
-          && self.currentAccount.details.signUpUrl != nil) {
-        __weak NYPLAccountSignInViewController *const weakSelf = self;
-
-        CardCreatorConfiguration *const config = [self.businessLogic makeRegularCardCreationConfiguration];
-        config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-          if (userInitiated) {
-            // Dismiss CardCreator & SignInVC when user finishes Credential Review
-            [weakSelf.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-          } else {
-            weakSelf.usernameTextField.text = username;
-            weakSelf.PINTextField.text = PIN;
-            [weakSelf updateLoginLogoutCellAppearance];
-            weakSelf.businessLogic.isLoggingInAfterSignUp = YES;
-            [weakSelf.businessLogic logIn];
-          }
-        };
-        
-        UINavigationController *const navigationController =
-          [CardCreator initialNavigationControllerWithConfiguration:config];
-        navigationController.navigationBar.topItem.leftBarButtonItem =
-          [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
-                                           style:UIBarButtonItemStylePlain
-                                          target:self
-                                          action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
-      }
-      else // does not support card creator
-      {
-        if (self.currentAccount.details.signUpUrl == nil) {
-          // this situation should be impossible, but let's log it if it happens
-          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilSignUpURL
-                                    summary:@"SignUp Error in modal: nil signUp URL"
-                                    message:nil
-                                   metadata:nil];
-          return;
-        }
-
-        RemoteHTMLViewController *webVC =
-        [[RemoteHTMLViewController alloc]
-         initWithURL:self.currentAccount.details.signUpUrl
-         title:@"eCard"
-         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-        
-        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webVC];
-       
-        navigationController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
+      UINavigationController *navController = [self.businessLogic makeCardCreatorIfPossible];
+      if (navController != nil) {
+        navController.navigationBar.topItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
-
-        
+        navController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navController animated:YES completion:nil];
       }
       break;
     }

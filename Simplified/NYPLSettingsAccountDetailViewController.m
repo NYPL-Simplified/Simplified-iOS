@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSignInUserProvidedCredentials, NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
 
 // view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
@@ -837,26 +837,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      
-      if (self.selectedAccount.details.supportsCardCreator
-          && self.selectedAccount.details.signUpUrl != nil) {
-        __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
-
-        CardCreatorConfiguration *config = [self.businessLogic makeRegularCardCreationConfiguration];
-        config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-          if (userInitiated) {
-            // Dismiss CardCreator when user finishes Credential Review
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
-          } else {
-            weakSelf.usernameTextField.text = username;
-            weakSelf.PINTextField.text = PIN;
-            [weakSelf updateLoginLogoutCellAppearance];
-            weakSelf.businessLogic.isLoggingInAfterSignUp = YES;
-            [weakSelf.businessLogic logIn];
-          }
-        };
-
-        UINavigationController *const navController = [CardCreator initialNavigationControllerWithConfiguration:config];
+      UINavigationController *navController = [self.businessLogic makeCardCreatorIfPossible];
+      if (navController != nil) {
         navController.navigationBar.topItem.leftBarButtonItem =
         [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
@@ -864,36 +846,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                         action:@selector(didSelectCancelForSignUp)];
         navController.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:navController animated:YES completion:nil];
-      }
-      else // does not support card creator
-      {
-        if (self.selectedAccount.details.signUpUrl == nil) {
-          // this situation should be impossible, but let's log it if it happens
-          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilSignUpURL
-                                    summary:@"SignUp Error in Settings: nil signUp URL"
-                                    message:nil
-                                   metadata:@{
-                                     @"selectedLibraryAccountUUID": self.selectedAccount.uuid,
-                                     @"selectedLibraryAccountName": self.selectedAccount.name,
-                                   }];
-          return;
-        }
-
-        RemoteHTMLViewController *webVC =
-        [[RemoteHTMLViewController alloc]
-         initWithURL:self.selectedAccount.details.signUpUrl
-         title:@"eCard"
-         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-        
-        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webVC];
-        
-        navigationController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
-                                         style:UIBarButtonItemStylePlain
-                                        target:self
-                                        action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
       }
       break;
     }
