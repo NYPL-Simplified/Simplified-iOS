@@ -342,6 +342,26 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     }
   }
 
+  @objc var isAuthenticationDocumentLoading: Bool = false
+
+  /// Makes sure we have the `libraryAccount` `details` loading the
+  /// authentication document if needed.
+  /// - Note: if an error occurs while loading the authentication document,
+  /// an error is reported via `NYPLErrorLogger`.
+  /// - Parameter completion: Always called once we have the library details.
+  @objc func ensureAuthenticationDocumentIsLoaded(_ completion: @escaping (Bool) -> Void) {
+    if libraryAccount?.details != nil {
+      completion(true)
+      return
+    }
+
+    isAuthenticationDocumentLoading = true
+    libraryAccount?.loadAuthenticationDocument(using: self) { success in
+      self.isAuthenticationDocumentLoading = false
+      completion(success)
+    }
+  }
+
   // MARK:- User Account Management
 
   /// The user account for the library we are signing in to.
