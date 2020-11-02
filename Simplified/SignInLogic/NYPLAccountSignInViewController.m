@@ -761,57 +761,6 @@ completionHandler:(void (^)(void))handler
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)verifyLocationServicesWithHandler:(void(^)(void))handler
-{
-  CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-
-  switch (status) {
-    case kCLAuthorizationStatusAuthorizedAlways:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusAuthorizedWhenInUse:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusDenied:
-    {
-      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location", nil)
-                                                                               message:NSLocalizedString(@"LocationRequiredMessage", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-
-      UIAlertAction *settingsAction = [UIAlertAction
-                                       actionWithTitle:NSLocalizedString(@"Settings", nil)
-                                       style:UIAlertActionStyleDefault
-                                       handler:^(UIAlertAction *action) {
-        if (action) {
-          [UIApplication.sharedApplication
-           openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
-           options:@{}
-           completionHandler:nil];
-        }
-      }];
-
-      UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                             style:UIAlertActionStyleDestructive
-                                                           handler:nil];
-
-      [alertController addAction:settingsAction];
-      [alertController addAction:cancelAction];
-
-      [self presentViewController:alertController
-                         animated:NO
-                       completion:nil];
-
-      break;
-    }
-    case kCLAuthorizationStatusRestricted:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusNotDetermined:
-      if (handler) handler();
-      break;
-  }
-}
-
 - (void)didSelectReveal
 {
   self.hiddenPIN = NO;
