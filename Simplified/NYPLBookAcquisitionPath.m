@@ -13,6 +13,8 @@ NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/audioboo
 NSString * const _Nonnull ContentTypeOctetStream = @"application/octet-stream";
 NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.overdrive.circulation.api+json;profile=audiobook";
 NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/json";
+NSString * const _Nonnull ContentTypeReadiumLCP = @"application/vnd.readium.lcp.license.v1.0+json";
+NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip";
 
 @interface NYPLBookAcquisitionPath ()
 
@@ -52,7 +54,9 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/js
       ContentTypeOpenAccessPDF,
       ContentTypeFeedbooksAudiobook,
       ContentTypeOverdriveAudiobook,
-      ContentTypeOctetStream
+      ContentTypeOctetStream,
+      ContentTypeReadiumLCP,
+      ContentTypeAudiobookZip
     ]];
   }
 
@@ -74,7 +78,14 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/js
         ContentTypeOpenAccessAudiobook,
         ContentTypeFeedbooksAudiobook,
         ContentTypeOverdriveAudiobook,
-        ContentTypeOctetStream
+        ContentTypeOctetStream,
+        ContentTypeReadiumLCP,
+        ContentTypeAudiobookZip
+      ]],
+      ContentTypeReadiumLCP: [NSSet setWithArray:@[
+          ContentTypeBearerToken,
+          ContentTypeEpubZip,
+          ContentTypeAudiobookZip
       ]],
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
       ContentTypeBearerToken: [NSSet setWithArray:@[
@@ -94,7 +105,8 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/js
   return [NSSet setWithArray:@[ContentTypeFindaway,
                                ContentTypeOpenAccessAudiobook,
                                ContentTypeFeedbooksAudiobook,
-                               ContentTypeOverdriveAudiobook]];
+                               ContentTypeOverdriveAudiobook,
+                               ContentTypeAudiobookZip ]];
 }
 
 - (BOOL)isEqual:(id const)object

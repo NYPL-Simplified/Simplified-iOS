@@ -20,6 +20,10 @@
 @end
 #endif
 
+#if defined(LCP)
+#import <ReadiumLCP/ReadiumLCP-Swift.h>
+#endif
+
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
@@ -124,6 +128,10 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
+    } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeReadiumLCP]) {
+        self.bookIdentifierToDownloadInfo[book.identifier] =
+        [[self downloadInfoForBookIdentifier:book.identifier]
+         withRightsManagement:NYPLMyBooksDownloadRightsManagementLCP];
     } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeEpubZip]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
@@ -259,6 +267,26 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
            userID:[[NYPLUserAccount sharedAccount] userID]
            deviceID:[[NYPLUserAccount sharedAccount] deviceID]];
         }
+#endif
+        break;
+      }
+      case NYPLMyBooksDownloadRightsManagementLCP: {
+#if defined(LCP)
+        LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
+        [lcpService fulfill:tmpSavedFileURL completion:^(NSURL *localUrl, NSURLSessionDownloadTask *downloadTask, NSError *error) {
+          if (error) {
+            [self logBookDownloadFailure:book
+                                  reason:@"Couldn't download LCP book"
+                            downloadTask:downloadTask
+                                metadata:@{@"lcpError": error}];
+            [self failDownloadForBook:book];
+            return;
+          }
+          BOOL success = [self moveDownloadedFileAtURL:localUrl book:book];
+          if (!success) {
+            [self failDownloadForBook:book];
+          }
+        }];
 #endif
         break;
       }

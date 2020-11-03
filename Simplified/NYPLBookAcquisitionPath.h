@@ -27,6 +27,10 @@ extern NSString * const _Nonnull ContentTypeOverdriveAudiobook;
 /// The actual Content-Type returned from Overdrive in the HTTP response for a
 /// download request. The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeOverdriveAudiobookActual;
+/// The constant value is fully lowercased.
+extern NSString * const _Nonnull ContentTypeReadiumLCP;
+/// The constant value is fully lowercased.
+extern NSString * const _Nonnull ContentTypeAudiobookZip;
 
 /// Represents a single path the application can take through an acquisition
 /// process.

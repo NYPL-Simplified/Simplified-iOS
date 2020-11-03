@@ -25,7 +25,7 @@ class AdobeDRMLibraryService: DRMLibraryService {
   /// - Parameter file: file URL
   /// - Returns: Always returns true
   func canFulfill(_ file: URL) -> Bool {
-    return true
+    return file.path.hasSuffix("_rights.xml")
   }
   
   /// Fulfills the given file to the fully protected publication.
@@ -33,7 +33,7 @@ class AdobeDRMLibraryService: DRMLibraryService {
   ///   - file: file URL
   ///   - completion: fulfilled publication, CancellableResult<DRMFulfilledPublication>
   func fulfill(_ file: URL, completion: @escaping (CancellableResult<DRMFulfilledPublication>) -> Void) {
-    let publication = DRMFulfilledPublication(localURL: file, downloadTask: nil, suggestedFilename: "File Name")
+    let publication = DRMFulfilledPublication(localURL: file, downloadTask: nil, suggestedFilename: file.lastPathComponent)
     completion(.success(publication))
   }
   

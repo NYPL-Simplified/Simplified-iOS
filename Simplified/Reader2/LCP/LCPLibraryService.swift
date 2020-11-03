@@ -17,7 +17,7 @@ import R2Shared
 import ReadiumLCP
 
 
-class LCPLibraryService: DRMLibraryService {
+@objc class LCPLibraryService: NSObject, DRMLibraryService {
 
     private var lcpService =  R2MakeLCPService()
     
@@ -30,6 +30,28 @@ class LCPLibraryService: DRMLibraryService {
     
     func canFulfill(_ file: URL) -> Bool {
         return file.pathExtension.lowercased() == "lcpl"
+    }
+    
+    /// Fulfill LCP license publication
+    /// This function was added for compatibility with Objective-C NYPLMyBooksDownloadCenter.
+    /// - Parameters:
+    ///   - file: LCP license file.
+    ///   - completion: Complition is called after a publication was downloaded or an error received.
+    ///   - localUrl: Downloaded publication URL.
+    ///   - downloadTask: `URLSessionDownloadTask` that downloaded the publication.
+    ///   - error: `NSError` if any.
+    @objc func fulfill(_ file: URL, completion: @escaping (_ localUrl: URL?, _ downloadTask: URLSessionDownloadTask?, _ error: NSError?) -> Void) {
+        lcpService.importPublication(from: file, authentication: self) { result, error in
+            var nsError: NSError?
+            if let error = error {
+                let domain = "SimplyE.LCPLibraryService"
+                let code = 0
+                nsError = NSError(domain: domain, code: code, userInfo: [
+                    NSLocalizedDescriptionKey: error.errorDescription as Any
+                ])
+            }
+          completion(result?.localURL, result?.downloadTask, nsError)
+        }
     }
     
     func fulfill(_ file: URL, completion: @escaping (CancellableResult<DRMFulfilledPublication>) -> Void) {
@@ -64,7 +86,7 @@ class LCPLibraryService: DRMLibraryService {
 extension LCPLibraryService: LCPAuthenticating {
     
     func requestPassphrase(for license: LCPAuthenticatedLicense, reason: LCPAuthenticationReason, completion: @escaping (String?) -> Void) {
-        guard let viewController = UIApplication.shared.keyWindow?.rootViewController else {
+      guard let viewController = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController else {
             completion(nil)
             return
         }
