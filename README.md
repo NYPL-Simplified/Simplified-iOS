@@ -74,8 +74,12 @@ cd Simplified-iOS/..
 git clone https://github.com/NYPL-Simplified/r2-shared-swift
 git clone https://github.com/NYPL-Simplified/r2-streamer-swift
 git clone https://github.com/readium/r2-navigator-swift
+git clone https://github.com/NYPL-Simplified/r2-lcp-swift
 ```
-The first 2 repos contain patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM in Readium 2.
+The first 2 repos contain patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM and LCP DRM support in Readium 2.
+
+You need to obtain a link to Readium LCP binary for Carthage. 
+Once you have it, please add it to the Cartfile of SimplyE and the Cartfile of r2-lcp-swift.
 
 Build their own Carthage dependencies first:
 ```bash
@@ -86,6 +90,9 @@ cd ../r2-streamer-swift
 carthage checkout --use-ssh
 carthage build --platform ios
 cd ../r2-navigator-swift
+carthage checkout --use-ssh
+carthage build --platform ios
+cd ../r2-lcp-swift
 carthage checkout --use-ssh
 carthage build --platform ios
 ```
