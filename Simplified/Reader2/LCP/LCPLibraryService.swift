@@ -86,7 +86,7 @@ import ReadiumLCP
 extension LCPLibraryService: LCPAuthenticating {
     
     func requestPassphrase(for license: LCPAuthenticatedLicense, reason: LCPAuthenticationReason, completion: @escaping (String?) -> Void) {
-      guard let viewController = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController else {
+      guard let viewController = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController ?? UIApplication.shared.keyWindow?.rootViewController else {
             completion(nil)
             return
         }
