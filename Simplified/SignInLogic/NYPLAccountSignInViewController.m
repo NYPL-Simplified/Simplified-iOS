@@ -13,7 +13,6 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
-#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"
 #import "NYPLRootTabBarController.h"
@@ -40,7 +39,7 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSignInUserProvidedCredentials, NYPLSignInBusinessLogicUIDelegate>
+@interface NYPLAccountSignInViewController () <NYPLSignInBusinessLogicUIDelegate>
 
 // view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
@@ -323,17 +322,7 @@ CGFloat const marginPadding = 2.0;
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
-
-  NYPLUserAccount *userAccount = self.businessLogic.userAccount;
-
-  if (![[NYPLADEPT sharedInstance] isUserAuthorized:[userAccount userID]
-                                         withDevice:[userAccount deviceID]]) {
-    if ([userAccount hasBarcodeAndPIN] && !self.businessLogic.isCurrentlySigningIn) {
-      self.usernameTextField.text = userAccount.barcode;
-      self.PINTextField.text = userAccount.PIN;
-      [self.businessLogic logIn];
-    }
-  }
+  [self.businessLogic logInIfUserAuthorized];
 }
 #endif
 
@@ -379,63 +368,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      
-      if (self.currentAccount.details.supportsCardCreator
-          && self.currentAccount.details.signUpUrl != nil) {
-        __weak NYPLAccountSignInViewController *const weakSelf = self;
-
-        CardCreatorConfiguration *const config = [self.businessLogic makeRegularCardCreationConfiguration];
-        config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-          if (userInitiated) {
-            // Dismiss CardCreator & SignInVC when user finishes Credential Review
-            [weakSelf.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-          } else {
-            weakSelf.usernameTextField.text = username;
-            weakSelf.PINTextField.text = PIN;
-            [weakSelf updateLoginLogoutCellAppearance];
-            weakSelf.businessLogic.isLoggingInAfterSignUp = YES;
-            [weakSelf.businessLogic logIn];
-          }
-        };
-        
-        UINavigationController *const navigationController =
-          [CardCreator initialNavigationControllerWithConfiguration:config];
-        navigationController.navigationBar.topItem.leftBarButtonItem =
-          [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
-                                           style:UIBarButtonItemStylePlain
-                                          target:self
-                                          action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
-      }
-      else // does not support card creator
-      {
-        if (self.currentAccount.details.signUpUrl == nil) {
-          // this situation should be impossible, but let's log it if it happens
-          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilSignUpURL
-                                    summary:@"SignUp Error in modal: nil signUp URL"
-                                    message:nil
-                                   metadata:nil];
-          return;
-        }
-
-        RemoteHTMLViewController *webVC =
-        [[RemoteHTMLViewController alloc]
-         initWithURL:self.currentAccount.details.signUpUrl
-         title:@"eCard"
-         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-        
-        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webVC];
-       
-        navigationController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
+      UINavigationController *navController = [self.businessLogic makeCardCreatorIfPossible];
+      if (navController != nil) {
+        navController.navigationBar.topItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
-
-        
+        navController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navController animated:YES completion:nil];
       }
       break;
     }
@@ -759,57 +700,6 @@ completionHandler:(void (^)(void))handler
 - (void)didSelectCancelForSignUp
 {
   [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)verifyLocationServicesWithHandler:(void(^)(void))handler
-{
-  CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-
-  switch (status) {
-    case kCLAuthorizationStatusAuthorizedAlways:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusAuthorizedWhenInUse:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusDenied:
-    {
-      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location", nil)
-                                                                               message:NSLocalizedString(@"LocationRequiredMessage", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-
-      UIAlertAction *settingsAction = [UIAlertAction
-                                       actionWithTitle:NSLocalizedString(@"Settings", nil)
-                                       style:UIAlertActionStyleDefault
-                                       handler:^(UIAlertAction *action) {
-        if (action) {
-          [UIApplication.sharedApplication
-           openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
-           options:@{}
-           completionHandler:nil];
-        }
-      }];
-
-      UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                             style:UIAlertActionStyleDestructive
-                                                           handler:nil];
-
-      [alertController addAction:settingsAction];
-      [alertController addAction:cancelAction];
-
-      [self presentViewController:alertController
-                         animated:NO
-                       completion:nil];
-
-      break;
-    }
-    case kCLAuthorizationStatusRestricted:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusNotDetermined:
-      if (handler) handler();
-      break;
-  }
 }
 
 - (void)didSelectReveal

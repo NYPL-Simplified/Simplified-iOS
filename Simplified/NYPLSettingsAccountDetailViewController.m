@@ -41,11 +41,10 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSignInUserProvidedCredentials, NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
 
 // view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
-@property (nonatomic) BOOL loading;
 @property (nonatomic) BOOL hiddenPIN;
 
 // UI
@@ -78,7 +77,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 @end
 
-static const NSInteger sLinearViewTag = 1;
+static const NSInteger sLinearViewTag = 1111;
 static const CGFloat sVerticalMarginPadding = 2.0;
 
 // table view sections indeces
@@ -218,36 +217,33 @@ Authenticating with any of those barcodes should work.
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
-  
-  if (self.selectedAccount.details == nil) {
+
+  if (self.businessLogic.libraryAccount.details != nil) {
+    [self setupViews];
+  } else {
     UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
     activityIndicator.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
     [self.view addSubview:activityIndicator];
     [activityIndicator startAnimating];
-    self.loading = true;
-    [self.selectedAccount loadAuthenticationDocumentUsingSignedInStateProvider:self.businessLogic completion:^(BOOL success) {
+
+    [self.businessLogic ensureAuthenticationDocumentIsLoaded:^(BOOL success) {
       dispatch_async(dispatch_get_main_queue(), ^{
         [activityIndicator removeFromSuperview];
         if (success) {
-          self.loading = false;
           [self setupViews];
-          
           self.hiddenPIN = YES;
           [self accountDidChange];
           [self updateShowHidePINState];
         } else {
-          // ok not to log error, since it's done by
-          // loadAuthenticationDocumentWithCompletion
           [self displayErrorMessage:NSLocalizedString(@"CheckConnection", nil)];
         }
       });
     }];
-  } else {
-    [self setupViews];
   }
 }
 
-- (void)displayErrorMessage:(NSString *)errorMessage {
+- (void)displayErrorMessage:(NSString *)errorMessage
+{
   UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
   label.text = errorMessage;
   [label sizeToFit];
@@ -255,7 +251,8 @@ Authenticating with any of those barcodes should work.
   [label centerInSuperviewWithOffset:self.tableView.contentOffset];
 }
 
-- (void)setupViews {
+- (void)setupViews
+{
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self.frontEndValidator;
   self.usernameTextField.placeholder =
@@ -837,26 +834,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      
-      if (self.selectedAccount.details.supportsCardCreator
-          && self.selectedAccount.details.signUpUrl != nil) {
-        __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
-
-        CardCreatorConfiguration *config = [self.businessLogic makeRegularCardCreationConfiguration];
-        config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-          if (userInitiated) {
-            // Dismiss CardCreator when user finishes Credential Review
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
-          } else {
-            weakSelf.usernameTextField.text = username;
-            weakSelf.PINTextField.text = PIN;
-            [weakSelf updateLoginLogoutCellAppearance];
-            weakSelf.businessLogic.isLoggingInAfterSignUp = YES;
-            [weakSelf.businessLogic logIn];
-          }
-        };
-
-        UINavigationController *const navController = [CardCreator initialNavigationControllerWithConfiguration:config];
+      UINavigationController *navController = [self.businessLogic makeCardCreatorIfPossible];
+      if (navController != nil) {
         navController.navigationBar.topItem.leftBarButtonItem =
         [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
@@ -864,36 +843,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                         action:@selector(didSelectCancelForSignUp)];
         navController.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:navController animated:YES completion:nil];
-      }
-      else // does not support card creator
-      {
-        if (self.selectedAccount.details.signUpUrl == nil) {
-          // this situation should be impossible, but let's log it if it happens
-          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilSignUpURL
-                                    summary:@"SignUp Error in Settings: nil signUp URL"
-                                    message:nil
-                                   metadata:@{
-                                     @"selectedLibraryAccountUUID": self.selectedAccount.uuid,
-                                     @"selectedLibraryAccountName": self.selectedAccount.name,
-                                   }];
-          return;
-        }
-
-        RemoteHTMLViewController *webVC =
-        [[RemoteHTMLViewController alloc]
-         initWithURL:self.selectedAccount.details.signUpUrl
-         title:@"eCard"
-         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-        
-        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webVC];
-        
-        navigationController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
-                                         style:UIBarButtonItemStylePlain
-                                        target:self
-                                        action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
       }
       break;
     }
@@ -1304,7 +1253,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return self.loading ? 0 : self.tableData.count;
+  return self.businessLogic.isAuthenticationDocumentLoading ? 0 : self.tableData.count;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView

@@ -575,6 +575,9 @@
 		73B72F11254C5A8B008725CA /* NYPLSignInURLSessionChallengeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B72F10254C5A8B008725CA /* NYPLSignInURLSessionChallengeHandler.swift */; };
 		73B72F12254C5A8B008725CA /* NYPLSignInURLSessionChallengeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B72F10254C5A8B008725CA /* NYPLSignInURLSessionChallengeHandler.swift */; };
 		73B72F13254C5A8B008725CA /* NYPLSignInURLSessionChallengeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B72F10254C5A8B008725CA /* NYPLSignInURLSessionChallengeHandler.swift */; };
+		73B80BAB25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */; };
+		73B80BAC25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */; };
+		73B80BAD25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */; };
 		73CDA121243EDAD8009CC6A6 /* URLRequest+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */; };
 		73CEF830252699CA006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
 		73CEF831252699DD006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
@@ -1320,6 +1323,7 @@
 		73A794C925492C9800C59CC1 /* NYPLFakeSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLFakeSamples.swift; sourceTree = "<group>"; };
 		73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountFrontEndValidation.swift; sourceTree = "<group>"; };
 		73B72F10254C5A8B008725CA /* NYPLSignInURLSessionChallengeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInURLSessionChallengeHandler.swift; sourceTree = "<group>"; };
+		73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+CardCreation.swift"; sourceTree = "<group>"; };
 		73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "carthage-update-simplye.sh"; path = "scripts/carthage-update-simplye.sh"; sourceTree = SOURCE_ROOT; };
 		73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+NYPL.swift"; sourceTree = "<group>"; };
 		73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCrashlytics.framework; path = Carthage/Build/iOS/FirebaseCrashlytics.framework; sourceTree = "<group>"; };
@@ -1982,6 +1986,7 @@
 				730263AA2540DE4200A53891 /* NYPLSAMLHelper.h */,
 				730263AB2540DE4200A53891 /* NYPLSAMLHelper.m */,
 				731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */,
+				73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */,
 				737F4A6A254A137900A3C34B /* NYPLSignInBusinessLogic+DRM.swift */,
 				733FF9BD2530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift */,
 				73A794A525477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift */,
@@ -3117,6 +3122,7 @@
 				739ECB2C25102A2B00691A70 /* NYPLCatalogs+SE.swift in Sources */,
 				7347F05C245A4DE200558D7F /* OPDS2CatalogsFeed.swift in Sources */,
 				7347F05D245A4DE200558D7F /* BundledHTMLViewController.swift in Sources */,
+				73B80BAC25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */,
 				7347F05E245A4DE200558D7F /* NYPLBookDetailView.m in Sources */,
 				7347F05F245A4DE200558D7F /* UIButton+NYPLAppearanceAdditions.m in Sources */,
 				7347F060245A4DE200558D7F /* NYPLBookCoverRegistry.m in Sources */,
@@ -3457,6 +3463,7 @@
 				73FCA34625005BA4001B0C5D /* NYPLAnnotations.swift in Sources */,
 				73FCA34725005BA4001B0C5D /* RemoteHTMLViewController.swift in Sources */,
 				73FCA34825005BA4001B0C5D /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,
+				73B80BAD25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */,
 				73FCA34925005BA4001B0C5D /* NYPLCatalogGroupedFeed.m in Sources */,
 				73FCA34A25005BA4001B0C5D /* NYPLCatalogFacet.m in Sources */,
 				73FCA34B25005BA4001B0C5D /* NYPLLoginCellTypes.swift in Sources */,
@@ -3529,6 +3536,7 @@
 				B51C1DFA2285FDF9003B49A5 /* OPDS2CatalogsFeed.swift in Sources */,
 				2D62568B1D412BCB0080A81F /* BundledHTMLViewController.swift in Sources */,
 				110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */,
+				73B80BAB25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */,
 				0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */,
 				1139DA6519C7755D00A07810 /* NYPLBookCoverRegistry.m in Sources */,
 				73085E3525030D27008F6244 /* SEMigrations.swift in Sources */,

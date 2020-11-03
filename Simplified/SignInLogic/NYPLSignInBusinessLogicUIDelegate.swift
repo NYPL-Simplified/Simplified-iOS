@@ -16,7 +16,7 @@ import Foundation
 }
 
 /// The functionalities on the UI that the sign-in business logic requires.
-@objc protocol NYPLSignInBusinessLogicUIDelegate: NYPLSignInUserProvidedCredentials {
+@objc protocol NYPLSignInBusinessLogicUIDelegate: NYPLSignInUserProvidedCredentials, NYPLUserAccountInputProvider {
   /// The context in which the UI delegate is operating in, such as in a modal
   /// sheet or a tab.
   /// - Note: This should not be derived from a computation involving views,

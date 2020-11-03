@@ -156,6 +156,24 @@ extension NYPLSignInBusinessLogic {
                                                     completion: nil)
     }
   }
+
+  @objc func logInIfUserAuthorized() {
+    if let drmAuthorizer = drmAuthorizer,
+      !drmAuthorizer.isUserAuthorized(userAccount.userID,
+                                      withDevice: userAccount.deviceID) {
+
+      if userAccount.hasBarcodeAndPIN() && !isCurrentlySigningIn {
+        if let usernameTextField = uiDelegate?.usernameTextField,
+          let PINTextField = uiDelegate?.PINTextField
+        {
+          usernameTextField.text = userAccount.barcode
+          PINTextField.text = userAccount.PIN
+        }
+
+        logIn()
+      }
+    }
+  }
 }
 
 #endif
