@@ -209,10 +209,9 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
       [NYPLErrorLogger
        logProblemDocumentParseError:problemDocumentParseError
        problemDocumentData:problemDocData
-       barcode:NYPLUserAccount.sharedAccount.barcode
        url:tmpSavedFileURL
        summary:[NSString stringWithFormat:@"Error parsing problem doc downloading %@ book", book.distributor]
-       message:[book loggableShortString]];
+       metadata:@{ @"book": [book loggableShortString] }];
     }
     [self logBookDownloadFailure:book
                           reason:@"Got problem document"
@@ -672,7 +671,7 @@ didCompleteWithError:(NSError *)error
 
 - (NSURL *)contentDirectoryURL:(NSString *)account
 {
-  NSURL *directoryURL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"content"];
+  NSURL *directoryURL = [[NYPLBookContentMetadataFilesHelper directoryFor:account] URLByAppendingPathComponent:@"content"];
   
   if (directoryURL != nil) {
     NSError *error = nil;

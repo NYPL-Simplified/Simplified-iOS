@@ -76,9 +76,6 @@
 "Verifying" = "verifica";
 "Back" = "Indietro";
 
-// NYPLAccountSignInViewController
-"SigningInAgree" = "Accedendo accosenti al contratto con gli utenti.";
-
 // NYPLAppDelegate
 
 "AppDelegateUpdateRequiredTitle" = "Aggiornamento Necessario";
@@ -181,7 +178,7 @@
 // Settings
 "SettingsConnectionFailureMessage" = "Non è stato possibile caricare la pagina per via di un errore nella connessione a internet.";
 
-// NYPLSettingsAccountViewController
+// NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
 "Add Library" = "Aggiungi Biblioteca";
 "Report an Issue" = "Riferisci un problema";
 "Show Barcode" = "Mostra il codice a barre";
@@ -213,6 +210,12 @@
 "LocationRequiredMessage" = "La convisione della posizione è necessaria per registrarsi. Si prega di consentire l'accesso alla posizione nelle Impostazioni di iOS.";
 "Error parsing user profile document." = "Si è verificato un errore nella decodifica del documento relativo al profilo utente.";
 "Trouble locating DRM in profile document." = "Si è verificato un errore relativo al DRM del documento.";
+"SigningInAgree" = "Accedendo acconsenti al contratto con gli utenti.";
+"Want a card for your child?" = "Vuoi una tessera per i tuoi figli?";
+"Cannot confirm library card eligibility." = "Si è verificato un errore per il quale è impossibile verificare se la tua tessera è idonea.";
+"Please log out and try your card information again." = "Prova a disconnetterti e a riaccedere per cercare di risolvere questo problema.";
+"Sign-in Error" = "Errore di autenticazione";
+"We could not find a match for the credentials provided." = "Non è stato possibile trovare il tuo utente con le informazioni ricevute.";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accetta";

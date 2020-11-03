@@ -94,6 +94,7 @@ class NYPLKeychainCodableVariable<VariableType: Codable>: NYPLKeychainVariable<V
       cachedValue = newValue
       alreadyInited = true
       DispatchQueue.global(qos: .userInitiated).async { [key] in
+        Log.debug(#file, "Writing `\(String(describing: newValue))` on keychain for \(key)")
         if let newValue = newValue, let data = try? JSONEncoder().encode(newValue) {
           NYPLKeychain.shared()?.setObject(data, forKey: key)
         } else {

@@ -227,7 +227,8 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 
 - (NSURL *)settingsURL
 {
-  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"settings.json"];
+  NSURL *URL = [[NYPLBookContentMetadataFilesHelper currentAccountDirectory]
+                URLByAppendingPathComponent:@"settings.json"];
   
   return URL;
 }

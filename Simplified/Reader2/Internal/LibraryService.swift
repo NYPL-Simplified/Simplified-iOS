@@ -97,7 +97,7 @@ final class LibraryService: NSObject, Loggable {
     if publication.format != .webpub {
       publicationServer.removeAll()
       guard let bookRelativePath = book.url?.lastPathComponent else {
-        log(.error, "Book with ID \(book.identifier ?? "''") has no usable URL")
+        log(.error, "Book with ID \(book.identifier) has no usable URL")
         return
       }
       do {

@@ -89,11 +89,7 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 
       let title = NSLocalizedString("Ready for Download", comment: "")
       let content = UNMutableNotificationContent()
-      if let bookTitle = book.title {
-        content.body = NSLocalizedString("The title you reserved, \(bookTitle), is available.", comment: "")
-      } else {
-        content.body = NSLocalizedString("The title you reserved is available.", comment: "")
-      }
+      content.body = NSLocalizedString("The title you reserved, \(book.title), is available.", comment: "")
       content.title = title
       content.sound = UNNotificationSound.default
       content.categoryIdentifier = HoldNotificationCategoryIdentifier
@@ -103,9 +99,12 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
                                                content: content,
                                                trigger: nil)
       unCenter.add(request) { error in
-        if (error != nil) {
-          Log.error(#file, "Error creating notification for: \(book.title ?? "--")." +
-            "Reason: \(error?.localizedDescription ?? "nil")")
+        if let error = error {
+          NYPLErrorLogger.logError(error as NSError,
+                                   summary: "Error creating notification for ready checkout",
+                                   message: nil,
+                                   metadata: [
+                                    "book": book.loggableDictionary()])
         }
       }
     }
