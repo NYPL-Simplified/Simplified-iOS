@@ -66,11 +66,11 @@ extension NYPLSignInBusinessLogic {
     }
   }
 
-  /// Performs log out using the given executor verifying no book registry
-  /// syncing or book downloads/returns authorizations are in progress.
-  /// - Parameter logOutExecutor: The object actually performing the log out.
-  /// - Returns: An alert the caller needs to present.
-  @objc func logOutOrWarn(using logOutExecutor: NYPLLogOutExecutor) -> UIAlertController? {
+  /// Performs log out verifying that no book registry syncing
+  /// or book download/return authorizations are in progress.
+  /// - Returns: An alert the caller needs to present in case there's syncing
+  /// or book downloading/returning currently happening.
+  @objc func logOutOrWarn() -> UIAlertController? {
 
     let title = NSLocalizedString("SignOut",
                                   comment: "Title for sign out action")
@@ -82,7 +82,7 @@ extension NYPLSignInBusinessLogic {
       msg = NSLocalizedString("It looks like you may have a book download or return in progress. Would you like to stop that and continue logging out?",
                               comment: "Warning message offering the user the choice of interrupting the download or return of a book to log out immediately, or waiting until that finishes.")
     } else {
-      logOutExecutor.performLogOut()
+      performLogOut()
       return nil
     }
 
@@ -93,7 +93,7 @@ extension NYPLSignInBusinessLogic {
       UIAlertAction(title: title,
                     style: .destructive,
                     handler: { _ in
-                      logOutExecutor.performLogOut()
+                      self.performLogOut()
       }))
     alert.addAction(
       UIAlertAction(title: NSLocalizedString("Wait", comment: "button title"),

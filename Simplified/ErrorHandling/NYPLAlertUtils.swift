@@ -53,7 +53,7 @@ import UIKit
       } else if code == NYPLADEPTError.tooManyActivations.rawValue {
         message = "SettingsAccountViewControllerMessageTooManyActivations"
       } else {
-        message = "UnknownAdeptError"
+        message = "DRM error: \(error?.localizedDescriptionWithRecovery ?? "Please try again.")"
       }
     }
     #endif

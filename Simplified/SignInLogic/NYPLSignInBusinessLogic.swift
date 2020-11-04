@@ -13,6 +13,12 @@ import NYPLCardCreator
   case signOut = 2
 }
 
+@objc protocol NYPLBookDownloadsDeleting {
+  func reset(_ libraryID: String!)
+}
+
+extension NYPLMyBooksDownloadCenter: NYPLBookDownloadsDeleting {}
+
 @objc protocol NYPLBookRegistrySyncing: NSObjectProtocol {
   var syncing: Bool {get}
   func reset(_ libraryAccountUUID: String)
@@ -21,35 +27,36 @@ import NYPLCardCreator
   func save()
 }
 
+extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
+
 @objc protocol NYPLDRMAuthorizing: NSObjectProtocol {
   var workflowsInProgress: Bool {get}
   func isUserAuthorized(_ userID: String!, withDevice device: String!) -> Bool
-}
-
-@objc protocol NYPLLogOutExecutor: NSObjectProtocol {
-  func performLogOut()
+  func authorize(withVendorID vendorID: String!, username: String!, password: String!, completion: ((Bool, Error?, String?, String?) -> Void)!)
+  func deauthorize(withUsername username: String!, password: String!, userID: String!, deviceID: String!, completion: ((Bool, Error?) -> Void)!)
 }
 
 #if FEATURE_DRM_CONNECTOR
 extension NYPLADEPT: NYPLDRMAuthorizing {}
 #endif
-extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 
 @objcMembers
 class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   @objc init(libraryAccountID: String,
              libraryAccountsProvider: NYPLLibraryAccountsProvider,
-             universalLinksSettings: NYPLUniversalLinksSettings,
+             urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider,
              bookRegistry: NYPLBookRegistrySyncing,
+             bookDownloadsCenter: NYPLBookDownloadsDeleting,
              userAccountProvider: NYPLUserAccountProvider.Type,
-             uiDelegate: NYPLSignInBusinessLogicUIDelegate?,
+             uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
              drmAuthorizer: NYPLDRMAuthorizing?) {
     self.uiDelegate = uiDelegate
     self.libraryAccountID = libraryAccountID
     self.libraryAccountsProvider = libraryAccountsProvider
-    self.universalLinksSettings = universalLinksSettings
+    self.urlSettingsProvider = urlSettingsProvider
     self.bookRegistry = bookRegistry
+    self.bookDownloadsCenter = bookDownloadsCenter
     self.userAccountProvider = userAccountProvider
     self.drmAuthorizer = drmAuthorizer
     self.samlHelper = NYPLSAMLHelper()
@@ -71,6 +78,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// Signing in and out may imply syncing the book registry.
   let bookRegistry: NYPLBookRegistrySyncing
 
+  /// Signing out implies removing book downloads from the device.
+  let bookDownloadsCenter: NYPLBookDownloadsDeleting
+
   /// Provides the user account for a given library.
   private let userAccountProvider: NYPLUserAccountProvider.Type
 
@@ -78,7 +88,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   weak private(set) var drmAuthorizer: NYPLDRMAuthorizing?
 
   /// The primary way for the business logic to communicate with the UI.
-  @objc weak var uiDelegate: NYPLSignInBusinessLogicUIDelegate?
+  @objc weak var uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?
 
   private var uiContext: String {
     return uiDelegate?.context ?? "Unknown"
@@ -99,7 +109,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   var patron: [String: Any]? = nil
 
   /// Settings used by OAuth sign-in flows.
-  let universalLinksSettings: NYPLUniversalLinksSettings
+  let urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider
 
   /// Cookies used to authenticate. Only required for the SAML flow.
   @objc var cookies: [HTTPCookie]?
@@ -157,12 +167,14 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   // Time-out to use for sign-in/out network requests.
   private let requestTimeoutInterval: TimeInterval = 25.0
 
-  private let urlSession: URLSession
+  @objc let urlSession: URLSession
 
   private let urlSessionDelegate: NYPLSignInURLSessionChallengeHandler
 
   /// Creates a request object for signing in or out, depending on
   /// on which authentication mechanism is currently selected.
+  /// - Note: If it was impossible to create the request, an error will be
+  /// reported.
   /// - Parameters:
   ///   - authType: What kind of authentication request should be created.
   ///   - context: A string for further context for error reporting.

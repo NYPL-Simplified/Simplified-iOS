@@ -24,7 +24,7 @@
   NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:idpURL resolvingAgainstBaseURL:true];
 
   // add redirect uri param
-  NSURLQueryItem *redirect_uri = [[NSURLQueryItem alloc] initWithName:@"redirect_uri" value:NYPLSettings.shared.authenticationUniversalLink.absoluteString];
+  NSURLQueryItem *redirect_uri = [[NSURLQueryItem alloc] initWithName:@"redirect_uri" value:self.businessLogic.urlSettingsProvider.universalLinksURL.absoluteString];
   urlComponents.queryItems = [urlComponents.queryItems arrayByAddingObject:redirect_uri];
   NSURL *url = urlComponents.URL;
 

@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLLogOutExecutor, NYPLSignInBusinessLogicUIDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NYPLSignInOutBusinessLogicUIDelegate>
 
 // view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
@@ -70,10 +70,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
 @property (nonatomic) NYPLSignInBusinessLogic *businessLogic;
-
-// networking
-@property (nonatomic) NSURLSession *session;
-@property (nonatomic) NYPLSignInURLSessionChallengeHandler *urlSessionDelegate;
 
 @end
 
@@ -152,8 +148,9 @@ Authenticating with any of those barcodes should work.
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:libraryUUID
                         libraryAccountsProvider:AccountsManager.shared
-                        universalLinksSettings: NYPLSettings.shared
+                        urlSettingsProvider: NYPLSettings.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        bookDownloadsCenter:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
                         drmAuthorizer:drmAuthorizer];
@@ -189,23 +186,11 @@ Authenticating with any of those barcodes should work.
    name:UIApplicationWillEnterForegroundNotification
    object:nil];
   
-  NSURLSessionConfiguration *const configuration =
-    [NSURLSessionConfiguration ephemeralSessionConfiguration];
-
-  _urlSessionDelegate = [[NYPLSignInURLSessionChallengeHandler alloc]
-                         initWithUIDelegate:self];
-
-  self.session = [NSURLSession
-                  sessionWithConfiguration:configuration
-                  delegate:_urlSessionDelegate
-                  delegateQueue:[NSOperationQueue mainQueue]];
-
   return self;
 }
 
 - (void)dealloc
 {
-  [self.session finishTasksAndInvalidate];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -498,7 +483,7 @@ Authenticating with any of those barcodes should work.
   return self.PINTextField.text;
 }
 
-#pragma mark - Account SignIn/SignOut
+#pragma mark - Account SignIn
 
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
@@ -508,176 +493,6 @@ Authenticating with any of those barcodes should work.
     [self.PINTextField resignFirstResponder];
     [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
   }
-}
-
-- (void)logOut
-{
-  UIAlertController *alert = [self.businessLogic logOutOrWarnUsing:self];
-  if (alert) {
-    [self presentViewController:alert animated:YES completion:nil];
-  }
-}
-
-- (void)performLogOut
-{
-#if defined(FEATURE_DRM_CONNECTOR)
-
-  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
-
-  // we need to make this request (which is identical to the sign-in request)
-  // because in order for the Adobe deactivation to be successful, it has
-  // to use a fresh Adobe token provided by the CM, since it may have expired.
-  // These tokens are very short lived (1 hour).
-  NSURLRequest *const request = [self.businessLogic
-                                 makeRequestFor:NYPLAuthRequestTypeSignOut
-                                 context:@"Settings Tab"];
-  NSString * const currentBarcode = [[self selectedUserAccount] barcode];
-  NSURLSessionDataTask *const task =
-  [self.session
-   dataTaskWithRequest:request
-   completionHandler:^(NSData *data,
-                       NSURLResponse *const response,
-                       NSError *const error) {
-     
-     NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
-     if (statusCode == 200) {
-       NSError *pDocError = nil;
-       UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
-       if (!pDoc) {
-         NYPLLOG_F(@"Unable to parse user profile at sign out (HTTP: %ld): Adobe device deauthorization won't be possible.", (long)statusCode);
-         [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
-                                                  summary:@"SignOut: unable to parse user profile doc"
-                                                  barcode:currentBarcode
-                                                 metadata:@{
-                                                   @"Request": request.loggableString,
-                                                   @"Response": response ?: @"N/A",
-                                                 }];
-         [self showLogoutAlertWithError:pDocError responseCode:statusCode];
-         [self removeActivityTitle];
-       } else {
-         if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
-           // Set the fresh Adobe token info into the user account so that the
-           // following `deauthorizeDevice` call can use it.
-           [self.selectedUserAccount setLicensor:[pDoc.drm[0] licensor]];
-           NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@", pDoc.drm[0].clientToken, self.selectedUserAccount.userID);
-         } else {
-           NYPLLOG_F(@"\nLicensor Token Invalid: %@", [pDoc toJson])
-         }
-         [self deauthorizeDevice];
-
-#ifdef OPENEBOOKS
-         [NYPLSettings sharedSettings].accountMainFeedURL = nil;
-#endif
-       }
-     } else {
-       if (statusCode == 401) {
-         [self deauthorizeDevice];
-       }
-
-       NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
-                        currentBarcode.md5String];
-       [NYPLErrorLogger logNetworkError:error
-                                   code:NYPLErrorCodeApiCall
-                                summary:@"signOut"
-                                request:request
-                               response:response
-                                message:msg
-                               metadata:@{
-                                 @"authMethod": self.businessLogic.selectedAuthentication.methodDescription ?: @"N/A"
-                               }];
-       [self showLogoutAlertWithError:error responseCode:statusCode];
-
-       [self removeActivityTitle];
-     }
-   }];
-
-  [task resume];
-  
-#else
-
-  if([NYPLBookRegistry sharedRegistry].syncing == YES) {
-    [self presentViewController:[NYPLAlertUtils
-                                 alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
-                                 message:@"SettingsAccountViewControllerCannotLogOutMessage"]
-                       animated:YES
-                     completion:nil];
-  } else {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
-    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
-    [self.businessLogic.userAccount removeAll];
-    self.businessLogic.selectedIDP = nil;
-    [self setupTableData];
-    [self removeActivityTitle];
-  }
-
-#endif
-}
-
-- (void)deauthorizeDevice
-{
-#if defined(FEATURE_DRM_CONNECTOR)
-
-  void (^afterDeauthorization)(void) = ^() {
-    [self removeActivityTitle];
-
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
-    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
-    
-    [self.businessLogic.userAccount removeAll];
-    self.businessLogic.selectedIDP = nil;
-    [self setupTableData];
-  };
-
-  NSDictionary *licensor = [self.selectedUserAccount licensor];
-  if (!licensor) {
-    NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
-    [NYPLErrorLogger logInvalidLicensorWithAccountID:self.selectedAccountId];
-    afterDeauthorization();
-    return;
-  }
-
-  NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-  NSString *tokenPassword = [licensorItems lastObject];
-  [licensorItems removeLastObject];
-  NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
-  NSString *deviceID = [self.selectedUserAccount deviceID];
-  
-  NYPLLOG(@"***DRM Deactivation Attempt***");
-  NYPLLOG_F(@"\nLicensor: %@\n",licensor);
-  NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
-  NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-  NYPLLOG_F(@"UserID: %@\n",[self.selectedUserAccount userID]);
-  NYPLLOG_F(@"DeviceID: %@\n",deviceID);
-  
-  [[NYPLADEPT sharedInstance]
-   deauthorizeWithUsername:tokenUsername
-   password:tokenPassword
-   userID:[self.selectedUserAccount userID]
-   deviceID:deviceID
-   completion:^(BOOL success, NSError *error) {
-     
-     if(!success) {
-       // Even though we failed, let the user continue to log out.
-       // The most likely reason is a user changing their PIN.
-       [NYPLErrorLogger logError:error
-                         summary:@"User lost an activation on signout: ADEPT error"
-                         message:nil
-                        metadata:@{
-                          @"DeviceID": deviceID ?: @"N/A",
-                          @"Licensor": licensor ?: @"N/A",
-                          @"AdobeTokenUsername": tokenUsername,
-                          @"AdobeTokenPassword": tokenPassword,
-                        }];
-     }
-     else {
-       NYPLLOG(@"***Successful DRM Deactivation***");
-     }
-
-     afterDeauthorization();
-   }];
-  
-#endif
-
 }
 
 - (void)      businessLogic:(NYPLSignInBusinessLogic *)businessLogic
@@ -709,6 +524,23 @@ didEncounterValidationError:(NSError *)error
                                                                 completion:nil];
 }
 
+- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self removeActivityTitle];
+  }];
+}
+
+#pragma mark - Account SignOut
+
+- (void)logOut
+{
+  UIAlertController *alert = [self.businessLogic logOutOrWarn];
+  if (alert) {
+    [self presentViewController:alert animated:YES completion:nil];
+  }
+}
+
 - (void)showLogoutAlertWithError:(NSError *)error responseCode:(NSInteger)code
 {
   NSString *title; NSString *message;
@@ -727,11 +559,25 @@ didEncounterValidationError:(NSError *)error
                    completion:nil];
 }
 
-- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
+- (void)   businessLogic:(NYPLSignInBusinessLogic *)logic
+didEncounterSignOutError:(NSError *)error
+      withHTTPStatusCode:(NSInteger)statusCode
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self removeActivityTitle];
-  }];
+  [self showLogoutAlertWithError:error responseCode:statusCode];
+  [self removeActivityTitle];
+}
+
+- (void)businessLogicWillSignOut:(NYPLSignInBusinessLogic *)businessLogic
+{
+#if defined(FEATURE_DRM_CONNECTOR)
+  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
+#endif
+}
+
+- (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
+{
+  [self removeActivityTitle];
+  [self setupTableData];
 }
 
 #pragma mark - UITableViewDataSource / UITableViewDelegate + related methods
