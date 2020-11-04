@@ -28,6 +28,12 @@ class NYPLBookRegistryMock: NSObject, NYPLBookRegistrySyncing, NYPLBookRegistryP
   func save() {
   }
     
+  func addBook(book: NYPLBook,
+               state: NYPLBookState) {
+    let dict = ["metadata": book.dictionaryRepresentation(), "state": state.stringValue()] as [String : AnyObject]
+    self.identifiersToRecords[book.identifier] = NYPLBookRegistryRecord(dictionary: dict)
+  }
+    
   func readiumBookmarks(forIdentifier identifier: String) -> [NYPLReadiumBookmark] {
     guard let record = identifiersToRecords[identifier] else { return [NYPLReadiumBookmark]() }
     return record.readiumBookmarks.sorted{ $0.progressWithinBook > $1.progressWithinBook }

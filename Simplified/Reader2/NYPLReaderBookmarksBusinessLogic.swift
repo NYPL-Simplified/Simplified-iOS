@@ -282,7 +282,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     })
   }
     
-  private func updateLocalBookmarks(serverBookmarks: [NYPLReadiumBookmark],
+  internal func updateLocalBookmarks(serverBookmarks: [NYPLReadiumBookmark],
                                      localBookmarks: [NYPLReadiumBookmark],
                                      bookmarksFailedToUpload: [NYPLReadiumBookmark],
                                      completion: @escaping () -> ())
@@ -300,7 +300,9 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     for serverBookmark in serverBookmarks {
       let matched = localBookmarks.contains{ $0.annotationId == serverBookmark.annotationId }
         
-      localBookmarksToKeep.append(serverBookmark)
+      if matched {
+        localBookmarksToKeep.append(serverBookmark)
+      }
         
       if let deviceID = serverBookmark.device,
         let drmDeviceID = drmDeviceID,
