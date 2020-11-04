@@ -101,11 +101,21 @@ Authenticating with any of those barcodes should work.
 
 @synthesize PINTextField;
 
-#pragma mark - NYPLSignInBusinessLogicUIDelegate properties
+#pragma mark - NYPLSignInOutBusinessLogicUIDelegate properties
 
 - (NSString *)context
 {
   return @"Settings Tab";
+}
+
+- (NSString *)username
+{
+  return self.usernameTextField.text;
+}
+
+- (NSString *)pin
+{
+  return self.PINTextField.text;
 }
 
 #pragma mark - Computed variables
@@ -460,77 +470,6 @@ Authenticating with any of those barcodes should work.
   [self.tableView reloadData];
 }
 
-- (void)scanLibraryCard
-{
-  [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
-    if (resultString) {
-      self.usernameTextField.text = resultString;
-      [self.PINTextField becomeFirstResponder];
-      self.loggingInAfterBarcodeScan = YES;
-    }
-  }];
-}
-
-#pragma mark - NYPLSignInUserProvidedCredentials
-
-- (NSString *)username
-{
-  return self.usernameTextField.text;
-}
-
-- (NSString *)pin
-{
-  return self.PINTextField.text;
-}
-
-#pragma mark - Account SignIn
-
-- (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
-{
-  if (!businessLogic.selectedAuthentication.isOauth
-      && !businessLogic.selectedAuthentication.isSaml) {
-    [self.usernameTextField resignFirstResponder];
-    [self.PINTextField resignFirstResponder];
-    [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-  }
-}
-
-- (void)      businessLogic:(NYPLSignInBusinessLogic *)businessLogic
-didEncounterValidationError:(NSError *)error
-     userFriendlyErrorTitle:(NSString *)title
-       andMessage:(NSString *)serverMessage
-{
-  [self removeActivityTitle];
-
-  if (error.code == NSURLErrorCancelled) {
-    // We cancelled the request when asked to answer the server's challenge
-    // a second time because we don't have valid credentials.
-    self.PINTextField.text = @"";
-    [self textFieldsDidChange];
-    [self.PINTextField becomeFirstResponder];
-  }
-
-  UIAlertController *alert = nil;
-  if (serverMessage != nil) {
-    alert = [NYPLAlertUtils alertWithTitle:title
-                                   message:serverMessage];
-  } else {
-    alert = [NYPLAlertUtils alertWithTitle:title
-                                     error:error];
-  }
-  
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
-                                                                  animated:YES
-                                                                completion:nil];
-}
-
-- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
-{
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self removeActivityTitle];
-  }];
-}
-
 #pragma mark - Account SignOut
 
 - (void)logOut
@@ -557,27 +496,6 @@ didEncounterValidationError:(NSError *)error
   [self presentViewController:[NYPLAlertUtils alertWithTitle:title message:message]
                      animated:YES
                    completion:nil];
-}
-
-- (void)   businessLogic:(NYPLSignInBusinessLogic *)logic
-didEncounterSignOutError:(NSError *)error
-      withHTTPStatusCode:(NSInteger)statusCode
-{
-  [self showLogoutAlertWithError:error responseCode:statusCode];
-  [self removeActivityTitle];
-}
-
-- (void)businessLogicWillSignOut:(NYPLSignInBusinessLogic *)businessLogic
-{
-#if defined(FEATURE_DRM_CONNECTOR)
-  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
-#endif
-}
-
-- (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
-{
-  [self removeActivityTitle];
-  [self setupTableData];
 }
 
 #pragma mark - UITableViewDataSource / UITableViewDelegate + related methods
@@ -1283,7 +1201,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }];
 }
 
-#pragma mark -
+#pragma mark - PIN Show/Hide
 
 - (void)PINShowHideSelected
 {
@@ -1320,6 +1238,21 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [self.PINShowHideButton sizeToFit];
   [self.tableView reloadData];
 }
+
+- (void)updateShowHidePINState
+{
+  self.PINTextField.rightView.hidden = YES;
+
+  // LAPolicyDeviceOwnerAuthentication is only on iOS >= 9.0
+  if([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 9) {
+    LAContext *const context = [[LAContext alloc] init];
+    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+      self.PINTextField.rightView.hidden = NO;
+    }
+  }
+}
+
+#pragma mark - UI update
 
 - (void)accountDidChange
 {
@@ -1435,6 +1368,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [self updateLoginLogoutCellAppearance];
 }
 
+#pragma mark -
+
+- (void)scanLibraryCard
+{
+  [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
+    if (resultString) {
+      self.usernameTextField.text = resultString;
+      [self.PINTextField becomeFirstResponder];
+      self.loggingInAfterBarcodeScan = YES;
+    }
+  }];
+}
+
 - (void)showEULA
 {
   UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.selectedAccount];
@@ -1467,18 +1413,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (void)updateShowHidePINState
-{
-  self.PINTextField.rightView.hidden = YES;
-  
-  // LAPolicyDeviceOwnerAuthentication is only on iOS >= 9.0
-  if([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 9) {
-    LAContext *const context = [[LAContext alloc] init];
-    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
-      self.PINTextField.rightView.hidden = NO;
-    }
-  }
-}
+#pragma mark - Bookmark Syncing
 
 - (void)syncSwitchChanged:(UISwitch*)sender
 {
@@ -1508,12 +1443,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }];
 }
 
-- (void)didSelectCancel
-{
-  [self.navigationController.presentingViewController
-   dismissViewControllerAnimated:YES
-   completion:nil];
-}
+#pragma mark - UIApplication callbacks
 
 - (void)willResignActive
 {
@@ -1528,6 +1458,75 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self updateShowHidePINState];
   }];
+}
+
+#pragma mark - NYPLSignInOutBusinessLogicUIDelegate
+
+- (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
+{
+  if (!businessLogic.selectedAuthentication.isOauth
+      && !businessLogic.selectedAuthentication.isSaml) {
+    [self.usernameTextField resignFirstResponder];
+    [self.PINTextField resignFirstResponder];
+    [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
+  }
+}
+
+- (void)      businessLogic:(NYPLSignInBusinessLogic *)businessLogic
+didEncounterValidationError:(NSError *)error
+     userFriendlyErrorTitle:(NSString *)title
+                 andMessage:(NSString *)serverMessage
+{
+  [self removeActivityTitle];
+
+  if (error.code == NSURLErrorCancelled) {
+    // We cancelled the request when asked to answer the server's challenge
+    // a second time because we don't have valid credentials.
+    self.PINTextField.text = @"";
+    [self textFieldsDidChange];
+    [self.PINTextField becomeFirstResponder];
+  }
+
+  UIAlertController *alert = nil;
+  if (serverMessage != nil) {
+    alert = [NYPLAlertUtils alertWithTitle:title
+                                   message:serverMessage];
+  } else {
+    alert = [NYPLAlertUtils alertWithTitle:title
+                                     error:error];
+  }
+
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
+                                                                  animated:YES
+                                                                completion:nil];
+}
+
+- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self removeActivityTitle];
+  }];
+}
+
+- (void)   businessLogic:(NYPLSignInBusinessLogic *)logic
+didEncounterSignOutError:(NSError *)error
+      withHTTPStatusCode:(NSInteger)statusCode
+{
+  [self showLogoutAlertWithError:error responseCode:statusCode];
+  [self removeActivityTitle];
+}
+
+- (void)businessLogicWillSignOut:(NYPLSignInBusinessLogic *)businessLogic
+{
+#if defined(FEATURE_DRM_CONNECTOR)
+  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
+#endif
+}
+
+- (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
+{
+  [self removeActivityTitle];
+  [self setupTableData];
 }
 
 @end
