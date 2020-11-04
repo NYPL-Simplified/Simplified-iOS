@@ -114,11 +114,7 @@ class LCPAuthenticationViewController: UIViewController {
     }
     
     func open(_ url: URL) {
-      if #available(iOS 10, *) {
         UIApplication.shared.open(url)
-      } else {
-        UIApplication.shared.openURL(url)
-      }
     }
     
     if let (_, url) = supportLinks.first, supportLinks.count == 1 {
