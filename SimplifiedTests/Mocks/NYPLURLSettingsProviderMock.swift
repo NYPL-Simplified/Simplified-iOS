@@ -10,12 +10,10 @@ import Foundation
 @testable import SimplyE
 
 class NYPLURLSettingsProviderMock: NSObject, NYPLUniversalLinksSettings, NYPLFeedURLProvider {
+  var accountMainFeedURL: URL?
+
   var universalLinksURL: URL {
     return URL(string: "https://example.com/univeral-link-redirect")!
-  }
-
-  var accountMainFeedURL: URL? {
-    return URL(string: "http://example.org/accountMainFeed")!
   }
 }
 
