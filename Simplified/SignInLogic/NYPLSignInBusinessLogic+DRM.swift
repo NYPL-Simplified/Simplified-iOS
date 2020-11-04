@@ -94,7 +94,7 @@ extension NYPLSignInBusinessLogic {
       VendorID: \(vendor ?? "N/A")
       """)
 
-    NYPLADEPT.sharedInstance()?
+    drmAuthorizer?
       .authorize(withVendorID: vendor,
                  username: username,
                  password: password) { success, error, deviceID, userID in

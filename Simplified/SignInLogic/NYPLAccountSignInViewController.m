@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NYPLSignInBusinessLogicUIDelegate>
+@interface NYPLAccountSignInViewController () <NYPLSignInOutBusinessLogicUIDelegate>
 
 // view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
@@ -88,8 +88,9 @@ CGFloat const marginPadding = 2.0;
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:AccountsManager.shared.currentAccountId
                         libraryAccountsProvider:AccountsManager.shared
-                        universalLinksSettings: NYPLSettings.shared
+                        urlSettingsProvider: NYPLSettings.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        bookDownloadsCenter:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
                         drmAuthorizer:
@@ -972,6 +973,20 @@ didEncounterValidationError:(NSError *)error
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self updateShowHidePINState];
   }];
+}
+
+- (void)   businessLogic:(NYPLSignInBusinessLogic *)logic
+didEncounterSignOutError:(NSError *)error
+      withHTTPStatusCode:(NSInteger)statusCode
+{
+}
+
+- (void)businessLogicWillSignOut:(NYPLSignInBusinessLogic *)businessLogic
+{
+}
+
+- (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
+{
 }
 
 @end

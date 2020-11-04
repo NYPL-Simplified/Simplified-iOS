@@ -5,10 +5,14 @@ import Foundation
   /// back to the our app. This URL will need to be provided to the external
   /// service. For example, Clever authentication uses this URL to redirect
   /// to the app after authenticating in Safari.
-  var authenticationUniversalLink: URL { get }
+  var universalLinksURL: URL { get }
 }
 
-@objcMembers class NYPLSettings: NSObject {
+@objc protocol NYPLFeedURLProvider {
+  var accountMainFeedURL: URL? { get }
+}
+
+@objcMembers class NYPLSettings: NSObject, NYPLFeedURLProvider {
   static let shared = NYPLSettings()
 
   @objc class func sharedSettings() -> NYPLSettings {
