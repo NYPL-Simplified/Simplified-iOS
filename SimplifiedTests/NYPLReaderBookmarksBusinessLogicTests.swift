@@ -49,7 +49,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
         seriesURL: emptyUrl,
         revokeURL: emptyUrl,
         report: emptyUrl
-      )!
+      )
       
       bookRegistryMock = NYPLBookRegistryMock()
       bookRegistryMock.addBook(book: fakeBook, state: .DownloadSuccessful)
