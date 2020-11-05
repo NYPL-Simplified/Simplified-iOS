@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define RIGHTS_XML_SUFFIX @"_rights.xml"
+
 @interface AdobeDRMContainer : NSObject
 NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;

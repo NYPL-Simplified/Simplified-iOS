@@ -25,7 +25,7 @@ class AdobeDRMLibraryService: DRMLibraryService {
   /// - Parameter file: file URL
   /// - Returns: `true` if file contains Adobe DRM license information.
   func canFulfill(_ file: URL) -> Bool {
-    return file.path.hasSuffix("_rights.xml")
+    return file.path.hasSuffix(RIGHTS_XML_SUFFIX)
   }
   
   /// Fulfills the given file to the fully protected publication.
