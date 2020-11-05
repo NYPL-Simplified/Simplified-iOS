@@ -9,7 +9,7 @@ import Foundation
 }
 
 @objc protocol NYPLFeedURLProvider {
-  var accountMainFeedURL: URL? { get }
+  var accountMainFeedURL: URL? { get set }
 }
 
 @objcMembers class NYPLSettings: NSObject, NYPLFeedURLProvider {

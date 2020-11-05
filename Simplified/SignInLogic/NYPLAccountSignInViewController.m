@@ -64,21 +64,24 @@ typedef NS_ENUM(NSInteger, Section) {
 
 CGFloat const marginPadding = 2.0;
 
-#pragma mark - NYPLSignInBusinessLogicUIDelegate properties
+#pragma mark - NYPLSignInOutBusinessLogicUIDelegate properties
 
 - (NSString *)context
 {
   return @"SignIn-modal";
 }
 
-#pragma mark - Computed variables
-
-- (Account *)currentAccount
+- (NSString *)username
 {
-  return self.businessLogic.libraryAccount;
+  return self.usernameTextField.text;
 }
 
-#pragma mark NSObject
+- (NSString *)pin
+{
+  return self.PINTextField.text;
+}
+
+#pragma mark - NSObject
 
 - (instancetype)init
 {
@@ -128,7 +131,7 @@ CGFloat const marginPadding = 2.0;
    object:nil];
   
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
-                            initWithAccount:self.currentAccount
+                            initWithAccount:self.businessLogic.libraryAccount
                             businessLogic:self.businessLogic
                             inputProvider:self];
   return self;
@@ -213,95 +216,6 @@ CGFloat const marginPadding = 2.0;
                            reuseIdentifier:nil];
 
   [self setupTableData];
-}
-
-- (NSArray *) cellsForAuthMethod:(AccountDetailsAuthentication *)authenticationMethod {
-  NSArray *authCells;
-
-  if (authenticationMethod.isOauth) {
-    // if authentication method is Oauth, just insert login/logout button, it will decide what to do by itself
-    authCells = @[@(CellKindLogInSignOut)];
-  } else if (authenticationMethod.isSaml && self.businessLogic.isSignedIn) {
-    // if authentication method is SAML and user is already logged, the only possible action is to logout
-    // add login/logout button, it will detect by itself that it should be log out in this case
-    authCells = @[@(CellKindLogInSignOut)];
-  } else if (authenticationMethod.isSaml) {
-    // if authentication method is SAML and previous case wasn't fullfilled, make a list of all possible IDPs to login
-    NSMutableArray *multipleCells = @[].mutableCopy;
-    for (OPDS2SamlIDP *idp in authenticationMethod.samlIdps) {
-      NYPLSamlIdpCellType *idpCell = [[NYPLSamlIdpCellType alloc] initWithIdp:idp];
-      [multipleCells addObject:idpCell];
-    }
-    authCells = multipleCells;
-  } else if (authenticationMethod.pinKeyboard != LoginKeyboardNone) {
-    // if authentication method has an information about pin keyboard, the login method is requires a pin
-    authCells = @[@(CellKindBarcode), @(CellKindPIN), @(CellKindLogInSignOut)];
-  } else {
-    // if all other cases failed, it means that server expects just a barcode, with a blank pin
-    self.PINTextField.text = @"";
-    authCells = @[@(CellKindBarcode), @(CellKindLogInSignOut)];
-  }
-
-  return authCells;
-}
-
-- (NSArray *) accountInfoSection {
-  NSMutableArray *workingSection = @[].mutableCopy;
-  if (!self.businessLogic.selectedAuthentication.needsAuth) {
-    // no authentication needed, empty section
-
-  } else if (self.businessLogic.selectedAuthentication && self.businessLogic.isSignedIn) {
-    // user already logged in
-    // show only the selected auth method
-
-    [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
-  } else if (!self.businessLogic.isSignedIn && self.businessLogic.userAccount.needsAuth) {
-    // user needs to sign in
-
-    if (self.businessLogic.isSamlPossible) {
-      // TODO: SIMPLY-2884 add an information header that authentication is required
-      NSString *libraryInfo = [NSString stringWithFormat:@"Log in to %@ required to download books.", self.businessLogic.libraryAccount.name];
-      [workingSection addObject:[[NYPLInfoHeaderCellType alloc] initWithInformation:libraryInfo]];
-    }
-
-    if (self.businessLogic.libraryAccount.details.auths.count > 1) {
-      // multiple authentication methods
-      for (AccountDetailsAuthentication *authMethod in self.businessLogic.libraryAccount.details.auths) {
-        // show all possible login methods
-        NYPLAuthMethodCellType *authType = [[NYPLAuthMethodCellType alloc] initWithAuthenticationMethod:authMethod];
-        [workingSection addObject:authType];
-        if (authMethod.methodDescription == self.businessLogic.selectedAuthentication.methodDescription) {
-          // selected method, unfold
-          [workingSection addObjectsFromArray:[self cellsForAuthMethod:authMethod]];
-        }
-      }
-    } else if (self.businessLogic.libraryAccount.details.auths.count == 1) {
-      // only 1 authentication method
-      // no method header needed
-      [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.libraryAccount.details.auths[0]]];
-    } else if (self.businessLogic.selectedAuthentication) {
-      // only 1 authentication method
-      // no method header needed
-      [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
-    }
-  } else {
-    [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
-  }
-  return workingSection;
-}
-
-- (void)setupTableData
-{
-  NSArray *section0AcctInfo = [self accountInfoSection];
-
-  NSArray *section1;
-  if ([self.businessLogic registrationIsPossible]) {
-    section1 = @[@(CellKindRegistration)];
-  } else {
-    section1 = @[];
-  }
-  self.tableData = @[section0AcctInfo, section1];
-  [self.tableView reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -568,19 +482,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-#pragma mark - NYPLSignInUserProvidedCredentials
-
-- (NSString *)username
-{
-    return self.usernameTextField.text;
-}
-
-- (NSString *)pin
-{
-    return self.PINTextField.text;
-}
-
-#pragma mark - Class Methods
+#pragma mark - Modal presentation
 
 + (void)
 requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
@@ -609,8 +511,6 @@ completionHandler:(void (^)(void))handler
                           authorizeImmediately:YES
                              completionHandler:handler];
 }
-
-#pragma mark -
 
 /**
  * Presents itself to begin the login process.
@@ -682,32 +582,98 @@ completionHandler:(void (^)(void))handler
   }
 }
 
-- (void)textFieldsDidChange
-{
-  [self updateLoginLogoutCellAppearance];
-}
+#pragma mark - Table view set up helpers
 
-- (void)scanLibraryCard
-{
-  [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
-    if (resultString) {
-      self.usernameTextField.text = resultString;
-      [self.PINTextField becomeFirstResponder];
-      self.loggingInAfterBarcodeScan = YES;
+- (NSArray *)cellsForAuthMethod:(AccountDetailsAuthentication *)authenticationMethod {
+  NSArray *authCells;
+
+  if (authenticationMethod.isOauth) {
+    // if authentication method is Oauth, just insert login/logout button, it will decide what to do by itself
+    authCells = @[@(CellKindLogInSignOut)];
+  } else if (authenticationMethod.isSaml && self.businessLogic.isSignedIn) {
+    // if authentication method is SAML and user is already logged, the only possible action is to logout
+    // add login/logout button, it will detect by itself that it should be log out in this case
+    authCells = @[@(CellKindLogInSignOut)];
+  } else if (authenticationMethod.isSaml) {
+    // if authentication method is SAML and previous case wasn't fullfilled, make a list of all possible IDPs to login
+    NSMutableArray *multipleCells = @[].mutableCopy;
+    for (OPDS2SamlIDP *idp in authenticationMethod.samlIdps) {
+      NYPLSamlIdpCellType *idpCell = [[NYPLSamlIdpCellType alloc] initWithIdp:idp];
+      [multipleCells addObject:idpCell];
     }
-  }];
+    authCells = multipleCells;
+  } else if (authenticationMethod.pinKeyboard != LoginKeyboardNone) {
+    // if authentication method has an information about pin keyboard, the login method is requires a pin
+    authCells = @[@(CellKindBarcode), @(CellKindPIN), @(CellKindLogInSignOut)];
+  } else {
+    // if all other cases failed, it means that server expects just a barcode, with a blank pin
+    self.PINTextField.text = @"";
+    authCells = @[@(CellKindBarcode), @(CellKindLogInSignOut)];
+  }
+
+  return authCells;
 }
 
-- (void)didSelectCancelForSignUp
-{
-  [self dismissViewControllerAnimated:YES completion:nil];
+- (NSArray *)accountInfoSection {
+  NSMutableArray *workingSection = @[].mutableCopy;
+  if (!self.businessLogic.selectedAuthentication.needsAuth) {
+    // no authentication needed, empty section
+
+  } else if (self.businessLogic.selectedAuthentication && self.businessLogic.isSignedIn) {
+    // user already logged in
+    // show only the selected auth method
+
+    [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
+  } else if (!self.businessLogic.isSignedIn && self.businessLogic.userAccount.needsAuth) {
+    // user needs to sign in
+
+    if (self.businessLogic.isSamlPossible) {
+      // TODO: SIMPLY-2884 add an information header that authentication is required
+      NSString *libraryInfo = [NSString stringWithFormat:@"Log in to %@ required to download books.", self.businessLogic.libraryAccount.name];
+      [workingSection addObject:[[NYPLInfoHeaderCellType alloc] initWithInformation:libraryInfo]];
+    }
+
+    if (self.businessLogic.libraryAccount.details.auths.count > 1) {
+      // multiple authentication methods
+      for (AccountDetailsAuthentication *authMethod in self.businessLogic.libraryAccount.details.auths) {
+        // show all possible login methods
+        NYPLAuthMethodCellType *authType = [[NYPLAuthMethodCellType alloc] initWithAuthenticationMethod:authMethod];
+        [workingSection addObject:authType];
+        if (authMethod.methodDescription == self.businessLogic.selectedAuthentication.methodDescription) {
+          // selected method, unfold
+          [workingSection addObjectsFromArray:[self cellsForAuthMethod:authMethod]];
+        }
+      }
+    } else if (self.businessLogic.libraryAccount.details.auths.count == 1) {
+      // only 1 authentication method
+      // no method header needed
+      [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.libraryAccount.details.auths[0]]];
+    } else if (self.businessLogic.selectedAuthentication) {
+      // only 1 authentication method
+      // no method header needed
+      [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
+    }
+  } else {
+    [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
+  }
+  return workingSection;
 }
 
-- (void)didSelectReveal
+- (void)setupTableData
 {
-  self.hiddenPIN = NO;
+  NSArray *section0AcctInfo = [self accountInfoSection];
+
+  NSArray *section1;
+  if ([self.businessLogic registrationIsPossible]) {
+    section1 = @[@(CellKindRegistration)];
+  } else {
+    section1 = @[];
+  }
+  self.tableData = @[section0AcctInfo, section1];
   [self.tableView reloadData];
 }
+
+#pragma mark - PIN Show/Hide
 
 - (void)PINShowHideSelected
 {
@@ -741,6 +707,53 @@ completionHandler:(void (^)(void))handler
   [self.tableView reloadData];
 }
 
+- (void)updateShowHidePINState
+{
+  self.PINTextField.rightView.hidden = YES;
+
+  // LAPolicyDeviceOwnerAuthentication is only on iOS >= 9.0
+  if([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 9) {
+    LAContext *const context = [[LAContext alloc] init];
+    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+      self.PINTextField.rightView.hidden = NO;
+    }
+  }
+}
+
+#pragma mark -
+
+- (void)scanLibraryCard
+{
+  [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
+    if (resultString) {
+      self.usernameTextField.text = resultString;
+      [self.PINTextField becomeFirstResponder];
+      self.loggingInAfterBarcodeScan = YES;
+    }
+  }];
+}
+
+- (void)didSelectCancel
+{
+  [self.navigationController.presentingViewController
+   dismissViewControllerAnimated:YES
+   completion:nil];
+}
+
+- (void)didSelectCancelForSignUp
+{
+  [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)showEULA
+{
+  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.businessLogic.libraryAccount];
+  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
+  [self.navigationController presentViewController:navVC animated:YES completion:nil];
+}
+
+#pragma mark - UI update
+
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -761,13 +774,6 @@ completionHandler:(void (^)(void))handler
     [self setupTableData];
     [self updateLoginLogoutCellAppearance];
   }];
-}
-
-- (void)showEULA
-{
-  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.currentAccount];
-  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
-  [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }
 
 - (void)updateLoginLogoutCellAppearance
@@ -800,16 +806,6 @@ completionHandler:(void (^)(void))handler
             self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
         }
     }
-  }
-}
-
-- (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
-{
-  if (!businessLogic.selectedAuthentication.isOauth
-      && !businessLogic.selectedAuthentication.isSaml) {
-    [self.usernameTextField resignFirstResponder];
-    [self.PINTextField resignFirstResponder];
-    [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
   }
 }
 
@@ -869,33 +865,11 @@ completionHandler:(void (^)(void))handler
   [self updateLoginLogoutCellAppearance];
 }
 
-- (void)      businessLogic:(NYPLSignInBusinessLogic *)businessLogic
-didEncounterValidationError:(NSError *)error
-     userFriendlyErrorTitle:(NSString *)title
-       andMessage:(NSString *)serverMessage
+#pragma mark - Text Input
+
+- (void)textFieldsDidChange
 {
-  [self removeActivityTitle];
-
-  if (error.code == NSURLErrorCancelled) {
-    // We cancelled the request when asked to answer the server's challenge
-    // a second time because we don't have valid credentials.
-    self.PINTextField.text = @"";
-    [self textFieldsDidChange];
-    [self.PINTextField becomeFirstResponder];
-  }
-
-  UIAlertController *alert = nil;
-  if (serverMessage != nil) {
-    alert = [NYPLAlertUtils alertWithTitle:title
-                                   message:serverMessage];
-  } else {
-    alert = [NYPLAlertUtils alertWithTitle:title
-                                     error:error];
-  }
-
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
-                                                                  animated:YES
-                                                                completion:nil];
+  [self updateLoginLogoutCellAppearance];
 }
 
 - (void)keyboardDidShow:(NSNotification *const)notification
@@ -924,11 +898,33 @@ didEncounterValidationError:(NSError *)error
   }];
 }
 
-- (void)didSelectCancel
+#pragma mark - UIApplication observer callbacks
+
+- (void)willResignActive
 {
-  [self.navigationController.presentingViewController
-   dismissViewControllerAnimated:YES
-   completion:nil];
+  if(!self.PINTextField.secureTextEntry) {
+    [self togglePINShowHideState];
+  }
+}
+
+- (void)willEnterForeground
+{
+  // We update the state again in case the user enabled or disabled an authentication mechanism.
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self updateShowHidePINState];
+  }];
+}
+
+#pragma mark - NYPLSignInBusinessLogicUIDelegate
+
+- (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
+{
+  if (!businessLogic.selectedAuthentication.isOauth
+      && !businessLogic.selectedAuthentication.isSaml) {
+    [self.usernameTextField resignFirstResponder];
+    [self.PINTextField resignFirstResponder];
+    [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
+  }
 }
 
 /**
@@ -947,32 +943,33 @@ didEncounterValidationError:(NSError *)error
   }];
 }
 
-- (void)willResignActive
+- (void)      businessLogic:(NYPLSignInBusinessLogic *)businessLogic
+didEncounterValidationError:(NSError *)error
+     userFriendlyErrorTitle:(NSString *)title
+                 andMessage:(NSString *)serverMessage
 {
-  if(!self.PINTextField.secureTextEntry) {
-    [self togglePINShowHideState];
-  }
-}
+  [self removeActivityTitle];
 
-- (void)updateShowHidePINState
-{
-  self.PINTextField.rightView.hidden = YES;
-  
-  // LAPolicyDeviceOwnerAuthentication is only on iOS >= 9.0
-  if([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 9) {
-    LAContext *const context = [[LAContext alloc] init];
-    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
-      self.PINTextField.rightView.hidden = NO;
-    }
+  if (error.code == NSURLErrorCancelled) {
+    // We cancelled the request when asked to answer the server's challenge
+    // a second time because we don't have valid credentials.
+    self.PINTextField.text = @"";
+    [self textFieldsDidChange];
+    [self.PINTextField becomeFirstResponder];
   }
-}
 
-- (void)willEnterForeground
-{
-  // We update the state again in case the user enabled or disabled an authentication mechanism.
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self updateShowHidePINState];
-  }];
+  UIAlertController *alert = nil;
+  if (serverMessage != nil) {
+    alert = [NYPLAlertUtils alertWithTitle:title
+                                   message:serverMessage];
+  } else {
+    alert = [NYPLAlertUtils alertWithTitle:title
+                                     error:error];
+  }
+
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
+                                                                  animated:YES
+                                                                completion:nil];
 }
 
 - (void)   businessLogic:(NYPLSignInBusinessLogic *)logic

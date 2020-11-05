@@ -73,7 +73,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   }
 
   // Lock for ensure internal state consistency.
-  private let permissionsCheckLock = NSLock()
+  let permissionsCheckLock = NSLock()
 
   /// Signing in and out may imply syncing the book registry.
   let bookRegistry: NYPLBookRegistrySyncing
@@ -139,7 +139,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   let libraryAccountID: String
 
   /// The object providing library account information.
-  private let libraryAccountsProvider: NYPLLibraryAccountsProvider
+  let libraryAccountsProvider: NYPLLibraryAccountsProvider
 
   @objc var libraryAccount: Account? {
     return libraryAccountsProvider.account(libraryAccountID)
@@ -165,7 +165,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   // MARK:- Network Requests Logic
 
   // Time-out to use for sign-in/out network requests.
-  private let requestTimeoutInterval: TimeInterval = 25.0
+  let requestTimeoutInterval: TimeInterval = 25.0
 
   @objc let urlSession: URLSession
 
@@ -493,151 +493,11 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   @objc func shouldShowEULALink() -> Bool {
     return libraryAccount?.details?.getLicenseURL(.eula) != nil
   }
+}
 
-  // MARK: - Bookmark Syncing
+// MARK:- Card creation core logic
 
-  @objc func shouldShowSyncButton() -> Bool {
-    guard let libraryDetails = libraryAccount?.details else {
-      return false
-    }
-
-    return libraryDetails.supportsSimplyESync &&
-      libraryDetails.getLicenseURL(.annotations) != nil &&
-      userAccount.hasCredentials() &&
-      libraryAccountID == libraryAccountsProvider.currentAccount?.uuid
-  }
-
-  /// Updates server sync setting for the currently selected library.
-  /// - Parameters:
-  ///   - granted: Whether the user is granting sync permission or not.
-  ///   - postServerSyncCompletion: Only run when granting sync permission.
-  @objc func changeSyncPermission(to granted: Bool,
-                                  postServerSyncCompletion: @escaping (Bool) -> Void) {
-    if granted {
-      // When granting, attempt to enable on the server.
-      NYPLAnnotations.updateServerSyncSetting(toEnabled: true) { success in
-        self.libraryAccount?.details?.syncPermissionGranted = success
-        postServerSyncCompletion(success)
-      }
-    } else {
-      // When revoking, just ignore the server's annotations.
-      libraryAccount?.details?.syncPermissionGranted = false
-    }
-  }
-
-  /// Checks with the annotations sync status with the server, adding logic
-  /// to make sure only one such requests is being executed at a time.
-  /// - Parameters:
-  ///   - preWork: Any preparatory work to be done. This block is run
-  ///   synchronously on the main thread. It's not run at all if a request is
-  ///   already ongoing or if the current library doesn't support syncing.
-  ///   - postWork: Any final work to be done. This block is run
-  ///   on the main thread. It's not run at all if a request is
-  ///   already ongoing or if the current library doesn't support syncing.
-  @objc func checkSyncPermission(preWork: () -> Void,
-                                 postWork: @escaping (_ enableSync: Bool) -> Void) {
-    guard let libraryDetails = libraryAccount?.details else {
-      return
-    }
-
-    guard permissionsCheckLock.try(), libraryDetails.supportsSimplyESync else {
-      Log.debug(#file, "Skipping sync setting check. Request already in progress or sync not supported.")
-      return
-    }
-
-    NYPLMainThreadRun.sync {
-      preWork()
-    }
-
-    NYPLAnnotations.requestServerSyncStatus(forAccount: userAccount) { enableSync in
-      if enableSync {
-        libraryDetails.syncPermissionGranted = true
-      }
-
-      NYPLMainThreadRun.sync {
-        postWork(enableSync)
-      }
-
-      self.permissionsCheckLock.unlock()
-    }
-  }
-
-  // MARK: - Card Creation
-
-  private func cardCreatorCredentials() -> (username: String, password: String) {
-    // the likeliness of this username/password to be nil is close to zero
-    // because these strings are decoded from static byte arrays. So any error
-    // should be detected during QA. Even in the case where these are nil, by
-    // using the "" default for initializing the CardCreatorConfiguration (see
-    // below) we'll run into an error soon after, at the 1st screen of the flow.
-    if NYPLSecrets.cardCreatorUsername == nil {
-      NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
-                               summary: "CardCreator username decode error from NYPLSecrets")
-    }
-    if NYPLSecrets.cardCreatorPassword == nil {
-      NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
-                               summary:"CardCreator password decode error from NYPLSecrets")
-    }
-
-    return (username: NYPLSecrets.cardCreatorUsername ?? "",
-            password: NYPLSecrets.cardCreatorPassword ?? "")
-  }
-
-  /// Factory method.
-  /// - Returns: A configuration to be used in the regular card creation flow.
-  @objc func makeRegularCardCreationConfiguration() -> CardCreatorConfiguration {
-    let simplifiedBaseURL = libraryAccount?.details?.signUpUrl ?? APIKeys.cardCreatorEndpointURL
-
-    let credentials = cardCreatorCredentials()
-    let cardCreatorConfiguration = CardCreatorConfiguration(
-      endpointURL: simplifiedBaseURL,
-      endpointVersion: APIKeys.cardCreatorVersion,
-      endpointUsername: credentials.username,
-      endpointPassword: credentials.password,
-      requestTimeoutInterval: requestTimeoutInterval)
-
-    return cardCreatorConfiguration
-  }
-
-  /// Factory method.
-  /// - Parameter parentBarcode: The barcode of the user creating the juvenile
-  /// account. Differently from the sign-in process, this MUST be a barcode --
-  /// the username will not work.
-  /// - Returns: A coordinator instance to handle the juvenile card creator flow.
-  private func makeJuvenileCardCreationCoordinator(using parentBarcode: String) -> JuvenileFlowCoordinator {
-
-    let simplifiedBaseURL = libraryAccount?.details?.signUpUrl ?? APIKeys.cardCreatorEndpointURL
-    let credentials = cardCreatorCredentials()
-    let platformAPI = NYPLPlatformAPIInfo(
-      oauthTokenURL: APIKeys.PlatformAPI.oauthTokenURL,
-      clientID: NYPLSecrets.platformClientID,
-      clientSecret: NYPLSecrets.platformClientSecret,
-      baseURL: APIKeys.PlatformAPI.baseURL)
-
-    let config = CardCreatorConfiguration(
-      endpointURL: simplifiedBaseURL,
-      endpointVersion: APIKeys.cardCreatorVersion,
-      endpointUsername: credentials.username,
-      endpointPassword: credentials.password,
-      juvenileParentBarcode: parentBarcode,
-      juvenilePlatformAPIInfo: platformAPI,
-      requestTimeoutInterval: requestTimeoutInterval)
-
-    return JuvenileFlowCoordinator(configuration: config)
-  }
-
-  /// Utility method to resolve the user barcode, accounting for NYPL-specific
-  /// knowledge.
-  private func userBarcode() -> String? {
-    // For NYPL specifically, the authorizationIdentifier is always a valid
-    // barcode.
-    if libraryAccountID == libraryAccountsProvider.NYPLAccountUUID {
-      return userAccount.authorizationIdentifier ?? userAccount.barcode
-    }
-
-    return userAccount.barcode
-  }
-
+extension NYPLSignInBusinessLogic {
   /// The entry point to the juvenile card creation flow.
   /// - Note: This is available only for NYPL accounts.
   /// - Parameters:
@@ -661,7 +521,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
     juvenileAuthIsOngoing = true
 
-    guard let parentBarcode = userBarcode() else {
+    guard let parentBarcode = resolveUserBarcode() else {
       let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
       let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
 
@@ -702,4 +562,5 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       self?.juvenileAuthLock.unlock()
     }
   }
+
 }
