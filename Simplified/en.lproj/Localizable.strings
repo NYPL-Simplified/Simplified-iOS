@@ -269,13 +269,13 @@
 
 // LCPAuthenticationViewController localizable strings
 // Passphrase request screen
-"lcp_passphraseNotFound_message" = "Passphrase Required";
-"lcp_invalidPassphrase_message" = "Incorrect Passphrase";
-"lcp_prompt_message1" = "This publication is protected by Readium LCP.";
-"lcp_prompt_message2" = "In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:";
+"Passphrase Required" = "Passphrase Required";
+"Incorrect Passphrase" = "Incorrect Passphrase";
+"This publication is protected by Readium LCP." = "This publication is protected by Readium LCP.";
+"In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:" = "In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:";
 // Button to contact the support when entering the passphrase
-"lcp_support_website" = "Website";
-"lcp_support_phone" = "Phone";
-"lcp_support_mail" = "Mail";
-"lcp_support_button" = "Support";
-"cancel_button" = "Cancel";
+"Website" = "Website";
+"Phone" = "Phone";
+"Mail" = "Mail";
+"Support" = "Support";
+"Cancel" = "Cancel";
