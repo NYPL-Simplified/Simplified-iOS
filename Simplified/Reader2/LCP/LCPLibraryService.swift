@@ -24,10 +24,14 @@ import ReadiumLCP
   /// [LicenseDocument.id: passphrase callback]
   private var authenticationCallbacks: [String: (String?) -> Void] = [:]
   
+  /// Library service brand
   var brand: DRM.Brand {
     return .lcp
   }
   
+  /// Returns whether this DRM can fulfill the given file into a protected publication.
+  /// - Parameter file: file URL
+  /// - Returns: `true` if file contains Adobe DRM license information.
   func canFulfill(_ file: URL) -> Bool {
     return file.pathExtension.lowercased() == "lcpl"
   }
@@ -54,6 +58,10 @@ import ReadiumLCP
     }
   }
   
+  /// Fulfills the given file to the fully protected publication.
+  /// - Parameters:
+  ///   - file: file URL
+  ///   - completion: fulfilled publication, CancellableResult<DRMFulfilledPublication>
   func fulfill(_ file: URL, completion: @escaping (CancellableResult<DRMFulfilledPublication>) -> Void) {
     lcpService.importPublication(from: file, authentication: self) { result, error in
       if let result = result {
@@ -67,6 +75,11 @@ import ReadiumLCP
     }
   }
   
+  /// Fills the DRM context of the given protected publication.
+  /// - Parameters:
+  ///   - publication: file URL
+  ///   - drm: DRM
+  ///   - completion: result of retrieving a license for the publication, CancellableResult<DRM?>
   func loadPublication(at publication: URL, drm: DRM, completion: @escaping (CancellableResult<DRM?>) -> Void) {
     lcpService.retrieveLicense(from: publication, authentication: self) { license, error in
       if let license = license {
@@ -85,6 +98,12 @@ import ReadiumLCP
 
 extension LCPLibraryService: LCPAuthenticating {
   
+  /// Requests a passphrase to decrypt the given license.
+  ///
+  /// - Parameter license: Information to show to the user about the license being opened.
+  /// - Parameter reason: Reason why the passphrase is requested. It should be used to prompt the user.
+  /// - Parameter completion: Used to return the retrieved passphrase. If the user cancelled, send nil. The passphrase may
+  ///   be already hashed.
   func requestPassphrase(for license: LCPAuthenticatedLicense, reason: LCPAuthenticationReason, completion: @escaping (String?) -> Void) {
     guard let viewController = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController ?? UIApplication.shared.keyWindow?.rootViewController else {
       completion(nil)
@@ -107,6 +126,11 @@ extension LCPLibraryService: LCPAuthenticating {
 
 extension LCPLibraryService: LCPAuthenticationDelegate {
   
+  /// Authenticate with passphrase.
+  /// The function calls the callback set for document ID in the license
+  /// - Parameters:
+  ///   - license: Information to show to the user about the license being opened.
+  ///   - passphrase: License passphrase
   func authenticate(_ license: LCPAuthenticatedLicense, with passphrase: String) {
     guard let callback = authenticationCallbacks.removeValue(forKey: license.document.id) else {
       return
@@ -114,6 +138,8 @@ extension LCPLibraryService: LCPAuthenticationDelegate {
     callback(passphrase)
   }
   
+  /// Cancel authentication. The function removes authentication callback associated with the license document ID
+  /// - Parameter license:Information to show to the user about the license being opened.
   func didCancelAuthentication(of license: LCPAuthenticatedLicense) {
     guard let callback = authenticationCallbacks.removeValue(forKey: license.document.id) else {
       return
