@@ -274,10 +274,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
         LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
         [lcpService fulfill:tmpSavedFileURL completion:^(NSURL *localUrl, NSURLSessionDownloadTask *downloadTask, NSError *error) {
           if (error) {
-            [self logBookDownloadFailure:book
-                                  reason:@"Couldn't download LCP book"
-                            downloadTask:downloadTask
-                                metadata:@{@"lcpError": error}];
+            [NYPLErrorLogger logError:error summary:error.domain message:error.localizedDescription metadata:nil];
             [self failDownloadForBook:book];
             return;
           }

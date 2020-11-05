@@ -48,7 +48,7 @@ import ReadiumLCP
     lcpService.importPublication(from: file, authentication: self) { result, error in
       var nsError: NSError?
       if let error = error {
-        let domain = "SimplyE.LCPLibraryService"
+        let domain = "LCP fulfillment error"
         let code = 0
         nsError = NSError(domain: domain, code: code, userInfo: [
           NSLocalizedDescriptionKey: error.errorDescription as Any
