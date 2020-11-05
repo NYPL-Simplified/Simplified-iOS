@@ -18,24 +18,40 @@ import ReadiumLCP
 
 protocol LCPAuthenticationDelegate: AnyObject {
   
+  /// Authenticate with passphrase.
+  /// The function calls the callback set for document ID in the license
+  /// - Parameters:
+  ///   - license: Information to show to the user about the license being opened.
+  ///   - passphrase: License passphrase
   func authenticate(_ license: LCPAuthenticatedLicense, with passphrase: String)
+
+  /// Cancel authentication. The function removes authentication callback associated with the license document ID
+  /// - Parameter license:Information to show to the user about the license being opened.
   func didCancelAuthentication(of license: LCPAuthenticatedLicense)
   
 }
 
 class LCPAuthenticationViewController: UIViewController {
   
+  // Authentication delegate - LCPLibraryService
   weak var delegate: LCPAuthenticationDelegate?
   
   @IBOutlet weak var scrollView: UIScrollView!
+  // Passphrase hint from the license
   @IBOutlet weak var hintLabel: UILabel!
+  // LCP protection info
   @IBOutlet weak var promptLabel: UILabel!
+  // LCP provider info
   @IBOutlet weak var messageLabel: UILabel!
+  // Passphrase field for the license
   @IBOutlet weak var passphraseField: UITextField!
+  // If the license contains one or several supoprt links, show support information
   @IBOutlet weak var supportButton: UIButton!
   
   private let license: LCPAuthenticatedLicense
   private let reason: LCPAuthenticationReason
+  
+  // Support links - can be web URLs, emails or phone numbers
   private let supportLinks: [(Link, URL)]
   
   init(license: LCPAuthenticatedLicense, reason: LCPAuthenticationReason) {
