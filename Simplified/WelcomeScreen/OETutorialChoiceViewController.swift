@@ -144,11 +144,7 @@ class OETutorialChoiceViewController : UIViewController {
     choiceVC.navigationItem.leftBarButtonItem = cancelBarButtonItem
     let navVC = UINavigationController(rootViewController: choiceVC)
     navVC.modalPresentationStyle = .formSheet
-    if #available(iOS 13.0, *) {
-      navVC.view.backgroundColor = .systemBackground
-    } else {
-      navVC.view.backgroundColor = .white
-    }
+    navVC.view.backgroundColor = NYPLConfiguration.welcomeTutorialBackgroundColor
     NYPLPresentationUtils.safelyPresent(navVC)
   }
   

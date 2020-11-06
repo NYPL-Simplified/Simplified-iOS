@@ -24,11 +24,7 @@ class OETutorialViewController : UIPageViewController, UIPageViewControllerDataS
     super.viewDidLoad()
     self.dataSource = self
     
-    if #available(iOS 13.0, *) {
-      self.view.backgroundColor = .systemBackground
-    } else {
-      self.view.backgroundColor = .white
-    }
+    self.view.backgroundColor = NYPLConfiguration.welcomeTutorialBackgroundColor
     
     let pageControl = UIPageControl.appearance(whenContainedInInstancesOf: [OETutorialViewController.self])
     pageControl.pageIndicatorTintColor = .lightGray
