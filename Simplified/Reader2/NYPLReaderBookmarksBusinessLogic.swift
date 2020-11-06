@@ -282,7 +282,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     })
   }
     
-  internal func updateLocalBookmarks(serverBookmarks: [NYPLReadiumBookmark],
+  func updateLocalBookmarks(serverBookmarks: [NYPLReadiumBookmark],
                                      localBookmarks: [NYPLReadiumBookmark],
                                      bookmarksFailedToUpload: [NYPLReadiumBookmark],
                                      completion: @escaping () -> ())

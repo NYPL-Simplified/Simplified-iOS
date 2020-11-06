@@ -75,7 +75,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
 
     // MARK: - Test updateLocalBookmarks
     
-    func testSyncServerBookmarksWithNoLocalBookmarks() throws {
+    func testUpdateLocalBookmarksWithNoLocalBookmarks() throws {
       var serverBookmarks = [NYPLReadiumBookmark]()
         
       // Make sure BookRegistry contains no bookmark
@@ -97,7 +97,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       }
     }
     
-    func testSyncServerBookmarksWithDuplicatedLocalBookmarks() throws {
+    func testUpdateLocalBookmarksWithDuplicatedLocalBookmarks() throws {
       var serverBookmarks = [NYPLReadiumBookmark]()
 
       // Make sure BookRegistry contains no bookmark
@@ -128,7 +128,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       }
     }
     
-    func testSyncServerBookmarksWithExtraLocalBookmarks() throws {
+    func testUpdateLocalBookmarksWithExtraLocalBookmarks() throws {
       var serverBookmarks = [NYPLReadiumBookmark]()
 
       // Make sure BookRegistry contains no bookmark
@@ -160,7 +160,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       }
     }
     
-    func testSyncServerBookmarksWithFailedUploadBookmarks() throws {
+    func testUpdateLocalBookmarksWithFailedUploadBookmarks() throws {
       var serverBookmarks = [NYPLReadiumBookmark]()
 
       // Make sure BookRegistry contains no bookmark
