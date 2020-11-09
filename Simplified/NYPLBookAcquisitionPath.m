@@ -66,7 +66,9 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
 + (NSSet<NSString *> *_Nonnull)supportedSubtypesForType:(NSString *)type
 {
   static NSDictionary<NSString *, NSSet<NSString *> *> *subtypesForTypes = nil;
-  
+  /*
+   Subtypes are the supported types of nested and indirect acquisitions.
+   */
   if (!subtypesForTypes) {
     subtypesForTypes = @{
       ContentTypeOPDSCatalog: [NSSet setWithArray:@[
