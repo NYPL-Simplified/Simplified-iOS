@@ -1193,7 +1193,7 @@
 		2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckTests.swift; sourceTree = "<group>"; };
 		2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckUpToDate.json; sourceTree = "<group>"; };
 		2D2B47721D08F807007F7764 /* SimplyETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimplyETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D2B47761D08F808007F7764 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../SimplyETests/Info.plist; sourceTree = "<group>"; };
+		2D2B47761D08F808007F7764 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2D2B47891D08FC78007F7764 /* UpdateCheckUnknown.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckUnknown.json; sourceTree = "<group>"; };
 		2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckNeedsUpdate.json; sourceTree = "<group>"; };
 		2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyE-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -2399,6 +2399,7 @@
 		A823D82F192BABA400B55DE2 /* SimplifiedTests */ = {
 			isa = PBXGroup;
 			children = (
+				2D2B47761D08F808007F7764 /* Info.plist */,
 				2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 				7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */,
@@ -2436,7 +2437,6 @@
 				B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */,
 				B51C1E14229456E2003B49A5 /* gpl_authentication_document.json */,
 				B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */,
-				2D2B47761D08F808007F7764 /* Info.plist */,
 				A823D832192BABA400B55DE2 /* InfoPlist.strings */,
 				111559F019B8FAA10003BE94 /* invalid.xml */,
 				11F54C1D194109120086FCAF /* main.xml */,
@@ -3771,7 +3771,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = SimplyETests/Info.plist;
+				INFOPLIST_FILE = SimplifiedTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3816,7 +3816,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = SimplyETests/Info.plist;
+				INFOPLIST_FILE = SimplifiedTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
