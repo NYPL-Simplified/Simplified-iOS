@@ -85,9 +85,8 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
         ContentTypeAudiobookZip
       ]],
       ContentTypeReadiumLCP: [NSSet setWithArray:@[
-          ContentTypeBearerToken,
-          ContentTypeEpubZip,
-          ContentTypeAudiobookZip
+        ContentTypeEpubZip,
+        ContentTypeAudiobookZip
       ]],
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
       ContentTypeBearerToken: [NSSet setWithArray:@[
