@@ -112,7 +112,8 @@ extension LCPLibraryService: LCPAuthenticating {
     
     authenticationCallbacks[license.document.id] = completion
     
-    let authenticationVC = LCPAuthenticationViewController(license: license, reason: reason)
+    let licenseInfo = LCPLicenseInfo(license: license)
+    let authenticationVC = LCPAuthenticationViewController(licenseInfo: licenseInfo, reason: reason)
     authenticationVC.delegate = self
     
     let navController = UINavigationController(rootViewController: authenticationVC)

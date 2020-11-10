@@ -48,16 +48,16 @@ class LCPAuthenticationViewController: UIViewController {
   // If the license contains one or several supoprt links, show support information
   @IBOutlet weak var supportButton: UIButton!
   
-  private let license: LCPAuthenticatedLicense
+  private let licenseInfo: LCPLicenseInfo
   private let reason: LCPAuthenticationReason
   
   // Support links - can be web URLs, emails or phone numbers
   private let supportLinks: [(Link, URL)]
   
-  init(license: LCPAuthenticatedLicense, reason: LCPAuthenticationReason) {
-    self.license = license
+  init(licenseInfo: LCPLicenseInfo, reason: LCPAuthenticationReason) {
+    self.licenseInfo = licenseInfo
     self.reason = reason
-    self.supportLinks = license.supportLinks
+    self.supportLinks = licenseInfo.supportLinks
       .compactMap { link -> (Link, URL)? in
         guard let url = URL(string: link.href), UIApplication.shared.canOpenURL(url) else {
           return nil
@@ -82,7 +82,7 @@ class LCPAuthenticationViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    var provider = license.document.provider
+    var provider = licenseInfo.provider
     if let providerHost = URL(string: provider)?.host {
       provider = providerHost
     }
@@ -106,7 +106,7 @@ class LCPAuthenticationViewController: UIViewController {
     
     promptLabel.text = NSLocalizedString("This publication is protected by Readium LCP.", comment: "Prompt message when asking for the passphrase")
     messageLabel.text = String(format: NSLocalizedString("In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:", comment: "More instructions about the passphrase"), provider)
-    hintLabel.text = license.hint
+    hintLabel.text = licenseInfo.hint
     
     let cancelItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: self, action: #selector(LCPAuthenticationViewController.cancel(_:)));
     navigationItem.rightBarButtonItem = cancelItem;
@@ -115,12 +115,12 @@ class LCPAuthenticationViewController: UIViewController {
   
   @IBAction func authenticate(_ sender: Any) {
     let passphrase = passphraseField.text ?? ""
-    delegate?.authenticate(license, with: passphrase)
+    delegate?.authenticate(licenseInfo.license, with: passphrase)
     dismiss(animated: true)
   }
   
   @IBAction func cancel(_ sender: Any) {
-    delegate?.didCancelAuthentication(of: license)
+    delegate?.didCancelAuthentication(of: licenseInfo.license)
     dismiss(animated: true)
   }
   
@@ -177,7 +177,7 @@ class LCPAuthenticationViewController: UIViewController {
   }
   
   @IBAction func showHintLink(_ sender: Any) {
-    guard let href = license.hintLink?.href, let url = URL(string: href) else {
+    guard let href = licenseInfo.hintLink?.href, let url = URL(string: href) else {
       return
     }
     
