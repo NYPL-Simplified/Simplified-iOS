@@ -24,11 +24,7 @@ class OETutorialEligibilityViewController : UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    if #available(iOS 13.0, *) {
-      self.view.backgroundColor = .systemBackground
-    } else {
-      self.view.backgroundColor = .white
-    }
+    self.view.backgroundColor = NYPLConfiguration.welcomeTutorialBackgroundColor
     
     self.descriptionLabel = UILabel(frame: CGRect.zero)
     self.descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),

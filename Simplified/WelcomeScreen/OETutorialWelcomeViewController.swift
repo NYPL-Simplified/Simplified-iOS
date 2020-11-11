@@ -26,12 +26,8 @@ class OETutorialWelcomeViewController : UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    if #available(iOS 13.0, *) {
-      self.view.backgroundColor = .systemBackground
-    } else {
-      self.view.backgroundColor = .white
-    }
-    
+    self.view.backgroundColor = NYPLConfiguration.welcomeTutorialBackgroundColor
+
     self.view.addSubview(self.logoImageView)
     
     self.descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),

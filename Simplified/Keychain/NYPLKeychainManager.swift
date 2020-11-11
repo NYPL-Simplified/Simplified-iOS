@@ -217,9 +217,13 @@ import NYPLAudiobookToolkit
       }
     }
     
-    NYPLErrorLogger.logError(withCode: .keychainItemAddFail,
-                             summary: "Keychan error for vendor \(vendor)",
-                             message: "\(message) \(errMsg)",
-                            metadata: nil)
+    NYPLErrorLogger.logError(
+      withCode: .keychainItemAddFail,
+      summary: "Keychain error for vendor \(vendor)",
+      metadata: [
+        "OSStatus": status,
+        "SecCopyErrorMessage from OSStatus": errMsg,
+        "message": message,
+    ])
   }
 }

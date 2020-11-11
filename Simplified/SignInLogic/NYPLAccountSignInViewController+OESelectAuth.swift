@@ -1,5 +1,5 @@
 //
-//  NYPLSignInViewController+OESelectAuth.swift
+//  NYPLAccountSignInViewController+OESelectAuth.swift
 //  Simplified
 //
 //  Created by Ettore Pasquini on 10/8/20.
