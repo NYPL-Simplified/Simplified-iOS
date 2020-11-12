@@ -9,8 +9,8 @@
 class NYPLSettingsPrimaryTableItem {
   let path: IndexPath
   let name: String
-  fileprivate let vc: UIViewController?
-  fileprivate let handler: ((UISplitViewController, UITableViewController)->())?
+  private let vc: UIViewController?
+  private let handler: ((UISplitViewController, UITableViewController)->())?
   
   init(indexPath: IndexPath, title: String, viewController: UIViewController) {
     path = indexPath
