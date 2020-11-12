@@ -32,4 +32,14 @@ extension NYPLConfiguration {
   @objc static func mainColor() -> UIColor {
     return UIColor(red: 141.0/255.0, green: 199.0/255.0, blue: 64.0/255.0, alpha: 1.0)
   }
+
+  static var welcomeTutorialBackgroundColor: UIColor {
+    if #available(iOS 11.0, *) {
+      if let color = UIColor(named: "TutorialColor") {
+        return color
+      }
+    }
+
+    return .white
+  }
 }

@@ -25,11 +25,11 @@ extension NYPLSignInBusinessLogic {
     } catch {
       NYPLErrorLogger.logUserProfileDocumentAuthError(error as NSError,
                                                       summary:"SignIn: unable to parse user profile doc",
-                                                      barcode:nil,
+                                                      barcode: nil,
                                                       metadata:loggingContext)
-      uiDelegate?.finalizeSignIn(forDRMAuthorization: false,
-                                 error: nil,
-                                 errorMessage: "Error parsing user profile document")
+      finalizeSignIn(forDRMAuthorization: false,
+                     error: nil,
+                     errorMessage: "Error parsing user profile document")
       return
     }
 
@@ -53,9 +53,9 @@ extension NYPLSignInBusinessLogic {
                                  summary: "SignIn: no licensor token in user profile doc",
                                  metadata: loggingContext)
 
-        uiDelegate?.finalizeSignIn(forDRMAuthorization: false,
-                                   error: nil,
-                                   errorMessage: "No credentials were received to authorize access to books with DRM.")
+        finalizeSignIn(forDRMAuthorization: false,
+                       error: nil,
+                       errorMessage: "No credentials were received to authorize access to books with DRM.")
         return
     }
 
@@ -94,7 +94,7 @@ extension NYPLSignInBusinessLogic {
       VendorID: \(vendor ?? "N/A")
       """)
 
-    NYPLADEPT.sharedInstance()?
+    drmAuthorizer?
       .authorize(withVendorID: vendor,
                  username: username,
                  password: password) { success, error, deviceID, userID in
@@ -127,33 +127,52 @@ extension NYPLSignInBusinessLogic {
                                                        metadata: loggingContext)
                   }
 
-                  self.uiDelegate?.finalizeSignIn(forDRMAuthorization: success,
-                                                  error: error as NSError?,
-                                                  errorMessage: nil)
+                  self.finalizeSignIn(forDRMAuthorization: success,
+                                      error: error as NSError?,
+                                      errorMessage: nil)
     }
 
     perform(#selector(dismissAfterUnexpectedDRMDelay), with: self, afterDelay: 25)
   }
 
   @objc func dismissAfterUnexpectedDRMDelay(_ arg: Any) {
+    NYPLMainThreadRun.asyncIfNeeded {
+      let title = NSLocalizedString("Sign In Error",
+                                    comment: "Title for sign in error alert")
+      let message = NSLocalizedString("The DRM Library is taking longer than expected. Please wait and try again later.\n\nIf the problem persists, try to sign out and back in again from the Library Settings menu.",
+                                      comment: "Message for sign-in error alert caused by failed DRM authorization")
 
-    let title = NSLocalizedString("Sign In Error",
-                                  comment: "Title for sign in error alert")
-    let message = NSLocalizedString("The DRM Library is taking longer than expected. Please wait and try again later.\n\nIf the problem persists, try to sign out and back in again from the Library Settings menu.",
-                                    comment: "Message for sign-in error alert caused by failed DRM authorization")
+      let alert = UIAlertController(title: title, message: message,
+                                    preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"),
+                                    style: .default) { [weak self] action in
+                                      self?.uiDelegate?.dismiss(animated: true,
+                                                                completion: nil)
+      })
 
-    let alert = UIAlertController(title: title, message: message,
-                                  preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"),
-                                  style: .default) { [weak self] action in
-                                    self?.uiDelegate?.dismiss(animated: true,
-                                                              completion: nil)
-    })
+      NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert,
+                                                    viewController: nil,
+                                                    animated: true,
+                                                    completion: nil)
+    }
+  }
 
-    NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert,
-                                                  viewController: nil,
-                                                  animated: true,
-                                                  completion: nil)
+  @objc func logInIfUserAuthorized() {
+    if let drmAuthorizer = drmAuthorizer,
+      !drmAuthorizer.isUserAuthorized(userAccount.userID,
+                                      withDevice: userAccount.deviceID) {
+
+      if userAccount.hasBarcodeAndPIN() && !isCurrentlySigningIn {
+        if let usernameTextField = uiDelegate?.usernameTextField,
+          let PINTextField = uiDelegate?.PINTextField
+        {
+          usernameTextField.text = userAccount.barcode
+          PINTextField.text = userAccount.PIN
+        }
+
+        logIn()
+      }
+    }
   }
 }
 
