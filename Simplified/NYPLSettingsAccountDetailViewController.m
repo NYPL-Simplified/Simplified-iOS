@@ -2,9 +2,10 @@
 @import NYPLCardCreator;
 @import CoreLocation;
 @import MessageUI;
-
-#import <PureLayout/PureLayout.h>
-#import <ZXingObjC/ZXingObjC.h>
+@import PureLayout;
+#ifndef OPENEBOOKS
+@import ZXingObjC;
+#endif
 
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -391,7 +392,7 @@ Authenticating with any of those barcodes should work.
   }
 
   if ([self.businessLogic librarySupportsBarcodeDisplay]) {
-    [workingSection insertObject:@(CellKindBarcodeImage) atIndex: 0];
+    [workingSection insertObject:@(CellKindBarcodeImage) atIndex:0];
   }
 
   return workingSection;
@@ -830,6 +831,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (![self.businessLogic librarySupportsBarcodeDisplay]) {
         NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
       } else {
+#ifndef OPENEBOOKS
         NYPLBarcode *barcode = [[NYPLBarcode alloc] initWithLibrary:self.selectedAccount.name];
         UIImage *barcodeImage = [barcode imageFromString:self.selectedUserAccount.authorizationIdentifier
                                           superviewWidth:self.tableView.bounds.size.width
@@ -866,6 +868,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
           }];
         }
+#endif
       }
       return cell;
     }
@@ -1271,7 +1274,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.usernameTextField.textColor = [UIColor defaultLabelColor];
       self.PINTextField.text = nil;
       self.PINTextField.textColor = [UIColor defaultLabelColor];
-      self.barcodeScanButton.hidden = NO;
+      if (self.businessLogic.selectedAuthentication.supportsBarcodeScanner) {
+        self.barcodeScanButton.hidden = NO;
+      }
     }
     
     [self setupTableData];
@@ -1372,6 +1377,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)scanLibraryCard
 {
+#ifdef OPENEBOOKS
+  __auto_type auth = self.businessLogic.selectedAuthentication;
+  [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
+                            summary:@"Barcode button was displayed"
+                            message:nil
+                           metadata:@{
+                             @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
+                             @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",
+                             @"Context": @"Settings tab"
+                           }];
+#else
   [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
     if (resultString) {
       self.usernameTextField.text = resultString;
@@ -1379,6 +1395,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.loggingInAfterBarcodeScan = YES;
     }
   }];
+#endif
 }
 
 - (void)showEULA

@@ -24,11 +24,6 @@
   return nil;
 }
 
-+ (BOOL)cardCreationEnabled
-{
-  return YES;
-}
-
 + (NSURL *)minimumVersionURL
 {
   return [NSURL URLWithString:@"http://www.librarysimplified.org/simplye-client/minimum-version"];

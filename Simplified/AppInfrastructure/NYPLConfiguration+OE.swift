@@ -42,4 +42,8 @@ extension NYPLConfiguration {
 
     return .white
   }
+
+  static func cardCreationEnabled() -> Bool {
+    return false
+  }
 }

@@ -7,8 +7,6 @@
 
 + (id)new NS_UNAVAILABLE;
 
-+ (BOOL)cardCreationEnabled;
-
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
 + (NSURL *)mainFeedURL;
 
