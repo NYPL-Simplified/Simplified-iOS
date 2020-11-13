@@ -113,6 +113,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       positionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       positionLabel.bottomAnchor.constraint(equalTo: navigator.view.bottomAnchor, constant: -20)
     ])
+    
+    restoreReadingProgress()
   }
 
   override func willMove(toParent parent: UIViewController?) {
@@ -261,7 +263,28 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       updateBookmarkButton(withState: false)
     }
   }
+  
+  //----------------------------------------------------------------------------
+  // MARK: - Reading Progress
+  
+  private func storeReadingProgress(locator: Locator) {
+    // Avoid overwriting location when reader first open
+    guard (locator.locations.totalProgression ?? 0) != 0 else {
+      return
+    }
+    let bookLocation = NYPLBookLocation(locator: locator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
+    NYPLBookRegistry.shared().setLocation(bookLocation, forIdentifier: book.identifier)
+  }
 
+  private func restoreReadingProgress() {
+    guard let bookLocation = NYPLBookRegistry.shared().location(forIdentifier: book.identifier),
+      let locator = bookLocation.convertToLocator() else {
+      return
+    }
+    
+    // TODO: Present alert
+    navigator.go(to: locator, animated: true) {}
+  }
 
   //----------------------------------------------------------------------------
   // MARK: - Accessibility
@@ -328,12 +351,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-//    do {
-//      //TODO: SIMPLY-2609
-//      try BooksDatabase.shared.books.saveProgression(locator, of: book)
-//    } catch {
-//      log(.error, error)
-//    }
+    storeReadingProgress(locator: locator)
 
     positionLabel.text = {
       if let position = locator.locations.position {

@@ -481,24 +481,34 @@ import UIKit
 
       guard let data = serverCFI.data(using: String.Encoding.utf8),
         let serverCfiJsonObject = try? JSONSerialization.jsonObject(with: data,
-          options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:String],
-        let serverCfiJson = serverCfiJsonObject["contentCFI"],
-        let serverIdrefJson = serverCfiJsonObject["idref"] else {
+          options: []) as! [String:Any]
+         else {
           Log.error(#file, "Error serializing serverCFI into JSON.")
           return nil
       }
+      
+      var serverCfiString: String?
+      var serverIdrefString: String?
+      
+      if let serverCfiJson = serverCfiJsonObject["contentCFI"] as? String {
+        serverCfiString = serverCfiJson
+      }
+      
+      if let serverIdrefJson = serverCfiJsonObject["idref"] as? String {
+        serverIdrefString = serverIdrefJson
+      }
+      
+      return NYPLReadiumBookmark(annotationId: annotationID,
+                                 contentCFI: serverCfiString,
+                                 idref: serverIdrefString,
+                                 chapter: chapter,
+                                 page: nil,
+                                 location: serverCFI,
+                                 progressWithinChapter: progressWithinChapter,
+                                 progressWithinBook: progressWithinBook,
+                                 time:time,
+                                 device:device)
 
-      let bookmark = NYPLReadiumBookmark(annotationId: annotationID,
-                                        contentCFI: serverCfiJson,
-                                        idref: serverIdrefJson,
-                                        chapter: chapter,
-                                        page: nil,
-                                        location: serverCFI,
-                                        progressWithinChapter: progressWithinChapter,
-                                        progressWithinBook: progressWithinBook,
-                                        time:time,
-                                        device:device)
-      return bookmark
     } else {
       Log.error(#file, "Bookmark not created from Annotation Element. 'Motivation' Type: \(motivation)")
     }
@@ -574,7 +584,7 @@ import UIKit
       return
     }
 
-    Log.debug(#file, "Begin task of uploading local bookmarks.")
+    Log.debug(#file, "Begin task of uploading local bookmarks, count: \(bookmarks.count).")
     let uploadGroup = DispatchGroup()
     var bookmarksFailedToUpdate = [NYPLReadiumBookmark]()
     var bookmarksUpdated = [NYPLReadiumBookmark]()
