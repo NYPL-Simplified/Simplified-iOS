@@ -134,9 +134,19 @@ extension NYPLWelcomeEULAViewController: WKNavigationDelegate {
                decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     if navigationAction.request.url == onlineEULAURL {
       return decisionHandler(.allow)
+
     } else if navigationAction.request.url?.lastPathComponent == NYPLWelcomeEULAViewController.offlineEULAPathComponent {
       return decisionHandler(.allow)
+
+    } else if navigationAction.navigationType == .linkActivated,
+      let url = navigationAction.request.url {
+
+      // do not open inside the app: we need to continue displaying the EULA
+      if UIApplication.shared.canOpenURL(url) {
+        UIApplication.shared.open(url)
+      }
     }
+
     return decisionHandler(.cancel)
   }
 

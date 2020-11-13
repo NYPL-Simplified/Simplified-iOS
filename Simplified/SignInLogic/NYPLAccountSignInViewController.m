@@ -8,7 +8,6 @@
 
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLAppDelegate.h"
-#import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
@@ -724,6 +723,17 @@ completionHandler:(void (^)(void))handler
 
 - (void)scanLibraryCard
 {
+#ifdef OPENEBOOKS
+  __auto_type auth = self.businessLogic.selectedAuthentication;
+  [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
+                            summary:@"Barcode button was displayed"
+                            message:nil
+                           metadata:@{
+                             @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
+                             @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",
+                             @"Context": @"Sign-in modal",
+                           }];
+#else
   [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
     if (resultString) {
       self.usernameTextField.text = resultString;
@@ -731,6 +741,7 @@ completionHandler:(void (^)(void))handler
       self.loggingInAfterBarcodeScan = YES;
     }
   }];
+#endif
 }
 
 - (void)didSelectCancel

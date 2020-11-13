@@ -38,4 +38,8 @@ extension NYPLConfiguration {
   @objc static func iconLogoGreenColor() -> UIColor {
     return UIColor(red: 141.0/255.0, green: 199.0/255.0, blue: 64.0/255.0, alpha: 1.0)
   }
+
+  static func cardCreationEnabled() -> Bool {
+    return true
+  }
 }
