@@ -102,6 +102,15 @@ class NYPLSettingsPrimaryTableViewController : UITableViewController {
     super.viewDidLoad()
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
   }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if self.splitViewController?.traitCollection.horizontalSizeClass == .compact {
+      if let indexPath = tableView.indexPathForSelectedRow {
+        tableView.deselectRow(at: indexPath, animated: true)
+      }
+    }
+  }
   
   // MARK: UITableViewDelegate
   
