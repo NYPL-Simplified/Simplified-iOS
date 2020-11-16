@@ -46,8 +46,7 @@ extension NYPLSignInBusinessLogic {
         let alert = NYPLAlertUtils.alert(title: "SettingsAccountViewControllerLoginFailed",
                                          message: errorMessage,
                                          error: error as NSError?)
-        NYPLRootTabBarController.shared()?
-          .safelyPresentViewController(alert, animated: true, completion: nil)
+        NYPLPresentationUtils.safelyPresent(alert, animated: true)
         return
       }
       #endif
