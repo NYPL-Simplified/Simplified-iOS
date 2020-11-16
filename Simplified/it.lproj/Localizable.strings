@@ -28,8 +28,10 @@
 "Description" = "Descrizione";
 "DeviceAuthorizationError" = "Si è verificato un errore durante autorizzando questo dispositivo.";
 "Download" = "Scarica";
-"DownloadCouldNotBeCompleted" = "Il download non è stata completata.\nScroll down to 'View Issues' to see details.";
-"DownloadCouldNotBeCompletedFormat" = "Il download di %@ non può essere completato.\nScorri più in giù o vai nella pagina dei dettaglio del libro per vedere i dettagli.";
+"DownloadCouldNotBeCompleted" = "Il download è fallito.";
+"DownloadCouldNotBeCompletedFormat" = "Il download di %@ non può essere completato.";
+"The download could not be completed.\nScroll down to 'View Issues' to see details." = "Il download non è stato completato.\nScorri in fondo alla pagina per i dettagli dell'errore.";
+"View Issues" = "Mostra il problema";
 "DownloadFailed" = "Scaricamento fallito";
 "Downloading" = "Scaricamento in corso";
 "Error" = "Errore";
@@ -56,6 +58,7 @@
 "Read" = "Leggi"; // present tense
 "Remove" = "Rimuovi";
 "Reserve" = "Prenota";
+"Retry" = "Riprova";
 "Return" = "Restituisci";
 "ReturnCouldNotBeCompletedFormat" = "Non è stato possibile restituire %@.";
 "ReturnFailed" = "Restituzione non riuscita";

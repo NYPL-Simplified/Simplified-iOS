@@ -55,7 +55,7 @@ private let standardCellHeight: CGFloat = 44.0
     cell.accessoryType = .disclosureIndicator
     cell.backgroundColor = UIColor.clear
     cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
-    cell.textLabel?.text = type.rawValue
+    cell.textLabel?.text = NSLocalizedString(type.rawValue, comment: "")
     return (cell,type)
   }
   
