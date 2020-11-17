@@ -114,7 +114,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       positionLabel.bottomAnchor.constraint(equalTo: navigator.view.bottomAnchor, constant: -20)
     ])
     
-    restoreReadingProgress()
+    restoreReadPosition()
   }
 
   override func willMove(toParent parent: UIViewController?) {
@@ -265,25 +265,60 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   }
   
   //----------------------------------------------------------------------------
-  // MARK: - Reading Progress
+  // MARK: - Read Position
   
-  private func storeReadingProgress(locator: Locator) {
+  private func storeReadPosition(locator: Locator) {
     // Avoid overwriting location when reader first open
     guard (locator.locations.totalProgression ?? 0) != 0 else {
       return
     }
     let bookLocation = NYPLBookLocation(locator: locator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
     NYPLBookRegistry.shared().setLocation(bookLocation, forIdentifier: book.identifier)
+    bookmarksBusinessLogic.postReadPosition(locationString: bookLocation.locationString)
   }
 
-  private func restoreReadingProgress() {
-    guard let bookLocation = NYPLBookRegistry.shared().location(forIdentifier: book.identifier),
-      let locator = bookLocation.convertToLocator() else {
-      return
+  /// Restore locally stored location and navigate to it
+  /// Then sync location from server and present alert for navigation
+  private func restoreReadPosition() {
+    var currentLocation:NYPLBookLocation?
+    
+    if let lastSavedLocation = NYPLBookRegistry.shared().location(forIdentifier: book.identifier),
+      let locator = lastSavedLocation.convertToLocator() {
+      self.navigator.go(to: locator, animated: true) {}
     }
     
-    // TODO: Present alert
-    navigator.go(to: locator, animated: true) {}
+    if let currentLocator = navigator.currentLocation {
+      currentLocation = NYPLBookLocation(locator: currentLocator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
+    }
+    
+    bookmarksBusinessLogic.syncReadPosition(bookID: book.identifier, currentLocation: currentLocation, url: book.annotationsURL) { [weak self] (serverLocationString) in
+      guard let locationString = serverLocationString,
+        let locator = NYPLBookLocation(locationString: locationString, renderer: NYPLBookLocation.r2Renderer).convertToLocator() else {
+        Log.debug(#file, "Unable to create locator from server stored location string - \(serverLocationString ?? "")")
+        return
+      }
+      
+      self?.persentReadPositionNavigationAlert(locator: locator)
+    }
+  }
+  
+  private func persentReadPositionNavigationAlert(locator: Locator) {
+    let alert = UIAlertController(title: NSLocalizedString("Sync Reading Position", comment: "An alert title notifying the user the reading position has been synced"),
+                                  message: NSLocalizedString("Do you want to move to the page on which you left off?", comment: "An alert message asking the user to perform navigation to the synced reading position or not"),
+                                  preferredStyle: .alert)
+    
+    let stayAction = UIAlertAction.init(title: NSLocalizedString("Stay", comment: "Do not perform navigation"),
+                                        style: .cancel, handler: nil)
+    
+    let moveAction = UIAlertAction.init(title: NSLocalizedString("Move", comment: "Perform navigation"),
+                                        style: .default) { (_) in
+      self.navigator.go(to: locator, animated: true, completion: {})
+    }
+    
+    alert.addAction(stayAction)
+    alert.addAction(moveAction)
+    
+    NYPLPresentationUtils.safelyPresent(alert)
   }
 
   //----------------------------------------------------------------------------
@@ -351,7 +386,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-    storeReadingProgress(locator: locator)
+    storeReadPosition(locator: locator)
 
     positionLabel.text = {
       if let position = locator.locations.position {
