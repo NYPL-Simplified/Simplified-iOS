@@ -103,7 +103,7 @@ CGFloat const marginPadding = 2.0;
 #endif
                         ];
 
-  self.title = NSLocalizedString(@"SignIn", nil);
+  self.title = NSLocalizedString(@"Sign In", nil);
 
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -396,7 +396,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
   regTitle.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   regTitle.numberOfLines = 2;
-  regTitle.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
+  regTitle.text = NSLocalizedString(@"Don't have a library card?", @"Title for registration. Asking the user if they already have a library card.");
   regButton.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   regButton.text = NSLocalizedString(@"SignUp", nil);
   regButton.textColor = [NYPLConfiguration mainColor];

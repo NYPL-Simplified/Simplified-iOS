@@ -32,7 +32,7 @@ class OETutorialWelcomeViewController : UIViewController {
     
     self.descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),
                                         size: 20.0)
-    self.descriptionLabel.text = NSLocalizedString("TutorialWelcomeViewControllerDescription", comment: "Welcome text for Open eBooks")
+    self.descriptionLabel.text = NSLocalizedString("Welcome to Open eBooks.", comment: "Welcome text for Open eBooks")
     self.descriptionLabel.textAlignment = .center
     self.descriptionLabel.numberOfLines = 0
     self.view.addSubview(self.descriptionLabel)

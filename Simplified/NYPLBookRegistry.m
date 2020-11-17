@@ -397,7 +397,7 @@ static NSString *const RecordsKey = @"records";
       [self save];
     } else {
       UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SyncFailed"
-                                                        message:@"DataError"];
+                                                        message:@"We found a problem. Please check your connection or close and reopen the app to retry."];
       [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
     }
   }];
