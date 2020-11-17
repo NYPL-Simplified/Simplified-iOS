@@ -117,21 +117,21 @@
 
 - (void)openEPUB:(NYPLBook *)book
 {
-  // TODO: SIMPLY-2472
-  // R1
-//  NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
-//  [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
+  if (NYPLSettings.shared.useR2) {
+    // R2
+    [[NYPLRootTabBarController sharedController] presentBook:book];
 
-  // R2
-  // TODO: SIMPLY-3102
-  [[NYPLRootTabBarController sharedController] presentBook:book];
-
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
-    if (enableSync == YES) {
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-      currentAccount.details.syncPermissionGranted = enableSync;
-    }
-  }];
+    [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
+      if (enableSync == YES) {
+        Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+        currentAccount.details.syncPermissionGranted = enableSync;
+      }
+    }];
+  } else {
+    // R1
+    NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
+    [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
+  }
 }
 
 - (void)openPDF:(NYPLBook *)book {

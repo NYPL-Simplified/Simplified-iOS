@@ -28,6 +28,7 @@ import Foundation
   static let userHasAcceptedEULAKey = "NYPLSettingsUserAcceptedEULA"
   static private let userSeenFirstTimeSyncMessageKey = "userSeenFirstTimeSyncMessageKey"
   static private let useBetaLibrariesKey = "NYPLUseBetaLibrariesKey"
+  static private let useR2Key = "NYPLUseR2Key"
   static let settingsLibraryAccountsKey = "NYPLSettingsLibraryAccountsKey"
   static private let versionKey = "NYPLSettingsVersionKey"
   
@@ -108,10 +109,21 @@ import Foundation
     set(b) {
       UserDefaults.standard.set(b, forKey: NYPLSettings.useBetaLibrariesKey)
       UserDefaults.standard.synchronize()
-      NotificationCenter.default.post(name: NSNotification.Name.NYPLUseBetaDidChange, object: self)
+      NotificationCenter.default.post(name: NSNotification.Name.NYPLUseBetaDidChange,
+                                      object: self)
     }
   }
-  
+
+  var useR2: Bool {
+    get {
+      return UserDefaults.standard.bool(forKey: NYPLSettings.useR2Key)
+    }
+    set(b) {
+      UserDefaults.standard.set(b, forKey: NYPLSettings.useR2Key)
+      UserDefaults.standard.synchronize()
+    }
+  }
+
   var appVersion: String? {
     get {
       return UserDefaults.standard.string(forKey: NYPLSettings.versionKey)
