@@ -480,8 +480,8 @@ import UIKit
       let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
 
       guard let data = serverCFI.data(using: String.Encoding.utf8),
-        let serverCfiJsonObject = try? JSONSerialization.jsonObject(with: data,
-          options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:String],
+        let serverCfiJsonObject = (try? JSONSerialization.jsonObject(with: data,
+          options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: String],
         let serverCfiJson = serverCfiJsonObject["contentCFI"],
         let serverIdrefJson = serverCfiJsonObject["idref"] else {
           Log.error(#file, "Error serializing serverCFI into JSON.")

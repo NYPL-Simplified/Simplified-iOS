@@ -29,8 +29,10 @@
 "Description" = "Description";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
 "Download" = "Download";
-"DownloadCouldNotBeCompleted" = "The download could not be completed.\nScroll down to 'View Issues' to see details.";
-"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.\nScroll down to 'View Issues' to see details.";
+"DownloadCouldNotBeCompleted" = "The download could not be completed.";
+"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
+"The download could not be completed.\nScroll down to 'View Issues' to see details." = "The download could not be completed.\nScroll down to 'View Issues' to see details.";
+"View Issues" = "View Issues";
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
 "Error" = "Error";
@@ -60,6 +62,7 @@
 "Read" = "Read"; // present tense
 "Remove" = "Remove";
 "Reserve" = "Reserve";
+"Retry" = "Retry";
 "Return" = "Return";
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
 "ReturnFailed" = "Return Failed";
