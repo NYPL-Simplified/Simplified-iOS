@@ -105,7 +105,7 @@
         [self updateFeedAndRegistryOnAccountChange];
       } else {
         NSString *title = NSLocalizedString(@"Error Loading Library", @"Title for alert related to error loading library authentication doc");
-        NSString *msg = NSLocalizedString(@"LibraryLoadError", @"Message for alert related to error loading library authentication doc");
+        NSString *msg = NSLocalizedString(@"We can’t get your library right now. Please close and reopen the app to try again.", @"Message for alert related to error loading library authentication doc");
         UIAlertController *alert = [NYPLAlertUtils
                                     alertWithTitle:title
                                     message:msg];

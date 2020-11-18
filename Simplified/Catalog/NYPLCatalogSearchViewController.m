@@ -67,7 +67,7 @@
   
   self.searchActivityIndicatorLabel = [[UILabel alloc] init];
   self.searchActivityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
-  self.searchActivityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
+  self.searchActivityIndicatorLabel.text = NSLocalizedString(@"Loading... Please wait.", @"Message explaining that the download is still going");
   self.searchActivityIndicatorLabel.hidden = YES;
   [self.view addSubview:self.searchActivityIndicatorLabel];
   [self.searchActivityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.searchActivityIndicatorView];

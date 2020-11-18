@@ -45,7 +45,7 @@ class NYPLSettingsPrimaryTableItem {
     let remoteView = RemoteHTMLViewController.init(
       URL: url,
       title: title,
-      failureMessage: NSLocalizedString("SettingsConnectionFailureMessage", comment: "")
+      failureMessage: NSLocalizedString("The page could not load due to a connection error.", comment: "")
     )
     return handleVCWrap(remoteView)
   }

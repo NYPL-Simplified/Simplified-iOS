@@ -564,9 +564,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       NSString *logoutString;
       if([self.selectedUserAccount hasCredentials]) {
         if ([self.businessLogic shouldShowSyncButton] && !self.syncSwitch.on) {
-          logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageSync", nil);
+          logoutString = NSLocalizedString(@"If you sign out without enabling Sync, your books and any saved bookmarks will be removed.", nil);
         } else {
-          logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageDefault", nil);
+          logoutString = NSLocalizedString(@"If you sign out, your books and any saved bookmarks will be removed.", nil);
         }
         UIAlertController *const alertController =
         (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
@@ -658,7 +658,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeAcknowledgements]
                                       title:NSLocalizedString(@"About", nil)
-                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                                      failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       [self.navigationController pushViewController:vc animated:YES];
       break;
     }
@@ -666,7 +666,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.selectedAccount.details getLicenseURL:URLTypePrivacyPolicy]
                                       title:NSLocalizedString(@"PrivacyPolicy", nil)
-                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                                      failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       [self.navigationController pushViewController:vc animated:YES];
       break;
     }
@@ -674,7 +674,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]
                                       title:NSLocalizedString(@"ContentLicenses", nil)
-                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                                      failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       [self.navigationController pushViewController:vc animated:YES];
       break;
     }
@@ -917,7 +917,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       
       self.ageCheckCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.ageCheckCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.ageCheckCell.textLabel.text = NSLocalizedString(@"SettingsAccountAgeCheckbox",
+      self.ageCheckCell.textLabel.text = NSLocalizedString(@"I am 13 years of age or older.",
                                                            @"Statement that confirms if a user meets the age requirement to download books");
       self.ageCheckCell.textLabel.numberOfLines = 2;
       return self.ageCheckCell;
@@ -931,7 +931,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.syncSwitch addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = NSLocalizedString(@"SettingsBookmarkSyncTitle",
+      cell.textLabel.text = NSLocalizedString(@"Sync Bookmarks",
                                               @"Title for switch to turn on or off syncing.");
       return cell;
     }
@@ -996,7 +996,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
   regTitle.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   regTitle.numberOfLines = 2;
-  regTitle.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
+  regTitle.text = NSLocalizedString(@"Don't have a library card?", @"Title for registration. Asking the user if they already have a library card.");
   regButton.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   regButton.text = NSLocalizedString(@"SignUp", nil);
   regButton.textColor = [NYPLConfiguration mainColor];
@@ -1147,7 +1147,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       NSDictionary *attrs;
       attrs = @{ NSForegroundColorAttributeName : [UIColor defaultLabelColor] };
       eulaString = [[NSMutableAttributedString alloc]
-                    initWithString:NSLocalizedString(@"SettingsAccountSyncFooterTitle",
+                    initWithString:NSLocalizedString(@"Save your reading position and bookmarks to all your other devices.",
                                                      @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
                     attributes:attrs];
     }
@@ -1409,7 +1409,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   UIAlertController *alertCont = [UIAlertController
                                     alertControllerWithTitle:NSLocalizedString(@"Age Verification", @"An alert title indicating the user needs to verify their age")
-                                    message:NSLocalizedString(@"SettingsAccountViewControllerAgeCheckMessage",
+                                    message:NSLocalizedString(@"If you are under 13, all content downloaded to My Books will be removed.",
                                                               @"An alert message warning the user they will lose their downloaded books if they continue.")
                                     preferredStyle:UIAlertControllerStyleAlert];
   
