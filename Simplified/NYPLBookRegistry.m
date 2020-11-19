@@ -266,7 +266,7 @@ static NSString *const RecordsKey = @"records";
 }
 
 - (void)syncResettingCache:(BOOL)shouldResetCache
-         completionHandler:(void (^)(BOOL success))handler
+         completionHandler:(void (^)(NSDictionary *errorDict))handler
 {
   [self syncResettingCache:shouldResetCache
          completionHandler:handler
@@ -274,7 +274,7 @@ static NSString *const RecordsKey = @"records";
 }
 
 - (void)syncResettingCache:(BOOL)shouldResetCache
-         completionHandler:(void (^)(BOOL success))completion
+         completionHandler:(void (^)(NSDictionary *errorDict))completion
     backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler
 {
   @synchronized(self) {
@@ -290,7 +290,19 @@ static NSString *const RecordsKey = @"records";
     } else if (!NYPLUserAccount.sharedAccount.hasCredentials || !AccountsManager.shared.currentAccount.loansUrl) {
       NYPLLOG(@"[syncWithCompletionHandler] No valid credentials");
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        if(completion) completion(NO);
+        if(completion) {
+          NYPLProblemDocument *problemDoc = [NYPLProblemDocument forExpiredOrMissingCredentials:
+                                             NYPLUserAccount.sharedAccount.hasCredentials];
+          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeInvalidCredentials
+                                    summary:@"Unable to sync loans"
+                                    message:nil
+                                   metadata:@{
+                                     @"shouldResetCache": @(shouldResetCache),
+                                     @"hasCredentials": @(NYPLUserAccount.sharedAccount.hasCredentials),
+                                     @"synthesize problem doc": problemDoc.dictionaryValue
+                                   }];
+          completion(problemDoc.dictionaryValue);
+        }
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
         [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
       }];
@@ -305,17 +317,24 @@ static NSString *const RecordsKey = @"records";
   [NYPLOPDSFeed
    withURL:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
    shouldResetCache:shouldResetCache
-   completionHandler:^(NYPLOPDSFeed *const feed, __unused NSDictionary *error) {
+   completionHandler:^(NYPLOPDSFeed *const feed, NSDictionary *error) {
      if(!feed) {
        NYPLLOG(@"Failed to obtain sync data.");
        self.syncing = NO;
        [self broadcastChange];
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
-          if(completion) completion(NO);
+          if(completion) completion(error);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
           [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
         }];
+       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeApiCall
+                                 summary:@"Unable to fetch loans"
+                                 message:nil
+                                metadata:@{
+                                  @"shouldResetCache": @(shouldResetCache),
+                                  @"errorDict": error ?: @"N/A"
+                                }];
        return;
      }
 
@@ -371,7 +390,7 @@ static NSString *const RecordsKey = @"records";
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
           [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
-          if(completion) completion(YES);
+          if(completion) completion(nil);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultNewData);
           [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
         }];
@@ -392,8 +411,8 @@ static NSString *const RecordsKey = @"records";
 
 - (void)syncWithStandardAlertsOnCompletion
 {
-  [self syncResettingCache:YES completionHandler:^(BOOL success) {
-    if(success) {
+  [self syncResettingCache:YES completionHandler:^(NSDictionary *errorDict) {
+    if (errorDict == nil) {
       [self save];
     } else {
       UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SyncFailed"

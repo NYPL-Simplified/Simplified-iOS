@@ -35,12 +35,13 @@ fileprivate let nullString = "null"
   case appLogicInconsistency = 101
   case genericErrorMsgDisplayed = 103
 
-  // book registry
+  // book registry / My books
   case unknownBookState = 203
   case registrySyncFailure = 204
 
   // sign in/out/up
   case invalidLicensor = 300
+  case invalidCredentials = 301
   case barcodeException = 302
   case remoteLoginError = 303
   case userProfileDocFail = 305

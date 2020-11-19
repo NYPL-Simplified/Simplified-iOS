@@ -127,8 +127,8 @@
     [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
     
     [[NYPLBookRegistry sharedRegistry] justLoad];
-    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-      if (success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(NSDictionary *errorDict) {
+      if (errorDict == nil) {
         [[NYPLBookRegistry sharedRegistry] save];
       }
     }];

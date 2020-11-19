@@ -24,7 +24,7 @@
 "ConnectionFailed" = "Connection Failed";
 "Unable to load the web page at this time." = "Unable to load the web page at this time.";
 "Content Licenses" = "Content Licenses";
-"We found a problem. Please check your connection or close and reopen the app to retry." = "We found a problem. Please check your connection or close and reopen the app to retry.";
+"We found a problem. Please check your connection or close and reopen the app to retry." = "We found a problem. Please check your connection and your credentials in Settings, or close and reopen the app to retry.";
 "Delete" = "Delete";
 "Description" = "Description";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
@@ -171,6 +171,12 @@
 
 // NYPLSettings
 "The page could not load due to a connection error." = "The page could not load due to a connection error.";
+
+// Authentication generic
+"Authentication Expired" = "Authentication Expired";
+"Your authentication details have expired. Please sign in again." = "Your authentication details have expired. Please sign in again.";
+"Authentication Required" = "Authentication Required";
+"Please sign in to use this functionality." = "Please sign in to use this functionality.";
 
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
 "Add Library" = "Add Library";
