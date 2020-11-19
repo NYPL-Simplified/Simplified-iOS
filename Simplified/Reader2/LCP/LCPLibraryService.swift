@@ -31,7 +31,7 @@ import ReadiumLCP
   
   /// Returns whether this DRM can fulfill the given file into a protected publication.
   /// - Parameter file: file URL
-  /// - Returns: `true` if file contains Adobe DRM license information.
+  /// - Returns: `true` if file contains LCP DRM license information.
   func canFulfill(_ file: URL) -> Bool {
     return file.pathExtension.lowercased() == "lcpl"
   }
