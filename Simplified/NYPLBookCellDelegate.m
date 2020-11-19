@@ -84,7 +84,7 @@
     if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID]
                                            withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) &&
         ([[NYPLUserAccount sharedAccount] hasCredentials])) {
-      [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
+      [NYPLAccountSignInViewController authorizeUsingExistingCredentialsWithCompletionHandler:^{
         [self openBook:book];   // with successful DRM activation
       }];
     } else {

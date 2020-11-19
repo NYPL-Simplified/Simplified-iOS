@@ -128,7 +128,7 @@ class OETutorialChoiceViewController : UIViewController {
 
   private func presentSignInVC(for loginChoice: LoginChoice) {
     let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
-    signInVC.present(usingExistingBarcode: false,
+    signInVC.present(usingExistingCredentials: false,
                      authorizeImmediately: false,
                      completionHandler: self.loginCompletionHandler)
   }

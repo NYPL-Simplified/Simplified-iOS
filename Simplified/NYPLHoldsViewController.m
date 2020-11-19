@@ -258,7 +258,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     if([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
-      [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO completionHandler:nil];
+      [NYPLAccountSignInViewController requestCredentialsUsingExisting:NO completionHandler:nil];
       [self.refreshControl endRefreshing];
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }
