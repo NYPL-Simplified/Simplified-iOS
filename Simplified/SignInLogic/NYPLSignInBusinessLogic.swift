@@ -23,7 +23,7 @@ extension NYPLMyBooksDownloadCenter: NYPLBookDownloadsDeleting {}
   var syncing: Bool {get}
   func reset(_ libraryAccountUUID: String)
   func syncResettingCache(_ resetCache: Bool,
-                          completionHandler: ((_ success: Bool) -> Void)?)
+                          completionHandler: ((_ errorDict: [AnyHashable: Any]?) -> Void)?)
   func save()
 }
 
@@ -427,8 +427,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     userAccount.authDefinition = selectedAuthentication
 
     if libraryAccountID == libraryAccountsProvider.currentAccountId {
-      bookRegistry.syncResettingCache(false) { [weak bookRegistry] success in
-        if success {
+      bookRegistry.syncResettingCache(false) { [weak bookRegistry] errorDict in
+        if errorDict == nil {
           bookRegistry?.save()
         }
       }

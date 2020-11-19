@@ -31,7 +31,7 @@ class OPDS2SamlIDP: NSObject, Codable {
 @objcMembers final class AccountDetails: NSObject {
   enum AuthType: String, Codable {
     case basic = "http://opds-spec.org/auth/basic"
-    case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa"
+    case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa" //used for Simplified collection
     case anonymous = "http://librarysimplified.org/rel/auth/anonymous"
     case oauthIntermediary = "http://librarysimplified.org/authtype/OAuth-with-intermediary"
     case saml = "http://librarysimplified.org/authtype/SAML-2.0"
@@ -108,12 +108,14 @@ class OPDS2SamlIDP: NSObject, Codable {
       isOfAge ? coppaOverUrl : coppaUnderUrl
     }
 
-    // use for Objective-C only, authType is the prefered way to do it in Swift
+    var isBasic: Bool {
+      return authType == .basic
+    }
+
     var isOauth: Bool {
       return authType == .oauthIntermediary
     }
 
-    // use for Objective-C only, authType is the prefered way to do it in Swift
     var isSaml: Bool {
       return authType == .saml
     }

@@ -161,15 +161,9 @@
 {
   UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
   if (applicationState == UIApplicationStateActive) {
-    __weak __auto_type wSelf = self;
-    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-      if (success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(NSDictionary *errorDict) {
+      if (errorDict == nil) {
         [[NYPLBookRegistry sharedRegistry] save];
-      } else {
-        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeRegistrySyncFailure
-                                  summary:@"NYPLCatalogFeedViewController"
-                                  message:@"Book registry sync failed"
-                                 metadata:@{@"Catalog feed URL": wSelf.URL ?: @"N/A"}];
       }
     }];
   }

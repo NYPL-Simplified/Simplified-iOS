@@ -169,6 +169,12 @@
 // NYPLSettings
 "The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";
 
+// Authentication generic
+"Authentication Expired" = "Credenziali di accesso scadute";
+"Your authentication details have expired. Please sign in again." = "Le tue credenziali di identificazione non sono più valide. Riaccedi per continuare.";
+"Authentication Required" = "Autenticazione necessaria";
+"Please sign in to use this functionality." = "Accedi con uno dei meccanismi di identificazione per poter usare questa funzionalità.";
+
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
 "Add Library" = "Aggiungi";
 "Report an Issue" = "Riferisci un problema";

@@ -484,67 +484,72 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 #pragma mark - Modal presentation
 
 + (void)
-requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
+requestCredentialsUsingExisting:(BOOL const)useExistingCredentials
 authorizeImmediately:(BOOL)authorizeImmediately
-completionHandler:(void (^)(void))handler
+completionHandler:(void (^)(void))completionHandler
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     NYPLAccountSignInViewController *signInVC = [[self alloc] init];
-    [signInVC presentUsingExistingBarcode:useExistingBarcode
-                     authorizeImmediately:authorizeImmediately
-                        completionHandler:handler];
+    [signInVC presentUsingExistingCredentials:useExistingCredentials
+                         authorizeImmediately:authorizeImmediately
+                            completionHandler:completionHandler];
   });
 }
 
-+ (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
-                             completionHandler:(void (^)(void))handler
++ (void)requestCredentialsUsingExisting:(BOOL)useExistingBarcode
+                                 completionHandler:(void (^)(void))completionHandler
 {
-  [self requestCredentialsUsingExistingBarcode:useExistingBarcode
-                          authorizeImmediately:NO
-                             completionHandler:handler];
+  [self requestCredentialsUsingExisting:useExistingBarcode
+                              authorizeImmediately:NO
+                                 completionHandler:completionHandler];
 }
 
-+ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)(void))handler
++ (void)authorizeUsingExistingCredentialsWithCompletionHandler:(void (^)(void))completionHandler
 {
-  [self requestCredentialsUsingExistingBarcode:YES
-                          authorizeImmediately:YES
-                             completionHandler:handler];
+  [self requestCredentialsUsingExisting:YES
+                              authorizeImmediately:YES
+                                 completionHandler:completionHandler];
 }
 
 /**
  * Presents itself to begin the login process.
  *
- * @param useExistingBarcode Should the screen be filled with the barcode when available?
+ * @param useExistingCredentials Should the screen be filled with the barcode when available?
  * @param authorizeImmediately Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview.
  * @param completionHandler Called upon successful authentication
  */
-- (void)presentUsingExistingBarcode:(BOOL const)useExistingBarcode
-               authorizeImmediately:(BOOL)authorizeImmediately
-                  completionHandler:(void (^)(void))handler
+- (void)presentUsingExistingCredentials:(BOOL const)useExistingCredentials
+                   authorizeImmediately:(BOOL)authorizeImmediately
+                      completionHandler:(void (^)(void))completionHandler
 {
-  self.businessLogic.completionHandler = handler;
+  self.businessLogic.completionHandler = completionHandler;
 
   // Tell the VC to create its text fields so we can set their properties.
   [self view];
 
-  if (self.businessLogic.userAccount.authDefinition.isSaml) {
-    if (!useExistingBarcode) {
+  if (self.businessLogic.userAccount.authDefinition.isSaml
+      || self.businessLogic.userAccount.authDefinition.isOauth) {
+    if (!useExistingCredentials) {
       // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
       // this is for the case when we were logged in, but IDP expired our session
       // and if this happens, we want the user to pick the idp to begin reauthentication
       self.businessLogic.ignoreSignedInState = true;
-      self.businessLogic.selectedAuthentication = nil;
-    }
-  } else {
-    if(useExistingBarcode) {
-      NSString *const barcode = self.businessLogic.userAccount.barcode;
-      if(!barcode) {
-        @throw NSInvalidArgumentException;
+      if (self.businessLogic.userAccount.authDefinition.isSaml) {
+        self.businessLogic.selectedAuthentication = nil;
       }
-      self.usernameTextField.text = barcode;
+    }
+  } else if (self.businessLogic.userAccount.authDefinition.isBasic) {
+    if (useExistingCredentials) {
+      self.usernameTextField.text = self.businessLogic.userAccount.barcode;
     } else {
       self.usernameTextField.text = @"";
     }
+  } else {
+    // no authentication needed for the other cases
+    if (completionHandler) {
+      completionHandler();
+    }
+    return;
   }
 
   self.PINTextField.text = @"";
@@ -573,7 +578,7 @@ completionHandler:(void (^)(void))handler
     // there's no extra logic to do for SAML
     // this exists as we don't want the textfield to become responder
   } else {
-    if(useExistingBarcode) {
+    if (useExistingCredentials) {
       [self.PINTextField becomeFirstResponder];
     } else {
       [self.usernameTextField becomeFirstResponder];
