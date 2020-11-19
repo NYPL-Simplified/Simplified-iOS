@@ -69,8 +69,8 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
   /**
    Subtypes are the supported types of nested and indirect acquisitions.
    For example:
-   - When we open LCP library, we receive ContentTypeOPDSCatalog with ContentTypeReadiumLCP subtypes in it.
-   - When we tap an LCP-protected book in the app, the app doesn't download the book, but downloads a license file for this book ContentTypeReadiumLCP
+   - When we open LCP library, we receive a feed of type ContentTypeOPDSCatalog containing ContentTypeReadiumLCP subtypes in it.
+   - When we tap an LCP-protected book in the app, the app doesn't download the book, but downloads a license file of type ContentTypeReadiumLCP
     with content subtype of ContentTypeEpubZip if it is a book or ContentTypeAudiobookZip for an audiobook;
     this file is later fulfilled by LCP library and we get a real epub book or audiobook.
    */
