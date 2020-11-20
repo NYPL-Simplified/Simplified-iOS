@@ -51,20 +51,10 @@ class LCPAuthenticationViewController: UIViewController {
   private let licenseInfo: LCPLicenseInfo
   private let reason: LCPAuthenticationReason
   
-  // Support links - can be web URLs, emails or phone numbers
-  private let supportLinks: [(Link, URL)]
-  
   init(licenseInfo: LCPLicenseInfo, reason: LCPAuthenticationReason) {
     self.licenseInfo = licenseInfo
     self.reason = reason
-    self.supportLinks = licenseInfo.supportLinks
-      .compactMap { link -> (Link, URL)? in
-        guard let url = URL(string: link.href), UIApplication.shared.canOpenURL(url) else {
-          return nil
-        }
-        return (link, url)
-    }
-    
+
     super.init(nibName: nil, bundle: nil)
     
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
@@ -87,7 +77,7 @@ class LCPAuthenticationViewController: UIViewController {
       provider = providerHost
     }
     
-    supportButton.isHidden = supportLinks.isEmpty
+    supportButton.isHidden = licenseInfo.supportLinks.isEmpty
     
     let label = UILabel()
     
@@ -125,7 +115,7 @@ class LCPAuthenticationViewController: UIViewController {
   }
   
   @IBAction func showSupportLink(_ sender: Any) {
-    guard !supportLinks.isEmpty else {
+    guard !licenseInfo.supportLinks.isEmpty else {
       return
     }
     
@@ -133,13 +123,13 @@ class LCPAuthenticationViewController: UIViewController {
         UIApplication.shared.open(url)
     }
     
-    if let (_, url) = supportLinks.first, supportLinks.count == 1 {
+    if let (_, url) = licenseInfo.supportLinks.first, licenseInfo.supportLinks.count == 1 {
       open(url)
       return
     }
     
     let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-    for (link, url) in supportLinks {
+    for (link, url) in licenseInfo.supportLinks {
       let title: String = {
         if let title = link.title {
           return title

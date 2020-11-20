@@ -21,6 +21,13 @@ class LCPLicenseInfo {
   /// - Parameter license: license info
   init(license: LCPAuthenticatedLicense) {
     self.license = license
+    self.supportLinks = license.supportLinks
+      .compactMap { link -> (Link, URL)? in
+        guard let url = URL(string: link.href), UIApplication.shared.canOpenURL(url) else {
+          return nil
+        }
+        return (link, url)
+      }
   }
   
   /// A hint to be displayed to the User to help them remember the User Passphrase.
@@ -34,9 +41,7 @@ class LCPLicenseInfo {
   }
   
   /// Support resources for the user (either a website, an email or a telephone number).
-  var supportLinks: [Link] {
-    return license.supportLinks
-  }
+  let supportLinks: [(Link, URL)]
   
   /// URI of the license provider.
   var provider: String {
