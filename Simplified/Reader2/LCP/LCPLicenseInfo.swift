@@ -43,9 +43,9 @@ class LCPLicenseInfo {
   /// Support resources for the user (either a website, an email or a telephone number).
   let supportLinks: [(Link, URL)]
   
-  /// URI of the license provider.
+  /// License provider.
   var provider: String {
-    return license.provider
+    return URL(string: license.provider)?.host ?? license.provider
   }
   
   /// Informations about the user owning the license.

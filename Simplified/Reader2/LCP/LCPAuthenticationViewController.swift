@@ -72,11 +72,6 @@ class LCPAuthenticationViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    var provider = licenseInfo.provider
-    if let providerHost = URL(string: provider)?.host {
-      provider = providerHost
-    }
-    
     supportButton.isHidden = licenseInfo.supportLinks.isEmpty
     
     let label = UILabel()
@@ -95,7 +90,7 @@ class LCPAuthenticationViewController: UIViewController {
     self.navigationItem.leftBarButtonItem = leftItem
     
     promptLabel.text = NSLocalizedString("This publication is protected by Readium LCP.", comment: "Prompt message when asking for the passphrase")
-    messageLabel.text = String(format: NSLocalizedString("In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:", comment: "More instructions about the passphrase"), provider)
+    messageLabel.text = String(format: NSLocalizedString("In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:", comment: "More instructions about the passphrase"), licenseInfo.provider)
     hintLabel.text = licenseInfo.hint
     
     let cancelItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: self, action: #selector(LCPAuthenticationViewController.cancel(_:)));
