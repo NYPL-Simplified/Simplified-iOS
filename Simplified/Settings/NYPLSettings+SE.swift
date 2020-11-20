@@ -8,7 +8,7 @@
 
 extension NYPLSettings: NYPLUniversalLinksSettings {
   /// Used to handle Clever and SAML sign-ins in SimplyE.
-  @objc var authenticationUniversalLink: URL {
+  @objc var universalLinksURL: URL {
     return URL(string: "https://librarysimplified.org/callbacks/SimplyE")!
   }
 }

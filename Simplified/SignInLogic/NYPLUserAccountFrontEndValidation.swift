@@ -14,8 +14,8 @@ import UIKit
  */
 @objc
 protocol NYPLUserAccountInputProvider {
-  var usernameTextField: UITextField! { get set }
-  var PINTextField: UITextField! { get set }
+  var usernameTextField: UITextField? { get set }
+  var PINTextField: UITextField? { get set }
 }
 
 @objcMembers class NYPLUserAccountFrontEndValidation: NSObject {

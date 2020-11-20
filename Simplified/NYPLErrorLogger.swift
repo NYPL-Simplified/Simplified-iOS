@@ -148,7 +148,7 @@ fileprivate let nullString = "null"
   ///   - summary: This will be the top line (searchable) in Crashlytics UI.
   ///   - message: A string for further context.
   ///   - metadata: Any additional metadata to be logged.
-  class func logError(_ error: Error,
+  class func logError(_ error: Error?,
                       summary: String,
                       message: String? = nil,
                       metadata: [String: Any]? = nil) {

@@ -123,7 +123,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
     // if model has some way of procesing login completion
     if let loginHandler = model?.loginCompletionHandler {
       // and login process just did complete
-      if let destination = navigationAction.request.url, destination.absoluteString.hasPrefix(NYPLSettings.shared.authenticationUniversalLink.absoluteString) {
+      if let destination = navigationAction.request.url, destination.absoluteString.hasPrefix(NYPLSettings.shared.universalLinksURL.absoluteString) {
 
         // cancel further webview redirections and loading
         decisionHandler(.cancel)

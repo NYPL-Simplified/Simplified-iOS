@@ -17,7 +17,7 @@ import R2Shared
 
 
 /// This class is meant to be subclassed by each publication format view controller. It contains the shared behavior, eg. navigation bar toggling.
-class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, Loggable {
+class NYPLBaseReaderViewController: UIViewController, Loggable {
 
   private static let bookmarkOnImageName = "BookmarkOn"
   private static let bookmarkOffImageName = "BookmarkOff"
@@ -30,10 +30,6 @@ class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, L
   private let book: NYPLBook
   private let drm: DRM?
   private var bookmarksBusinessLogic: NYPLReaderBookmarksBusinessLogic
-
-  // TODO: SIMPLY-2804
-//  let backgroundHelper: NYPLBackgroundExecutor
-//  let syncManager: NYPLReadiumViewSyncManager?
 
   // UI
   let navigator: UIViewController & Navigator
@@ -193,22 +189,6 @@ class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, L
   }
 
   //----------------------------------------------------------------------------
-  // MARK: - NYPLBackgroundWorkOwner
-  // TODO: SIMPLY-2804
-
-  func setUpWorkItem(wrapping backgroundWork: @escaping () -> Void) -> (() -> Void)? {
-    return { }
-  }
-
-  func performBackgroundWork() {
-//    let bookMapDict: [AnyHashable : Any] = [:]//NYPLReaderReadiumView.generateBookDictionary
-//    self.syncManager = NYPLReadiumViewSyncManager(bookID: book.identifier,
-//                                                  annotationsURL: book.annotationsURL,
-//                                                  bookMap: bookMapDict,
-//                                                  delegate: bookmarksBusinessLogic)
-  }
-
-  //----------------------------------------------------------------------------
   // MARK: - TOC / Bookmarks
 
   private func shouldPresentAsPopover() -> Bool {
@@ -364,6 +344,13 @@ extension NYPLBaseReaderViewController: NavigatorDelegate {
         return nil
       }
     }()
+    
+    if let resourceIndex = publication.resourceIndex(forLocator: locator),
+      let _ = bookmarksBusinessLogic.isBookmarkExisting(at: NYPLBookmarkR2Location(resourceIndex: resourceIndex, locator: locator)) {
+      updateBookmarkButton(withState: true)
+    } else {
+      updateBookmarkButton(withState: false)
+    }
   }
 
   func navigator(_ navigator: Navigator, presentExternalURL url: URL) {
