@@ -54,7 +54,7 @@ extension NYPLMigrationManager {
     Log.info(#file, "Running 1.9.0 migration")
 
     // translate old User settings from keychain
-    let user = NYPLUserAccount.sharedAccount(libraryUUID: NYPLConfiguration.OpenEBooksUUID)
+    let user = NYPLUserAccount.sharedAccount(libraryUUID: NYPLConfiguration.OpenEBooksUUIDProd)
     let keychain = NYPLKeychain.shared()
 
     if let oldBarcode = keychain?.object(forKey: "OpenEbooksAccountBarcode") as? String,
