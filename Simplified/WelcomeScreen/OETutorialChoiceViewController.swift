@@ -114,11 +114,13 @@ class OETutorialChoiceViewController : UIViewController {
     let userAccount = NYPLUserAccount.sharedAccount()
     if libAccount?.details == nil {
       libAccount?.loadAuthenticationDocument(using: userAccount) { success in
-        if success {
-          self.presentSignInVC(for: loginChoice)
-        } else {
-          let alert = NYPLAlertUtils.alert(title: "Sign-in Error", message: "We could not find a match for the credentials provided.")
-          self.present(alert, animated: true, completion: nil)
+        NYPLMainThreadRun.asyncIfNeeded {
+          if success {
+            self.presentSignInVC(for: loginChoice)
+          } else {
+            let alert = NYPLAlertUtils.alert(title: "Sign-in Error", message: "We could not find a match for the credentials provided.")
+            self.present(alert, animated: true, completion: nil)
+          }
         }
       }
     } else {
