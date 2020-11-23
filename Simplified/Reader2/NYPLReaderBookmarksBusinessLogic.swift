@@ -23,6 +23,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   private var readPositionSyncStatus: NYPLReadPositionSyncStatus
   private var shouldPostLastReadPosition: Bool
   private var queuedReadPosition: String = ""
+  private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).bookmarkBusinessLogic")
 
   init(book: NYPLBook,
        r2Publication: Publication,
@@ -390,13 +391,13 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       return
     }
     
-    DispatchQueue.global(qos: .background).async {
+    serialQueue.async {
       switch(self.readPositionSyncStatus) {
       case .idle:
         self.readPositionSyncStatus = .busy
         self.queuedReadPosition = locationString
         self.postQueuedReadPosition()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 120) {
+        self.serialQueue.asyncAfter(deadline: .now() + 120) {
           self.readPositionSyncStatus = .idle
           if self.queuedReadPosition != "" {
             self.postReadPosition(locationString: self.queuedReadPosition)
@@ -410,7 +411,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   }
   
   @objc private func postQueuedReadPosition() {
-    DispatchQueue.global(qos: .background).async {
+    serialQueue.async {
       if self.queuedReadPosition != "" {
         NYPLAnnotations.postReadingPosition(forBook: self.book.identifier, annotationsURL: nil, cfi: self.queuedReadPosition)
         self.queuedReadPosition = ""
