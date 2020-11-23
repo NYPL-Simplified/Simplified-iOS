@@ -15,6 +15,18 @@ import Foundation
   }
   
   func librarySwitchDidChange(sender: UISwitch!) {
+    #if OPENEBOOKS
+    // we need to sign out because OE doesn't have the UX of handling multiple
+    // accounts at the same time.
+    if NYPLUserAccount.sharedAccount().isSignedIn() {
+      let alert = NYPLAlertUtils.alert(title: "Warning",
+                                       message: "Please sign out before changing to/from QA libraries")
+      NYPLPresentationUtils.safelyPresent(alert, animated: true) {
+        sender.setOn(!sender.isOn, animated: true)
+      }
+      return
+    }
+    #endif
     NYPLSettings.shared.useBetaLibraries = sender.isOn
   }
   
