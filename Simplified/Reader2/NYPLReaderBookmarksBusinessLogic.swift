@@ -347,11 +347,45 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
 
   // MARK: - Read Position
   
+  func storeReadPosition(locator: Locator) {
+    // Avoid overwriting location when reader first open
+    guard (locator.locations.totalProgression ?? 0) != 0,
+      let bookLocation = NYPLBookLocation(locator: locator, publication: publication, renderer: NYPLBookLocation.r2Renderer) else {
+      return
+    }
+    NYPLBookRegistry.shared().setLocation(bookLocation, forIdentifier: book.identifier)
+    postReadPosition(locationString: bookLocation.locationString)
+  }
+  
+  /// Restore locally stored location and  sync location from server
+  func restoreReadPosition(currentLocator: Locator?, localFetchCompletion: (Locator?) -> (), serverFetchCompletion: @escaping (Locator?) -> ()) {
+    var currentLocation:NYPLBookLocation?
+    
+    if let lastSavedLocation = NYPLBookRegistry.shared().location(forIdentifier: book.identifier),
+      let locator = lastSavedLocation.convertToLocator() {
+      localFetchCompletion(locator)
+    }
+    
+    if let currentLocator = currentLocator {
+      currentLocation = NYPLBookLocation(locator: currentLocator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
+    }
+    
+    syncReadPosition(bookID: book.identifier, currentLocation: currentLocation, url: book.annotationsURL) { (serverLocationString) in
+      guard let locationString = serverLocationString,
+        let locator = NYPLBookLocation(locationString: locationString, renderer: NYPLBookLocation.r2Renderer).convertToLocator() else {
+        Log.debug(#file, "Unable to create locator from server stored location string - \(serverLocationString ?? "")")
+        return
+      }
+      
+      serverFetchCompletion(locator)
+    }
+  }
+  
   /// Post the read position to server if we have synced the read position from server
   /// There is a 120 seconds interval to avoid high frequency of requests
   /// - Parameters:
   /// - locationString: A json string that contains required information to create a Locator object
-  func postReadPosition(locationString: String) {
+  private func postReadPosition(locationString: String) {
     if !shouldPostLastReadPosition {
       return
     }
@@ -384,10 +418,10 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     }
   }
   
-  func syncReadPosition(bookID: String,
-                        currentLocation: NYPLBookLocation?,
-                        url: URL?,
-                        completion: @escaping (String?) -> ()) {
+  private func syncReadPosition(bookID: String,
+                                currentLocation: NYPLBookLocation?,
+                                url: URL?,
+                                completion: @escaping (String?) -> ()) {
     NYPLAnnotations.syncReadingPosition(ofBook: bookID, toURL: url) { [weak self] (responseObject) in
       guard let responseObject = responseObject else {
         self?.shouldPostLastReadPosition = true

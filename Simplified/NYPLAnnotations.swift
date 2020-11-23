@@ -481,21 +481,17 @@ import UIKit
 
       guard let data = serverCFI.data(using: String.Encoding.utf8),
         let serverCfiJsonObject = (try? JSONSerialization.jsonObject(with: data,
-          options: [])) as? [String: Any]
+          options: [])) as? [String: Any],
+        let serverIdrefString = serverCfiJsonObject["idref"] as? String
          else {
           Log.error(#file, "Error serializing serverCFI into JSON.")
           return nil
       }
       
       var serverCfiString: String?
-      var serverIdrefString: String?
       
       if let serverCfiJson = serverCfiJsonObject["contentCFI"] as? String {
         serverCfiString = serverCfiJson
-      }
-      
-      if let serverIdrefJson = serverCfiJsonObject["idref"] as? String {
-        serverIdrefString = serverIdrefJson
       }
       
       return NYPLReadiumBookmark(annotationId: annotationID,

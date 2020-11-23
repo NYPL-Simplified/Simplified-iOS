@@ -266,43 +266,20 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   
   //----------------------------------------------------------------------------
   // MARK: - Read Position
-  
-  private func storeReadPosition(locator: Locator) {
-    // Avoid overwriting location when reader first open
-    guard (locator.locations.totalProgression ?? 0) != 0 else {
-      return
-    }
-    let bookLocation = NYPLBookLocation(locator: locator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
-    NYPLBookRegistry.shared().setLocation(bookLocation, forIdentifier: book.identifier)
-    bookmarksBusinessLogic.postReadPosition(locationString: bookLocation.locationString)
-  }
 
-  /// Restore locally stored location and navigate to it
-  /// Then sync location from server and present alert for navigation
   private func restoreReadPosition() {
-    var currentLocation:NYPLBookLocation?
-    
-    if let lastSavedLocation = NYPLBookRegistry.shared().location(forIdentifier: book.identifier),
-      let locator = lastSavedLocation.convertToLocator() {
-      self.navigator.go(to: locator, animated: true) {}
-    }
-    
-    if let currentLocator = navigator.currentLocation {
-      currentLocation = NYPLBookLocation(locator: currentLocator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
-    }
-    
-    bookmarksBusinessLogic.syncReadPosition(bookID: book.identifier, currentLocation: currentLocation, url: book.annotationsURL) { [weak self] (serverLocationString) in
-      guard let locationString = serverLocationString,
-        let locator = NYPLBookLocation(locationString: locationString, renderer: NYPLBookLocation.r2Renderer).convertToLocator() else {
-        Log.debug(#file, "Unable to create locator from server stored location string - \(serverLocationString ?? "")")
-        return
+    bookmarksBusinessLogic.restoreReadPosition(currentLocator: navigator.currentLocation, localFetchCompletion: { (localLocator) in
+      if let localLocator = localLocator {
+        self.navigator.go(to: localLocator, animated: true) {}
       }
-      
-      self?.persentReadPositionNavigationAlert(locator: locator)
+    }) { [weak self] (serverLocator) in
+      if let serverLocator = serverLocator {
+        self?.presentReadPositionNavigationAlert(locator: serverLocator)
+      }
     }
   }
   
-  private func persentReadPositionNavigationAlert(locator: Locator) {
+  private func presentReadPositionNavigationAlert(locator: Locator) {
     let alert = UIAlertController(title: NSLocalizedString("Sync Reading Position", comment: "An alert title notifying the user the reading position has been synced"),
                                   message: NSLocalizedString("Do you want to move to the page on which you left off?", comment: "An alert message asking the user to perform navigation to the synced reading position or not"),
                                   preferredStyle: .alert)
@@ -386,7 +363,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-    storeReadPosition(locator: locator)
+    bookmarksBusinessLogic.storeReadPosition(locator: locator)
 
     positionLabel.text = {
       if let position = locator.locations.position {
