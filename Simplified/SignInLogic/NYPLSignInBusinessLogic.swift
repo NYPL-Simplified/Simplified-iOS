@@ -267,6 +267,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
         "Data is nil?": "\(data == nil)",
         "Context": self.uiContext]
 
+      self.isCurrentlySigningIn = false
+
       guard
         let httpResponse = response as? HTTPURLResponse,
         httpResponse.statusCode == 200,
@@ -277,8 +279,6 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
                                   loggingContext: loggingContext)
           return
       }
-
-      self.isCurrentlySigningIn = false
 
       #if FEATURE_DRM_CONNECTOR
       self.drmAuthorizeUserData(responseData,
