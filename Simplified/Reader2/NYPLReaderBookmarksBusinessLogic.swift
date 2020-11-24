@@ -20,8 +20,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   private let drmDeviceID: String?
   private let bookRegistryProvider: NYPLBookRegistryProvider
   private let currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
-  private var readPositionSyncStatus: NYPLReadPositionSyncStatus
   private var shouldPostLastReadPosition: Bool
+  private var lastReadPositionUploadDate: Date
   private var queuedReadPosition: String = ""
   private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).bookmarkBusinessLogic")
 
@@ -37,7 +37,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     bookmarks = bookRegistryProvider.readiumBookmarks(forIdentifier: book.identifier)
     self.currentLibraryAccountProvider = currentLibraryAccountProvider
     self.shouldPostLastReadPosition = false
-    self.readPositionSyncStatus = .idle
+    self.lastReadPositionUploadDate = Date().addingTimeInterval(-120)
     
     super.init()
     NotificationCenter.default.addObserver(self, selector: #selector(postQueuedReadPosition), name: UIApplication.willResignActiveNotification, object: nil)
@@ -393,30 +393,19 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     }
     
     serialQueue.async {
-      switch(self.readPositionSyncStatus) {
-      case .idle:
-        self.readPositionSyncStatus = .busy
-        self.queuedReadPosition = locationString
+      self.queuedReadPosition = locationString
+      
+      if Date() > self.lastReadPositionUploadDate.addingTimeInterval(120) {
         self.postQueuedReadPosition()
-        self.serialQueue.asyncAfter(deadline: .now() + 120) {
-          self.readPositionSyncStatus = .idle
-          if self.queuedReadPosition != "" {
-            self.postReadPosition(locationString: self.queuedReadPosition)
-            self.queuedReadPosition = ""
-          }
-        }
-      case .busy:
-        self.queuedReadPosition = locationString
       }
     }
   }
   
   @objc private func postQueuedReadPosition() {
-    serialQueue.async {
-      if self.queuedReadPosition != "" {
-        NYPLAnnotations.postReadingPosition(forBook: self.book.identifier, annotationsURL: nil, cfi: self.queuedReadPosition)
-        self.queuedReadPosition = ""
-      }
+    if self.queuedReadPosition != "" {
+      NYPLAnnotations.postReadingPosition(forBook: self.book.identifier, annotationsURL: nil, cfi: self.queuedReadPosition)
+      self.queuedReadPosition = ""
+      self.lastReadPositionUploadDate = Date()
     }
   }
   
