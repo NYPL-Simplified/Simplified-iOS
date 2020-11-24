@@ -362,13 +362,14 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   func restoreReadPosition(currentLocator: Locator?, localFetchCompletion: (Locator?) -> (), serverFetchCompletion: @escaping (Locator?) -> ()) {
     var currentLocation:NYPLBookLocation?
     
+    if let currentLocator = currentLocator {
+      currentLocation = NYPLBookLocation(locator: currentLocator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
+    }
+    
     if let lastSavedLocation = NYPLBookRegistry.shared().location(forIdentifier: book.identifier),
       let locator = lastSavedLocation.convertToLocator() {
       localFetchCompletion(locator)
-    }
-    
-    if let currentLocator = currentLocator {
-      currentLocation = NYPLBookLocation(locator: currentLocator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
+      currentLocation = lastSavedLocation
     }
     
     syncReadPosition(bookID: book.identifier, currentLocation: currentLocation, url: book.annotationsURL) { (serverLocationString) in
