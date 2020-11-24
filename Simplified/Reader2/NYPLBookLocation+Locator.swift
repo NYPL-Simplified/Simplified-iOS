@@ -20,6 +20,7 @@ extension NYPLBookLocation {
     
     // Store all required properties of a locator object in a dictionary
     // Create a json string from it and use it as the location string in NYPLBookLocation
+    // There is no specific format to follow, the value of the keys can be change if needed
     let dict: [String : Any] = [
       NYPLBookLocation.hrefKey: idref,
       NYPLBookLocation.typeKey: locator.type,
