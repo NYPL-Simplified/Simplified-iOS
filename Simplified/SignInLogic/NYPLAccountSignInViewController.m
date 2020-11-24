@@ -983,9 +983,7 @@ didEncounterValidationError:(NSError *)error
                                      error:error];
   }
 
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
-                                                                  animated:YES
-                                                                completion:nil];
+  [NYPLPresentationUtils safelyPresent:alert animated:YES completion:nil];
 }
 
 - (void)   businessLogic:(NYPLSignInBusinessLogic *)logic
