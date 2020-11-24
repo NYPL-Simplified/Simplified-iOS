@@ -14,10 +14,10 @@ extension NYPLMigrationManager {
     let appVersionTokens = appVersion.split(separator: ".").compactMap({ Int($0) })
 
     // Run through migration stages
-    if versionIsLessThan(appVersionTokens, [3, 2, 0]) { // v3.2.0
+    if version(appVersionTokens, isLessThan: [3, 2, 0]) { // v3.2.0
       migrate1();
     }
-    if versionIsLessThan(appVersionTokens, [3, 3, 0]) { // v3.3.0
+    if version(appVersionTokens, isLessThan: [3, 3, 0]) { // v3.3.0
       migrate2();
     }
 
