@@ -443,8 +443,6 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
         deviceID == self?.drmDeviceID ||
         currentLocation?.locationString == serverLocationString) {
         self?.shouldPostLastReadPosition = true
-        completion(serverLocationString)
-        return
       }
       
       completion(serverLocationString)
