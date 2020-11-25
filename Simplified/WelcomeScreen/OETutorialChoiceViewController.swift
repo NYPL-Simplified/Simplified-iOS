@@ -41,8 +41,7 @@ class OETutorialChoiceViewController : UIViewController {
     
     title = NSLocalizedString("LogIn", comment: "")
     
-    descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),
-                                   size: 20.0)
+    descriptionLabel.font = NYPLConfiguration.welcomeScreenFont()
     descriptionLabel.text = NSLocalizedString("You need to login to access the collection.", comment: "")
     descriptionLabel.textAlignment = .center
     descriptionLabel.numberOfLines = 0
@@ -70,10 +69,10 @@ class OETutorialChoiceViewController : UIViewController {
   
   override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
-    let minSize = min(view.frame.width, 414)
+    let minSize = min(view.frame.width, 428)
     
     // TODO: Magic number usage
-    stackView.frame = CGRect(x: 0, y: 0, width: minSize, height: 160.0)
+    stackView.frame = CGRect(x: 0, y: 0, width: minSize, height: 170.0)
     stackView.centerInSuperview()
     stackView.integralizeFrame()
   }

@@ -55,4 +55,14 @@ extension NYPLConfiguration {
   static func cardCreationEnabled() -> Bool {
     return false
   }
+
+  static func welcomeScreenFont() -> UIFont? {
+    if UIDevice.current.userInterfaceIdiom == .phone {
+      return UIFont(name: NYPLConfiguration.systemFontFamilyName(),
+                    size: 18.0)
+    } else {
+      return UIFont(name: NYPLConfiguration.systemFontFamilyName(),
+                    size: 22.0)
+    }
+  }
 }
