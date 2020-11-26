@@ -270,20 +270,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
         break;
       }
       case NYPLMyBooksDownloadRightsManagementLCP: {
-#if defined(LCP)
-        LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
-        [lcpService fulfill:tmpSavedFileURL completion:^(NSURL *localUrl, NSError *error) {
-          if (error) {
-            [NYPLErrorLogger logError:error summary:error.domain message:error.localizedDescription metadata:nil];
-            [self failDownloadForBook:book];
-            return;
-          }
-          BOOL success = [self moveDownloadedFileAtURL:localUrl book:book];
-          if (!success) {
-            [self failDownloadForBook:book];
-          }
-        }];
-#endif
+        [self fulfillLCPLicense:tmpSavedFileURL forBook:book];
         break;
       }
       case NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON: {
@@ -1356,5 +1343,28 @@ didFinishDownload:(BOOL)didFinishDownload
 }
 
 #endif
+
+
+#pragma mark - LCP
+
+/// Fulfill LCP license
+/// @param licenseUrl Downloaded LCP license URL
+/// @param book `NYPLBook` Book
+- (void)fulfillLCPLicense:(NSURL *)licenseUrl forBook:(NYPLBook *)book {
+  #if defined(LCP)
+  LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
+  [lcpService fulfill:licenseUrl completion:^(NSURL *localUrl, NSError *error) {
+    if (error) {
+      [NYPLErrorLogger logError:error summary:error.domain message:error.localizedDescription metadata:nil];
+      [self failDownloadForBook:book];
+      return;
+    }
+    BOOL success = [self moveDownloadedFileAtURL:localUrl book:book];
+    if (!success) {
+      [self failDownloadForBook:book];
+    }
+  }];
+  #endif
+}
 
 @end
