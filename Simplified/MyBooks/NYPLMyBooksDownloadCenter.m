@@ -272,7 +272,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
       case NYPLMyBooksDownloadRightsManagementLCP: {
 #if defined(LCP)
         LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
-        [lcpService fulfill:tmpSavedFileURL completion:^(NSURL *localUrl, NSURLSessionDownloadTask *downloadTask, NSError *error) {
+        [lcpService fulfill:tmpSavedFileURL completion:^(NSURL *localUrl, NSError *error) {
           if (error) {
             [NYPLErrorLogger logError:error summary:error.domain message:error.localizedDescription metadata:nil];
             [self failDownloadForBook:book];

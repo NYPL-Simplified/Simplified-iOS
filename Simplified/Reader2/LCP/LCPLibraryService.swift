@@ -42,7 +42,7 @@ import ReadiumLCP
   ///   - localUrl: Downloaded publication URL.
   ///   - downloadTask: `URLSessionDownloadTask` that downloaded the publication.
   ///   - error: `NSError` if any.
-  @objc func fulfill(_ file: URL, completion: @escaping (_ localUrl: URL?, _ downloadTask: URLSessionDownloadTask?, _ error: NSError?) -> Void) {
+  @objc func fulfill(_ file: URL, completion: @escaping (_ localUrl: URL?, _ error: NSError?) -> Void) {
     lcpService.importPublication(from: file, authentication: self) { result, error in
       var nsError: NSError?
       if let error = error {
@@ -52,7 +52,7 @@ import ReadiumLCP
           NSLocalizedDescriptionKey: error.errorDescription as Any
         ])
       }
-      completion(result?.localURL, result?.downloadTask, nsError)
+      completion(result?.localURL, nsError)
     }
   }
   
