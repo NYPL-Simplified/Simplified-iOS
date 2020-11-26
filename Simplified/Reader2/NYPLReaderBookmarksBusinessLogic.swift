@@ -20,7 +20,6 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   private let drmDeviceID: String?
   private let bookRegistryProvider: NYPLBookRegistryProvider
   private let currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
-  private var shouldPostLastReadPosition: Bool
   private var lastReadPositionUploadDate: Date
   private var queuedReadPosition: String = ""
   private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).bookmarkBusinessLogic")
@@ -36,7 +35,6 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     self.bookRegistryProvider = bookRegistryProvider
     bookmarks = bookRegistryProvider.readiumBookmarks(forIdentifier: book.identifier)
     self.currentLibraryAccountProvider = currentLibraryAccountProvider
-    self.shouldPostLastReadPosition = false
     self.lastReadPositionUploadDate = Date().addingTimeInterval(-120)
     
     super.init()
@@ -354,11 +352,13 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       let bookLocation = NYPLBookLocation(locator: locator, publication: publication, renderer: NYPLBookLocation.r2Renderer) else {
       return
     }
-    NYPLBookRegistry.shared().setLocation(bookLocation, forIdentifier: book.identifier)
+    
+    bookRegistryProvider.setLocation(bookLocation, forIdentifier: book.identifier)
     postReadPosition(locationString: bookLocation.locationString)
   }
   
   /// Restore locally stored location and  sync location from server
+  /// Both local and server fetch completions are only called if fetch succeed
   func restoreReadPosition(currentLocator: Locator?, localFetchCompletion: (Locator?) -> (), serverFetchCompletion: @escaping (Locator?) -> ()) {
     var currentLocation:NYPLBookLocation?
     
@@ -366,7 +366,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       currentLocation = NYPLBookLocation(locator: currentLocator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
     }
     
-    if let lastSavedLocation = NYPLBookRegistry.shared().location(forIdentifier: book.identifier),
+    if let lastSavedLocation = bookRegistryProvider.location(forIdentifier: book.identifier),
       let locator = lastSavedLocation.convertToLocator() {
       localFetchCompletion(locator)
       currentLocation = lastSavedLocation
@@ -388,10 +388,6 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   /// - Parameters:
   /// - locationString: A json string that contains required information to create a Locator object
   private func postReadPosition(locationString: String) {
-    if !shouldPostLastReadPosition {
-      return
-    }
-    
     serialQueue.async {
       self.queuedReadPosition = locationString
       
@@ -409,13 +405,15 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     }
   }
   
+  /// GET the read position from server
+  /// The read position from server should only be returned
+  /// if it comes from a different device and does not match current location
   private func syncReadPosition(bookID: String,
                                 currentLocation: NYPLBookLocation?,
                                 url: URL?,
                                 completion: @escaping (String?) -> ()) {
     NYPLAnnotations.syncReadingPosition(ofBook: bookID, toURL: url) { [weak self] (responseObject) in
       guard let responseObject = responseObject else {
-        self?.shouldPostLastReadPosition = true
         Log.debug(#file, "No Server Annotation for this book exists.")
         completion(nil)
         return
@@ -432,7 +430,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
       if (serverLocationString == nil ||
         deviceID == self?.drmDeviceID ||
         currentLocation?.locationString == serverLocationString) {
-        self?.shouldPostLastReadPosition = true
+        completion(nil)
+        return
       }
       
       completion(serverLocationString)

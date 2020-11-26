@@ -17,6 +17,9 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
 
 - (nonnull NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(nonnull NSString *)identifier;
 
+- (void)setLocation:(nullable NYPLBookLocation *)location
+      forIdentifier:(nonnull NSString *)identifier;
+
 - (nullable NYPLBookLocation *)locationForIdentifier:(nonnull NSString *)identifier;
 
 - (void)addReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
