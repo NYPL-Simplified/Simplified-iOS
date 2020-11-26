@@ -25,9 +25,7 @@ import ReadiumLCP
   private var authenticationCallbacks: [String: (String?) -> Void] = [:]
   
   /// Library service brand
-  var brand: DRM.Brand {
-    return .lcp
-  }
+  let brand: DRM.Brand = .lcp
   
   /// Returns whether this DRM can fulfill the given file into a protected publication.
   /// - Parameter file: file URL
