@@ -7,12 +7,14 @@
 //
 
 class OETutorialWelcomeViewController : UIViewController {
+  let padding: CGFloat = 30.0
+
   var descriptionLabel: UILabel
   var logoImageView: UIImageView
   
   init() {
     self.descriptionLabel = UILabel.init(frame: CGRect.zero)
-    self.logoImageView = UIImageView.init(image: UIImage.init(named: "app_launch_screen_image"))
+    self.logoImageView = UIImageView(image: UIImage(named: "Logo"))
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -29,10 +31,10 @@ class OETutorialWelcomeViewController : UIViewController {
     self.view.backgroundColor = NYPLConfiguration.welcomeTutorialBackgroundColor
 
     self.view.addSubview(self.logoImageView)
-    
-    self.descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),
-                                        size: 20.0)
-    self.descriptionLabel.text = NSLocalizedString("Welcome to Open eBooks.", comment: "Welcome text for Open eBooks")
+
+    self.descriptionLabel.font = NYPLConfiguration.welcomeScreenFont()
+    self.descriptionLabel.text = NSLocalizedString("Welcome to Open eBooks",
+                                                   comment: "Welcome text")
     self.descriptionLabel.textAlignment = .center
     self.descriptionLabel.numberOfLines = 0
     self.view.addSubview(self.descriptionLabel)
@@ -40,13 +42,18 @@ class OETutorialWelcomeViewController : UIViewController {
   
   override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
-    // Make the logo and text as wide as possible up to iPhone 6 Plus size. We cap
-    // it there be able to have a reasonable text width and size.
-    let minSize = min(view.frame.width,
-                      logoImageView.image?.size.width ?? 480.0)
-    let logoImageViewSize = CGSize(width: minSize, height: minSize)
+
+    // get actual asset size to keep ratio intact when resizing
+    let logoAssetWidth = logoImageView.image?.size.width ?? 331.0
+    let logoAssetHeight = logoImageView.image?.size.height ?? 241.0
+
+    // since we have a vector image, use half the screen similarly as launch img
+    let logoWidth = view.frame.width / 2
+    let logoHeight = logoWidth * logoAssetHeight / logoAssetWidth
+    let logoImageViewSize = CGSize(width: logoWidth, height: logoHeight)
+
     let descriptionLabelSize = descriptionLabel.sizeThatFits(
-      CGSize(width: logoImageViewSize.width,
+      CGSize(width: view.frame.width - padding * 2,
              height: CGFloat.greatestFiniteMagnitude))
 
     self.logoImageView.frame = CGRect.init(
@@ -55,10 +62,11 @@ class OETutorialWelcomeViewController : UIViewController {
       width: logoImageViewSize.width,
       height: logoImageViewSize.height
     )
+    self.logoImageView.integralizeFrame()
 
     self.descriptionLabel.frame = CGRect.init(
       x: (self.view.frame.width - descriptionLabelSize.width) / 2.0,
-      y: self.logoImageView.frame.maxY,
+      y: self.logoImageView.frame.maxY + padding,
       width: descriptionLabelSize.width,
       height: descriptionLabelSize.height
     )
