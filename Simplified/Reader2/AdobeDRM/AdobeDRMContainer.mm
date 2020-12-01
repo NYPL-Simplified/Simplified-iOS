@@ -40,8 +40,7 @@ static id acsdrm_lock = nil;
     }
 
     // *_rights.xml file contents
-    NSString *rightsSuffix = @"_rights.xml";
-    NSString *rightsPath = [NSString stringWithFormat:@"%@%@", path, rightsSuffix];
+    NSString *rightsPath = [NSString stringWithFormat:@"%@%@", path, RIGHTS_XML_SUFFIX];
     NSData *rightsData = [NSData dataWithContentsOfFile:rightsPath];
     size_t rightsLen = rightsData.length;
     unsigned char *rightsContent = (unsigned char *)rightsData.bytes;

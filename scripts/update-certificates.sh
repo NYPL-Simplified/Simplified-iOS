@@ -18,4 +18,4 @@ cp ../Certificates/OpenEbooks/iOS/GoogleService-Info.plist OpenEbooks/
 
 git update-index --skip-worktree Simplified/NYPLSecrets.swift
 swift ../Certificates/SimplyE/iOS/KeyObfuscator.swift
-
+swift ../Certificates/SimplyE/iOS/LCPLib.swift
