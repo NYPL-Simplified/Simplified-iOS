@@ -95,7 +95,8 @@ carthage build --platform ios
 ```
 Then finally build Carthage for SimplyE (for a faster build, you can remove the related R2 lines from SimplyE's Cartfile since the `SimplyE-R2dev` target in `SimplifiedR2.workspace` refers to the manually cloned R2 repos):
 ```bash
-./scripts/build-3rd-parties-dependencies.sh
+./scripts/update-certificates.sh
+./scripts/build-carthage.sh
 ```
 Finally, open the workspace and use the `SimplyE-R2dev` target to build the app.
 
