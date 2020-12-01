@@ -38,7 +38,7 @@ import ReadiumLCP
   /// This function was added for compatibility with Objective-C NYPLMyBooksDownloadCenter.
   /// - Parameters:
   ///   - file: LCP license file.
-  ///   - completion: Complition is called after a publication was downloaded or an error received.
+  ///   - completion: Completion is called after a publication was downloaded or an error received.
   ///   - localUrl: Downloaded publication URL.
   ///   - downloadTask: `URLSessionDownloadTask` that downloaded the publication.
   ///   - error: `NSError` if any.
