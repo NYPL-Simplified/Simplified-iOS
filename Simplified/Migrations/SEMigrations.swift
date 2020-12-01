@@ -112,10 +112,10 @@ extension NYPLMigrationManager {
     try? FileManager.default.removeItem(at: origBetaUrl)
     try? FileManager.default.removeItem(at: origProdUrl)
     if FileManager.default.fileExists(atPath: origBetaUrl.absoluteString) {
-      Log.warn(#file, "Old beta cache still exists")
+      Log.error(#file, "Old beta cache still exists")
     }
     if FileManager.default.fileExists(atPath: origProdUrl.absoluteString) {
-      Log.warn(#file, "Old prod cache still exists")
+      Log.error(#file, "Old prod cache still exists")
     }
   }
 }
