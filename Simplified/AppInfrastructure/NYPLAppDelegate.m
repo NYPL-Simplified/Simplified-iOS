@@ -40,9 +40,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 - (BOOL)application:(UIApplication *)app
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
-#if !TARGET_OS_SIMULATOR
   [NYPLErrorLogger configureCrashAnalytics];
-#endif
 
   // Perform data migrations as early as possible before anything has a chance to access them
   [NYPLKeychainManager validateKeychain];
