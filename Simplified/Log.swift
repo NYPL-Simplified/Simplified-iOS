@@ -1,80 +1,92 @@
-import Firebase
+import os
 import Foundation
+import Firebase
 
 final class Log: NSObject {
-  
-  @objc static let logUrl = try! FileManager.default.url(
-    for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-    .appendingPathComponent("log.log")
-  
-  @objc static let logQueue = DispatchQueue(label: Bundle.main.bundleIdentifier!
-    + ".swiftLogger")
-  
-  enum Level {
-    case debug
-    case info
-    case warn
-    case error
-  }
-  
-  fileprivate class func levelToString(_ level: Level) -> String {
+  static var dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    return formatter
+  }()
+
+  private class func levelToString(_ level: OSLogType) -> String {
     switch level {
     case .debug:
       return "DEBUG"
     case .info:
       return "INFO"
-    case .warn:
-      return "WARNING"
     case .error:
       return "ERROR"
+    case .fault:
+      return "FAULT"
+    default:
+      return "WARNING"
     }
   }
   
-  class func log(_ level: Level, _ tag: String, _ message: String, error: Error? = nil) {
-    #if !DEBUG
-      guard level != .debug else {
-        return
-      }
-    #endif
-    
-    // Generate timestamp
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
-    let timestamp = dateFormatter.string(from: Date())
-    
-    // Format string
-    let formattedMsg = "[\(levelToString(level))] [\(timestamp)] \(tag): \(message)\(error == nil ? "" : "\n\(error!)")\n"
+  private class func log(_ level: OSLogType, _ tag: String, _ message: String) {
+    let tag = trimTag(tag)
 
-    #if targetEnvironment(simulator)
-    NSLog(formattedMsg)
-    #elseif DEBUG
+    #if !targetEnvironment(simulator) && !DEBUG
+    let timestamp = dateFormatter.string(from: Date())
     if level != .debug {
-      Crashlytics.crashlytics().log(format: "%@", arguments: getVaList([formattedMsg]))
-    } else {
-      NSLog(formattedMsg)
+      let formattedMsg = "[\(levelToString(level))] \(timestamp) \(tag): \(message)"
+      Crashlytics.crashlytics().log("\(formattedMsg)")
     }
-    #else
-    Crashlytics.crashlytics().log("\(formattedMsg)")
     #endif
+
+    os_log("%{public}@: %{public}@", type: level, tag, message)
   }
-  
+
+  /** For objc compatibility only. */
   @objc class func log(_ message: String) {
-    log(Level.info, "", message, error: nil)
+    log(.default, "", message)
+  }
+
+  class func debug(_ tag: String, _ message: String) {
+    log(.debug, tag, message)
   }
   
-  class func debug(_ tag: String, _ message: String, error: Error? = nil) {
-    log(.debug, tag, message, error: error)
+  class func info(_ tag: String, _ message: String) {
+    log(.info, tag, message)
   }
   
-  class func info(_ tag: String, _ message: String, error: Error? = nil) {
-    log(.info, tag, message, error: error)
+  class func warn(_ tag: String, _ message: String) {
+    log(.default, tag, message)
   }
-  
-  class func warn(_ tag: String, _ message: String, error: Error? = nil) {
-    log(.warn, tag, message, error: error)
+
+  class func error(_ tag: String, _ message: String) {
+    log(.error, tag, message)
   }
-  
-  class func error(_ tag: String, _ message: String, error: Error? = nil) {
-    log(.error, tag, message, error: error)
+
+  /**
+   Fault-level messages are intended for capturing system-level or
+   multi-process errors only.
+   */
+  class func fault(_ tag: String, _ message: String) {
+    log(.fault, tag, message)
+  }
+
+  // Avoid including source paths related to the build machine/user such as
+  // "/Users/<username>/<local-path>/.../Simplified"
+  private class func trimTag(_ tag: String) -> String {
+    guard tag.starts(with: "/") else {
+      return tag
+    }
+
+    var components = tag.components(separatedBy: "/")
+
+    // remove any local path components before the source root in repo
+    let sourcesRootIndex = (components.index(of: "Simplified") ?? 0) + 1
+
+    if sourcesRootIndex < components.count {
+      components.removeFirst(sourcesRootIndex)
+    }
+
+    guard !components.isEmpty else {
+      return tag
+    }
+
+    return components.joined(separator: "/")
   }
 }
