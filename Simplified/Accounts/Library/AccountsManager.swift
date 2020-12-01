@@ -181,7 +181,6 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
                                          completion: @escaping (Bool) -> ()) {
     do {
       let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
-      Log.debug(#function, "catalogsFeed data=\(String(describing: String(data: data, encoding: .utf8)))")
       let hadAccount = self.currentAccount != nil
 
       accountSetsWorkQueue.sync(flags: .barrier) {
