@@ -388,11 +388,11 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   /// - Parameters:
   /// - locationString: A json string that contains required information to create a Locator object
   private func postReadPosition(locationString: String) {
-    serialQueue.async {
-      self.queuedReadPosition = locationString
+    serialQueue.async { [weak self] in
+      self?.queuedReadPosition = locationString
       
-      if Date() > self.lastReadPositionUploadDate.addingTimeInterval(120) {
-        self.postQueuedReadPosition()
+      if Date() > self?.lastReadPositionUploadDate.addingTimeInterval(120) ?? Date() {
+        self?.postQueuedReadPosition()
       }
     }
   }
@@ -406,8 +406,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   }
   
   @objc private func postQueuedReadPositionInSerialQueue() {
-    serialQueue.async {
-      self.postQueuedReadPosition()
+    serialQueue.async { [weak self] in
+      self?.postQueuedReadPosition()
     }
   }
   
