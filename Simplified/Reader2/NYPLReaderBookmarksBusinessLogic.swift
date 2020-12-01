@@ -22,7 +22,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   private let currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
   private var lastReadPositionUploadDate: Date
   private var queuedReadPosition: String = ""
-  private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).bookmarkBusinessLogic")
+  private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).bookmarkBusinessLogic", target: .global(qos: .utility))
 
   init(book: NYPLBook,
        r2Publication: Publication,
@@ -38,7 +38,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     self.lastReadPositionUploadDate = Date().addingTimeInterval(-120)
     
     super.init()
-    NotificationCenter.default.addObserver(self, selector: #selector(postQueuedReadPosition), name: UIApplication.willResignActiveNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(postQueuedReadPositionInSerialQueue), name: UIApplication.willResignActiveNotification, object: nil)
   }
 
   func bookmark(at index: Int) -> NYPLReadiumBookmark? {
@@ -397,11 +397,17 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     }
   }
   
-  @objc private func postQueuedReadPosition() {
+  private func postQueuedReadPosition() {
     if self.queuedReadPosition != "" {
       NYPLAnnotations.postReadingPosition(forBook: self.book.identifier, annotationsURL: nil, cfi: self.queuedReadPosition)
       self.queuedReadPosition = ""
       self.lastReadPositionUploadDate = Date()
+    }
+  }
+  
+  @objc private func postQueuedReadPositionInSerialQueue() {
+    serialQueue.async {
+      self.postQueuedReadPosition()
     }
   }
   

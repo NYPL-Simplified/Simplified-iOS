@@ -270,11 +270,15 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   private func restoreReadPosition() {
     bookmarksBusinessLogic.restoreReadPosition(currentLocator: navigator.currentLocation, localFetchCompletion: { (localLocator) in
       if let localLocator = localLocator {
-        self.navigator.go(to: localLocator, animated: true) {}
+        NYPLMainThreadRun.asyncIfNeeded {
+          self.navigator.go(to: localLocator, animated: true) {}
+        }
       }
     }) { [weak self] (serverLocator) in
       if let serverLocator = serverLocator {
-        self?.presentReadPositionNavigationAlert(locator: serverLocator)
+        NYPLMainThreadRun.asyncIfNeeded {
+          self?.presentReadPositionNavigationAlert(locator: serverLocator)
+        }
       }
     }
   }

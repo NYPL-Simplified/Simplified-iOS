@@ -44,7 +44,7 @@ extension NYPLBookLocation {
       let type = dict[NYPLBookLocation.typeKey] as? String,
       let progressWithinChapter = dict[NYPLBookLocation.chapterProgressKey] as? Double,
       let progressWithinBook = dict[NYPLBookLocation.bookProgressKey] as? Double else {
-      Log.warn(#file, "Failed to convert NYPLBookLocation to Locator object with location string - \(locationString)")
+      Log.error(#file, "Failed to convert NYPLBookLocation to Locator object with location string - \(locationString)")
       return nil
     }
     
