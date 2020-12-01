@@ -128,6 +128,10 @@
 		175E480E24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */; };
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
 		179699D124131BA500EC309F /* UIColor+LabelColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179699D024131BA500EC309F /* UIColor+LabelColor.swift */; };
+		1798538B255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
+		1798538C255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
+		1798538D255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
+		1798538E255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
 		17ADCF4F254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
 		17ADCF54254BBA4E00D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
 		17CE5305243C020800315E63 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
@@ -1582,6 +1586,7 @@
 		1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementManagerTests.swift; sourceTree = "<group>"; };
 		176F8A802519684D00CE5BFB /* AudioEngine.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AudioEngine.xcframework; path = Carthage/Build/iOS/AudioEngine.xcframework; sourceTree = "<group>"; };
 		179699D024131BA500EC309F /* UIColor+LabelColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+LabelColor.swift"; sourceTree = "<group>"; };
+		1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookLocation+Locator.swift"; sourceTree = "<group>"; };
 		17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarksBusinessLogicTests.swift; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OverdriveProcessor.framework; path = Carthage/Build/iOS/OverdriveProcessor.framework; sourceTree = "<group>"; };
@@ -2666,6 +2671,7 @@
 				7386C1F624525AFF004C78BD /* NYPLReaderTOCBusinessLogic.swift */,
 				737DCB8B245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift */,
 				73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */,
+				1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */,
 				73F7136D2417260700C63B81 /* UI */,
 				73DB2D0924132C8B008346ED /* Internal */,
 				21F238B72498F7FB004DC0B1 /* AdobeDRM */,
@@ -3859,6 +3865,7 @@
 				730EDFEF251537AF0038DD9F /* NYPLCredentials.swift in Sources */,
 				730EDFEF251537AF0038DD9F /* NYPLCredentials.swift in Sources */,
 				7347F050245A4DE200558D7F /* NYPLReloadView.m in Sources */,
+				1798538D255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */,
 				7347F051245A4DE200558D7F /* NYPLReachabilityManager.m in Sources */,
 				7347F052245A4DE200558D7F /* NYPLReadiumViewSyncManager.m in Sources */,
 				7342703124DCB30B00A4F605 /* ReaderModule.swift in Sources */,
@@ -4207,6 +4214,7 @@
 				739E60BC244A0D8600D00301 /* NYPLContentTypeBadge.swift in Sources */,
 				739E60BD244A0D8600D00301 /* NYPLZXingEncoder.m in Sources */,
 				73B5510C251174F900D05B86 /* NSString+JSONParse.swift in Sources */,
+				1798538C255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */,
 				739E60BE244A0D8600D00301 /* NYPLProblemReportViewController.m in Sources */,
 				739E60BF244A0D8600D00301 /* NYPLHoldsNavigationController.m in Sources */,
 				21F238CC24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */,
@@ -4415,6 +4423,8 @@
 				73FCA30425005BA4001B0C5D /* NYPLBookLocation.m in Sources */,
 				73FCA30525005BA4001B0C5D /* NYPLFacetView.m in Sources */,
 				73422119252FE4950053DA9E /* NYPLAccountSignInViewController+OESelectAuth.swift in Sources */,
+				1798538E255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */,
+				73422119252FE4950053DA9E /* NYPLSignInViewController+OESelectAuth.swift in Sources */,
 				73FCA30625005BA4001B0C5D /* NYPLReaderContainerDelegate.mm in Sources */,
 				73FCA30725005BA4001B0C5D /* ProblemReportEmail.swift in Sources */,
 				73FCA30825005BA4001B0C5D /* NYPLBookCellDelegate.m in Sources */,
@@ -4674,6 +4684,8 @@
 				085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */,
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
 				A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */,
+				1798538B255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */,
+				73A3EAED2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */,
 				110AD83D19E497D6005724C3 /* NYPLOPDSAttribute.m in Sources */,
 				21F238CB24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */,
 				1114A6A1195884CB007507A2 /* NYPLCatalogUngroupedFeed.m in Sources */,

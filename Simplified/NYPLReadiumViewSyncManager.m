@@ -11,11 +11,6 @@
 #import "NYPLRootTabBarController.h"
 #import "SimplyE-Swift.h"
 
-typedef NS_ENUM(NSInteger, NYPLReadPositionSyncStatus) {
-  NYPLReadPositionSyncStatusIdle,
-  NYPLReadPositionSyncStatusBusy
-};
-
 @interface NYPLReadiumViewSyncManager ()
 
 @property (nonatomic) NSString *bookID;
