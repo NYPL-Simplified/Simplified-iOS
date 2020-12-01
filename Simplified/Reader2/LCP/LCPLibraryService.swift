@@ -103,11 +103,6 @@ extension LCPLibraryService: LCPAuthenticating {
   /// - Parameter completion: Used to return the retrieved passphrase. If the user cancelled, send nil. The passphrase may
   ///   be already hashed.
   func requestPassphrase(for license: LCPAuthenticatedLicense, reason: LCPAuthenticationReason, completion: @escaping (String?) -> Void) {
-    guard let viewController = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController ?? UIApplication.shared.keyWindow?.rootViewController else {
-      completion(nil)
-      return
-    }
-    
     authenticationCallbacks[license.document.id] = completion
     
     let licenseInfo = LCPLicenseInfo(license: license)
@@ -117,7 +112,7 @@ extension LCPLibraryService: LCPAuthenticating {
     let navController = UINavigationController(rootViewController: authenticationVC)
     navController.modalPresentationStyle = .formSheet
     
-    viewController.present(navController, animated: true)
+    NYPLPresentationUtils.safelyPresent(navController, animated: true, completion: nil)
   }
   
 }
