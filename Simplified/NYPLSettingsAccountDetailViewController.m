@@ -3,9 +3,6 @@
 @import CoreLocation;
 @import MessageUI;
 @import PureLayout;
-#ifndef OPENEBOOKS
-@import ZXingObjC;
-#endif
 
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
