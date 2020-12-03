@@ -285,6 +285,11 @@
 		7326AB3524BD272100C3BA29 /* R2Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7326AB3224BD271F00C3BA29 /* R2Shared.framework */; };
 		7326AB3624BD272200C3BA29 /* R2Navigator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7326AB3324BD272000C3BA29 /* R2Navigator.framework */; };
 		7326AB3724BD280B00C3BA29 /* SwiftSoup.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735FC2D42485C178009CF11E /* SwiftSoup.framework */; };
+		732752882578CB7900A073E2 /* R2LCPClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732752832578CB7900A073E2 /* R2LCPClient.framework */; };
+		732752892578CB7900A073E2 /* R2LCPClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732752832578CB7900A073E2 /* R2LCPClient.framework */; };
+		7327528A2578CB7900A073E2 /* R2LCPClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732752832578CB7900A073E2 /* R2LCPClient.framework */; };
+		7327528B2578CB7900A073E2 /* R2LCPClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732752832578CB7900A073E2 /* R2LCPClient.framework */; };
+		7327528C2578CBC000A073E2 /* R2LCPClient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732752832578CB7900A073E2 /* R2LCPClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7327528D2578D68500A073E2 /* NYPLReauthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734B78982565F7DE006FB8AD /* NYPLReauthenticator.swift */; };
 		7327528E2578D69300A073E2 /* URLResponse+NYPLAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734B789025659611006FB8AD /* URLResponse+NYPLAuthentication.swift */; };
 		7327A89323EE017300954748 /* NYPLMainThreadChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */; };
@@ -1359,6 +1364,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				7327528C2578CBC000A073E2 /* R2LCPClient.framework in Embed Frameworks */,
 				736CF272252278AA0081D30A /* AudioEngine.xcframework in Embed Frameworks */,
 				73E4959D244E5FA500BD8F15 /* R2Streamer.framework in Embed Frameworks */,
 				731B2B23244A2B6C00A7A649 /* R2Navigator.framework in Embed Frameworks */,
@@ -1698,6 +1704,7 @@
 		7326AB2D24BD271F00C3BA29 /* R2Streamer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2Streamer.framework; path = Carthage/Build/iOS/R2Streamer.framework; sourceTree = "<group>"; };
 		7326AB3224BD271F00C3BA29 /* R2Shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2Shared.framework; path = Carthage/Build/iOS/R2Shared.framework; sourceTree = "<group>"; };
 		7326AB3324BD272000C3BA29 /* R2Navigator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2Navigator.framework; path = Carthage/Build/iOS/R2Navigator.framework; sourceTree = "<group>"; };
+		732752832578CB7900A073E2 /* R2LCPClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2LCPClient.framework; path = "../r2-lcp-swift/Carthage/Build/iOS/R2LCPClient.framework"; sourceTree = "<group>"; };
 		7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMainThreadChecker.swift; sourceTree = "<group>"; };
 		732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBackgroundExecutor.swift; sourceTree = "<group>"; };
 		7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NYPLReaderPositions.storyboard; sourceTree = "<group>"; };
@@ -1936,6 +1943,7 @@
 				7347F0E1245A4DE200558D7F /* AudioToolbox.framework in Frameworks */,
 				7347F0E2245A4DE200558D7F /* libiconv.tbd in Frameworks */,
 				7347F0E3245A4DE200558D7F /* CoreGraphics.framework in Frameworks */,
+				7327528A2578CB7900A073E2 /* R2LCPClient.framework in Frameworks */,
 				7347F0E4245A4DE200558D7F /* QuartzCore.framework in Frameworks */,
 				7347F0E5245A4DE200558D7F /* libADEPT.a in Frameworks */,
 				7347F0E6245A4DE200558D7F /* libAdobe Content Filter.a in Frameworks */,
@@ -2018,6 +2026,7 @@
 				739E611B244A0D8600D00301 /* NYPLAEToolkit.framework in Frameworks */,
 				736CF271252278AA0081D30A /* AudioEngine.xcframework in Frameworks */,
 				739E611C244A0D8600D00301 /* NYPLAudiobookToolkit.framework in Frameworks */,
+				732752892578CB7900A073E2 /* R2LCPClient.framework in Frameworks */,
 				739E611E244A0D8600D00301 /* FirebaseCoreDiagnostics.framework in Frameworks */,
 				739E611F244A0D8600D00301 /* FirebaseCore.framework in Frameworks */,
 				739E6120244A0D8600D00301 /* FirebaseAnalytics.framework in Frameworks */,
@@ -2040,6 +2049,7 @@
 				73FCA35D25005BA4001B0C5D /* MediaPlayer.framework in Frameworks */,
 				73FCA35E25005BA4001B0C5D /* CoreMedia.framework in Frameworks */,
 				73FCA35F25005BA4001B0C5D /* CoreVideo.framework in Frameworks */,
+				7327528B2578CB7900A073E2 /* R2LCPClient.framework in Frameworks */,
 				73FCA36025005BA4001B0C5D /* AVFoundation.framework in Frameworks */,
 				73FCA36125005BA4001B0C5D /* AudioToolbox.framework in Frameworks */,
 				73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */,
@@ -2104,6 +2114,7 @@
 				08A352241BDE8E640040BF1D /* Security.framework in Frameworks */,
 				08A352201BDE8E410040BF1D /* CFNetwork.framework in Frameworks */,
 				84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */,
+				732752882578CB7900A073E2 /* R2LCPClient.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
@@ -2888,6 +2899,7 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				732752832578CB7900A073E2 /* R2LCPClient.framework */,
 				2171ADA6251E38560003CABA /* ReadiumLCP.framework */,
 				735FC2D42485C178009CF11E /* SwiftSoup.framework */,
 				731B2B1C244A1EB400A7A649 /* CryptoSwift.framework */,
@@ -5147,8 +5159,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/../r2-streamer-swift/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/../r2-navigator-swift/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/../r2-lcp-swift/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
@@ -5200,8 +5211,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/../r2-streamer-swift/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/../r2-navigator-swift/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/../r2-lcp-swift/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
