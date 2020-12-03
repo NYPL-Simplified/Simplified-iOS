@@ -32,14 +32,16 @@ fileprivate let nullString = "null"
 
   // generic app related
   case appLaunch = 100
+  case appLogicInconsistency = 101
   case genericErrorMsgDisplayed = 103
 
-  // book registry
+  // book registry / My books
   case unknownBookState = 203
   case registrySyncFailure = 204
 
   // sign in/out/up
   case invalidLicensor = 300
+  case invalidCredentials = 301
   case barcodeException = 302
   case remoteLoginError = 303
   case userProfileDocFail = 305
@@ -111,12 +113,11 @@ fileprivate let nullString = "null"
   // low-level / system related
   case missingSystemPaths = 1200
   case fileMoveFail = 1201
-    
-  // keychain
-  case keychainItemAddFail = 1300
-
   case directoryURLCreateFail = 1202
   case missingExpectedObject = 1203
+
+  // keychain
+  case keychainItemAddFail = 1300
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {

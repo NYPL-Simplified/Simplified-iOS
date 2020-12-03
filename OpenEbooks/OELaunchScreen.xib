@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="ipad12_9" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,30 +14,17 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="app_launch_screen_image" translatesAutoresizingMaskIntoConstraints="NO" id="aU7-0U-gPl">
-                    <rect key="frame" x="120" y="120" width="240" height="240"/>
+                    <rect key="frame" x="90" y="112.5" width="300" height="255"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="aU7-0U-gPl" secondAttribute="height" multiplier="1:1" id="Uta-cM-jiz"/>
+                        <constraint firstAttribute="width" secondItem="aU7-0U-gPl" secondAttribute="height" multiplier="331:281" id="qF4-SB-KNN"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Discover Books" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WYc-c3-ywe">
-                    <rect key="frame" x="30" y="390" width="420" height="60"/>
-                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="61"/>
-                    <color key="textColor" red="0.5490196078431373" green="0.77647058823529413" blue="0.24313725490196078" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <nil key="highlightedColor"/>
-                    <variation key="widthClass=compact">
-                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="31"/>
-                    </variation>
-                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="WYc-c3-ywe" secondAttribute="trailing" constant="30" id="3za-Ru-DuR"/>
-                <constraint firstItem="WYc-c3-ywe" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="30" id="IlC-SK-7bY"/>
                 <constraint firstAttribute="centerY" secondItem="aU7-0U-gPl" secondAttribute="centerY" id="ODw-y3-Rmm"/>
-                <constraint firstItem="WYc-c3-ywe" firstAttribute="top" secondItem="aU7-0U-gPl" secondAttribute="bottom" priority="750" constant="30" id="OGi-Mo-rAV"/>
-                <constraint firstItem="aU7-0U-gPl" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="centerX" multiplier="0.5" id="P32-ie-Adr"/>
-                <constraint firstAttribute="bottom" secondItem="WYc-c3-ywe" secondAttribute="bottom" constant="30" id="UoG-iU-Vbg"/>
-                <constraint firstItem="aU7-0U-gPl" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="centerX" multiplier="1.5" id="ztd-eH-3h5"/>
+                <constraint firstItem="aU7-0U-gPl" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="centerX" multiplier="0.375" id="P32-ie-Adr"/>
+                <constraint firstItem="aU7-0U-gPl" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="centerX" multiplier="1.625" id="ztd-eH-3h5"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -45,6 +32,6 @@
         </view>
     </objects>
     <resources>
-        <image name="app_launch_screen_image" width="480" height="480"/>
+        <image name="app_launch_screen_image" width="331" height="281"/>
     </resources>
 </document>

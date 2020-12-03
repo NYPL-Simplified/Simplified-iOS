@@ -364,10 +364,10 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   if (!success) {
     dispatch_async(dispatch_get_main_queue(), ^{
       if (problemDocument) {
-        if ([problemDocument.type isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+        if ([downloadTask.response indicatesAuthenticationNeedsRefresh:problemDocument]) {
           NYPLLOG(@"Invalid credentials problem when downloading a book, present sign in VC");
           [NYPLAccountSignInViewController
-           requestCredentialsUsingExistingBarcode:NO
+           requestCredentialsUsingExisting:NO
            completionHandler:^{
             [self startDownloadForBook:book];
           }];
@@ -388,7 +388,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
       } else if (needsAuth) {
         NYPLLOG(@"Present sign in VC");
         [NYPLAccountSignInViewController
-         requestCredentialsUsingExistingBarcode:NO
+         requestCredentialsUsingExisting:NO
          completionHandler:^{
           [self startDownloadForBook:book];
         }];
@@ -622,7 +622,7 @@ didCompleteWithError:(NSError *)error
         } else if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
           NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
           [NYPLAccountSignInViewController
-           requestCredentialsUsingExistingBarcode:NO
+           requestCredentialsUsingExisting:NO
            completionHandler:^{
             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] returnBookWithIdentifier:identifier];
           }];
@@ -764,7 +764,7 @@ didCompleteWithError:(NSError *)error
           } if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
             NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
             [NYPLAccountSignInViewController
-             requestCredentialsUsingExistingBarcode:NO
+             requestCredentialsUsingExisting:NO
              completionHandler:^{
               [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
             }];
@@ -996,7 +996,7 @@ didCompleteWithError:(NSError *)error
           void (^problemFoundHandler)(NYPLProblemDocument * _Nullable) = ^(__unused NYPLProblemDocument * _Nullable problemDocument) {
             [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:book.identifier];
             [NYPLAccountSignInViewController
-             requestCredentialsUsingExistingBarcode:NO
+             requestCredentialsUsingExisting:NO
              completionHandler:^{
               [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
             }];
@@ -1030,7 +1030,7 @@ didCompleteWithError:(NSError *)error
     }
   } else {
     [NYPLAccountSignInViewController
-     requestCredentialsUsingExistingBarcode:NO
+     requestCredentialsUsingExisting:NO
      completionHandler:^{
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
      }];
@@ -1339,7 +1339,7 @@ didFinishDownload:(BOOL)didFinishDownload
 
 - (void)didIgnoreFulfillmentWithNoAuthorizationPresent
 {
-  [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:nil];
+  [NYPLAccountSignInViewController authorizeUsingExistingCredentialsWithCompletionHandler:nil];
 }
 
 #endif

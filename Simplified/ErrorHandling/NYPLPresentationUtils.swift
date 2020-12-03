@@ -7,8 +7,12 @@
 
 class NYPLPresentationUtils: NSObject {
   /// Presents the given view controller on top of the topmost currently
-  /// displayed view controller.
+  /// displayed view controller in the current window.
   ///
+  /// This function does not assume anything regarding the current view
+  /// controller. In particular, it does _not_ assume that it is the
+  /// `NYPLRootTabBarController::shared` instance.
+  /// 
   /// If the input and topmost view controllers are both
   /// UINavigationControllers, this method bails presentation if they
   /// both contain a first view controller of the same type.

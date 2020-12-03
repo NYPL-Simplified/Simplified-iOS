@@ -18,12 +18,16 @@ extension NYPLSettings {
 
   var settingsAccountsList: [String] {
     get {
-      if let libraryAccounts = UserDefaults.standard.array(forKey: NYPLSettings.settingsLibraryAccountsKey) {
-        return libraryAccounts as! [String]
+      if let libraryAccounts = UserDefaults.standard.array(forKey: NYPLSettings.settingsLibraryAccountsKey) as? [String] {
+        return libraryAccounts
       }
       
       // Avoid crash in case currentLibrary isn't set yet
-      return [NYPLConfiguration.OpenEBooksUUID]
+      if useBetaLibraries {
+        return [NYPLConfiguration.OpenEBooksUUIDBeta]
+      } else {
+        return [NYPLConfiguration.OpenEBooksUUIDProd]
+      }
     }
     set(newAccountsList) {
       UserDefaults.standard.set(newAccountsList, forKey: NYPLSettings.settingsLibraryAccountsKey)

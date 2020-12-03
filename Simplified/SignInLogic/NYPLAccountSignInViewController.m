@@ -8,7 +8,6 @@
 
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLAppDelegate.h"
-#import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
@@ -104,7 +103,7 @@ CGFloat const marginPadding = 2.0;
 #endif
                         ];
 
-  self.title = NSLocalizedString(@"SignIn", nil);
+  self.title = NSLocalizedString(@"Sign In", nil);
 
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -397,7 +396,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
   regTitle.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   regTitle.numberOfLines = 2;
-  regTitle.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
+  regTitle.text = NSLocalizedString(@"Don't have a library card?", @"Title for registration. Asking the user if they already have a library card.");
   regButton.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   regButton.text = NSLocalizedString(@"SignUp", nil);
   regButton.textColor = [NYPLConfiguration mainColor];
@@ -485,67 +484,72 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 #pragma mark - Modal presentation
 
 + (void)
-requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
+requestCredentialsUsingExisting:(BOOL const)useExistingCredentials
 authorizeImmediately:(BOOL)authorizeImmediately
-completionHandler:(void (^)(void))handler
+completionHandler:(void (^)(void))completionHandler
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     NYPLAccountSignInViewController *signInVC = [[self alloc] init];
-    [signInVC presentUsingExistingBarcode:useExistingBarcode
-                     authorizeImmediately:authorizeImmediately
-                        completionHandler:handler];
+    [signInVC presentUsingExistingCredentials:useExistingCredentials
+                         authorizeImmediately:authorizeImmediately
+                            completionHandler:completionHandler];
   });
 }
 
-+ (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
-                             completionHandler:(void (^)(void))handler
++ (void)requestCredentialsUsingExisting:(BOOL)useExistingBarcode
+                                 completionHandler:(void (^)(void))completionHandler
 {
-  [self requestCredentialsUsingExistingBarcode:useExistingBarcode
-                          authorizeImmediately:NO
-                             completionHandler:handler];
+  [self requestCredentialsUsingExisting:useExistingBarcode
+                              authorizeImmediately:NO
+                                 completionHandler:completionHandler];
 }
 
-+ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)(void))handler
++ (void)authorizeUsingExistingCredentialsWithCompletionHandler:(void (^)(void))completionHandler
 {
-  [self requestCredentialsUsingExistingBarcode:YES
-                          authorizeImmediately:YES
-                             completionHandler:handler];
+  [self requestCredentialsUsingExisting:YES
+                              authorizeImmediately:YES
+                                 completionHandler:completionHandler];
 }
 
 /**
  * Presents itself to begin the login process.
  *
- * @param useExistingBarcode Should the screen be filled with the barcode when available?
+ * @param useExistingCredentials Should the screen be filled with the barcode when available?
  * @param authorizeImmediately Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview.
  * @param completionHandler Called upon successful authentication
  */
-- (void)presentUsingExistingBarcode:(BOOL const)useExistingBarcode
-               authorizeImmediately:(BOOL)authorizeImmediately
-                  completionHandler:(void (^)(void))handler
+- (void)presentUsingExistingCredentials:(BOOL const)useExistingCredentials
+                   authorizeImmediately:(BOOL)authorizeImmediately
+                      completionHandler:(void (^)(void))completionHandler
 {
-  self.businessLogic.completionHandler = handler;
+  self.businessLogic.completionHandler = completionHandler;
 
   // Tell the VC to create its text fields so we can set their properties.
   [self view];
 
-  if (self.businessLogic.userAccount.authDefinition.isSaml) {
-    if (!useExistingBarcode) {
+  if (self.businessLogic.userAccount.authDefinition.isSaml
+      || self.businessLogic.userAccount.authDefinition.isOauth) {
+    if (!useExistingCredentials) {
       // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
       // this is for the case when we were logged in, but IDP expired our session
       // and if this happens, we want the user to pick the idp to begin reauthentication
       self.businessLogic.ignoreSignedInState = true;
-      self.businessLogic.selectedAuthentication = nil;
-    }
-  } else {
-    if(useExistingBarcode) {
-      NSString *const barcode = self.businessLogic.userAccount.barcode;
-      if(!barcode) {
-        @throw NSInvalidArgumentException;
+      if (self.businessLogic.userAccount.authDefinition.isSaml) {
+        self.businessLogic.selectedAuthentication = nil;
       }
-      self.usernameTextField.text = barcode;
+    }
+  } else if (self.businessLogic.userAccount.authDefinition.isBasic) {
+    if (useExistingCredentials) {
+      self.usernameTextField.text = self.businessLogic.userAccount.barcode;
     } else {
       self.usernameTextField.text = @"";
     }
+  } else {
+    // no authentication needed for the other cases
+    if (completionHandler) {
+      completionHandler();
+    }
+    return;
   }
 
   self.PINTextField.text = @"";
@@ -574,7 +578,7 @@ completionHandler:(void (^)(void))handler
     // there's no extra logic to do for SAML
     // this exists as we don't want the textfield to become responder
   } else {
-    if(useExistingBarcode) {
+    if (useExistingCredentials) {
       [self.PINTextField becomeFirstResponder];
     } else {
       [self.usernameTextField becomeFirstResponder];
@@ -724,6 +728,17 @@ completionHandler:(void (^)(void))handler
 
 - (void)scanLibraryCard
 {
+#ifdef OPENEBOOKS
+  __auto_type auth = self.businessLogic.selectedAuthentication;
+  [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
+                            summary:@"Barcode button was displayed"
+                            message:nil
+                           metadata:@{
+                             @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
+                             @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",
+                             @"Context": @"Sign-in modal",
+                           }];
+#else
   [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
     if (resultString) {
       self.usernameTextField.text = resultString;
@@ -731,6 +746,7 @@ completionHandler:(void (^)(void))handler
       self.loggingInAfterBarcodeScan = YES;
     }
   }];
+#endif
 }
 
 - (void)didSelectCancel
@@ -967,9 +983,7 @@ didEncounterValidationError:(NSError *)error
                                      error:error];
   }
 
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
-                                                                  animated:YES
-                                                                completion:nil];
+  [NYPLPresentationUtils safelyPresent:alert animated:YES completion:nil];
 }
 
 - (void)   businessLogic:(NYPLSignInBusinessLogic *)logic
