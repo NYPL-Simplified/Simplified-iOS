@@ -107,13 +107,13 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       viewController = [[RemoteHTMLViewController alloc]
                         initWithURL:[NSURL URLWithString: NYPLSettings.NYPLAboutSimplyEURLString]
                         title:NSLocalizedString(@"AboutApp", nil)
-                        failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                        failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       viewController = [[RemoteHTMLViewController alloc]
                         initWithURL:[NSURL URLWithString: NYPLSettings.NYPLUserAgreementURLString]
                         title:NSLocalizedString(@"EULA", nil)
-                        failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                        failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
       viewController = [[BundledHTMLViewController alloc]

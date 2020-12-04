@@ -36,7 +36,7 @@ class NYPLSettingsSplitViewController : UISplitViewController, UISplitViewContro
     return navVC?.viewControllers.first as? NYPLSettingsPrimaryTableViewController
   }
 
-  // MARK: UIView
+  // MARK: UIViewController
 
   override func viewDidLoad() {
     super.viewDidLoad()

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#import <ZXingObjC/ZXingObjC.h>
+@import UIKit;
+@import ZXingObjC;
 
 @interface NYPLBarcodeScanningViewController : UIViewController <ZXCaptureDelegate>
 

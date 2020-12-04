@@ -25,7 +25,8 @@ class NYPLSettingsPrimaryTableViewController : UITableViewController {
     self.items = []
     self.itemsMap = [:]
     self.developerVC = NYPLDeveloperSettingsTableViewController()
-    
+    self.shouldShowDeveloperMenuItem = false
+
     // Init info label
     self.infoLabel = UILabel()
     self.infoLabel.font = UIFont.systemFont(ofSize: 12.0)
@@ -35,11 +36,12 @@ class NYPLSettingsPrimaryTableViewController : UITableViewController {
     self.infoLabel.text = "\(productName) version \(version) (\(build))"
     self.infoLabel.textAlignment = .center
     self.infoLabel.sizeToFit()
-    
-    self.shouldShowDeveloperMenuItem = false
-    
+
     super.init(nibName: nil, bundle: nil)
-    
+    self.title = NSLocalizedString("Settings", comment: "")
+    self.clearsSelectionOnViewWillAppear = false
+
+    // add gesture recognizer for debug menu
     let tap = UITapGestureRecognizer.init(target: self, action: #selector(revealDeveloperSettings))
     tap.numberOfTapsRequired = 7;
     self.infoLabel.isUserInteractionEnabled = true
@@ -100,6 +102,15 @@ class NYPLSettingsPrimaryTableViewController : UITableViewController {
     super.viewDidLoad()
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
   }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if self.splitViewController?.traitCollection.horizontalSizeClass == .compact {
+      if let indexPath = tableView.indexPathForSelectedRow {
+        tableView.deselectRow(at: indexPath, animated: true)
+      }
+    }
+  }
   
   // MARK: UITableViewDelegate
   
@@ -125,7 +136,7 @@ class NYPLSettingsPrimaryTableViewController : UITableViewController {
     if section == sectionCount - 1 {
       return 45.0
     }
-    return 15.0
+    return 0
   }
   
   override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

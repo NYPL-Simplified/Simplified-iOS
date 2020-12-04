@@ -39,6 +39,31 @@ To build OpenSSL and cURL from scratch, you can use the following script:
 ```
 Both scripts must be run from the Simplified-iOS repo root.
 
+## Building for Readium 2 Integration
+
+Before working on R2 integration, make sure you can build the app without R2. Follow the steps listed above for building the app with DRM.
+
+For working on integrating R2 into SimplyE, use the `feature/readium2` branch and use the `SimplifiedR2.workspace`. This assumes you have checked out the following frameworks and cloned them as siblings of `Simplified-iOS` on the file system:
+```bash
+cd Simplified-iOS/..
+git clone https://github.com/NYPL-Simplified/r2-shared-swift
+git clone https://github.com/NYPL-Simplified/r2-streamer-swift
+git clone https://github.com/NYPL-Simplified/r2-navigator-swift
+git clone https://github.com/NYPL-Simplified/r2-lcp-swift
+```
+The first 2 repos are patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM and LCP DRM support in Readium 2.
+
+The `build-carthage.sh` is more extensive on the `feature/readium2` branch and takes care of rebuilding the Carthage folders for all the R2 repos:
+```bash
+./scripts/build-carthage.sh
+```
+However, once you have built the Carthage dependencies for the R2 repos, you likely won't need to do that again. So if you do need to rebuild SimplyE's Carthage excluding the R2 stuff, append the `--skipR2` parameter for a faster build:
+```bash
+./scripts/build-carthage.sh --skipR2
+```
+
+Finally, open the workspace and use the `SimplyE-R2dev` target to build the app.
+
 # Building Without Adobe DRM
 
 **Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
@@ -63,42 +88,6 @@ Both scripts must be run from the Simplified-iOS repo root.
 18. Remove input and output filepaths for  `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
 19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
 20. Build.
-
-# Building for Readium 2 Integration
-
-For working on integrating R2 into SimplyE, use the `feature/readium2` branch. First build the app following the steps above for building with/without DRM.
-
-Then we recommend using the `SimplifiedR2.workspace`. This assumes you have checked out the following frameworks (clone them as siblings of `Simplified-iOS` on the file system):
-```bash
-cd Simplified-iOS/..
-git clone https://github.com/NYPL-Simplified/r2-shared-swift
-git clone https://github.com/NYPL-Simplified/r2-streamer-swift
-git clone https://github.com/readium/r2-navigator-swift
-git clone https://github.com/NYPL-Simplified/r2-lcp-swift
-```
-The first 2 repos contain patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM and LCP DRM support in Readium 2.
-
-Build their own Carthage dependencies first:
-```bash
-cd r2-shared-swift
-carthage checkout --use-ssh
-carthage build --platform ios
-cd ../r2-streamer-swift
-carthage checkout --use-ssh
-carthage build --platform ios
-cd ../r2-navigator-swift
-carthage checkout --use-ssh
-carthage build --platform ios
-cd ../r2-lcp-swift
-carthage checkout --use-ssh
-carthage build --platform ios
-```
-Then finally build Carthage for SimplyE (for a faster build, you can remove the related R2 lines from SimplyE's Cartfile since the `SimplyE-R2dev` target in `SimplifiedR2.workspace` refers to the manually cloned R2 repos):
-```bash
-./scripts/update-certificates.sh
-./scripts/build-carthage.sh
-```
-Finally, open the workspace and use the `SimplyE-R2dev` target to build the app.
 
 # Building Secondary Targets
 

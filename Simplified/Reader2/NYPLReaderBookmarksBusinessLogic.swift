@@ -243,8 +243,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
                                             timeoutInternal: 8.0,
                                             handler: { (reachable) in
       guard reachable else {
-        self.handleBookmarksSyncFail(level: .warn,
-                                     message: "Error: host was not reachable for bookmark sync attempt.",
+        self.handleBookmarksSyncFail(message: "Error: host was not reachable for bookmark sync attempt.",
                                      completion: completion)
         return
       }
@@ -264,8 +263,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
         
         NYPLAnnotations.getServerBookmarks(forBook: self.book.identifier, atURL: self.book.annotationsURL) { (serverBookmarks) in
           guard let serverBookmarks = serverBookmarks else {
-            self.handleBookmarksSyncFail(level: .debug,
-                                         message: "Ending sync without running completion. Returning original list of bookmarks.",
+            self.handleBookmarksSyncFail(message: "Ending sync without running completion. Returning original list of bookmarks.",
                                          completion: completion)
             return
           }
@@ -456,10 +454,9 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     
   // Helper
     
-  private func handleBookmarksSyncFail(level: Log.Level,
-                                       message: String,
+  private func handleBookmarksSyncFail(message: String,
                                        completion: @escaping (Bool, [NYPLReadiumBookmark]) -> ()) {
-    Log.log(level, #file, message)
+    Log.info(#file, message)
     
     self.bookmarks = self.bookRegistryProvider.readiumBookmarks(forIdentifier: self.book.identifier)
     completion(false, self.bookmarks)

@@ -39,10 +39,9 @@ class OETutorialChoiceViewController : UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    title = NSLocalizedString("Log In", comment: "")
+    title = NSLocalizedString("LogIn", comment: "")
     
-    descriptionLabel.font = UIFont(name: NYPLConfiguration.systemFontFamilyName(),
-                                   size: 20.0)
+    descriptionLabel.font = NYPLConfiguration.welcomeScreenFont()
     descriptionLabel.text = NSLocalizedString("You need to login to access the collection.", comment: "")
     descriptionLabel.textAlignment = .center
     descriptionLabel.numberOfLines = 0
@@ -70,10 +69,10 @@ class OETutorialChoiceViewController : UIViewController {
   
   override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
-    let minSize = min(view.frame.width, 414)
+    let minSize = min(view.frame.width, 428)
     
     // TODO: Magic number usage
-    stackView.frame = CGRect(x: 0, y: 0, width: minSize, height: 160.0)
+    stackView.frame = CGRect(x: 0, y: 0, width: minSize, height: 170.0)
     stackView.centerInSuperview()
     stackView.integralizeFrame()
   }
@@ -114,11 +113,13 @@ class OETutorialChoiceViewController : UIViewController {
     let userAccount = NYPLUserAccount.sharedAccount()
     if libAccount?.details == nil {
       libAccount?.loadAuthenticationDocument(using: userAccount) { success in
-        if success {
-          self.presentSignInVC(for: loginChoice)
-        } else {
-          let alert = NYPLAlertUtils.alert(title: "Sign-in Error", message: "We could not find a match for the credentials provided.")
-          self.present(alert, animated: true, completion: nil)
+        NYPLMainThreadRun.asyncIfNeeded {
+          if success {
+            self.presentSignInVC(for: loginChoice)
+          } else {
+            let alert = NYPLAlertUtils.alert(title: "Sign-in Error", message: "We could not find a match for the credentials provided.")
+            self.present(alert, animated: true, completion: nil)
+          }
         }
       }
     } else {
@@ -128,7 +129,7 @@ class OETutorialChoiceViewController : UIViewController {
 
   private func presentSignInVC(for loginChoice: LoginChoice) {
     let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
-    signInVC.present(usingExistingBarcode: false,
+    signInVC.present(usingExistingCredentials: false,
                      authorizeImmediately: false,
                      completionHandler: self.loginCompletionHandler)
   }

@@ -170,7 +170,7 @@
     AccountsManager.shared.loadCatalogs() { success in
       DispatchQueue.main.async {
         guard success else {
-          let alert = NYPLAlertUtils.alert(title:nil, message:"LibraryLoadError", style: .cancel)
+          let alert = NYPLAlertUtils.alert(title:nil, message:"We can’t get your library right now. Please close and reopen the app to try again.", style: .cancel)
           NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: self, animated: true, completion: nil)
           return
         }
@@ -182,7 +182,7 @@
   
   private func showAddAccountList() {
     let alert = UIAlertController(title: NSLocalizedString(
-      "SettingsAccountLibrariesViewControllerAlertTitle",
+      "Add Your Library",
       comment: "Title to tell a user that they can add another account to the list"),
                                   message: nil,
                                   preferredStyle: .actionSheet)
