@@ -2,6 +2,8 @@
 
 set -e
 
+echo "Building Adobe RMSDK..."
+
 ADOBE_RMSDK="`pwd`/adobe-rmsdk"
 CONFIGURATIONS=(Debug Release)
 SDKS=(iphoneos iphonesimulator)
