@@ -21,9 +21,11 @@ set -eo pipefail
 case $1 in
   --SE | SE | SimplyE | simplye | "")
     APP_NAME=SimplyE
+    APP_NAME_FOLDER=SimplyE
     ;;
   --OE | OE | OpenEbooks | Open_eBooks | "Open eBooks" | openebooks | open_ebooks)
     APP_NAME="Open eBooks"
+    APP_NAME_FOLDER=OpenEbooks
     ;;
   *)
     echo "xcode-settings: please specify a valid app. Possible values: simplye | openebooks"
