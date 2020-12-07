@@ -13,9 +13,6 @@ echo "Building 3rd party dependencies..."
 # update dependencies from Certificates repo
 ./scripts/update-certificates.sh
 
-# rebuild all Carthage dependencies from scratch
-./scripts/build-carthage.sh
-
 # this is required for the Adobe SDK
 ./scripts/build-openssl-curl.sh
 
@@ -23,3 +20,5 @@ echo "Building 3rd party dependencies..."
 sh ./scripts/adobe-rmsdk-build.sh
 (cd readium-sdk; sh MakeHeaders.sh Apple)
 
+# rebuild all Carthage dependencies from scratch
+./scripts/build-carthage.sh
