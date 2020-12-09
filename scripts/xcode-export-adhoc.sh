@@ -22,7 +22,7 @@ echo "Exporting $ARCHIVE_NAME for Ad-Hoc distribution..."
 mkdir -p "$ADHOC_EXPORT_PATH"
 
 xcodebuild -archivePath "$ARCHIVE_PATH.xcarchive" \
-            -exportOptionsPlist "$APP_NAME/exportOptions-adhoc.plist" \
+            -exportOptionsPlist "$APP_NAME_FOLDER/exportOptions-adhoc.plist" \
             -exportPath "$ADHOC_EXPORT_PATH" \
             -allowProvisioningUpdates \
             -exportArchive #| xcpretty
