@@ -10,15 +10,20 @@
 # Description: This scripts wipes your Carthage folder, checks out and rebuilds
 #              all dependencies.
 
-echo "Building Carthage..."
+echo "Building Carthage for [$CONTEXT]..."
 
-# deep clean to avoid any caching issues
-rm -rf ~/Library/Caches/org.carthage.CarthageKit
-rm -rf Carthage
+if [ "$CONTEXT" != "ci" ]; then
+  # deep clean to avoid any caching issues
+  rm -rf ~/Library/Caches/org.carthage.CarthageKit
+  rm -rf Carthage
+  carthage checkout --use-ssh
+fi
 
-carthage checkout --use-ssh
-
-# fetch AudioEngine
 ./Carthage/Checkouts/NYPLAEToolkit/fetch-audioengine.sh
+
+echo "List of carthage checkouts to be built:"
+ls -la ./Carthage/Checkouts/
+
+echo "Carthage build..."
 
 carthage build --platform ios

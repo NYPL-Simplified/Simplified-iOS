@@ -1,0 +1,60 @@
+name: Testing
+on: pull_request
+jobs:
+  test:
+    name: Testing SimplyE and Open eBooks
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout main repo and submodules
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: true
+          token: ${{ secrets.WORKFLOW_PAT }}
+#           path: Simplified-iOS
+#       - name: Checkout Certificates
+#         uses: actions/checkout@v2.3.4
+#         with:
+#           repository: NYPL-Simplified/Certificates
+#           token: ${{ secrets.WORKFLOW_PAT }}
+#           path: Certificates
+      - name: Force Xcode 11.5
+        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Carthage Bootstrap
+        uses: devbotsxyz/carthage-bootstrap@v1
+        with:
+          github-token: ${{ secrets.WORKFLOW_PAT }}
+          platform: iOS
+          cache: false
+          verbose: true
+#       - name: Checkout NYPLAEToolkit
+#         uses: actions/checkout@v2.3.4
+#         with:
+#           repository: NYPL-Simplified/NYPLAEToolkit
+#           token: ${{ secrets.WORKFLOW_PAT }}
+#           path: Simplified-iOS/Carthage/Checkouts/NYPLAEToolkit/
+#       - name: Checkout audiobook-ios-overdrive
+#         uses: actions/checkout@v2.3.4
+#         with:
+#           repository: NYPL-Simplified/audiobook-ios-overdrive
+#           token: ${{ secrets.WORKFLOW_PAT }}
+#           path: Simplified-iOS/Carthage/Checkouts/audiobook-ios-overdrive/
+#       - name: Checkout Adobe RMSDK
+#         uses: actions/checkout@v2.3.4
+#         with:
+#           repository: NYPL-Simplified/DRM-iOS-AdeptConnector
+#           token: ${{ secrets.WORKFLOW_PAT }}
+#           path: DRM-iOS-AdeptConnector
+#       - name: Set up repo for DRM build
+#         run: exec ./scripts/setup-repo-drm.sh
+#         working-directory: Simplified-iOS
+#       - name: Build 3rd parties dependencies
+#         run: ./scripts/build-3rd-party-dependencies.sh && ls -la ./Carthage/Checkouts && ls -la ./Carthage/Build/iOS/
+#         working-directory: Simplified-iOS
+#         env:
+#           CONTEXT: ci
+#           GITHUB_TOKEN: ${{ secrets.WORKFLOW_PAT }}
+      - name: Run SimplyE tests
+        run: ls -la && ls -la Carthage/Checkouts && ls -la Carthage/Build/iOS && ./scripts/xcode-test.sh simplye
+#         working-directory: Simplified-iOS
+      - name: Run Open eBooks tests
+        run: cd Simplified-iOS && ./scripts/xcode-test.sh openebooks
