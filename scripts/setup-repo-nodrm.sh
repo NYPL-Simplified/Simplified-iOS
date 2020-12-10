@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# Usage: run this script from the root of Simplified-iOS repo.
+# SUMMARY
+#   Sets up the Simplified-iOS repo for running SimplyE without DRM support.
 #
-#     ./scripts/setup-repo.sh
+# USAGE
+#   You only have to run this script once after checking out the related repos.
+#   Run it from the root of Simplified-iOS, e.g.:
 #
-# Description: This scripts sets up the repo for building SimplyE or
-#              Open eBooks without DRM support.
+#     ./scripts/setup-repo-nodrm.sh
+#
+# NOTE
+#   Building Open eBooks without DRM is not supported.
+#
 
 echo "Setting up repo for non-DRM build"
 
