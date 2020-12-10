@@ -1,7 +1,23 @@
 # System Requirements
 
-- Install the latest Xcode (11.4 or higher) in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install Xcode 11.5 in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
+
+# Building without Adobe DRM nor Private Repos
+
+```bash
+git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
+cd Simplified-iOS
+
+# one-time set-up
+setup-no-drm.sh
+
+# idempotent script to rebuild all dependencies
+build-3rd-parties-dependencies.sh --no-private
+```
+
+Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
+
 
 # Building With Adobe DRM
 
@@ -40,31 +56,6 @@ To build OpenSSL and cURL from scratch, you can use the following script:
 ./scripts/build-openssl-curl.sh
 ```
 Both scripts must be run from the Simplified-iOS repo root.
-
-# Building Without Adobe DRM
-
-**Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
-
-01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
-02. `cd Simplified-iOS`
-03. `git submodule deinit adept-ios && git rm -rf adept-ios`
-04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
-05. `git submodule update --init --recursive`
-06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. Remove "NYPL-Simplified/NYPLAEToolkit" from `Cartfile` and `Cartfile.resolved`.
-08. `carthage bootstrap --platform ios --use-ssh`
-09. `cp Simplified/AppInfrastructure/APIKeys.swift.example Simplified/AppInfrastructure/APIKeys.swift` and edit accordingly.
-10. `cp Simplified/Accounts/Library/Accounts.json.example Simplified/Accounts/Library/Accounts.json`.
-11. `cp SimplyE/GoogleService-Info.plist.example SimplyE/GoogleService-Info.plist` and edit with you firebase project config.
-12. `cp SimplyE/ReaderClientCert.sig.example SimplyE/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file.
-13. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
-14. `open Simplified.xcodeproj`
-15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
-16. Remove `FEATURE_DRM_CONNECTOR` entries in _Build Settings_ -> _Swift Compiler - Custom Flags_ -> _Active Compilation Conditions_ in project settings
-17. Delete `NYPLAEToolkit.framework`, `AudioEngine.xcframework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
-18. Remove input and output filepaths for  `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
-19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
-20. Build.
 
 # Building Secondary Targets
 

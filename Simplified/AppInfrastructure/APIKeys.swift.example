@@ -1,10 +1,11 @@
 import Foundation
 
 @objcMembers class APIKeys: NSObject {
-  static let bugsnagID: String = ""
-
   static let cardCreatorEndpointURL: URL = URL.init(string: "")!
   static let cardCreatorVersion: String = ""
-  static let cardCreatorUsername: String = ""
-  static let cardCreatorPassword: String = ""
+
+  struct PlatformAPI {
+    static let oauthTokenURL = URL(string: "https://example.org/oauth/token")!
+    static let baseURL = URL(string: "https://example.org/api/v0.3/")!
+  }
 }
