@@ -1,5 +1,4 @@
 @import PureLayout;
-#import "SimplyE-Swift.h"
 
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
@@ -51,6 +50,14 @@
 - (void)didChangePreferredContentSize
 {
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+}
+
+- (void)configureFailMessageWithProblemDocument:(NYPLProblemDocument *)problemDoc {
+  if (problemDoc != nil) {
+    self.messageLabel.text = NSLocalizedString(@"The download could not be completed.\nScroll down to 'View Issues' to see details.", nil);
+  } else {
+    self.messageLabel.text = NSLocalizedString(@"The download could not be completed.", nil);
+  }
 }
 
 @end

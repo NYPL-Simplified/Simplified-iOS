@@ -32,6 +32,7 @@
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
 "DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
 "The download could not be completed.\nScroll down to 'View Issues' to see details." = "The download could not be completed.\nScroll down to 'View Issues' to see details.";
+"The download could not be completed." = "The download could not be completed.";
 "View Issues" = "View Issues";
 "Report a Problem" = "Report a Problem";
 "Related Books" = "Related Books";
