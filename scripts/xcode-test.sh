@@ -16,7 +16,7 @@ source "$(dirname $0)/xcode-settings.sh"
 
 echo "Running unit tests for $APP_NAME..."
 
-xcodebuild -project $PROJECT_NAME \
-           -scheme $SCHEME \
+xcodebuild -project "$PROJECT_NAME" \
+           -scheme "$SCHEME" \
            -destination platform=iOS\ Simulator,OS=13.5,name=iPhone\ 11 \
            clean test

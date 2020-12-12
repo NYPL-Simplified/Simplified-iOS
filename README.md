@@ -22,9 +22,9 @@ Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
 
 # Building With Adobe DRM
 
-## Building the Application
+## Building the Application from Scratch
 
-01. Contact project lead and ensure you have access to all required submodules and other repos, including private ones.
+01. Contact project lead and ensure you have access to all the required private repos.
 02. Then simply run:
 ```bash
 git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
@@ -33,24 +33,21 @@ cd Simplified-iOS
 ```
 03. Open Simplified.xcodeproj and build the `SimplyE` or `Open eBooks` target.
 
-
 ## Building Dependencies Individually
 
-The `scripts` directory contains a number of scripts to build dependencies and perform other build/setup tasks, such as archiving and exporting. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
+After bootstrapping, it's unlikely you'll need to do that again, because the DRM dependencies very rarely change. 
 
-To build all Carthage dependencies from scratch you can use the `build-carthage.sh` script. Note that this will wipe the Carthage folder if you already have it:
+More common is the case of needing to update/rebuild the 3rd party dependencies managed by Carthage. To that end (and more), the `scripts` directory contains a number of scripts to rebuild them and perform other build/setup tasks from the command line, such as archiving and exporting. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
+
+For instance, to build all 3rd party dependencies minus DRM:
 ```bash
-./scripts/build-carthage.sh
+./scripts/build-3rd-party-dependencies.sh
 ```
-To run a `carthage update`, use the `update-carthage.sh` script. As the previous script, this also rebuilds the Carthage dependencies from scratch:
-```bash
-./scripts/update-carthage.sh
-```
-To build DRM-related dependencies, you can use the `adobe-rmsdk-build.sh` or `/build-openssl-curl.sh` scripts.
+In the rare event you need to build DRM-related dependencies, you can use the `adobe-rmsdk-build.sh` script.
 
 # Building Secondary Targets
 
-The Xcode project contains 3 additional targets beside the main one referenced earlier:
+The Xcode project contains 2 additional targets beside the main one referenced earlier and the unit tests:
 
 - **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace. It requires DRM.
 - **Open eBooks**: This is an app primarily targeted toward the education space. It requires DRM.
@@ -65,11 +62,9 @@ The primary services/singletons within the program are as follows:
 * `AccountsManager`
 * `NYPLUserAccount`
 * `NYPLBookRegistry`
-* `NYPLKeychain`
 * `NYPLMyBooksDownloadCenter`
-* `NYPLMigrationManager`
 * `NYPLSettings`
-* `NYPLSettingsNYPLProblemDocumentCacheManager`
+* `NYPLKeychain`
 
 Most of the above contain appropriate documentation in the header files.
 
@@ -82,7 +77,7 @@ Questions, suggestions, and general discussion occurs via Slack: Email
 
 # License
 
-Copyright © 2015 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2015-2020 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
