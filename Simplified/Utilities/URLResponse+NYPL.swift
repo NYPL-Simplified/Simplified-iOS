@@ -25,7 +25,7 @@ extension URLResponse {
 }
 
 extension HTTPURLResponse {
-  @objc func isFailure() -> Bool {
-    return statusCode < 200 || statusCode > 299
+  @objc func isSuccess() -> Bool {
+    return statusCode >= 200 && statusCode <= 299
   }
 }

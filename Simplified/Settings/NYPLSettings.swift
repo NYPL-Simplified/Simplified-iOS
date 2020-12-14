@@ -1,6 +1,18 @@
 import Foundation
 
-@objcMembers class NYPLSettings: NSObject {
+@objc protocol NYPLUniversalLinksSettings: NSObjectProtocol {
+  /// The URL that will be used to redirect an external authentication flow
+  /// back to the our app. This URL will need to be provided to the external
+  /// service. For example, Clever authentication uses this URL to redirect
+  /// to the app after authenticating in Safari.
+  var universalLinksURL: URL { get }
+}
+
+@objc protocol NYPLFeedURLProvider {
+  var accountMainFeedURL: URL? { get set }
+}
+
+@objcMembers class NYPLSettings: NSObject, NYPLFeedURLProvider {
   static let shared = NYPLSettings()
 
   @objc class func sharedSettings() -> NYPLSettings {

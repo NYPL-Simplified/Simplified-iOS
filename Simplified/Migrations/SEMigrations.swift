@@ -14,10 +14,10 @@ extension NYPLMigrationManager {
     let appVersionTokens = appVersion.split(separator: ".").compactMap({ Int($0) })
 
     // Run through migration stages
-    if versionIsLessThan(appVersionTokens, [3, 2, 0]) { // v3.2.0
+    if version(appVersionTokens, isLessThan: [3, 2, 0]) { // v3.2.0
       migrate1();
     }
-    if versionIsLessThan(appVersionTokens, [3, 3, 0]) { // v3.3.0
+    if version(appVersionTokens, isLessThan: [3, 3, 0]) { // v3.3.0
       migrate2();
     }
 
@@ -78,7 +78,7 @@ extension NYPLMigrationManager {
         continue
       }
 
-      guard let oldDirectoryPath = DirectoryManager.directory("\(accountId)") else {
+      guard let oldDirectoryPath = NYPLBookContentMetadataFilesHelper.directory(for: "\(accountId)") else {
         Log.error(#file, "Could not get a directory path for accountId \(accountId)")
         continue
       }
@@ -87,7 +87,7 @@ extension NYPLMigrationManager {
           Log.error(#file, "Could not find mapping from accountID \(accountId) to uuid")
           continue
         }
-        guard let newDirectoryPath = DirectoryManager.directory(accountUuid) else {
+        guard let newDirectoryPath = NYPLBookContentMetadataFilesHelper.directory(for: accountUuid) else {
           Log.error(#file, "Could not get a directory path for accountUuid \(accountUuid)")
           continue
         }
@@ -112,10 +112,10 @@ extension NYPLMigrationManager {
     try? FileManager.default.removeItem(at: origBetaUrl)
     try? FileManager.default.removeItem(at: origProdUrl)
     if FileManager.default.fileExists(atPath: origBetaUrl.absoluteString) {
-      Log.warn(#file, "Old beta cache still exists")
+      Log.error(#file, "Old beta cache still exists")
     }
     if FileManager.default.fileExists(atPath: origProdUrl.absoluteString) {
-      Log.warn(#file, "Old prod cache still exists")
+      Log.error(#file, "Old prod cache still exists")
     }
   }
 }

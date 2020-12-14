@@ -10,7 +10,7 @@
 "Accounts" = "Accounts";
 "Account" = "Account";
 "Acknowledgements" = "Acknowledgements";
-"ActivitySlowLoadMessage" = "Loading. Please wait.";
+"Loading... Please wait." = "Loading... Please wait.";
 "BarcodeOrUsername" = "Barcode or Username";
 "Borrow" = "Get";
 "BorrowFailed" = "Borrowing failed";
@@ -22,15 +22,20 @@
 "CheckConnection" = "Please check your connection and try again.";
 "Close" = "Close";
 "ConnectionFailed" = "Connection Failed";
-"ConnectionFailedDescription" = "Unable to load the web page at this time.";
-"ContentLicenses" = "Content Licenses";
-"DataError" = "We found a problem. Please check your connection or close and reopen the app to retry.";
+"Unable to load the web page at this time." = "Unable to load the web page at this time.";
+"Content Licenses" = "Content Licenses";
+"We found a problem. Please check your connection or close and reopen the app to retry." = "We found a problem. Please check your connection and your credentials in Settings, or close and reopen the app to retry.";
 "Delete" = "Delete";
 "Description" = "Description";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
 "Download" = "Download";
-"DownloadCouldNotBeCompleted" = "The download could not be completed.\nScroll down to 'View Issues' to see details.";
-"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.\nScroll down to 'View Issues' to see details.";
+"DownloadCouldNotBeCompleted" = "The download could not be completed.";
+"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
+"The download could not be completed.\nScroll down to 'View Issues' to see details." = "The download could not be completed.\nScroll down to 'View Issues' to see details.";
+"View Issues" = "View Issues";
+"Report a Problem" = "Report a Problem";
+"Related Books" = "Related Books";
+"Loading Related Books" = "Loading Related Books";
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
 "Error" = "Error";
@@ -39,9 +44,9 @@
 "Information" = "Information";
 "LibraryCard" = "Library Card";
 "Error Loading Library" = "Error Loading Library";
-"LibraryLoadError" = "We can’t get your library right now. Please close and reopen the app to try again.";
+"We can’t get your library right now. Please close and reopen the app to try again." = "We can’t get your library right now. Please close and reopen the app to try again.";
 "LogIn" = "Log In";
-"ManageAccounts" = "Manage Accounts";
+"Manage Accounts" = "Manage Accounts";
 "More..." = "More…";
 "MoreBooks" = "More %@ books";
 "NoEmailAccountSet" = "No email account is set for this device.";
@@ -50,16 +55,17 @@
 "OK" = "OK";
 "PDFNotSupported" = "Adobe PDF Not Supported";
 "PDFNotSupportedDescriptionFormat" = "%@ is an Adobe PDF, which is not supported.";
-"PickYourLibrary" = "Find Your Library";
+"Find Your Library" = "Find Your Library";
 "PIN" = "PIN";
-"PleaseWait" = "Please Wait";
-"PleaseWaitMessage" = "Please wait a moment before switching library accounts.";
+"Please Wait" = "Please Wait";
+"Please wait a moment before switching library accounts." = "Please wait a moment before switching library accounts.";
 "PrivacyPolicy" = "Privacy Policy";
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
 "Remove" = "Remove";
 "Reserve" = "Reserve";
+"Retry" = "Retry";
 "Return" = "Return";
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
 "ReturnFailed" = "Return Failed";
@@ -67,7 +73,7 @@
 "Search" = "Search";
 "Settings" = "Settings";
 "Show" = "Show";
-"SignIn" = "Sign In";
+"Sign In" = "Sign In";
 "SignOut" = "Sign Out";
 "SigningOut" = "Signing Out";
 "SignUp" = "Sign Up";
@@ -77,21 +83,17 @@
 "TryAgain" = "Try Again";
 "Unknown error parsing problem document" = "Unknown error parsing problem document";
 "UnknownRequestError" = "An unknown error occurred. Please check your connection or try again later.";
-"UnknownError" = "An error occurred. Please try again later.";
 "Verifying" = "Verifying";
 "Back" = "Back";
 "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.";
 
-
 // NYPLAppDelegate
-
 "AppDelegateUpdateRequiredTitle" = "Update Required";
 "AppDelegateUpdateRequiredMessageFormat" = "A critical update is required for applications older than version %@. Essential parts of the application will not function correctly until an update is performed.";
 "AppDelegateUpdateNow" = "Update Now";
 "AppDelegateUpdateRemindMeLater" = "Remind Me Later";
 
 // NYPLBookButtonsView
-
 "BookButtonsViewRemoveHoldTitle" = "Remove Reservation";
 "BookButtonsViewRemoveHoldMessage" = "Are you sure you want to remove \"%@\" from your reservations? You will no longer be in line for this book.";
 "BookButtonsViewRemoveHoldConfirm" = "Remove";
@@ -109,33 +111,28 @@
 
 // NYPLBookCellDelegate
 "Unsupported Item" = "Unsupported Item";
-"The item you are trying to open is not currently supported by SimplyE." = "The item you are trying to open is not currently supported by SimplyE.";
+"The item you are trying to open is not currently supported." = "The item you are trying to open is not currently supported.";
 "Corrupted Audiobook" = "Corrupted Audiobook";
 "The audiobook you are trying to open appears to be corrupted. Try downloading it again." = "The audiobook you are trying to open appears to be corrupted. Try downloading it again.";
 
 // NYPLFacetView
-
 "FacetViewNotActive" = "<>";
 
 // NYPLHoldsViewController
-
 "HoldsViewControllerTitle" = "Reservations";
 "HoldsViewControllerSearchTitle" = "Search Reservations";
 "AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
-"ReservationsGoToCatalog" = "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.";
+"When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download." = "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.";
 
 // NYPLMyBooksDownloadCenter
-
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Delete";
 "MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Are you sure you want to delete \"%@\"?";
 "MyBooksGoToCatalog" = "Visit the Catalog to\nadd books to My Books.";
-
 "MyBooksDownloadCenterConfirmReturnTitle" = "Return";
 "MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Are you sure you want to return \"%@\"?";
 
 // NYPLMyBooksViewController
-
 "MyBooksViewControllerTitle" = "My Books";
 "MyBooksViewControllerSearchTitle" = "Search My Books";
 "MyBooksViewControllerFacetAll" = "All";
@@ -146,12 +143,10 @@
 "MyBooksViewControllerGroupSortBy" = "Sort By";
 
 // NYPLReaderViewController
-
 "ReaderViewControllerCorruptTitle" = "Could Not Display Book";
 "ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
 "ReaderViewControllerCurrentChapter" = "Current Chapter";
 "Book" = "Book";
-"leftin" = "left in";
 "TOC" = "Table of contents";
 
 // NYPLReaderReadiumView
@@ -166,56 +161,50 @@
 "BlackOnWhiteText" = "Black on white text";
 "DecreaseFontSize" = "Decrease font size";
 "IncreaseFontSize" = "Increase font size";
-"MediaOverlayPlaybackToggle" = "Media overlay playback toggle";
 "BrightnessSlider" = "Brightness slider";
 
 // NYPLReaderSettingsViewController
 "ReaderViewControllerToggleReaderSettings" = "Toggle reader settings";
 
 // ReaderTOCViewController
-
 "ReaderTOCViewControllerTitle" = "Table of Contents";
 
 // NYPLSettings
+"The page could not load due to a connection error." = "The page could not load due to a connection error.";
 
-"SettingsAboutNoConnection" = "There was an internet connection error and the page could not load.";
-"SettingsConnectionFailureMessage" = "The page could not load due to a connection error.";
+// Authentication generic
+"Authentication Expired" = "Authentication Expired";
+"Your authentication details have expired. Please sign in again." = "Your authentication details have expired. Please sign in again.";
+"Authentication Required" = "Authentication Required";
+"Please sign in to use this functionality." = "Please sign in to use this functionality.";
 
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
 "Add Library" = "Add Library";
 "Report an Issue" = "Report an Issue";
 "Show Barcode" = "Show Barcode";
 "Hide Barcode" = "Hide Barcode";
-"SettingsAccountAgeCheckbox" = "I am 13 years of age or older.";
-"SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
-"SettingsAccountRegistrationTitle" = "Don't have a library card?";
-"SettingsBookmarkSyncTitle" = "Sync Bookmarks";
-"SettingsAccountSyncFooterTitle" = "Save your reading position and bookmarks to all your other devices.";
+"I am 13 years of age or older." = "I am 13 years of age or older.";
+"Don't have a library card?" = "Don't have a library card?";
+"Sync Bookmarks" = "Sync Bookmarks";
+"Save your reading position and bookmarks to all your other devices." = "Save your reading position and bookmarks to all your other devices.";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
-"SettingsAccountViewControllerCannotLogOutTitle" =
-  "Logout Failed";
-"SettingsAccountViewControllerCannotLogOutMessage" =
-  "Please wait for certain download-related actions to finish before logging out.";
-"SettingsAccountViewControllerInvalidCredentials" =
-  "Your barcode and pin combination was not valid. Please try again.";
+"SettingsAccountViewControllerCannotLogOutTitle" = "Logout Failed";
+"SettingsAccountViewControllerCannotLogOutMessage" = "Please wait for certain download-related actions to finish before logging out.";
+"SettingsAccountViewControllerInvalidCredentials" = "Your barcode and pin combination was not valid. Please try again.";
 "SettingsAccountViewControllerLoginFailed" = "Login Failed";
 "SettingsAccountViewControllerLogoutFailed" = "Sign Out Failed";
-"SettingsAccountViewControllerLogoutMessageDefault" = "If you sign out, your books and any saved bookmarks will be removed.";
-"SettingsAccountViewControllerLogoutMessageSync" = "If you sign out without enabling Sync, your books and any saved bookmarks will be removed.";
-"SettingsAccountViewControllerAgeCheckMessage" = "If you are under 13, all content downloaded to My Books will be removed.";
-"SettingsAccountViewControllerMessageLogIn" = "Use your library card to log in.";
-"SettingsAccountViewControllerMessageLogInToDownloadBook" =
-  "You need a library card to download this book.";
-"SettingsAccountViewControllerMessageInvalidPIN" =
-  "Your PIN has changed. Enter your new PIN.";
+"If you sign out, your books and any saved bookmarks will be removed." = "If you sign out, your books and any saved bookmarks will be removed.";
+"If you sign out without enabling Sync, your books and any saved bookmarks will be removed." = "If you sign out without enabling Sync, your books and any saved bookmarks will be removed.";
+"If you are under 13, all content downloaded to My Books will be removed." = "If you are under 13, all content downloaded to My Books will be removed.";
 "Location" = "Location";
-"LocationRequiredMessage" = "Location information is required for Sign Up. Please allow access to location information in the iOS settings";
 "Error parsing user profile document." = "Error parsing user profile document. Please try again.";
 "Trouble locating DRM in profile document." = "Trouble locating DRM in profile document. Please try again.";
 "SigningInAgree" = "By signing in, you agree to the End User License Agreement.";
 "Want a card for your child?" = "Want a card for your child?";
 "Cannot confirm library card eligibility." = "Cannot confirm library card eligibility.";
 "Please log out and try your card information again." = "Please log out and try your card information again.";
+"Sign-in Error" = "Sign-in Error";
+"We could not find a match for the credentials provided." = "We could not find a match for the credentials provided.";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accept";
@@ -225,25 +214,20 @@
 "NOTICE" = "NOTICE";
 
 // NYPLSettingsLibrarySelectionViewController
-"SettingsAccountLibrariesViewControllerAlertTitle" = "Add Your Library";
-
-// NYPLSettingsPrimaryTableViewController
-"CustomOPDSURL" = "Custom HTTP(S) OPDS URL";
+"Add Your Library" = "Add Your Library";
 
 // NYPLSettingsPrivacyPolicyViewController
-"PrivacyPolicy" = "Privacy Policy";
 "SettingsAccountViewControllerMessageTooManyActivations" = "Too many devices have been authorized with this library card.";
 
 // NYPLWelcomeScreen
-"WelcomeScreenAgeVerifyTitle" = "Age Verification";
-"WelcomeScreenAgeVerifyMessage" = "You must be 13 years of age or older to download some of the books from this collection. How old are you?";
-"WelcomeScreenTitle1" = "Read E-Books from Your Library";
-"WelcomeScreenSubtitle1" = "Simply browse, borrow, and read free e-books from your local library.";
-"WelcomeScreenButtonTitle1" = "Find Your Library";
-"WelcomeScreenTitle2" = "The SimplyE Collection";
-"WelcomeScreenSubtitle2" = "E-books free to download and read without a library card.";
-"WelcomeScreenButtonTitle2" = "Add a Library Later";
-"LibraryListTitle" = "Pick Your Library";
+"Age Verification" = "Age Verification";
+"You must be 13 years of age or older to download some of the books from this collection. How old are you?" = "You must be 13 years of age or older to download some of the books from this collection. How old are you?";
+"Read E-Books from Your Library" = "Read E-Books from Your Library";
+"Simply browse, borrow, and read free e-books from your local library." = "Simply browse, borrow, and read free e-books from your local library.";
+"Find Your Library" = "Find Your Library";
+"The SimplyE Collection" = "The SimplyE Collection";
+"Add a Library Later" = "Add a Library Later";
+"Pick Your Library" = "Pick Your Library";
 "Under 13" = "Under 13";
 "13 or Older" = "13 or Older";
 
@@ -255,10 +239,7 @@
 "Delete all the bookmarks you have saved in the cloud." = "Delete all the bookmarks you have saved in the cloud.";
 
 // Open eBooks
-"TutorialWelcomeViewControllerDescription" = "Welcome to Open eBooks.";
-"TutorialEligibilityViewControllerDescription" =
+"Welcome to Open eBooks" = "Welcome to Open eBooks!";
+"Open eBooks provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works." =
 "The Open eBooks app provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works.\n\nChildren from low-income areas may qualify for access in several ways.";
-"TutorialChoiceViewControllerDescription" = "You need to login to access the collection.";
-"TutorialChoiceUseExistingCode" = "Use Existing Code";
-"TutorialChoiceUseClever" = "Login With Clever";
-"TutorialChoiceRequestCodes" = "Request New Codes";
+"You need to login to access the collection." = "You need to login to access the collection.";

@@ -9,20 +9,14 @@ import Foundation
 
 extension NYPLMigrationManager {
   static func runMigrations() {
-    // Fetch and parse app version
+    // Fetch and parse saved app version from User Defaults
     let appVersionInUserDefaults = NYPLSettings.shared.appVersion ?? ""
-    let appVersionInUserDefaultsTokens = appVersionInUserDefaults.split(separator: ".").compactMap({ Int($0) })
+    let versionComponents = appVersionInUserDefaults.split(separator: ".").compactMap({ Int($0) })
+    Log.info(#function, "AppVersion in UserDefaults: \(appVersionInUserDefaults) - Tokenized: \(versionComponents)")
 
     // Run through migration stages
-    Log.info(#function, "AppVersion in UserDefaults: \(appVersionInUserDefaultsTokens)")
-
-    if versionIsLessThan(appVersionInUserDefaultsTokens, [1, 8, 1]) {
-      migrate_1_8_1();
-    }
-
-    if versionIsLessThan(appVersionInUserDefaultsTokens, [1, 9, 0]) {
-      migrate_1_9_0();
-    }
+    migrate_1_8_1(ifNeededFrom: versionComponents)
+    migrate_1_9_0(ifNeededFrom: versionComponents)
   }
 
   /// v1.8.1
@@ -30,7 +24,11 @@ extension NYPLMigrationManager {
   /// userID and deviceID will be nil
   /// Need to make transition smooth to multi-account
   /// - Note: this was taken from Open eBooks repo: https://bit.ly/2DHP5sF
-  private static func migrate_1_8_1() -> Void {
+  private static func migrate_1_8_1(ifNeededFrom previousVersion: [Int]) -> Void {
+    guard !previousVersion.isEmpty, version(previousVersion, isLessThan: [1, 8, 1]) else {
+      return
+    }
+
     Log.info(#function, "Running 1.8.1 migration")
     let nyplAccount = NYPLUserAccount.sharedAccount()
 
@@ -50,68 +48,100 @@ extension NYPLMigrationManager {
     }
   }
 
-  private static func migrate_1_9_0() -> Void {
+  private static func migrate_1_9_0(ifNeededFrom previousVersion: [Int]) -> Void {
+    // we run this even if previous version is empty because this migration
+    // involves keychain items, which are persisted even after the app is
+    // uninstalled.
+    guard version(previousVersion, isLessThan: [1, 9, 0]) else {
+      return
+    }
+
     Log.info(#file, "Running 1.9.0 migration")
 
     // translate old User settings from keychain
-    let user = NYPLUserAccount.sharedAccount(libraryUUID: NYPLConfiguration.OpenEBooksUUID)
+    let user = NYPLUserAccount.sharedAccount(libraryUUID: NYPLConfiguration.OpenEBooksUUIDProd)
     let keychain = NYPLKeychain.shared()
 
     if let oldBarcode = keychain?.object(forKey: "OpenEbooksAccountBarcode") as? String,
       let oldPIN = keychain?.object(forKey: "OpenEbooksAccountPIN") as? String {
 
-      user.setBarcode(oldBarcode, PIN: oldPIN)
+      Log.info(#function, "oldBarcode (hashed)=\(oldBarcode.md5hex())")
+
+      // only set it if we are actually upgrading. If user had removed the app
+      // do not set it because it would be jarring to see yourself signed in.
+      if !previousVersion.isEmpty {
+        user.setBarcode(oldBarcode, PIN: oldPIN)
+      }
+
       keychain?.removeObject(forKey: "OpenEbooksAccountBarcode")
       keychain?.removeObject(forKey: "OpenEbooksAccountPIN")
     } else {
-      Log.info(#function, "No Barcode+Pin combo found while migrating from pre 1.9.0")
+      Log.info(#function, "No Barcode+Pin combo found while migrating from \(previousVersion)")
     }
 
     if let oldAdobeToken = keychain?.object(forKey: "OpenEbooksAccountAdobeTokenKey") as? String,
       let oldPatron = keychain?.object(forKey: "OpenEbooksAccountPatronKey") as? [String: Any] {
 
-      user.setAdobeToken(oldAdobeToken, patron: oldPatron)
+      Log.info(#function, "oldPatron=\(oldPatron)")
+
+      // only set it if we are actually upgrading.
+      if !previousVersion.isEmpty {
+        user.setAdobeToken(oldAdobeToken, patron: oldPatron)
+      }
+
       keychain?.removeObject(forKey: "OpenEbooksAccountAdobeTokenKey")
       keychain?.removeObject(forKey: "OpenEbooksAccountPatronKey")
     } else {
-      Log.info(#function, "No AdobeToken+Patron combo found while migrating from pre 1.9.0")
+      Log.info(#function, "No AdobeToken+Patron combo found while migrating from \(previousVersion)")
     }
 
     if let oldAuthToken = keychain?.object(forKey: "OpenEbooksAccountAuthTokenKey") as? String {
-      user.setAuthToken(oldAuthToken)
+      if !previousVersion.isEmpty {
+        user.setAuthToken(oldAuthToken)
+      }
       keychain?.removeObject(forKey: "OpenEbooksAccountAuthTokenKey")
     } else {
-      Log.info(#function, "No AuthToken found while migrating from pre 1.9.0")
+      Log.info(#function, "No AuthToken found while migrating from \(previousVersion)")
     }
 
     if let oldAdobeVendor = keychain?.object(forKey: "OpenEbooksAccountAdobeVendorKey") as? String {
-      user.setAdobeVendor(oldAdobeVendor)
+      Log.info(#function, "oldAdobeVendor=\(oldAdobeVendor)")
+      if !previousVersion.isEmpty {
+        user.setAdobeVendor(oldAdobeVendor)
+      }
       keychain?.removeObject(forKey: "OpenEbooksAccountAdobeVendorKey")
     } else {
-      Log.info(#function, "No AdobeVendor found while migrating from pre 1.9.0")
+      Log.info(#function, "No AdobeVendor found while migrating from \(previousVersion)")
     }
 
     if let oldProvider = keychain?.object(forKey: "OpenEbooksAccountProviderKey") as? String {
-      user.setProvider(oldProvider)
+      Log.info(#function, "oldProvider=\(oldProvider)")
+      if !previousVersion.isEmpty {
+        user.setProvider(oldProvider)
+      }
       keychain?.removeObject(forKey: "OpenEbooksAccountProviderKey")
     } else {
-      Log.info(#function, "No Provider found while migrating from pre 1.9.0")
+      Log.info(#function, "No Provider found while migrating from \(previousVersion)")
     }
 
     if let oldUserID = keychain?.object(forKey: "OpenEbooksAccountUserIDKey") as? String {
       Log.info(#function, "oldUserID=\(oldUserID)")
-      user.setUserID(oldUserID)
+      if !previousVersion.isEmpty {
+        user.setUserID(oldUserID)
+      }
       keychain?.removeObject(forKey: "OpenEbooksAccountUserIDKey")
     } else {
-      Log.info(#function, "No userID found while migrating from pre 1.9.0")
+      Log.info(#function, "No userID found while migrating from \(previousVersion)")
     }
 
     if let oldDeviceID = keychain?.object(forKey: "OpenEbooksAccountDeviceIDKey") as? String {
       Log.info(#function, "oldDeviceID=\(oldDeviceID)")
-      user.setDeviceID(oldDeviceID)
+      if !previousVersion.isEmpty {
+        user.setDeviceID(oldDeviceID)
+      }
       keychain?.removeObject(forKey: "OpenEbooksAccountDeviceIDKey")
     } else {
-      Log.info(#function, "No DeviceID found while migrating from pre 1.9.0")
+      Log.info(#function, "No DeviceID found while migrating from \(previousVersion)")
     }
   }
 

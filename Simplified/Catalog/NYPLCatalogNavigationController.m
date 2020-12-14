@@ -105,7 +105,7 @@
         [self updateFeedAndRegistryOnAccountChange];
       } else {
         NSString *title = NSLocalizedString(@"Error Loading Library", @"Title for alert related to error loading library authentication doc");
-        NSString *msg = NSLocalizedString(@"LibraryLoadError", @"Message for alert related to error loading library authentication doc");
+        NSString *msg = NSLocalizedString(@"We can’t get your library right now. Please close and reopen the app to try again.", @"Message for alert related to error loading library authentication doc");
         UIAlertController *alert = [NYPLAlertUtils
                                     alertWithTitle:title
                                     message:msg];
@@ -127,8 +127,8 @@
     [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
     
     [[NYPLBookRegistry sharedRegistry] justLoad];
-    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-      if (success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(NSDictionary *errorDict) {
+      if (errorDict == nil) {
         [[NYPLBookRegistry sharedRegistry] save];
       }
     }];
@@ -146,7 +146,7 @@
     }];
   } else if (NYPLUserAccount.sharedAccount.isCatalogSecured && !NYPLUserAccount.sharedAccount.hasCredentials) {
     // sign in
-    [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO authorizeImmediately:YES completionHandler:^{
+    [NYPLAccountSignInViewController requestCredentialsUsingExisting:NO authorizeImmediately:YES completionHandler:^{
       dispatch_async(dispatch_get_main_queue(), ^{
         completion();
       });

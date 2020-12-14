@@ -18,7 +18,7 @@ extension NYPLAppDelegate {
       }
     } else {
       let eulaURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
-      let eulaVC = NYPLEULAViewController(onlineEULAURL: eulaURL) {
+      let eulaVC = NYPLWelcomeEULAViewController(onlineEULAURL: eulaURL) {
         UIView.transition(
           with: self.window,
           duration: 0.5,
@@ -36,7 +36,8 @@ extension NYPLAppDelegate {
 
   @objc func completeBecomingActive() {
     if !NYPLUserAccount.sharedAccount().hasCredentials()
-      && NYPLSettings.shared.userHasSeenWelcomeScreen {
+      && NYPLSettings.shared.userHasSeenWelcomeScreen
+      && !isSigningIn {
       
       OETutorialChoiceViewController.showLoginPicker(handler: nil)
     }

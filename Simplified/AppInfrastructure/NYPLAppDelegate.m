@@ -28,7 +28,7 @@
 @property (nonatomic) AudiobookLifecycleManager *audiobookLifecycleManager;
 @property (nonatomic) NYPLReachability *reachabilityManager;
 @property (nonatomic) NYPLUserNotifications *notificationsManager;
-
+@property (nonatomic, readwrite) BOOL isSigningIn;
 @end
 
 @implementation NYPLAppDelegate
@@ -40,9 +40,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 - (BOOL)application:(UIApplication *)app
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
-#if !TARGET_OS_SIMULATOR
   [NYPLErrorLogger configureCrashAnalytics];
-#endif
 
   // Perform data migrations as early as possible before anything has a chance to access them
   [NYPLKeychainManager validateKeychain];
@@ -55,6 +53,10 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   self.notificationsManager = [[NYPLUserNotifications alloc] init];
   [self.notificationsManager authorizeIfNeeded];
+  [NSNotificationCenter.defaultCenter addObserver:self
+                                         selector:@selector(signingIn:)
+                                             name:NSNotification.NYPLIsSigningIn
+                                           object:nil];
 
   [[NetworkQueue shared] addObserverForOfflineQueue];
   self.reachabilityManager = [NYPLReachability sharedReachability];
@@ -65,8 +67,6 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [self.window makeKeyAndVisible];
 
   [self setUpRootVC];
-
-  [self beginCheckingForUpdates];
 
   [NYPLErrorLogger logNewAppLaunch];
 
@@ -82,8 +82,8 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
     NYPLLOG_F(@"[Background Fetch] Starting book registry sync. "
               "ElapsedTime=%f", -startDate.timeIntervalSinceNow);
     // Only the "current library" account syncs during a background fetch.
-    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-      if (success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(NSDictionary *errorDict) {
+      if (errorDict == nil) {
         [[NYPLBookRegistry sharedRegistry] save];
       }
     } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
@@ -100,7 +100,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
 {
-    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] && [userActivity.webpageURL.host isEqualToString:NYPLSettings.shared.authenticationUniversalLink.host]) {
+    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] && [userActivity.webpageURL.host isEqualToString:NYPLSettings.shared.universalLinksURL.host]) {
         [[NSNotificationCenter defaultCenter]
          postNotificationName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
          object:userActivity.webpageURL];
@@ -176,6 +176,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   [self.audiobookLifecycleManager willTerminate];
   [[NYPLBookRegistry sharedRegistry] save];
   [[NYPLReaderSettings sharedSettings] save];
+  [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void)application:(__unused UIApplication *)application
@@ -189,42 +190,9 @@ completionHandler:(void (^const)(void))completionHandler
 
 #pragma mark -
 
-- (void)beginCheckingForUpdates
+- (void)signingIn:(NSNotification *)notif
 {
-  [UpdateCheckShim
-   performUpdateCheckWithURL:[NYPLConfiguration minimumVersionURL]
-   handler:^(NSString *_Nonnull version, NSURL *_Nonnull updateURL) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       UIAlertController *const alertController =
-         [UIAlertController
-          alertControllerWithTitle:NSLocalizedString(@"AppDelegateUpdateRequiredTitle", nil)
-          message:[NSString stringWithFormat:NSLocalizedString(@"AppDelegateUpdateRequiredMessageFormat", nil), version]
-          preferredStyle:UIAlertControllerStyleAlert];
-       [alertController addAction:
-        [UIAlertAction
-         actionWithTitle:NSLocalizedString(@"AppDelegateUpdateNow", nil)
-         style:UIAlertActionStyleDefault
-         handler:^(__unused UIAlertAction *_Nonnull action) {
-           [[UIApplication sharedApplication] openURL:updateURL
-                                              options:@{}
-                                    completionHandler:nil];
-         }]];
-       [alertController addAction:
-        [UIAlertAction
-         actionWithTitle:NSLocalizedString(@"AppDelegateUpdateRemindMeLater", nil)
-         style:UIAlertActionStyleCancel
-         handler:nil]];
-       [self.window.rootViewController
-        presentViewController:alertController
-        animated:YES
-        completion:^{
-          // Try again in 24 hours or on next launch, whichever is sooner.
-          [self performSelector:@selector(beginCheckingForUpdates)
-                     withObject:nil
-                     afterDelay:(60 * 60 * 24)];
-        }];
-     }];
-   }];
+  self.isSigningIn = [notif.object boolValue];
 }
 
 @end

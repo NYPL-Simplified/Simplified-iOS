@@ -17,6 +17,7 @@ extension Notification.Name {
   static let NYPLUseBetaDidChange = Notification.Name("NYPLUseBetaDidChange")
   static let NYPLUserAccountDidChange = Notification.Name("NYPLUserAccountDidChangeNotification")
   static let NYPLDidSignOut = Notification.Name("NYPLDidSignOut")
+  static let NYPLIsSigningIn = Notification.Name("NYPLIsSigningIn")
 
   // TODO: i think this was called "OEAppDelegateDidReceiveCleverRedirectURL"
   // in kyle's branch
@@ -32,5 +33,6 @@ extension Notification.Name {
   public static let NYPLUseBetaDidChange = Notification.Name.NYPLUseBetaDidChange
   public static let NYPLUserAccountDidChange = Notification.Name.NYPLUserAccountDidChange
   public static let NYPLDidSignOut = Notification.Name.NYPLDidSignOut
+  public static let NYPLIsSigningIn = Notification.Name.NYPLIsSigningIn
   public static let NYPLAppDelegateDidReceiveCleverRedirectURL = Notification.Name.NYPLAppDelegateDidReceiveCleverRedirectURL
 }

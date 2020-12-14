@@ -46,7 +46,11 @@ import UIKit
         return
       } else if (!initialized && settings.userHasSeenFirstTimeSyncMessage == false) {
         Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
+        #if OPENEBOOKS
+        let title = "Open eBooks Sync"
+        #else
         let title = "SimplyE Sync"
+        #endif
         let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
         let alertController = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
         let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
@@ -476,8 +480,8 @@ import UIKit
       let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
 
       guard let data = serverCFI.data(using: String.Encoding.utf8),
-        let serverCfiJsonObject = try? JSONSerialization.jsonObject(with: data,
-          options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:String],
+        let serverCfiJsonObject = (try? JSONSerialization.jsonObject(with: data,
+          options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: String],
         let serverCfiJson = serverCfiJsonObject["contentCFI"],
         let serverIdrefJson = serverCfiJsonObject["idref"] else {
           Log.error(#file, "Error serializing serverCFI into JSON.")

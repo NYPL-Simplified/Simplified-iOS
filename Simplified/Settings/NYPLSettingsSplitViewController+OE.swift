@@ -49,17 +49,17 @@ extension NYPLSettingsSplitViewController {
       ),
       NYPLSettingsPrimaryTableItem.init(
         indexPath: IndexPath(row: 1, section: 1),
-        title: NSLocalizedString("User Agreement", comment: "Title for User Agreement section"),
+        title: NSLocalizedString("EULA", comment: "Title for User Agreement section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
-          title: NSLocalizedString("User Agreement", comment: "Title for User Agreement section"),
+          title: NSLocalizedString("EULA", comment: "Title for User Agreement section"),
           url: URLsProvider.accountURL(forType: .eula)
         )
       ),
       NYPLSettingsPrimaryTableItem.init(
         indexPath: IndexPath(row: 2, section: 1),
-        title: NSLocalizedString("Privacy Policy", comment: "Title for Privacy Policy section"),
+        title: NSLocalizedString("PrivacyPolicy", comment: "Title for Privacy Policy section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
-          title: NSLocalizedString("Privacy Policy", comment: "Title for Privacy Policy section"),
+          title: NSLocalizedString("PrivacyPolicy", comment: "Title for Privacy Policy section"),
           url: URLsProvider.accountURL(forType: .privacyPolicy)
         )
       )

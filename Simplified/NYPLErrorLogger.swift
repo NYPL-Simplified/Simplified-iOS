@@ -32,14 +32,16 @@ fileprivate let nullString = "null"
 
   // generic app related
   case appLaunch = 100
+  case appLogicInconsistency = 101
   case genericErrorMsgDisplayed = 103
 
-  // book registry
+  // book registry / My books
   case unknownBookState = 203
   case registrySyncFailure = 204
 
   // sign in/out/up
   case invalidLicensor = 300
+  case invalidCredentials = 301
   case barcodeException = 302
   case remoteLoginError = 303
   case userProfileDocFail = 305
@@ -51,9 +53,8 @@ fileprivate let nullString = "null"
   case missingParentBarcodeForJuvenile = 311
   case cardCreatorCredentialsDecodeFail = 312
   case oauthPatronInfoDecodeFail = 313
-  case unrecognizedLoginUniversalLink = 314
+  case unrecognizedUniversalLink = 314
   case validationWithoutAuthToken = 315
-  case signInRedirectError = 316
 
   // audiobooks
   case audiobookUserEvent = 400
@@ -74,6 +75,7 @@ fileprivate let nullString = "null"
   case authDocParseFail = 607
   case parseProblemDocFail = 608
   case overdriveFulfillResponseParseFail = 609
+  case authDataParseFail = 610
 
   // account management
   case authDocLoadFail = 700
@@ -97,6 +99,8 @@ fileprivate let nullString = "null"
   case responseFail = 909
   case clientSideTransientError = 910
   case clientSideUserInterruption = 911
+  case problemDocAvailable = 912
+  case malformedURL = 913
 
   // DRM
   case epubDecodingError = 1000
@@ -109,12 +113,11 @@ fileprivate let nullString = "null"
   // low-level / system related
   case missingSystemPaths = 1200
   case fileMoveFail = 1201
-    
-  // keychain
-  case keychainItemAddFail = 1300
-
   case directoryURLCreateFail = 1202
   case missingExpectedObject = 1203
+
+  // keychain
+  case keychainItemAddFail = 1300
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
@@ -146,7 +149,7 @@ fileprivate let nullString = "null"
   ///   - summary: This will be the top line (searchable) in Crashlytics UI.
   ///   - message: A string for further context.
   ///   - metadata: Any additional metadata to be logged.
-  class func logError(_ error: Error,
+  class func logError(_ error: Error?,
                       summary: String,
                       message: String? = nil,
                       metadata: [String: Any]? = nil) {
@@ -213,29 +216,18 @@ fileprivate let nullString = "null"
   /// Report when there's an error logging in to an account.
   /// - Parameters:
   ///   - error: The error returned, if any.
-  ///   - barcode: Clear-text barcode that was used to attempt sign-in. This
-  ///   will be hashed.
   ///   - library: The library the user is trying to sign in into.
-  ///   - request: The request issued that returned the error.
   ///   - response: The response that returned the error.
   ///   - problemDocument: A structured error description returned by the server.
   ///   - metadata: Free-form dictionary for additional metadata to be logged.
   class func logLoginError(_ error: NSError?,
-                           barcode: String?,
                            library: Account?,
-                           request: URLRequest?,
                            response: URLResponse?,
                            problemDocument: NYPLProblemDocument?,
                            metadata: [String: Any]?) {
     var metadata = metadata ?? [String : Any]()
     if let error = error {
       metadata[NSUnderlyingErrorKey] = error
-    }
-    if let barcode = barcode {
-      metadata["hashedBarcode"] = barcode.md5hex()
-    }
-    if let request = request {
-      metadata["request"] = request.loggableString
     }
     if let response = response as? HTTPURLResponse {
       metadata["responseStatusCode"] = response.statusCode
@@ -248,7 +240,7 @@ fileprivate let nullString = "null"
     }
     let errorCode: Int
     if let problemDocument = problemDocument {
-      metadata["problemDocument"] = problemDocument.debugDictionary
+      metadata["problemDocument"] = problemDocument.dictionaryValue
       errorCode = NYPLErrorCode.loginErrorWithProblemDoc.rawValue
     } else {
       errorCode = NYPLErrorCode.remoteLoginError.rawValue
@@ -323,8 +315,9 @@ fileprivate let nullString = "null"
   ///   hashed.
   class func logUserProfileDocumentAuthError(_ error: NSError?,
                                              summary: String,
-                                             barcode: String?) {
-    var userInfo = [String : Any]()
+                                             barcode: String?,
+                                             metadata: [String: Any]? = nil) {
+    var userInfo = metadata ?? [String : Any]()
     addAccountInfoToMetadata(&userInfo)
     userInfo = additionalInfo(severity: .error, metadata: userInfo)
     if let barcode = barcode {
@@ -424,26 +417,20 @@ fileprivate let nullString = "null"
   /**
    Report when there's an issue parsing a problem document.
    - parameter originalError: the parsing error.
-   - parameter barcode: The clear-text user barcode. This will be hashed.
    - parameter url: the url the problem document is being fetched from.
-   - parameter summary: client-provided operating context.
-   - parameter message: A dev-friendly message to concisely explain what's
-   happening.
+   - parameter summary: This will be the top line (searchable) in Crashlytics UI.
+   - parameter metadata: Any additional metadata to be logged for more context.
    */
   class func logProblemDocumentParseError(_ originalError: NSError,
                                           problemDocumentData: Data?,
-                                          barcode: String?,
                                           url: URL?,
                                           summary: String,
-                                          message: String?) {
-    var metadata = [String: Any]()
+                                          metadata: [String: Any]? = nil) {
+    var metadata = metadata ?? [String: Any]()
     addAccountInfoToMetadata(&metadata)
     metadata["url"] = url ?? nullString
     metadata["errorDescription"] = originalError.localizedDescription
     metadata[NSUnderlyingErrorKey] = originalError
-    if let barcode = barcode {
-      metadata["hashedBarcode"] = barcode.md5hex()
-    }
     if let problemDocumentData = problemDocumentData {
       if let problemDocString = String(data: problemDocumentData, encoding: .utf8) {
         metadata["receivedProblemDocumentData"] = problemDocString
@@ -452,7 +439,6 @@ fileprivate let nullString = "null"
 
     let userInfo = additionalInfo(
       severity: .error,
-      message: message,
       metadata: metadata)
 
     let err = NSError(domain: summary,

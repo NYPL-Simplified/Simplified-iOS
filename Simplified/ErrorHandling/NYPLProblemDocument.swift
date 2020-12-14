@@ -1,7 +1,7 @@
 import Foundation
 
 /**
-  Represents a Problem Document, outlined in https://tools.ietf.org/html/rfc7807
+ Represents a Problem Document, outlined in https://tools.ietf.org/html/rfc7807
  */
 @objcMembers class NYPLProblemDocument: NSObject, Codable {
   static let TypeNoActiveLoan =
@@ -10,7 +10,14 @@ import Foundation
     "http://librarysimplified.org/terms/problem/loan-already-exists";
   static let TypeInvalidCredentials =
     "http://librarysimplified.org/terms/problem/credentials-invalid";
-  static let noStatus: Int = -1
+
+  private static let noStatus: Int = -1
+
+  private static let typeKey = "type"
+  private static let titleKey = "title"
+  private static let statusKey = "status"
+  private static let detailKey = "detail"
+  private static let instanceKey = "instance"
 
   /// Per RFC7807, this identifies the type of problem.
   let type: String?
@@ -29,15 +36,50 @@ import Foundation
   /// the problem.
   let instance: String?
   
-  fileprivate init(_ dict: [String : Any]) {
-    self.type = dict["type"] as? String
-    self.title = dict["title"] as? String
-    self.status = dict["status"] as? Int
-    self.detail = dict["detail"] as? String
-    self.instance = dict["instance"] as? String
+  private init(_ dict: [String : Any]) {
+    self.type = dict[NYPLProblemDocument.typeKey] as? String
+    self.title = dict[NYPLProblemDocument.titleKey] as? String
+    self.status = dict[NYPLProblemDocument.statusKey] as? Int
+    self.detail = dict[NYPLProblemDocument.detailKey] as? String
+    self.instance = dict[NYPLProblemDocument.instanceKey] as? String
     super.init()
   }
-  
+
+  /// Synthesizes a problem document for expired or missing credentials.
+  ///
+  /// The type will always be `NYPLProblemDocument.TypeInvalidCredentials`.
+  ///
+  /// - Note: Use this sparingly. Problem Documents are by definition
+  /// objects representing a server result. This is provided only to facilitate
+  /// interfacing with existing logic that expects a problem document, but
+  /// the problem originated on the client.
+  ///
+  /// - Parameter hasCredentials: if `true` the problem document will represent
+  /// an expired credentials situation, otherwise the missing credentials case.
+  /// - Returns: A problem document with `type`, `title`, `detail`.
+  @objc(forExpiredOrMissingCredentials:)
+  static func forExpiredOrMissingCredentials(hasCredentials: Bool) -> NYPLProblemDocument {
+    if hasCredentials {
+      return NYPLProblemDocument([
+        NYPLProblemDocument.typeKey: NYPLProblemDocument.TypeInvalidCredentials,
+        NYPLProblemDocument.titleKey:
+          NSLocalizedString("Authentication Expired",
+                            comment: "Title for an error related to expired credentials"),
+        NYPLProblemDocument.detailKey:
+          NSLocalizedString("Your authentication details have expired. Please sign in again.",
+                            comment: "Message to prompt user to re-authenticate")])
+    } else {
+      return NYPLProblemDocument([
+        NYPLProblemDocument.typeKey: NYPLProblemDocument.TypeInvalidCredentials,
+        NYPLProblemDocument.titleKey:
+          NSLocalizedString("Authentication Required",
+                            comment: "Title for an error related to credentials being required"),
+        NYPLProblemDocument.detailKey:
+          NSLocalizedString("Please sign in to use this functionality.",
+                            comment: "Message to prompt user to authenticate")])
+    }
+  }
+
   /**
     Factory method that creates a ProblemDocument from data
     @param data data with which to populate the ProblemDocument
@@ -59,13 +101,13 @@ import Foundation
     return NYPLProblemDocument(dict)
   }
 
-  @objc var debugDictionary: [String: Any] {
+  @objc var dictionaryValue: [String: Any] {
     return [
-      "type": type ?? "",
-      "title": title ?? "",
-      "status": status ?? NYPLProblemDocument.noStatus,
-      "detail": detail ?? "",
-      "instance": instance ?? "",
+      NYPLProblemDocument.typeKey: type ?? "",
+      NYPLProblemDocument.titleKey: title ?? "",
+      NYPLProblemDocument.statusKey: status ?? NYPLProblemDocument.noStatus,
+      NYPLProblemDocument.detailKey: detail ?? "",
+      NYPLProblemDocument.instanceKey: instance ?? "",
     ]
   }
 }

@@ -19,12 +19,23 @@ private enum StorageKey: String {
   case cookies = "NYPLAccountAuthCookiesKey"
 
   func keyForLibrary(uuid libraryUUID: String?) -> String {
-    guard let libraryUUID = libraryUUID else { return self.rawValue }
+    guard
+      // historically user data for NYPL has not used keys that contain the
+      // library UUID.
+      let libraryUUID = libraryUUID,
+      libraryUUID != AccountsManager.shared.NYPLAccountUUID else {
+        return self.rawValue
+    }
+
     return "\(self.rawValue)_\(libraryUUID)"
   }
 }
 
-@objcMembers class NYPLUserAccount : NSObject {
+@objc protocol NYPLUserAccountProvider: NSObjectProtocol {
+  static func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
+}
+
+@objcMembers class NYPLUserAccount : NSObject, NYPLUserAccountProvider {
   static private let shared = NYPLUserAccount()
   private let accountInfoLock = NSRecursiveLock()
   private lazy var keychainTransaction = NYPLKeychainVariableTransaction(accountInfoLock: accountInfoLock)
@@ -95,7 +106,7 @@ private enum StorageKey: String {
     }
   }
 
-  public private(set) var credentials: NYPLCredentials? {
+  var credentials: NYPLCredentials? {
     get {
       var credentials = _credentials.read()
 
@@ -152,17 +163,13 @@ private enum StorageKey: String {
     return sharedAccount(libraryUUID: AccountsManager.shared.currentAccountId)
   }
     
-  @objc(sharedAccount:)
   class func sharedAccount(libraryUUID: String?) -> NYPLUserAccount {
     shared.accountInfoLock.lock()
     defer {
       shared.accountInfoLock.unlock()
     }
-    if let uuid = libraryUUID, uuid != AccountsManager.NYPLAccountUUID {
-      shared.libraryUUID = uuid
-    } else {
-      shared.libraryUUID = nil
-    }
+
+    shared.libraryUUID = libraryUUID
 
     return shared
   }
@@ -444,24 +451,6 @@ private enum StorageKey: String {
   }
     
   // MARK: - Remove
-  func removeBarcodeAndPIN() {
-    keychainTransaction.perform {
-      _authDefinition.write(nil)
-      _credentials.write(nil)
-      _cookies.write(nil)
-      _authorizationIdentifier.write(nil)
-
-      // remove legacy, just in case
-      _barcode.write(nil)
-      _pin.write(nil)
-      _authToken.write(nil)
-
-      notifyAccountDidChange()
-
-      NotificationCenter.default.post(name: Notification.Name.NYPLDidSignOut,
-                                      object: nil)
-    }
-  }
 
   func removeAll() {
     keychainTransaction.perform {
@@ -472,7 +461,22 @@ private enum StorageKey: String {
       _userID.write(nil)
       _deviceID.write(nil)
 
-      removeBarcodeAndPIN()
+      keychainTransaction.perform {
+        _authDefinition.write(nil)
+        _credentials.write(nil)
+        _cookies.write(nil)
+        _authorizationIdentifier.write(nil)
+
+        // remove legacy, just in case
+        _barcode.write(nil)
+        _pin.write(nil)
+        _authToken.write(nil)
+
+        notifyAccountDidChange()
+
+        NotificationCenter.default.post(name: Notification.Name.NYPLDidSignOut,
+                                        object: nil)
+      }
     }
   }
 }

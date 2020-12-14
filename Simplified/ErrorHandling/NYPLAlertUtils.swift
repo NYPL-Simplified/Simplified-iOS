@@ -3,6 +3,24 @@ import UIKit
 
 @objcMembers class NYPLAlertUtils : NSObject {
   /**
+   Generates an alert view controller. If the `message` is non-nil, it will be
+   used instead of deriving the error message from the `error`.
+
+   - Parameter title: The alert title; can be a localization key.
+   - Parameter error: An error. If the error contains a localizedDescription, that will be used for the alert message.
+   - Returns: The alert controller to be presented.
+   */
+  class func alert(title: String?,
+                   message: String?,
+                   error: NSError?) -> UIAlertController {
+    if let message = message {
+      return alert(title: title, message: message)
+    } else {
+      return alert(title: title, error: error)
+    }
+  }
+
+  /**
     Generates an alert view from errors of domains: NSURLErrorDomain, NYPLADEPTErrorDomain
 
    - Parameter title: The alert title; can be a localization key.
@@ -35,7 +53,7 @@ import UIKit
       } else if code == NYPLADEPTError.tooManyActivations.rawValue {
         message = "SettingsAccountViewControllerMessageTooManyActivations"
       } else {
-        message = "UnknownAdeptError"
+        message = "DRM error: \(error?.localizedDescriptionWithRecovery ?? "Please try again.")"
       }
     }
     #endif
@@ -106,28 +124,44 @@ import UIKit
       return
     }
 
+    var titleWasAdded = false
+    var detailWasAdded = false
     if append == false {
-      alert.title = document.title
-      alert.message = document.detail
-      return
+      if let problemDocTitle = document.title, !problemDocTitle.isEmpty {
+        alert.title = document.title
+        titleWasAdded = true
+      }
+      if let problemDocDetail = document.detail, !problemDocDetail.isEmpty {
+        alert.message = document.detail
+        detailWasAdded = true
+        if titleWasAdded {
+          // now we know we set both the alert's title and message, and since
+          // we are not appending (i.e. we are replacing what was on the
+          // existing alert), we are done.
+          return
+        }
+      }
     }
 
-    var titleWasAdded = false
+    // at this point either the alert's title or message could be empty.
+    // Let's fill that up with what we have, either from the existing alert
+    // or from the problem document.
+
     if alert.title?.isEmpty ?? true {
       alert.title = document.title
       titleWasAdded = true
     }
 
     let existingMsg: String = {
-      if let existingMsg = alert.message, !existingMsg.isEmpty {
-        return existingMsg + "\n"
+      if let alertMsg = alert.message, !alertMsg.isEmpty {
+        return alertMsg + "\n"
       }
       return ""
     }()
 
-    let docDetail: String = document.detail ?? ""
+    let docDetail = detailWasAdded ? "" : (document.detail ?? "")
 
-    if !titleWasAdded, let docTitle = document.title, !docTitle.isEmpty {
+    if !titleWasAdded, let docTitle = document.title, !docTitle.isEmpty, docTitle != alert.title {
       alert.message = "\(existingMsg)\(docTitle)\n\(docDetail)"
     } else {
       alert.message = "\(existingMsg)\(docDetail)"
@@ -135,7 +169,8 @@ import UIKit
   }
   
   /**
-   Presents an alert view from another given view
+   Presents an alert view from another given view, assuming the current
+   window's root view controller is `NYPLRootTabBarController::shared`.
 
    - Parameters:
      - alertController: The alert to display.

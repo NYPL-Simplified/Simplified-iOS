@@ -7,8 +7,9 @@ import Foundation
 
   class func postEvent(_ event: String, withBook book: NYPLBook) -> Void
   {
-    if book.analyticsURL != nil{
-      let requestURL = book.analyticsURL.appendingPathComponent(event)
+    if book.analyticsURL != nil,
+      let requestURL = book.analyticsURL?.appendingPathComponent(event) {
+
       post(event, withURL: requestURL)
     }
   }
