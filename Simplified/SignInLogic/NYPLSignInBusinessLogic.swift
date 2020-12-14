@@ -284,9 +284,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       self.drmAuthorizeUserData(responseData,
                                 loggingContext: loggingContext)
       #else
-      self.uiDelegate?.finalizeSignIn(forDRMAuthorization: true,
-                                      error: nil,
-                                      errorMessage: nil)
+      self.finalizeSignIn(forDRMAuthorization: true,
+                          error: nil,
+                          errorMessage: nil)
       #endif
     }
 

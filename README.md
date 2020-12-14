@@ -1,78 +1,59 @@
 # System Requirements
 
-- Install the latest Xcode (11.4 or higher) in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install Xcode 11.5 in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
+
+# Building without Adobe DRM nor Private Repos
+
+```bash
+git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
+cd Simplified-iOS
+git checkout develop
+
+# one-time set-up
+./scripts/setup-repo-nodrm.sh
+
+# idempotent script to rebuild all dependencies
+./scripts/build-3rd-party-dependencies.sh --no-private
+```
+
+Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
+
 
 # Building With Adobe DRM
 
 ## Building the Application
 
-01. Contact project lead and ensure you have repo access to all required submodules, including private ones. Also request a copy of the Adobe RMSDK archive, which is currently not on Github, unzip it and place it in a place of your choice.
-02. Then run:
+01. Contact project lead and ensure you have access to all required submodules and other repos, including private ones.
+02. Then simply run:
 ```bash
 git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
-git clone git@github.com:NYPL-Simplified/Certificates.git
 cd Simplified-iOS
-ln -s <rmsdk_path>/DRM_Connector_Prerelease adobe-rmsdk
-git checkout develop
-git submodule update --init --recursive
+./scripts/bootstrap-drm.sh
 ```
-03. Build dependencies (carthage, OpenSSL, cURL). You can also use this script at any other time if you ever need to rebuild them: it should be idempotent.
-```bash
-./scripts/build-3rd-parties-dependencies.sh
-```
-
-04. Open Simplified.xcodeproj and build the SimplyE target.
+03. Open Simplified.xcodeproj and build the `SimplyE` or `Open eBooks` target.
 
 
 ## Building Dependencies Individually
 
-To build all Carthage dependencies from scratch you can use the following script. Note that this will wipe the Carthage folder if you already have it:
+The `scripts` directory contains a number of scripts to build dependencies and perform other build/setup tasks, such as archiving and exporting. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
+
+To build all Carthage dependencies from scratch you can use the `build-carthage.sh` script. Note that this will wipe the Carthage folder if you already have it:
 ```bash
 ./scripts/build-carthage.sh
 ```
-To run a `carthage update`, use the following script to avoid AudioEngine errors. Note, this will rebuild all Carthage dependencies:
+To run a `carthage update`, use the `update-carthage.sh` script. As the previous script, this also rebuilds the Carthage dependencies from scratch:
 ```bash
-./scripts/carthage-update-simplye.sh
+./scripts/update-carthage.sh
 ```
-To build OpenSSL and cURL from scratch, you can use the following script:
-```bash
-./scripts/build-openssl-curl.sh
-```
-Both scripts must be run from the Simplified-iOS repo root.
-
-# Building Without Adobe DRM
-
-**Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
-
-01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
-02. `cd Simplified-iOS`
-03. `git submodule deinit adept-ios && git rm -rf adept-ios`
-04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
-05. `git submodule update --init --recursive`
-06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. Remove "NYPL-Simplified/NYPLAEToolkit" from `Cartfile` and `Cartfile.resolved`.
-08. `carthage bootstrap --platform ios --use-ssh`
-09. `cp Simplified/AppInfrastructure/APIKeys.swift.example Simplified/AppInfrastructure/APIKeys.swift` and edit accordingly.
-10. `cp Simplified/Accounts/Library/Accounts.json.example Simplified/Accounts/Library/Accounts.json`.
-11. `cp SimplyE/GoogleService-Info.plist.example SimplyE/GoogleService-Info.plist` and edit with you firebase project config.
-12. `cp SimplyE/ReaderClientCert.sig.example SimplyE/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file.
-13. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
-14. `open Simplified.xcodeproj`
-15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
-16. Remove `FEATURE_DRM_CONNECTOR` entries in _Build Settings_ -> _Swift Compiler - Custom Flags_ -> _Active Compilation Conditions_ in project settings
-17. Delete `NYPLAEToolkit.framework`, `AudioEngine.xcframework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
-18. Remove input and output filepaths for  `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
-19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
-20. Build.
+To build DRM-related dependencies, you can use the `adobe-rmsdk-build.sh` or `/build-openssl-curl.sh` scripts.
 
 # Building Secondary Targets
 
 The Xcode project contains 3 additional targets beside the main one referenced earlier:
 
-- **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace.
-- **Open eBooks**: This is related to a project currently under development. It is not functional at the moment.
-- **SimplyETests**: Suite of unit tests.
+- **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace. It requires DRM.
+- **Open eBooks**: This is an app primarily targeted toward the education space. It requires DRM.
 
 # Contributing
 

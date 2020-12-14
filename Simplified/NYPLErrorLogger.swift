@@ -125,19 +125,23 @@ fileprivate let nullString = "null"
   // MARK:- Configuration
 
   class func configureCrashAnalytics() {
+    #if FEATURE_CRASH_REPORTING
     FirebaseApp.configure()
 
     if let deviceID = UIDevice.current.identifierForVendor?.uuidString {
       Crashlytics.crashlytics().setCustomValue(deviceID, forKey: "NYPLDeviceID")
     }
+    #endif
   }
 
   class func setUserID(_ userID: String?) {
+    #if FEATURE_CRASH_REPORTING
     if let userIDmd5 = userID?.md5hex() {
       Crashlytics.crashlytics().setUserID(userIDmd5)
     } else {
       Crashlytics.crashlytics().setUserID("SIGNED_OUT_USER")
     }
+    #endif
   }
 
   //----------------------------------------------------------------------------
@@ -252,7 +256,7 @@ fileprivate let nullString = "null"
                       code: errorCode,
                       userInfo: userInfo)
 
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
 
   /**
@@ -283,7 +287,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.adeptAuthFail.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
 
   /**
@@ -303,7 +307,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.invalidLicensor.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
 
   /// Report when there's an issue parsing a user profile document obtained
@@ -331,7 +335,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.userProfileDocFail.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
 
   //----------------------------------------------------------------------------
@@ -350,7 +354,7 @@ fileprivate let nullString = "null"
                          code: error.code,
                          userInfo: userInfo)
 
-    Crashlytics.crashlytics().record(error: newErr)
+    record(error: newErr)
   }
 
   class func logAudiobookInfoEvent(message: String) {
@@ -358,7 +362,7 @@ fileprivate let nullString = "null"
     let err = NSError(domain: "Audiobooks",
                       code: NYPLErrorCode.audiobookUserEvent.rawValue,
                       userInfo: userInfo)
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
 
   //----------------------------------------------------------------------------
@@ -376,7 +380,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.appLaunch.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
 
   /**
@@ -399,7 +403,7 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.barcodeException.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
 
   class func logCatalogInitError(withCode code: NYPLErrorCode,
@@ -445,11 +449,19 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.parseProblemDocFail.rawValue,
                       userInfo: userInfo)
 
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
   
   //----------------------------------------------------------------------------
   // MARK:- Private helpers
+
+  private class func record(error: NSError) {
+    #if FEATURE_CRASH_REPORTING
+    Crashlytics.crashlytics().record(error: error)
+    #else
+    Log.error("LOG_ERROR", "\(error)")
+    #endif
+  }
 
   /// Helper to log a generic error to Crashlytics.
   /// - Parameters:
@@ -494,7 +506,7 @@ fileprivate let nullString = "null"
     let err = NSError(domain: finalSummary,
                       code: finalCode,
                       userInfo: userInfo)
-    Crashlytics.crashlytics().record(error: err)
+    record(error: err)
   }
 
   /// Fixes up summary and code inspecting the domain and code of a given
