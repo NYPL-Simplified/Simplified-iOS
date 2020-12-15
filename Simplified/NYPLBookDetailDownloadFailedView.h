@@ -1,5 +1,4 @@
-#import "SimplyE-Swift.h"
-
+@class NYPLProblemDocument;
 @class NYPLBookDetailDownloadFailedView;
 
 @interface NYPLBookDetailDownloadFailedView : UIView
