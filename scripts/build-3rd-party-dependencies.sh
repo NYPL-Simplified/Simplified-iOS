@@ -16,7 +16,7 @@
 # NOTE
 #   This script is idempotent so it can be run safely over and over.
 
-echo "Building 3rd party dependencies..."
+echo "Building 3rd party dependencies for [$BUILD_CONTEXT]..."
 
 case $1 in
   --no-private )
@@ -29,5 +29,7 @@ esac
 
 (cd readium-sdk; sh MakeHeaders.sh Apple)
 
-# rebuild all Carthage dependencies from scratch
-./scripts/build-carthage.sh
+if [ "$BUILD_CONTEXT" != "ci" ]; then
+  # rebuild all Carthage dependencies from scratch
+  ./scripts/build-carthage.sh
+fi

@@ -1,0 +1,58 @@
+name: Unit Testing
+on: pull_request
+jobs:
+  build-and-test:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout main repo and submodules
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: true
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Checkout Adobe RMSDK
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: NYPL-Simplified/DRM-iOS-AdeptConnector
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          path: ./DRM-iOS-AdeptConnector
+      - name: Checkout Certificates
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: NYPL-Simplified/Certificates
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          path: ./Certificates
+      - name: Checkout NYPLAEToolkit
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: NYPL-Simplified/NYPLAEToolkit
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          path: ./NYPLAEToolkit
+      - name: Force Xcode 11.5
+        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Fetch AudioEngine
+        run: ./NYPLAEToolkit/scripts/fetch-audioengine.sh
+      - name: Verify AudioEngine
+        run: ls -la Carthage/Build/iOS
+      - name: Build non-Carthage 3rd party dependencies
+        run: ./scripts/build-3rd-party-dependencies.sh ./NYPLAEToolkit/SimplyE/iOS/APIKeys.json
+        env:
+          BUILD_CONTEXT: ci
+      - name: Set up repo for DRM build
+        run: exec ./scripts/setup-repo-drm.sh
+        env:
+          BUILD_CONTEXT: ci
+      - name: Verify AdeptConnector contents
+        run: ls -la ./DRM-iOS-AdeptConnector/lib/ios
+      - name: Carthage Bootstrap
+        uses: devbotsxyz/carthage-bootstrap@v1
+        with:
+          github-token: ${{ secrets.IOS_DEV_CI_PAT }}
+          platform: iOS
+          cache: false
+          verbose: true
+      - name: Verify Carthage contents
+        run: ls -la Carthage/Checkouts && ls -la Carthage/Build/iOS
+      - name: Run SimplyE tests
+        run: ./scripts/xcode-test.sh simplye
+      - name: Run Open eBooks tests
+        run: ./scripts/xcode-test.sh openebooks

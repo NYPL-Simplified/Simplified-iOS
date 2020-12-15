@@ -11,11 +11,17 @@
 #     ./scripts/setup-repo-drm.sh
 #
 
-echo "Setting up repo for building with DRM support"
+echo "Setting up repo for building with DRM support for [$BUILD_CONTEXT]..."
 
 git submodule update --init --recursive
 
-ln -s ../DRM-iOS-AdeptConnector adobe-rmsdk
+if [ "$BUILD_CONTEXT" == "ci" ]; then
+  ADOBE_SDK_PATH=./DRM-iOS-AdeptConnector
+else
+  ADOBE_SDK_PATH=../DRM-iOS-AdeptConnector
+fi
 
-cd ../DRM-iOS-AdeptConnector
+ln -s $ADOBE_SDK_PATH adobe-rmsdk
+
+cd $ADOBE_SDK_PATH
 ./uncompress.sh
