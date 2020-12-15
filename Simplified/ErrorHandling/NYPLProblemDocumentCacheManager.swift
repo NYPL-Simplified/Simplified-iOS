@@ -27,38 +27,42 @@ extension Notification.Name {
   }
   
   // Member values
-  var lastCachedDoc: DocWithTimestamp?
-  var lastCachedKey: String?
-  var cache: [String : [DocWithTimestamp]]
+  private var cache: [String : [DocWithTimestamp]]
   
   override init() {
     cache = [String : [DocWithTimestamp]]()
-    lastCachedDoc = nil
-    lastCachedKey = nil
     super.init()
   }
   
+  // MARK: - Write
+  
   @objc func cacheProblemDocument(_ doc: NYPLProblemDocument, key: String) {
-    lastCachedKey = key
-    lastCachedDoc = DocWithTimestamp.init(doc)
+    let timeStampDoc = DocWithTimestamp.init(doc)
     guard var vals = cache[key] else {
-      cache[key] = [lastCachedDoc!]
+      cache[key] = [timeStampDoc]
       NotificationCenter.default.post(name: NSNotification.Name.NYPLProblemDocumentWasCached, object: doc)
       return
     }
     
     if vals.count >= NYPLProblemDocumentCacheManager.CACHE_SIZE {
       vals.removeFirst(1)
-      vals.append(lastCachedDoc!)
+      vals.append(timeStampDoc)
       cache[key] = vals
     }
     NotificationCenter.default.post(name: NSNotification.Name.NYPLProblemDocumentWasCached, object: doc)
   }
   
+  @objc(clearCachedDocForBookIdentifier:)
+  func clearCachedDoc(_ key: String) {
+    cache[key] = []
+  }
+  
+  // MARK: - Read
+  
   func getLastCachedDoc(_ key: String) -> NYPLProblemDocument? {
-    if lastCachedKey == key {
-      return lastCachedDoc?.doc
+    guard let cachedDocuments = cache[key] else {
+      return nil
     }
-    return nil
+    return cachedDocuments.last?.doc
   }
 }

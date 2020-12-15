@@ -266,7 +266,7 @@
 }
 
 - (void)didSelectViewIssuesForBook:(NYPLBook *)book sender:(id)__unused sender {
-  NYPLProblemDocument* pDoc = [[NYPLProblemDocumentCacheManager shared] getLastCachedDoc:book.identifier];
+  NYPLProblemDocument* pDoc = [[NYPLProblemDocumentCacheManager sharedInstance] getLastCachedDoc:book.identifier];
   if (pDoc) {
     NYPLBookDetailsProblemDocumentViewController* vc = [[NYPLBookDetailsProblemDocumentViewController alloc] initWithProblemDocument:pDoc book:book];
     UINavigationController* navVC = [self navigationController];

@@ -222,6 +222,8 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   }
 
   if (success) {
+    [[NYPLProblemDocumentCacheManager sharedInstance] clearCachedDocForBookIdentifier:book.identifier];
+    
     switch(rights) {
       case NYPLMyBooksDownloadRightsManagementUnknown:
         [self logBookDownloadFailure:book
