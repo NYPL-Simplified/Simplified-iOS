@@ -1,4 +1,4 @@
-name: Unit Testing
+name: Unit Tests
 on: pull_request
 jobs:
   build-and-test:
@@ -31,8 +31,6 @@ jobs:
         run: sudo xcode-select -switch /Applications/Xcode_11.5.app
       - name: Fetch AudioEngine
         run: ./NYPLAEToolkit/scripts/fetch-audioengine.sh
-      - name: Verify AudioEngine
-        run: ls -la Carthage/Build/iOS
       - name: Build non-Carthage 3rd party dependencies
         run: ./scripts/build-3rd-party-dependencies.sh ./NYPLAEToolkit/SimplyE/iOS/APIKeys.json
         env:
@@ -41,8 +39,6 @@ jobs:
         run: exec ./scripts/setup-repo-drm.sh
         env:
           BUILD_CONTEXT: ci
-      - name: Verify AdeptConnector contents
-        run: ls -la ./DRM-iOS-AdeptConnector/lib/ios
       - name: Carthage Bootstrap
         uses: devbotsxyz/carthage-bootstrap@v1
         with:
@@ -50,8 +46,6 @@ jobs:
           platform: iOS
           cache: false
           verbose: true
-      - name: Verify Carthage contents
-        run: ls -la Carthage/Checkouts && ls -la Carthage/Build/iOS
       - name: Run SimplyE tests
         run: ./scripts/xcode-test.sh simplye
       - name: Run Open eBooks tests
