@@ -23,7 +23,7 @@ import NYPLAudiobookToolkit
   /// .lcpa archive container
   private let container: Container
 
-  /// Distributor key - one can be found in `NYPLBook.distributor` properety
+  /// Distributor key - one can be found in `NYPLBook.distributor` property
   @objc static let distributorKey = "lcp"
   
   /// Initialize for an LCP audiobook
