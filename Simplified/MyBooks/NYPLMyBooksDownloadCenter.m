@@ -695,7 +695,7 @@ didCompleteWithError:(NSError *)error
   NYPLBookContentType contentType = book.defaultBookContentType;
   switch (contentType) {
     case NYPLBookContentTypeAudiobook:
-      if ([distributor isEqualToString:@"lcp"]) {
+      if ([distributor isEqualToString:LCPAudiobooks.distributorKey]) {
         // LCP audiobooks require .lcpa file extension for correct library work
         return @"lcpa";
       }
