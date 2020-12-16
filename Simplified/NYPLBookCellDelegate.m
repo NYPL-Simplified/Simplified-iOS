@@ -1,7 +1,9 @@
 @import MediaPlayer;
 @import NYPLAudiobookToolkit;
 @import PDFRendererProvider;
+#if FEATURE_OVERDRIVE
 @import OverdriveProcessor;
+#endif
 
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBook.h"
@@ -170,11 +172,13 @@
     
   NSMutableDictionary *dict = nil;
     
+#if FEATURE_OVERDRIVE
   if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
     dict = [(NSMutableDictionary *)json mutableCopy];
     dict[@"id"] = book.identifier;
   }
-  
+#endif
+
   [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
       id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
@@ -367,11 +371,13 @@
     
   [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:self.book.identifier];
 
+#if FEATURE_OVERDRIVE
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateODAudiobookManifest) name:NYPLMyBooksDownloadCenterDidChangeNotification object:nil];
-    
+#endif
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
 }
 
+#if FEATURE_OVERDRIVE
 - (void)updateODAudiobookManifest {
   if ([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier] == NYPLBookStateDownloadSuccessful) {
     OverdriveAudiobook *odAudiobook = (OverdriveAudiobook *)self.manager.audiobook;
@@ -399,5 +405,6 @@
     [self.refreshAudiobookLock unlock];
   }
 }
+#endif
 
 @end

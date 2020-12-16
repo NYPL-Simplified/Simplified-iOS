@@ -16,7 +16,11 @@
 # NOTE
 #   This script is idempotent so it can be run safely over and over.
 
-echo "Building 3rd party dependencies for [$BUILD_CONTEXT]..."
+if [ "$BUILD_CONTEXT" == "" ]; then
+  echo "Building 3rd party dependencies..."
+else
+  echo "Building 3rd party dependencies for [$BUILD_CONTEXT]..."
+fi
 
 case $1 in
   --no-private )
@@ -31,5 +35,5 @@ esac
 
 if [ "$BUILD_CONTEXT" != "ci" ]; then
   # rebuild all Carthage dependencies from scratch
-  ./scripts/build-carthage.sh
+  ./scripts/build-carthage.sh $1
 fi

@@ -1,25 +1,36 @@
 #!/bin/bash
 
-# TODO: Remove the script in Certificate repo
-# for extracting AudioEngine URL when this is being merge
-
-# Usage: run this script from the root of Simplified-iOS repo.
+# SUMMARY
+#   This script builds all the dependencies managed by Carthage.
+#   It wipes the Carthage folder beforehand.
 #
-#     ./scripts/build-carthage.sh
+# USAGE
+#   Run this script from the root of Simplified-iOS repo:
 #
-# Description: This scripts wipes your Carthage folder, checks out and rebuilds
-#              all dependencies.
+#     ./scripts/build-carthage.sh [--no-private]
+#
+# PARAMETERS
+#   --no-private: skips building private repos.
+#
+# NOTE
+#   This script is idempotent so it can be run safely over and over.
 
-echo "Building Carthage for [$BUILD_CONTEXT]..."
-
-if [ "$BUILD_CONTEXT" != "ci" ]; then
-  # deep clean to avoid any caching issues
-  rm -rf ~/Library/Caches/org.carthage.CarthageKit
-  rm -rf Carthage
-  carthage checkout --use-ssh
+if [ "$BUILD_CONTEXT" == "" ]; then
+  echo "Building Carthage..."
+else
+  echo "Building Carthage for [$BUILD_CONTEXT]..."
 fi
 
-./Carthage/Checkouts/NYPLAEToolkit/scripts/fetch-audioengine.sh
+# deep clean to avoid any caching issues
+rm -rf ~/Library/Caches/org.carthage.CarthageKit
+rm -rf Carthage
+
+if [ "$1" == "--no-private" ]; then
+  carthage checkout
+else
+  carthage checkout --use-ssh
+  ./Carthage/Checkouts/NYPLAEToolkit/scripts/fetch-audioengine.sh
+fi
 
 echo "List of carthage checkouts to be built:"
 ls -la ./Carthage/Checkouts/
