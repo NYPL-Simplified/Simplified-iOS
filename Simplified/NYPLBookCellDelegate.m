@@ -183,10 +183,19 @@
     dict[@"id"] = book.identifier;
   }
   
+  id<DRMDecryptor> audiobookDrmDecryptor = nil;
+
+  if ([book.distributor isEqualToString:LCPAudiobooks.distributorKey]) {
+    LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:url];
+    dict = [[lcpAudiobooks contentDictionary] mutableCopy];
+    dict[@"id"] = book.identifier;
+    audiobookDrmDecryptor = lcpAudiobooks;
+  }
+  
   [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
-      id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
-
+      id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json decryptor:audiobookDrmDecryptor];
+      
       if (!audiobook) {
         if (error) {
           [self presentDRMKeyError:error];
