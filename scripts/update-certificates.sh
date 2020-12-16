@@ -6,15 +6,27 @@
 #
 # Note: this script assumes you have the Certificates repo cloned as a sibling of Simplified-iOS.
 
-cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/AppInfrastructure/
+echo "Updating repo with info from Certificates repo for [$BUILD_CONTEXT]..."
+
+if [ "$BUILD_CONTEXT" == "ci" ]; then
+  CERTIFICATES_PATH="./Certificates"
+else
+  CERTIFICATES_PATH="../Certificates"
+fi
+
+cp $CERTIFICATES_PATH/SimplyE/iOS/APIKeys.swift Simplified/AppInfrastructure/
 
 # SimplyE-specific stuff
-cp ../Certificates/SimplyE/iOS/GoogleService-Info.plist SimplyE/
-cp ../Certificates/SimplyE/iOS/ReaderClientCertProduction.sig SimplyE/ReaderClientCert.sig
+cp $CERTIFICATES_PATH/SimplyE/iOS/GoogleService-Info.plist SimplyE/
+cp $CERTIFICATES_PATH/SimplyE/iOS/ReaderClientCertProduction.sig SimplyE/ReaderClientCert.sig
 
 # OpenEbooks-specific stuff
-cp ../Certificates/OpenEbooks/iOS/ReaderClientCert.sig OpenEbooks/
-cp ../Certificates/OpenEbooks/iOS/GoogleService-Info.plist OpenEbooks/
+cp $CERTIFICATES_PATH/OpenEbooks/iOS/ReaderClientCert.sig OpenEbooks/
+cp $CERTIFICATES_PATH/OpenEbooks/iOS/GoogleService-Info.plist OpenEbooks/
 
 git update-index --skip-worktree Simplified/NYPLSecrets.swift
-swift ../Certificates/SimplyE/iOS/KeyObfuscator.swift
+
+echo "Obfuscating keys..."
+swift $CERTIFICATES_PATH/SimplyE/iOS/KeyObfuscator.swift "$CERTIFICATES_PATH/SimplyE/iOS/APIKeys.json"
+
+echo "update-certificates: finished"

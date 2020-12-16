@@ -4,10 +4,10 @@ enum AudioBookVendors: String, CaseIterable {
   case cantook = "cantook"
 }
 
-enum NYPLSecrets {
+class NYPLSecrets: NSObject {
   private static let salt: [UInt8] = [0]
 
-  static var cardCreator:String? {
+  static var cardCreatorUsername: String? {
     #if !DEBUG
       #error("Secrets file not generated")
     #endif
@@ -15,11 +15,44 @@ enum NYPLSecrets {
     return decode(encoded, cipher: salt)
   }
     
-  static var cardCreatorInfo:[String:Any] {
+  static var cardCreatorPassword: String? {
     #if !DEBUG
       #error("Secrets file not generated")
     #endif
-    return [:]
+    let encoded: [UInt8] = [0]
+    return decode(encoded, cipher: salt)
+  }
+
+  @objc static var overdriveClientKey: String? {
+    #if !DEBUG
+    #error("Secrets file not generated")
+    #endif
+    let encoded: [UInt8] = [0]
+    return decode(encoded, cipher: salt)
+  }
+
+  @objc static var overdriveClientSecret: String? {
+    #if !DEBUG
+    #error("Secrets file not generated")
+    #endif
+    let encoded: [UInt8] = [0]
+    return decode(encoded, cipher: salt)
+  }
+
+  @objc static var platformClientID: String? {
+    #if !DEBUG
+    #error("Secrets file not generated")
+    #endif
+    let encoded: [UInt8] = [0]
+    return decode(encoded, cipher: salt)
+  }
+
+  @objc static var platformClientSecret: String? {
+    #if !DEBUG
+    #error("Secrets file not generated")
+    #endif
+    let encoded: [UInt8] = [0]
+    return decode(encoded, cipher: salt)
   }
 
   static func feedbookKeys(forVendor name: AudioBookVendors) -> String? {
@@ -43,7 +76,7 @@ enum NYPLSecrets {
     #if !DEBUG
       #error("Secrets file not generated")
     #endif
-    var decrypted = [UInt8]()
+    let decrypted = [UInt8]()
     return String(bytes: decrypted, encoding: .utf8)
   }
 }
