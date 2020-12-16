@@ -6,7 +6,11 @@
 #
 # Note: this script assumes you have the Certificates repo cloned as a sibling of Simplified-iOS.
 
-echo "Updating repo with info from Certificates repo for [$BUILD_CONTEXT]..."
+if [ "$BUILD_CONTEXT" == "" ]; then
+  echo "Updating repo with info from Certificates repo..."
+else
+  echo "Updating repo with info from Certificates repo for [$BUILD_CONTEXT]..."
+fi
 
 if [ "$BUILD_CONTEXT" == "ci" ]; then
   CERTIFICATES_PATH="./Certificates"
