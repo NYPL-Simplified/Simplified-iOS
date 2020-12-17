@@ -185,7 +185,7 @@
   
   id<DRMDecryptor> audiobookDrmDecryptor = nil;
 
-  if ([book.distributor isEqualToString:LCPAudiobooks.distributorKey]) {
+  if ([LCPAudiobooks canOpenBook:book]) {
     LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:url];
     dict = [[lcpAudiobooks contentDictionary] mutableCopy];
     dict[@"id"] = book.identifier;

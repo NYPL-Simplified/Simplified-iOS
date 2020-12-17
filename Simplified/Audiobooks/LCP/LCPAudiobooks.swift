@@ -54,6 +54,13 @@ import NYPLAudiobookToolkit
       return nil
     }
   }
+  
+  /// Check if the book is LCP audiobook
+  /// - Parameter book: audiobook
+  /// - Returns: `true` if the book is an LCP DRM protected audiobook, `false` otherwise
+  @objc static func canOpenBook(_ book: NYPLBook) -> Bool {
+    book.defaultBookContentType() == .audiobook && book.distributor == distributorKey
+  }
 
 }
 

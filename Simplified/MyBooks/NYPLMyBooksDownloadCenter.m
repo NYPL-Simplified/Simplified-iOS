@@ -548,7 +548,7 @@ didCompleteWithError:(NSError *)error
       if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
         dict = [(NSMutableDictionary *)json mutableCopy];
         dict[@"id"] = book.identifier;
-      } else if ([book.distributor isEqualToString:LCPAudiobooks.distributorKey]) {
+      } else if ([LCPAudiobooks canOpenBook:book]) {
         LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:bookURL];
         dict = [[lcpAudiobooks contentDictionary] mutableCopy];
         dict[@"id"] = book.identifier;
@@ -556,7 +556,7 @@ didCompleteWithError:(NSError *)error
       
       [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
       
-      if ([book.distributor isEqualToString:LCPAudiobooks.distributorKey]) {
+      if ([LCPAudiobooks canOpenBook:book]) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:bookURL.path]) {
           NSError *error = nil;
           [[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error];
@@ -691,17 +691,8 @@ didCompleteWithError:(NSError *)error
 /// @param book `NYPLBook` book
 - (NSString *)pathExtensionForBook:(NYPLBook *)book
 {
-  NSString *distributor = [book.distributor lowercaseString];
-  NYPLBookContentType contentType = book.defaultBookContentType;
-  switch (contentType) {
-    case NYPLBookContentTypeAudiobook:
-      if ([distributor isEqualToString:LCPAudiobooks.distributorKey]) {
-        // LCP audiobooks require .lcpa file extension for correct library work
-        return @"lcpa";
-      }
-      break;
-    default:
-      break;
+  if ([LCPAudiobooks canOpenBook:book]) {
+    return @"lcpa";
   }
   return @"epub";
 }
