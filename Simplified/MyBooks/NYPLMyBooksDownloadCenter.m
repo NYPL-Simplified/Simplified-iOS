@@ -1,5 +1,7 @@
 @import NYPLAudiobookToolkit;
+#if FEATURE_OVERDRIVE
 @import OverdriveProcessor;
+#endif
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccountSignInViewController.h"
@@ -141,11 +143,13 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
          withRightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
+#if FEATURE_OVERDRIVE
     } else if ([downloadTask.response.MIMEType
                    isEqualToString:@"application/json"]) {
          self.bookIdentifierToDownloadInfo[book.identifier] =
            [[self downloadInfoForBookIdentifier:book.identifier]
             withRightsManagement:NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON];
+#endif
     } else if ([NYPLBookAcquisitionPath.supportedTypes containsObject:downloadTask.response.MIMEType]) {
       // if response type represents supported type of book, proceed
       NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".", downloadTask.response.MIMEType);
@@ -230,6 +234,8 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   }
 
   if (success) {
+    [[NYPLProblemDocumentCacheManager sharedInstance] clearCachedDocForBookIdentifier:book.identifier];
+    
     switch(rights) {
       case NYPLMyBooksDownloadRightsManagementUnknown:
         [self logBookDownloadFailure:book
@@ -545,11 +551,13 @@ didCompleteWithError:(NSError *)error
         
       NSMutableDictionary *dict = nil;
         
+#if FEATURE_OVERDRIVE
       if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
         dict = [(NSMutableDictionary *)json mutableCopy];
         dict[@"id"] = book.identifier;
       }
-      
+#endif
+
       [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
       break;
     }
@@ -877,6 +885,7 @@ didCompleteWithError:(NSError *)error
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
+#if FEATURE_OVERDRIVE
     } else if ([book.distributor isEqualToString:OverdriveDistributorKey] && book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
       NSURL *URL = book.defaultAcquisition.hrefURL;
         
@@ -943,7 +952,7 @@ didCompleteWithError:(NSError *)error
           }];
         }
       }];
-        
+#endif
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
