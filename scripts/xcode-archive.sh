@@ -33,4 +33,5 @@ xcodebuild -project $PROJECT_NAME \
            -sdk iphoneos \
            -configuration Release \
            -archivePath $ARCHIVE_PATH \
-           clean archive
+           clean archive | \
+           if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi

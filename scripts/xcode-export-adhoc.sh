@@ -28,4 +28,5 @@ xcodebuild -archivePath "$ARCHIVE_PATH.xcarchive" \
             -exportOptionsPlist "$APP_NAME_FOLDER/exportOptions-adhoc.plist" \
             -exportPath "$ADHOC_EXPORT_PATH" \
             -allowProvisioningUpdates \
-            -exportArchive #| xcpretty
+            -exportArchive | \
+            if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi
