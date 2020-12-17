@@ -561,8 +561,10 @@ didCompleteWithError:(NSError *)error
           NSError *error = nil;
           [[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error];
           if (error) {
-            NSString *message = [NSString stringWithFormat:@"%@ %@", book.identifier, book.title];
-            [NYPLErrorLogger logError:error summary:@"Failed to delete audiobook local content" message:message metadata:NULL];
+            [NYPLErrorLogger logError:error
+                              summary:@"Failed to delete LCP audiobook local content"
+                              message:NULL
+                             metadata:@{ @"book": [book loggableShortString] }];
           }
         }
       }
