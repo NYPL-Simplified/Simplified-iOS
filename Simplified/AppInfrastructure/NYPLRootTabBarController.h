@@ -17,6 +17,10 @@
 /// controller currently being presented from the receiver, or from the
 /// controller being presented by that one, and so on, such that no duplicate
 /// presenting errors occur.
+///
+/// @note This methods assumes that the current window's root view controller
+/// is the @p NYPLRootTabBarController::sharedController.
+///
 - (void)safelyPresentViewController:(UIViewController *)viewController
                            animated:(BOOL)animated
                          completion:(void (^)(void))completion;

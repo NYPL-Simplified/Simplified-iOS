@@ -169,7 +169,8 @@ import UIKit
   }
   
   /**
-   Presents an alert view from another given view
+   Presents an alert view from another given view, assuming the current
+   window's root view controller is `NYPLRootTabBarController::shared`.
 
    - Parameters:
      - alertController: The alert to display.

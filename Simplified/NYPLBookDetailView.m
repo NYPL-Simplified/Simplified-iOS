@@ -567,6 +567,7 @@ static NSString *DetailHTMLTemplate = nil;
       self.buttonsView.state = NYPLBookButtonsStateDownloadInProgress;
       break;
     case NYPLBookStateDownloadFailed:
+      [self.downloadFailedView configureFailMessageWithProblemDocument:[[NYPLProblemDocumentCacheManager shared] getLastCachedDoc:self.book.identifier]];
       self.downloadFailedView.hidden = NO;
       [self hideDownloadingView:YES];
       self.buttonsView.hidden = NO;

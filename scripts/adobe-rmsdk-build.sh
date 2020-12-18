@@ -1,6 +1,21 @@
 #!/bin/bash
 
+# SUMMARY
+#   Builds the Adobe SDK, including its dependencies.
+#
+# USAGE
+#   You typically only need to run this script once.
+#   Run it from the root of Simplified-iOS, e.g.:
+#
+#     ./scripts/adobe-rmsdk-build.sh
+
 set -e
+
+echo "Building Adobe RMSDK dependencies..."
+
+./scripts/build-openssl-curl.sh
+
+echo "Building Adobe RMSDK..."
 
 ADOBE_RMSDK="`pwd`/adobe-rmsdk"
 CONFIGURATIONS=(Debug Release)

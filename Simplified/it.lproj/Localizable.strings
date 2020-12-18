@@ -10,7 +10,7 @@
 "Accounts" = "Biblioteche";
 "Account" = "Account";
 "Acknowledgements" = "Ringraziamenti";
-"ActivitySlowLoadMessage" = "Caricamento in corso...";
+"Loading... Please wait." = "Caricamento in corso...";
 "BarcodeOrUsername" = "Codice a barre o nome utente";
 "Borrow" = "Prendi in prestito";
 "BorrowFailed" = "Prestito non riuscito";
@@ -22,14 +22,20 @@
 "CheckConnection" = "Controlla la connessione e riprova.";
 "Close" = "Chiudi";
 "ConnectionFailed" = "Connessione fallita";
-"ConnectionFailedDescription" = "Al momento non è possibile caricare la pagina.";
-"ContentLicenses" = "Licenze sul contenuto";
+"Unable to load the web page at this time." = "Al momento non è possibile caricare la pagina.";
+"Content Licenses" = "Licenze sui contenuti";
 "Delete" = "Rimuovi";
 "Description" = "Descrizione";
 "DeviceAuthorizationError" = "Si è verificato un errore durante autorizzando questo dispositivo.";
 "Download" = "Scarica";
-"DownloadCouldNotBeCompleted" = "Il download non è stata completata.\nScroll down to 'View Issues' to see details.";
-"DownloadCouldNotBeCompletedFormat" = "Il download di %@ non può essere completato.\nScorri più in giù o vai nella pagina dei dettaglio del libro per vedere i dettagli.";
+"DownloadCouldNotBeCompleted" = "Il download è fallito.";
+"DownloadCouldNotBeCompletedFormat" = "Il download di %@ non può essere completato.";
+"The download could not be completed.\nScroll down to 'View Issues' to see details." = "Il download non è stato completato.\nScorri in fondo alla pagina per i dettagli dell'errore.";
+"The download could not be completed." = "Il download non è stato completato.";
+"View Issues" = "Mostra il problema";
+"Report a Problem" = "Riferisci un problema";
+"Related Books" = "Libri correlati";
+"Loading Related Books" = "Caricamento dei libri correlati in corso";
 "DownloadFailed" = "Scaricamento fallito";
 "Downloading" = "Scaricamento in corso";
 "Error" = "Errore";
@@ -38,9 +44,9 @@
 "Information" = "Informazioni";
 "LibraryCard" = "Tessera della biblioteca";
 "Error Loading Library" = "Errore di accesso alla biblioteca";
-"LibraryLoadError" = "Non è possibile accedere alla tua biblioteca in questo momento. Prova a chiudere e riaprire l'app, oppure se il problema persiste riprova tra qualche minuto.";
+"We can’t get your library right now. Please close and reopen the app to try again." = "Non è possibile accedere alla tua biblioteca in questo momento. Prova a chiudere e riaprire l'app, oppure se il problema persiste riprova tra qualche minuto.";
 "LogIn" = "Accedi";
-"More..." = "Di Più…";
+"More..." = "Di più…";
 "MoreBooks" = "Più %@ libri";
 "NoEmailAccountSet" = "No email account is set for this device.";
 "NoResultsFound" = "Nessun risultato trovato.";
@@ -48,14 +54,15 @@
 "OK" = "OK";
 "PDFNotSupported" = "Adobe PDF non supportato";
 "PDFNotSupportedDescriptionFormat" = "%@ È un PDF di Adobe, che non è supportato.";
-"PickYourLibrary" = "Scegli la tua biblioteca";
+"Find Your Library" = "Scegli la tua biblioteca";
 "PIN" = "PIN";
-"PrivacyPolicy" = "politica sulla riservatezza";
+"PrivacyPolicy" = "Norme sulla privacy";
 "Published" = "Pubblicato";
 "Publisher" = "Editore";
 "Read" = "Leggi"; // present tense
 "Remove" = "Rimuovi";
 "Reserve" = "Prenota";
+"Retry" = "Riprova";
 "Return" = "Restituisci";
 "ReturnCouldNotBeCompletedFormat" = "Non è stato possibile restituire %@.";
 "ReturnFailed" = "Restituzione non riuscita";
@@ -63,6 +70,7 @@
 "Search" = "Ricerca";
 "Settings" = "Impostazioni";
 "Show" = "Mostra";
+"Sign In" = "Accedi";
 "SignOut" = "Disconnessione";
 "SigningOut" = "Disconnessione in corso";
 "SignUp" = "Registrati";
@@ -72,26 +80,22 @@
 "TryAgain" = "Riprova";
 "Unknown error parsing problem document" = "Si è verificato un errore. Per favore riprova.";
 "UnknownRequestError" = "Si è verificato un errore. Controlla la tua connessione a internet o riprova più tardi.";
-"UnknownError" = "Si è verificato un errore. Per favore riprova più tardi.";
 "Verifying" = "verifica";
 "Back" = "Indietro";
 
 // NYPLAppDelegate
-
 "AppDelegateUpdateRequiredTitle" = "Aggiornamento Necessario";
 "AppDelegateUpdateRequiredMessageFormat" = "Un aggiornamento critico è necessario per versioni più vecchie della %@. Parti essenziali dell'app non funzioneranno correttamente fino a quando verrà eseguito un aggiornamento.";
 "AppDelegateUpdateNow" = "Aggiorna ora";
 "AppDelegateUpdateRemindMeLater" = "Ricordamelo dopo";
 
 // NYPLBookButtonsView
-
 "BookButtonsViewRemoveHoldTitle" = "rimuovere la prenotazione";
 "BookButtonsViewRemoveHoldMessage" = "Sei sicuro di voler rimuovere \"%@\" dalla tua prenotazione? Non sarà più essere in linea per questo libro.";
 "BookButtonsViewRemoveHoldConfirm" = "Rimuovere";
 
 
 // NYPLBookDetailViewControllerTitle
-
 "BookDetailViewControllerTitle" = "Dettagli";
 "BookDetailViewControllerDownloadNeededTitle" = "Il tuo libro non è stato ancora scaricato.";
 "BookDetailViewControllerDownloadSuccessfulTitle" = "Il tuo libro è pronto da leggere!";
@@ -109,28 +113,23 @@
 "The audiobook you are trying to open appears to be corrupted. Try downloading it again." = "L'audiobook che stai cercando di ascoltare sembra avere dei problemi. Prova a scaricarlo di nuovo.";
 
 // NYPLFacetView
-
 "FacetViewNotActive" = "<>";
 
 // NYPLHoldsViewController
-
 "HoldsViewControllerTitle" = "Prenotazioni";
 "HoldsViewControllerSearchTitle" = "Cerca le riserve";
 "AvailableForCheckoutHeader" = "DISPONIBILE PER PRESTITO";
 "WaitingForAvailabilityHeader" = "IN ATTESA DI DISPONIBILITÀ";
-"ReservationsGoToCatalog" = "I libri prenotati appariranno qui. A quel punto, controlla di tanto in tanto per vedere se sono diventati disponibili e possono essere scaricati.";
+"When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download." = "I libri prenotati appariranno qui. A quel punto, controlla di tanto in tanto per vedere se sono diventati disponibili e possono essere scaricati.";
 
 // NYPLMyBooksDownloadCenter
-
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Cancellare";
 "MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Sei sicuro di voler eliminare %@?";
-"MyBooksGoToCatalog" = "Visita il catalogo per aggiungere libri I miei libri";
-
+"MyBooksGoToCatalog" = "Visita il catalogo per aggiungere i tuoi libri";
 "MyBooksDownloadCenterConfirmReturnTitle" = "Restituisci";
 "MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Sei sicuro di voler restituire %@?";
 
 // NYPLMyBooksViewController
-
 "MyBooksViewControllerTitle" = "I miei libri";
 "MyBooksViewControllerSearchTitle" = "Cerca i miei libri";
 "MyBooksViewControllerFacetAll" = "Tutti";
@@ -145,7 +144,6 @@
 "ReaderViewControllerCorruptMessage" = "Questo libro è danneggiato e non può essere letto.";
 "ReaderViewControllerCurrentChapter" = "Capitolo corrente";
 "Book" = "Libro";
-"leftin" = "sinistra";
 "TOC" = "Sommario";
 
 // NYPLReaderReadiumView (R1)
@@ -164,7 +162,6 @@
 "BlackOnWhiteText" = "Nero su testo bianco";
 "DecreaseFontSize" = "Diminuire la dimensione del carattere";
 "IncreaseFontSize" = "Aumenta dimensione caratteri";
-"MediaOverlayPlaybackToggle" = "Media Toggle riproduzione overlay";
 "BrightnessSlider" = "cursore Luminosità";
 
 // NYPLReaderSettingsViewController
@@ -178,16 +175,24 @@
 // Settings
 "SettingsConnectionFailureMessage" = "Non è stato possibile caricare la pagina per via di un errore nella connessione a internet.";
 
+// NYPLSettings
+"The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";
+
+// Authentication generic
+"Authentication Expired" = "Credenziali di accesso scadute";
+"Your authentication details have expired. Please sign in again." = "Le tue credenziali di identificazione non sono più valide. Riaccedi per continuare.";
+"Authentication Required" = "Autenticazione necessaria";
+"Please sign in to use this functionality." = "Accedi con uno dei meccanismi di identificazione per poter usare questa funzionalità.";
+
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
 "Add Library" = "Aggiungi Biblioteca";
 "Report an Issue" = "Riferisci un problema";
 "Show Barcode" = "Mostra il codice a barre";
 "Hide Barcode" = "Nascondi il codice a barre";
-"SettingsAccountAgeCheckbox" = "Ho almeno 13 anni";
-"SettingsAccountEULACheckbox" = "Acconsento ai termini del contratto di licenza con l'utente.";
-"SettingsAccountRegistrationTitle" = "Non hai una tessera della biblioteca?";
-"SettingsBookmarkSyncTitle" = "Sincronizza i segnalibri";
-"SettingsAccountSyncFooterTitle" = "Salva la posizione di lettura e i segnalibri su tutti i tuoi altri dispositivi.";
+"I am 13 years of age or older." = "Ho almeno 13 anni";
+"Don't have a library card?" = "Non hai una tessera?";
+"Sync Bookmarks" = "Sincronizza i segnalibri";
+"Save your reading position and bookmarks to all your other devices." = "Salva la posizione di lettura e i segnalibri su tutti i tuoi altri dispositivi.";
 "SettingsAccountViewControllerAuthenticationReason" = "Accedi per visualizzare il PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Disconnessione fallita";
@@ -197,17 +202,10 @@
   "La combinazione di codice a barre e PIN non è valida. Riprova.";
 "SettingsAccountViewControllerLoginFailed" = "Accesso fallito";
 "SettingsAccountViewControllerLogoutFailed" = "Errore durante la disconnessione";
-"SettingsAccountViewControllerLogoutMessageDefault" =
-  "Se ti disconnetti, tutti i libri scaricati saranno rimossi da questo dispositivo.";
-"SettingsAccountViewControllerLogoutMessageSync" = "Se ti disconnetti senza abilitare la sincronizzazione i tuoi libri e i tuoi segnalibri saranno rimossi.";
-"SettingsAccountViewControllerAgeCheckMessage" = "Se hai meno di 13 anni, tutti i tuoi libri saranno rimossi.";
-"SettingsAccountViewControllerMessageLogIn" = "Usa la tua tessera della biblioteca per effettuare l'accesso.";
-"SettingsAccountViewControllerMessageLogInToDownloadBook" =
-  "Ti serve una tessera della biblioteca per scaricare questo libro.";
-"SettingsAccountViewControllerMessageInvalidPIN" =
-  "Il PIN è cambiato. Inserisci il nuovo PIN.";
+"If you sign out, your books and any saved bookmarks will be removed." = "Se ti disconnetti, tutti i libri scaricati saranno rimossi da questo dispositivo.";
+"If you sign out without enabling Sync, your books and any saved bookmarks will be removed." = "Se ti disconnetti senza abilitare la sincronizzazione i tuoi libri e i tuoi segnalibri saranno rimossi.";
+"If you are under 13, all content downloaded to My Books will be removed." = "Se hai meno di 13 anni, tutti i tuoi libri saranno rimossi.";
 "Location" = "Condivisione della posizione";
-"LocationRequiredMessage" = "La convisione della posizione è necessaria per registrarsi. Si prega di consentire l'accesso alla posizione nelle Impostazioni di iOS.";
 "Error parsing user profile document." = "Si è verificato un errore nella decodifica del documento relativo al profilo utente.";
 "Trouble locating DRM in profile document." = "Si è verificato un errore relativo al DRM del documento.";
 "SigningInAgree" = "Accedendo acconsenti al contratto con gli utenti.";
@@ -225,25 +223,20 @@
 "NOTICE" = "AVVISO";
 
 // NYPLSettingsLibrarySelectionViewController
-"SettingsAccountLibrariesViewControllerAlertTitle" = "Aggiungi la tua biblioteca";
-
-// NYPLSettingsPrimaryTableViewController
-"CustomOPDSURL" = "Custom HTTP(S) OPDS URL";
+"Add Your Library" = "Aggiungi la tua biblioteca";
 
 // NYPLSettingsPrivacyPolicyViewController
-"PrivacyPolicy" = "Norme sulla privacy";
 "SettingsAccountViewControllerMessageTooManyActivations" = "Sono stati autorizzati troppi dispositivi con questa tessera di biblioteca.";
 
 // NYPLWelcomeScreen
-"WelcomeScreenAgeVerifyTitle" = "Verifica dell'età";
-"WelcomeScreenAgeVerifyMessage" = "Devi avere almeno 13 anni per scaricare alcuni dei libri nella nostra collection. Quanti anni hai?";
-"WelcomeScreenTitle1" = "Leggi ebook dalla tua biblioteca";
-"WelcomeScreenSubtitle1" = "Consulta il catalogo, prendi dei libri in prestito dalla tua biblioteca locale e leggili gratuitamente.";
-"WelcomeScreenButtonTitle1" = "Trova la tua biblioteca";
-"WelcomeScreenTitle2" = "La collezione SimplyE";
-"WelcomeScreenSubtitle2" = "Ebooks gratis da scaricare e leggere senza una tessera di biblioteca.";
-"WelcomeScreenButtonTitle2" = "Aggiungi una biblioteca più tardi";
-"LibraryListTitle" = "Scegli la tua biblioteca";
+"Age Verification" = "Verifica dell'età";
+"You must be 13 years of age or older to download some of the books from this collection. How old are you?" = "Devi avere almeno 13 anni per scaricare alcuni dei libri nella nostra collection. Quanti anni hai?";
+"Read E-Books from Your Library" = "Leggi ebook dalla tua biblioteca";
+"Simply browse, borrow, and read free e-books from your local library." = "Consulta il catalogo, prendi dei libri in prestito dalla tua biblioteca locale e leggili gratuitamente.";
+"Find Your Library" = "Trova la tua biblioteca";
+"The SimplyE Collection" = "La collezione SimplyE";
+"Add a Library Later" = "Aggiungi una biblioteca più tardi";
+"Pick Your Library" = "Scegli la tua biblioteca";
 "Under 13" = "Meno di 13";
 "13 or Older" = "13 o di più";
 
@@ -255,10 +248,7 @@
 "Delete all the bookmarks you have saved in the cloud." = "Tutti i segnalibri salvati sul server saranno rimossi.";
 
 // Open eBooks
-"TutorialWelcomeViewControllerDescription" = "Benvenuti a Open eBooks.";
-"TutorialEligibilityViewControllerDescription" =
+"Welcome to Open eBooks" = "Benvenuti a Open eBooks!";
+"Open eBooks provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works." =
 "Open eBooks fornisce libri gratuitamente ai bambini che ne hanno più bisogno.\n\nLa collezione include migliaia di titoli popolari e rinomati, e centinaia di lavori nel dominio pubblico.\n\nBambini provenienti da aree disagiate possono accedere in vari modi.";
-"TutorialChoiceViewControllerDescription" = "Scegli la modalità di accesso alla collezione.";
-"TutorialChoiceUseExistingCode" = "Usa un codice esistente";
-"TutorialChoiceUseClever" = "Accedi via Clever";
-"TutorialChoiceRequestCodes" = "Richiedi codici di accesso";
+"You need to login to access the collection." = "Scegli la modalità di accesso.";

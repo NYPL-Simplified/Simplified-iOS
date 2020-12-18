@@ -40,9 +40,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 - (BOOL)application:(UIApplication *)app
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
-#if !TARGET_OS_SIMULATOR
   [NYPLErrorLogger configureCrashAnalytics];
-#endif
 
   // Perform data migrations as early as possible before anything has a chance to access them
   [NYPLKeychainManager validateKeychain];
@@ -70,8 +68,6 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
   [self setUpRootVC];
 
-  [self beginCheckingForUpdates];
-
   [NYPLErrorLogger logNewAppLaunch];
 
   return YES;
@@ -86,8 +82,8 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
     NYPLLOG_F(@"[Background Fetch] Starting book registry sync. "
               "ElapsedTime=%f", -startDate.timeIntervalSinceNow);
     // Only the "current library" account syncs during a background fetch.
-    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
-      if (success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(NSDictionary *errorDict) {
+      if (errorDict == nil) {
         [[NYPLBookRegistry sharedRegistry] save];
       }
     } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
@@ -197,44 +193,6 @@ completionHandler:(void (^const)(void))completionHandler
 - (void)signingIn:(NSNotification *)notif
 {
   self.isSigningIn = [notif.object boolValue];
-}
-
-- (void)beginCheckingForUpdates
-{
-  [UpdateCheckShim
-   performUpdateCheckWithURL:[NYPLConfiguration minimumVersionURL]
-   handler:^(NSString *_Nonnull version, NSURL *_Nonnull updateURL) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       UIAlertController *const alertController =
-         [UIAlertController
-          alertControllerWithTitle:NSLocalizedString(@"AppDelegateUpdateRequiredTitle", nil)
-          message:[NSString stringWithFormat:NSLocalizedString(@"AppDelegateUpdateRequiredMessageFormat", nil), version]
-          preferredStyle:UIAlertControllerStyleAlert];
-       [alertController addAction:
-        [UIAlertAction
-         actionWithTitle:NSLocalizedString(@"AppDelegateUpdateNow", nil)
-         style:UIAlertActionStyleDefault
-         handler:^(__unused UIAlertAction *_Nonnull action) {
-           [[UIApplication sharedApplication] openURL:updateURL
-                                              options:@{}
-                                    completionHandler:nil];
-         }]];
-       [alertController addAction:
-        [UIAlertAction
-         actionWithTitle:NSLocalizedString(@"AppDelegateUpdateRemindMeLater", nil)
-         style:UIAlertActionStyleCancel
-         handler:nil]];
-       [self.window.rootViewController
-        presentViewController:alertController
-        animated:YES
-        completion:^{
-          // Try again in 24 hours or on next launch, whichever is sooner.
-          [self performSelector:@selector(beginCheckingForUpdates)
-                     withObject:nil
-                     afterDelay:(60 * 60 * 24)];
-        }];
-     }];
-   }];
 }
 
 @end

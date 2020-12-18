@@ -15,34 +15,34 @@
 /**
  * Presents itself to begin the login process.
  *
- * @param useExistingBarcode Should the screen be filled with the barcode when available?
+ * @param useExistingCredentials Should the screen be filled with the barcode when available?
  * @param authorizeImmediately Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview.
  * @param completionHandler Called upon successful authentication
  */
-- (void)presentUsingExistingBarcode:(BOOL const)useExistingBarcode
-               authorizeImmediately:(BOOL)authorizeImmediately
-                  completionHandler:(void (^)(void))handler;
+- (void)presentUsingExistingCredentials:(BOOL const)useExistingBarcode
+                   authorizeImmediately:(BOOL)authorizeImmediately
+                      completionHandler:(void (^)(void))completionHandler;
 
 /**
  * Present sign in view controller to begin a login process.
  *
- * @param useExistingBarcode      Should the screen be filled with barcode and pin when available?
+ * @param useExistingCredentials      Should the screen be filled with barcode and pin when available?
  * @param authorizeImmediately  Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview
  * @param completionHandler Called upon successful authentication.
  */
-+ (void)requestCredentialsUsingExistingBarcode:(BOOL const)useExistingCredentials
-                          authorizeImmediately:(BOOL)authorizeImmediately
-                             completionHandler:(void (^)(void))handler;
++ (void)requestCredentialsUsingExisting:(BOOL const)useExistingCredentials
+                   authorizeImmediately:(BOOL)authorizeImmediately
+                      completionHandler:(void (^)(void))completionHandler;
 
 // TODO: All calls to this method probably should go through NYPLAccount.
 // The existing barcode may only be used if set in the shared NYPLAccount.
-+ (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
-                             completionHandler:(void (^)(void))handler;
++ (void)requestCredentialsUsingExisting:(BOOL)useExistingBarcode
+                      completionHandler:(void (^)(void))completionHandler;
 
 // This method is here almost entirely so we can handle a bug that seems to occur
 // when the user updates, where the barcode and pin are entered but accoring to
 // ADEPT the device is not authorized. To be used, the account must have a barcode
 // and pin.
-+ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)(void))handler;
++ (void)authorizeUsingExistingCredentialsWithCompletionHandler:(void (^)(void))completionHandler;
 
 @end

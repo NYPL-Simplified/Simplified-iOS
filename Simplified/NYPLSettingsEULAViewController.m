@@ -87,7 +87,7 @@ didFailNavigation:(__unused WKNavigation *)navigation
 
   UIAlertController *alertController = [UIAlertController
                                         alertControllerWithTitle:NSLocalizedString(@"ConnectionFailed", nil)
-                                        message:NSLocalizedString(@"ConnectionFailedDescription", nil)
+                                        message:NSLocalizedString(@"Unable to load the web page at this time.", nil)
                                         preferredStyle:UIAlertControllerStyleAlert];
 
   UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)

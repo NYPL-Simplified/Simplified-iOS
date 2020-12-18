@@ -3,10 +3,15 @@
 #import "ADEPT/NYPLADEPT.h"
 #import "AdobeDRMContainer.h"
 #endif
+
+#ifndef OPENEBOOKS
+#import "NYPLBarcodeScanningViewController.h"
+#import "NYPLZXingEncoder.h"
+#endif
+
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLAppDelegate.h"
-#import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLBookDetailViewController.h"
@@ -33,11 +38,10 @@
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReadiumViewSyncManager.h"
 #import "NYPLReloadView.h"
-#import "NYPLRoundedButton.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLRoundedButton.h"
 #import "NYPLSAMLHelper.h"
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLXML.h"
-#import "NYPLZXingEncoder.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "UIView+NYPLViewAdditions.h"

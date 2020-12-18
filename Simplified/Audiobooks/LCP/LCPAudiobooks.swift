@@ -6,6 +6,8 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
+#if LCP
+
 import Foundation
 import R2Shared
 import R2Streamer
@@ -110,3 +112,5 @@ extension LCPAudiobooks: DRMDecryptor {
     }
   }
 }
+
+#endif

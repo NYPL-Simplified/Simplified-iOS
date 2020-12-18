@@ -23,6 +23,8 @@
 
 @property (nonatomic, strong) ZXCapture *capture;
 @property (nonatomic, copy) void (^completion)(NSString *resultString);
+@property (nonatomic) BOOL isFirstApplyOrientation;
+@property (nonatomic) UIView *scanRectView;
 
 @end
 
@@ -35,49 +37,55 @@
   self = [super init];
   if (self) {
     self.completion = completion;
-    return self;
-  } else {
-    return nil;
   }
+  return self;
+}
+
+- (void)dealloc
+{
+  [self.capture.layer removeFromSuperlayer];
 }
 
 #pragma mark - View Controller Methods
 
-- (void)dealloc {
-  [self.capture.layer removeFromSuperlayer];
-}
-
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                target:self
-                                                                                action:@selector(didSelectCancel)];
+  UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]
+                                   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                   target:self
+                                   action:@selector(didSelectCancel)];
   self.navigationItem.leftBarButtonItem = cancelButton;
 
   self.capture = [[ZXCapture alloc] init];
+  if ([self.capture.captureDevice supportsAVCaptureSessionPreset:AVCaptureSessionPreset1920x1080]) {
+    self.capture.sessionPreset = AVCaptureSessionPreset1920x1080;
+  }
   self.capture.camera = self.capture.back;
   self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
+  self.capture.delegate = self;
   [self.view.layer addSublayer:self.capture.layer];
 
-  UIView *previewRect = [[UIView alloc] init];
-  previewRect.layer.borderColor = [UIColor redColor].CGColor;
-  previewRect.layer.borderWidth = 4.0;
-  previewRect.layer.cornerRadius = 20.0;
-  [self.view addSubview:previewRect];
-  [previewRect autoCenterInSuperview];
-  if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
-    [previewRect autoSetDimensionsToSize:CGSizeMake(350, 170)];
-  } else {
-    [previewRect autoSetDimensionsToSize:CGSizeMake(250, 120)];
-  }
+  self.scanRectView = [[UIView alloc] init];
+  self.scanRectView.layer.borderColor = [UIColor redColor].CGColor;
+  self.scanRectView.layer.borderWidth = 4.0;
+  self.scanRectView.layer.cornerRadius = 10.0;
+  [self.view addSubview:self.scanRectView];
+
+  // kind of arbitrary, but let's use a perceived width minus some padding
+  CGFloat dim = MIN(self.view.frame.size.width, self.view.frame.size.height) - 20;
+  [self.scanRectView autoSetDimensionsToSize:CGSizeMake(dim, dim/2)];
+  [self.scanRectView autoCenterInSuperview];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
+- (void)viewDidLayoutSubviews
+{
+  [super viewDidLayoutSubviews];
 
-  self.capture.delegate = self;
-  [self applyOrientation];
+  if (_isFirstApplyOrientation == NO) {
+    _isFirstApplyOrientation = YES;
+    [self applyOrientation];
+  }
 }
 
 - (void)didSelectCancel
@@ -130,134 +138,67 @@
 			scanRectRotation = 90;
 			break;
 	}
-	[self applyRectOfInterest:orientation];
+  self.capture.layer.frame = self.view.frame;
 	CGAffineTransform transform = CGAffineTransformMakeRotation((CGFloat) (captureRotation / 180 * M_PI));
 	[self.capture setTransform:transform];
 	[self.capture setRotation:scanRectRotation];
-	self.capture.layer.frame = self.view.frame;
+  [self applyRectOfInterest:orientation];
 }
 
-- (void)applyRectOfInterest:(UIInterfaceOrientation)orientation {
-	CGFloat scaleVideo, scaleVideoX, scaleVideoY;
-	CGFloat videoSizeX, videoSizeY;
-	CGRect transformedVideoRect = self.view.frame;
-	if([self.capture.sessionPreset isEqualToString:AVCaptureSessionPreset1920x1080]) {
-		videoSizeX = 1080;
-		videoSizeY = 1920;
-	} else {
-		videoSizeX = 720;
-		videoSizeY = 1280;
-	}
-	if(UIInterfaceOrientationIsPortrait(orientation)) {
-		scaleVideoX = self.view.frame.size.width / videoSizeX;
-		scaleVideoY = self.view.frame.size.height / videoSizeY;
-		scaleVideo = MAX(scaleVideoX, scaleVideoY);
-		if(scaleVideoX > scaleVideoY) {
-			transformedVideoRect.origin.y += (scaleVideo * videoSizeY - self.view.frame.size.height) / 2;
-		} else {
-			transformedVideoRect.origin.x += (scaleVideo * videoSizeX - self.view.frame.size.width) / 2;
-		}
-	} else {
-		scaleVideoX = self.view.frame.size.width / videoSizeY;
-		scaleVideoY = self.view.frame.size.height / videoSizeX;
-		scaleVideo = MAX(scaleVideoX, scaleVideoY);
-		if(scaleVideoX > scaleVideoY) {
-			transformedVideoRect.origin.y += (scaleVideo * videoSizeX - self.view.frame.size.height) / 2;
-		} else {
-			transformedVideoRect.origin.x += (scaleVideo * videoSizeY - self.view.frame.size.width) / 2;
-		}
-	}
-	_captureSizeTransform = CGAffineTransformMakeScale(1/scaleVideo, 1/scaleVideo);
-	self.capture.scanRect = CGRectApplyAffineTransform(transformedVideoRect, _captureSizeTransform);
-}
+- (void)applyRectOfInterest:(UIInterfaceOrientation)orientation
+{
+  CGFloat scaleVideoX, scaleVideoY;
+  CGFloat videoSizeX, videoSizeY;
+  CGRect transformedVideoRect = self.scanRectView.frame;
 
-#pragma mark - Private Methods
-
-- (NSString *)barcodeFormatToString:(ZXBarcodeFormat)format {
-  switch (format) {
-    case kBarcodeFormatAztec:
-      return @"Aztec";
-
-    case kBarcodeFormatCodabar:
-      return @"CODABAR";
-
-    case kBarcodeFormatCode39:
-      return @"Code 39";
-
-    case kBarcodeFormatCode93:
-      return @"Code 93";
-
-    case kBarcodeFormatCode128:
-      return @"Code 128";
-
-    case kBarcodeFormatDataMatrix:
-      return @"Data Matrix";
-
-    case kBarcodeFormatEan8:
-      return @"EAN-8";
-
-    case kBarcodeFormatEan13:
-      return @"EAN-13";
-
-    case kBarcodeFormatITF:
-      return @"ITF";
-
-    case kBarcodeFormatPDF417:
-      return @"PDF417";
-
-    case kBarcodeFormatQRCode:
-      return @"QR Code";
-
-    case kBarcodeFormatRSS14:
-      return @"RSS 14";
-
-    case kBarcodeFormatRSSExpanded:
-      return @"RSS Expanded";
-
-    case kBarcodeFormatUPCA:
-      return @"UPCA";
-
-    case kBarcodeFormatUPCE:
-      return @"UPCE";
-
-    case kBarcodeFormatUPCEANExtension:
-      return @"UPC/EAN extension";
-
-    default:
-      return @"Unknown";
+  if ([self.capture.sessionPreset isEqualToString:AVCaptureSessionPreset1920x1080]) {
+    videoSizeX = 1080;
+    videoSizeY = 1920;
+  } else {
+    videoSizeX = 720;
+    videoSizeY = 1280;
   }
+
+  if (UIInterfaceOrientationIsPortrait(orientation)) {
+    scaleVideoX = self.capture.layer.frame.size.width / videoSizeX;
+    scaleVideoY = self.capture.layer.frame.size.height / videoSizeY;
+
+    // Convert CGPoint under portrait mode to map with orientation of image
+    // because the image will be cropped before rotate
+    // reference: https://github.com/zxingify/zxingify-objc/issues/222
+    CGFloat realX = transformedVideoRect.origin.y;
+    CGFloat realY = self.capture.layer.frame.size.width - transformedVideoRect.size.width - transformedVideoRect.origin.x;
+    CGFloat realWidth = transformedVideoRect.size.height;
+    CGFloat realHeight = transformedVideoRect.size.width;
+    transformedVideoRect = CGRectMake(realX, realY, realWidth, realHeight);
+  } else {
+    scaleVideoX = self.capture.layer.frame.size.width / videoSizeY;
+    scaleVideoY = self.capture.layer.frame.size.height / videoSizeX;
+  }
+
+  _captureSizeTransform = CGAffineTransformMakeScale(1.0/scaleVideoX, 1.0/scaleVideoY);
+  self.capture.scanRect = CGRectApplyAffineTransform(transformedVideoRect, _captureSizeTransform);
 }
 
 #pragma mark - ZXCaptureDelegate Methods
 
-- (void)captureResult:(ZXCapture *)__unused capture result:(ZXResult *)result {
-  if (!result) return;
+- (void)captureResult:(ZXCapture *)capture result:(ZXResult *)result
+{
+  NYPLLOG_F(@"ZXing result: %@", result);
 
-	CGAffineTransform inverse = CGAffineTransformInvert(_captureSizeTransform);
-	NSMutableArray *points = [[NSMutableArray alloc] init];
-	NSString *location = @"";
-	for (ZXResultPoint *resultPoint in result.resultPoints) {
-		CGPoint cgPoint = CGPointMake(resultPoint.x, resultPoint.y);
-		CGPoint transformedPoint = CGPointApplyAffineTransform(cgPoint, inverse);
-		transformedPoint = [self.view convertPoint:transformedPoint toView:self.view.window];
-		NSValue* windowPointValue = [NSValue valueWithCGPoint:transformedPoint];
-		location = [NSString stringWithFormat:@"%@ (%f, %f)", location, transformedPoint.x, transformedPoint.y];
-		[points addObject:windowPointValue];
-	}
-
-  // We got a result. Close the window and send the format string back to the delegate.
-
-  NSString *formatString = [self barcodeFormatToString:result.barcodeFormat];
-  NSString *display = [NSString stringWithFormat:@"Scanned! Format: %@  Contents: %@  Location: %@", formatString, result.text, location];
-  NYPLLOG(display);
-  // Vibrate
-  AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+  if (!result) {
+    return;
+  }
 
   [self.capture stop];
 
+  AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+
+  // send the decoded barcode back
   if (self.completion) {
     self.completion(result.text);
   }
+
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 

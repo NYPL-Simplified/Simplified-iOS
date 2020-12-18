@@ -29,7 +29,7 @@ extension NYPLSignInBusinessLogic {
     guard libraryAccount?.details?.supportsCardCreator ?? false else {
       let title = NSLocalizedString("eCard",
                                     comment: "Title for web-based card creator page")
-      let msg = NSLocalizedString("SettingsConnectionFailureMessage",
+      let msg = NSLocalizedString("The page could not load due to a connection error.",
                                   comment: "Message for errors loading a HTML page")
       let webVC = RemoteHTMLViewController(URL: signUpURL,
                                            title: title,

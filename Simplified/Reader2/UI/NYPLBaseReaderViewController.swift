@@ -113,6 +113,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       positionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       positionLabel.bottomAnchor.constraint(equalTo: navigator.view.bottomAnchor, constant: -20)
     ])
+    
+    restoreReadPosition()
   }
 
   override func willMove(toParent parent: UIViewController?) {
@@ -261,7 +263,44 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       updateBookmarkButton(withState: false)
     }
   }
+  
+  //----------------------------------------------------------------------------
+  // MARK: - Read Position
 
+  private func restoreReadPosition() {
+    bookmarksBusinessLogic.restoreReadPosition(currentLocator: navigator.currentLocation, localFetchCompletion: { (localLocator) in
+      if let localLocator = localLocator {
+        NYPLMainThreadRun.asyncIfNeeded {
+          self.navigator.go(to: localLocator, animated: true) {}
+        }
+      }
+    }) { [weak self] (serverLocator) in
+      if let serverLocator = serverLocator {
+        NYPLMainThreadRun.asyncIfNeeded {
+          self?.presentReadPositionNavigationAlert(locator: serverLocator)
+        }
+      }
+    }
+  }
+  
+  private func presentReadPositionNavigationAlert(locator: Locator) {
+    let alert = UIAlertController(title: NSLocalizedString("Sync Reading Position", comment: "An alert title notifying the user the reading position has been synced"),
+                                  message: NSLocalizedString("Do you want to move to the page on which you left off?", comment: "An alert message asking the user to perform navigation to the synced reading position or not"),
+                                  preferredStyle: .alert)
+    
+    let stayAction = UIAlertAction.init(title: NSLocalizedString("Stay", comment: "Do not perform navigation"),
+                                        style: .cancel, handler: nil)
+    
+    let moveAction = UIAlertAction.init(title: NSLocalizedString("Move", comment: "Perform navigation"),
+                                        style: .default) { (_) in
+      self.navigator.go(to: locator, animated: true, completion: {})
+    }
+    
+    alert.addAction(stayAction)
+    alert.addAction(moveAction)
+    
+    NYPLPresentationUtils.safelyPresent(alert)
+  }
 
   //----------------------------------------------------------------------------
   // MARK: - Accessibility
@@ -328,12 +367,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-//    do {
-//      //TODO: SIMPLY-2609
-//      try BooksDatabase.shared.books.saveProgression(locator, of: book)
-//    } catch {
-//      log(.error, error)
-//    }
+    bookmarksBusinessLogic.storeReadPosition(locator: locator)
 
     positionLabel.text = {
       if let position = locator.locations.position {

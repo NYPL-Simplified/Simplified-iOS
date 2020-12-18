@@ -134,14 +134,23 @@
       NSURLSessionDataTask *dataTaskCopy = self.dataTask;
       self.dataTask = nil;
 
-      if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
-        self.reloadView.hidden = false;
-        [NYPLAccountSignInViewController
-         requestCredentialsUsingExistingBarcode:([NYPLUserAccount sharedAccount].barcode != nil)
-         completionHandler:^{
-          NYPLLOG(@"Re-loading from RemoteVC because got response w/ MIMEtype == application/vnd.opds.authentication.v1.0+json and then authenticated");
-          [self load];
-        }];
+      __auto_type user = [NYPLUserAccount sharedAccount];
+
+      __block NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
+      BOOL authenticating = [reauthenticator authenticateUser:user
+                                          ifNeededForResponse:response
+                                                 responseData:data
+                                                responseError:error
+                                      authenticationPreflight:^{ self.reloadView.hidden = NO; }
+                                     authenticationCompletion:^{
+        // make sure to retain the reauthenticator until end of auth flow and
+        // then break any possible retain cycle
+        reauthenticator = nil;
+        NYPLLOG(@"Re-loading from RemoteVC because authentication expired");
+        [self load];
+      }];
+
+      if (authenticating) {
         return;
       }
 
@@ -244,7 +253,7 @@
   
   self.activityIndicatorLabel = [[UILabel alloc] init];
   self.activityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
-  self.activityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
+  self.activityIndicatorLabel.text = NSLocalizedString(@"Loading... Please wait.", @"Message explaining that the download is still going");
   self.activityIndicatorLabel.hidden = YES;
   [self.view addSubview:self.activityIndicatorLabel];
   [self.activityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.activityIndicatorView];
