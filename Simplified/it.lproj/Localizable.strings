@@ -102,7 +102,6 @@
 "BookDetailViewControllerDownloadSuccessfulTitle" = "Il tuo libro è pronto da leggere!";
 "BookDetailViewControllerAvailableToBorrowTitle" = "Questo libro si può prendere in prestito";
 "BookDetailViewControllerCanHoldTitle" = "Tutte le licenze di questo libro sono attualmente assegnate.";
-"BookDetailViewControllerCanKeepTitle" = "Questo libro aperto, l'accesso è a disposizione per mantenere.";
 "BookDetailViewControllerHoldingTitleFormat" = "Disponibile per cassa in circa il %@.";
 "BookDetailViewControllerReservedTitleFormat" = "La prenotazione verrà automaticamente cancellata in %@.";
 "BookDetailViewControllerDistributedByFormat" = "Distribuito da: ";

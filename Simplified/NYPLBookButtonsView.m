@@ -154,11 +154,6 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
                               TitleKey: NSLocalizedString(@"Borrow", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Borrows %@", nil), self.book.title]}];
       break;
-    case NYPLBookButtonsStateCanKeep:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                              TitleKey: NSLocalizedString(@"Download", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title]}];
-      break;
     case NYPLBookButtonsStateCanHold:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
                               TitleKey: NSLocalizedString(@"Reserve", nil),

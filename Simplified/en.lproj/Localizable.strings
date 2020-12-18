@@ -105,7 +105,6 @@
 "BookDetailViewControllerDownloadSuccessfulTitle" = "Your book is ready to read!";
 "BookDetailViewControllerAvailableToBorrowTitle" = "This book is available to borrow.";
 "BookDetailViewControllerCanHoldTitle" = "All licenses of this book are currently checked out.";
-"BookDetailViewControllerCanKeepTitle" = "This open-access book is available to keep.";
 "BookDetailViewControllerHoldingTitleFormat" = "Available for checkout in less than %@.";
 "BookDetailViewControllerReservedTitleFormat" = "This reservation will be automatically cancelled in %@.";
 "BookDetailViewControllerDistributedByFormat" = "Distributed by: ";
