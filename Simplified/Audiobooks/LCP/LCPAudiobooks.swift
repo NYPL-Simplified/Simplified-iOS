@@ -17,9 +17,6 @@ import NYPLAudiobookToolkit
   private let audiobookUrl: URL
   private let lcpService = LCPLibraryService()
 
-  /// LCP license object for decryption
-  private var lcpLicense: DRMLicense?
-
   /// .lcpa archive container
   private let container: Container
 
@@ -73,12 +70,16 @@ extension LCPAudiobooks: DRMDecryptor {
   ///   - resultUrl: URL to save decrypted file at.
   ///   - completion: decryptor callback with optional `Error`.
   func decrypt(url: URL, to resultUrl: URL, completion: @escaping (Error?) -> Void) {
-    loadLicense { error in
+    loadLicense { [weak self] license, error in
+      guard let self = self else {
+        completion(nil)
+        return
+      }
       if let error = error {
         completion(error)
         return
       }
-      guard let license = self.lcpLicense else {
+      guard let license = license else {
         completion(nil)
         return
       }
@@ -96,23 +97,15 @@ extension LCPAudiobooks: DRMDecryptor {
   
   /// Load `DRMLicense` license for audiobook once
   /// - Parameter completion: `LCPError`, if any
-  private func loadLicense(completion: @escaping (_ error: Error?) -> Void) {
-    // If the license has already been loaded, just call back
-    if self.lcpLicense != nil {
-      completion(nil)
-      return
-    }
-    // Load publication to get license
-    let drm = DRM(brand: .lcp)
-    lcpService.loadPublication(at: audiobookUrl, drm: drm) { result in
+  private func loadLicense(completion: @escaping (_ license: DRMLicense?, _ error: Error?) -> Void) {
+    lcpService.loadPublication(at: audiobookUrl, drm: DRM(brand: .lcp)) { result in
       switch result {
-      case .success(let updatedDrm):
-        self.lcpLicense = updatedDrm?.license
-        completion(nil)
+      case .success(let drm):
+        completion(drm?.license, nil)
       case .failure(let error):
-        completion(error)
+        completion(nil, error)
       case .cancelled:
-        completion(nil)
+        completion(nil, nil)
       }
     }
   }
