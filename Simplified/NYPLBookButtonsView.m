@@ -32,7 +32,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
      state = NYPLBookButtonsStateCanBorrow;
    }
    unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
-     state = NYPLBookButtonsStateCanKeep;
+     state = NYPLBookButtonsStateCanBorrow;
    }
    reserved:^(__unused NYPLOPDSAcquisitionAvailabilityReserved *_Nonnull reserved) {
      state = NYPLBookButtonsStateHolding;
