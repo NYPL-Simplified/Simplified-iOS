@@ -51,7 +51,7 @@
     style = UIAlertControllerStyleAlert;
   }
 
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:style];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Find Your Library", nil) message:nil preferredStyle:style];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
 
@@ -74,8 +74,8 @@
 
       if (workflowsInProgress) {
         [self presentViewController:[NYPLAlertUtils
-                                     alertWithTitle:@"PleaseWait"
-                                     message:@"PleaseWaitMessage"]
+                                     alertWithTitle:@"Please Wait"
+                                     message:@"Please wait a moment before switching library accounts."]
                            animated:YES
                          completion:nil];
       } else {
@@ -85,7 +85,7 @@
     }]];
   }
 
-  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ManageAccounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Manage Accounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
     NSUInteger tabCount = [[[NYPLRootTabBarController sharedController] viewControllers] count];
     UISplitViewController *splitViewVC = [[[NYPLRootTabBarController sharedController] viewControllers] lastObject];
     UINavigationController *masterNavVC = [[splitViewVC viewControllers] firstObject];

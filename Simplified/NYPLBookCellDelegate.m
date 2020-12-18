@@ -1,7 +1,9 @@
 @import MediaPlayer;
 @import NYPLAudiobookToolkit;
 @import PDFRendererProvider;
+#if FEATURE_OVERDRIVE
 @import OverdriveProcessor;
+#endif
 
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBook.h"
@@ -84,7 +86,7 @@
     if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID]
                                            withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) &&
         ([[NYPLUserAccount sharedAccount] hasCredentials])) {
-      [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
+      [NYPLAccountSignInViewController authorizeUsingExistingCredentialsWithCompletionHandler:^{
         [self openBook:book];   // with successful DRM activation
       }];
     } else {
@@ -388,11 +390,13 @@
     
   [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:self.book.identifier];
 
+#if FEATURE_OVERDRIVE
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateODAudiobookManifest) name:NYPLMyBooksDownloadCenterDidChangeNotification object:nil];
-    
+#endif
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
 }
 
+#if FEATURE_OVERDRIVE
 - (void)updateODAudiobookManifest {
   if ([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier] == NYPLBookStateDownloadSuccessful) {
     OverdriveAudiobook *odAudiobook = (OverdriveAudiobook *)self.manager.audiobook;
@@ -420,5 +424,6 @@
     [self.refreshAudiobookLock unlock];
   }
 }
+#endif
 
 @end

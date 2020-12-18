@@ -18,10 +18,11 @@ class NYPLBookRegistryMock: NSObject, NYPLBookRegistrySyncing, NYPLBookRegistryP
   }
 
   func syncResettingCache(_ resetCache: Bool,
-                          completionHandler: ((_ success: Bool) -> Void)?) {
+                          completionHandler: (([AnyHashable : Any]?) -> Void)?) {
     syncing = true
     DispatchQueue.global(qos: .background).async {
       self.syncing = false
+      completionHandler?(nil)
     }
   }
 

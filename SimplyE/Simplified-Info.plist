@@ -47,12 +47,19 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>lyrtech.org</key>
+			<key>minio.se-community-lcp-test.lyrtech.org</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 				<key>NSIncludesSubdomains</key>
+				<false/>
+			</dict>
+			<key>cm.se-community-lcp-test.lyrtech.org</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
+				<key>NSIncludesSubdomains</key>
+				<false/>
 			</dict>
 		</dict>
 	</dict>

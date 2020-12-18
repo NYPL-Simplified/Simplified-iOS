@@ -71,8 +71,8 @@ import Foundation
   {
     DispatchQueue.main.async {
       let alertCont = UIAlertController.init(
-        title: NSLocalizedString("WelcomeScreenAgeVerifyTitle", comment: "An alert title indicating the user needs to verify their age"),
-        message: NSLocalizedString("WelcomeScreenAgeVerifyMessage", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"),
+        title: NSLocalizedString("Age Verification", comment: "An alert title indicating the user needs to verify their age"),
+        message: NSLocalizedString("You must be 13 years of age or older to download some of the books from this collection. How old are you?", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"),
         preferredStyle: .alert
       )
       alertCont.addAction(UIAlertAction.init(title: NSLocalizedString("Under 13", comment:"A button title indicating an under-age range"), style: .default, handler: { _ in

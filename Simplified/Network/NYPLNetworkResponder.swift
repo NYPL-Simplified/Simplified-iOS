@@ -164,7 +164,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
 
     // no problem document nor error, but response could still be a failure
     if let httpResponse = task.response as? HTTPURLResponse {
-      guard !httpResponse.isFailure() else {
+      guard httpResponse.isSuccess() else {
         logMetadata["response"] = httpResponse
         logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("UnknownRequestError", comment: "A generic error message for when a network request fails")
         let err = NSError(domain: "Api call with failure HTTP status",

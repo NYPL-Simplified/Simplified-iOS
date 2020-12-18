@@ -38,15 +38,15 @@ import PureLayout
   
   func setupViews() {
     let view1 = splashScreenView("SplashPickLibraryIcon",
-                                 headline: NSLocalizedString("WelcomeScreenTitle1", comment: "Title to tell users they can read books from a library they already have a card for."),
-                                 subheadline: NSLocalizedString("WelcomeScreenSubtitle1", comment: "Informs a user of the features of being able to check out a book in the app and even use more than one mobile device"),
-                                 buttonTitle: NSLocalizedString("WelcomeScreenButtonTitle1", comment: "Button that lets user know they can select a library they have a card for"),
+                                 headline: NSLocalizedString("Read E-Books from Your Library", comment: "Title to tell users they can read books from a library they already have a card for."),
+                                 subheadline: NSLocalizedString("Simply browse, borrow, and read free e-books from your local library.", comment: "Informs a user of the features of being able to check out a book in the app and even use more than one mobile device"),
+                                 buttonTitle: NSLocalizedString("Find Your Library", comment: "Button that lets user know they can select a library they have a card for"),
                                  buttonTargetSelector: #selector(pickYourLibraryTapped))
     
     let view2 = splashScreenView("SplashInstantClassicsIcon",
-                                 headline: NSLocalizedString("WelcomeScreenTitle2", comment: "Title to show a user an option if they do not have a library card to check out books."),
+                                 headline: NSLocalizedString("The SimplyE Collection", comment: "Title to show a user an option if they do not have a library card to check out books."),
                                  subheadline: nil,
-                                 buttonTitle: NSLocalizedString("WelcomeScreenButtonTitle2", comment: "Name of section for free books means books that are well-known popular novels for many people."),
+                                 buttonTitle: NSLocalizedString("Add a Library Later", comment: "Name of section for free books means books that are well-known popular novels for many people."),
                                  buttonTargetSelector: #selector(instantClassicsTapped))
     
     let logoView = UIImageView(image: UIImage(named: "LaunchImageLogo"))
@@ -145,7 +145,7 @@ import PureLayout
   }
   
   func showLoadingFailureAlert() {
-    let alert = NYPLAlertUtils.alert(title:nil, message:"LibraryLoadError", style: .cancel)
+    let alert = NYPLAlertUtils.alert(title:nil, message:"We can’t get your library right now. Please close and reopen the app to try again.", style: .cancel)
     present(alert, animated: true, completion: nil)
   }
   
@@ -312,7 +312,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     self.nyplAccounts = self.accounts.filter { AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
     self.accounts = self.accounts.filter { !AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
 
-    self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
+    self.title = NSLocalizedString("Pick Your Library", comment: "Title that also informs the user that they should choose a library from the list.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
   }
   

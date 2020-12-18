@@ -94,7 +94,7 @@
   
   self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   self.instructionsLabel.hidden = YES;
-  self.instructionsLabel.text = NSLocalizedString(@"ReservationsGoToCatalog", nil);
+  self.instructionsLabel.text = NSLocalizedString(@"When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.", nil);
   self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
   self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
   self.instructionsLabel.numberOfLines = 0;
@@ -258,7 +258,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     if([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
-      [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO completionHandler:nil];
+      [NYPLAccountSignInViewController requestCredentialsUsingExisting:NO completionHandler:nil];
       [self.refreshControl endRefreshing];
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }

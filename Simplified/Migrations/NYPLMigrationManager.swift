@@ -21,8 +21,17 @@ class NYPLMigrationManager: NSObject {
     NYPLSettings.shared.appVersion = targetVersion
   }
 
-  // Less-than comparator operation
-  static func versionIsLessThan(_ a: [Int], _ b:[Int]) -> Bool {
+  /// Compares app versions.
+  ///
+  /// - Note: An empty `a` version is considered "less than" a non-empty `b`.
+  /// 
+  /// - Parameters:
+  ///   - a: An array of integers expressing a version number.
+  ///   - b: An array of integers expressing a version number.
+  /// - Returns: `true` if version `a` is anterior to version `b`, or if `a` is
+  /// empty and `b` is not, or if `a` and `b` coincide except `b` has more
+  /// components than `a` (e.g. 1.2 vs 1.2.1).
+  static func version(_ a: [Int], isLessThan b:[Int]) -> Bool {
     var i = 0
     while i < a.count && i < b.count {
       guard a[i] == b[i] else {

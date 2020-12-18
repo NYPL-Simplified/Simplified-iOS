@@ -7,7 +7,9 @@
 //
 
 import Foundation
+#if FEATURE_OVERDRIVE
 import OverdriveProcessor
+#endif
 
 extension NYPLBook {
 
@@ -25,6 +27,7 @@ extension NYPLBook {
       return true
     }
 
+    #if FEATURE_OVERDRIVE
     // Overdrive may return a response whose Content-Type doesn't match the
     // one that was promised in this book's OPDS document
     if distributor?.lowercased() == OverdriveDistributorKey.lowercased() {
@@ -40,7 +43,8 @@ extension NYPLBook {
         return true
       }
     }
-
+    #endif
+    
     return false
   }
 }

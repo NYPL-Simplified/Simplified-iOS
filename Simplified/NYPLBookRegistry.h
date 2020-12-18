@@ -17,6 +17,9 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
 
 - (nonnull NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(nonnull NSString *)identifier;
 
+- (void)setLocation:(nullable NYPLBookLocation *)location
+      forIdentifier:(nonnull NSString *)identifier;
+
 - (nullable NYPLBookLocation *)locationForIdentifier:(nonnull NSString *)identifier;
 
 - (void)addReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
@@ -73,12 +76,14 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
  @param handler Completion Handler is on main thread, but not gauranteed to be called.
  */
 - (void)syncResettingCache:(BOOL)shouldResetCache
-         completionHandler:(void (^ _Nullable)(BOOL success))handler;
+         completionHandler:(void (^ _Nullable)(NSDictionary * _Nullable errorDict))handler;
 
 /**
  Syncs the latest loans content from the server. Attempting to sync while one is
  already in progress will be ignored. Resetting the registry while a sync is in
  progress will cause the handler not to be called.
+
+ Errors are logged via NYPLErrorLogger.
 
  @param shouldResetCache Whether we should wipe the whole cache of
  loans/holds/book details/open search/ungrouped feeds in its entirety or not.
@@ -89,7 +94,7 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
  block should be balanced with calls to the method.
  */
 - (void)syncResettingCache:(BOOL)shouldResetCache
-         completionHandler:(void (^ _Nullable)(BOOL success))handler
+         completionHandler:(void (^ _Nullable)(NSDictionary * _Nullable errorDict))handler
     backgroundFetchHandler:(void (^ _Nullable)(UIBackgroundFetchResult))fetchHandler;
 
 /**
