@@ -185,12 +185,14 @@
   
   id<DRMDecryptor> audiobookDrmDecryptor = nil;
 
+#if defined(LCP)
   if ([LCPAudiobooks canOpenBook:book]) {
     LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:url];
     dict = [[lcpAudiobooks contentDictionary] mutableCopy];
     dict[@"id"] = book.identifier;
     audiobookDrmDecryptor = lcpAudiobooks;
   }
+#endif
   
   [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
