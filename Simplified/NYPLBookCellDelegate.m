@@ -178,10 +178,12 @@
     
   NSMutableDictionary *dict = nil;
     
+#if FEATURE_OVERDRIVE
   if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
     dict = [(NSMutableDictionary *)json mutableCopy];
     dict[@"id"] = book.identifier;
   }
+#endif
   
   id<DRMDecryptor> audiobookDrmDecryptor = nil;
 
