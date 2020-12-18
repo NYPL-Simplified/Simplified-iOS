@@ -555,15 +555,19 @@ didCompleteWithError:(NSError *)error
       if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
         dict = [(NSMutableDictionary *)json mutableCopy];
         dict[@"id"] = book.identifier;
-      } else if ([LCPAudiobooks canOpenBook:book]) {
+      }
+#endif
+
+#if defined(LCP)
+      if ([LCPAudiobooks canOpenBook:book]) {
         LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:bookURL];
         dict = [[lcpAudiobooks contentDictionary] mutableCopy];
         dict[@"id"] = book.identifier;
       }
 #endif
-
       [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
       
+#if defined(LCP)
       if ([LCPAudiobooks canOpenBook:book]) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:bookURL.path]) {
           NSError *error = nil;
@@ -576,7 +580,7 @@ didCompleteWithError:(NSError *)error
           }
         }
       }
-      
+#endif
       break;
     }
     case NYPLBookContentTypePDF: {
@@ -701,10 +705,11 @@ didCompleteWithError:(NSError *)error
 /// @param book `NYPLBook` book
 - (NSString *)pathExtensionForBook:(NYPLBook *)book
 {
+#if defined(LCP)
   if ([LCPAudiobooks canOpenBook:book]) {
     return @"lcpa";
   }
-  
+#endif
   // FIXME: The extension is always "epub" even when the URL refers to content of a different
   // type (e.g. an audiobook). While there's no reason this must change, it's certainly likely
   // to cause confusion for anyone looking at the filesystem.
