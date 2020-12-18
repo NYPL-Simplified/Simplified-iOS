@@ -1,9 +1,8 @@
-name: Upload to iOS-binaries
+name: Upload SimplyE to iOS-binaries
 on:
   push:
     branches:
       - develop
-      - support/SIMPLY-3361/iosbinaries
 jobs:
   archive-and-upload:
     runs-on: macOS-latest
@@ -37,9 +36,10 @@ jobs:
         env:
           IOS_DISTR_IDENTITY_PASSPHRASE: ${{ secrets.IOS_DISTR_IDENTITY_PASSPHRASE }}
           IOS_DISTR_IDENTITY_BASE64: ${{ secrets.IOS_DISTR_IDENTITY }}
-          SE_PROV_PROFILE_ADHOC_BASE64: ${{ secrets.SE_PROV_PROFILE_ADHOC }}
-          OE_PROV_PROFILE_ADHOC_BASE64: ${{ secrets.OE_PROV_PROFILE_ADHOC }}
-        run: ./scripts/decode-install-secrets.sh
+          FASTLANE_USER: ${{ secrets.APPLEID_USERNAME }}
+          FASTLANE_PASSWORD: ${{ secrets.APPLEID_PASSWORD }}
+          FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
+        run: ./scripts/decode-install-secrets.sh simplye
       - name: Fetch AudioEngine
         run: ./NYPLAEToolkit/scripts/fetch-audioengine.sh
       - name: Set up repo for DRM build
@@ -57,7 +57,16 @@ jobs:
           platform: iOS
           cache: false
           verbose: true
-      - name: Archive and Upload SimplyE to iOS-binaries
-        run: ./scripts/archive-and-upload-adhoc.sh simplye
+      - name: Archive SimplyE
+        run: ./scripts/xcode-archive.sh simplye
         env:
           BUILD_CONTEXT: ci
+      - name: Export SimplyE
+        run: ./scripts/xcode-export-adhoc.sh simplye
+        env:
+          BUILD_CONTEXT: ci
+      - name: Upload SimplyE to iOS-binaries
+        run: ./scripts/ios-binaries-upload.sh simplye
+        env:
+          BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}

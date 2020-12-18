@@ -34,7 +34,7 @@ elif [[ -d "NYPL-iOS-binaries" ]]; then
   IOS_BINARIES_DIR_NAME=NYPL-iOS-binaries
 else
   IOS_BINARIES_DIR_NAME=iOS-binaries
-  git clone git@github.com:NYPL-Simplified/iOS-binaries.git
+  git clone https://${GITHUB_TOKEN}@github.com/NYPL-Simplified/iOS-binaries.git
 fi
 
 IOS_BINARIES_DIR_PATH="$PWD/$IOS_BINARIES_DIR_NAME"
@@ -46,14 +46,14 @@ cp "$ADHOC_EXPORT_PATH/$APP_NAME.ipa" "$IOS_BINARIES_DIR_PATH/$IPA_NAME"
 
 cd "$IOS_BINARIES_DIR_PATH"
 git add "$IPA_NAME"
+git status
 
 if [ "$BUILD_CONTEXT" == "ci" ]; then
-  git config --global user.email "ci@librarysimplified.org" ||
-    fatal "could not configure git"
-  git config --global user.name "Library Simplified CI" ||
-    fatal "could not configure git"
+  git config --global user.email "ci@librarysimplified.org"
+  git config --global user.name "Library Simplified CI"
 fi
 
-COMMIT_MSG="Add ${BUILD_NAME} build"
-git commit -m "$COMMIT_MSG" || fatal "could not commit ${BUILD_NAME} binary"
-git push --force || fatal "could not push ${BUILD_NAME} binary"
+COMMIT_MSG="Add ${BUILD_NAME} iOS build"
+git commit -m "$COMMIT_MSG"
+echo "Committed."
+git push -f

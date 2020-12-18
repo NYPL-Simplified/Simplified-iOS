@@ -12,3 +12,4 @@ adobe-rmsdk
 Carthage
 **/GoogleService-Info.plist
 **/NYPLSecrets.swift
+fastlane/report.xml
