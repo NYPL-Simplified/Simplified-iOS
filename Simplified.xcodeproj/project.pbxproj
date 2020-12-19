@@ -1612,6 +1612,8 @@
 		73EB0B802582CD59006BC997 /* bootstrap-drm.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "bootstrap-drm.sh"; sourceTree = "<group>"; };
 		73EB0B812582CD59006BC997 /* setup-repo-drm.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "setup-repo-drm.sh"; sourceTree = "<group>"; };
 		73EB0B822582CD5A006BC997 /* setup-repo-nodrm.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "setup-repo-nodrm.sh"; sourceTree = "<group>"; };
+		73EC88FF258D88E100978955 /* non-drm-build.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "non-drm-build.yml"; sourceTree = "<group>"; };
+		73EC8904258D8A2A00978955 /* xcode-build-nodrm.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-build-nodrm.sh"; sourceTree = "<group>"; };
 		73FB0AC824EB403D0072E430 /* NYPLBookContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLBookContentType.swift; path = Models/NYPLBookContentType.swift; sourceTree = "<group>"; };
 		73FCA3A425005BA4001B0C5D /* Open eBooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open eBooks.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsEULAViewController.h; sourceTree = "<group>"; };
@@ -2182,6 +2184,7 @@
 			isa = PBXGroup;
 			children = (
 				7300D469258829E1002256A3 /* unit-testing.yml */,
+				73EC88FF258D88E100978955 /* non-drm-build.yml */,
 			);
 			path = workflows;
 			sourceTree = "<group>";
@@ -2463,6 +2466,7 @@
 				733E3E07257ED49C00BEBA32 /* xcode-archive.sh */,
 				733E3E09257ED49D00BEBA32 /* xcode-export-adhoc.sh */,
 				7358A951258997A900E66D34 /* xcode-test.sh */,
+				73EC8904258D8A2A00978955 /* xcode-build-nodrm.sh */,
 				733E3E05257ED49C00BEBA32 /* xcode-settings.sh */,
 				733E3E06257ED49C00BEBA32 /* ios-binaries-upload.sh */,
 				73EB0B802582CD59006BC997 /* bootstrap-drm.sh */,
