@@ -1,0 +1,63 @@
+name: Upload to iOS-binaries
+on:
+  push:
+    branches:
+      - develop
+      - support/SIMPLY-3361/iosbinaries
+jobs:
+  archive-and-upload:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout main repo and submodules
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: true
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Checkout Adobe RMSDK
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: NYPL-Simplified/DRM-iOS-AdeptConnector
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          path: ./DRM-iOS-AdeptConnector
+      - name: Checkout Certificates
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: NYPL-Simplified/Certificates
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          path: ./Certificates
+      - name: Checkout NYPLAEToolkit
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: NYPL-Simplified/NYPLAEToolkit
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          path: ./NYPLAEToolkit
+      - name: Force Xcode 11.5
+        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Setup iOS Distribution Details
+        env:
+          IOS_DISTR_IDENTITY_PASSPHRASE: ${{ secrets.IOS_DISTR_IDENTITY_PASSPHRASE }}
+          IOS_DISTR_IDENTITY_BASE64: ${{ secrets.IOS_DISTR_IDENTITY }}
+          SE_PROV_PROFILE_ADHOC_BASE64: ${{ secrets.SE_PROV_PROFILE_ADHOC }}
+          OE_PROV_PROFILE_ADHOC_BASE64: ${{ secrets.OE_PROV_PROFILE_ADHOC }}
+        run: ./scripts/decode-install-secrets.sh
+      - name: Fetch AudioEngine
+        run: ./NYPLAEToolkit/scripts/fetch-audioengine.sh
+      - name: Set up repo for DRM build
+        run: exec ./scripts/setup-repo-drm.sh
+        env:
+          BUILD_CONTEXT: ci
+      - name: Build non-Carthage 3rd party dependencies
+        run: ./scripts/build-3rd-party-dependencies.sh
+        env:
+          BUILD_CONTEXT: ci
+      - name: Carthage Bootstrap
+        uses: devbotsxyz/carthage-bootstrap@v1
+        with:
+          github-token: ${{ secrets.IOS_DEV_CI_PAT }}
+          platform: iOS
+          cache: false
+          verbose: true
+      - name: Archive and Upload SimplyE to iOS-binaries
+        run: ./scripts/archive-and-upload-adhoc.sh simplye
+        env:
+          BUILD_CONTEXT: ci
