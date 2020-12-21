@@ -541,46 +541,7 @@ didCompleteWithError:(NSError *)error
       break;
     }
     case NYPLBookContentTypeAudiobook: {
-      NSData *const data = [NSData dataWithContentsOfURL:bookURL];
-      
-      if (!data) {
-        break;
-      }
-      id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:
-                                              [self fileURLForBookIndentifier:book.identifier account:account]]);
-        
-      NSMutableDictionary *dict = nil;
-        
-#if FEATURE_OVERDRIVE
-      if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
-        dict = [(NSMutableDictionary *)json mutableCopy];
-        dict[@"id"] = book.identifier;
-      }
-#endif
-
-#if defined(LCP)
-      if ([LCPAudiobooks canOpenBook:book]) {
-        LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:bookURL];
-        dict = [[lcpAudiobooks contentDictionary] mutableCopy];
-        dict[@"id"] = book.identifier;
-      }
-#endif
-      [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
-      
-#if defined(LCP)
-      if ([LCPAudiobooks canOpenBook:book]) {
-        if ([[NSFileManager defaultManager] fileExistsAtPath:bookURL.path]) {
-          NSError *error = nil;
-          [[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error];
-          if (error) {
-            [NYPLErrorLogger logError:error
-                              summary:@"Failed to delete LCP audiobook local content"
-                              message:NULL
-                             metadata:@{ @"book": [book loggableShortString] }];
-          }
-        }
-      }
-#endif
+      [self deleteLocalContentForAudiobook:book atURL:bookURL];
       break;
     }
     case NYPLBookContentTypePDF: {
@@ -593,6 +554,52 @@ didCompleteWithError:(NSError *)error
     case NYPLBookContentTypeUnsupported:
       break;
   }
+}
+
+/// Delete downloaded audiobook content
+/// @param book Audiobook
+/// @param bookURL Location of the book
+- (void)deleteLocalContentForAudiobook:(NYPLBook *)book atURL:(NSURL *)bookURL
+{
+  NSData *const data = [NSData dataWithContentsOfURL:bookURL];
+
+  if (!data) {
+    return;
+  }
+  id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:bookURL]);
+  
+  NSMutableDictionary *dict = nil;
+  
+#if FEATURE_OVERDRIVE
+  if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
+    dict = [(NSMutableDictionary *)json mutableCopy];
+    dict[@"id"] = book.identifier;
+  }
+#endif
+  
+#if defined(LCP)
+  if ([LCPAudiobooks canOpenBook:book]) {
+    LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:bookURL];
+    dict = [[lcpAudiobooks contentDictionary] mutableCopy];
+    dict[@"id"] = book.identifier;
+  }
+#endif
+  [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
+  
+#if defined(LCP)
+  if ([LCPAudiobooks canOpenBook:book]) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:bookURL.path]) {
+      NSError *error = nil;
+      [[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error];
+      if (error) {
+        [NYPLErrorLogger logError:error
+                          summary:@"Failed to delete LCP audiobook local content"
+                          message:NULL
+                         metadata:@{ @"book": [book loggableShortString] }];
+      }
+    }
+  }
+#endif
 }
   
 - (void)returnBookWithIdentifier:(NSString *)identifier
