@@ -35,7 +35,7 @@ import NYPLAudiobookToolkit
       }
       self.container = pubBox.associatedContainer
     } catch {
-      NYPLErrorLogger.logError(error, summary: "Error opening audiobook")
+      NYPLErrorLogger.logError(error, summary: "Error opening LCP audiobook")
       return nil
     }
   }
@@ -49,7 +49,7 @@ import NYPLAudiobookToolkit
       let publicationObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
       return publicationObject
     } catch {
-      NYPLErrorLogger.logError(error, summary: "Error reading audiobook \(manifestPath)")
+      NYPLErrorLogger.logError(error, summary: "Error reading LCP audiobook")
       return nil
     }
   }
