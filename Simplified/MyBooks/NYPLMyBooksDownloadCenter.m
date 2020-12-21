@@ -530,42 +530,23 @@ didCompleteWithError:(NSError *)error
     return;
   }
   
+  NSURL *bookURL = [self fileURLForBookIndentifier:identifier account:account];
+  
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB: {
       NSError *error = nil;
-      if(![[NSFileManager defaultManager]
-           removeItemAtURL:[self fileURLForBookIndentifier:identifier account:account]
-           error:&error]){
+      if(![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]){
         NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
       }
       break;
     }
     case NYPLBookContentTypeAudiobook: {
-      NSData *const data = [NSData dataWithContentsOfURL:
-                            [self fileURLForBookIndentifier:book.identifier account:account]];
-      if (!data) {
-        break;
-      }
-      id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:
-                                              [self fileURLForBookIndentifier:book.identifier account:account]]);
-        
-      NSMutableDictionary *dict = nil;
-        
-#if FEATURE_OVERDRIVE
-      if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
-        dict = [(NSMutableDictionary *)json mutableCopy];
-        dict[@"id"] = book.identifier;
-      }
-#endif
-
-      [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
+      [self deleteLocalContentForAudiobook:book atURL:bookURL];
       break;
     }
     case NYPLBookContentTypePDF: {
       NSError *error = nil;
-      if (![[NSFileManager defaultManager]
-          removeItemAtURL:[self fileURLForBookIndentifier:identifier account:account]
-          error:&error]) {
+      if (![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]) {
         NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
       }
       break;
@@ -573,6 +554,52 @@ didCompleteWithError:(NSError *)error
     case NYPLBookContentTypeUnsupported:
       break;
   }
+}
+
+/// Delete downloaded audiobook content
+/// @param book Audiobook
+/// @param bookURL Location of the book
+- (void)deleteLocalContentForAudiobook:(NYPLBook *)book atURL:(NSURL *)bookURL
+{
+  NSData *const data = [NSData dataWithContentsOfURL:bookURL];
+
+  if (!data) {
+    return;
+  }
+  id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:bookURL]);
+  
+  NSMutableDictionary *dict = nil;
+  
+#if FEATURE_OVERDRIVE
+  if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
+    dict = [(NSMutableDictionary *)json mutableCopy];
+    dict[@"id"] = book.identifier;
+  }
+#endif
+  
+#if defined(LCP)
+  if ([LCPAudiobooks canOpenBook:book]) {
+    LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:bookURL];
+    dict = [[lcpAudiobooks contentDictionary] mutableCopy];
+    dict[@"id"] = book.identifier;
+  }
+#endif
+  [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
+  
+#if defined(LCP)
+  if ([LCPAudiobooks canOpenBook:book]) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:bookURL.path]) {
+      NSError *error = nil;
+      [[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error];
+      if (error) {
+        [NYPLErrorLogger logError:error
+                          summary:@"Failed to delete LCP audiobook local content"
+                          message:NULL
+                         metadata:@{ @"book": [book loggableShortString] }];
+      }
+    }
+  }
+#endif
 }
   
 - (void)returnBookWithIdentifier:(NSString *)identifier
@@ -681,6 +708,21 @@ didCompleteWithError:(NSError *)error
   return directoryURL;
 }
 
+/// Path extension depending on book type
+/// @param book `NYPLBook` book
+- (NSString *)pathExtensionForBook:(NYPLBook *)book
+{
+#if defined(LCP)
+  if ([LCPAudiobooks canOpenBook:book]) {
+    return @"lcpa";
+  }
+#endif
+  // FIXME: The extension is always "epub" even when the URL refers to content of a different
+  // type (e.g. an audiobook). While there's no reason this must change, it's certainly likely
+  // to cause confusion for anyone looking at the filesystem.
+  return @"epub";
+}
+
 - (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
 {
   return [self fileURLForBookIndentifier:identifier account:[AccountsManager sharedInstance].currentAccount.uuid];
@@ -689,12 +731,10 @@ didCompleteWithError:(NSError *)error
 - (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier account:(NSString * const)account
 {
   if(!identifier) return nil;
-  
-  // FIXME: The extension is always "epub" even when the URL refers to content of a different
-  // type (e.g. an audiobook). While there's no reason this must change, it's certainly likely
-  // to cause confusion for anyone looking at the filesystem.
+  NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
+  NSString *pathExtension = [self pathExtensionForBook:book];
   return [[[self contentDirectoryURL:account] URLByAppendingPathComponent:[identifier SHA256]]
-          URLByAppendingPathExtension:@"epub"];
+          URLByAppendingPathExtension:pathExtension];
 }
 
 - (void)logBookDownloadFailure:(NYPLBook *)book

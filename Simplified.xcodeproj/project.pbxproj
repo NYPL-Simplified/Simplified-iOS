@@ -143,6 +143,8 @@
 		17DFC5F8251E8644003A19CC /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		211A7D4A255AD9F500687940 /* LCPLicenseInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A7D49255AD9F500687940 /* LCPLicenseInfo.swift */; };
 		211A7D4B255AD9F500687940 /* LCPLicenseInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A7D49255AD9F500687940 /* LCPLicenseInfo.swift */; };
+		212B99D7258A36FD00C8BF79 /* LCPAudiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */; };
+		212B99D8258A36FD00C8BF79 /* LCPAudiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */; };
 		2146872B2559A64B007B401A /* LCPAuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171ADA1251E38150003CABA /* LCPAuthenticationViewController.swift */; };
 		2146872C2559A64B007B401A /* LCPAuthenticationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2171ADA2251E38150003CABA /* LCPAuthenticationViewController.xib */; };
 		2146872D2559A64B007B401A /* LCPLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171ADA0251E38140003CABA /* LCPLibraryService.swift */; };
@@ -1845,6 +1847,7 @@
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OverdriveProcessor.framework; path = Carthage/Build/iOS/OverdriveProcessor.framework; sourceTree = "<group>"; };
 		211A7D49255AD9F500687940 /* LCPLicenseInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCPLicenseInfo.swift; sourceTree = "<group>"; };
+		212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LCPAudiobooks.swift; sourceTree = "<group>"; };
 		2171ADA0251E38140003CABA /* LCPLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LCPLibraryService.swift; sourceTree = "<group>"; };
 		2171ADA1251E38150003CABA /* LCPAuthenticationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LCPAuthenticationViewController.swift; sourceTree = "<group>"; };
 		2171ADA2251E38150003CABA /* LCPAuthenticationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LCPAuthenticationViewController.xib; sourceTree = "<group>"; };
@@ -2663,6 +2666,14 @@
 			path = LCP;
 			sourceTree = "<group>";
 		};
+		218D0CF925715EF700E81705 /* LCP */ = {
+			isa = PBXGroup;
+			children = (
+				212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */,
+			);
+			path = LCP;
+			sourceTree = "<group>";
+		};
 		219901F224FD2DBE001BC727 /* JWK */ = {
 			isa = PBXGroup;
 			children = (
@@ -2676,6 +2687,7 @@
 		21E7E07424FEA7C100189224 /* Audiobooks */ = {
 			isa = PBXGroup;
 			children = (
+				218D0CF925715EF700E81705 /* LCP */,
 				21E7E07924FEA7D700189224 /* DPLA */,
 				A92FB0F821CDCE3D004740F4 /* NYPLReturnPromptHelper.swift */,
 				21EC1B8E2501538600A12384 /* AudioBookVendors+Extensions.swift */,
@@ -4725,6 +4737,7 @@
 				73CE0C6E2519806900BC4DFE /* NYPLLibraryNavigationController.m in Sources */,
 				739E60EF244A0D8600D00301 /* NYPLCatalogFacet.m in Sources */,
 				7342701E24DCB23000A4F605 /* NSError+NYPLAdditions.swift in Sources */,
+				212B99D8258A36FD00C8BF79 /* LCPAudiobooks.swift in Sources */,
 				739E60F0244A0D8600D00301 /* NYPLAccountSignInViewController.m in Sources */,
 				739E60F1244A0D8600D00301 /* NYPLUserProfileDocument.swift in Sources */,
 				739E60F2244A0D8600D00301 /* AccountsManager.swift in Sources */,
@@ -5399,6 +5412,7 @@
 				089E430C24A2459100310360 /* NYPLLoginCellTypes.swift in Sources */,
 				2146872B2559A64B007B401A /* LCPAuthenticationViewController.swift in Sources */,
 				1158812E1A894F4E008672C3 /* NYPLAccountSignInViewController.m in Sources */,
+				212B99D7258A36FD00C8BF79 /* LCPAudiobooks.swift in Sources */,
 				5D3A28CC22D3DA850042B3BD /* NYPLUserProfileDocument.swift in Sources */,
 				03F94CD11DD6288C00CE8F4F /* AccountsManager.swift in Sources */,
 				52592BB821220A1100587288 /* NYPLLocalization.m in Sources */,
@@ -5793,6 +5807,7 @@
 					"FEATURE_DRM_CONNECTOR=1",
 					"FEATURE_CRASH_REPORTING=1",
 					"FEATURE_OVERDRIVE=1",
+					"LCP=1",
 				);
 				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
