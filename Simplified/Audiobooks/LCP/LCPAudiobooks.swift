@@ -78,6 +78,7 @@ extension LCPAudiobooks: DRMDecryptor {
         return
       }
       if let error = error {
+        NYPLErrorLogger.logError(error, summary: "Error loading license for LCP audiobook")
         completion(error)
         return
       }
@@ -91,6 +92,7 @@ extension LCPAudiobooks: DRMDecryptor {
         try data?.write(to: resultUrl, options: .atomic)
         completion(nil)
       } catch {
+        NYPLErrorLogger.logError(error, summary: "Error decrypting LCP audio file \(url)")
         completion(error)
         return
       }
