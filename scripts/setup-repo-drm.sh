@@ -11,7 +11,11 @@
 #     ./scripts/setup-repo-drm.sh
 #
 
-echo "Setting up repo for building with DRM support for [$BUILD_CONTEXT]..."
+if [ "$BUILD_CONTEXT" == "" ]; then
+  echo "Setting up repo for building with DRM support..."
+else
+  echo "Setting up repo for building with DRM support for [$BUILD_CONTEXT]..."
+fi
 
 git submodule update --init --recursive
 

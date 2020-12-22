@@ -1,25 +1,29 @@
 #!/bin/bash
 
 # SUMMARY
-# Configures common environment variables for building Simplified apps.
+#   Configures common environment variables for building Simplified apps.
 #
 # USAGE
-# Source this script from other scripts (e.g. xcode-archive.sh)
+#   Source this script from other scripts (e.g. xcode-archive.sh)
 #
-# in xcode-archive.sh:
-#   source "path/to/xcode-settings.sh"
-#   ...
+#   in xcode-archive.sh:
+#     source "path/to/xcode-settings.sh"
+#     ...
 #
-# invocation:
-#   xcode-archive.sh SimplyE
+#   invocation:
+#     xcode-archive.sh <app_name>
 #
-# The assumption here is that the app name (visible to the end-user) coincides
-# with the Xcode target and scheme names.
+#   The assumption here is that the app name (visible to the end-user)
+#   coincides with the Xcode target and scheme names.
+#
+# PARAMETERS
+#     <app_name> : Which app to build. Mandatory. Possible values:
+#         [ simplye | SE | openebooks | OE ]
 
 set -eo pipefail
 
 case $1 in
-  --SE | SE | SimplyE | simplye | "")
+  --SE | SE | SimplyE | simplye)
     APP_NAME=SimplyE
     APP_NAME_FOLDER=SimplyE
     ;;
@@ -38,6 +42,7 @@ BUILD_PATH='./Build'
 PROJECT_NAME=Simplified.xcodeproj
 TARGET_NAME=$APP_NAME
 SCHEME=$APP_NAME
+PROV_PROFILES_DIR_PATH="$HOME/Library/MobileDevice/Provisioning Profiles"
 
 # app agnostic build settings
 BUILD_SETTINGS="`xcodebuild -project $PROJECT_NAME -showBuildSettings -target \"$TARGET_NAME\"`"

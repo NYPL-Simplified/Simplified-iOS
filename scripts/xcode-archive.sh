@@ -4,7 +4,10 @@
 #   Creates an archive for SimplyE or Open eBooks
 #
 # SYNOPSIS
-#   xcode-archive.sh [ simplye | SE | openebooks | OE ]
+#   xcode-archive.sh <app_name>
+#
+# PARAMETERS
+#   See xcode-settings.sh for possible parameters.
 #
 # USAGE
 #   Run this script from the root of Simplified-iOS repo, e.g.:
@@ -30,4 +33,5 @@ xcodebuild -project $PROJECT_NAME \
            -sdk iphoneos \
            -configuration Release \
            -archivePath $ARCHIVE_PATH \
-           clean archive
+           clean archive | \
+           if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi

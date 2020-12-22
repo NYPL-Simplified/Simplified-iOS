@@ -4,7 +4,10 @@
 #   Exports an archive for SimplyE / Open eBooks and generates the related ipa.
 #
 # SYNOPSIS
-#   xcode-export-adhoc.sh [ simplye | SE | openebooks | OE ]
+#   xcode-export-adhoc.sh <app_name>
+#
+# PARAMETERS
+#   See xcode-settings.sh for possible parameters.
 #
 # USAGE
 #   Run this script from the root of Simplified-iOS repo, e.g.:
@@ -25,4 +28,5 @@ xcodebuild -archivePath "$ARCHIVE_PATH.xcarchive" \
             -exportOptionsPlist "$APP_NAME_FOLDER/exportOptions-adhoc.plist" \
             -exportPath "$ADHOC_EXPORT_PATH" \
             -allowProvisioningUpdates \
-            -exportArchive #| xcpretty
+            -exportArchive | \
+            if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi

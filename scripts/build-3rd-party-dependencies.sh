@@ -33,7 +33,7 @@ esac
 
 (cd readium-sdk; sh MakeHeaders.sh Apple)
 
-if [ "$BUILD_CONTEXT" != "ci" ]; then
+if [ "$BUILD_CONTEXT" != "ci" ] || [ "$1" == "--no-private" ]; then
   # rebuild all Carthage dependencies from scratch
   ./scripts/build-carthage.sh $1
 fi

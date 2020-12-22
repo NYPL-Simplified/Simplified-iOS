@@ -1,5 +1,6 @@
 name: Unit Tests
-on: pull_request
+on:
+  pull_request:
 jobs:
   build-and-test:
     runs-on: macOS-latest
@@ -31,12 +32,12 @@ jobs:
         run: sudo xcode-select -switch /Applications/Xcode_11.5.app
       - name: Fetch AudioEngine
         run: ./NYPLAEToolkit/scripts/fetch-audioengine.sh
-      - name: Build non-Carthage 3rd party dependencies
-        run: ./scripts/build-3rd-party-dependencies.sh ./NYPLAEToolkit/SimplyE/iOS/APIKeys.json
-        env:
-          BUILD_CONTEXT: ci
       - name: Set up repo for DRM build
         run: exec ./scripts/setup-repo-drm.sh
+        env:
+          BUILD_CONTEXT: ci
+      - name: Build non-Carthage 3rd party dependencies
+        run: ./scripts/build-3rd-party-dependencies.sh
         env:
           BUILD_CONTEXT: ci
       - name: Carthage Bootstrap
