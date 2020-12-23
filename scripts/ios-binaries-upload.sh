@@ -49,7 +49,7 @@ git add "$IPA_NAME"
 git status
 
 if [ "$BUILD_CONTEXT" == "ci" ]; then
-  git config --global user.email "ci@librarysimplified.org"
+  git config --global user.email "librarysimplifiedci@nypl.org"
   git config --global user.name "Library Simplified CI"
 fi
 
