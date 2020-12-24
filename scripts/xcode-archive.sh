@@ -27,6 +27,9 @@ echo "Build will be available at $ARCHIVE_PATH"
 # prepare
 mkdir -p $BUILD_PATH
 
+echo "Valid identities in keychain able to satisfy code signing policy:"
+security find-identity -p codesigning -v
+
 # build
 xcodebuild -project $PROJECT_NAME \
            -scheme $SCHEME \

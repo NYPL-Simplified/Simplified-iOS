@@ -22,12 +22,13 @@
 
 set -eo pipefail
 
-case $1 in
-  --SE | SE | SimplyE | simplye)
+APPNAME_PARAM=`echo "$1" | tr '[:upper:]' '[:lower:]'`
+case "$APPNAME_PARAM" in
+  se | simplye)
     APP_NAME=SimplyE
     APP_NAME_FOLDER=SimplyE
     ;;
-  --OE | OE | OpenEbooks | Open_eBooks | "Open eBooks" | openebooks | open_ebooks)
+  oe | openebooks | open_ebooks)
     APP_NAME="Open eBooks"
     APP_NAME_FOLDER=OpenEbooks
     ;;

@@ -1586,6 +1586,8 @@
 		739ECB282510207E00691A70 /* NYPLCatalogs+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLCatalogs+OE.swift"; sourceTree = "<group>"; };
 		739ECB2A25102A2B00691A70 /* NYPLCatalogs+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLCatalogs+SE.swift"; sourceTree = "<group>"; };
 		739ECB2D25108EE800691A70 /* NYPLRootTabBarController+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+SE.swift"; sourceTree = "<group>"; };
+		73A1DAD02592AD0F00712B5F /* Appfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
+		73A1DAD12592AD0F00712B5F /* Fastfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; };
 		73A794A525477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+UI.swift"; sourceTree = "<group>"; };
 		73A794BC2548E36100C59CC1 /* NYPLBookCreationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookCreationTests.swift; sourceTree = "<group>"; };
 		73A794C62549095700C59CC1 /* NYPLBookAcquisitionPathEntryMinimal.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NYPLBookAcquisitionPathEntryMinimal.xml; sourceTree = "<group>"; };
@@ -1614,6 +1616,7 @@
 		73EB0B822582CD5A006BC997 /* setup-repo-nodrm.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "setup-repo-nodrm.sh"; sourceTree = "<group>"; };
 		73EC88FF258D88E100978955 /* non-drm-build.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "non-drm-build.yml"; sourceTree = "<group>"; };
 		73EC8904258D8A2A00978955 /* xcode-build-nodrm.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-build-nodrm.sh"; sourceTree = "<group>"; };
+		73EC8927258D905E00978955 /* archive-and-upload.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "archive-and-upload.yml"; sourceTree = "<group>"; };
 		73FB0AC824EB403D0072E430 /* NYPLBookContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLBookContentType.swift; path = Models/NYPLBookContentType.swift; sourceTree = "<group>"; };
 		73FCA3A425005BA4001B0C5D /* Open eBooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open eBooks.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsEULAViewController.h; sourceTree = "<group>"; };
@@ -2185,6 +2188,7 @@
 			children = (
 				7300D469258829E1002256A3 /* unit-testing.yml */,
 				73EC88FF258D88E100978955 /* non-drm-build.yml */,
+				73EC8927258D905E00978955 /* archive-and-upload.yml */,
 			);
 			path = workflows;
 			sourceTree = "<group>";
@@ -2453,6 +2457,15 @@
 			path = Catalog;
 			sourceTree = "<group>";
 		};
+		73A1DACF2592AD0F00712B5F /* fastlane */ = {
+			isa = PBXGroup;
+			children = (
+				73A1DAD02592AD0F00712B5F /* Appfile */,
+				73A1DAD12592AD0F00712B5F /* Fastfile */,
+			);
+			path = fastlane;
+			sourceTree = SOURCE_ROOT;
+		};
 		73CEF8332526FE80006B2820 /* scripts */ = {
 			isa = PBXGroup;
 			children = (
@@ -2719,6 +2732,7 @@
 				73CEF839252706E3006B2820 /* SimplyE */,
 				73CEF83B25270929006B2820 /* OpenEbooks */,
 				7300D467258829E1002256A3 /* .github */,
+				73A1DACF2592AD0F00712B5F /* fastlane */,
 				73CEF8332526FE80006B2820 /* scripts */,
 				17071060242A923400E2648F /* NYPLSecrets.swift */,
 				CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */,
