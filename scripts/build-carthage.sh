@@ -15,6 +15,8 @@
 # NOTE
 #   This script is idempotent so it can be run safely over and over.
 
+set -eo pipefail
+
 if [ "$BUILD_CONTEXT" == "" ]; then
   echo "Building Carthage..."
 else

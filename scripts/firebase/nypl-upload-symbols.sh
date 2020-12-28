@@ -19,6 +19,8 @@
 #       for the build you need to update. Given an archive, typically this is
 #       ~/Library/Developer/Xcode/Archives/<date>/<archive-name>.xcarchive/dSYMs
 
+set -eo pipefail
+
 # lower case of app name param
 APPNAME=`echo "$1" | tr '[:upper:]' '[:lower:]'`
 

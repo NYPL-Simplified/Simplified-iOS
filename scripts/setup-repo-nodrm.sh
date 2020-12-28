@@ -15,6 +15,8 @@
 #      to deinit the adobe repos. This is expected and does not affect the
 #      build process.
 
+set -eo pipefail
+
 echo "Setting up repo for non-DRM build"
 
 git submodule deinit adept-ios && git rm -rf adept-ios

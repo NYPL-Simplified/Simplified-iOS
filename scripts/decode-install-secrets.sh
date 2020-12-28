@@ -92,7 +92,7 @@ echo "Completed setting search list to build.keychain"
 # security list-keychains -s "$KEYCHAIN_PATH"
 # security default-keychain -s "$KEYCHAIN_PATH"
 
-# enable keychain so that we can use it to codesign our builds
+# enable keychain so that we can use its keys to codesign our builds
 security unlock-keychain -p "$KEYCHAIN_PASSPHRASE" "$KEYCHAIN_PATH"
 echo "Unlocked build keychain to enable codesigning"
 security set-key-partition-list -S apple-tool:,apple: -s \
