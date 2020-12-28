@@ -1,4 +1,4 @@
-name: Upload SimplyE to iOS-binaries
+name: SimplyE Build
 on:
   push:
     branches:
