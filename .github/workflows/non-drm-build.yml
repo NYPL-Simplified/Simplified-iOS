@@ -18,5 +18,7 @@ jobs:
           BUILD_CONTEXT: ci
       - name: Build 3rd party dependencies
         run: ./scripts/build-3rd-party-dependencies.sh --no-private
+        env:
+          BUILD_CONTEXT: ci
       - name: Build SimplyE without DRM support
         run: ./scripts/xcode-build-nodrm.sh

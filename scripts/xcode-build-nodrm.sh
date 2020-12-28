@@ -11,6 +11,8 @@
 #
 #     ./scripts/xcode-build-nodrm.sh
 
+set -eo pipefail
+
 echo "Building SimplyE without DRM support..."
 
 xcodebuild -project Simplified.xcodeproj \

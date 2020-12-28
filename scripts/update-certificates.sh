@@ -6,6 +6,8 @@
 #
 # Note: this script assumes you have the Certificates repo cloned as a sibling of Simplified-iOS.
 
+set -eo pipefail
+
 if [ "$BUILD_CONTEXT" == "" ]; then
   echo "Updating repo with info from Certificates repo..."
 else

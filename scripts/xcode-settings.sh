@@ -22,6 +22,12 @@
 
 set -eo pipefail
 
+fatal()
+{
+  echo "$0 error: $1" 1>&2
+  exit 1
+}
+
 APPNAME_PARAM=`echo "$1" | tr '[:upper:]' '[:lower:]'`
 case "$APPNAME_PARAM" in
   se | simplye)

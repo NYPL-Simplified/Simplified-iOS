@@ -49,5 +49,9 @@ jobs:
           verbose: true
       - name: Run SimplyE tests
         run: ./scripts/xcode-test.sh simplye
+        env:
+          BUILD_CONTEXT: ci
       - name: Run Open eBooks tests
         run: ./scripts/xcode-test.sh openebooks
+        env:
+          BUILD_CONTEXT: ci
