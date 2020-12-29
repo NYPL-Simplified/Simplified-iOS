@@ -19,8 +19,15 @@ set -eo pipefail
 
 echo "Setting up repo for non-DRM build"
 
-git submodule deinit adept-ios && git rm -rf adept-ios
-git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter
+if [[ -d "adept-ios" ]]; then
+  git submodule deinit adept-ios
+  git rm -rf adept-ios
+fi
+if [[ -d "adobe-content-filter" ]]; then
+  git submodule deinit adobe-content-filter
+  git rm -rf adobe-content-filter
+fi
+
 git submodule update --init --recursive
 
 # Remove private repos from Cartfile and Cartfile.resolved.
