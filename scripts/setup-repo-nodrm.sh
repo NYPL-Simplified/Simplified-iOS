@@ -19,14 +19,10 @@ set -eo pipefail
 
 echo "Setting up repo for non-DRM build"
 
-if [[ -d "adept-ios" ]]; then
-  git submodule deinit adept-ios
-  git rm -rf adept-ios
-fi
-if [[ -d "adobe-content-filter" ]]; then
-  git submodule deinit adobe-content-filter
-  git rm -rf adobe-content-filter
-fi
+git submodule foreach --quiet 'git submodule deinit adept-ios'
+git rm -rf adept-ios
+git submodule foreach --quiet 'git submodule deinit adobe-content-filter'
+git rm -rf adobe-content-filter
 
 git submodule update --init --recursive
 
