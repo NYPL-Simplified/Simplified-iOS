@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - release/**
 jobs:
   check-binaries:
     runs-on: macOS-latest
