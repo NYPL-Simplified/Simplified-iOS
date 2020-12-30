@@ -11,6 +11,8 @@
 #     ./scripts/setup-repo-drm.sh
 #
 
+set -eo pipefail
+
 if [ "$BUILD_CONTEXT" == "" ]; then
   echo "Setting up repo for building with DRM support..."
 else

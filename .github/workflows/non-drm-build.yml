@@ -5,18 +5,17 @@ jobs:
   build:
     runs-on: macOS-latest
     steps:
-      - name: Checkout main repo and submodules
-        uses: actions/checkout@v2.3.4
-        with:
-          submodules: true
-          token: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Force Xcode 11.5
         run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Checkout main repo
+        uses: actions/checkout@v2
       - name: Set up repo for nonDRM build
         run: exec ./scripts/setup-repo-nodrm.sh
         env:
           BUILD_CONTEXT: ci
       - name: Build 3rd party dependencies
         run: ./scripts/build-3rd-party-dependencies.sh --no-private
+        env:
+          BUILD_CONTEXT: ci
       - name: Build SimplyE without DRM support
         run: ./scripts/xcode-build-nodrm.sh

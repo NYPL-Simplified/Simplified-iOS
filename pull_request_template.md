@@ -12,4 +12,6 @@
 
 **Has the application documentation been updated for these changes?**
 
+**Did you bump the SimplyE build number?**
+
 **Did someone actually run this code to verify it works?**

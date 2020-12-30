@@ -4,6 +4,7 @@ on:
 jobs:
   build-and-test:
     runs-on: macOS-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Checkout main repo and submodules
         uses: actions/checkout@v2.3.4
@@ -49,5 +50,9 @@ jobs:
           verbose: true
       - name: Run SimplyE tests
         run: ./scripts/xcode-test.sh simplye
+        env:
+          BUILD_CONTEXT: ci
       - name: Run Open eBooks tests
         run: ./scripts/xcode-test.sh openebooks
+        env:
+          BUILD_CONTEXT: ci

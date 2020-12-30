@@ -1,10 +1,8 @@
-name: Upload SimplyE to iOS-binaries
-on:
-  push:
-    branches:
-      - develop
+name: SimplyE Build
+on: workflow_dispatch
 jobs:
   archive-and-upload:
+    if: github.ref == 'refs/heads/develop'
     runs-on: macOS-latest
     steps:
       - name: Checkout main repo and submodules
