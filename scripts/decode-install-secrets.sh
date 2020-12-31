@@ -2,7 +2,8 @@
 
 # SUMMARY
 #   Creates a new "build" keychain, installs an Apple distribution identity
-#   in it for code signing, and downloads production provisioning profiles.
+#   in it for code signing, restricts keychain search list to this new keychain
+#   and downloads production provisioning profiles.
 #
 # DESCRIPTION
 #   This script is meant to be used in a CI context only. There's no need to
@@ -41,6 +42,11 @@
 #
 
 set -eo pipefail
+
+if [ "$BUILD_CONTEXT" != "ci" ]; then
+  echo "This script should be only used in a CI context because it manipulates keychain search lists"
+  exit 1
+fi
 
 # lower case
 APPNAME_PARAM=`echo "$1" | tr '[:upper:]' '[:lower:]'`

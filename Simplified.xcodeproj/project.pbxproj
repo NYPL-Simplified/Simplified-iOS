@@ -1511,6 +1511,8 @@
 		730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialWelcomeViewController.swift; sourceTree = "<group>"; };
 		73127257259A99F50032D7B4 /* check-build-number.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "check-build-number.yml"; sourceTree = "<group>"; };
 		7312725C259A9AB00032D7B4 /* ios-binaries-check.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "ios-binaries-check.sh"; sourceTree = "<group>"; };
+		731272AC259CF6F90032D7B4 /* xcode-export-appstore.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-export-appstore.sh"; sourceTree = "<group>"; };
+		731272B1259CFB180032D7B4 /* testflight-upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "testflight-upload.sh"; sourceTree = "<group>"; };
 		7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+SignOut.swift"; sourceTree = "<group>"; };
 		731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogic.swift; sourceTree = "<group>"; };
 		7320AB48251EBC9900E3F04D /* OpenEbooksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenEbooksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2481,11 +2483,13 @@
 				733E3E08257ED49D00BEBA32 /* archive-and-upload-adhoc.sh */,
 				733E3E07257ED49C00BEBA32 /* xcode-archive.sh */,
 				733E3E09257ED49D00BEBA32 /* xcode-export-adhoc.sh */,
+				731272AC259CF6F90032D7B4 /* xcode-export-appstore.sh */,
 				7358A951258997A900E66D34 /* xcode-test.sh */,
 				73EC8904258D8A2A00978955 /* xcode-build-nodrm.sh */,
 				733E3E05257ED49C00BEBA32 /* xcode-settings.sh */,
 				733E3E06257ED49C00BEBA32 /* ios-binaries-upload.sh */,
 				7312725C259A9AB00032D7B4 /* ios-binaries-check.sh */,
+				731272B1259CFB180032D7B4 /* testflight-upload.sh */,
 				73EB0B802582CD59006BC997 /* bootstrap-drm.sh */,
 				73EB0B812582CD59006BC997 /* setup-repo-drm.sh */,
 				73EB0B822582CD5A006BC997 /* setup-repo-nodrm.sh */,
@@ -5069,7 +5073,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -5126,7 +5130,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
