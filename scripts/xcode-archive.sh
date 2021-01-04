@@ -4,7 +4,10 @@
 #   Creates an archive for SimplyE or Open eBooks
 #
 # SYNOPSIS
-#   xcode-archive.sh [ simplye | SE | openebooks | OE ]
+#   xcode-archive.sh <app_name>
+#
+# PARAMETERS
+#   See xcode-settings.sh for possible parameters.
 #
 # USAGE
 #   Run this script from the root of Simplified-iOS repo, e.g.:
@@ -24,10 +27,14 @@ echo "Build will be available at $ARCHIVE_PATH"
 # prepare
 mkdir -p $BUILD_PATH
 
+echo "Valid identities in keychain able to satisfy code signing policy:"
+security find-identity -p codesigning -v
+
 # build
 xcodebuild -project $PROJECT_NAME \
            -scheme $SCHEME \
            -sdk iphoneos \
            -configuration Release \
            -archivePath $ARCHIVE_PATH \
-           clean archive
+           clean archive | \
+           if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi

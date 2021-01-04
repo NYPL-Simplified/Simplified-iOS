@@ -1,0 +1,32 @@
+name: Check Build Number
+on:
+  push:
+    branches:
+      - develop
+      - release/**
+jobs:
+  check-binaries:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v2.3.4
+        with:
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Checkout iOS Binaries repo
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: NYPL-Simplified/iOS-binaries
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          path: ./iOS-binaries
+      - name: Force Xcode 11.5
+        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Check Build Number
+        run: ./scripts/ios-binaries-check.sh simplye
+        env:
+          BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Trigger Archive+Upload
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: SimplyE Build
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
