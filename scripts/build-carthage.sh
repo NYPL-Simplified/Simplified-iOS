@@ -17,6 +17,8 @@
 #   This script is idempotent so it can be run safely over and over.
 #   It assumes that the R2 repos are checked out as siblings of Simplified-iOS.
 
+set -eo pipefail
+
 if [ "$BUILD_CONTEXT" == "" ]; then
   echo "Building Carthage..."
 else

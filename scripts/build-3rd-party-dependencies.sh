@@ -16,6 +16,14 @@
 # NOTE
 #   This script is idempotent so it can be run safely over and over.
 
+set -eo pipefail
+
+fatal()
+{
+  echo "$0 error: $1" 1>&2
+  exit 1
+}
+
 if [ "$BUILD_CONTEXT" == "" ]; then
   echo "Building 3rd party dependencies..."
 else
@@ -31,9 +39,9 @@ case $1 in
     ;;
 esac
 
-(cd readium-sdk; sh MakeHeaders.sh Apple)
+(cd readium-sdk; sh MakeHeaders.sh Apple) || fatal "Error making Readium headers"
 
-if [ "$BUILD_CONTEXT" != "ci" ]; then
+if [ "$BUILD_CONTEXT" != "ci" ] || [ "$1" == "--no-private" ]; then
   # rebuild all Carthage dependencies from scratch
   ./scripts/build-carthage.sh $1
 fi

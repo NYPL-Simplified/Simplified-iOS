@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # SUMMARY
-#   Uploads an exported .ipa for SimplyE or Open eBooks to the
+#   Checks if a binary with the current build number already exists on the
 #   https://github.com/NYPL-Simplified/iOS-binaries repo.
 #
 # SYNOPSIS
-#   ios-binaries-upload.sh <app_name>
+#   ios-binaries-check.sh <app_name>
 #
 # PARAMETERS
 #   See xcode-settings.sh for possible parameters.
@@ -13,13 +13,11 @@
 # USAGE
 #   Run this script from the root of Simplified-iOS repo, e.g.:
 #
-#     ./scripts/ios-binaries-upload simplye
+#     ./scripts/ios-binaries-check simplye
 
 source "$(dirname $0)/xcode-settings.sh"
 
-echo "Uploading $ARCHIVE_NAME to 'ios-binaries' repo..."
-
-SIMPLIFIED_DIR=$PWD
+echo "Checking if $ARCHIVE_NAME already exists on 'iOS-binaries' repo..."
 
 # In a GitHub Actions CI context we can't clone a repo as a sibling
 if [ "$BUILD_CONTEXT" != "ci" ]; then
@@ -39,21 +37,10 @@ fi
 
 IOS_BINARIES_DIR_PATH="$PWD/$IOS_BINARIES_DIR_NAME"
 
-cd "$SIMPLIFIED_DIR"
-IPA_NAME="${ARCHIVE_NAME}.ipa"
-echo "Copying .ipa to $IOS_BINARIES_DIR_PATH/$IPA_NAME"
-cp "$ADHOC_EXPORT_PATH/$APP_NAME.ipa" "$IOS_BINARIES_DIR_PATH/$IPA_NAME"
-
-cd "$IOS_BINARIES_DIR_PATH"
-git add "$IPA_NAME"
-git status
-
-if [ "$BUILD_CONTEXT" == "ci" ]; then
-  git config --global user.email "librarysimplifiedci@nypl.org"
-  git config --global user.name "Library Simplified CI"
+FOUND_BUILD=`find "$IOS_BINARIES_DIR_PATH" -name ${BUILD_NAME}*`
+if [ "$FOUND_BUILD" != "" ]; then
+  echo "Build ${BUILD_NAME} already exists in iOS-binaries"
+  exit 1
 fi
 
-COMMIT_MSG="Add ${BUILD_NAME} iOS build"
-git commit -m "$COMMIT_MSG"
-echo "Committed."
-git push -f
+echo "iOS binaries check completed"
