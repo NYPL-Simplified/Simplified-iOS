@@ -17,6 +17,10 @@
 #     git checkout Cartfile
 #     git checkout Cartfile.resolved
 #     ./scripts/build-carthage.sh
+#
+# NOTES
+#   If working on R2 integration, use the `build-carthage-R2-integration.sh`
+#   script instead.
 
 set -eo pipefail
 
@@ -29,12 +33,24 @@ fi
 # deep clean to avoid any caching issues
 rm -rf ~/Library/Caches/org.carthage.CarthageKit
 
-# In a CI context we are unable to pass the proper git authentication to
-# the `carthage` commands, so we skip them here
-if [ "$BUILD_CONTEXT" != "ci" ] && [ "$1" != "--no-private" ]; then
-  # checkout NYPLAEToolkit to use the private script to fetch AudioEngine
-  carthage checkout NYPLAEToolkit
-  ./Carthage/Checkouts/NYPLAEToolkit/scripts/fetch-audioengine.sh
+if [ "$1" != "--no-private" ]; then
+  if [ "$BUILD_CONTEXT" == "ci" ]; then
+    # in a CI context we cannot have siblings repos, so we check them out nested
+    CERTIFICATES_PATH_PREFIX="."
+  else
+    CERTIFICATES_PATH_PREFIX=".."
+
+    # checkout NYPLAEToolkit to use the private script to fetch AudioEngine.
+    # We can only do it from outside of a GitHub Actions CI context, because
+    # git authentication is not passed correctly to Carthage there.
+    echo "Checking out NYPLAEToolkit to fetch AudioEngine binary before carthage bootstrap..."
+    carthage checkout NYPLAEToolkit
+    ./Carthage/Checkouts/NYPLAEToolkit/scripts/fetch-audioengine.sh
+  fi
+
+  # r2-lcp requires a private client library, available via Certificates repo
+  echo "Fixing up the Cartfile for LCP..."
+  swift $CERTIFICATES_PATH_PREFIX/Certificates/SimplyE/iOS/LCPLib.swift -f
 fi
 
 if [ "$BUILD_CONTEXT" != "ci" ] || [ "$1" == "--no-private" ]; then
