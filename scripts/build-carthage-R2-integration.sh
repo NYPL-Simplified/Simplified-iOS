@@ -6,8 +6,16 @@
 #
 # Description: This scripts wipes your Carthage folder, checks out and rebuilds
 #              all dependencies.
+#
+# NOTES
+#   This is meant to be used locally. It won't work in a GitHub Actions CI
+#   context. For the latter, use `build-carthage.sh` instead.
 
 echo "Building Carthages for R2 dependencies..."
+
+# deep clean to avoid any caching issues
+rm -rf ~/Library/Caches/org.carthage.CarthageKit
+rm -rf Carthage
 
 echo "Building r2-shared-swift Carthage dependencies..."
 cd ../r2-shared-swift
@@ -30,8 +38,15 @@ cd ../r2-navigator-swift
 rm -rf Carthage
 carthage update --platform iOS
 
-# also update SimplyE's dependencies so the framework versions all match
-echo "Updating Simplified-iOS Carthage.resolved..."
-carthage update --no-build
-
 echo "Done with R2 Carthage dependencies."
+cd ..
+
+# remove R2 dependencies from Carthage since we'll build them in the R2 workspace
+sed -i '' "s|github \"NYPL-Simplified/r2|#github \"NYPL-Simplified/r2|" Cartfile
+sed -i '' "s|github \"NYPL-Simplified/r2||" Cartfile.resolved
+
+carthage checkout
+./Carthage/Checkouts/NYPLAEToolkit/scripts/fetch-audioengine.sh
+
+# also update SimplyE's dependencies so the framework versions all match
+carthage build --platform ios

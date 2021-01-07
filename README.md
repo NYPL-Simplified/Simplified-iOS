@@ -73,7 +73,7 @@ Then use the `feature/readium2` branch and rebuild the dependencies. This will t
 ```bash
 cd Simplified-iOS
 git checkout feature/readium2
-./scripts/build-3rd-party-dependencies.sh
+./scripts/build-carthage-R2-integration.sh
 ```
 Finally, open `SimplifiedR2.workspace` and use the `SimplyE-R2dev` target to build the app.
 

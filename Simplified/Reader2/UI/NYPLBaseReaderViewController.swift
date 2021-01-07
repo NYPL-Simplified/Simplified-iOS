@@ -1,7 +1,5 @@
 //
 //  ReaderViewController.swift
-//  r2-testapp-swift
-//
 //  Created by Mickaël Menu on 07.03.19.
 //
 //  Copyright 2019 European Digital Reading Lab. All rights reserved.

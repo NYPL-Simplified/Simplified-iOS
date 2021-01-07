@@ -1,6 +1,5 @@
 //
 //  LCPLibraryService.swift
-//  r2-testapp-swift
 //
 //  Created by Mickaël Menu on 01.02.19.
 //
