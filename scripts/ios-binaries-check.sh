@@ -20,13 +20,14 @@ source "$(dirname $0)/xcode-settings.sh"
 echo "Checking if $ARCHIVE_NAME.ipa already exists on 'iOS-binaries' repo..."
 
 CURL_RESULT=`curl -I -s -o /dev/null -w "%{http_code}"  https://github.com/NYPL-Simplified/iOS-binaries/blob/master/$ARCHIVE_NAME.ipa`
+echo "CURL_RESULT=$CURL_RESULT"
 
 if [ "$CURL_RESULT" == 200 ]; then
-  echo "Build ${BUILD_NAME} already exists in iOS-binaries"
+  echo "Build ${ARCHIVE_NAME} already exists in iOS-binaries"
   exit 1
 elif [ "$CURL_RESULT" != 404 ]; then
-  echo "Obtained unexpected result [$CURL_RESULT] from iOS-binaries for file named \"${ARCHIVE_NAME}.ipa\""
+  echo "Obtained unexpected curl result for file named \"${ARCHIVE_NAME}.ipa\""
   exit 1
 fi
 
-echo "iOS binaries check completed"
+echo "iOS-binaries check completed successfully"

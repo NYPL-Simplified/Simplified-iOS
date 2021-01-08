@@ -1,6 +1,4 @@
-[![SimplyE Build](https://github.com/NYPL-Simplified/Simplified-iOS/workflows/SimplyE%20Build/badge.svg)](https://github.com/NYPL-Simplified/Simplified-iOS/actions?query=workflow%3A%22SimplyE%20Build%22)
-
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![SimplyE Build](https://github.com/NYPL-Simplified/Simplified-iOS/workflows/SimplyE%20Build/badge.svg)](https://github.com/NYPL-Simplified/Simplified-iOS/actions?query=workflow%3A%22SimplyE%20Build%22) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # SimplyE and Open eBooks
 
@@ -87,7 +85,7 @@ Continuous integration is enabled on push events on `develop`, release and featu
 
 # License
 
-Copyright © 2015-2020 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2015-2021 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

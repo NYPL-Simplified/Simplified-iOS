@@ -53,7 +53,7 @@ if [ "$BUILD_CONTEXT" == "ci" ]; then
   git config --global user.name "Library Simplified CI"
 fi
 
-COMMIT_MSG="Add ${BUILD_NAME} iOS build"
+COMMIT_MSG="Add ${ARCHIVE_NAME} build"
 git commit -m "$COMMIT_MSG"
 echo "Committed."
 git push -f
