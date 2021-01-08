@@ -17,29 +17,15 @@
 
 source "$(dirname $0)/xcode-settings.sh"
 
-echo "Checking if $ARCHIVE_NAME already exists on 'iOS-binaries' repo..."
+echo "Checking if $ARCHIVE_NAME.ipa already exists on 'iOS-binaries' repo..."
 
-# In a GitHub Actions CI context we can't clone a repo as a sibling
-if [ "$BUILD_CONTEXT" != "ci" ]; then
-  cd ..
-fi
+CURL_RESULT=`curl -I -s -o /dev/null -w "%{http_code}"  https://github.com/NYPL-Simplified/iOS-binaries/blob/master/$ARCHIVE_NAME.ipa`
 
-if [[ -d "iOS-binaries" ]]; then
-  echo "iOS-binaries repo appears to be cloned already..."
-  IOS_BINARIES_DIR_NAME=iOS-binaries
-elif [[ -d "NYPL-iOS-binaries" ]]; then
-  echo "iOS-binaries repo appears to be cloned already..."
-  IOS_BINARIES_DIR_NAME=NYPL-iOS-binaries
-else
-  IOS_BINARIES_DIR_NAME=iOS-binaries
-  git clone https://${GITHUB_TOKEN}@github.com/NYPL-Simplified/iOS-binaries.git
-fi
-
-IOS_BINARIES_DIR_PATH="$PWD/$IOS_BINARIES_DIR_NAME"
-
-FOUND_BUILD=`find "$IOS_BINARIES_DIR_PATH" -name ${BUILD_NAME}*`
-if [ "$FOUND_BUILD" != "" ]; then
+if [ "$CURL_RESULT" == 200 ]; then
   echo "Build ${BUILD_NAME} already exists in iOS-binaries"
+  exit 1
+elif [ "$CURL_RESULT" != 404 ]; then
+  echo "Obtained unexpected result [$CURL_RESULT] from iOS-binaries for file named \"${ARCHIVE_NAME}.ipa\""
   exit 1
 fi
 
