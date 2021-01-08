@@ -25,7 +25,7 @@ if [ "$CURL_RESULT" == 200 ]; then
   echo "Build ${BUILD_NAME} already exists in iOS-binaries"
   exit 1
 else if [ "$CURL_RESULT" != 404 ]; then
-  echo "Obtained unexpected result from iOS-binaries for file named \"${ARCHIVE_NAME}.ipa\""
+  echo "Obtained unexpected result [$CURL_RESULT] from iOS-binaries for file named \"${ARCHIVE_NAME}.ipa\""
   exit 1
 fi
 
