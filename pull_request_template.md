@@ -10,8 +10,9 @@
 **Dependencies for merging? Releasing to production?**
 [Description of any watchouts, dependencies, or issues we should be aware of goes here]
 
-**Has the application documentation been updated for these changes?**
+**Does this include changes that require a new SimplyE build for QA?**
+[Bump the SimplyE build number to generate a new build on NYPL-Simplified/iOS-binaries]
 
-**Did you bump the SimplyE build number?**
+**Has the application documentation been updated for these changes?**
 
 **Did someone actually run this code to verify it works?**
