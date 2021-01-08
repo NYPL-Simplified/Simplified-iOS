@@ -68,12 +68,14 @@ final class LibraryService: NSObject, Loggable {
       return
     }
     
+    #if FEATURE_DRM_CONNECTOR
     // Load DRM service with publication data
     // If it's Adobe DRM, set contaiener for decrypting
     if let adobeDrmService = drmService as? AdobeDRMLibraryService {
       adobeDrmService.container = container
     }
-    
+    #endif
+
     let url = URL(fileURLWithPath: container.rootFile.rootPath)
     drmService.loadPublication(at: url, drm: drm) { result in
       switch result {
@@ -188,12 +190,14 @@ final class LibraryService: NSObject, Loggable {
         return nil
       }
       let (publication, container) = pubBox
+      #if FEATURE_DRM_CONNECTOR
       // TODO: SIMPLY-2840
       // Parse .ncx document to update TOC and page list if publication doesn't contain TOC
       // -- the code below should be removed as described in SIMPLY-2840 --
       if publication.tableOfContents.isEmpty {
         publication.otherCollections.append(contentsOf: parseNCXDocument(in: container, links: publication.links))
       }
+      #endif
       // -- end of cleanup --
       items[url.lastPathComponent] = (container, parsingCallback)
       return (publication, container)
@@ -208,7 +212,7 @@ final class LibraryService: NSObject, Loggable {
 
 }
 
-
+#if FEATURE_DRM_CONNECTOR
 
 // TODO: SIMPLY-2840
 // This extension should be removed as a part of the cleanup
@@ -249,3 +253,5 @@ extension LibraryService {
       ].compactMap { $0 }
   }
 }
+
+#endif

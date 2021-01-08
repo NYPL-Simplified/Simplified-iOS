@@ -1,6 +1,5 @@
 //
 //  LCPAuthenticationViewController.swift
-//  r2-testapp-swift
 //
 //  Created by Mickaël Menu on 01.03.19.
 //

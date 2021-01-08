@@ -3,7 +3,7 @@ on: workflow_dispatch
 jobs:
   upload-arc:
     runs-on: macOS-latest
-    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/')
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/feature/')
     steps:
       - name: Force Xcode 11.5
         run: sudo xcode-select -switch /Applications/Xcode_11.5.app

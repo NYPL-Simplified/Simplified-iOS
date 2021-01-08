@@ -31,6 +31,8 @@ sed -i '' "s#.*NYPL-Simplified/NYPLAEToolkit.*##" Cartfile
 sed -i '' "s#.*NYPL-Simplified/NYPLAEToolkit.*##" Cartfile.resolved
 sed -i '' "s#.*NYPL-Simplified/audiobook-ios-overdrive.*##" Cartfile
 sed -i '' "s#.*NYPL-Simplified/audiobook-ios-overdrive.*##" Cartfile.resolved
+sed -i '' "s#.*lcp.*##" Cartfile
+sed -i '' "s#.*lcp.*##" Cartfile.resolved
 
 if [ ! -f "APIKeys.swift" ]; then
   cp Simplified/AppInfrastructure/APIKeys.swift.example Simplified/AppInfrastructure/APIKeys.swift

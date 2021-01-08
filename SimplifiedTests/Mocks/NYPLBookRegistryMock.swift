@@ -45,6 +45,9 @@ class NYPLBookRegistryMock: NSObject, NYPLBookRegistrySyncing, NYPLBookRegistryP
     return record.location
   }
     
+  func setLocation(_ location: NYPLBookLocation?, forIdentifier identifier: String) {
+  }
+
   func add(_ bookmark: NYPLReadiumBookmark, forIdentifier identifier: String) {
     guard let record = identifiersToRecords[identifier] else { return }
     var bookmarks = [NYPLReadiumBookmark]()
