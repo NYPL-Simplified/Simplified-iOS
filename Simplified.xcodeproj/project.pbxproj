@@ -126,6 +126,7 @@
 		172DF39225AFE0C400986A05 /* ZIPFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 170E5FBD25AFDD64007D6DE6 /* ZIPFoundation.framework */; };
 		172DF39425AFE19600986A05 /* ZIPFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 170E5FBD25AFDD64007D6DE6 /* ZIPFoundation.framework */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
+		175B51F725B107CE00F34D9A /* ZIPFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 170E5FBD25AFDD64007D6DE6 /* ZIPFoundation.framework */; };
 		175E480824EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */; };
 		175E480E24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480D24EF46EA0066A6CF /* NYPLAnnouncementViewController.swift */; };
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
@@ -2328,6 +2329,7 @@
 				7347F0FF245A4DE200558D7F /* GoogleUtilities.framework in Frameworks */,
 				73DED82325A6310000A4D63B /* Fuzi.framework in Frameworks */,
 				73DED81725A6305900A4D63B /* ReadiumLCP.framework in Frameworks */,
+				175B51F725B107CE00F34D9A /* ZIPFoundation.framework in Frameworks */,
 				7347F100245A4DE200558D7F /* GoogleAppMeasurement.framework in Frameworks */,
 				7347F101245A4DE200558D7F /* FIRAnalyticsConnector.framework in Frameworks */,
 				7347F102245A4DE200558D7F /* GoogleDataTransport.framework in Frameworks */,
@@ -4149,6 +4151,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/NYPLAudiobookToolkit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PDFRendererProvider.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/OverdriveProcessor.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/ZIPFoundation.framework",
 			);
 			name = "Copy Frameworks (Carthage)";
 			outputFileListPaths = (
@@ -4161,6 +4164,7 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLAudiobookToolkit.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PDFRendererProvider.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/OverdriveProcessor.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ZIPFoundation.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6044,7 +6048,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_MODULE_NAME = SimplyE;
@@ -6105,7 +6108,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_MODULE_NAME = SimplyE;
