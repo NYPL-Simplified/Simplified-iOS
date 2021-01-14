@@ -26,26 +26,30 @@ rm -rf Carthage
 echo "Building r2-shared-swift Carthage dependencies..."
 cd ../r2-shared-swift
 rm -rf Carthage
+carthage checkout
 carthage build --platform iOS
 
 echo "Building r2-lcp-swift Carthage dependencies..."
 cd ../r2-lcp-swift
 rm -rf Carthage
 swift ../Certificates/SimplyE/iOS/LCPLib.swift -f
+carthage checkout
 carthage build --platform iOS
 
 echo "Building r2-streamer-swift Carthage dependencies..."
 cd ../r2-streamer-swift
 rm -rf Carthage
+carthage checkout
 carthage build --platform iOS
 
 echo "Building r2-navigator-swift Carthage dependencies..."
 cd ../r2-navigator-swift
 rm -rf Carthage
+carthage checkout
 carthage build --platform iOS
 
 echo "Done with R2 Carthage dependencies."
-cd ..
+cd ../Simplified-iOS
 
 # remove R2 dependencies from Carthage since we'll build them in the R2 workspace
 sed -i '' "s|github \"NYPL-Simplified/r2|#github \"NYPL-Simplified/r2|" Cartfile
