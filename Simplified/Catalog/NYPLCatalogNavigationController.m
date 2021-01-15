@@ -144,7 +144,7 @@
         completion();
       });
     }];
-  } else if (NYPLUserAccount.sharedAccount.isCatalogSecured && !NYPLUserAccount.sharedAccount.hasCredentials) {
+  } else if (NYPLUserAccount.sharedAccount.catalogRequiresAuthentication && !NYPLUserAccount.sharedAccount.hasCredentials) {
     // sign in
     [NYPLAccountSignInViewController requestCredentialsUsingExisting:NO authorizeImmediately:YES completionHandler:^{
       dispatch_async(dispatch_get_main_queue(), ^{

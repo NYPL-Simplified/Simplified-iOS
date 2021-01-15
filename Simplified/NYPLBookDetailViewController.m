@@ -6,7 +6,6 @@
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
-#import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSession.h"
 #import "NYPLProblemReportViewController.h"
