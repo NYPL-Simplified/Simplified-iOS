@@ -15,28 +15,67 @@ import R2Shared
 import R2Streamer
 import UIKit
 
-// TODO: SIMPLY-2656 Review "module" nomenclature
-
 /// The Library module handles the presentation of the bookshelf, and the publications' management.
 protocol LibraryModuleAPI {
-  var libraryService: LibraryService {get}
   
-  /// Loads the R2 DRM object for the given publication.
-  func loadDRM(for book: NYPLBook, completion: @escaping (CancellableResult<DRM?>) -> Void)
+  var delegate: LibraryModuleDelegate? { get }
+  
+  /// Root navigation controller containing the Library.
+  /// Can be used to present the library to the user.
+  var rootViewController: UINavigationController { get }
+  
+  /// Loads the sample publications if needed.
+  func preloadSamples() throws
+  
+  /// Imports a new publication to the library, either from:
+  /// - a local file URL
+  /// - a remote URL which will be downloaded
+  ///
+  /// - Parameters:
+  ///   - url: Source URL to import.
+  ///   - title: Title of the publication when known, to provide context.
+  func importPublication(from url: URL, title: String?, sender: UIViewController, completion: @escaping (CancellableResult<NYPLBook, LibraryError>) -> Void)
+  
 }
 
-// TODO: SIMPLY-2656 Do we even need this class?
+extension LibraryModuleAPI {
+  
+  func importPublication(from url: URL, title: String? = nil, sender: UIViewController) {
+    importPublication(from: url, title: title, sender: sender, completion: { _ in })
+  }
+  
+}
+
+protocol LibraryModuleDelegate: ModuleDelegate {
+  
+  /// Called when the user tap on a publication in the library.
+  func libraryDidSelectPublication(_ publication: Publication, book: NYPLBook, completion: @escaping () -> Void)
+  
+}
+
 
 final class LibraryModule: LibraryModuleAPI {
-
-  let libraryService: LibraryService
-
-  init(server: PublicationServer) {
-    self.libraryService = LibraryService(publicationServer: server)
+  
+  weak var delegate: LibraryModuleDelegate?
+  
+  public let library: LibraryService
+  
+  init(delegate: LibraryModuleDelegate?, server: PublicationServer) {
+    self.library = LibraryService(publicationServer: server)
+    self.delegate = delegate
+    self.rootViewController = UINavigationController()
   }
-
-  func loadDRM(for book: NYPLBook, completion: @escaping (CancellableResult<DRM?>) -> Void) {
-    libraryService.loadDRM(for: book, completion: completion)
+  
+  private(set) lazy var rootViewController: UINavigationController = {
+    // FIXME: should be library view controller or completely removed
+    return (UIApplication.shared.delegate?.window??.rootViewController?.presentedViewController) as! UINavigationController
+  }()
+  
+  func preloadSamples() throws {
+    // We don't have book samples
   }
-
+  
+  func importPublication(from url: URL, title: String?, sender: UIViewController, completion: @escaping (CancellableResult<NYPLBook, LibraryError>) -> ()) {
+    library.importPublication(from: url, title: title, sender: sender, completion: completion)
+  }
 }

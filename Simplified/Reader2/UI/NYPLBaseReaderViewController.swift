@@ -28,7 +28,6 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   // Models and business logic references
   let publication: Publication
   private let book: NYPLBook
-  private let drm: DRM?
   private var bookmarksBusinessLogic: NYPLReaderBookmarksBusinessLogic
 
   // UI
@@ -46,13 +45,12 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   ///   - drm: Information about the DRM associated with the publication.
   init(navigator: UIViewController & Navigator,
        publication: Publication,
-       book: NYPLBook,
-       drm: DRM?) {
+       book: NYPLBook
+  ) {
 
     self.navigator = navigator
     self.publication = publication
     self.book = book
-    self.drm = drm
     bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(
       book: book,
       r2Publication: publication,
