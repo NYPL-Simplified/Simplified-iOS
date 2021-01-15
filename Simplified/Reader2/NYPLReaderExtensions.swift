@@ -46,20 +46,25 @@ extension NYPLBook {
 
 @objc extension NYPLRootTabBarController {
   func presentBook(_ book: NYPLBook) {
-    guard let libModule = r2Owner?.libraryModule else {
+    guard let libraryModule = r2Owner?.library as? LibraryModule, let readerModule = r2Owner.reader else {
       return
     }
 
-    let libService = libModule.libraryService
-
-    libService.parseBookAsync(book) { [weak self] publication in
+    libraryModule.library.openBook(book, forPresentation: true, sender: self) { [weak self] result in
       guard let navVC = self?.selectedViewController as? UINavigationController else {
         preconditionFailure("No navigation controller, unable to present reader")
       }
-
-      self?.r2Owner.readerModule.presentPublication(publication,
-                                                    book: book,
-                                                    in: navVC) {}
+      switch result {
+      case .success(let publication):
+        readerModule.presentPublication(publication: publication, book: book, in: navVC) {
+          //
+        }
+      case .cancelled:
+        preconditionFailure("Open book opration was cancelled")
+        
+      case .failure(let error):
+        preconditionFailure("Open book error: \(error.localizedDescription)")
+      }
     }
   }
 }

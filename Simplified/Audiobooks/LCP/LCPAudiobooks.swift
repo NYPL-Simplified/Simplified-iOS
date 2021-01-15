@@ -20,7 +20,9 @@ import NYPLAudiobookToolkit
   private let lcpService = LCPLibraryService()
 
   /// .lcpa archive container
-  private let container: Container
+//  private let container: Container
+  private let publication: Publication?
+  
 
   /// Distributor key - one can be found in `NYPLBook.distributor` property
   @objc static let distributorKey = "lcp"
@@ -29,15 +31,16 @@ import NYPLAudiobookToolkit
   /// - Parameter audiobookUrl: must be a file with `.lcpa` extension
   @objc init?(for audiobookUrl: URL) {
     self.audiobookUrl = audiobookUrl
-    do {
-      guard let (pubBox, _) = try Publication.parse(at: self.audiobookUrl) else {
-        return nil
-      }
-      self.container = pubBox.associatedContainer
-    } catch {
-      NYPLErrorLogger.logError(error, summary: "Error opening LCP audiobook")
-      return nil
-    }
+    self.publication = nil
+//    do {
+//      guard let (pubBox, _) = try Publication.parse(at: self.audiobookUrl) else {
+//        return nil
+//      }
+//      self.container = pubBox.associatedContainer
+//    } catch {
+//      NYPLErrorLogger.logError(error, summary: "Error opening LCP audiobook")
+//      return nil
+//    }
   }
   
   /// Content dictionary for `AudiobookFactory`
@@ -45,9 +48,15 @@ import NYPLAudiobookToolkit
     let manifestPath = "manifest.json"
     do {
       // Relative path inside the audiobook
-      let data = try container.data(relativePath: manifestPath)
-      let publicationObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
-      return publicationObject
+      
+//      let data = try container.data(relativePath: manifestPath)
+//      let publicationObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
+      
+      guard let result = publication?.get(manifestPath).readAsJSON() else {
+        return nil
+      }
+      let publicationObject = try result.get()
+      return publicationObject as NSDictionary
     } catch {
       NYPLErrorLogger.logError(error, summary: "Error reading LCP audiobook")
       return nil
@@ -72,47 +81,47 @@ extension LCPAudiobooks: DRMDecryptor {
   ///   - resultUrl: URL to save decrypted file at.
   ///   - completion: decryptor callback with optional `Error`.
   func decrypt(url: URL, to resultUrl: URL, completion: @escaping (Error?) -> Void) {
-    loadLicense { [weak self] license, error in
-      guard let self = self else {
-        completion(nil)
-        return
-      }
-      if let error = error {
-        NYPLErrorLogger.logError(error, summary: "Error loading license for LCP audiobook")
-        completion(error)
-        return
-      }
-      guard let license = license else {
-        completion(nil)
-        return
-      }
-      do {
-        let audiofileContent = try self.container.data(relativePath: url.path)
-        let data = try license.decipher(audiofileContent)
-        try data?.write(to: resultUrl, options: .atomic)
-        completion(nil)
-      } catch {
-        NYPLErrorLogger.logError(error, summary: "Error decrypting LCP audio file \(url)")
-        completion(error)
-        return
-      }
-    }
+//    loadLicense { [weak self] license, error in
+//      guard let self = self else {
+//        completion(nil)
+//        return
+//      }
+//      if let error = error {
+//        NYPLErrorLogger.logError(error, summary: "Error loading license for LCP audiobook")
+//        completion(error)
+//        return
+//      }
+//      guard let license = license else {
+//        completion(nil)
+//        return
+//      }
+//      do {
+//        let audiofileContent = try self.container.data(relativePath: url.path)
+//        let data = try license.decipher(audiofileContent)
+//        try data?.write(to: resultUrl, options: .atomic)
+//        completion(nil)
+//      } catch {
+//        NYPLErrorLogger.logError(error, summary: "Error decrypting LCP audio file \(url)")
+//        completion(error)
+//        return
+//      }
+//    }
   }
   
   /// Load `DRMLicense` license for audiobook once
   /// - Parameter completion: `LCPError`, if any
-  private func loadLicense(completion: @escaping (_ license: DRMLicense?, _ error: Error?) -> Void) {
-    lcpService.loadPublication(at: audiobookUrl, drm: DRM(brand: .lcp)) { result in
-      switch result {
-      case .success(let drm):
-        completion(drm?.license, nil)
-      case .failure(let error):
-        completion(nil, error)
-      case .cancelled:
-        completion(nil, nil)
-      }
-    }
-  }
+//  private func loadLicense(completion: @escaping (_ license: DRMLicense?, _ error: Error?) -> Void) {
+//    lcpService.loadPublication(at: audiobookUrl, drm: DRM(brand: .lcp)) { result in
+//      switch result {
+//      case .success(let drm):
+//        completion(drm?.license, nil)
+//      case .failure(let error):
+//        completion(nil, error)
+//      case .cancelled:
+//        completion(nil, nil)
+//      }
+//    }
+//  }
 }
 
 #endif

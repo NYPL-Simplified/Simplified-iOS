@@ -14,21 +14,30 @@ import Foundation
 import UIKit
 import R2Shared
 
-/// A ReaderFormatModule is a sub-module of ReaderModule that handles
-/// publication of a given format (eg. EPUB, CBZ).
+
+/// A ReaderFormatModule is a sub-module of ReaderModule that handles publication of a given format (eg. EPUB, CBZ).
 protocol ReaderFormatModule {
-  var delegate: ReaderFormatModuleDelegate? { get }
-
-  /// Publication types handled by this sub-module.
-  var publicationFormats: [Publication.Format] { get }
-
-  /// Creates the view controller to present the publication.
-  func makeReaderVC(for publication: Publication,
-                    book: NYPLBook,
-                    drm: DRM?,
-                    resourcesServer: ResourcesServer) throws -> UIViewController
+    
+    var delegate: ReaderFormatModuleDelegate? { get }
+    
+    /// Publication types handled by this sub-module.
+    var publicationFormats: [Publication.Format] { get }
+    
+    /// Creates the view controller to present the publication.
+    func makeReaderViewController(for publication: Publication, book: NYPLBook, resourcesServer: ResourcesServer) throws -> UIViewController
+    
 }
 
-protocol ReaderFormatModuleDelegate: ModuleDelegate {
+protocol ReaderFormatModuleDelegate: AnyObject {
+//
+//    /// Shows the reader's outline from the given links.
+//    func presentOutline(of publication: Publication, delegate: OutlineTableViewControllerDelegate?, from viewController: UIViewController)
+//
+//    /// Shows the DRM management screen for the given DRM.
+//    func presentDRM(for publication: Publication, from viewController: UIViewController)
+//
+//    func presentAlert(_ title: String, message: String, from viewController: UIViewController)
+    func presentError(_ error: Error?, from viewController: UIViewController)
+    
 }
 
