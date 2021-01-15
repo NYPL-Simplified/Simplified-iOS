@@ -40,7 +40,7 @@
 "Downloading" = "Scaricamento in corso";
 "Error" = "Errore";
 "Feedback" = "Feedback";
-"Hide" = "nascondere";
+"Hide" = "Nascondi";
 "Information" = "Informazioni";
 "LibraryCard" = "Tessera della biblioteca";
 "Error Loading Library" = "Errore di accesso alla biblioteca";
@@ -78,7 +78,6 @@
 "SyncFailed" = "Sincronizzazione non riuscita";
 "TimedOut" = "Tempo scaduto";
 "TryAgain" = "Riprova";
-"Unknown error parsing problem document" = "Si è verificato un errore. Per favore riprova.";
 "UnknownRequestError" = "Si è verificato un errore. Controlla la tua connessione a internet o riprova più tardi.";
 "Verifying" = "verifica";
 "Back" = "Indietro";
@@ -90,20 +89,20 @@
 "AppDelegateUpdateRemindMeLater" = "Ricordamelo dopo";
 
 // NYPLBookButtonsView
-"BookButtonsViewRemoveHoldTitle" = "rimuovere la prenotazione";
-"BookButtonsViewRemoveHoldMessage" = "Sei sicuro di voler rimuovere \"%@\" dalla tua prenotazione? Non sarà più essere in linea per questo libro.";
+"BookButtonsViewRemoveHoldTitle" = "Rimuovi prenotazione";
+"BookButtonsViewRemoveHoldMessage" = "Sei sicuro di voler cancellare la prenotazione di \"%@\"? Perderai il tuo posto nella fila per accedere a questo libro.";
 "BookButtonsViewRemoveHoldConfirm" = "Rimuovere";
 
-
-// NYPLBookDetailViewControllerTitle
+// Book Details
 "BookDetailViewControllerTitle" = "Dettagli";
-"BookDetailViewControllerDownloadNeededTitle" = "Il tuo libro non è stato ancora scaricato.";
-"BookDetailViewControllerDownloadSuccessfulTitle" = "Il tuo libro è pronto da leggere!";
+"BookDetailViewControllerDownloadNeededTitle" = "Il libro non è stato ancora scaricato.";
+"BookDetailViewControllerDownloadSuccessfulTitle" = "Il libro è pronto da leggere!";
 "BookDetailViewControllerAvailableToBorrowTitle" = "Questo libro si può prendere in prestito";
 "BookDetailViewControllerCanHoldTitle" = "Tutte le licenze di questo libro sono attualmente assegnate.";
-"BookDetailViewControllerHoldingTitleFormat" = "Disponibile per cassa in circa il %@.";
+"BookDetailViewControllerHoldingTitleFormat" = "Disponibile per essere preso in prestito tra %@.";
 "BookDetailViewControllerReservedTitleFormat" = "La prenotazione verrà automaticamente cancellata in %@.";
 "BookDetailViewControllerDistributedByFormat" = "Distribuito da: ";
+"It will expire in %@." = "Scadrà tra %@.";
 
 // NYPLBookCellDelegate
 "Unsupported Item" = "Formato non supportato";

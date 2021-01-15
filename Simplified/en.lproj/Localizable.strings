@@ -82,7 +82,6 @@
 "SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
-"Unknown error parsing problem document" = "Unknown error parsing problem document";
 "UnknownRequestError" = "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
 "Back" = "Back";
@@ -99,7 +98,7 @@
 "BookButtonsViewRemoveHoldMessage" = "Are you sure you want to remove \"%@\" from your reservations? You will no longer be in line for this book.";
 "BookButtonsViewRemoveHoldConfirm" = "Remove";
 
-// NYPLBookDetailViewControllerTitle
+// Book Details
 "BookDetailViewControllerTitle" = "Details";
 "BookDetailViewControllerDownloadNeededTitle" = "Your book has not yet been downloaded.";
 "BookDetailViewControllerDownloadSuccessfulTitle" = "Your book is ready to read!";
@@ -108,6 +107,7 @@
 "BookDetailViewControllerHoldingTitleFormat" = "Available for checkout in less than %@.";
 "BookDetailViewControllerReservedTitleFormat" = "This reservation will be automatically cancelled in %@.";
 "BookDetailViewControllerDistributedByFormat" = "Distributed by: ";
+"It will expire in %@." = "It will expire in %@.";
 
 // NYPLBookCellDelegate
 "Unsupported Item" = "Unsupported Item";

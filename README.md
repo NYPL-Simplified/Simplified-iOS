@@ -1,6 +1,4 @@
-[![SimplyE Build](https://github.com/NYPL-Simplified/Simplified-iOS/workflows/SimplyE%20Build/badge.svg)](https://github.com/NYPL-Simplified/Simplified-iOS/actions?query=workflow%3A%22SimplyE%20Build%22)
-
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![SimplyE Build](https://github.com/NYPL-Simplified/Simplified-iOS/workflows/SimplyE%20Build/badge.svg)](https://github.com/NYPL-Simplified/Simplified-iOS/actions?query=workflow%3A%22SimplyE%20Build%22) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # SimplyE and Open eBooks
 
@@ -88,27 +86,26 @@ The Xcode project contains 2 additional targets beside the main one referenced e
 
 This codebase follows Google's [Swift](https://google.github.io/swift/) and [Objective-C](https://google.github.io/styleguide/objcguide.xml) style guides, including the use of two-space indentation. More details are available in [our wiki](https://github.com/NYPL-Simplified/Simplified/wiki/Mobile-client-applications#code-style-1).
 
-The primary services/singletons within the program are as follows:
-
-* `AccountsManager`
-* `NYPLUserAccount`
-* `NYPLBookRegistry`
-* `NYPLMyBooksDownloadCenter`
-* `NYPLSettings`
-* `NYPLKeychain`
-
-Most of the above contain appropriate documentation in the header files.
-
-The rest of the program follows Apple's usual pattern of passive views,
+Most of the code follows Apple's usual pattern of passive views,
 relatively passive models, and one-off controllers for integrating everything.
 Immutability is preferred wherever possible.
 
 Questions, suggestions, and general discussion occurs via Slack: Email
 `swans062@umn.edu` for access.
 
+## Branching and CI
+
+`develop` is the main development branch.
+
+Release branch names follow the convention: `release/<appname>/<version>`. For example, `release/simplye/3.7.0`.
+
+Feature branch names (for feature whose development is a month or more): `feature/<feature-name>`, e.g. `feature/readium2`.
+
+Continuous integration is enabled on push events on `develop`, release and feature branches, archiving and uploading a device build of SimplyE to [iOS-binaries](https://github.com/NYPL-Simplified/iOS-binaries). Commits on release branches also send the same build to TestFlight.
+
 # License
 
-Copyright © 2015-2020 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2015-2021 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

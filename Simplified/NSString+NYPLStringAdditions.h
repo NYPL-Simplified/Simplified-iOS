@@ -12,4 +12,8 @@
  */
 - (NSString *)stringURLEncodedAsQueryParamValue;
 
+/// Determines if a string is empty not counting any whitespace characters.
+/// E.g. [@" " isEmptyNoWhitespace] returns @p true.
+- (BOOL)isEmptyNoWhitespace;
+
 @end

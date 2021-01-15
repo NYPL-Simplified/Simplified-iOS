@@ -194,7 +194,8 @@ class NYPLCaching {
     config.shouldUseExtendedBackgroundIdleMode = true
     config.httpMaximumConnectionsPerHost = 8
     config.httpShouldUsePipelining = true
-
+    config.timeoutIntervalForRequest = 30
+    config.timeoutIntervalForResource = 60
     config.requestCachePolicy = .useProtocolCachePolicy
     config.urlCache = makeCache()
 
