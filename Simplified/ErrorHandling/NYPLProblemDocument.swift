@@ -92,6 +92,24 @@ import Foundation
     return try jsonDecoder.decode(NYPLProblemDocument.self, from: data)
   }
   
+  /// Factory method to create a problem document after an api call.
+  ///
+  /// - Parameters:
+  ///   - responseData: Response data possibly containing a problem document.
+  ///   - responseError: Error possibly containing a problem document.
+  /// - Returns: A problem document instance if a problem document was found,
+  /// or `nil` otherwise.
+  @objc class func fromResponseError(_ responseError: NSError?,
+                                     responseData: Data?) -> NYPLProblemDocument? {
+    if let problemDocFromError = responseError?.problemDocument {
+      return problemDocFromError
+    } else if let responseData = responseData {
+      return try? NYPLProblemDocument.fromData(responseData)
+    } else {
+      return nil
+    }
+  }
+
   /**
     Factory method that creates a ProblemDocument from a dictionary
     @param dict data with which to populate the ProblemDocument
@@ -109,5 +127,9 @@ import Foundation
       NYPLProblemDocument.detailKey: detail ?? "",
       NYPLProblemDocument.instanceKey: instance ?? "",
     ]
+  }
+
+  @objc var stringValue: String {
+    return "\(title == nil ? "" : title! + ": ")\(detail ?? "")"
   }
 }

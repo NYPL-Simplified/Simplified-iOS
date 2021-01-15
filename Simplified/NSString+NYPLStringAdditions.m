@@ -69,4 +69,11 @@
   return [self stringByAddingPercentEncodingWithAllowedCharacters:noEscapingCharSet];
 }
 
+- (BOOL)isEmptyNoWhitespace
+{
+  NSString *s = [self stringByTrimmingCharactersInSet:
+                 [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  return s.length == 0;
+}
+
 @end
