@@ -122,6 +122,7 @@
 {
   Account *account = [[AccountsManager sharedInstance] currentAccount];
   __block NSURL *mainFeedUrl = [NSURL URLWithString:account.catalogUrl];
+
   void (^completion)(void) = ^() {
     [[NYPLSettings sharedSettings] setAccountMainFeedURL:mainFeedUrl];
     [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
@@ -137,28 +138,22 @@
      postNotificationName:NSNotification.NYPLCurrentAccountDidChange
      object:nil];
   };
-  if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
+
+  NYPLUserAccount * const user = NYPLUserAccount.sharedAccount;
+  if (user.authDefinition.needsAgeCheck) {
     [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
+      [NYPLMainThreadRun asyncIfNeeded: ^{
+        mainFeedUrl = [user.authDefinition coppaURLWithIsOfAge:isOfAge];
         completion();
-      });
+      }];
     }];
-  } else if (NYPLUserAccount.sharedAccount.isCatalogSecured && !NYPLUserAccount.sharedAccount.hasCredentials) {
-    // sign in
-    [NYPLAccountSignInViewController requestCredentialsUsingExisting:NO authorizeImmediately:YES completionHandler:^{
-      dispatch_async(dispatch_get_main_queue(), ^{
-        completion();
-      });
+  } else if (user.catalogRequiresAuthentication && !user.hasCredentials) {
+    // we're signed out, so sign in
+    [NYPLAccountSignInViewController requestCredentialsWithCompletion:^{
+      [NYPLMainThreadRun asyncIfNeeded:completion];
     }];
   } else {
-    if (![NSThread isMainThread]) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        completion();
-      });
-    } else {
-      completion();
-    }
+    [NYPLMainThreadRun asyncIfNeeded:completion];
   }
 }
 

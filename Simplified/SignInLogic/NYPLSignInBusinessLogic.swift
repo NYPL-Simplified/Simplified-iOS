@@ -242,7 +242,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
                             code: NYPLErrorCode.noURL.rawValue,
                             userInfo: [
                               NSLocalizedDescriptionKey:
-                                NSLocalizedString("Unable to contact server because the server didn't provide a URL for signing in.",
+                                NSLocalizedString("Unable to contact the server because the URL for signing in is missing.",
                                                   comment: "Error message for when the library profile url is missing from the authentication document the server provided."),
                               NSLocalizedRecoverySuggestionErrorKey:
                                 NSLocalizedString("Try force-quitting the app and repeat the sign-in process.",
@@ -372,6 +372,78 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       self.isAuthenticationDocumentLoading = false
       completion(success)
     }
+  }
+
+  /// Set up the sign-in business logic to refresh the authentication token
+  /// for the currently signed in user.
+  ///
+  /// This method determines if user input is required in order to keep the
+  /// user login session going. If no user input is required, it proceeds
+  /// to fetch a new token keeping the user logged in.
+  ///
+  /// - IMPORTANT: This method is not thread-safe.
+  /// - Parameters:
+  ///   - usingExistingCredentials: Force using existing credentials for the
+  ///   authentication refresh attempt.
+  ///   - completion: Block to be run after the authentication refresh attempt
+  ///   is performed.
+  /// - Returns: `true` if a sign-in UI is needed to refresh authentication.
+  func refreshAuthIfNeeded(usingExistingCredentials: Bool,
+                           completion: (() -> Void)?) -> Bool {
+
+    guard
+      let authDef = userAccount.authDefinition,
+      (authDef.isBasic || authDef.isOauth || authDef.isSaml)
+    else {
+      completion?()
+      return false
+    }
+
+    completionHandler = completion
+
+    // reset authentication if needed
+    if authDef.isSaml || authDef.isOauth {
+      if !usingExistingCredentials {
+        // if current authentication is SAML and we don't want to use current
+        // credentials, we need to force log in process. this is for the case
+        // when we were logged in, but IDP expired our session and if this
+        // happens, we want the user to pick the idp to begin reauthentication
+        ignoreSignedInState = true
+        if authDef.isSaml {
+          selectedAuthentication = nil
+        }
+      }
+    }
+
+    // set up UI and log in if needed
+    if authDef.isBasic {
+      if usingExistingCredentials && userAccount.hasBarcodeAndPIN() {
+        if uiDelegate == nil {
+          #if DEBUG
+          preconditionFailure("uiDelegate must be set for logIn to work correctly")
+          #else
+          NYPLErrorLogger.logError(
+            withCode: .appLogicInconsistency,
+            summary: "uiDelegate missing while refreshing basic auth",
+            metadata: [
+              "usingExistingCredentials": usingExistingCredentials,
+              "hashedBarcode": userAccount.barcode?.md5hex() ?? "N/A"
+          ])
+          #endif
+        }
+        uiDelegate?.usernameTextField?.text = userAccount.barcode
+        uiDelegate?.PINTextField?.text = userAccount.PIN
+
+        logIn()
+        return false
+      } else {
+        uiDelegate?.usernameTextField?.text = ""
+        uiDelegate?.PINTextField?.text = ""
+        uiDelegate?.usernameTextField?.becomeFirstResponder()
+      }
+    }
+
+    return true
   }
 
   // MARK:- User Account Management
