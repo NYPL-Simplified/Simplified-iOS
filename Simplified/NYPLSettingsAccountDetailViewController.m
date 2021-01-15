@@ -99,6 +99,8 @@ Authenticating with any of those barcodes should work.
 
 @synthesize PINTextField;
 
+@synthesize forceEditability;
+
 #pragma mark - NYPLSignInOutBusinessLogicUIDelegate properties
 
 - (NSString *)context

@@ -258,8 +258,8 @@ private enum StorageKey: String {
   }
 
   // Oauth requires login to load catalog
-  var isCatalogSecured: Bool {
-    return authDefinition?.isCatalogSecured ?? false
+  var catalogRequiresAuthentication: Bool {
+    return authDefinition?.catalogRequiresAuthentication ?? false
   }
 
   // MARK: - Legacy
