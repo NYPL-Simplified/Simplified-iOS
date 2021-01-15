@@ -270,7 +270,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
         break;
       }
       case NYPLMyBooksDownloadRightsManagementLCP: {
-        [self fulfillLCPLicense:tmpSavedFileURL forBook:book];
+        [self fulfillLCPLicense:tmpSavedFileURL forBook:book downloadTask:downloadTask];
         break;
       }
       case NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON: {
@@ -1435,7 +1435,10 @@ didFinishDownload:(BOOL)didFinishDownload
 /// Fulfill LCP license
 /// @param licenseUrl Downloaded LCP license URL
 /// @param book `NYPLBook` Book
-- (void)fulfillLCPLicense:(NSURL *)licenseUrl forBook:(NYPLBook *)book {
+- (void)fulfillLCPLicense:(NSURL *)licenseUrl
+                  forBook:(NYPLBook *)book
+             downloadTask:(NSURLSessionDownloadTask *)downloadTask
+{
   #if defined(LCP)
   LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
   [lcpService fulfill:licenseUrl completion:^(NSURL *localUrl, NSError *error) {
@@ -1444,7 +1447,9 @@ didFinishDownload:(BOOL)didFinishDownload
       [self failDownloadForBook:book];
       return;
     }
-    BOOL success = [self moveDownloadedFileAtURL:localUrl book:book];
+    BOOL success = [self replaceBook:book
+                       withFileAtURL:localUrl
+                     forDownloadTask:downloadTask];
     if (!success) {
       [self failDownloadForBook:book];
     }
