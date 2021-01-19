@@ -39,13 +39,25 @@ fi
 
 IOS_BINARIES_DIR_PATH="$PWD/$IOS_BINARIES_DIR_NAME"
 
+ # check we didn't already upload this build
+ZIP_FULLPATH="$IOS_BINARIES_DIR_PATH/$UPLOAD_FILENAME"
+if [[ -f "$ZIP_FULLPATH" ]]; then
+  echo "${ARCHIVE_NAME} already exists on iOS-binaries"
+  exit 1
+fi
+
+# put .ipa with rest of files to be uploaded
 cd "$SIMPLIFIED_DIR"
 IPA_NAME="${ARCHIVE_NAME}.ipa"
-echo "Copying .ipa to $IOS_BINARIES_DIR_PATH/$IPA_NAME"
-cp "$ADHOC_EXPORT_PATH/$APP_NAME.ipa" "$IOS_BINARIES_DIR_PATH/$IPA_NAME"
+cp "$ADHOC_EXPORT_PATH/$APP_NAME.ipa" "$PAYLOAD_PATH/$IPA_NAME"
 
+# zip .ipa with dSYMs
+cd "$PAYLOAD_PATH/.."
+zip -r "$ZIP_FULLPATH" "$PAYLOAD_DIR_NAME"
+
+# upload to iOS-binaries repo
 cd "$IOS_BINARIES_DIR_PATH"
-git add "$IPA_NAME"
+git add "$ZIP_FULLPATH"
 git status
 
 if [ "$BUILD_CONTEXT" == "ci" ]; then
