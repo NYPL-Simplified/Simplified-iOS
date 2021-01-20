@@ -1,4 +1,4 @@
-name: Check Build Number
+name: Check SimplyE Build Number
 on:
   push:
     branches:
