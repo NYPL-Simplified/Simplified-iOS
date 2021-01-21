@@ -19,6 +19,7 @@ didRequestSyncBookmarksWithCompletion:
 
 @end
 
+/// VC handling TOC and Bookmarks for Readium 1 reader.
 @interface NYPLReaderTOCViewController : UIViewController
 
 @property (nonatomic, weak) id<NYPLReaderTOCViewControllerDelegate> delegate;

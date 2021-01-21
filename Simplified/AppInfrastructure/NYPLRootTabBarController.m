@@ -1,7 +1,6 @@
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLMyBooksNavigationController.h"
-#import "NYPLMyBooksViewController.h"
 #import "NYPLReaderViewController.h"
 
 #ifdef SIMPLYE
@@ -18,6 +17,7 @@
 @property (nonatomic) NYPLMyBooksNavigationController *myBooksNavigationController;
 @property (nonatomic) NYPLHoldsNavigationController *holdsNavigationController;
 @property (nonatomic) NYPLSettingsSplitViewController *settingsSplitViewController;
+@property (readwrite) NYPLR2Owner *r2Owner;
 
 @end
 
@@ -65,6 +65,7 @@
                                            selector:@selector(dismissReaderUponEnteringBackground)
                                                name:UIApplicationDidEnterBackgroundNotification
                                              object:nil];
+  self.r2Owner = [[NYPLR2Owner alloc] init];
   return self;
 }
 

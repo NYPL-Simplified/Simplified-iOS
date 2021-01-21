@@ -6,5 +6,10 @@ github "NYPL-Simplified/NYPLAudiobookToolkit" "master"
 github "NYPL-Simplified/PDFRendererProvider-iOS" "master"
 github "NYPL-Simplified/audiobook-ios-overdrive" "master"
 github "PureLayout/PureLayout" ~> 3.1.2
-github "stephencelis/SQLite.swift" ~> 0.11.5
+github "stephencelis/SQLite.swift" == 0.12.2
 github "zxingify/zxingify-objc" ~> 3.6
+# restore once R2 is merged to develop
+github "NYPL-Simplified/r2-lcp-swift" "develop"
+github "NYPL-Simplified/r2-shared-swift" "develop"
+github "NYPL-Simplified/r2-streamer-swift" "develop"
+github "NYPL-Simplified/r2-navigator-swift" "develop"

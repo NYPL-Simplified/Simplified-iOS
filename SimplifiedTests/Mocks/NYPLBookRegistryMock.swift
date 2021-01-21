@@ -9,8 +9,9 @@
 import Foundation
 @testable import SimplyE
 
-class NYPLBookRegistryMock: NSObject, NYPLBookRegistrySyncing {
+class NYPLBookRegistryMock: NSObject, NYPLBookRegistrySyncing, NYPLBookRegistryProvider {
   var syncing = false
+  var identifiersToRecords = [String: NYPLBookRegistryRecord]()
 
   func reset(_ libraryAccountUUID: String) {
     syncing = false
@@ -26,5 +27,45 @@ class NYPLBookRegistryMock: NSObject, NYPLBookRegistrySyncing {
   }
 
   func save() {
+  }
+    
+  func addBook(book: NYPLBook,
+               state: NYPLBookState) {
+    let dict = ["metadata": book.dictionaryRepresentation(), "state": state.stringValue()] as [String : AnyObject]
+    self.identifiersToRecords[book.identifier] = NYPLBookRegistryRecord(dictionary: dict)
+  }
+    
+  func readiumBookmarks(forIdentifier identifier: String) -> [NYPLReadiumBookmark] {
+    guard let record = identifiersToRecords[identifier] else { return [NYPLReadiumBookmark]() }
+    return record.readiumBookmarks.sorted{ $0.progressWithinBook > $1.progressWithinBook }
+  }
+  
+  func location(forIdentifier identifier: String) -> NYPLBookLocation? {
+    guard let record = identifiersToRecords[identifier] else { return nil }
+    return record.location
+  }
+    
+  func setLocation(_ location: NYPLBookLocation?, forIdentifier identifier: String) {
+  }
+
+  func add(_ bookmark: NYPLReadiumBookmark, forIdentifier identifier: String) {
+    guard let record = identifiersToRecords[identifier] else { return }
+    var bookmarks = [NYPLReadiumBookmark]()
+    bookmarks.append(contentsOf: record.readiumBookmarks)
+    bookmarks.append(bookmark)
+    identifiersToRecords[identifier] = record.withReadiumBookmarks(bookmarks)
+  }
+
+  func delete(_ bookmark: NYPLReadiumBookmark, forIdentifier identifier: String) {
+    guard let record = identifiersToRecords[identifier] else { return }
+    let bookmarks = record.readiumBookmarks.filter { $0 != bookmark }
+    identifiersToRecords[identifier] = record.withReadiumBookmarks(bookmarks)
+  }
+  
+  func replace(_ oldBookmark: NYPLReadiumBookmark, with newBookmark: NYPLReadiumBookmark, forIdentifier identifier: String) {
+    guard let record = identifiersToRecords[identifier] else { return }
+    var bookmarks = record.readiumBookmarks.filter { $0 != oldBookmark }
+    bookmarks.append(newBookmark)
+    identifiersToRecords[identifier] = record.withReadiumBookmarks(bookmarks)
   }
 }

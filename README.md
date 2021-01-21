@@ -26,9 +26,7 @@ git checkout develop
 # idempotent script to rebuild all dependencies
 ./scripts/build-3rd-party-dependencies.sh --no-private
 ```
-
 Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
-
 
 # Building With Adobe DRM
 
@@ -53,7 +51,29 @@ For instance, to build all 3rd party dependencies minus DRM:
 ```bash
 ./scripts/build-3rd-party-dependencies.sh
 ```
-In the rare event you need to build DRM-related dependencies, you can use the `adobe-rmsdk-build.sh` script.
+Both scripts must be run from the Simplified-iOS repo root.
+
+## Building for Readium 2 Integration
+
+Before working on R2 integration, make sure you can build the app without R2. Follow the steps listed above for building the app with DRM.
+
+For working on integrating R2 into SimplyE, first clone the following frameworks as siblings of `Simplified-iOS` on the file system:
+```bash
+cd Simplified-iOS/..
+git clone https://github.com/NYPL-Simplified/r2-shared-swift
+git clone https://github.com/NYPL-Simplified/r2-streamer-swift
+git clone https://github.com/NYPL-Simplified/r2-navigator-swift
+git clone https://github.com/NYPL-Simplified/r2-lcp-swift
+```
+The first 2 repos are patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM and LCP DRM support in Readium 2.
+
+Then use the `feature/readium2` branch and rebuild the dependencies. This will take longer than on `develop`, because there are more Carthage dependencies to build and keep in sync:
+```bash
+cd Simplified-iOS
+git checkout feature/readium2
+./scripts/build-carthage-R2-integration.sh
+```
+Finally, open `SimplifiedR2.workspace` and use the `SimplyE-R2dev` target to build the app.
 
 # Building Secondary Targets
 

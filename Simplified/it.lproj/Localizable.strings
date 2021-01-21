@@ -81,7 +81,6 @@
 "UnknownRequestError" = "Si è verificato un errore. Controlla la tua connessione a internet o riprova più tardi.";
 "Verifying" = "verifica";
 "Back" = "Indietro";
-"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "Il caricamento di questa pagina è fallito. Prova a chiudere l'app completamente e a riaprirla. Se il problema persiste, contatta l'Help Desk della tua biblioteca.";
 
 // NYPLAppDelegate
 "AppDelegateUpdateRequiredTitle" = "Aggiornamento Necessario";
@@ -138,15 +137,19 @@
 "MyBooksViewControllerGroupShow" = "Mostra";
 "MyBooksViewControllerGroupSortBy" = "Ordina per";
 
-// NYPLReaderViewController
+// NYPLReaderViewController (R1)
 "ReaderViewControllerCorruptTitle" = "Prenota Impossibile visualizzare";
 "ReaderViewControllerCorruptMessage" = "Questo libro è danneggiato e non può essere letto.";
 "ReaderViewControllerCurrentChapter" = "Capitolo corrente";
 "Book" = "Libro";
 "TOC" = "Sommario";
 
-// NYPLReaderReadiumView
+// NYPLReaderReadiumView (R1)
 "chapter" = "capitolo";
+
+// ReaderViewController (R2)
+"Previous Chapter" = "Capitolo precedente";
+"Next Chapter" = "Capitolo successivo";
 
 // NYPLReaderSettingsView
 "SansFont" = "carattere sans";
@@ -162,8 +165,13 @@
 // NYPLReaderSettingsViewController
 "ReaderViewControllerToggleReaderSettings" = "impostazioni del lettore Toggle";
 
-// ReaderTOCViewController
+// Reader Positions (TOC and Bookmarks)
 "ReaderTOCViewControllerTitle" = "Sommario";
+"%@ through chapter" = "%@ del capitolo";
+"There are no bookmarks for this book." = "Non ci sono segnalibri per questo libro.";
+
+// Settings
+"SettingsConnectionFailureMessage" = "Non è stato possibile caricare la pagina per via di un errore nella connessione a internet.";
 
 // NYPLSettings
 "The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";
@@ -175,7 +183,7 @@
 "Please sign in to use this functionality." = "Accedi con uno dei meccanismi di identificazione per poter usare questa funzionalità.";
 
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
-"Add Library" = "Aggiungi";
+"Add Library" = "Aggiungi Biblioteca";
 "Report an Issue" = "Riferisci un problema";
 "Show Barcode" = "Mostra il codice a barre";
 "Hide Barcode" = "Nascondi il codice a barre";
@@ -184,9 +192,12 @@
 "Sync Bookmarks" = "Sincronizza i segnalibri";
 "Save your reading position and bookmarks to all your other devices." = "Salva la posizione di lettura e i segnalibri su tutti i tuoi altri dispositivi.";
 "SettingsAccountViewControllerAuthenticationReason" = "Accedi per visualizzare il PIN.";
-"SettingsAccountViewControllerCannotLogOutTitle" = "Disconnessione fallita";
-"SettingsAccountViewControllerCannotLogOutMessage" = "Si prega di attendere finchè gli scaricamenti in corso sono finiti prima di uscire.";
-"SettingsAccountViewControllerInvalidCredentials" = "La combinazione di codice a barre e PIN non è valida. Riprova.";
+"SettingsAccountViewControllerCannotLogOutTitle" =
+  "Disconnessione fallita";
+"SettingsAccountViewControllerCannotLogOutMessage" =
+  "Si prega di attendere finchè gli scaricamenti in corso sono finiti prima di uscire.";
+"SettingsAccountViewControllerInvalidCredentials" =
+  "La combinazione di codice a barre e PIN non è valida. Riprova.";
 "SettingsAccountViewControllerLoginFailed" = "Accesso fallito";
 "SettingsAccountViewControllerLogoutFailed" = "Errore durante la disconnessione";
 "If you sign out, your books and any saved bookmarks will be removed." = "Se ti disconnetti, tutti i libri scaricati saranno rimossi da questo dispositivo.";

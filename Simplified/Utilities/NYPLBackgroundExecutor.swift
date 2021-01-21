@@ -11,7 +11,7 @@ import Dispatch
 
 /**
  Protocol that should be implemented by a class that wants to schedule work
- in the background.
+ in the background using `NYPLBackgroundExecutor`.
  */
 @objc protocol NYPLBackgroundWorkOwner {
   /// Implementors should do 2 things:
@@ -21,9 +21,9 @@ import Dispatch
   /// created via `dispatch_block_create` to avoid undefined
   /// behavior (see docs for `dispatch_block_cancel()`).
   ///
-  /// 2. Invoke the `backgroundWork` parameter from inside the work item.
+  /// 2. Invoke the `backgroundWork` block parameter from inside the work item.
   ///
-  /// E.g. at a minimum this means:
+  /// E.g.:
   /// ```objc
   /// - (dispatch_block_t)setUpWorkItemWrappingBackgroundWork:(void(^)(void))backgroundWork
   /// {
@@ -34,9 +34,11 @@ import Dispatch
   /// }
   /// ```
   ///
-  /// `NYPLBackgroundExecutor` will call this function at the right time
-  /// passing in a wrapper `block` that takes care of ending the background
-  /// task for you, performing the appropriate logging.
+  /// Then when used in conjunction with `NYPLBackgroundExecutor`,
+  /// `NYPLBackgroundExecutor::dispatchBackgroundWork()` will call
+  /// `setUpWorkItem(wrapping:)` at the right time. The executor takes
+  /// care of starting and ending the background task for you,
+  /// performing the appropriate logging.
   ///
   /// - Parameter backgroundWork: The block that the owning class should invoke
   /// from inside the work-item / dispatch-block it created.

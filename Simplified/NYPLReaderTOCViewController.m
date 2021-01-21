@@ -2,26 +2,24 @@
 
 #import "NYPLConfiguration.h"
 #import "NYPLReaderSettings.h"
-#import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReaderTOCViewController.h"
 #import "SimplyE-Swift.h"
 
-
+// Deprecated: this is used only by R1. R2 uses NYPLReaderPositionsVC.
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (strong, nonatomic) IBOutlet UILabel *noBookmarksLabel;
 @property (nonatomic) UIRefreshControl *refreshControl;
-@property (nonatomic) BOOL darkColorScheme;
 
 - (IBAction)didSelectSegment:(id)sender;
 
 @end
 
-static NSString *const reuseIdentifierTOC = @"contentCell";
-static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
+static NSString *const reuseIDTOC = @"contentCell";
+static NSString *const reuseIDBookmark = @"bookmarkCell";
 
 typedef NS_ENUM(NSInteger, SegmentControlType) {
   SegmentControlTypeTOC,
@@ -38,6 +36,10 @@ segmentControlTypeWithInteger(NSInteger const integer)
   return integer;
 }
 
+// TODO: SIMPLY-2608
+// Once bookmarks logic is finalized, it should be possible to refactor (and
+// possibly even completely remove) this VC and related storyboard with
+// NYPLReaderPositionsVC.
 @implementation NYPLReaderTOCViewController
 
 #pragma mark UIViewController
@@ -63,8 +65,7 @@ segmentControlTypeWithInteger(NSInteger const integer)
   self.navigationController.navigationBar.barTintColor = nil;
   
   self.tableView.separatorColor = [UIColor grayColor];
-  [self.tableView reloadData];
-  
+
   switch (segmentControlTypeWithInteger(self.segmentedControl.selectedSegmentIndex)) {
     case SegmentControlTypeTOC:
       if ([self.tableView.subviews containsObject:self.refreshControl]){
@@ -80,46 +81,17 @@ segmentControlTypeWithInteger(NSInteger const integer)
       break;
   }
 
-  switch([NYPLReaderSettings sharedSettings].colorScheme) {
-    case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
-      self.view.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
-      if (@available(iOS 13.0, *)) {
-        self.segmentedControl.selectedSegmentTintColor = [NYPLConfiguration mainColor];
-        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [NYPLConfiguration mainColor]} forState:UIControlStateNormal];
-        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateSelected];
-      } else {
-        self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
-      }
-      self.noBookmarksLabel.textColor = [UIColor blackColor];
-      break;
-      
-    case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
-      self.view.backgroundColor = [NYPLConfiguration readerBackgroundColor];
-      if (@available(iOS 13.0, *)) {
-        self.segmentedControl.selectedSegmentTintColor = [NYPLConfiguration mainColor];
-        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [NYPLConfiguration mainColor]} forState:UIControlStateNormal];
-        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateSelected];
-      } else {
-        self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
-      }
-      self.noBookmarksLabel.textColor = [UIColor blackColor];
-      break;
-      
-    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
-      self.view.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
-      if (@available(iOS 13.0, *)) {
-        self.segmentedControl.selectedSegmentTintColor =  [UIColor whiteColor];
-        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateNormal];
-        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateSelected];
-      } else {
-        self.segmentedControl.tintColor = [UIColor whiteColor];
-      }
-      self.noBookmarksLabel.textColor = [UIColor whiteColor];
-      self.darkColorScheme = YES;
-      break;
+  NYPLReaderSettings *readerSettings = [NYPLReaderSettings sharedSettings];
+  self.view.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+  self.tableView.backgroundColor = self.view.backgroundColor;
+  self.noBookmarksLabel.textColor = readerSettings.foregroundColor;
+
+  if (@available(iOS 13.0, *)) {
+    self.segmentedControl.selectedSegmentTintColor = readerSettings.tintColor;
+    [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : readerSettings.tintColor} forState:UIControlStateNormal];
+    [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : readerSettings.selectedForegroundColor} forState:UIControlStateSelected];
+  } else {
+    self.segmentedControl.tintColor = readerSettings.tintColor;
   }
 
   [self.tableView reloadData];
@@ -167,58 +139,29 @@ segmentControlTypeWithInteger(NSInteger const integer)
 {
   switch (segmentControlTypeWithInteger(self.segmentedControl.selectedSegmentIndex)) {
     case SegmentControlTypeTOC:{
-      NYPLReaderTOCCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierTOC];
-      NYPLReaderTOCElement *const toc = self.tableOfContents[indexPath.row];
+      NYPLReaderTOCCell *cell = [self.tableView
+                                 dequeueReusableCellWithIdentifier:reuseIDTOC
+                                 forIndexPath:indexPath];
+
+      NYPLReaderTOCElement *const tocElement = self.tableOfContents[indexPath.row];
+      BOOL isCurrentChapter = [self.currentChapter isEqualToString:tocElement.title];
+      [cell configWithTitle:tocElement.title
+               nestingLevel:tocElement.nestingLevel
+        isForCurrentChapter:isCurrentChapter];
   
-      cell.leadingEdgeConstraint.constant = 0;
-      cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
-      cell.titleLabel.text = toc.title;
-
-      cell.background.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
-      cell.background.layer.borderWidth = 1;
-      cell.background.layer.cornerRadius = 3;
-
-      cell.backgroundColor = [UIColor clearColor];
-      if (self.darkColorScheme) {
-        cell.titleLabel.textColor = [UIColor whiteColor];
-      } else {
-        cell.titleLabel.textColor = [UIColor blackColor];
-      }
-      
-      if ([self.currentChapter isEqualToString:toc.title])
-      {
-        cell.background.hidden = NO;
-      }
-      else {
-        cell.background.hidden = YES;
-      }
       return cell;
     }
     case SegmentControlTypeBookmark: {
-      NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
-      cell.backgroundColor = [UIColor clearColor];
-      
+      NYPLReaderBookmarkCell *cell = [self.tableView
+                                      dequeueReusableCellWithIdentifier:reuseIDBookmark
+                                      forIndexPath:indexPath];
       NYPLReadiumBookmark *const bookmark = self.bookmarks[indexPath.row];
-      
-      cell.chapterLabel.text = bookmark.chapter;
-      
-      NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
-      dateFormatter.timeStyle = NSDateFormatterShortStyle;
-      dateFormatter.dateStyle = NSDateFormatterShortStyle;
-      
-      NSDate *date = [NSDate dateWithRFC3339String:bookmark.time];
-      NSString *prettyDate = [dateFormatter stringFromDate:date];
-
-      cell.pageNumberLabel.text = [NSString stringWithFormat:@"%@ - %@ through chapter",prettyDate, bookmark.percentInChapter];
-      
-      if (self.darkColorScheme) {
-        cell.chapterLabel.textColor = [UIColor whiteColor];
-        cell.pageNumberLabel.textColor = [UIColor whiteColor];
-      } else {
-        cell.chapterLabel.textColor = [UIColor blackColor];
-        cell.pageNumberLabel.textColor = [UIColor blackColor];
+      if (bookmark != nil) {
+        [cell configWithChapterName:bookmark.chapter ?: @""
+                   percentInChapter:bookmark.percentInChapter
+                  rfc3339DateString:bookmark.time];
       }
-      
+
       return cell;
     }
   }
@@ -248,9 +191,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch (segmentControlTypeWithInteger(self.segmentedControl.selectedSegmentIndex)) {
     case SegmentControlTypeTOC:
-      return 56;
+      return [NYPLConfiguration defaultTOCRowHeight];
     case SegmentControlTypeBookmark:
-      return 100;
+      return [NYPLConfiguration defaultBookmarkRowHeight];
   }
 }
 

@@ -6,6 +6,18 @@
 
 #import "SimplyE-Swift.h"
 
+NSString *const NYPLReaderSettingsColorSchemeDidChangeNotification =
+@"NYPLReaderSettingsColorSchemeDidChange";
+
+NSString *const NYPLReaderSettingsFontFaceDidChangeNotification =
+@"NYPLReaderSettingsFontFaceDidChange";
+
+NSString *const NYPLReaderSettingsFontSizeDidChangeNotification =
+@"NYPLReaderSettingsFontSizeDidChange";
+
+NSString *const NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification =
+@"NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification";
+
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize const input,
                                          NYPLReaderSettingsFontSize *const output)
 {
@@ -100,19 +112,26 @@ NSString *fontFaceToString(NYPLReaderSettingsFontFace const fontFace)
     case NYPLReaderSettingsFontFaceSerif:
       return @"serif";
     case NYPLReaderSettingsFontFaceOpenDyslexic:
-      return @"OpenDyslexic3";
+      return @"OpenDyslexic";
   }
 }
 
-NYPLReaderSettingsFontFace fontFaceFromString(NSString *const string)
+NYPLReaderSettingsFontFace fontFaceFromString(NSString *const stringKey)
 {
-  NSNumber *const fontFaceNumber =
-    @{@"sans": @(NYPLReaderSettingsFontFaceSans),
-      @"serif": @(NYPLReaderSettingsFontFaceSerif),
-      @"OpenDyslexic3": @(NYPLReaderSettingsFontFaceOpenDyslexic)}[string];
+  NSDictionary *possibleValues = @{
+    @"sans": @(NYPLReaderSettingsFontFaceSans),
+    @"serif": @(NYPLReaderSettingsFontFaceSerif),
+    @"OpenDyslexic": @(NYPLReaderSettingsFontFaceOpenDyslexic),
+    @"OpenDyslexic3": @(NYPLReaderSettingsFontFaceOpenDyslexic)
+  };
+  NSNumber *fontFaceNumber = possibleValues[stringKey];
   
-  if(!fontFaceNumber) {
+  if(fontFaceNumber == nil) {
+#if DEBUG
     @throw NSInternalInconsistencyException;
+#else
+    fontFaceNumber = @(NYPLReaderSettingsFontFaceSans);
+#endif
   }
   
   return [fontFaceNumber integerValue];
@@ -355,6 +374,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [NYPLConfiguration readerBackgroundColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [NYPLConfiguration readerBackgroundDarkColor];
   }
 }
@@ -367,6 +387,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [NYPLConfiguration backgroundMediaOverlayHighlightColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [NYPLConfiguration backgroundMediaOverlayHighlightDarkColor];
   }
 }
@@ -375,10 +396,34 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 {
   switch(self.colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      return [UIColor blackColor];
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [UIColor blackColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
+      return [UIColor whiteColor];
+  }
+}
+
+- (UIColor *)selectedForegroundColor
+{
+  switch(self.colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      return [UIColor whiteColor];
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
+      return [UIColor blackColor];
+  }
+}
+
+- (UIColor *)tintColor
+{
+  switch(self.colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      return [NYPLConfiguration mainColor];
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [UIColor whiteColor];
   }
 }

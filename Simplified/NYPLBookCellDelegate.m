@@ -128,15 +128,23 @@
   }
 }
 
-- (void)openEPUB:(NYPLBook *)book {
-  NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
-  [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
-    if (enableSync == YES) {
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-      currentAccount.details.syncPermissionGranted = enableSync;
-    }
-  }];
+- (void)openEPUB:(NYPLBook *)book
+{
+  if (NYPLSettings.shared.useR2) {
+    // R2
+    [[NYPLRootTabBarController sharedController] presentBook:book];
+
+    [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
+      if (enableSync == YES) {
+        Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+        currentAccount.details.syncPermissionGranted = enableSync;
+      }
+    }];
+  } else {
+    // R1
+    NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
+    [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
+  }
 }
 
 - (void)openPDF:(NYPLBook *)book {
@@ -189,11 +197,22 @@
     dict[@"id"] = book.identifier;
   }
 #endif
+  
+  id<DRMDecryptor> audiobookDrmDecryptor = nil;
 
+#if defined(LCP)
+  if ([LCPAudiobooks canOpenBook:book]) {
+    LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:url];
+    dict = [[lcpAudiobooks contentDictionary] mutableCopy];
+    dict[@"id"] = book.identifier;
+    audiobookDrmDecryptor = lcpAudiobooks;
+  }
+#endif
+  
   [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
-      id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
-
+      id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json decryptor:audiobookDrmDecryptor];
+      
       if (!audiobook) {
         if (error) {
           [self presentDRMKeyError:error];

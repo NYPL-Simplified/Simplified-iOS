@@ -1,14 +1,16 @@
 /// Bookmark representation for the Readium-1 epub renderer.
 @objcMembers final class NYPLReadiumBookmark: NSObject {
-  
+  // I think this is the bookmark ID
   var annotationId:String?
 
   var chapter:String?
   var page:String?
 
+  // location and contentCFI are location information generated from R1 reader
+  // which are not available in R2, therefore they are now optionals
   var location:String
   var idref:String
-  var contentCFI:String
+  var contentCFI:String?
   var progressWithinChapter:Float = 0.0
   var progressWithinBook:Float = 0.0
 
@@ -20,6 +22,8 @@
   }
   
   var device:String?
+
+  /// Date formatted as per RFC 3339
   let time:String
   
   init?(annotationId:String?,
@@ -34,7 +38,7 @@
         device:String?)
   {
     //Obj-C Nil Check
-    guard let contentCFI = contentCFI, let idref = idref, let location = location else {
+    guard let idref = idref else {
       Log.error(#file, "Bookmark failed init due to nil parameter.")
       return nil
     }
@@ -43,7 +47,10 @@
     self.idref = idref
     self.chapter = chapter ?? ""
     self.page = page ?? ""
-    self.location = location
+    // This location structure originally comes from R1 Reader's Javascript
+    // and its not available in R2, we are mimicking the structure
+    // in order to pass the needed information to the server
+    self.location = location ?? "{\"idref\":\"\(idref)\",\"contentCFI\":\"\(contentCFI ?? "")\"}"
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook
     self.time = time ?? NSDate().rfc3339String()
@@ -82,7 +89,7 @@
 
   var dictionaryRepresentation:NSDictionary {
     return ["annotationId":self.annotationId ?? "",
-            "contentCFI":self.contentCFI,
+            "contentCFI":self.contentCFI ?? "",
             "idref":self.idref,
             "chapter":self.chapter ?? "",
             "page":self.page ?? "",
@@ -97,14 +104,27 @@
   override func isEqual(_ object: Any?) -> Bool {
     let other = object as! NYPLReadiumBookmark
 
-    if (self.contentCFI == other.contentCFI &&
-      self.idref == other.idref &&
-      self.chapter == other.chapter &&
-      self.location == other.location)
-    {
-      return true
+    if let contentCFI = self.contentCFI,
+      let otherContentCFI = other.contentCFI,
+      contentCFI.count > 0 && otherContentCFI.count > 0 {
+        // R1
+        return self.idref == other.idref
+            && self.contentCFI == other.contentCFI
+            && self.location == other.location
+            && self.chapter == other.chapter
+    } else {
+      // R2
+      return self.idref == other.idref
+        && self.progressWithinBook == other.progressWithinBook
+        && self.progressWithinChapter == other.progressWithinChapter
+        && self.chapter == other.chapter
     }
-    return false
+  }
+}
+
+extension NYPLReadiumBookmark {
+  override var description: String {
+    return "\(dictionaryRepresentation)"
   }
 }
 

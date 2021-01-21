@@ -11,18 +11,20 @@
 - (instancetype)init
 {
   NYPLMyBooksViewController *vc = [[NYPLMyBooksViewController alloc] init];
-  
+
   self = [super initWithRootViewController:vc];
   if(!self) return nil;
   
   self.tabBarItem.image = [UIImage imageNamed:@"MyBooks"];
-  
+
 #ifdef SIMPLYE
   [self setNavigationLeftBarButtonForVC:vc];
 #endif
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NSNotification.NYPLCurrentAccountDidChange object:nil];
-
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(currentAccountChanged)
+                                               name:NSNotification.NYPLCurrentAccountDidChange
+                                             object:nil];
   return self;
 }
 

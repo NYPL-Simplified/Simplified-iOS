@@ -21,7 +21,8 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
   NYPLReaderSettingsFontSizeLarge = 4,
   NYPLReaderSettingsFontSizeXLarge = 5,
   NYPLReaderSettingsFontSizeXXLarge = 6,
-  NYPLReaderSettingsFontSizeXXXLarge = 7
+  NYPLReaderSettingsFontSizeXXXLarge = 7,
+  NYPLReaderSettingsFontSizeLargest = 7
 };
 
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsMediaOverlaysEnableClick) {
@@ -29,43 +30,38 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsMediaOverlaysEnableClick) {
   NYPLReaderSettingsMediaOverlaysEnableClickFalse = 1
 };
 
-static NSString *const NYPLReaderSettingsColorSchemeDidChangeNotification =
-  @"NYPLReaderSettingsColorSchemeDidChange";
-
-static NSString *const NYPLReaderSettingsFontFaceDidChangeNotification =
-  @"NYPLReaderSettingsFontFaceDidChange";
-
-static NSString *const NYPLReaderSettingsFontSizeDidChangeNotification =
-  @"NYPLReaderSettingsFontSizeDidChange";
-
-static NSString *const NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification =
-@"NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification";
+extern NSString * _Nonnull const NYPLReaderSettingsColorSchemeDidChangeNotification;
+extern NSString * _Nonnull const NYPLReaderSettingsFontFaceDidChangeNotification;
+extern NSString * _Nonnull const NYPLReaderSettingsFontSizeDidChangeNotification;
+extern NSString * _Nonnull const NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification;
 
 
 // Returns |YES| if output was set properly, else |NO| due to already being at the smallest size.
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize input,
-                                         NYPLReaderSettingsFontSize *output);
+                                         NYPLReaderSettingsFontSize * _Nullable output);
 
 // Returns |YES| if output was set properly, else |NO| due to already being at the largest size.
 BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
-                                         NYPLReaderSettingsFontSize *output);
+                                         NYPLReaderSettingsFontSize * _Nullable output);
 
 @interface NYPLReaderSettings : NSObject
 
-+ (NYPLReaderSettings *)sharedSettings;
++ (nonnull NYPLReaderSettings *)sharedSettings;
 
-@property (nonatomic, readonly) UIColor *backgroundColor;
-@property (nonatomic, readonly) UIColor *backgroundMediaOverlayHighlightColor;
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsMediaOverlaysEnableClick mediaOverlaysEnableClick;
-@property (nonatomic, readonly) UIColor *foregroundColor;
+@property (nonnull, nonatomic, readonly) UIColor *backgroundColor;
+@property (nonnull, nonatomic, readonly) UIColor *backgroundMediaOverlayHighlightColor;
+@property (nonnull, nonatomic, readonly) UIColor *foregroundColor;
+@property (nonnull, nonatomic, readonly) UIColor *selectedForegroundColor;
+@property (nonnull, nonatomic, readonly) UIColor *tintColor;
 
 - (void)save;
 
-- (NSArray *)readiumStylesRepresentation;
+- (nonnull NSArray *)readiumStylesRepresentation;
 
-- (NSDictionary *)readiumSettingsRepresentation;
+- (nonnull NSDictionary *)readiumSettingsRepresentation;
 
 @end
