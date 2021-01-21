@@ -20,12 +20,11 @@
 #define EDGE_OF_SCREEN_POINT_FRACTION    0.2
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate, UIPopoverPresentationControllerDelegate>
+  <NYPLUserSettingsReaderDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate, UIPopoverPresentationControllerDelegate>
 
 @property (nonatomic) UIViewController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) BOOL interfaceHidden, isAccessibilityConfigurationActive;
-@property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
 @property (nonatomic) BOOL previousPageTurnWasRight;
 @property (nonatomic) NYPLReaderReadiumView *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
@@ -57,42 +56,6 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
 };
 
 @implementation NYPLReaderViewController
-
-- (void)applyCurrentSettings
-{
-  self.navigationController.navigationBar.barTintColor =
-    [NYPLReaderSettings sharedSettings].backgroundColor;
-
-  self.activePopoverController.view.backgroundColor =
-  [NYPLReaderSettings sharedSettings].backgroundColor;
-  
-  switch([NYPLReaderSettings sharedSettings].colorScheme) {
-    case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
-      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
-      self.headerViewLabel.textColor = [UIColor darkGrayColor];
-      self.footerViewLabel.textColor = [UIColor darkGrayColor];
-      break;
-    case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
-      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
-      self.headerViewLabel.textColor = [UIColor darkGrayColor];
-      self.footerViewLabel.textColor = [UIColor darkGrayColor];
-      break;
-    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
-      self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
-      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
-      self.headerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
-      self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
-      break;
-  }
-}
 
 - (instancetype)initWithBookIdentifier:(NSString *const)bookIdentifier
 {
@@ -175,7 +138,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)viewDidLoad
 {
-  
   [super viewDidLoad];
   
   self.automaticallyAdjustsScrollViewInsets = NO;
@@ -187,27 +149,20 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  // Table of Contents button
-  NYPLRoundedButton *const contentsButton = [NYPLRoundedButton button];
-  contentsButton.bounds = CGRectMake(0, 0, 44.0f, 44.0f);
-  contentsButton.layer.borderWidth = 0.0f;
-  contentsButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
-  [contentsButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
-  [contentsButton addTarget:self
-                action:@selector(didSelectContents)
-      forControlEvents:UIControlEventTouchUpInside];
-  
-  self.contentsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:contentsButton];
-  
-  // Settings button
-  NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
-  settingsButton.bounds = CGRectMake(0, 0, 44.0f, 44.0f);
-  settingsButton.layer.borderWidth = 0.0f;
-  settingsButton.accessibilityLabel = NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
-  [settingsButton setImage:[UIImage imageNamed:@"Format"] forState:UIControlStateNormal];
-  [settingsButton addTarget:self
-                     action:@selector(didSelectSettings)
-           forControlEvents:UIControlEventTouchUpInside];
+  self.contentsBarButtonItem = [[UIBarButtonItem alloc]
+                                initWithImage:[UIImage imageNamed:@"TOC"]
+                                style:UIBarButtonItemStylePlain
+                                target:self
+                                action:@selector(didSelectTOC)];
+  self.contentsBarButtonItem.accessibilityLabel = NSLocalizedString(@"TOC", nil);
+
+  self.settingsBarButtonItem = [[UIBarButtonItem alloc]
+                                initWithImage:[UIImage imageNamed:@"Format"]
+                                style:UIBarButtonItemStylePlain
+                                target:self
+                                action:@selector(didSelectSettings)];
+  self.settingsBarButtonItem.accessibilityLabel =
+  NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
 
   // Bookmark button
   NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
@@ -218,17 +173,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [bookmarkButton addTarget:self
                      action:@selector(toggleBookmark)
            forControlEvents:UIControlEventTouchUpInside];
-
-  
-  UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:contentsButton];
-  self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
-  self.bookmarkBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:bookmarkButton];
+  self.bookmarkBarButtonItem = [[UIBarButtonItem alloc]
+                                initWithCustomView:bookmarkButton];
 
   // Bar button items require autolayout help 11.0+
   if (@available(iOS 11.0, *)) {
-    [self.settingsBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(44,44)];
     [self.bookmarkBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(44,44)];
-    [TOCBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(44,44)];
   }
 
   // Corruption may have occurred before we added these, so we need to set their enabled status
@@ -467,10 +417,15 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     [self.activePopoverController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
     self.activePopoverController = nil;
   }
-  if(self.readerSettingsViewPhone) {
-    [self.readerSettingsViewPhone removeFromSuperview];
-    self.readerSettingsViewPhone = nil;
-  }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+  [super viewWillDisappear:animated];
+
+  [self.activePopoverController.presentingViewController
+   dismissViewControllerAnimated:NO completion:nil];
+  self.activePopoverController = nil;
 }
 
 #pragma mark Accessibility
@@ -582,6 +537,14 @@ spineItemTitle:(NSString *const)title
   }
 }
 
+- (UIModalPresentationStyle)
+adaptivePresentationStyleForPresentationController:(__attribute__((unused))  UIPresentationController *)controller
+traitCollection:(__attribute__((unused)) UITraitCollection *)traitCollection
+{
+  // Prevent the popOver to be presented fullscreen on iPhones.
+  return UIModalPresentationNone;
+}
+
 #pragma mark UIScrollViewDelegate
 
 - (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
@@ -636,42 +599,49 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReadiumBookmar
   [self.rendererView.syncManager syncBookmarksWithCompletion:completion];
 }
 
-#pragma mark NYPLReaderSettingsViewDelegate
+#pragma mark NYPLUserSettingsReaderDelegate
 
-- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-       didSelectBrightness:(CGFloat const)brightness
+- (void)applyCurrentSettings
 {
-  [UIScreen mainScreen].brightness = brightness;
+  self.navigationController.navigationBar.barTintColor =
+  [NYPLReaderSettings sharedSettings].backgroundColor;
+
+  self.activePopoverController.view.backgroundColor =
+  [NYPLReaderSettings sharedSettings].backgroundColor;
+
+  switch([NYPLReaderSettings sharedSettings].colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
+      self.headerViewLabel.textColor = [UIColor darkGrayColor];
+      self.footerViewLabel.textColor = [UIColor darkGrayColor];
+      break;
+
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
+      self.headerViewLabel.textColor = [UIColor darkGrayColor];
+      self.footerViewLabel.textColor = [UIColor darkGrayColor];
+      break;
+
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+      self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
+      self.headerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
+      self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
+      break;
+  }
 }
 
-- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-      didSelectColorScheme:(NYPLReaderSettingsColorScheme const)colorScheme
+- (NYPLR1R2UserSettings *)userSettings
 {
-  [NYPLReaderSettings sharedSettings].colorScheme = colorScheme;
-  
-  [self applyCurrentSettings];
-}
-
-- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontSize:(NYPLReaderSettingsFontSize const)fontSize
-{
-  [NYPLReaderSettings sharedSettings].fontSize = fontSize;
-  
-  [self applyCurrentSettings];
-}
-
-- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontFace:(NYPLReaderSettingsFontFace)fontFace
-{
-  [NYPLReaderSettings sharedSettings].fontFace = fontFace;
-  
-  [self applyCurrentSettings];
-}
-
--(void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-      didSelectMediaOverlaysEnableClick:(NYPLReaderSettingsMediaOverlaysEnableClick) mediaOverlaysEnableClick {
-  [NYPLReaderSettings sharedSettings].mediaOverlaysEnableClick = mediaOverlaysEnableClick;
-  [self applyCurrentSettings];
+  return [[NYPLR1R2UserSettings alloc] init];
 }
 
 #pragma mark -
@@ -711,11 +681,6 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReadiumBookmar
     self.headerView.hidden = !self.interfaceHidden;
   }
   
-  if(self.interfaceHidden) {
-    [self.readerSettingsViewPhone removeFromSuperview];
-    self.readerSettingsViewPhone = nil;
-  }
-  
   // Accessibility
   self.rendererView.accessibilityElementsHidden = !interfaceHidden;
   id firstElement = interfaceHidden ? nil : self.navigationController.navigationBar;
@@ -739,83 +704,43 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReadiumBookmar
 
 - (void)didSelectSettings
 {
-  if(self.readerSettingsViewPhone) {
-    [self.readerSettingsViewPhone removeFromSuperview];
-    self.readerSettingsViewPhone = nil;
-    return;
+  if (self.activePopoverController && self.activePopoverController == self.presentedViewController) {
+    [self dismissViewControllerAnimated:NO completion:nil];
   }
-  
-  CGFloat const width =
-    (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
-     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact)
-     ? 320
-     : CGRectGetWidth(self.view.frame);
-  
-  NYPLReaderSettingsView *const readerSettingsView =
-    [[NYPLReaderSettingsView alloc] initWithWidth:width];
-  readerSettingsView.delegate = self;
-  readerSettingsView.colorScheme = [NYPLReaderSettings sharedSettings].colorScheme;
-  readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;
-  readerSettingsView.fontFace = [NYPLReaderSettings sharedSettings].fontFace;
-  
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
-     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
-    UIViewController *const viewController = [[UIViewController alloc] init];
-    viewController.view = readerSettingsView;
-    viewController.preferredContentSize = viewController.view.bounds.size;
-    if (self.activePopoverController && self.activePopoverController == self.presentedViewController) {
-      [self dismissViewControllerAnimated:NO completion:nil];
-    }
-    self.activePopoverController = viewController;
-    self.activePopoverController.view.backgroundColor =
-      [NYPLReaderSettings sharedSettings].backgroundColor;
-    self.activePopoverController.modalPresentationStyle = UIModalPresentationPopover;
-    self.activePopoverController.popoverPresentationController.delegate = self;
-    self.activePopoverController.popoverPresentationController.barButtonItem = self.settingsBarButtonItem;
-    [self presentViewController:self.activePopoverController animated:YES completion:nil];
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.activePopoverController);
-  } else {
-    readerSettingsView.frame = CGRectOffset(readerSettingsView.frame,
-                                            0,
-                                            (CGRectGetHeight(self.view.frame) -
-                                             CGRectGetHeight(readerSettingsView.frame)));
-    [self.view addSubview:readerSettingsView];
-    self.readerSettingsViewPhone = readerSettingsView;
-    if (@available (iOS 11.0, *)) {
-      [readerSettingsView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
-      [readerSettingsView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
-      [readerSettingsView autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-      [readerSettingsView autoSetDimension:ALDimensionHeight toSize:readerSettingsView.frame.size.height];
-    }
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.readerSettingsViewPhone);
-  }
+
+  NYPLUserSettingsVC *vc = [[NYPLUserSettingsVC alloc] initWithDelegate:self];
+  self.activePopoverController = vc;
+  vc.modalPresentationStyle = UIModalPresentationPopover;
+  vc.popoverPresentationController.delegate = self;
+  vc.popoverPresentationController.barButtonItem = self.settingsBarButtonItem;
+  [self presentViewController:vc animated:YES completion:^{
+    vc.popoverPresentationController.passthroughViews = nil;
+  }];
+  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, vc);
 }
 
-- (void)didSelectContents
+- (void)didSelectTOC
 {
   UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLReaderTOC" bundle:nil];
-  NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLReaderTOC"];
-  viewController.delegate = self;
-  viewController.tableOfContents = self.rendererView.TOCElements;
-  viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
-  viewController.bookmarks = self.rendererView.bookmarkElements.mutableCopy;
-  NYPLReaderReadiumView *rv = self.rendererView;
-  viewController.currentChapter = [rv currentChapter];
+  NYPLReaderTOCViewController *tocVC = [sb instantiateViewControllerWithIdentifier:@"NYPLReaderTOC"];
+  tocVC.delegate = self;
+  tocVC.tableOfContents = self.rendererView.TOCElements;
+  tocVC.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
+  tocVC.bookmarks = self.rendererView.bookmarkElements.mutableCopy;
+  tocVC.currentChapter = [self.rendererView currentChapter];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     if (self.activePopoverController && self.activePopoverController == self.presentedViewController) {
       [self dismissViewControllerAnimated:NO completion:nil];
     }
-    self.activePopoverController = viewController;
-    self.activePopoverController.view.backgroundColor =
-      [NYPLReaderSettings sharedSettings].backgroundColor;
-    self.activePopoverController.modalPresentationStyle = UIModalPresentationPopover;
-    self.activePopoverController.popoverPresentationController.delegate = self;
-    self.activePopoverController.popoverPresentationController.barButtonItem = self.contentsBarButtonItem;
-    [self presentViewController:self.activePopoverController animated:YES completion:nil];
+    tocVC.modalPresentationStyle = UIModalPresentationPopover;
+    tocVC.popoverPresentationController.delegate = self;
+    tocVC.popoverPresentationController.barButtonItem = self.contentsBarButtonItem;
+    self.activePopoverController = tocVC;
+    [self presentViewController:tocVC animated:YES completion:nil];
   } else {
-    [self.navigationController pushViewController:viewController animated:YES];
+    [self.navigationController pushViewController:tocVC animated:YES];
   }
 }
 

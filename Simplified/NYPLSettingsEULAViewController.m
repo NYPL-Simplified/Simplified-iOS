@@ -1,7 +1,7 @@
 @import WebKit;
 
+#import "SimplyE-Swift.h"
 #import "NYPLConfiguration.h"
-
 #import "NYPLSettingsEULAViewController.h"
 
 @interface NYPLSettingsEULAViewController ()

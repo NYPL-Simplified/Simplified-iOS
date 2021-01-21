@@ -1,6 +1,7 @@
 #if FEATURE_DRM_CONNECTOR
 #import "ADEPT/NYPLADEPTErrors.h"
 #import "ADEPT/NYPLADEPT.h"
+#import "AdobeDRMContainer.h"
 #endif
 
 #ifndef OPENEBOOKS
@@ -33,11 +34,14 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLOPDS.h"
 #import "NYPLReachability.h"
+#import "NYPLReaderSettings.h"
+#import "NYPLReaderSettingsView.h"
+#import "NYPLReadiumViewSyncManager.h"
 #import "NYPLReloadView.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLSAMLHelper.h"
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLXML.h"
-#import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
+#import "UIView+NYPLViewAdditions.h"

@@ -33,9 +33,9 @@ class Date_NYPLAdditionsTests: XCTestCase {
     let dateString = "2020-06-02"
     let iOS10Date = NSDate(iso8601DateString: dateString)
     XCTAssertNotNil(iOS10Date)
-    XCTAssertEqual(iOS10Date?.utcComponents()?.year, 2020)
-    XCTAssertEqual(iOS10Date?.utcComponents()?.month, 6)
-    XCTAssertEqual(iOS10Date?.utcComponents()?.day, 2)
+    XCTAssertEqual(iOS10Date?.utcComponents().year, 2020)
+    XCTAssertEqual(iOS10Date?.utcComponents().month, 6)
+    XCTAssertEqual(iOS10Date?.utcComponents().day, 2)
   }
 
   func testInvalidRFC3339Date() {

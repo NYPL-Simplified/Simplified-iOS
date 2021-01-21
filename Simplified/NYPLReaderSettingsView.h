@@ -2,39 +2,47 @@
 
 @class NYPLReaderSettingsView;
 
+//==============================================================================
+
+typedef NS_ENUM(NSUInteger, NYPLReaderFontSizeChange) {
+  NYPLReaderFontSizeChangeIncrease,
+  NYPLReaderFontSizeChangeDecrease,
+};
+
 @protocol NYPLReaderSettingsViewDelegate
 
-- (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
+- (void)readerSettingsView:(nonnull NYPLReaderSettingsView *)readerSettingsView
        didSelectBrightness:(CGFloat)brightness;
 
-- (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
+- (void)readerSettingsView:(nonnull NYPLReaderSettingsView *)readerSettingsView
       didSelectColorScheme:(NYPLReaderSettingsColorScheme)colorScheme;
 
-- (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontSize:(NYPLReaderSettingsFontSize)fontSize;
+- (NYPLReaderSettingsFontSize)readerSettingsView:(nonnull NYPLReaderSettingsView *)view
+                               didChangeFontSize:(NYPLReaderFontSizeChange)change;
 
-- (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
+- (void)readerSettingsView:(nonnull NYPLReaderSettingsView *)readerSettingsView
          didSelectFontFace:(NYPLReaderSettingsFontFace)fontFace;
 
-- (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
-    didSelectMediaOverlaysEnableClick:(NYPLReaderSettingsMediaOverlaysEnableClick)fontFace;
 @end
 
+//==============================================================================
+/**
+ This class observes brightness change notifications from UIScreen and reflects
+ them visually. It does not, however, change the screen's brightness itself.
+ Objects that use this view should implement its delegate and forward
+ brightness changes to a UIScreen instance as appropriate.
+ */
 @interface NYPLReaderSettingsView : UIView
 
-// This class observes brightness change notifications from UIScreen and reflects them visually. It
-// does not, however, change the screen's brightness itself. Objects that use this view should
-// implement its delegate and forward brightness changes to a UIScreen instance as appropriate.
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
-@property (nonatomic, weak) id<NYPLReaderSettingsViewDelegate> delegate;
+@property (nonatomic, weak, nullable) id<NYPLReaderSettingsViewDelegate> delegate;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
 
-+ (id)new NS_UNAVAILABLE;
-- (id)init NS_UNAVAILABLE;
-- (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
-- (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
-
-- (instancetype)initWithWidth:(CGFloat)width;
++ (nonnull instancetype)new NS_UNAVAILABLE;
+- (nonnull instancetype)init NS_UNAVAILABLE;
+- (nonnull instancetype)initWithCoder:(nonnull NSCoder *)aDecoder NS_UNAVAILABLE;
+- (nonnull instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
+- (nonnull instancetype)initWithWidth:(CGFloat)width;
 
 @end

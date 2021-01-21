@@ -56,21 +56,24 @@
 // OK to leave as static color because it's reader-only
 + (UIColor *)readerBackgroundSepiaColor
 {
-  return [UIColor colorWithRed:242/255.0 green:228/255.0 blue:203/255.0 alpha:1.0];
+  return [UIColor colorWithRed:250/255.0 green:244/255.0 blue:232/255.0 alpha:1.0];
 }
 
 // OK to leave as static color because it's reader-only
-+(UIColor *)backgroundMediaOverlayHighlightColor {
++ (UIColor *)backgroundMediaOverlayHighlightColor
+{
   return [UIColor yellowColor];
 }
 
 // OK to leave as static color because it's reader-only
-+(UIColor *)backgroundMediaOverlayHighlightDarkColor {
++ (UIColor *)backgroundMediaOverlayHighlightDarkColor
+{
   return [UIColor orangeColor];
 }
 
 // OK to leave as static color because it's reader-only
-+(UIColor *)backgroundMediaOverlayHighlightSepiaColor {
++ (UIColor *)backgroundMediaOverlayHighlightSepiaColor
+{
   return [UIColor yellowColor];
 }
 
@@ -89,6 +92,16 @@
 + (NSString *)systemFontFamilyName
 {
   return @"Avenir Next";
+}
+
++ (CGFloat)defaultTOCRowHeight
+{
+  return 56;
+}
+
++ (CGFloat)defaultBookmarkRowHeight
+{
+  return 100;
 }
 
 @end

@@ -5,6 +5,11 @@
 @class NYPLBookLocation;
 @class NYPLReadiumBookmark;
 
+typedef NS_ENUM(NSInteger, NYPLReadPositionSyncStatus) {
+  NYPLReadPositionSyncStatusIdle,
+  NYPLReadPositionSyncStatusBusy
+};
+
 @protocol NYPLReadiumViewSyncManagerDelegate <NSObject>
 
 @required

@@ -142,15 +142,19 @@
 "MyBooksViewControllerGroupShow" = "Show";
 "MyBooksViewControllerGroupSortBy" = "Sort By";
 
-// NYPLReaderViewController
+// NYPLReaderViewController (R1)
 "ReaderViewControllerCorruptTitle" = "Could Not Display Book";
 "ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
 "ReaderViewControllerCurrentChapter" = "Current Chapter";
 "Book" = "Book";
 "TOC" = "Table of contents";
 
-// NYPLReaderReadiumView
+// NYPLReaderReadiumView (R1)
 "chapter" = "chapter";
+
+// ReaderViewController (R2)
+"Previous Chapter" = "Previous Chapter";
+"Next Chapter" = "Next Chapter";
 
 // NYPLReaderSettingsView
 "SansFont" = "Sans font";
@@ -166,8 +170,10 @@
 // NYPLReaderSettingsViewController
 "ReaderViewControllerToggleReaderSettings" = "Toggle reader settings";
 
-// ReaderTOCViewController
+// Reader Positions (TOC and Bookmarks)
 "ReaderTOCViewControllerTitle" = "Table of Contents";
+"%@ through chapter" = "%@ through chapter";
+"There are no bookmarks for this book." = "There are no bookmarks for this book.";
 
 // NYPLSettings
 "The page could not load due to a connection error." = "The page could not load due to a connection error.";
@@ -243,3 +249,15 @@
 "Open eBooks provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works." =
 "The Open eBooks app provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works.\n\nChildren from low-income areas may qualify for access in several ways.";
 "You need to login to access the collection." = "You need to login to access the collection.";
+
+// LCPAuthenticationViewController localizable strings
+// Passphrase request screen
+"Passphrase Required" = "Passphrase Required";
+"Incorrect Passphrase" = "Incorrect Passphrase";
+"This publication is protected by Readium LCP." = "This publication is protected by Readium LCP.";
+"In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:" = "In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:";
+// Button to contact the support when entering the passphrase
+"Website" = "Website";
+"Phone" = "Phone";
+"Mail" = "Mail";
+"Support" = "Support";
