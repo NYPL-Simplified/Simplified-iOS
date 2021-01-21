@@ -746,7 +746,7 @@ didCompleteWithError:(NSError *)error
             formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
                                                                             comment: @"When book is already checked out on patron's other device(s), they will get this message"), book.title];
             alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
-          } if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+          } else if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
             NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
             __weak __auto_type wSelf = self;
             [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount

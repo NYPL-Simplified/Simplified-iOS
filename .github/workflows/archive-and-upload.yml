@@ -7,6 +7,10 @@ jobs:
     steps:
       - name: Force Xcode 11.5
         run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Install Firebase Tools
+        run: npm install -g firebase-tools
+      - name: Check Firebase Tools
+        run: command -v firebase && firebase --version
       - name: Checkout main repo and submodules
         uses: actions/checkout@v2.3.4
         with:
@@ -74,6 +78,11 @@ jobs:
         run: ./scripts/xcode-export-appstore.sh simplye
         env:
           BUILD_CONTEXT: ci
+      - name: Upload to Firebase
+        run: ./scripts/firebase-upload.sh simplye
+        env:
+          BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Upload to TestFlight
         if: startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/testflight-upload.sh simplye
