@@ -64,104 +64,9 @@ import ReadiumLCP
   ///   - downloadTask: `URLSessionDownloadTask` that downloaded the publication.
   ///   - error: `NSError` if any.
   @objc func fulfill(_ file: URL, completion: @escaping (_ localUrl: URL?, _ error: NSError?) -> Void) {
-//    lcpService.importPublication(from: file, authentication: self) { result, error in
-//      var nsError: NSError?
-//      if let error = error {
-//        let domain = "LCP fulfillment error"
-//        let code = 0
-//        nsError = NSError(domain: domain, code: code, userInfo: [
-//          NSLocalizedDescriptionKey: error.errorDescription as Any
-//        ])
-//      }
-//      completion(result?.localURL, nsError)
-//    }
-  }
 
-  /*
-  
-  /// Fulfill LCP license publication
-  /// This function was added for compatibility with Objective-C NYPLMyBooksDownloadCenter.
-  /// - Parameters:
-  ///   - file: LCP license file.
-  ///   - completion: Completion is called after a publication was downloaded or an error received.
-  ///   - localUrl: Downloaded publication URL.
-  ///   - downloadTask: `URLSessionDownloadTask` that downloaded the publication.
-  ///   - error: `NSError` if any.
-  @objc func fulfill(_ file: URL, completion: @escaping (_ localUrl: URL?, _ error: NSError?) -> Void) {
-    lcpService.importPublication(from: file, authentication: self) { result, error in
-      var nsError: NSError?
-      if let error = error {
-        let domain = "LCP fulfillment error"
-        let code = 0
-        nsError = NSError(domain: domain, code: code, userInfo: [
-          NSLocalizedDescriptionKey: error.errorDescription as Any
-        ])
-      }
-      completion(result?.localURL, nsError)
-    }
   }
-  
-  /// Fulfills the given file to the fully protected publication.
-  /// - Parameters:
-  ///   - file: file URL
-  ///   - completion: fulfilled publication, CancellableResult<DRMFulfilledPublication>
-  func fulfill(_ file: URL, completion: @escaping (CancellableResult<DRMFulfilledPublication>) -> Void) {
-    lcpService.importPublication(from: file, authentication: self) { result, error in
-      if let result = result {
-        let publication = DRMFulfilledPublication(localURL: result.localURL, downloadTask: result.downloadTask, suggestedFilename: result.suggestedFilename)
-        completion(.success(publication))
-      } else if let error = error {
-        completion(.failure(error))
-      } else {
-        completion(.cancelled)
-      }
-    }
-  }
-  
-  /// Fills the DRM context of the given protected publication.
-  /// - Parameters:
-  ///   - publication: file URL
-  ///   - drm: DRM
-  ///   - completion: result of retrieving a license for the publication, CancellableResult<DRM?>
-  func loadPublication(at publication: URL, drm: DRM, completion: @escaping (CancellableResult<DRM?>) -> Void) {
-    lcpService.retrieveLicense(from: publication, authentication: self) { license, error in
-      if let license = license {
-        var drm = drm
-        drm.license = license
-        completion(.success(drm))
-      } else if let error = error {
-        completion(.failure(error))
-      } else {
-        completion(.cancelled)
-      }
-    }
-  }
-  */
 }
-
-//extension LCPLibraryService: LCPAuthenticating {
-//  
-//  /// Requests a passphrase to decrypt the given license.
-//  ///
-//  /// - Parameter license: Information to show to the user about the license being opened.
-//  /// - Parameter reason: Reason why the passphrase is requested. It should be used to prompt the user.
-//  /// - Parameter completion: Used to return the retrieved passphrase. If the user cancelled, send nil. The passphrase may
-//  ///   be already hashed.
-//  func requestPassphrase(for license: LCPAuthenticatedLicense, reason: LCPAuthenticationReason, completion: @escaping (String?) -> Void) {
-//    authenticationCallbacks[license.document.id] = completion
-//    
-//    let licenseInfo = LCPLicenseInfo(license: license)
-//    let authenticationVC = LCPAuthenticationViewController(licenseInfo: licenseInfo, reason: reason)
-//    authenticationVC.delegate = self
-//    
-//    let navController = UINavigationController(rootViewController: authenticationVC)
-//    navController.modalPresentationStyle = .formSheet
-//    
-//    NYPLPresentationUtils.safelyPresent(navController, animated: true, completion: nil)
-//  }
-//  
-//}
-
 
 extension LCPLibraryService: LCPAuthenticationDelegate {
   
@@ -185,7 +90,6 @@ extension LCPLibraryService: LCPAuthenticationDelegate {
     }
     callback(nil)
   }
-  
 }
 
 #endif
