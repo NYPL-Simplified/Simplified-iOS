@@ -54,8 +54,7 @@
 "NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
-"PDFNotSupported" = "Adobe PDF Not Supported";
-"PDFNotSupportedDescriptionFormat" = "%@ is an Adobe PDF, which is not supported.";
+"PDFNotSupportedFormatStr" = "%@ is an Adobe PDF, which is not supported.";
 "Find Your Library" = "Find Your Library";
 "PIN" = "PIN";
 "Please Wait" = "Please Wait";

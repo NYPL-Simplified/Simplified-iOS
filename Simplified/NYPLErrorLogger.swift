@@ -7,7 +7,6 @@ import CFNetwork
 import Foundation
 import Firebase
 
-let NYPLSimplyEDomain = "org.nypl.labs.SimplyE"
 fileprivate let nullString = "null"
 
 @objc enum NYPLSeverity: NSInteger {
@@ -121,6 +120,12 @@ fileprivate let nullString = "null"
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
+  #if OPENEBOOKS
+  @objc static let clientDomain = "org.nypl.labs.OpenEbooks"
+  #else
+  @objc static let clientDomain = "org.nypl.labs.SimplyE"
+  #endif
+
   //----------------------------------------------------------------------------
   // MARK:- Configuration
 
@@ -376,7 +381,7 @@ fileprivate let nullString = "null"
     addAccountInfoToMetadata(&metadata)
     
     let userInfo = additionalInfo(severity: .info, metadata: metadata)
-    let err = NSError(domain: NYPLSimplyEDomain,
+    let err = NSError(domain: clientDomain,
                       code: NYPLErrorCode.appLaunch.rawValue,
                       userInfo: userInfo)
 
