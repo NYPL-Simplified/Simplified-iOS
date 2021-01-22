@@ -238,7 +238,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
     guard let req = makeRequest(for: .signIn, context: uiContext) else {
       NYPLMainThreadRun.asyncIfNeeded {
-        let error = NSError(domain: NYPLSimplyEDomain,
+        let error = NSError(domain: NYPLErrorLogger.clientDomain,
                             code: NYPLErrorCode.noURL.rawValue,
                             userInfo: [
                               NSLocalizedDescriptionKey:
@@ -597,7 +597,7 @@ extension NYPLSignInBusinessLogic {
       let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
       let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
 
-      let error = NSError(domain: NYPLSimplyEDomain,
+      let error = NSError(domain: NYPLErrorLogger.clientDomain,
                           code: NYPLErrorCode.missingParentBarcodeForJuvenile.rawValue,
                           userInfo: [
                             NSLocalizedDescriptionKey: description,

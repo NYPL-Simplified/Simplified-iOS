@@ -50,10 +50,9 @@
 "MoreBooks" = "Più %@ libri";
 "NoEmailAccountSet" = "No email account is set for this device.";
 "NoResultsFound" = "Nessun risultato trovato.";
-"NotConnected" = "Non sei connesso a Internet. Si prega di ricollegare e riprovare.";
+"NotConnected" = "Non sei connesso a Internet. Riprova più tardi.";
 "OK" = "OK";
-"PDFNotSupported" = "Adobe PDF non supportato";
-"PDFNotSupportedDescriptionFormat" = "%@ È un PDF di Adobe, che non è supportato.";
+"PDFNotSupportedFormatStr" = "%@ è in formato PDF, che non è supportato.";
 "Find Your Library" = "Scegli la tua biblioteca";
 "PIN" = "PIN";
 "PrivacyPolicy" = "Norme sulla privacy";
