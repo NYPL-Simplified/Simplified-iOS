@@ -32,15 +32,6 @@ import NYPLAudiobookToolkit
   @objc init?(for audiobookUrl: URL) {
     self.audiobookUrl = audiobookUrl
     self.publication = nil
-//    do {
-//      guard let (pubBox, _) = try Publication.parse(at: self.audiobookUrl) else {
-//        return nil
-//      }
-//      self.container = pubBox.associatedContainer
-//    } catch {
-//      NYPLErrorLogger.logError(error, summary: "Error opening LCP audiobook")
-//      return nil
-//    }
   }
   
   /// Content dictionary for `AudiobookFactory`
@@ -81,31 +72,6 @@ extension LCPAudiobooks: DRMDecryptor {
   ///   - resultUrl: URL to save decrypted file at.
   ///   - completion: decryptor callback with optional `Error`.
   func decrypt(url: URL, to resultUrl: URL, completion: @escaping (Error?) -> Void) {
-//    loadLicense { [weak self] license, error in
-//      guard let self = self else {
-//        completion(nil)
-//        return
-//      }
-//      if let error = error {
-//        NYPLErrorLogger.logError(error, summary: "Error loading license for LCP audiobook")
-//        completion(error)
-//        return
-//      }
-//      guard let license = license else {
-//        completion(nil)
-//        return
-//      }
-//      do {
-//        let audiofileContent = try self.container.data(relativePath: url.path)
-//        let data = try license.decipher(audiofileContent)
-//        try data?.write(to: resultUrl, options: .atomic)
-//        completion(nil)
-//      } catch {
-//        NYPLErrorLogger.logError(error, summary: "Error decrypting LCP audio file \(url)")
-//        completion(error)
-//        return
-//      }
-//    }
   }
   
   /// Load `DRMLicense` license for audiobook once
