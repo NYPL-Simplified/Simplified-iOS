@@ -18,13 +18,13 @@ import R2Shared
 /// The ReaderModule handles the presentation of publications to be read by the user.
 /// It contains sub-modules implementing ReaderFormatModule to handle each format of publication (eg. CBZ, EPUB).
 protocol ReaderModuleAPI {
-    
-    var delegate: ReaderModuleDelegate? { get }
-    
-    /// Presents the given publication to the user, inside the given navigation controller.
-    /// - Parameter completion: Called once the publication is presented, or if an error occured.
-    func presentPublication(publication: Publication, book: NYPLBook, in navigationController: UINavigationController, completion: @escaping () -> Void)
-    
+  
+  var delegate: ReaderModuleDelegate? { get }
+  
+  /// Presents the given publication to the user, inside the given navigation controller.
+  /// - Parameter completion: Called once the publication is presented, or if an error occured.
+  func presentPublication(publication: Publication, book: NYPLBook, in navigationController: UINavigationController, completion: @escaping () -> Void)
+  
 }
 
 protocol ReaderModuleDelegate: ModuleDelegate {
@@ -32,83 +32,83 @@ protocol ReaderModuleDelegate: ModuleDelegate {
 
 
 final class ReaderModule: ReaderModuleAPI {
+  
+  weak var delegate: ReaderModuleDelegate?
+  private let resourcesServer: ResourcesServer
+  
+  /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
+  var formatModules: [ReaderFormatModule] = []
+  
+  //    private let factory = ReaderFactory()
+  
+  init(delegate: ReaderModuleDelegate?, resourcesServer: ResourcesServer) {
+    self.delegate = delegate
+    self.resourcesServer = resourcesServer
     
-    weak var delegate: ReaderModuleDelegate?
-    private let resourcesServer: ResourcesServer
+    formatModules = [
+      //            CBZModule(delegate: self),
+      EPUBModule(delegate: self),
+    ]
     
-    /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
-    var formatModules: [ReaderFormatModule] = []
-    
-//    private let factory = ReaderFactory()
-    
-    init(delegate: ReaderModuleDelegate?, resourcesServer: ResourcesServer) {
-        self.delegate = delegate
-        self.resourcesServer = resourcesServer
-        
-        formatModules = [
-//            CBZModule(delegate: self),
-            EPUBModule(delegate: self),
-        ]
-        
-//        if #available(iOS 11.0, *) {
-//            formatModules.append(PDFModule(delegate: self))
-//        }
+    //        if #available(iOS 11.0, *) {
+    //            formatModules.append(PDFModule(delegate: self))
+    //        }
+  }
+  
+  func presentPublication(publication: Publication, book: NYPLBook, in navigationController: UINavigationController, completion: @escaping () -> Void) {
+    guard let delegate = delegate else {
+      fatalError("Reader delegate not set")
     }
     
-    func presentPublication(publication: Publication, book: NYPLBook, in navigationController: UINavigationController, completion: @escaping () -> Void) {
-        guard let delegate = delegate else {
-            fatalError("Reader delegate not set")
-        }
-        
-        func present(_ viewController: UIViewController) {
-            let backItem = UIBarButtonItem()
-            backItem.title = ""
-            viewController.navigationItem.backBarButtonItem = backItem
-            viewController.hidesBottomBarWhenPushed = true
-            navigationController.pushViewController(viewController, animated: true)
-        }
-        
-        guard let module = self.formatModules.first(where:{ $0.publicationFormats.contains(publication.format) }) else {
-            delegate.presentError(ReaderError.formatNotSupported, from: navigationController)
-            completion()
-            return
-        }
-
-        do {
-            let readerViewController = try module.makeReaderViewController(for: publication, book: book, resourcesServer: resourcesServer)
-            present(readerViewController)
-        } catch {
-            delegate.presentError(error, from: navigationController)
-        }
-
-        completion()
+    func present(_ viewController: UIViewController) {
+      let backItem = UIBarButtonItem()
+      backItem.title = ""
+      viewController.navigationItem.backBarButtonItem = backItem
+      viewController.hidesBottomBarWhenPushed = true
+      navigationController.pushViewController(viewController, animated: true)
     }
     
+    guard let module = self.formatModules.first(where:{ $0.publicationFormats.contains(publication.format) }) else {
+      delegate.presentError(ReaderError.formatNotSupported, from: navigationController)
+      completion()
+      return
+    }
+    
+    do {
+      let readerViewController = try module.makeReaderViewController(for: publication, book: book, resourcesServer: resourcesServer)
+      present(readerViewController)
+    } catch {
+      delegate.presentError(error, from: navigationController)
+    }
+    
+    completion()
+  }
+  
 }
 
 
 extension ReaderModule: ReaderFormatModuleDelegate {
-
-//    func presentDRM(for publication: Publication, from viewController: UIViewController) {
-//        let drmViewController: DRMManagementTableViewController = factory.make(publication: publication, delegate: delegate)
-//        let backItem = UIBarButtonItem()
-//        backItem.title = ""
-//        drmViewController.navigationItem.backBarButtonItem = backItem
-//        viewController.navigationController?.pushViewController(drmViewController, animated: true)
-//    }
-//
-//    func presentOutline(of publication: Publication, delegate: OutlineTableViewControllerDelegate?, from viewController: UIViewController) {
-//        let outlineTableVC: OutlineTableViewController = factory.make(publication: publication)
-//        outlineTableVC.delegate = delegate
-//        viewController.present(UINavigationController(rootViewController: outlineTableVC), animated: true)
-//    }
-    
-//    func presentAlert(_ title: String, message: String, from viewController: UIViewController) {
-//        delegate?.presentAlert(title, message: message, from: viewController)
-//    }
-    
-    func presentError(_ error: Error?, from viewController: UIViewController) {
-        delegate?.presentError(error, from: viewController)
-    }
-
+  
+  //    func presentDRM(for publication: Publication, from viewController: UIViewController) {
+  //        let drmViewController: DRMManagementTableViewController = factory.make(publication: publication, delegate: delegate)
+  //        let backItem = UIBarButtonItem()
+  //        backItem.title = ""
+  //        drmViewController.navigationItem.backBarButtonItem = backItem
+  //        viewController.navigationController?.pushViewController(drmViewController, animated: true)
+  //    }
+  //
+  //    func presentOutline(of publication: Publication, delegate: OutlineTableViewControllerDelegate?, from viewController: UIViewController) {
+  //        let outlineTableVC: OutlineTableViewController = factory.make(publication: publication)
+  //        outlineTableVC.delegate = delegate
+  //        viewController.present(UINavigationController(rootViewController: outlineTableVC), animated: true)
+  //    }
+  
+  //    func presentAlert(_ title: String, message: String, from viewController: UIViewController) {
+  //        delegate?.presentAlert(title, message: message, from: viewController)
+  //    }
+  
+  func presentError(_ error: Error?, from viewController: UIViewController) {
+    delegate?.presentError(error, from: viewController)
+  }
+  
 }
