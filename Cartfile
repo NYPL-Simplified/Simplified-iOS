@@ -1,6 +1,6 @@
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseCrashlyticsBinary.json"
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"
-github "NYPL-Simplified/CardCreator-iOS" ~> 1.2
+github "NYPL-Simplified/CardCreator-iOS" "master"
 github "NYPL-Simplified/NYPLAEToolkit" "master"
 github "NYPL-Simplified/NYPLAudiobookToolkit" "master"
 github "NYPL-Simplified/PDFRendererProvider-iOS" "master"

@@ -213,26 +213,37 @@ Authenticating with any of those barcodes should work.
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
+  UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
+  activityIndicator.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
+  [self.view addSubview:activityIndicator];
+  [activityIndicator startAnimating];
+  
+  void (^completion)(void) = ^() {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [activityIndicator removeFromSuperview];
+      [self setupViews];
+      self.hiddenPIN = YES;
+      [self accountDidChange];
+      [self updateShowHidePINState];
+    });
+  };
+  
   if (self.businessLogic.libraryAccount.details != nil) {
-    [self setupViews];
+    if (self.businessLogic.libraryAccount.details.supportsCardCreator) {
+      [self setupViews];
+    } else {
+      [self.businessLogic checkCardCreationEligibilityWithCompletion:completion];
+    }
   } else {
-    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
-    activityIndicator.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
-    [self.view addSubview:activityIndicator];
-    [activityIndicator startAnimating];
-
     [self.businessLogic ensureAuthenticationDocumentIsLoaded:^(BOOL success) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        [activityIndicator removeFromSuperview];
-        if (success) {
-          [self setupViews];
-          self.hiddenPIN = YES;
-          [self accountDidChange];
-          [self updateShowHidePINState];
-        } else {
+      if (success) {
+        completion();
+      } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [activityIndicator removeFromSuperview];
           [self displayErrorMessage:NSLocalizedString(@"CheckConnection", nil)];
-        }
-      });
+        });
+      }
     }];
   }
 }

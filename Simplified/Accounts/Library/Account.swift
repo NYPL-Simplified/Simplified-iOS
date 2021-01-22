@@ -155,7 +155,7 @@ class OPDS2SamlIDP: NSObject, Codable {
   let defaults:UserDefaults
   let uuid:String
   let supportsSimplyESync:Bool
-  let supportsCardCreator:Bool
+  private(set) var supportsCardCreator:Bool
   let supportsReservations:Bool
   let auths: [Authentication]
 
@@ -234,17 +234,16 @@ class OPDS2SamlIDP: NSObject, Codable {
       if trimmedUrlStr.lowercased().hasPrefix("nypl.card-creator:") {
         let cartCreatorUrlStr = String(trimmedUrlStr.dropFirst("nypl.card-creator:".count))
         signUpUrl = URL(string: cartCreatorUrlStr)
-        supportsCardCreator = (signUpUrl != nil)
       } else {
         // fallback to attempt to use the URL we got even though it doesn't
         // have the scheme we expected.
         signUpUrl = URL(string: trimmedUrlStr)
-        supportsCardCreator = false
       }
     } else {
       signUpUrl = nil
-      supportsCardCreator = false
     }
+    
+    supportsCardCreator = false
     
     super.init()
     
@@ -332,6 +331,15 @@ class OPDS2SamlIDP: NSObject, Codable {
         return result
       }
     }
+  }
+  
+  func setCardCreationEligibilityError(error: Error?) {
+    guard let error = error else {
+      supportsCardCreator = true
+      return
+    }
+    Log.debug(#function, error.localizedDescription)
+    supportsCardCreator = false
   }
   
   fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {

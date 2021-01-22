@@ -635,4 +635,18 @@ extension NYPLSignInBusinessLogic {
     }
   }
 
+  @objc func checkCardCreationEligibility(completion: @escaping () -> Void) {
+    guard let parentBarcode = self.resolveUserBarcode() else {
+      completion()
+      return
+    }
+    
+    let coordinator = juvenileCardCreationCoordinator ?? makeJuvenileCardCreationCoordinator(using: parentBarcode)
+    juvenileCardCreationCoordinator = coordinator
+
+    coordinator.checkJuvenileCreationEligibility(parentBarcode: parentBarcode) { [weak self] error in
+      self?.libraryAccount?.details?.setCardCreationEligibilityError(error: error)
+      completion()
+    }
+  }
 }
