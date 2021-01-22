@@ -1,7 +1,5 @@
 //
 //  DRMLibraryService.swift
-//  r2-testapp-swift
-//
 //  Created by Mickaël Menu on 01.02.19.
 //
 //  Copyright 2019 Readium Foundation. All rights reserved.

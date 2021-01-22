@@ -1,7 +1,5 @@
 //
 //  ReaderViewController.swift
-//  r2-testapp-swift
-//
 //  Created by Mickaël Menu on 07.03.19.
 //
 //  Copyright 2019 European Digital Reading Lab. All rights reserved.
@@ -368,10 +366,15 @@ extension NYPLBaseReaderViewController: NavigatorDelegate {
     bookmarksBusinessLogic.storeReadPosition(locator: locator)
 
     positionLabel.text = {
+      var chapterTitle = ""
+      if let title = locator.title {
+        chapterTitle = " (\(title))"
+      }
+      
       if let position = locator.locations.position {
-        return "\(position) / \(publication.positions.count)"
+        return "Page \(position) of \(publication.positions.count)" + chapterTitle
       } else if let progression = locator.locations.totalProgression {
-        return "\(progression)%"
+        return "\(progression)%" + chapterTitle
       } else {
         return nil
       }

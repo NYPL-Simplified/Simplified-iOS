@@ -125,22 +125,26 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     OperationQueue.current?.underlyingQueue?.async {
       // on OE this ends up loading the OPDS2_Catalog_feed.json file stored
       // in the app bundle
-      self.loadCatalogs { _ in }
+      self.loadCatalogs(completion: nil)
     }
   }
 
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
 
-  // Returns whether loading was happening already
+  /// Adds `handler` to the list of completion handlers for `key`.
+  ///
+  /// - Returns: `true` if loading was happening already.
   private func addLoadingCompletionHandler(key: String,
-                                           _ handler: @escaping (Bool) -> ()) -> Bool {
+                                           _ handler: ((Bool) -> ())?) -> Bool {
     var wasEmpty = false
     completionHandlerAccessQueue.sync {
       if loadingCompletionHandlers[key] == nil {
         loadingCompletionHandlers[key] = [(Bool)->()]()
       }
       wasEmpty = loadingCompletionHandlers[key]!.isEmpty
-      loadingCompletionHandlers[key]!.append(handler)
+      if let handler = handler {
+        loadingCompletionHandlers[key]!.append(handler)
+      }
     }
     return !wasEmpty
   }
@@ -239,7 +243,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
   /// thread or not.
-  func loadCatalogs(completion: @escaping (Bool) -> ()) {
+  func loadCatalogs(completion: ((Bool) -> ())?) {
     Log.debug(#file, "Entering loadCatalog...")
     let targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
     let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
@@ -310,10 +314,10 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   }
 
   @objc private func updateAccountSetFromNotification(_ notif: NSNotification) {
-    updateAccountSet(completion: { _ in })
+    updateAccountSet(completion: nil)
   }
 
-  func updateAccountSet(completion: @escaping (Bool) -> () = { _ in }) {
+  func updateAccountSet(completion: ((Bool) -> ())?) {
     accountSetsWorkQueue.sync(flags: .barrier) {
       self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
     }

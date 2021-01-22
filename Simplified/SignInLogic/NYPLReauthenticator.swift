@@ -8,56 +8,42 @@
 
 import Foundation
 
+/// This class is a front-end for taking care of situations where an
+/// already authenticated user somehow sees its requests fail with a 401
+/// HTTP status as it the request lacked proper authentication.
+///
+/// This typically involves refreshing the authentication token and, depending
+/// on the chosen authentication method, opening up a sign-in VC to interact
+/// with the user.
+///
+/// This class takes care of initializing the VC's UI, its business logic,
+/// opening up the VC when needed, and performing the log-in request under
+/// the hood when no user input is needed.
 @objc class NYPLReauthenticator: NSObject {
 
-  /// Determines if the current authentication state has changed based on
-  /// this response metadata and the returned data.
+  private var signInModalVC: NYPLAccountSignInViewController?
+
+  /// Re-authenticates the user. This may involve presenting the sign-in
+  /// modal UI or not, depending on the sign-in business logic.
   ///
   /// - Parameters:
   ///   - user: The current user.
-  ///   - response: The response to inspect.
-  ///   - responseData: The data returned by the server for this response.
-  ///   - responseError: Any error returned by URLSession or the like. If you
-  ///   used `NYPLNetworkExecutor`, this should include the problem document
-  ///   if the server sent it.
-  ///   - authenticationPreflight: Code to run before starting the
-  ///   authentication flow.
+  ///   - usingExistingCredentials: Use the existing credentials for `user`.
   ///   - authenticationCompletion: Code to run after the authentication
   ///   flow completes.
   /// - Returns: `true` if an authentication flow was started to refresh the
   /// credentials, `false` otherwise.
-  @objc func authenticateUser(_ user: NYPLUserAccount,
-                              ifNeededForResponse response: URLResponse,
-                              responseData: Data?,
-                              responseError: NSError?,
-                              authenticationPreflight: (() -> Void)?,
-                              authenticationCompletion: (()-> Void)?) -> Bool {
-    let problemDoc: NYPLProblemDocument?
-    if let problemDocFromError = responseError?.problemDocument {
-      problemDoc = problemDocFromError
-    } else if let responseData = responseData {
-      problemDoc = try? NYPLProblemDocument.fromData(responseData)
-    } else {
-      problemDoc = nil
+  @objc func authenticateIfNeeded(_ user: NYPLUserAccount,
+                                  usingExistingCredentials: Bool,
+                                  authenticationCompletion: (()-> Void)?) {
+    NYPLMainThreadRun.asyncIfNeeded {
+      let vc = NYPLAccountSignInViewController()
+      self.signInModalVC = vc
+      vc.forceEditability = true
+      vc.presentIfNeeded(usingExistingCredentials: usingExistingCredentials) {
+        authenticationCompletion?()
+        self.signInModalVC = nil //break desired retain cycle
+      }
     }
-
-    if response.indicatesAuthenticationNeedsRefresh(with: problemDoc) {
-      authenticate(user: user,
-                   preflight: authenticationPreflight,
-                   completion: authenticationCompletion)
-      return true
-    }
-
-    return false
-  }
-
-  private func authenticate(user: NYPLUserAccount,
-                            preflight: (() -> Void)?,
-                            completion: (()-> Void)?) {
-    preflight?()
-    NYPLAccountSignInViewController.requestCredentials(
-      usingExisting: user.authDefinition?.authType == .basic,
-      authorizeImmediately: user.authDefinition?.authType == .basic,
-      completionHandler: completion ?? {})
   }
 }

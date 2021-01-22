@@ -129,9 +129,8 @@ class OETutorialChoiceViewController : UIViewController {
 
   private func presentSignInVC(for loginChoice: LoginChoice) {
     let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
-    signInVC.present(usingExistingCredentials: false,
-                     authorizeImmediately: false,
-                     completionHandler: self.loginCompletionHandler)
+    signInVC.presentIfNeeded(usingExistingCredentials: false,
+                             completionHandler: self.loginCompletionHandler)
   }
 
   @objc func didSelectRequestCodes() {

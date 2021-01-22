@@ -16,6 +16,7 @@ import UIKit
 protocol NYPLUserAccountInputProvider {
   var usernameTextField: UITextField? { get set }
   var PINTextField: UITextField? { get set }
+  var forceEditability: Bool { get }
 }
 
 @objcMembers class NYPLUserAccountFrontEndValidation: NSObject {
@@ -35,6 +36,10 @@ protocol NYPLUserAccountInputProvider {
 
 extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
   func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+    if let userInputProvider = userInputProvider, userInputProvider.forceEditability {
+      return true
+    }
+
     return !(businessLogic?.userAccount.hasBarcodeAndPIN() ?? false)
   }
 

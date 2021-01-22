@@ -15,10 +15,15 @@
 #      to deinit the adobe repos. This is expected and does not affect the
 #      build process.
 
+set -eo pipefail
+
 echo "Setting up repo for non-DRM build"
 
-git submodule deinit adept-ios && git rm -rf adept-ios
-git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter
+git submodule foreach --quiet 'git submodule deinit adept-ios'
+git rm -rf adept-ios
+git submodule foreach --quiet 'git submodule deinit adobe-content-filter'
+git rm -rf adobe-content-filter
+
 git submodule update --init --recursive
 
 # Remove private repos from Cartfile and Cartfile.resolved.
@@ -26,6 +31,8 @@ sed -i '' "s#.*NYPL-Simplified/NYPLAEToolkit.*##" Cartfile
 sed -i '' "s#.*NYPL-Simplified/NYPLAEToolkit.*##" Cartfile.resolved
 sed -i '' "s#.*NYPL-Simplified/audiobook-ios-overdrive.*##" Cartfile
 sed -i '' "s#.*NYPL-Simplified/audiobook-ios-overdrive.*##" Cartfile.resolved
+sed -i '' "s#.*lcp.*##" Cartfile
+sed -i '' "s#.*lcp.*##" Cartfile.resolved
 
 if [ ! -f "APIKeys.swift" ]; then
   cp Simplified/AppInfrastructure/APIKeys.swift.example Simplified/AppInfrastructure/APIKeys.swift

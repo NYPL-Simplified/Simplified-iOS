@@ -227,7 +227,7 @@ CGFloat const marginPadding = 2.0;
     return;
   } else {
     self.hiddenPIN = YES;
-    [self accountDidChange];
+    [self updateInputUIForcingEditability:self.forceEditability];
     [self updateShowHidePINState];
   }
 }
@@ -483,77 +483,38 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 #pragma mark - Modal presentation
 
-+ (void)
-requestCredentialsUsingExisting:(BOOL const)useExistingCredentials
-authorizeImmediately:(BOOL)authorizeImmediately
-completionHandler:(void (^)(void))completionHandler
++ (void)requestCredentialsWithCompletion:(void (^)(void))completion
 {
-  dispatch_async(dispatch_get_main_queue(), ^{
+  [NYPLMainThreadRun asyncIfNeeded:^{
     NYPLAccountSignInViewController *signInVC = [[self alloc] init];
-    [signInVC presentUsingExistingCredentials:useExistingCredentials
-                         authorizeImmediately:authorizeImmediately
-                            completionHandler:completionHandler];
-  });
-}
-
-+ (void)requestCredentialsUsingExisting:(BOOL)useExistingBarcode
-                                 completionHandler:(void (^)(void))completionHandler
-{
-  [self requestCredentialsUsingExisting:useExistingBarcode
-                              authorizeImmediately:NO
-                                 completionHandler:completionHandler];
-}
-
-+ (void)authorizeUsingExistingCredentialsWithCompletionHandler:(void (^)(void))completionHandler
-{
-  [self requestCredentialsUsingExisting:YES
-                              authorizeImmediately:YES
-                                 completionHandler:completionHandler];
+    [signInVC presentIfNeededUsingExistingCredentials:NO
+                                    completionHandler:completion];
+  }];
 }
 
 /**
  * Presents itself to begin the login process.
  *
  * @param useExistingCredentials Should the screen be filled with the barcode when available?
- * @param authorizeImmediately Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview.
  * @param completionHandler Called upon successful authentication
  */
-- (void)presentUsingExistingCredentials:(BOOL const)useExistingCredentials
-                   authorizeImmediately:(BOOL)authorizeImmediately
-                      completionHandler:(void (^)(void))completionHandler
+- (void)presentIfNeededUsingExistingCredentials:(BOOL const)useExistingCredentials
+                              completionHandler:(void (^)(void))completionHandler
 {
-  self.businessLogic.completionHandler = completionHandler;
-
   // Tell the VC to create its text fields so we can set their properties.
   [self view];
 
-  if (self.businessLogic.userAccount.authDefinition.isSaml
-      || self.businessLogic.userAccount.authDefinition.isOauth) {
-    if (!useExistingCredentials) {
-      // if current authentication is SAML and we don't want to use current credentials, we need to force log in process
-      // this is for the case when we were logged in, but IDP expired our session
-      // and if this happens, we want the user to pick the idp to begin reauthentication
-      self.businessLogic.ignoreSignedInState = true;
-      if (self.businessLogic.userAccount.authDefinition.isSaml) {
-        self.businessLogic.selectedAuthentication = nil;
-      }
-    }
-  } else if (self.businessLogic.userAccount.authDefinition.isBasic) {
-    if (useExistingCredentials) {
-      self.usernameTextField.text = self.businessLogic.userAccount.barcode;
-    } else {
-      self.usernameTextField.text = @"";
-    }
-  } else {
-    // no authentication needed for the other cases
-    if (completionHandler) {
-      completionHandler();
-    }
-    return;
+  BOOL shouldPresentVC = [self.businessLogic
+                          refreshAuthIfNeededUsingExistingCredentials:useExistingCredentials
+                          completion:completionHandler];
+
+  if (shouldPresentVC) {
+    [self presentAsModal];
   }
+}
 
-  self.PINTextField.text = @"";
-
+- (void)presentAsModal
+{
   UIBarButtonItem *const cancelBarButtonItem =
   [[UIBarButtonItem alloc]
    initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
@@ -566,24 +527,6 @@ completionHandler:(void (^)(void))completionHandler
   navVC.modalPresentationStyle = UIModalPresentationFormSheet;
 
   [NYPLPresentationUtils safelyPresent:navVC animated:YES completion:nil];
-
-  if (authorizeImmediately && self.businessLogic.userAccount.hasBarcodeAndPIN) {
-    self.PINTextField.text = self.businessLogic.userAccount.PIN;
-    [self.businessLogic logIn];
-  } else if (self.businessLogic.userAccount.authDefinition.isOauth) {
-    if (authorizeImmediately) {
-      [self.businessLogic logIn];
-    }
-  } else if (self.businessLogic.userAccount.authDefinition.isSaml) {
-    // there's no extra logic to do for SAML
-    // this exists as we don't want the textfield to become responder
-  } else {
-    if (useExistingCredentials) {
-      [self.PINTextField becomeFirstResponder];
-    } else {
-      [self.usernameTextField becomeFirstResponder];
-    }
-  }
 }
 
 #pragma mark - Table view set up helpers
@@ -715,12 +658,9 @@ completionHandler:(void (^)(void))completionHandler
 {
   self.PINTextField.rightView.hidden = YES;
 
-  // LAPolicyDeviceOwnerAuthentication is only on iOS >= 9.0
-  if([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 9) {
-    LAContext *const context = [[LAContext alloc] init];
-    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
-      self.PINTextField.rightView.hidden = NO;
-    }
+  LAContext *const context = [[LAContext alloc] init];
+  if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+    self.PINTextField.rightView.hidden = NO;
   }
 }
 
@@ -773,23 +713,35 @@ completionHandler:(void (^)(void))completionHandler
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if(self.businessLogic.isSignedIn) {
-      self.usernameTextField.text = self.businessLogic.userAccount.barcode;
-      self.usernameTextField.enabled = NO;
-      self.usernameTextField.textColor = [UIColor grayColor];
-      self.PINTextField.text = self.businessLogic.userAccount.PIN;
-      self.PINTextField.textColor = [UIColor grayColor];
-    } else {
-      self.usernameTextField.text = nil;
-      self.usernameTextField.enabled = YES;
-      self.usernameTextField.textColor = [UIColor defaultLabelColor];
-      self.PINTextField.text = nil;
-      self.PINTextField.textColor = [UIColor defaultLabelColor];
-    }
-    
-    [self setupTableData];
-    [self updateLoginLogoutCellAppearance];
+    [self updateInputUIForcingEditability:NO];
   }];
+}
+
+- (void)updateInputUIForcingEditability:(BOOL)forceEditability
+{
+  if(self.businessLogic.isSignedIn) {
+    self.usernameTextField.text = self.businessLogic.userAccount.barcode;
+    self.usernameTextField.enabled = forceEditability;
+    self.PINTextField.text = self.businessLogic.userAccount.PIN;
+    self.PINTextField.enabled = forceEditability;
+    if (forceEditability) {
+      self.usernameTextField.textColor = [UIColor blackColor];
+      self.PINTextField.textColor = [UIColor blackColor];
+    } else {
+      self.usernameTextField.textColor = [UIColor grayColor];
+      self.PINTextField.textColor = [UIColor grayColor];
+    }
+  } else {
+    self.usernameTextField.text = nil;
+    self.usernameTextField.enabled = YES;
+    self.usernameTextField.textColor = [UIColor defaultLabelColor];
+    self.PINTextField.text = nil;
+    self.PINTextField.enabled = YES;
+    self.PINTextField.textColor = [UIColor defaultLabelColor];
+  }
+
+  [self setupTableData];
+  [self updateLoginLogoutCellAppearance];
 }
 
 - (void)updateLoginLogoutCellAppearance
@@ -797,7 +749,7 @@ completionHandler:(void (^)(void))completionHandler
   if (self.businessLogic.isCurrentlySigningIn) {
     return;
   }
-  if(self.businessLogic.isSignedIn) {
+  if(self.businessLogic.isSignedIn && !self.forceEditability) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", @"Title for sign out action");
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];

@@ -113,9 +113,6 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
     case NYPLBookButtonsStateCanHold:
       newMessageString = NSLocalizedString(@"BookDetailViewControllerCanHoldTitle", nil);
       break;
-    case NYPLBookButtonsStateCanKeep:
-      newMessageString = NSLocalizedString(@"BookDetailViewControllerCanKeepTitle", nil);
-      break;
     case NYPLBookButtonsStateDownloadNeeded:
       newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
       break;
