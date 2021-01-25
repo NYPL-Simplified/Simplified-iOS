@@ -27,9 +27,6 @@ final class EPUBModule: ReaderFormatModule {
     return [.epub, .webpub]
   }
   
-//  func makeReaderVC(for publication: Publication,
-//                    book: NYPLBook,
-//                    resourcesServer: ResourcesServer) throws -> UIViewController {
   func makeReaderViewController(for publication: Publication, book: NYPLBook, resourcesServer: ResourcesServer) throws -> UIViewController {
       
     guard publication.metadata.identifier != nil else {
