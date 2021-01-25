@@ -130,6 +130,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   private let juvenileAuthLock = NSLock()
   @objc private(set) var juvenileAuthIsOngoing = false
   private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
+  private(set) var allowJuvenileCardCreation = false
 
   // MARK:- Library Accounts Info
 
@@ -558,6 +559,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     guard libraryAccountID == libraryAccountsProvider.NYPLAccountUUID else {
       return false
     }
+    guard allowJuvenileCardCreation else {
+      return false
+    }
 
     return isSignedIn()
   }
@@ -635,4 +639,19 @@ extension NYPLSignInBusinessLogic {
     }
   }
 
+  @objc func checkCardCreationEligibility(completion: @escaping () -> Void) {
+    guard let parentBarcode = self.resolveUserBarcode() else {
+      allowJuvenileCardCreation = false
+      completion()
+      return
+    }
+    
+    let coordinator = juvenileCardCreationCoordinator ?? makeJuvenileCardCreationCoordinator(using: parentBarcode)
+    juvenileCardCreationCoordinator = coordinator
+
+    coordinator.checkJuvenileCreationEligibility(parentBarcode: parentBarcode) { [weak self] error in
+      self?.allowJuvenileCardCreation = (error == nil)
+      completion()
+    }
+  }
 }
