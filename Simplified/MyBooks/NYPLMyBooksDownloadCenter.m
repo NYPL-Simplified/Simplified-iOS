@@ -1428,12 +1428,22 @@ didFinishDownload:(BOOL)didFinishDownload
 /// Fulfill LCP license
 /// @param licenseUrl Downloaded LCP license URL
 /// @param book `NYPLBook` Book
-- (void)fulfillLCPLicense:(NSURL *)licenseUrl
+- (void)fulfillLCPLicense:(NSURL *)fileUrl
                   forBook:(NYPLBook *)book
              downloadTask:(NSURLSessionDownloadTask *)downloadTask
 {
   #if defined(LCP)
   LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
+  // Ensure correct license extension
+  NSURL *licenseUrl = [[fileUrl URLByDeletingPathExtension] URLByAppendingPathExtension:lcpService.licenseExtension];
+  NSError *moveError;
+  [[NSFileManager defaultManager] moveItemAtURL:fileUrl toURL:licenseUrl error:&moveError];
+  if (moveError) {
+    [NYPLErrorLogger logError:moveError summary:moveError.domain message:moveError.localizedDescription metadata:nil];
+    [self failDownloadWithAlertForBook:book];
+    return;
+  }
+  // LCP library expects an .lcpl file at localUrl
   [lcpService fulfill:licenseUrl completion:^(NSURL *localUrl, NSError *error) {
     if (error) {
       [NYPLErrorLogger logError:error summary:error.domain message:error.localizedDescription metadata:nil];

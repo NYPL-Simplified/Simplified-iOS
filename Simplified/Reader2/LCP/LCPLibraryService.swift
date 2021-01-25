@@ -18,6 +18,9 @@ import ReadiumLCP
 
 @objc class LCPLibraryService: NSObject, DRMLibraryService {
   
+  /// Readium licensee file extension
+  @objc public let licenseExtension = "lcpl"
+  
   /// Readium LCPService
   private var lcpService = LCPService()
   
@@ -31,7 +34,7 @@ import ReadiumLCP
   /// - Parameter file: file URL
   /// - Returns: `true` if file contains LCP DRM license information.
   func canFulfill(_ file: URL) -> Bool {
-    return file.pathExtension.lowercased() == "lcpl"
+    return file.pathExtension.lowercased() == licenseExtension
   }
   
   /// Fulfill LCP liceense publication.
@@ -64,7 +67,20 @@ import ReadiumLCP
   ///   - downloadTask: `URLSessionDownloadTask` that downloaded the publication.
   ///   - error: `NSError` if any.
   @objc func fulfill(_ file: URL, completion: @escaping (_ localUrl: URL?, _ error: NSError?) -> Void) {
-
+    self.lcpService.acquirePublication(from: file) { result in
+      do {
+        let publication = try result.get()
+        completion(publication.localURL, nil)
+      } catch {
+        let domain = "LCP fulfillment error"
+        let code = 0
+        let errorDescription = (error as? LCPError)?.errorDescription ?? error.localizedDescription
+        let nsError = NSError(domain: domain, code: code, userInfo: [
+          NSLocalizedDescriptionKey: errorDescription as Any
+        ])
+        completion(nil, nsError)
+      }
+    }
   }
 }
 
