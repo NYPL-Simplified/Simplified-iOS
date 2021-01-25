@@ -218,13 +218,15 @@ Authenticating with any of those barcodes should work.
   [self.view addSubview:activityIndicator];
   [activityIndicator startAnimating];
   
+  __weak NYPLSettingsAccountDetailViewController *weakSelf = self;
+  
   void (^completion)(void) = ^() {
     dispatch_async(dispatch_get_main_queue(), ^{
       [activityIndicator removeFromSuperview];
-      [self setupViews];
-      self.hiddenPIN = YES;
-      [self accountDidChange];
-      [self updateShowHidePINState];
+      [weakSelf setupViews];
+      weakSelf.hiddenPIN = YES;
+      [weakSelf accountDidChange];
+      [weakSelf updateShowHidePINState];
     });
   };
   
@@ -233,11 +235,11 @@ Authenticating with any of those barcodes should work.
   } else {
     [self.businessLogic ensureAuthenticationDocumentIsLoaded:^(BOOL success) {
       if (success) {
-        [self.businessLogic checkCardCreationEligibilityWithCompletion:completion];
+        [weakSelf.businessLogic checkCardCreationEligibilityWithCompletion:completion];
       } else {
         dispatch_async(dispatch_get_main_queue(), ^{
           [activityIndicator removeFromSuperview];
-          [self displayErrorMessage:NSLocalizedString(@"CheckConnection", nil)];
+          [weakSelf displayErrorMessage:NSLocalizedString(@"CheckConnection", nil)];
         });
       }
     }];
