@@ -229,15 +229,11 @@ Authenticating with any of those barcodes should work.
   };
   
   if (self.businessLogic.libraryAccount.details != nil) {
-    if ([self.businessLogic juvenileCardsManagementIsPossible]) {
-      [self setupViews];
-    } else {
-      [self.businessLogic checkCardCreationEligibilityWithCompletion:completion];
-    }
+    [self.businessLogic checkCardCreationEligibilityWithCompletion:completion];
   } else {
     [self.businessLogic ensureAuthenticationDocumentIsLoaded:^(BOOL success) {
       if (success) {
-        completion();
+        [self.businessLogic checkCardCreationEligibilityWithCompletion:completion];
       } else {
         dispatch_async(dispatch_get_main_queue(), ^{
           [activityIndicator removeFromSuperview];
