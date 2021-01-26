@@ -37,7 +37,7 @@ import ReadiumLCP
     return file.pathExtension.lowercased() == licenseExtension
   }
   
-  /// Fulfill LCP liceense publication.
+  /// Fulfill LCP license publication.
   /// - Parameter file: LCP license file.
   /// - Returns: fulfilled publication as `Deferred` (`CancellableReesult` interenally) object.
   func fulfill(_ file: URL) -> Deferred<DRMFulfilledPublication, Error> {
