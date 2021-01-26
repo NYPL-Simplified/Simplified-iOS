@@ -561,14 +561,18 @@ didCompleteWithError:(NSError *)error
 #if defined(LCP)
   if ([LCPAudiobooks canOpenBook:book]) {
     LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:bookURL];
-    dict = [[lcpAudiobooks contentDictionary] mutableCopy];
-    dict[@"id"] = book.identifier;
-  }
-#endif
-  [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
-  
-#if defined(LCP)
-  if ([LCPAudiobooks canOpenBook:book]) {
+    [lcpAudiobooks contentDictionaryWithCompletion:^(NSDictionary * _Nullable dict, NSError * _Nullable error) {
+      if (error) {
+        // LCPAudiobooks logs this error
+        return;
+      }
+      if (dict) {
+        // Delete decrypted content for the book
+        NSMutableDictionary *mutableDict = [dict mutableCopy];
+        [[AudiobookFactory audiobook:mutableDict] deleteLocalContent];
+      }
+    }];
+    // Delete LCP book file
     if ([[NSFileManager defaultManager] fileExistsAtPath:bookURL.path]) {
       NSError *error = nil;
       [[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error];
@@ -579,7 +583,12 @@ didCompleteWithError:(NSError *)error
                          metadata:@{ @"book": [book loggableShortString] }];
       }
     }
+  } else {
+    // Not an LCP book
+    [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
   }
+#else
+  [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
 #endif
 }
   

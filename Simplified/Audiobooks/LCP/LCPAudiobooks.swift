@@ -11,6 +11,7 @@
 import Foundation
 import R2Shared
 import R2Streamer
+import ReadiumLCP
 import NYPLAudiobookToolkit
 
 /// LCP Audiobooks helper class
@@ -18,39 +19,36 @@ import NYPLAudiobookToolkit
     
   private let audiobookUrl: URL
   private let lcpService = LCPLibraryService()
-
-  /// .lcpa archive container
-//  private let container: Container
-  private let publication: Publication?
+  private let streamer: Streamer
   
-
   /// Distributor key - one can be found in `NYPLBook.distributor` property
   @objc static let distributorKey = "lcp"
   
   /// Initialize for an LCP audiobook
   /// - Parameter audiobookUrl: must be a file with `.lcpa` extension
   @objc init?(for audiobookUrl: URL) {
+    // Check contentProtection is in place
+    guard let contentProtection = lcpService.contentProtection else {
+      return nil
+    }
     self.audiobookUrl = audiobookUrl
-    self.publication = nil
+    self.streamer = Streamer(contentProtections: [contentProtection])
   }
   
   /// Content dictionary for `AudiobookFactory`
-  @objc func contentDictionary() -> NSDictionary? {
+  @objc func contentDictionary(completion: @escaping (_ json: NSDictionary?, _ error: NSError?) -> ()) {
     let manifestPath = "manifest.json"
-    do {
-      // Relative path inside the audiobook
-      
-//      let data = try container.data(relativePath: manifestPath)
-//      let publicationObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
-      
-      guard let result = publication?.get(manifestPath).readAsJSON() else {
-        return nil
+    let asset = FileAsset(url: self.audiobookUrl)
+    streamer.open(asset: asset, allowUserInteraction: false) { result in
+      do {
+        let publication = try result.get()
+        let resourse = publication.get(manifestPath)
+        let json = try resourse.readAsJSON().get()
+        completion(json as NSDictionary, nil)
+      } catch {
+        NYPLErrorLogger.logError(error, summary: "Error reading LCP \(manifestPath) file")
+        completion(nil, LCPAudiobooks.nsError(for: error))
       }
-      let publicationObject = try result.get()
-      return publicationObject as NSDictionary
-    } catch {
-      NYPLErrorLogger.logError(error, summary: "Error reading LCP audiobook")
-      return nil
     }
   }
   
@@ -61,6 +59,15 @@ import NYPLAudiobookToolkit
     book.defaultBookContentType() == .audiobook && book.distributor == distributorKey
   }
 
+  /// Creates an NSError for Objective-C code
+  /// - Parameter error: Error object
+  /// - Returns: NSError object
+  private static func nsError(for error: Error) -> NSError {
+    let description = (error as? LCPError)?.errorDescription ?? error.localizedDescription
+    return NSError(domain: "SimplyE.LCPAudiobooks", code: 0, userInfo: [
+      NSLocalizedDescriptionKey: description
+    ])
+  }
 }
 
 /// DRM Decryptor for LCP audiobooks
@@ -72,22 +79,20 @@ extension LCPAudiobooks: DRMDecryptor {
   ///   - resultUrl: URL to save decrypted file at.
   ///   - completion: decryptor callback with optional `Error`.
   func decrypt(url: URL, to resultUrl: URL, completion: @escaping (Error?) -> Void) {
+    let asset = FileAsset(url: self.audiobookUrl)
+    streamer.open(asset: asset, allowUserInteraction: false) { result in
+      do {
+        let publicatoin = try result.get()
+        let resource = publicatoin.get(url.path)
+        let data = try resource.read().get()
+        try data.write(to: resultUrl)
+        completion(nil)
+      } catch {
+        NYPLErrorLogger.logError(error, summary: "Error decrypting LCP audio file \(url)")
+        completion(LCPAudiobooks.nsError(for: error))
+      }
+    }
   }
-  
-  /// Load `DRMLicense` license for audiobook once
-  /// - Parameter completion: `LCPError`, if any
-//  private func loadLicense(completion: @escaping (_ license: DRMLicense?, _ error: Error?) -> Void) {
-//    lcpService.loadPublication(at: audiobookUrl, drm: DRM(brand: .lcp)) { result in
-//      switch result {
-//      case .success(let drm):
-//        completion(drm?.license, nil)
-//      case .failure(let error):
-//        completion(nil, error)
-//      case .cancelled:
-//        completion(nil, nil)
-//      }
-//    }
-//  }
 }
 
 #endif

@@ -57,7 +57,6 @@ import ReadiumLCP
       }
   }
 
-
   /// Fulfill LCP license publication
   /// This function was added for compatibility with Objective-C NYPLMyBooksDownloadCenter.
   /// - Parameters:

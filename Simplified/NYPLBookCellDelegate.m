@@ -198,20 +198,33 @@
   }
 #endif
   
-  id<DRMDecryptor> audiobookDrmDecryptor = nil;
-
 #if defined(LCP)
   if ([LCPAudiobooks canOpenBook:book]) {
     LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:url];
-    dict = [[lcpAudiobooks contentDictionary] mutableCopy];
-    dict[@"id"] = book.identifier;
-    audiobookDrmDecryptor = lcpAudiobooks;
+    [lcpAudiobooks contentDictionaryWithCompletion:^(NSDictionary * _Nullable dict, NSError * _Nullable error) {
+      if (error) {
+        [self presentUnsupportedItemError];
+        return;
+      }
+      if (dict) {
+        NSMutableDictionary *mutableDict = [dict mutableCopy];
+        mutableDict[@"id"] = book.identifier;
+        [self openAudiobook:book withJSON:mutableDict decryptor:lcpAudiobooks];
+      }
+    }];
+  } else {
+    // Not an LCP book
+    [self openAudiobook:book withJSON:dict ?: json decryptor:nil];
   }
+#else
+  [self openAudiobook:book withJSON:dict ?: json decryptor:nil];
 #endif
-  
+}
+
+- (void)openAudiobook:(NYPLBook *)book withJSON:(NSDictionary *)json decryptor:(id<DRMDecryptor>)audiobookDrmDecryptor {
   [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
-      id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json decryptor:audiobookDrmDecryptor];
+      id<Audiobook> const audiobook = [AudiobookFactory audiobook:json decryptor:audiobookDrmDecryptor];
       
       if (!audiobook) {
         if (error) {
@@ -281,7 +294,6 @@
       [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
     }];
   }];
-
 }
 
 #pragma mark - Audiobook Methods

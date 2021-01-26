@@ -39,20 +39,14 @@ final class ReaderModule: ReaderModuleAPI {
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
   
-  //    private let factory = ReaderFactory()
-  
   init(delegate: ReaderModuleDelegate?, resourcesServer: ResourcesServer) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
     
     formatModules = [
-      //            CBZModule(delegate: self),
-      EPUBModule(delegate: self),
+      EPUBModule(delegate: self)
     ]
-    
-    //        if #available(iOS 11.0, *) {
-    //            formatModules.append(PDFModule(delegate: self))
-    //        }
+
   }
   
   func presentPublication(publication: Publication, book: NYPLBook, in navigationController: UINavigationController, completion: @escaping () -> Void) {
@@ -88,25 +82,7 @@ final class ReaderModule: ReaderModuleAPI {
 
 
 extension ReaderModule: ReaderFormatModuleDelegate {
-  
-  //    func presentDRM(for publication: Publication, from viewController: UIViewController) {
-  //        let drmViewController: DRMManagementTableViewController = factory.make(publication: publication, delegate: delegate)
-  //        let backItem = UIBarButtonItem()
-  //        backItem.title = ""
-  //        drmViewController.navigationItem.backBarButtonItem = backItem
-  //        viewController.navigationController?.pushViewController(drmViewController, animated: true)
-  //    }
-  //
-  //    func presentOutline(of publication: Publication, delegate: OutlineTableViewControllerDelegate?, from viewController: UIViewController) {
-  //        let outlineTableVC: OutlineTableViewController = factory.make(publication: publication)
-  //        outlineTableVC.delegate = delegate
-  //        viewController.present(UINavigationController(rootViewController: outlineTableVC), animated: true)
-  //    }
-  
-  //    func presentAlert(_ title: String, message: String, from viewController: UIViewController) {
-  //        delegate?.presentAlert(title, message: message, from: viewController)
-  //    }
-  
+    
   func presentError(_ error: Error?, from viewController: UIViewController) {
     delegate?.presentError(error, from: viewController)
   }
