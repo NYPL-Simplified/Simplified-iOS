@@ -16,8 +16,7 @@ import Foundation
     
     if paths.count < 1 {
       NYPLErrorLogger.logError(withCode: .missingSystemPaths,
-                               summary: "NYPLBookContentMetadataFilesHelper::directory",
-                               message: "No valid search paths in iOS's ApplicationSupport directory in the UserDomain",
+                               summary: "No valid search paths in iOS's ApplicationSupport directory in UserDomain",
                                metadata: ["account": account])
       return nil
     }

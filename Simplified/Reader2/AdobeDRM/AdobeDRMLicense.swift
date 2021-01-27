@@ -29,11 +29,11 @@ class AdobeDRMLicense: DRMLicense {
       let data = try container.data(relativePath: encryptionPath)
       adobeDRMContainer = AdobeDRMContainer(url: fileUrl, encryptionData: data)
       if let errorMessage = adobeDRMContainer?.epubDecodingError {
-        // TODO: SIMPLY-2656
-        // There may be a better logger method for this
         NYPLErrorLogger.logError(withCode: .epubDecodingError,
                                  summary: "Unable to initialize Adobe DRM license",
-                                 message: errorMessage)
+                                 metadata: [
+                                  "decoding error msg" : errorMessage,
+                                  "fileURL": fileUrl])
       }
     } catch {
       // This is not an error, container doesn't have a method to check the file existance
@@ -49,11 +49,9 @@ class AdobeDRMLicense: DRMLicense {
     guard let container = adobeDRMContainer else { return data }
     let decodedData = container.decode(data)
     if let errorMessage = adobeDRMContainer?.epubDecodingError {
-      // TODO: SIMPLY-2656
-      // There may be a better logger method for this
       NYPLErrorLogger.logError(withCode: .epubDecodingError,
                                summary: "Unable to decrype Adobe DRM license",
-                               message: errorMessage)
+                               metadata: ["decoding error msg" : errorMessage])
     }
     return decodedData
   }

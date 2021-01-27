@@ -16,7 +16,6 @@ extension NYPLSignInBusinessLogic {
     guard let signUpURL = libraryAccount?.details?.signUpUrl else {
       NYPLErrorLogger.logError(withCode: .nilSignUpURL,
                                summary: "SignUp Error in Settings: nil signUp URL",
-                               message: nil,
                                metadata: [
                                 "libraryAccountUUID": libraryAccountID,
                                 "libraryAccountName": libraryAccount?.name ?? "N/A",

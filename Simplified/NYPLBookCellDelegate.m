@@ -293,18 +293,17 @@
                      (long)level, message];
 
     if (error) {
-      [NYPLErrorLogger logAudiobookIssue:error
-                                severity:NYPLSeverityError
-                                 message:msg];
-    } else {
-      if (level > LogLevelDebug) {
-        NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:NYPLErrorCodeAudiobookExternalError userInfo:nil];
-
-        NYPLSeverity severity = level == LogLevelInfo ? NYPLSeverityInfo : level == LogLevelWarn ? NYPLSeverityWarning : NYPLSeverityError;
-        [NYPLErrorLogger logAudiobookIssue:error
-                                  severity:severity
-                                   message:msg];
-      }
+      [NYPLErrorLogger logError:error
+                        summary:@"Error registering audiobook callback for logging"
+                       metadata:@{ @"context": msg ?: @"N/A" }];
+    } else if (level > LogLevelDebug) {
+      NSString *logLevel = (level == LogLevelInfo ?
+                            @"info" :
+                            (level == LogLevelWarn ? @"warning" : @"error"));
+      NSString *summary = [NSString stringWithFormat:@"NYPLAudiobookToolkit::AudiobookManager %@", logLevel];
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookExternalError
+                                summary:summary
+                               metadata:@{ @"context": msg ?: @"N/A" }];
     }
   }];
 }
@@ -364,11 +363,12 @@
   UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
   [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 
-  NSString *logMsg = [NSString stringWithFormat:@"bookID: %@; fileURL: %@", book.identifier, url];
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
                             summary:@"Audiobooks: corrupted audiobook"
-                            message:logMsg
-                           metadata:nil];
+                           metadata:@{
+                             @"book": book.loggableDictionary ?: @"N/A",
+                             @"fileURL": url ?: @"N/A"
+                           }];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

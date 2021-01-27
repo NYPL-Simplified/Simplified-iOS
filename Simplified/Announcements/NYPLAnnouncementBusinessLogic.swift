@@ -65,7 +65,6 @@ class NYPLAnnouncementBusinessLogic {
     } catch {
       NYPLErrorLogger.logError(error,
                                summary: "Fail to write Presented Announcements file to local storage",
-                               message: nil,
                                metadata: ["filePathURL": filePathURL,
                                           "presentedAnnouncements": presentedAnnouncements])
     }
