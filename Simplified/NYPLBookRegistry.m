@@ -289,7 +289,6 @@ static NSString *const RecordsKey = @"records";
                                              NYPLUserAccount.sharedAccount.hasCredentials];
           [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeInvalidCredentials
                                     summary:@"Unable to sync loans"
-                                    message:nil
                                    metadata:@{
                                      @"shouldResetCache": @(shouldResetCache),
                                      @"hasCredentials": @(NYPLUserAccount.sharedAccount.hasCredentials),
@@ -324,7 +323,6 @@ static NSString *const RecordsKey = @"records";
         }];
        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeApiCall
                                  summary:@"Unable to fetch loans"
-                                 message:nil
                                 metadata:@{
                                   @"shouldResetCache": @(shouldResetCache),
                                   @"errorDict": error ?: @"N/A"

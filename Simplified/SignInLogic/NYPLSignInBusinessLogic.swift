@@ -188,9 +188,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     guard
       let urlStr = libraryAccount?.details?.userProfileUrl,
       let url = URL(string: urlStr) else {
-        NYPLErrorLogger.logError(withCode: .noURL,
-                                 summary: "Error \(authTypeStr)",
-                                 message: "Unable to create URL for \(authTypeStr)")
+        NYPLErrorLogger.logError(
+          withCode: .noURL,
+          summary: "Error: unable to create URL for \(authTypeStr)",
+          metadata: ["library.userProfileUrl": libraryAccount?.details?.userProfileUrl ?? "N/A"])
         return nil
     }
 
@@ -217,8 +218,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       } else {
         Log.info(#file, "Auth token expected, but none is available.")
         NYPLErrorLogger.logError(withCode: .validationWithoutAuthToken,
-                                 summary: "Error \(authTypeStr)",
-                                 message: "There is no token available during oauth/saml authentication validation.",
+                                 summary: "Error \(authTypeStr): No token available during OAuth/SAML authentication validation",
                                  metadata: [
                                   "isSAML": selectedAuth.isSaml,
                                   "isOAuth": selectedAuth.isOauth,

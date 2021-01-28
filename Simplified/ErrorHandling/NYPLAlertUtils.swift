@@ -69,10 +69,10 @@ import UIKit
         metadata["alertTitle"] = title ?? "N/A"
         if let error = error {
           metadata["error"] = error
+          metadata["message"] = "Error object contained no usable error message for the user, so we defaulted to a generic one."
         }
         NYPLErrorLogger.logError(withCode: .genericErrorMsgDisplayed,
                                  summary: "Displayed error alert with generic message",
-                                 message: "Error \(error?.description ?? "") contained no usable error message for the user, so we defaulted to a generic one.",
                                  metadata: metadata)
       }
     }

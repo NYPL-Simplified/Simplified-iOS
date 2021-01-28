@@ -121,13 +121,13 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     taskInfoLock.lock()
     guard let currentTaskInfo = taskInfo.removeValue(forKey: taskID) else {
       taskInfoLock.unlock()
+      logMetadata["NYPLNetworkResponder context"] = "No task info available for task \(taskID). Completion closure could not be called."
       NYPLErrorLogger.logNetworkError(
         networkError,
         code: .noTaskInfoAvailable,
         summary: "Network layer error: task info unavailable",
         request: task.originalRequest,
         response: task.response,
-        message: "No task info available for task \(taskID). Completion closure could not be called.",
         metadata: logMetadata)
       return
     }

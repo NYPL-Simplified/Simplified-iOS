@@ -575,7 +575,6 @@ didCompleteWithError:(NSError *)error
       if (error) {
         [NYPLErrorLogger logError:error
                           summary:@"Failed to delete LCP audiobook local content"
-                          message:NULL
                          metadata:@{ @"book": [book loggableShortString] }];
       }
     }
@@ -740,7 +739,6 @@ didCompleteWithError:(NSError *)error
 
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeDownloadFail
                             summary:context
-                            message:nil
                            metadata:dict];
 }
 
@@ -919,7 +917,6 @@ didCompleteWithError:(NSError *)error
         if (error) {
           [NYPLErrorLogger logError:error
                             summary:@"Overdrive audiobook fulfillment error"
-                            message:nil
                            metadata:@{
                              @"responseHeaders": responseHeaders ?: @"N/A",
                              @"acquisitionURL": URL ?: @"N/A",
@@ -936,7 +933,6 @@ didCompleteWithError:(NSError *)error
         if (!scope || !requestURLString) {
           [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOverdriveFulfillResponseParseFail
                                     summary:@"Overdrive audiobook fulfillment: wrong headers"
-                                    message:@"Response does not contain the expected headers"
                                    metadata:@{
                                      @"responseHeaders": responseHeaders ?: @"N/A",
                                      @"acquisitionURL": URL ?: @"N/A",
@@ -961,8 +957,7 @@ didCompleteWithError:(NSError *)error
            completion:^(NSError * _Nullable error) {
             if (error) {
               [NYPLErrorLogger logError:error
-                                summary:@"Overdrive audiobook fulfillment: patron token error"
-                                message:@"Error refreshing Overdrive patron token"
+                                summary:@"Overdrive audiobook fulfillment: error refreshing patron token"
                                metadata:@{
                                  @"responseHeaders": responseHeaders ?: @"N/A",
                                  @"acquisitionURL": URL ?: @"N/A",
@@ -997,7 +992,6 @@ didCompleteWithError:(NSError *)error
         NYPLLOG(@"Aborting request with invalid URL.");
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeDownloadFail
                                   summary:@"Book download failure: nil download URL"
-                                  message:@"Unable to download book because the download URL is nil"
                                  metadata:@{
                                    @"acquisitionURL": URL ?: @"N/A",
                                    @"book": book.loggableDictionary,
@@ -1320,8 +1314,7 @@ didFinishDownload:(BOOL)didFinishDownload
 
     if (![self fileURLForBookIndentifier:book.identifier]) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAdobeDRMFulfillmentFail
-                                summary:@"Adobe DRM error: final file URL unavailable"
-                                message:@"fileURLForBookIndentifier returned nil, so no destination to copy file to."
+                                summary:@"Adobe DRM error: destination file URL unavailable"
                                metadata:@{
                                  @"adeptError": adeptError ?: @"N/A",
                                  @"fileURLToRemove": adeptToURL ?: @"N/A",
@@ -1345,7 +1338,6 @@ didFinishDownload:(BOOL)didFinishDownload
     if(!didSucceedCopying) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAdobeDRMFulfillmentFail
                                 summary:@"Adobe DRM error: failure copying file"
-                                message:@"NSFileManager::copyItemAtURL:toURL:error: failed"
                                metadata:@{
                                  @"adeptError": adeptError ?: @"N/A",
                                  @"copyError": copyError ?: @"N/A",
@@ -1360,7 +1352,6 @@ didFinishDownload:(BOOL)didFinishDownload
   } else {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAdobeDRMFulfillmentFail
                               summary:@"Adobe DRM error: did not finish download"
-                              message:@"ADEPT callback was called with didFinishDownload == false"
                              metadata:@{
                                @"adeptError": adeptError ?: @"N/A",
                                @"adeptToURL": adeptToURL ?: @"N/A",
@@ -1436,7 +1427,15 @@ didFinishDownload:(BOOL)didFinishDownload
   LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
   [lcpService fulfill:licenseUrl completion:^(NSURL *localUrl, NSError *error) {
     if (error) {
-      [NYPLErrorLogger logError:error summary:error.domain message:error.localizedDescription metadata:nil];
+      NSString *summary = [NSString stringWithFormat:@"%@ LCP license fulfillment error",
+                           book.distributor];
+      [NYPLErrorLogger logError:error
+                        summary:summary
+                       metadata:@{
+                         @"book": book.loggableDictionary ?: @"N/A",
+                         @"licenseURL": licenseUrl  ?: @"N/A",
+                         @"localURL": localUrl  ?: @"N/A",
+                       }];
       [self failDownloadWithAlertForBook:book];
       return;
     }

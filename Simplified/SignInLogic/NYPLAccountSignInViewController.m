@@ -673,7 +673,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   __auto_type auth = self.businessLogic.selectedAuthentication;
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
                             summary:@"Barcode button was displayed"
-                            message:nil
                            metadata:@{
                              @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
                              @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",

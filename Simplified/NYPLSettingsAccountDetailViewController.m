@@ -1228,8 +1228,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           }];
         } else {
           [NYPLErrorLogger logError:error
-                            summary:@"Show/Hide PIN"
-                            message:@"Error while trying to show the PIN"
+                            summary:@"Error while trying to show/hide the PIN"
                            metadata:nil];
         }
       }];
@@ -1389,7 +1388,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   __auto_type auth = self.businessLogic.selectedAuthentication;
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
                             summary:@"Barcode button was displayed"
-                            message:nil
                            metadata:@{
                              @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
                              @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",
