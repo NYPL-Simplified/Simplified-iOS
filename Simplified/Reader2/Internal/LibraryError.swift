@@ -1,6 +1,6 @@
 //
 //  LibraryError.swift
-//  r2-testapp-swift
+//  Simplified
 //
 //  Created by Mickaël Menu on 12.06.19.
 //

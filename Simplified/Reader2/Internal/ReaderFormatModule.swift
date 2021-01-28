@@ -1,6 +1,6 @@
 //
 //  ReaderFormatModule.swift
-//  r2-testapp-swift
+//  Simplified
 //
 //  Created by Mickaël Menu on 22.02.19.
 //

@@ -1,6 +1,6 @@
 //
 //  URL.swift
-//  r2-testapp-swift
+//  Simplified
 //
 //  Created by Mickaël Menu on 26/07/2020.
 //

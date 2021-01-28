@@ -1,6 +1,6 @@
 //
 //  LibraryService.swift
-//  r2-testapp-swift
+//  Simplified
 //
 //  Created by Mickaël Menu on 20.02.19.
 //
