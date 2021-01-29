@@ -30,7 +30,7 @@ protocol ModuleDelegate: AnyObject {
 @objc public final class NYPLR2Owner: NSObject {
 
   var libraryService: LibraryService! = nil
-  var reader: ReaderModuleAPI! = nil
+  var readerModule: ReaderModuleAPI! = nil
 
   override init() {
     super.init()
@@ -41,7 +41,7 @@ protocol ModuleDelegate: AnyObject {
     }
 
     libraryService = LibraryService(publicationServer: server)
-    reader = ReaderModule(delegate: self, resourcesServer: server)
+    readerModule = ReaderModule(delegate: self, resourcesServer: server)
 
     // Set Readium 2's logging minimum level.
     R2EnableLog(withMinimumSeverityLevel: .debug)
