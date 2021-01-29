@@ -30,14 +30,10 @@ extension NYPLSignInURLSessionChallengeHandler: URLSessionTaskDelegate {
                   didReceive challenge: URLAuthenticationChallenge,
                   completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
     NYPLMainThreadRun.asyncIfNeeded {
-      if let username = self.uiDelegate?.username, let pin = self.uiDelegate?.pin {
-        NYPLBasicAuth.authCustomHandler(challenge: challenge,
-                                        completionHandler: completionHandler,
-                                        username: username,
-                                        password: pin)
-      } else {
-        completionHandler(.rejectProtectionSpace, nil)
-      }
+      NYPLBasicAuth.authHandler(username: self.uiDelegate?.username,
+                                password: self.uiDelegate?.pin,
+                                challenge: challenge,
+                                completionHandler: completionHandler)
     }
   }
 }

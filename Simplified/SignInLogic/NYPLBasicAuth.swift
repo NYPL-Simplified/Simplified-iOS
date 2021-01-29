@@ -14,41 +14,33 @@ import Foundation
   @objc static func authHandler(challenge: URLAuthenticationChallenge,
                                 completionHandler: @escaping BasicAuthCompletionHandler)
   {
-    switch challenge.protectionSpace.authenticationMethod {
-    case NSURLAuthenticationMethodHTTPBasic:
-      let account = NYPLUserAccount.sharedAccount()
-      if let barcode = account.barcode, let pin = account.PIN {
-        authCustomHandler(challenge: challenge,
-                          completionHandler: completionHandler,
-                          username: barcode,
-                          password: pin)
-      } else {
-        completionHandler(.cancelAuthenticationChallenge, nil)
-      }
-
-    case NSURLAuthenticationMethodServerTrust:
-      completionHandler(.performDefaultHandling, nil)
-
-    default:
-      completionHandler(.rejectProtectionSpace, nil)
-    }
+    let account = NYPLUserAccount.sharedAccount()
+    authHandler(username: account.barcode, password: account.PIN,
+                challenge: challenge, completionHandler: completionHandler)
   }
 
-  @objc static func authCustomHandler(challenge: URLAuthenticationChallenge!,
-                                      completionHandler: @escaping BasicAuthCompletionHandler,
-                                      username: String,
-                                      password: String)
+  static func authHandler(username: String?,
+                          password: String?,
+                          challenge: URLAuthenticationChallenge,
+                          completionHandler: @escaping BasicAuthCompletionHandler)
   {
     switch challenge.protectionSpace.authenticationMethod {
     case NSURLAuthenticationMethodHTTPBasic:
-      if challenge.previousFailureCount == 0 {
-        let credentials = URLCredential(user: username,
-                                        password: password,
-                                        persistence: .none)
-        completionHandler(.useCredential, credentials)
-      } else {
-        completionHandler(.cancelAuthenticationChallenge, nil)
+      guard
+        let username = username,
+        let password = password,
+        challenge.previousFailureCount == 0 else {
+          completionHandler(.cancelAuthenticationChallenge, nil)
+          return
       }
+
+      let credentials = URLCredential(user: username,
+                                      password: password,
+                                      persistence: .none)
+      completionHandler(.useCredential, credentials)
+
+    case NSURLAuthenticationMethodServerTrust:
+      completionHandler(.performDefaultHandling, nil)
 
     default:
       completionHandler(.rejectProtectionSpace, nil)
