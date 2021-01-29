@@ -45,7 +45,7 @@ final class LibraryService: Loggable {
   /// Opens the Readium 2 Publication for the given `book`.
   ///
   /// If the `Publication` is intended to be presented in a navigator, set `forPresentation`.
-  func openBook(_ book: NYPLBook, forPresentation prepareForPresentation: Bool, sender: UIViewController, completion: @escaping (CancellableResult<Publication, LibraryError>) -> Void) {
+  func openBook(_ book: NYPLBook, sender: UIViewController, completion: @escaping (CancellableResult<Publication, LibraryError>) -> Void) {
     guard let bookUrl =  book.url else {
       completion(.failure(.publicationIsNotValid))
       return

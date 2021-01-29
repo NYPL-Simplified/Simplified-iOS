@@ -50,7 +50,7 @@ extension NYPLBook {
       return
     }
 
-    libraryService.openBook(book, forPresentation: true, sender: self) { [weak self] result in
+    libraryService.openBook(book, sender: self) { [weak self] result in
       guard let navVC = self?.selectedViewController as? UINavigationController else {
         preconditionFailure("No navigation controller, unable to present reader")
       }
