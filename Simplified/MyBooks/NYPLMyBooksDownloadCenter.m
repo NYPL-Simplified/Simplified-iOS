@@ -1435,8 +1435,9 @@ didFinishDownload:(BOOL)didFinishDownload
 #pragma mark - LCP
 
 /// Fulfill LCP license
-/// @param licenseUrl Downloaded LCP license URL
+/// @param fileUrl Downloaded LCP license URL
 /// @param book `NYPLBook` Book
+/// @param downloadTask download task
 - (void)fulfillLCPLicense:(NSURL *)fileUrl
                   forBook:(NYPLBook *)book
              downloadTask:(NSURLSessionDownloadTask *)downloadTask
@@ -1448,14 +1449,23 @@ didFinishDownload:(BOOL)didFinishDownload
   NSError *moveError;
   [[NSFileManager defaultManager] moveItemAtURL:fileUrl toURL:licenseUrl error:&moveError];
   if (moveError) {
-    [NYPLErrorLogger logError:moveError summary:moveError.domain message:moveError.localizedDescription metadata:nil];
+    [NYPLErrorLogger logError:moveError summary:@"Error renaming LCP license file" message:nil metadata:@{
+      @"fileUrl": fileUrl,
+      @"licenseUrl": licenseUrl,
+      @"book": book
+    }];
     [self failDownloadWithAlertForBook:book];
     return;
   }
-  // LCP library expects an .lcpl file at localUrl
+  // LCP library expects an .lcpl file at licenseUrl
+  // localUrl is URL of downloaded file with embedded license
   [lcpService fulfill:licenseUrl completion:^(NSURL *localUrl, NSError *error) {
     if (error) {
-      [NYPLErrorLogger logError:error summary:error.domain message:error.localizedDescription metadata:nil];
+      [NYPLErrorLogger logError:error summary:@"Error fulfilling LCP license" message:nil metadata:@{
+        @"licenseUrl": licenseUrl,
+        @"localUrl": localUrl,
+        @"book": book
+      }];
       [self failDownloadWithAlertForBook:book];
       return;
     }
