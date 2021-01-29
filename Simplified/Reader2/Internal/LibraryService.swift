@@ -15,17 +15,7 @@ import UIKit
 import R2Shared
 import R2Streamer
 
-protocol LibraryServiceDelegate: AnyObject {
-  
-  func reloadLibrary()
-  func confirmImportingDuplicatePublication(withTitle title: String) -> Deferred<Void, Error>
-  
-}
-
-
 final class LibraryService: Loggable {
-  
-  weak var delegate: LibraryServiceDelegate?
   
   private let streamer: Streamer
   private let publicationServer: PublicationServer
