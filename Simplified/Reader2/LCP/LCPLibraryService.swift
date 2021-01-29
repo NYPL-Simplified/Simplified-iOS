@@ -41,20 +41,20 @@ import ReadiumLCP
   /// - Parameter file: LCP license file.
   /// - Returns: fulfilled publication as `Deferred` (`CancellableReesult` interenally) object.
   func fulfill(_ file: URL) -> Deferred<DRMFulfilledPublication, Error> {
-      return deferred { completion in
-          self.lcpService.acquirePublication(from: file) { result in
-              completion(result
-                  .map {
-                      DRMFulfilledPublication(
-                          localURL: $0.localURL,
-                          downloadTask: $0.downloadTask,
-                          suggestedFilename: $0.suggestedFilename
-                      )
-                  }
-                  .eraseToAnyError()
-              )
-          }
+    return deferred { completion in
+      self.lcpService.acquirePublication(from: file) { result in
+        completion(result
+          .map {
+            DRMFulfilledPublication(
+              localURL: $0.localURL,
+              downloadTask: $0.downloadTask,
+              suggestedFilename: $0.suggestedFilename
+            )
+        }
+        .eraseToAnyError()
+        )
       }
+    }
   }
 
   /// Fulfill LCP license publication
