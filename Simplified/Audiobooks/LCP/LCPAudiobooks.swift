@@ -82,8 +82,8 @@ extension LCPAudiobooks: DRMDecryptor {
     let asset = FileAsset(url: self.audiobookUrl)
     streamer.open(asset: asset, allowUserInteraction: false) { result in
       do {
-        let publicatoin = try result.get()
-        let resource = publicatoin.get(url.path)
+        let publication = try result.get()
+        let resource = publication.get(url.path)
         let data = try resource.read().get()
         try data.write(to: resultUrl)
         completion(nil)
