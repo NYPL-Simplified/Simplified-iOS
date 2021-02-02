@@ -72,7 +72,7 @@ import ReadiumLCP
         completion(publication.localURL, nil)
       } catch {
         let domain = "LCP fulfillment error"
-        let code = 0
+        let code = NYPLErrorCode.lcpDRMFulfillmentFail.rawValue
         let errorDescription = (error as? LCPError)?.errorDescription ?? error.localizedDescription
         let nsError = NSError(domain: domain, code: code, userInfo: [
           NSLocalizedDescriptionKey: errorDescription as Any
