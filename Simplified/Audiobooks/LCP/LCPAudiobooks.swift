@@ -17,6 +17,10 @@ import NYPLAudiobookToolkit
 /// LCP Audiobooks helper class
 @objc class LCPAudiobooks: NSObject {
     
+  private let audiobookUrlKey = "audiobookUrl"
+  private let audioFileHrefKey = "audioFileHref"
+  private let destinationFileUrlKey = "destinationFileUrl"
+  
   private let audiobookUrl: URL
   private let lcpService = LCPLibraryService()
   private let streamer: Streamer
@@ -46,7 +50,7 @@ import NYPLAudiobookToolkit
         let json = try resourse.readAsJSON().get()
         completion(json as NSDictionary, nil)
       } catch {
-        NYPLErrorLogger.logError(error, summary: "Error reading LCP \(manifestPath) file", metadata: ["audiobookUrl": self.audiobookUrl])
+        NYPLErrorLogger.logError(error, summary: "Error reading LCP \(manifestPath) file", metadata: [self.audiobookUrlKey: self.audiobookUrl])
         completion(nil, LCPAudiobooks.nsError(for: error))
       }
     }
@@ -89,7 +93,11 @@ extension LCPAudiobooks: DRMDecryptor {
         try data.write(to: resultUrl)
         completion(nil)
       } catch {
-        NYPLErrorLogger.logError(error, summary: "Error decrypting LCP audio file \(url)")
+        NYPLErrorLogger.logError(error, summary: "Error decrypting LCP audio file", metadata: [
+          self.audiobookUrlKey: self.audiobookUrl,
+          self.audioFileHrefKey: url,
+          self.destinationFileUrlKey: resultUrl
+        ])
         completion(LCPAudiobooks.nsError(for: error))
       }
     }
