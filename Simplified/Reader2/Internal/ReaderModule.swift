@@ -22,6 +22,9 @@ protocol ReaderModuleAPI {
   var delegate: ReaderModuleDelegate? { get }
   
   /// Presents the given publication to the user, inside the given navigation controller.
+  /// - Parameter publication: The R2 publication to display.
+  /// - Parameter book: Our internal book model related to the `publication`.
+  /// - Parameter navigationController: The navigation stack the book will be presented in.
   /// - Parameter completion: Called once the publication is presented, or if an error occured.
   func presentPublication(publication: Publication, book: NYPLBook, in navigationController: UINavigationController, completion: @escaping () -> Void)
   
