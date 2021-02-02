@@ -71,7 +71,3 @@ extension NYPLR2Owner: ModuleDelegate {
     )
   }
 }
-
-extension NYPLR2Owner: ReaderModuleDelegate {
-
-}

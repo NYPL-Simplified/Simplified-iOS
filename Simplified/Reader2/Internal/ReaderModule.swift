@@ -19,7 +19,7 @@ import R2Shared
 /// It contains sub-modules implementing ReaderFormatModule to handle each format of publication (eg. CBZ, EPUB).
 protocol ReaderModuleAPI {
   
-  var delegate: ReaderModuleDelegate? { get }
+  var delegate: ModuleDelegate? { get }
   
   /// Presents the given publication to the user, inside the given navigation controller.
   /// - Parameter publication: The R2 publication to display.
@@ -30,19 +30,15 @@ protocol ReaderModuleAPI {
   
 }
 
-protocol ReaderModuleDelegate: ModuleDelegate {
-}
-
-
 final class ReaderModule: ReaderModuleAPI {
   
-  weak var delegate: ReaderModuleDelegate?
+  weak var delegate: ModuleDelegate?
   private let resourcesServer: ResourcesServer
   
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
   
-  init(delegate: ReaderModuleDelegate?, resourcesServer: ResourcesServer) {
+  init(delegate: ModuleDelegate?, resourcesServer: ResourcesServer) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
     
