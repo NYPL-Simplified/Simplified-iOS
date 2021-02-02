@@ -58,7 +58,7 @@ final class ReaderModule: ReaderModuleAPI {
     
     func present(_ viewController: UIViewController) {
       let backItem = UIBarButtonItem()
-      backItem.title = ""
+      backItem.title = NSLocalizedString("Back", comment: "Text for Back button")
       viewController.navigationItem.backBarButtonItem = backItem
       viewController.hidesBottomBarWhenPushed = true
       navigationController.pushViewController(viewController, animated: true)
