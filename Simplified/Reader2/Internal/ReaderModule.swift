@@ -48,7 +48,10 @@ final class ReaderModule: ReaderModuleAPI {
 
   }
   
-  func presentPublication(publication: Publication, book: NYPLBook, in navigationController: UINavigationController, completion: @escaping () -> Void) {
+  func presentPublication(publication: Publication,
+                          book: NYPLBook,
+                          in navigationController: UINavigationController,
+                          completion: @escaping () -> Void) {
     guard let delegate = delegate else {
       fatalError("Reader delegate not set")
     }
