@@ -46,7 +46,7 @@ extension NYPLBook {
 
 @objc extension NYPLRootTabBarController {
   func presentBook(_ book: NYPLBook) {
-    guard let libraryService = r2Owner?.libraryService, let readerModule = r2Owner.readerModule else {
+    guard let libraryService = r2Owner?.libraryService, let readerModule = r2Owner?.readerModule else {
       return
     }
 
