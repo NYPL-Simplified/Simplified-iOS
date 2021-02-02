@@ -16,20 +16,14 @@ import R2Shared
 enum LibraryError: LocalizedError {
   
   case publicationIsNotValid
-  case importFailed(Error)
   case openFailed(Error)
-  case downloadFailed(String)
   
   var errorDescription: String? {
     switch self {
     case .publicationIsNotValid:
-      return NSLocalizedString("Error message used when trying to import a publication that is not valid", comment: "Error message used when trying to import a publication that is not valid")
-    case .importFailed(let error):
-      return String(format: NSLocalizedString("Error message used when a low-level error occured while importing a publication", comment: "Error message used when a low-level error occured while importing a publication"), error.localizedDescription)
+      return NSLocalizedString("The book you were trying to open is invalid", comment: "Error message used when trying to import a publication that is not valid")
     case .openFailed(let error):
-      return String(format: NSLocalizedString("Error message used when a low-level error occured while opening a publication", comment: "Error message used when a low-level error occured while opening a publication"), error.localizedDescription)
-    case .downloadFailed(let description):
-      return String(format: NSLocalizedString("Error message when the download of a publication failed", comment: "Error message when the download of a publication failed"), description)
+      return String(format: NSLocalizedString("An error was encountered while trying to open this book", comment: "Error message used when a low-level error occured while opening a publication"), error.localizedDescription)
     }
   }
   

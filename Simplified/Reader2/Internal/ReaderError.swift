@@ -19,9 +19,9 @@ enum ReaderError: LocalizedError {
   var errorDescription: String? {
     switch self {
     case .formatNotSupported:
-      return NSLocalizedString("Error message when trying to read a publication with a unsupported format", comment: "Error message when trying to read a publication with a unsupported format")
+      return NSLocalizedString("The book you were trying to read is in an unsupported format.", comment: "Error message when trying to read a publication with a unsupported format")
     case .epubNotValid:
-      return NSLocalizedString("Error message when trying to read an EPUB that is invalid", comment: "Error message when trying to read an EPUB that is invalid")
+      return NSLocalizedString("The book you were trying to read is corrupted. Please try downloading it again.", comment: "Error message when trying to read an EPUB that is invalid")
     }
   }
   
