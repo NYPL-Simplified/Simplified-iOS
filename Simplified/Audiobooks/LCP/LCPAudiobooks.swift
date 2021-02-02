@@ -98,7 +98,7 @@ extension LCPAudiobooks: DRMDecryptor {
           self.audioFileHrefKey: url,
           self.destinationFileUrlKey: resultUrl
         ])
-        completion(LCPAudiobooks.nsError(for: error))
+        completion(error)
       }
     }
   }
