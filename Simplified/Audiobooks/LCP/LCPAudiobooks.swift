@@ -46,7 +46,7 @@ import NYPLAudiobookToolkit
         let json = try resourse.readAsJSON().get()
         completion(json as NSDictionary, nil)
       } catch {
-        NYPLErrorLogger.logError(error, summary: "Error reading LCP \(manifestPath) file")
+        NYPLErrorLogger.logError(error, summary: "Error reading LCP \(manifestPath) file", metadata: ["audiobookUrl": self.audiobookUrl])
         completion(nil, LCPAudiobooks.nsError(for: error))
       }
     }
