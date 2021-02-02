@@ -65,7 +65,8 @@ import NYPLAudiobookToolkit
   private static func nsError(for error: Error) -> NSError {
     let description = (error as? LCPError)?.errorDescription ?? error.localizedDescription
     return NSError(domain: "SimplyE.LCPAudiobooks", code: 0, userInfo: [
-      NSLocalizedDescriptionKey: description
+      NSLocalizedDescriptionKey: description,
+      "Error": error
     ])
   }
 }
