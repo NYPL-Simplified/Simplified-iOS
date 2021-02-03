@@ -37,10 +37,6 @@ class AdobeDRMLibraryService: DRMLibraryService {
     completion(.success(publication))
   }
   
-  
-  
-  
-  
   /// Fills the DRM context of the given protected publication.
   /// - Parameters:
   ///   - publication: file URL
