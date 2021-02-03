@@ -60,10 +60,21 @@ extension NYPLBook {
           //
         }
       case .cancelled:
-        preconditionFailure("Open book opration was cancelled")
+        // .cancelled is returned when publication has restricted access to its resources and can't be rendered
+        NYPLErrorLogger.logError(nil, summary: "Error accessing book resources", metadata: [
+          "book": book
+        ])
+        let alertController = NYPLAlertUtils.alert(title: "ReaderViewControllerCorruptTitle", message: "ReaderViewControllerCorruptMessage")
+        NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: self, animated: true, completion: nil)
         
       case .failure(let error):
-        preconditionFailure("Open book error: \(error.localizedDescription)")
+        // .failure is retured for an error raised while trying to unlock publication
+        // error is supposed to be visible to users, it is defined by ContentProtection error property
+        NYPLErrorLogger.logError(error, summary: "Error accessing book resources", metadata: [
+          "book": book
+        ])
+        let alertController = NYPLAlertUtils.alert(title: "Content Protection Error", message: error.localizedDescription)
+        NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: self, animated: true, completion: nil)
       }
     }
   }

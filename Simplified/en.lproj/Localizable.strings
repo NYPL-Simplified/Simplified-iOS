@@ -260,3 +260,5 @@
 "Phone" = "Phone";
 "Mail" = "Mail";
 "Support" = "Support";
+// Content protection error
+"Content Protection Error" = "Content Protection Error";
