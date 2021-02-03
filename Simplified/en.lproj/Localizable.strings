@@ -262,3 +262,11 @@
 "Support" = "Support";
 // Content protection error
 "Content Protection Error" = "Content Protection Error";
+
+// LibraryError messages
+"The book you were trying to open is invalid" = "The book you were trying to open is invalid";
+"An error was encountered while trying to open this book" = "An error was encountered while trying to open this book";
+
+// ReaderError messages
+"The book you were trying to read is in an unsupported format." = "The book you were trying to read is in an unsupported format.";
+"The book you were trying to read is corrupted. Please try downloading it again." = "The book you were trying to read is corrupted. Please try downloading it again.";
