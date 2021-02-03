@@ -42,15 +42,39 @@ extension NYPLADEPT: NYPLDRMAuthorizing {}
 
 @objcMembers
 class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
+  /// Makes a business logic object with a network request executor that
+  /// performs no persistent storage for caching.
+  @objc convenience init(libraryAccountID: String,
+                         libraryAccountsProvider: NYPLLibraryAccountsProvider,
+                         urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider,
+                         bookRegistry: NYPLBookRegistrySyncing,
+                         bookDownloadsCenter: NYPLBookDownloadsDeleting,
+                         userAccountProvider: NYPLUserAccountProvider.Type,
+                         uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
+                         drmAuthorizer: NYPLDRMAuthorizing?) {
+    self.init(libraryAccountID: libraryAccountID,
+              libraryAccountsProvider: libraryAccountsProvider,
+              urlSettingsProvider: urlSettingsProvider,
+              bookRegistry: bookRegistry,
+              bookDownloadsCenter: bookDownloadsCenter,
+              userAccountProvider: userAccountProvider,
+              networkExecutor: NYPLNetworkExecutor(credentialsProvider: uiDelegate,
+                                                   cachingStrategy: .ephemeral,
+                                                   delegateQueue: OperationQueue.main),
+              uiDelegate: uiDelegate,
+              drmAuthorizer: drmAuthorizer)
+  }
 
-  @objc init(libraryAccountID: String,
-             libraryAccountsProvider: NYPLLibraryAccountsProvider,
-             urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider,
-             bookRegistry: NYPLBookRegistrySyncing,
-             bookDownloadsCenter: NYPLBookDownloadsDeleting,
-             userAccountProvider: NYPLUserAccountProvider.Type,
-             uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
-             drmAuthorizer: NYPLDRMAuthorizing?) {
+  /// Designated initializer.
+  init(libraryAccountID: String,
+       libraryAccountsProvider: NYPLLibraryAccountsProvider,
+       urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider,
+       bookRegistry: NYPLBookRegistrySyncing,
+       bookDownloadsCenter: NYPLBookDownloadsDeleting,
+       userAccountProvider: NYPLUserAccountProvider.Type,
+       networkExecutor: NYPLRequestExecuting,
+       uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
+       drmAuthorizer: NYPLDRMAuthorizing?) {
     self.uiDelegate = uiDelegate
     self.libraryAccountID = libraryAccountID
     self.libraryAccountsProvider = libraryAccountsProvider
@@ -58,21 +82,14 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     self.bookRegistry = bookRegistry
     self.bookDownloadsCenter = bookDownloadsCenter
     self.userAccountProvider = userAccountProvider
+    self.networker = networkExecutor
     self.drmAuthorizer = drmAuthorizer
     self.samlHelper = NYPLSAMLHelper()
-    self.urlSessionDelegate = NYPLSignInURLSessionChallengeHandler(uiDelegate: uiDelegate)
-    self.urlSession = URLSession(configuration: .ephemeral,
-                                 delegate: urlSessionDelegate,
-                                 delegateQueue: OperationQueue.main)
     super.init()
     self.samlHelper.businessLogic = self
   }
 
-  deinit {
-    self.urlSession.finishTasksAndInvalidate()
-  }
-
-  // Lock for ensure internal state consistency.
+  /// Lock for ensuring internal state consistency.
   let permissionsCheckLock = NSLock()
 
   /// Signing in and out may imply syncing the book registry.
@@ -165,12 +182,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   // MARK:- Network Requests Logic
 
-  // Time-out to use for sign-in/out network requests.
-  let requestTimeoutInterval: TimeInterval = 25.0
-
-  @objc let urlSession: URLSession
-
-  private let urlSessionDelegate: NYPLSignInURLSessionChallengeHandler
+  let networker: NYPLRequestExecuting
 
   /// Creates a request object for signing in or out, depending on
   /// on which authentication mechanism is currently selected.
@@ -196,7 +208,6 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     }
 
     var req = URLRequest(url: url)
-    req.timeoutInterval = requestTimeoutInterval
 
     if let selectedAuth = selectedAuthentication,
       (selectedAuth.isOauth || selectedAuth.isSaml) {
@@ -238,90 +249,62 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     isCurrentlySigningIn = true
 
     guard let req = makeRequest(for: .signIn, context: uiContext) else {
-      NYPLMainThreadRun.asyncIfNeeded {
-        let error = NSError(domain: NYPLErrorLogger.clientDomain,
-                            code: NYPLErrorCode.noURL.rawValue,
-                            userInfo: [
-                              NSLocalizedDescriptionKey:
-                                NSLocalizedString("Unable to contact the server because the URL for signing in is missing.",
-                                                  comment: "Error message for when the library profile url is missing from the authentication document the server provided."),
-                              NSLocalizedRecoverySuggestionErrorKey:
-                                NSLocalizedString("Try force-quitting the app and repeat the sign-in process.",
-                                                  comment: "Recovery instructions for when the URL to sign in is missing")])
-        self.handleNetworkError(error,
-                                problemDocData: nil,
-                                response: nil,
-                                loggingContext: ["Context": self.uiContext])
-      }
+      let error = NSError(domain: NYPLErrorLogger.clientDomain,
+                          code: NYPLErrorCode.noURL.rawValue,
+                          userInfo: [
+                            NSLocalizedDescriptionKey:
+                              NSLocalizedString("Unable to contact the server because the URL for signing in is missing.",
+                                                comment: "Error message for when the library profile url is missing from the authentication document the server provided."),
+                            NSLocalizedRecoverySuggestionErrorKey:
+                              NSLocalizedString("Try force-quitting the app and repeat the sign-in process.",
+                                                comment: "Recovery instructions for when the URL to sign in is missing")])
+      self.handleNetworkError(error, loggingContext: ["Context": uiContext])
       return
     }
 
-    let task = urlSession.dataTask(with: req) { [weak self] data, response, error in
+    networker.executeRequest(req) { [weak self] result in
       guard let self = self else {
         return
       }
 
       let loggingContext: [String: Any] = [
         "Request": req.loggableString,
-        "Response": response ?? "N/A",
         "Attempted Barcode": self.uiDelegate?.username?.md5hex() ?? "N/A",
-        "Data is nil?": "\(data == nil)",
         "Context": self.uiContext]
 
       self.isCurrentlySigningIn = false
 
-      guard
-        let httpResponse = response as? HTTPURLResponse,
-        httpResponse.statusCode == 200,
-        let responseData = data else {
-          self.handleNetworkError(error as NSError?,
-                                  problemDocData: data,
-                                  response: response,
-                                  loggingContext: loggingContext)
-          return
-      }
+      switch result {
+      case .success(let responseData, _):
+        #if FEATURE_DRM_CONNECTOR
+        self.drmAuthorizeUserData(responseData, loggingContext: loggingContext)
+        #else
+        self.finalizeSignIn(forDRMAuthorization: true)
+        #endif
 
-      #if FEATURE_DRM_CONNECTOR
-      self.drmAuthorizeUserData(responseData,
+      case .failure(let errorWithProblemDoc, let response):
+        self.handleNetworkError(errorWithProblemDoc as NSError,
+                                response: response,
                                 loggingContext: loggingContext)
-      #else
-      self.finalizeSignIn(forDRMAuthorization: true,
-                          error: nil,
-                          errorMessage: nil)
-      #endif
+      }
     }
-
-    task.resume()
   }
 
-  private func handleNetworkError(_ error: Error?,
-                                  problemDocData: Data?,
-                                  response: URLResponse?,
-                                  loggingContext: [String: Any]?) {
-    let problemDoc: NYPLProblemDocument?
-    if let problemDocData = problemDocData, response?.isProblemDocument() ?? false {
-      do {
-        problemDoc = try NYPLProblemDocument.fromData(problemDocData)
-      } catch(let parseError) {
-        problemDoc = nil
-        NYPLErrorLogger.logProblemDocumentParseError(parseError as NSError,
-                                                     problemDocumentData: problemDocData,
-                                                     url: nil,
-                                                     summary: "Sign-in validation: Problem Doc parse error",
-                                                     metadata: loggingContext)
-      }
-    } else {
-      problemDoc = nil
-    }
+  /// Uses the problem document's `title` and `message` fields to
+  ///  communicate a user friendly error info to the `uiDelegate`.
+  /// Also logs the `error`.
+  private func handleNetworkError(_ error: NSError,
+                                  response: URLResponse? = nil,
+                                  loggingContext: [String: Any]) {
+    let problemDoc = error.problemDocument
 
-    // if there's no response it's a client-side error that we already logged
-    if response != nil {
-      NYPLErrorLogger.logLoginError(error as NSError?,
-                                    library: libraryAccount,
-                                    response: response,
-                                    problemDocument: problemDoc,
-                                    metadata: loggingContext)
-    }
+    // NYPLNetworkExecutor already logged the error, but this is more
+    // informative
+    NYPLErrorLogger.logLoginError(error,
+                                  library: libraryAccount,
+                                  response: response,
+                                  problemDocument: problemDoc,
+                                  metadata: loggingContext)
 
     let title, message: String?
     if let problemDoc = problemDoc {
@@ -332,10 +315,12 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       message = nil
     }
 
-    uiDelegate?.businessLogic(self,
-                              didEncounterValidationError: error,
-                              userFriendlyErrorTitle: title,
-                              andMessage: message)
+    NYPLMainThreadRun.asyncIfNeeded {
+      self.uiDelegate?.businessLogic(self,
+                                     didEncounterValidationError: error,
+                                     userFriendlyErrorTitle: title,
+                                     andMessage: message)
+    }
   }
 
   /// Initiates process of signing in with the server.

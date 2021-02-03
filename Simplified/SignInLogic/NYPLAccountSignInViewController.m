@@ -883,7 +883,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }];
 }
 
-#pragma mark - NYPLSignInBusinessLogicUIDelegate
+#pragma mark - NYPLSignInOutBusinessLogicUIDelegate
 
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {

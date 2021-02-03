@@ -68,7 +68,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
             task.currentRequest.URL.absoluteString,
             challenge.protectionSpace.authenticationMethod);
 
-    [NYPLBasicAuth authHandlerWithChallenge:challenge completionHandler:completionHandler];
+  NYPLBasicAuth *challenger = [[NYPLBasicAuth alloc] initWithCredentialsProvider:
+                               NYPLUserAccount.sharedAccount];
+  [challenger handleChallenge:challenge completion:completionHandler];
 }
 
 #pragma mark -

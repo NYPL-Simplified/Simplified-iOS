@@ -8,15 +8,8 @@
 
 import Foundation
 
-/// Defines the interface required by the various pieces of the sign-in logic
-/// to obtain the credentials provided by the user directly.
-@objc protocol NYPLSignInUserProvidedCredentials: NSObjectProtocol {
-  var username: String? {get}
-  var pin: String? {get}
-}
-
 /// The functionalities on the UI that the sign-in business logic requires.
-@objc protocol NYPLSignInBusinessLogicUIDelegate: NYPLSignInUserProvidedCredentials, NYPLUserAccountInputProvider {
+@objc protocol NYPLSignInBusinessLogicUIDelegate: NYPLBasicAuthCredentialsProvider, NYPLUserAccountInputProvider {
   /// The context in which the UI delegate is operating in, such as in a modal
   /// sheet or a tab.
   /// - Note: This should not be derived from a computation involving views,

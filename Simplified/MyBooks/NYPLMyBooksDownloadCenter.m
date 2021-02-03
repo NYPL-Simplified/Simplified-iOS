@@ -401,7 +401,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  [NYPLBasicAuth authHandlerWithChallenge:challenge completionHandler:completionHandler];
+  NYPLBasicAuth *handler = [[NYPLBasicAuth alloc] initWithCredentialsProvider:NYPLUserAccount.sharedAccount];
+  [handler handleChallenge:challenge completion:completionHandler];
 }
 
 // This is implemented in order to be able to handle redirects when using
