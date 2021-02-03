@@ -1446,10 +1446,15 @@ didFinishDownload:(BOOL)didFinishDownload
   LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
   // Ensure correct license extension
   NSURL *licenseUrl = [[fileUrl URLByDeletingPathExtension] URLByAppendingPathExtension:lcpService.licenseExtension];
-  NSError *moveError;
-  [[NSFileManager defaultManager] moveItemAtURL:fileUrl toURL:licenseUrl error:&moveError];
-  if (moveError) {
-    [NYPLErrorLogger logError:moveError summary:@"Error renaming LCP license file" message:nil metadata:@{
+  NSError *replaceError;
+  [[NSFileManager defaultManager] replaceItemAtURL:licenseUrl
+                                     withItemAtURL:fileUrl
+                                    backupItemName:nil
+                                           options:NSFileManagerItemReplacementUsingNewMetadataOnly
+                                  resultingItemURL:nil
+                                             error:&replaceError];
+  if (replaceError) {
+    [NYPLErrorLogger logError:replaceError summary:@"Error renaming LCP license file" message:nil metadata:@{
       @"fileUrl": fileUrl,
       @"licenseUrl": licenseUrl,
       @"book": book
