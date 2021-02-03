@@ -14,6 +14,20 @@ enum NYPLResult<SuccessInfo> {
   case failure(NYPLUserFriendlyError, URLResponse?)
 }
 
+protocol NYPLRequestExecuting {
+  /// Execute a given request.
+  /// - Parameters:
+  ///   - req: The request to perform.
+  ///   - completion: Always called when the resource is either fetched from
+  /// the network or from the cache.
+  /// - Returns: The task issueing the given request.
+  @discardableResult
+  func executeRequest(_ req: URLRequest,
+                      completion: @escaping (_: NYPLResult<Data>) -> Void) -> URLSessionDataTask
+
+  var requestTimeout: TimeInterval {get}
+}
+
 /// A class that is capable of executing network requests in a thread-safe way.
 /// This class implements caching according to server response caching headers,
 /// but can also be configured to have a fallback mechanism to cache responses
@@ -28,28 +42,29 @@ enum NYPLResult<SuccessInfo> {
   /// The delegate of the URLSession.
   private let responder: NYPLNetworkResponder
 
-  /// Whether the fallback caching system should be active or not.
-  let shouldEnableFallbackCaching: Bool
-
   /// Designated initializer.
-  /// - Parameter shouldEnableFallbackCaching: If set to `true`, the executor
-  /// will attempt to cache responses even when these lack a sufficient set of
-  /// caching headers. The default is `false`.
-  init(shouldEnableFallbackCaching: Bool = false) {
-    self.shouldEnableFallbackCaching = shouldEnableFallbackCaching
-    self.responder = NYPLNetworkResponder()
-    let config = NYPLCaching.makeURLSessionConfiguration()
+  /// - Parameter credentialsProvider: The object responsible with providing cretdentials
+  /// - Parameter cachingStrategy: The strategy to cache responses with.
+  /// - Parameter delegateQueue: The queue where callbacks will be called.
+  init(credentialsProvider: NYPLBasicAuthCredentialsProvider? = nil,
+       cachingStrategy: NYPLCachingStrategy,
+       delegateQueue: OperationQueue? = nil) {
+    self.responder = NYPLNetworkResponder(credentialsProvider: credentialsProvider,
+                                          useFallbackCaching: cachingStrategy == .fallback)
+
+    let config = NYPLCaching.makeURLSessionConfiguration(caching: cachingStrategy)
     self.urlSession = URLSession(configuration: config,
                                  delegate: self.responder,
-                                 delegateQueue: nil)
+                                 delegateQueue: delegateQueue)
+    super.init()
   }
 
   deinit {
-    urlSession.invalidateAndCancel()
+    urlSession.finishTasksAndInvalidate()
   }
 
   /// A shared generic executor with enabled fallback caching.
-  @objc static let shared = NYPLNetworkExecutor(shouldEnableFallbackCaching: true)
+  @objc static let shared = NYPLNetworkExecutor(cachingStrategy: .fallback)
 
   /// Performs a GET request using the specified URL
   /// - Parameters:
@@ -61,12 +76,15 @@ enum NYPLResult<SuccessInfo> {
     let req = request(for: reqURL)
     executeRequest(req, completion: completion)
   }
+}
 
+extension NYPLNetworkExecutor: NYPLRequestExecuting {
   /// Executes a given request.
   /// - Parameters:
   ///   - req: The request to perform.
   ///   - completion: Always called when the resource is either fetched from
   /// the network or from the cache.
+  /// - Returns: The task issueing the given request.
   @discardableResult
   func executeRequest(_ req: URLRequest,
            completion: @escaping (_: NYPLResult<Data>) -> Void) -> URLSessionDataTask {
@@ -75,6 +93,10 @@ enum NYPLResult<SuccessInfo> {
     Log.info(#file, "Starting request \(req.loggableString)")
     task.resume()
     return task
+  }
+
+  var requestTimeout: TimeInterval {
+    return urlSession.configuration.timeoutIntervalForRequest
   }
 }
 

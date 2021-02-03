@@ -88,7 +88,7 @@ extension NYPLSignInBusinessLogic {
       endpointVersion: APIKeys.cardCreatorVersion,
       endpointUsername: credentials.username,
       endpointPassword: credentials.password,
-      requestTimeoutInterval: requestTimeoutInterval)
+      requestTimeoutInterval: networker.requestTimeout)
 
     return cardCreatorConfiguration
   }
@@ -115,7 +115,7 @@ extension NYPLSignInBusinessLogic {
       endpointPassword: credentials.password,
       juvenileParentBarcode: parentBarcode,
       juvenilePlatformAPIInfo: platformAPI,
-      requestTimeoutInterval: requestTimeoutInterval)
+      requestTimeoutInterval: networker.requestTimeout)
 
     return JuvenileFlowCoordinator(configuration: config)
   }

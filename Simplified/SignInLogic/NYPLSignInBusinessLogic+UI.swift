@@ -22,8 +22,8 @@ extension NYPLSignInBusinessLogic {
   ///   - errorMessage: Error message to display, taking priority over `error`.
   ///   This can be a localization key.
   func finalizeSignIn(forDRMAuthorization drmSuccess: Bool,
-                      error: Error?,
-                      errorMessage: String?) {
+                      error: Error? = nil,
+                      errorMessage: String? = nil) {
     NYPLMainThreadRun.asyncIfNeeded {
       defer {
         self.uiDelegate?.businessLogicDidCompleteSignIn(self)

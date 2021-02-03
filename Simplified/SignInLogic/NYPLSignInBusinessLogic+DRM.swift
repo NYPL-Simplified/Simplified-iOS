@@ -28,7 +28,6 @@ extension NYPLSignInBusinessLogic {
                                                       barcode: nil,
                                                       metadata:loggingContext)
       finalizeSignIn(forDRMAuthorization: false,
-                     error: nil,
                      errorMessage: "Error parsing user profile document")
       return
     }
@@ -54,7 +53,6 @@ extension NYPLSignInBusinessLogic {
                                  metadata: loggingContext)
 
         finalizeSignIn(forDRMAuthorization: false,
-                       error: nil,
                        errorMessage: "No credentials were received to authorize access to books with DRM.")
         return
     }
@@ -99,7 +97,9 @@ extension NYPLSignInBusinessLogic {
                  username: username,
                  password: password) { success, error, deviceID, userID in
 
-                  OperationQueue.main.addOperation { [weak self] in
+                  // make sure to cancel the previously scheduled selector
+                  // from the same thread it was scheduled on
+                  NYPLMainThreadRun.asyncIfNeeded { [weak self] in
                     if let self = self {
                       NSObject.cancelPreviousPerformRequests(withTarget: self)
                     }
@@ -128,11 +128,12 @@ extension NYPLSignInBusinessLogic {
                   }
 
                   self.finalizeSignIn(forDRMAuthorization: success,
-                                      error: error as NSError?,
-                                      errorMessage: nil)
+                                      error: error as NSError?)
     }
 
-    perform(#selector(dismissAfterUnexpectedDRMDelay), with: self, afterDelay: 25)
+    NYPLMainThreadRun.asyncIfNeeded { [weak self] in
+      self?.perform(#selector(self?.dismissAfterUnexpectedDRMDelay), with: self, afterDelay: 25)
+    }
   }
 
   @objc func dismissAfterUnexpectedDRMDelay(_ arg: Any) {
