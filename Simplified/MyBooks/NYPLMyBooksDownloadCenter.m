@@ -1455,9 +1455,9 @@ didFinishDownload:(BOOL)didFinishDownload
                                              error:&replaceError];
   if (replaceError) {
     [NYPLErrorLogger logError:replaceError summary:@"Error renaming LCP license file" message:nil metadata:@{
-      @"fileUrl": fileUrl,
-      @"licenseUrl": licenseUrl,
-      @"book": book
+      @"fileUrl": fileUrl ?: @"nil",
+      @"licenseUrl": licenseUrl ?: @"nil",
+      @"book": book ?: @"nil"
     }];
     [self failDownloadWithAlertForBook:book];
     return;
@@ -1467,9 +1467,9 @@ didFinishDownload:(BOOL)didFinishDownload
   [lcpService fulfill:licenseUrl completion:^(NSURL *localUrl, NSError *error) {
     if (error) {
       [NYPLErrorLogger logError:error summary:@"Error fulfilling LCP license" message:nil metadata:@{
-        @"licenseUrl": licenseUrl,
-        @"localUrl": localUrl,
-        @"book": book
+        @"licenseUrl": licenseUrl ?: @"nil",
+        @"localUrl": localUrl ?: @"nil",
+        @"book": book ?: @"nil"
       }];
       [self failDownloadWithAlertForBook:book];
       return;
