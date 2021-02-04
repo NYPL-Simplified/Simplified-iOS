@@ -114,8 +114,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// This flag should be set if the instance is used to register new users.
   @objc var isLoggingInAfterSignUp: Bool = false
 
-  /// A closure to be invoked at the end of the sign-in process.
-  @objc var completionHandler: (() -> Void)? = nil
+  /// A closure that will be invoked at the end of the sign-in process when
+  /// refreshing authentication.
+  var refreshAuthCompletion: (() -> Void)? = nil
 
   // MARK:- OAuth / SAML / Clever Info
 
@@ -385,7 +386,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       return false
     }
 
-    completionHandler = completion
+    refreshAuthCompletion = completion
 
     // reset authentication if needed
     if authDef.isSaml || authDef.isOauth {
