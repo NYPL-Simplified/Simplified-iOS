@@ -116,7 +116,7 @@ extension NYPLSignInBusinessLogic {
                   var success = success
 
                   if success, let userID = userID, let deviceID = deviceID {
-                    OperationQueue.main.addOperation {
+                    NYPLMainThreadRun.asyncIfNeeded {
                       self.userAccount.setUserID(userID)
                       self.userAccount.setDeviceID(deviceID)
                     }
