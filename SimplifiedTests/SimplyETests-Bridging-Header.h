@@ -12,11 +12,11 @@
 //
 
 @interface NYPLOpenSearchDescription ()
-@property (nonatomic, readwrite) NSString *OPDSURLTemplate;
+@property (nonatomic, readwrite, nullable) NSString *OPDSURLTemplate;
 @end
 
 @interface UIColor ()
-- (NSString *)javascriptHexString;
+- (nullable NSString *)javascriptHexString;
 @end
 
 @interface NYPLBook ()
