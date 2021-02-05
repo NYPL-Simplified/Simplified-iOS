@@ -33,6 +33,7 @@ import NYPLAudiobookToolkit
   @objc init?(for audiobookUrl: URL) {
     // Check contentProtection is in place
     guard let contentProtection = lcpService.contentProtection else {
+      NYPLErrorLogger.logError(nil, summary: "Uninitialized contentProtection in LCPAudiobooks")
       return nil
     }
     self.audiobookUrl = audiobookUrl
