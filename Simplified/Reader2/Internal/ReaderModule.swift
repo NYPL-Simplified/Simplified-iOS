@@ -19,7 +19,7 @@ import R2Shared
 /// It contains sub-modules implementing ReaderFormatModule to handle each format of publication (eg. CBZ, EPUB).
 protocol ReaderModuleAPI {
   
-  var delegate: ModuleDelegate { get }
+  var delegate: ModuleDelegate? { get }
   
   /// Presents the given publication to the user, inside the given navigation controller.
   /// - Parameter publication: The R2 publication to display.
@@ -32,13 +32,13 @@ protocol ReaderModuleAPI {
 
 final class ReaderModule: ReaderModuleAPI {
   
-  var delegate: ModuleDelegate
+  weak var delegate: ModuleDelegate?
   private let resourcesServer: ResourcesServer
   
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
   
-  init(delegate: ModuleDelegate, resourcesServer: ResourcesServer) {
+  init(delegate: ModuleDelegate?, resourcesServer: ResourcesServer) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
     
@@ -52,6 +52,9 @@ final class ReaderModule: ReaderModuleAPI {
                           book: NYPLBook,
                           in navigationController: UINavigationController,
                           completion: @escaping () -> Void) {
+    if delegate == nil {
+      NYPLErrorLogger.logError(nil, summary: "ReaderModule delegate is not set")
+    }
     
     func present(_ viewController: UIViewController) {
       let backItem = UIBarButtonItem()
@@ -62,7 +65,7 @@ final class ReaderModule: ReaderModuleAPI {
     }
     
     guard let module = self.formatModules.first(where:{ $0.publicationFormats.contains(publication.format) }) else {
-      delegate.presentError(ReaderError.formatNotSupported, from: navigationController)
+      delegate?.presentError(ReaderError.formatNotSupported, from: navigationController)
       completion()
       return
     }
@@ -71,7 +74,7 @@ final class ReaderModule: ReaderModuleAPI {
       let readerViewController = try module.makeReaderViewController(for: publication, book: book, resourcesServer: resourcesServer)
       present(readerViewController)
     } catch {
-      delegate.presentError(error, from: navigationController)
+      delegate?.presentError(error, from: navigationController)
     }
     
     completion()
@@ -83,7 +86,7 @@ final class ReaderModule: ReaderModuleAPI {
 extension ReaderModule: ReaderFormatModuleDelegate {
     
   func presentError(_ error: Error?, from viewController: UIViewController) {
-    delegate.presentError(error, from: viewController)
+    delegate?.presentError(error, from: viewController)
   }
   
 }
