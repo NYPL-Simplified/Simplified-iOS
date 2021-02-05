@@ -19,7 +19,7 @@ import R2Shared
 /// It contains sub-modules implementing ReaderFormatModule to handle each format of publication (eg. CBZ, EPUB).
 protocol ReaderModuleAPI {
   
-  var delegate: ModuleDelegate? { get }
+  var delegate: ModuleDelegate { get }
   
   /// Presents the given publication to the user, inside the given navigation controller.
   /// - Parameter publication: The R2 publication to display.
@@ -32,13 +32,13 @@ protocol ReaderModuleAPI {
 
 final class ReaderModule: ReaderModuleAPI {
   
-  weak var delegate: ModuleDelegate?
+  var delegate: ModuleDelegate
   private let resourcesServer: ResourcesServer
   
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
   
-  init(delegate: ModuleDelegate?, resourcesServer: ResourcesServer) {
+  init(delegate: ModuleDelegate, resourcesServer: ResourcesServer) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
     
@@ -52,9 +52,6 @@ final class ReaderModule: ReaderModuleAPI {
                           book: NYPLBook,
                           in navigationController: UINavigationController,
                           completion: @escaping () -> Void) {
-    guard let delegate = delegate else {
-      fatalError("Reader delegate not set")
-    }
     
     func present(_ viewController: UIViewController) {
       let backItem = UIBarButtonItem()
@@ -86,7 +83,7 @@ final class ReaderModule: ReaderModuleAPI {
 extension ReaderModule: ReaderFormatModuleDelegate {
     
   func presentError(_ error: Error?, from viewController: UIViewController) {
-    delegate?.presentError(error, from: viewController)
+    delegate.presentError(error, from: viewController)
   }
   
 }
