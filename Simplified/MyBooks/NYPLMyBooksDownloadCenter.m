@@ -1457,7 +1457,7 @@ didFinishDownload:(BOOL)didFinishDownload
     [NYPLErrorLogger logError:replaceError summary:@"Error renaming LCP license file" message:nil metadata:@{
       @"fileUrl": fileUrl ?: @"nil",
       @"licenseUrl": licenseUrl ?: @"nil",
-      @"book": book ?: @"nil"
+      @"book": [book loggableDictionary] ?: @"nil"
     }];
     [self failDownloadWithAlertForBook:book];
     return;
@@ -1469,7 +1469,7 @@ didFinishDownload:(BOOL)didFinishDownload
       [NYPLErrorLogger logError:error summary:@"Error fulfilling LCP license" message:nil metadata:@{
         @"licenseUrl": licenseUrl ?: @"nil",
         @"localUrl": localUrl ?: @"nil",
-        @"book": book ?: @"nil"
+        @"book": [book loggableDictionary] ?: @"nil"
       }];
       [self failDownloadWithAlertForBook:book];
       return;
