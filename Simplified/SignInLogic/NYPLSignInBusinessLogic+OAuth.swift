@@ -66,6 +66,7 @@ extension NYPLSignInBusinessLogic {
   }
 
   //----------------------------------------------------------------------------
+  // this is used by both Clever and SAML authentication
   @objc func handleRedirectURL(_ notification: Notification) {
     NotificationCenter.default
       .removeObserver(self, name: .NYPLAppDelegateDidReceiveCleverRedirectURL, object: nil)

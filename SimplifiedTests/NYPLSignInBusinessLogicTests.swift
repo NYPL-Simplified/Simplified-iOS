@@ -180,12 +180,13 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
 
     let expect = expectation(forNotification: .NYPLIsSigningIn, object: nil) { notif -> Bool in
       let isSigningIn = notif.object as! Bool
-      // verification
-      XCTAssertEqual(self.businessLogic.isCurrentlySigningIn, isSigningIn)
+      // sanity verification
       XCTAssertNotNil(user)
       XCTAssertNotNil(self.drmAuthorizer)
 
       if isSigningIn == false {
+        // verification
+        XCTAssertFalse(self.businessLogic.isValidatingCredentials)
         XCTAssertNotNil(user.deviceID)
         XCTAssertEqual(user.deviceID, self.drmAuthorizer.deviceID)
         XCTAssertEqual(user.userID, self.drmAuthorizer.userID)
@@ -200,7 +201,7 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
     // test
     businessLogic.selectedAuthentication = libraryAccountMock.barcodeAuthentication
     businessLogic.logIn()
-    XCTAssertTrue(businessLogic.isCurrentlySigningIn)
+    XCTAssertTrue(businessLogic.isValidatingCredentials)
 
     wait(for: [expect], timeout: 5)
   }

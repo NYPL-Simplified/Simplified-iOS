@@ -163,7 +163,7 @@ extension NYPLSignInBusinessLogic {
       !drmAuthorizer.isUserAuthorized(userAccount.userID,
                                       withDevice: userAccount.deviceID) {
 
-      if userAccount.hasBarcodeAndPIN() && !isCurrentlySigningIn {
+      if userAccount.hasBarcodeAndPIN() && !isValidatingCredentials {
         if let usernameTextField = uiDelegate?.usernameTextField,
           let PINTextField = uiDelegate?.PINTextField
         {

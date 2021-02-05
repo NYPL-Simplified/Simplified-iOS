@@ -746,7 +746,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)updateLoginCellAppearance
 {
-  if (self.businessLogic.isCurrentlySigningIn) {
+  if (self.businessLogic.isValidatingCredentials) {
     return;
   }
 

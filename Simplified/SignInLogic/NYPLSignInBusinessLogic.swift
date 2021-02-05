@@ -139,8 +139,14 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// the session expired (e.g. SAML flow).
   var ignoreSignedInState: Bool = false
 
-  /// This is `true` during the process of signing in / validating credentials.
-  @objc var isCurrentlySigningIn = false
+  /// This is `true` during the process of validating credentials.
+  ///
+  /// Credentials validation happens *after* the initial sign-in intent
+  /// where the app obtains the credentials in some way (e.g. user
+  /// typing them in, or the redirection to 3rd party website for OAuth;
+  /// see `logIn`), and *before* doing DRM authorization (see
+  /// `drmAuthorizeUserData`).
+  @objc var isValidatingCredentials = false
 
   // MARK:- Juvenile Card Creation Info
 
@@ -246,7 +252,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// Clever and SAML), validate said credentials against the Circulation
   /// Manager servers and call back to the UI once that's concluded.
   func validateCredentials() {
-    isCurrentlySigningIn = true
+    isValidatingCredentials = true
 
     guard let req = makeRequest(for: .signIn, context: uiContext) else {
       let error = NSError(domain: NYPLErrorLogger.clientDomain,
@@ -267,12 +273,12 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
         return
       }
 
+      self.isValidatingCredentials = false
+
       let loggingContext: [String: Any] = [
         "Request": req.loggableString,
         "Attempted Barcode": self.uiDelegate?.username?.md5hex() ?? "N/A",
         "Context": self.uiContext]
-
-      self.isCurrentlySigningIn = false
 
       switch result {
       case .success(let responseData, _):
