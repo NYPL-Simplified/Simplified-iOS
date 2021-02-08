@@ -19,9 +19,8 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
 
   let userSettings: NYPLR1R2UserSettings
 
-  init(publication: Publication, book: NYPLBook, drm: DRM?, resourcesServer: ResourcesServer) {
+  init(publication: Publication, book: NYPLBook, resourcesServer: ResourcesServer) {
     let navigator = EPUBNavigatorViewController(publication: publication,
-                                                license: drm?.license,
                                                 initialLocation: book.progressionLocator,
                                                 resourcesServer: resourcesServer)
     userSettings = NYPLR1R2UserSettings(r2UserSettings: navigator.userSettings)
@@ -32,7 +31,7 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
     // to re-set that to reflect our ad-hoc configuration.
     publication.userProperties = navigator.userSettings.userProperties
 
-    super.init(navigator: navigator, publication: publication, book: book, drm: drm)
+    super.init(navigator: navigator, publication: publication, book: book)
 
     navigator.delegate = self
   }

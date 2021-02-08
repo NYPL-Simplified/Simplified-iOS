@@ -561,14 +561,18 @@ didCompleteWithError:(NSError *)error
 #if defined(LCP)
   if ([LCPAudiobooks canOpenBook:book]) {
     LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:bookURL];
-    dict = [[lcpAudiobooks contentDictionary] mutableCopy];
-    dict[@"id"] = book.identifier;
-  }
-#endif
-  [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
-  
-#if defined(LCP)
-  if ([LCPAudiobooks canOpenBook:book]) {
+    [lcpAudiobooks contentDictionaryWithCompletion:^(NSDictionary * _Nullable dict, NSError * _Nullable error) {
+      if (error) {
+        // LCPAudiobooks logs this error
+        return;
+      }
+      if (dict) {
+        // Delete decrypted content for the book
+        NSMutableDictionary *mutableDict = [dict mutableCopy];
+        [[AudiobookFactory audiobook:mutableDict] deleteLocalContent];
+      }
+    }];
+    // Delete LCP book file
     if ([[NSFileManager defaultManager] fileExistsAtPath:bookURL.path]) {
       NSError *error = nil;
       [[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error];
@@ -579,7 +583,12 @@ didCompleteWithError:(NSError *)error
                          metadata:@{ @"book": [book loggableShortString] }];
       }
     }
+  } else {
+    // Not an LCP book
+    [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
   }
+#else
+  [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
 #endif
 }
   
@@ -1426,17 +1435,42 @@ didFinishDownload:(BOOL)didFinishDownload
 #pragma mark - LCP
 
 /// Fulfill LCP license
-/// @param licenseUrl Downloaded LCP license URL
+/// @param fileUrl Downloaded LCP license URL
 /// @param book `NYPLBook` Book
-- (void)fulfillLCPLicense:(NSURL *)licenseUrl
+/// @param downloadTask download task
+- (void)fulfillLCPLicense:(NSURL *)fileUrl
                   forBook:(NYPLBook *)book
              downloadTask:(NSURLSessionDownloadTask *)downloadTask
 {
   #if defined(LCP)
   LCPLibraryService *lcpService = [[LCPLibraryService alloc] init];
+  // Ensure correct license extension
+  NSURL *licenseUrl = [[fileUrl URLByDeletingPathExtension] URLByAppendingPathExtension:lcpService.licenseExtension];
+  NSError *replaceError;
+  [[NSFileManager defaultManager] replaceItemAtURL:licenseUrl
+                                     withItemAtURL:fileUrl
+                                    backupItemName:nil
+                                           options:NSFileManagerItemReplacementUsingNewMetadataOnly
+                                  resultingItemURL:nil
+                                             error:&replaceError];
+  if (replaceError) {
+    [NYPLErrorLogger logError:replaceError summary:@"Error renaming LCP license file" message:nil metadata:@{
+      @"fileUrl": fileUrl ?: @"nil",
+      @"licenseUrl": licenseUrl ?: @"nil",
+      @"book": [book loggableDictionary] ?: @"nil"
+    }];
+    [self failDownloadWithAlertForBook:book];
+    return;
+  }
+  // LCP library expects an .lcpl file at licenseUrl
+  // localUrl is URL of downloaded file with embedded license
   [lcpService fulfill:licenseUrl completion:^(NSURL *localUrl, NSError *error) {
     if (error) {
-      [NYPLErrorLogger logError:error summary:error.domain message:error.localizedDescription metadata:nil];
+      [NYPLErrorLogger logError:error summary:@"Error fulfilling LCP license" message:nil metadata:@{
+        @"licenseUrl": licenseUrl ?: @"nil",
+        @"localUrl": localUrl ?: @"nil",
+        @"book": [book loggableDictionary] ?: @"nil"
+      }];
       [self failDownloadWithAlertForBook:book];
       return;
     }

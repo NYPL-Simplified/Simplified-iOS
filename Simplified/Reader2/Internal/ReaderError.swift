@@ -1,6 +1,6 @@
 //
 //  ReaderError.swift
-//  r2-testapp-swift
+//  Simplified
 //
 //  Created by Mickaël Menu on 12.06.19.
 //
@@ -12,19 +12,17 @@
 
 import Foundation
 
-// TODO: SIMPLY-2656 Merge with other localized strings
-
 enum ReaderError: LocalizedError {
-    case formatNotSupported
-    case epubNotValid
-    
-    var errorDescription: String? {
-        switch self {
-        case .formatNotSupported:
-            return NSLocalizedString("reader_error_formatNotSupported", comment: "Error message when trying to read a publication with a unsupported format")
-        case .epubNotValid:
-            return NSLocalizedString("reader_error_epubNotValid", comment: "Error message when trying to read an EPUB that is invalid")
-        }
+  case formatNotSupported
+  case epubNotValid
+  
+  var errorDescription: String? {
+    switch self {
+    case .formatNotSupported:
+      return NSLocalizedString("The book you were trying to read is in an unsupported format.", comment: "Error message when trying to read a publication with a unsupported format")
+    case .epubNotValid:
+      return NSLocalizedString("The book you were trying to read is corrupted. Please try downloading it again.", comment: "Error message when trying to read an EPUB that is invalid")
     }
-    
+  }
+  
 }

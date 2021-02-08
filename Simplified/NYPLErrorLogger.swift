@@ -104,6 +104,7 @@ fileprivate let nullString = "null"
   // DRM
   case epubDecodingError = 1000
   case adobeDRMFulfillmentFail = 1001
+  case lcpDRMFulfillmentFail = 1002
 
   // wrong content
   case unknownRightsManagement = 1100

@@ -18,21 +18,45 @@ import ReadiumLCP
 
 @objc class LCPLibraryService: NSObject, DRMLibraryService {
   
-  private var lcpService =  R2MakeLCPService()
+  /// Readium licensee file extension
+  @objc public let licenseExtension = "lcpl"
+  
+  /// Readium LCPService
+  private var lcpService = LCPService()
+  
+  /// ContentProtection unlocks protected publication, providing a custom `Fetcher`
+  lazy var contentProtection: ContentProtection? = lcpService.contentProtection()
   
   /// [LicenseDocument.id: passphrase callback]
   private var authenticationCallbacks: [String: (String?) -> Void] = [:]
-  
-  /// Library service brand
-  let brand: DRM.Brand = .lcp
   
   /// Returns whether this DRM can fulfill the given file into a protected publication.
   /// - Parameter file: file URL
   /// - Returns: `true` if file contains LCP DRM license information.
   func canFulfill(_ file: URL) -> Bool {
-    return file.pathExtension.lowercased() == "lcpl"
+    return file.pathExtension.lowercased() == licenseExtension
   }
   
+  /// Fulfill LCP license publication.
+  /// - Parameter file: LCP license file.
+  /// - Returns: fulfilled publication as `Deferred` (`CancellableReesult` interenally) object.
+  func fulfill(_ file: URL) -> Deferred<DRMFulfilledPublication, Error> {
+    return deferred { completion in
+      self.lcpService.acquirePublication(from: file) { result in
+        completion(result
+          .map {
+            DRMFulfilledPublication(
+              localURL: $0.localURL,
+              downloadTask: $0.downloadTask,
+              suggestedFilename: $0.suggestedFilename
+            )
+        }
+        .eraseToAnyError()
+        )
+      }
+    }
+  }
+
   /// Fulfill LCP license publication
   /// This function was added for compatibility with Objective-C NYPLMyBooksDownloadCenter.
   /// - Parameters:
@@ -42,80 +66,22 @@ import ReadiumLCP
   ///   - downloadTask: `URLSessionDownloadTask` that downloaded the publication.
   ///   - error: `NSError` if any.
   @objc func fulfill(_ file: URL, completion: @escaping (_ localUrl: URL?, _ error: NSError?) -> Void) {
-    lcpService.importPublication(from: file, authentication: self) { result, error in
-      var nsError: NSError?
-      if let error = error {
+    self.lcpService.acquirePublication(from: file) { result in
+      do {
+        let publication = try result.get()
+        completion(publication.localURL, nil)
+      } catch {
         let domain = "LCP fulfillment error"
-        let code = 0
-        nsError = NSError(domain: domain, code: code, userInfo: [
-          NSLocalizedDescriptionKey: error.errorDescription as Any
+        let code = NYPLErrorCode.lcpDRMFulfillmentFail.rawValue
+        let errorDescription = (error as? LCPError)?.errorDescription ?? error.localizedDescription
+        let nsError = NSError(domain: domain, code: code, userInfo: [
+          NSLocalizedDescriptionKey: errorDescription as Any
         ])
-      }
-      completion(result?.localURL, nsError)
-    }
-  }
-  
-  /// Fulfills the given file to the fully protected publication.
-  /// - Parameters:
-  ///   - file: file URL
-  ///   - completion: fulfilled publication, CancellableResult<DRMFulfilledPublication>
-  func fulfill(_ file: URL, completion: @escaping (CancellableResult<DRMFulfilledPublication>) -> Void) {
-    lcpService.importPublication(from: file, authentication: self) { result, error in
-      if let result = result {
-        let publication = DRMFulfilledPublication(localURL: result.localURL, downloadTask: result.downloadTask, suggestedFilename: result.suggestedFilename)
-        completion(.success(publication))
-      } else if let error = error {
-        completion(.failure(error))
-      } else {
-        completion(.cancelled)
+        completion(nil, nsError)
       }
     }
   }
-  
-  /// Fills the DRM context of the given protected publication.
-  /// - Parameters:
-  ///   - publication: file URL
-  ///   - drm: DRM
-  ///   - completion: result of retrieving a license for the publication, CancellableResult<DRM?>
-  func loadPublication(at publication: URL, drm: DRM, completion: @escaping (CancellableResult<DRM?>) -> Void) {
-    lcpService.retrieveLicense(from: publication, authentication: self) { license, error in
-      if let license = license {
-        var drm = drm
-        drm.license = license
-        completion(.success(drm))
-      } else if let error = error {
-        completion(.failure(error))
-      } else {
-        completion(.cancelled)
-      }
-    }
-  }
-  
 }
-
-extension LCPLibraryService: LCPAuthenticating {
-  
-  /// Requests a passphrase to decrypt the given license.
-  ///
-  /// - Parameter license: Information to show to the user about the license being opened.
-  /// - Parameter reason: Reason why the passphrase is requested. It should be used to prompt the user.
-  /// - Parameter completion: Used to return the retrieved passphrase. If the user cancelled, send nil. The passphrase may
-  ///   be already hashed.
-  func requestPassphrase(for license: LCPAuthenticatedLicense, reason: LCPAuthenticationReason, completion: @escaping (String?) -> Void) {
-    authenticationCallbacks[license.document.id] = completion
-    
-    let licenseInfo = LCPLicenseInfo(license: license)
-    let authenticationVC = LCPAuthenticationViewController(licenseInfo: licenseInfo, reason: reason)
-    authenticationVC.delegate = self
-    
-    let navController = UINavigationController(rootViewController: authenticationVC)
-    navController.modalPresentationStyle = .formSheet
-    
-    NYPLPresentationUtils.safelyPresent(navController, animated: true, completion: nil)
-  }
-  
-}
-
 
 extension LCPLibraryService: LCPAuthenticationDelegate {
   
@@ -139,7 +105,6 @@ extension LCPLibraryService: LCPAuthenticationDelegate {
     }
     callback(nil)
   }
-  
 }
 
 #endif

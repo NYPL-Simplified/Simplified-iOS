@@ -29,7 +29,7 @@ protocol ModuleDelegate: AnyObject {
 /// modules' delegates.
 @objc public final class NYPLR2Owner: NSObject {
 
-  var libraryModule: LibraryModuleAPI! = nil
+  var libraryService: LibraryService! = nil
   var readerModule: ReaderModuleAPI! = nil
 
   override init() {
@@ -40,7 +40,7 @@ protocol ModuleDelegate: AnyObject {
       fatalError("Can't start publication server")
     }
 
-    libraryModule = LibraryModule(server: server)
+    libraryService = LibraryService(publicationServer: server)
     readerModule = ReaderModule(delegate: self, resourcesServer: server)
 
     // Set Readium 2's logging minimum level.
@@ -69,11 +69,5 @@ extension NYPLR2Owner: ModuleDelegate {
       message: error.localizedDescription,
       from: viewController
     )
-  }
-}
-
-extension NYPLR2Owner: ReaderModuleDelegate {
-  func readerLoadDRM(for book: NYPLBook, completion: @escaping (CancellableResult<DRM?>) -> Void) {
-    libraryModule.loadDRM(for: book, completion: completion)
   }
 }
