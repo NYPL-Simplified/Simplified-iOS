@@ -40,7 +40,6 @@ extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 extension NYPLADEPT: NYPLDRMAuthorizing {}
 #endif
 
-@objcMembers
 class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// Makes a business logic object with a network request executor that
   /// performs no persistent storage for caching.
@@ -114,8 +113,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// This flag should be set if the instance is used to register new users.
   @objc var isLoggingInAfterSignUp: Bool = false
 
-  /// A closure to be invoked at the end of the sign-in process.
-  @objc var completionHandler: (() -> Void)? = nil
+  /// A closure that will be invoked at the end of the sign-in process when
+  /// refreshing authentication.
+  var refreshAuthCompletion: (() -> Void)? = nil
 
   // MARK:- OAuth / SAML / Clever Info
 
@@ -126,7 +126,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   var patron: [String: Any]? = nil
 
   /// Settings used by OAuth sign-in flows.
-  let urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider
+  @objc let urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider
 
   /// Cookies used to authenticate. Only required for the SAML flow.
   @objc var cookies: [HTTPCookie]?
@@ -139,8 +139,14 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// the session expired (e.g. SAML flow).
   var ignoreSignedInState: Bool = false
 
-  /// This is `true` during the process of signing in / validating credentials.
-  var isCurrentlySigningIn = false
+  /// This is `true` during the process of validating credentials.
+  ///
+  /// Credentials validation happens *after* the initial sign-in intent
+  /// where the app obtains the credentials in some way (e.g. user
+  /// typing them in, or the redirection to 3rd party website for OAuth;
+  /// see `logIn`), and *before* doing DRM authorization (see
+  /// `drmAuthorizeUserData`).
+  @objc var isValidatingCredentials = false
 
   // MARK:- Juvenile Card Creation Info
 
@@ -154,7 +160,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// The ID of the library this object is signing in to.
   /// - Note: This is also provided by `libraryAccountsProvider::currentAccount`
   /// but that could be returning nil if called too early on.
-  let libraryAccountID: String
+  @objc let libraryAccountID: String
 
   /// The object providing library account information.
   let libraryAccountsProvider: NYPLLibraryAccountsProvider
@@ -163,10 +169,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
     return libraryAccountsProvider.account(libraryAccountID)
   }
 
-  var selectedIDP: OPDS2SamlIDP?
+  @objc var selectedIDP: OPDS2SamlIDP?
 
   private var _selectedAuthentication: AccountDetails.Authentication?
-  var selectedAuthentication: AccountDetails.Authentication? {
+  @objc var selectedAuthentication: AccountDetails.Authentication? {
     get {
       guard _selectedAuthentication == nil else { return _selectedAuthentication }
       guard userAccount.authDefinition == nil else { return userAccount.authDefinition }
@@ -192,8 +198,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   ///   - authType: What kind of authentication request should be created.
   ///   - context: A string for further context for error reporting.
   /// - Returns: A request for signing in or signing out.
-  @objc func makeRequest(for authType: NYPLAuthRequestType,
-                         context: String) -> URLRequest? {
+  func makeRequest(for authType: NYPLAuthRequestType,
+                   context: String) -> URLRequest? {
 
     let authTypeStr = (authType == .signOut ? "signing out" : "signing in")
 
@@ -246,7 +252,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   /// Clever and SAML), validate said credentials against the Circulation
   /// Manager servers and call back to the UI once that's concluded.
   func validateCredentials() {
-    isCurrentlySigningIn = true
+    isValidatingCredentials = true
 
     guard let req = makeRequest(for: .signIn, context: uiContext) else {
       let error = NSError(domain: NYPLErrorLogger.clientDomain,
@@ -267,12 +273,12 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
         return
       }
 
+      self.isValidatingCredentials = false
+
       let loggingContext: [String: Any] = [
         "Request": req.loggableString,
         "Attempted Barcode": self.uiDelegate?.username?.md5hex() ?? "N/A",
         "Context": self.uiContext]
-
-      self.isCurrentlySigningIn = false
 
       switch result {
       case .success(let responseData, _):
@@ -374,8 +380,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   ///   - completion: Block to be run after the authentication refresh attempt
   ///   is performed.
   /// - Returns: `true` if a sign-in UI is needed to refresh authentication.
-  func refreshAuthIfNeeded(usingExistingCredentials: Bool,
-                           completion: (() -> Void)?) -> Bool {
+  @objc func refreshAuthIfNeeded(usingExistingCredentials: Bool,
+                                 completion: (() -> Void)?) -> Bool {
 
     guard
       let authDef = userAccount.authDefinition,
@@ -385,7 +391,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       return false
     }
 
-    completionHandler = completion
+    refreshAuthCompletion = completion
 
     // reset authentication if needed
     if authDef.isSaml || authDef.isOauth {
@@ -435,7 +441,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   // MARK:- User Account Management
 
   /// The user account for the library we are signing in to.
-  var userAccount: NYPLUserAccount {
+  @objc var userAccount: NYPLUserAccount {
     return userAccountProvider.sharedAccount(libraryUUID: libraryAccountID)
   }
 
@@ -503,7 +509,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   // MARK: - Available Features Checks
 
-  func librarySupportsBarcodeDisplay() -> Bool {
+  @objc func librarySupportsBarcodeDisplay() -> Bool {
     // For now, only supports libraries granted access in Accounts.json,
     // is signed in, and has an authorization ID returned from the loans feed.
     return userAccount.hasBarcodeAndPIN() &&
@@ -519,7 +525,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
   }
 
   /// - Returns: Whether it is possible to sign up for a new account or not.
-  func registrationIsPossible() -> Bool {
+  @objc func registrationIsPossible() -> Bool {
     return !isSignedIn() && NYPLConfiguration.cardCreationEnabled() && libraryAccount?.details?.signUpUrl != nil
   }
 
@@ -530,7 +536,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
       (libraryAccount?.details?.supportsCardCreator ?? false)
   }
 
-  func isSamlPossible() -> Bool {
+  @objc func isSamlPossible() -> Bool {
     libraryAccount?.details?.auths.contains { $0.isSaml } ?? false
   }
 

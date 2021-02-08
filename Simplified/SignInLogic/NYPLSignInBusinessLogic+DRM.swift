@@ -116,7 +116,7 @@ extension NYPLSignInBusinessLogic {
                   var success = success
 
                   if success, let userID = userID, let deviceID = deviceID {
-                    OperationQueue.main.addOperation {
+                    NYPLMainThreadRun.asyncIfNeeded {
                       self.userAccount.setUserID(userID)
                       self.userAccount.setDeviceID(deviceID)
                     }
@@ -163,7 +163,7 @@ extension NYPLSignInBusinessLogic {
       !drmAuthorizer.isUserAuthorized(userAccount.userID,
                                       withDevice: userAccount.deviceID) {
 
-      if userAccount.hasBarcodeAndPIN() && !isCurrentlySigningIn {
+      if userAccount.hasBarcodeAndPIN() && !isValidatingCredentials {
         if let usernameTextField = uiDelegate?.usernameTextField,
           let PINTextField = uiDelegate?.PINTextField
         {

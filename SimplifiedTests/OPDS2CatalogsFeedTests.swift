@@ -187,18 +187,21 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       XCTAssertEqual(nypl.details?.supportsReservations, true)
       XCTAssertEqual(nypl.details?.userProfileUrl, "https://circulation.librarysimplified.org/NYNYPL/patrons/me/")
       XCTAssertEqual(nypl.details?.supportsSimplyESync, true)
-      XCTAssertEqual(nypl.details?.signUpUrl, nil)
-      XCTAssertEqual(nypl.details?.supportsCardCreator, false)
-      XCTAssertEqual(nypl.details?.getLicenseURL(.privacyPolicy), URL(string: "http://www.librarysimplified.org/privacypolicy.html"))
-      XCTAssertEqual(nypl.details?.getLicenseURL(.eula), URL(string: "https://www.librarysimplified.org/EULA/"))
-      XCTAssertEqual(nypl.details?.getLicenseURL(.contentLicenses), URL(string: "http://www.librarysimplified.org/license.html"))
-      XCTAssertEqual(nypl.details?.getLicenseURL(.acknowledgements), URL(string: "http://www.librarysimplified.org/acknowledgments.html"))
+      XCTAssertNotNil(nypl.details?.signUpUrl)
+      XCTAssertEqual(nypl.details?.signUpUrl,
+                     URL(string: "https://patrons.librarysimplified.org/"))
+      XCTAssert(nypl.details?.supportsCardCreator ?? false)
+      XCTAssertEqual(nypl.details?.getLicenseURL(.privacyPolicy),
+                     URL(string: "https://www.nypl.org/help/about-nypl/legal-notices/privacy-policy"))
+      XCTAssertEqual(nypl.details?.getLicenseURL(.eula), URL(string: "https://librarysimplified.org/EULA/"))
+      XCTAssertEqual(nypl.details?.getLicenseURL(.contentLicenses),
+                     URL(string: "https://librarysimplified.org/licenses/"))
       XCTAssertEqual(nypl.details?.mainColor, "red")
       XCTAssertEqual(nypl.details?.defaultAuth?.supportsBarcodeScanner, true)
       XCTAssertEqual(nypl.details?.defaultAuth?.supportsBarcodeDisplay, true)
       XCTAssertEqual(nypl.details?.defaultAuth?.patronIDKeyboard, .standard)
-      XCTAssertEqual(nypl.details?.defaultAuth?.pinKeyboard, .numeric)
-      XCTAssertEqual(nypl.details?.defaultAuth?.authPasscodeLength, 4)
+      XCTAssertEqual(nypl.details?.defaultAuth?.pinKeyboard, .standard)
+      XCTAssertEqual(nypl.details?.defaultAuth?.authPasscodeLength, 12)
       
     } catch (let error) {
       XCTAssert(false, error.localizedDescription)
