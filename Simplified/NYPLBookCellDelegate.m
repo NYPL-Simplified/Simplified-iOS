@@ -402,7 +402,7 @@
   [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:self.book.identifier];
 
 #if FEATURE_OVERDRIVE
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateODAudiobookManifest) name:NYPLMyBooksDownloadCenterDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateODAudiobookManifest) name:NSNotification.NYPLMyBooksDownloadCenterDidChange object:nil];
 #endif
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
 }

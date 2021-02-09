@@ -43,31 +43,17 @@
      [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     self.modalPresentationStyle = UIModalPresentationFormSheet;
   }
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLBookRegistryDidChangeNotification
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     NYPLBook *newBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
-     if(newBook) {
-       self.book = newBook;
-       self.bookDetailView.book = newBook;
-     }
-     self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
-   }];
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     self.bookDetailView.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                             downloadProgressForBookIdentifier:book.identifier];
-     self.bookDetailView.downloadStarted = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                            downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementUnknown;
-   }];
-  
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(bookRegistryDidChange)
+                                               name:NSNotification.NYPLBookRegistryDidChange
+                                             object:nil];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(myBooksDidChange)
+                                               name:NSNotification.NYPLMyBooksDownloadCenterDidChange
+                                             object:nil];
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(didChangePreferredContentSize)
                                                name:UIContentSizeCategoryDidChangeNotification
@@ -280,6 +266,26 @@
       [navVC pushViewController:vc animated:YES];
     }
   }
+}
+
+- (void)myBooksDidChange
+{
+  __auto_type myBooks = [NYPLMyBooksDownloadCenter sharedDownloadCenter];
+  __auto_type bookID = self.book.identifier;
+  NYPLMyBooksDownloadRightsManagement rights = [myBooks downloadInfoForBookIdentifier:bookID].rightsManagement;
+  self.bookDetailView.downloadProgress = [myBooks downloadProgressForBookIdentifier:bookID];
+  self.bookDetailView.downloadStarted = (rights != NYPLMyBooksDownloadRightsManagementUnknown);
+}
+
+- (void)bookRegistryDidChange
+{
+  NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
+  NYPLBook *newBook = [registry bookForIdentifier:self.book.identifier];
+  if(newBook) {
+    self.book = newBook;
+    self.bookDetailView.book = newBook;
+  }
+  self.bookDetailView.state = [registry stateForIdentifier:self.book.identifier];
 }
 
 @end
