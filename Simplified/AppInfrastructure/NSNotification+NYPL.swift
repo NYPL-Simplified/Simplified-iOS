@@ -22,6 +22,7 @@ extension Notification.Name {
   static let NYPLBookRegistryDidChange = Notification.Name("NYPLBookRegistryDidChange")
   static let NYPLBookProcessingDidChange = Notification.Name("NYPLBookProcessingDidChange")
   static let NYPLMyBooksDownloadCenterDidChange = Notification.Name("NYPLMyBooksDownloadCenterDidChange")
+  static let NYPLBookDetailDidClose = Notification.Name("NYPLBookDetailDidClose")
 }
 
 @objc extension NSNotification {
@@ -38,4 +39,5 @@ extension Notification.Name {
   public static let NYPLBookRegistryDidChange = Notification.Name.NYPLBookRegistryDidChange
   public static let NYPLBookProcessingDidChange = Notification.Name.NYPLBookProcessingDidChange
   public static let NYPLMyBooksDownloadCenterDidChange = Notification.Name.NYPLMyBooksDownloadCenterDidChange
+  public static let NYPLBookDetailDidClose = Notification.Name.NYPLBookDetailDidClose
 }

@@ -120,7 +120,12 @@
 
 #pragma mark NYPLBookDetailViewDelegate
 
--(void)didSelectCloseButton:(__attribute__((unused)) NYPLBookDetailView *)detailView {
+- (void)didSelectCloseButton:(__attribute__((unused)) NYPLBookDetailView *)detailView
+{
+  [NSNotificationCenter.defaultCenter
+   postNotificationName:NSNotification.NYPLBookDetailDidClose
+   object:self.book];
+
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
