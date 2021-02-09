@@ -38,15 +38,7 @@
   self.book = book;
   
   self.title = book.title;
-  UILabel *label = [[UILabel alloc] init];
-  self.navigationItem.titleView = label;
-  
-  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book delegate:self];
-  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
-  
-  [self.view addSubview:self.bookDetailView];
-  [self.bookDetailView autoPinEdgesToSuperviewEdges];
-  
+
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     self.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -87,6 +79,23 @@
                                              object:nil];
   
   return self;
+}
+
+#pragma mark UIViewController
+
+-(void)viewDidLoad
+{
+  [super viewDidLoad];
+
+  UILabel *label = [[UILabel alloc] init];
+  self.navigationItem.titleView = label;
+
+  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:self.book
+                                                        delegate:self];
+  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry]
+                               stateForIdentifier:self.book.identifier];
+  [self.view addSubview:self.bookDetailView];
+  [self.bookDetailView autoPinEdgesToSuperviewEdges];
 }
 
 - (void)viewWillAppear:(BOOL)animated
