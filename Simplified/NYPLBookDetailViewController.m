@@ -225,9 +225,15 @@
   }
 }
 
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraits
 {
-  if (previousTraitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
+  [super traitCollectionDidChange:previousTraits];
+
+  // Note: this is kind of an encapsulation-breaking hack. It's related
+  // to the logic to change on the fly how we present the book detail page
+  // in split screen mode in presentFromViewController: and
+  // NYPLCatalogGroupedFeedViewController::traitCollectionDidChange:.
+  if (previousTraits.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
       self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
     [self.navigationController popToRootViewControllerAnimated:NO];
   }
