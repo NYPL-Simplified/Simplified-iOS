@@ -1,0 +1,50 @@
+//
+//  AdobeDRMFetcher.swift
+//  Simplified
+//
+//  Created by Vladimir Fedorov on 10.02.2021.
+//  Copyright © 2021 NYPL Labs. All rights reserved.
+//
+
+import Foundation
+import R2Shared
+
+/// Adobe DRM fetcher
+/// Decrypts .epub contents data
+class AdobeDRMFetcher: Fetcher {
+  
+  /// AdobeDRMContainer calls AAdobe DRM software
+  let container: AdobeDRMContainer
+  
+  /// ArchiveFetcher for the publication
+  let fetcher: Fetcher
+  
+  /// Adobe DRM Fetcher initializer
+  /// - Parameters:
+  ///   - url: Publication URL
+  ///   - fetcher: ArchiveFetcher for the publication
+  ///   - encryptionData: `META-INF/encryption.xml` file contents
+  init(url: URL, fetcher: Fetcher, encryptionData: Data) {
+    self.container = AdobeDRMContainer(url: url, encryptionData: encryptionData)
+    self.fetcher = fetcher
+    self.links = fetcher.links
+  }
+  
+  var links: [Link]
+  
+  func get(_ link: Link) -> Resource {
+    do {
+      let resource = fetcher.get(link)
+      let encryptedData = try resource.read().get()
+      let href = link.href.starts(with: "/") ? String(link.href.dropFirst()) : link.href // remove leading /
+      let data = container.decode(encryptedData, at: href)
+      return DataResource(link: link, data: data)
+    } catch {
+      return FailureResource(link: link, error: .other(error))
+    }
+  }
+  
+  func close() {
+    // No need to close anything.
+  }
+}

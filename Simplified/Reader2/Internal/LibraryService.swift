@@ -31,7 +31,7 @@ final class LibraryService: Loggable {
     #endif
     
     #if FEATURE_DRM_CONNECTOR
-//    drmLibraryServices.append(AdobeDRMLibraryService())
+    drmLibraryServices.append(AdobeDRMLibraryService())
     #endif
     
     streamer = Streamer(

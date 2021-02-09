@@ -141,12 +141,7 @@ static id acsdrm_lock = nil;
     size_t outputLen = filteredData->length();
     memcpy(output, filteredData->data(), outputLen);
     NSData *decryptedData = [NSData dataWithBytes:output length: NSUInteger(outputLen)];
-    NSMutableData *result = [NSMutableData dataWithData:decryptedData];
-    // Data padding is required in Readium 2
-    // number of bytes to trim from the result (1 means this last byte will be cut off)
-    const char padding[] = {1};
-    [result appendBytes:padding length:1];
-    return [result copy];
+    return decryptedData;
   }
 }
 
