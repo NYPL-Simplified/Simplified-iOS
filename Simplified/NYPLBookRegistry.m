@@ -133,7 +133,7 @@ static NSString *const RecordsKey = @"records";
     }
 
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLBookRegistryDidChangeNotification
+     postNotificationName:NSNotification.NYPLBookRegistryDidChange
      object:self];
   }];
 }
@@ -142,7 +142,7 @@ static NSString *const RecordsKey = @"records";
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLBookProcessingDidChangeNotification
+     postNotificationName:NSNotification.NYPLBookProcessingDidChange
      object:self
      userInfo:@{@"identifier": identifier,
                 @"value": @(value)}];

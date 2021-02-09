@@ -38,44 +38,22 @@
   self.book = book;
   
   self.title = book.title;
-  UILabel *label = [[UILabel alloc] init];
-  self.navigationItem.titleView = label;
-  
-  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book delegate:self];
-  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
-  
-  [self.view addSubview:self.bookDetailView];
-  [self.bookDetailView autoPinEdgesToSuperviewEdges];
-  
+
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     self.modalPresentationStyle = UIModalPresentationFormSheet;
   }
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLBookRegistryDidChangeNotification
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     NYPLBook *newBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
-     if(newBook) {
-       self.book = newBook;
-       self.bookDetailView.book = newBook;
-     }
-     self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
-   }];
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     self.bookDetailView.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                             downloadProgressForBookIdentifier:book.identifier];
-     self.bookDetailView.downloadStarted = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                            downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementUnknown;
-   }];
-  
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(bookRegistryDidChange)
+                                               name:NSNotification.NYPLBookRegistryDidChange
+                                             object:nil];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(myBooksDidChange)
+                                               name:NSNotification.NYPLMyBooksDownloadCenterDidChange
+                                             object:nil];
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(didChangePreferredContentSize)
                                                name:UIContentSizeCategoryDidChangeNotification
@@ -87,6 +65,23 @@
                                              object:nil];
   
   return self;
+}
+
+#pragma mark UIViewController
+
+-(void)viewDidLoad
+{
+  [super viewDidLoad];
+
+  UILabel *label = [[UILabel alloc] init];
+  self.navigationItem.titleView = label;
+
+  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:self.book
+                                                        delegate:self];
+  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry]
+                               stateForIdentifier:self.book.identifier];
+  [self.view addSubview:self.bookDetailView];
+  [self.bookDetailView autoPinEdgesToSuperviewEdges];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -125,7 +120,12 @@
 
 #pragma mark NYPLBookDetailViewDelegate
 
--(void)didSelectCloseButton:(__attribute__((unused)) NYPLBookDetailView *)detailView {
+- (void)didSelectCloseButton:(__attribute__((unused)) NYPLBookDetailView *)detailView
+{
+  [NSNotificationCenter.defaultCenter
+   postNotificationName:NSNotification.NYPLBookDetailDidClose
+   object:self.book];
+
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -230,9 +230,15 @@
   }
 }
 
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraits
 {
-  if (previousTraitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
+  [super traitCollectionDidChange:previousTraits];
+
+  // Note: this is kind of an encapsulation-breaking hack. It's related
+  // to the logic to change on the fly how we present the book detail page
+  // in split screen mode in presentFromViewController: and
+  // NYPLCatalogGroupedFeedViewController::traitCollectionDidChange:.
+  if (previousTraits.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
       self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
     [self.navigationController popToRootViewControllerAnimated:NO];
   }
@@ -271,6 +277,26 @@
       [navVC pushViewController:vc animated:YES];
     }
   }
+}
+
+- (void)myBooksDidChange
+{
+  __auto_type myBooks = [NYPLMyBooksDownloadCenter sharedDownloadCenter];
+  __auto_type bookID = self.book.identifier;
+  NYPLMyBooksDownloadRightsManagement rights = [myBooks downloadInfoForBookIdentifier:bookID].rightsManagement;
+  self.bookDetailView.downloadProgress = [myBooks downloadProgressForBookIdentifier:bookID];
+  self.bookDetailView.downloadStarted = (rights != NYPLMyBooksDownloadRightsManagementUnknown);
+}
+
+- (void)bookRegistryDidChange
+{
+  NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
+  NYPLBook *newBook = [registry bookForIdentifier:self.book.identifier];
+  if(newBook) {
+    self.book = newBook;
+    self.bookDetailView.book = newBook;
+  }
+  self.bookDetailView.state = [registry stateForIdentifier:self.book.identifier];
 }
 
 @end

@@ -1098,7 +1098,7 @@ didCompleteWithError:(NSError *)error
   // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
   // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
   [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
+   postNotificationName:NSNotification.NYPLMyBooksDownloadCenterDidChange
    object:self];
 }
 
@@ -1214,7 +1214,7 @@ didCompleteWithError:(NSError *)error
   self.broadcastScheduled = NO;
   
   [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
+   postNotificationName:NSNotification.NYPLMyBooksDownloadCenterDidChange
    object:self];
 }
 
