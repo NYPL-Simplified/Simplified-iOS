@@ -32,10 +32,25 @@ class NYPLNetworkResponder: NSObject {
   /// Protects access to `taskInfo` to ensure thread-safety.
   private let taskInfoLock: NSRecursiveLock
 
+  /// Whether the fallback caching system should be active or not.
+  private let useFallbackCaching: Bool
+
+  /// The object providing the credentials to respond to an authentication
+  /// challenge. If `nil`, the shared `NYPLUserAccount` singleton will be used.
+  private let credentialsProvider: NYPLBasicAuthCredentialsProvider?
+
   //----------------------------------------------------------------------------
-  override init() {
+  /// - Parameter shouldEnableFallbackCaching: If set to `true`, the executor
+  /// will attempt to cache responses even when these lack a sufficient set of
+  /// caching headers. The default is `false`.
+  /// - Parameter credentialsProvider: The object providing the credentials
+  /// to respond to an authentication challenge.
+  init(credentialsProvider: NYPLBasicAuthCredentialsProvider? = nil,
+       useFallbackCaching: Bool = false) {
     self.taskInfo = [Int: NYPLNetworkTaskInfo]()
     self.taskInfoLock = NSRecursiveLock()
+    self.useFallbackCaching = useFallbackCaching
+    self.credentialsProvider = credentialsProvider
     super.init()
   }
 
@@ -99,7 +114,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
       return
     }
 
-    if httpResponse.hasSufficientCachingHeaders {
+    if httpResponse.hasSufficientCachingHeaders || !useFallbackCaching {
       completionHandler(proposedResponse)
     } else {
       let newResponse = httpResponse.modifyingCacheHeaders()
@@ -121,13 +136,13 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     taskInfoLock.lock()
     guard let currentTaskInfo = taskInfo.removeValue(forKey: taskID) else {
       taskInfoLock.unlock()
+      logMetadata["NYPLNetworkResponder context"] = "No task info available for task \(taskID). Completion closure could not be called."
       NYPLErrorLogger.logNetworkError(
         networkError,
         code: .noTaskInfoAvailable,
         summary: "Network layer error: task info unavailable",
         request: task.originalRequest,
         response: task.response,
-        message: "No task info available for task \(taskID). Completion closure could not be called.",
         metadata: logMetadata)
       return
     }
@@ -140,10 +155,10 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
 
     // attempt parsing of Problem Document
     if task.response?.isProblemDocument() ?? false {
-      let problemDocError = task.parseAndLogError(fromProblemDocumentData: responseData,
-                                                  networkError: networkError,
-                                                  logMetadata: logMetadata)
-      currentTaskInfo.completion(.failure(problemDocError, task.response))
+      let errorWithProblemDoc = task.parseAndLogError(fromProblemDocumentData: responseData,
+                                                      networkError: networkError,
+                                                      logMetadata: logMetadata)
+      currentTaskInfo.completion(.failure(errorWithProblemDoc, task.response))
       return
     }
 
@@ -229,7 +244,7 @@ extension URLSessionTask {
   }
 
   //----------------------------------------------------------------------------
-  func error(fromProblemDocument problemDoc: NYPLProblemDocument) -> NSError {
+  fileprivate func error(fromProblemDocument problemDoc: NYPLProblemDocument) -> NSError {
     var userInfo = [String: Any]()
     if let currentRequest = currentRequest {
       userInfo["taskCurrentRequest"] = currentRequest
@@ -259,10 +274,8 @@ extension NYPLNetworkResponder: URLSessionTaskDelegate {
                   didReceive challenge: URLAuthenticationChallenge,
                   completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
   {
-    //        NYPLLOG_F(@"NSURLSessionTask: %@. Challenge Received: %@",
-    //                   task.currentRequest.URL.absoluteString,
-    //                   challenge.protectionSpace.authenticationMethod);
-    
-    NYPLBasicAuth.authHandler(challenge: challenge, completionHandler: completionHandler)
+    let credsProvider = credentialsProvider ?? NYPLUserAccount.sharedAccount()
+    let authChallenger = NYPLBasicAuth(credentialsProvider: credsProvider)
+    authChallenger.handleChallenge(challenge, completion: completionHandler)
   }
 }

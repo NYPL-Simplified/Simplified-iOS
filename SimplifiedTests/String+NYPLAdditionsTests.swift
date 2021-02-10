@@ -32,6 +32,7 @@ class String_NYPLAdditionsTests: XCTestCase {
 
   func testMD5() {
     XCTAssertEqual("password".md5hex(), "5f4dcc3b5aa765d61d8327deb882cf99")
+    XCTAssertEqual("password".md5String(), "5f4dcc3b5aa765d61d8327deb882cf99")
   }
 
   func testBase64Encode() {

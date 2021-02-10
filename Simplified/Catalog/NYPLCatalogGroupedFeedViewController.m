@@ -38,6 +38,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NYPLBook *mostRecentBookSelected;
 @property (nonatomic) int tempBookPosition;
+@property (nonatomic) UITraitCollection *previouslyProcessedTraits;
 
 @end
 
@@ -56,7 +57,17 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   self.feed = feed;
   self.remoteViewController = remoteViewController;
 
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(userDidCloseBookDetail:)
+                                               name:NSNotification.NYPLBookDetailDidClose
+                                             object:nil];
+
   return self;
+}
+
+- (void)dealloc
+{
+  [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 #pragma mark UIViewController
@@ -170,11 +181,24 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 
 // Transition book detail view between Form Sheet and Nav Controller
 // when changing between compact and regular size classes
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraits
 {
-  NYPLLOG_F(@"View's horizontal size class changed from %ld to %ld",
-            (long)previousTraitCollection.horizontalSizeClass,
-            (long)self.traitCollection.horizontalSizeClass);
+  [super traitCollectionDidChange:previousTraits];
+
+  // for some reason when we background the app this method is called twice.
+  // So if we see that we already handled the previous traits, we bail early.
+  if ([self.previouslyProcessedTraits isEqual:previousTraits]) {
+    return;
+  }
+  self.previouslyProcessedTraits = previousTraits;
+  
+  // if there are no changes in size class traits, there's no need to adjust
+  // the way we present the book details
+  UITraitCollection *currentTraits = self.traitCollection;
+  if (previousTraits.horizontalSizeClass == currentTraits.horizontalSizeClass
+      && previousTraits.verticalSizeClass == currentTraits.verticalSizeClass) {
+    return;
+  }
 
   if (!self.mostRecentBookSelected) {
     return;
@@ -378,8 +402,7 @@ viewForHeaderInSection:(NSInteger const)section
     [self.remoteViewController loadWithURL:newURL];
   } else {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              summary:NSStringFromClass([self class])
-                              message:@"Catalog facet missing href URL"
+                              summary:@"Catalog facet missing href URL"
                              metadata:nil];
     [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
   }
@@ -429,8 +452,7 @@ viewForHeaderInSection:(NSInteger const)section
     NSString *msg = [NSString stringWithFormat:@"Lane %@ has no subsection URL to display category",
                      lane.title];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              summary:NSStringFromClass([self class])
-                              message:msg
+                              summary:msg
                              metadata:@{
                                @"methodName": @"didSelectCategory:"
                              }];
@@ -463,6 +485,19 @@ viewForHeaderInSection:(NSInteger const)section
        self.navigationItem.rightBarButtonItem.enabled = YES;
      }];
    }];
+}
+
+- (void)userDidCloseBookDetail:(NSNotification *)notif
+{
+  if ([notif.object isKindOfClass:[NYPLBook class]]) {
+    NYPLBook *book = notif.object;
+
+    // if we closed the book detail page for the given book, we should no
+    // longer track its ID because don't have to present it anymore.
+    if ([self.mostRecentBookSelected.identifier isEqualToString:book.identifier]) {
+      self.mostRecentBookSelected = nil;
+    }
+  }
 }
 
 @end

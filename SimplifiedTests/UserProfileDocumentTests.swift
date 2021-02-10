@@ -3,28 +3,7 @@ import XCTest
 @testable import SimplyE
 
 class UserProfileDocumentTests: XCTestCase {
-  let validJson = """
-  {
-    "simplified:authorization_identifier": "23333999999915",
-    "drm": [
-      {
-        "drm:vendor": "NYPL",
-        "drm:scheme": "http://librarysimplified.org/terms/drm/scheme/ACS",
-        "drm:clientToken": "someToken"
-      }
-    ],
-    "links": [
-      {
-        "href": "https://circulation.librarysimplified.org/NYNYPL/AdobeAuth/devices",
-        "rel": "http://librarysimplified.org/terms/drm/rel/devices"
-      }
-    ],
-    "simplified:authorization_expires": "2025-05-01T00:00:00Z",
-    "settings": {
-      "simplified:synchronize_annotations": true
-    }
-  }
-  """
+  let validJson = NYPLFake.validUserProfileJson
 
   let dataCorruptedJson = "lll"
     

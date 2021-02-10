@@ -46,7 +46,7 @@
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(bookRegistryDidChange)
-   name:NYPLBookRegistryDidChangeNotification
+   name:NSNotification.NYPLBookRegistryDidChange
    object:nil];
   
   [[NSNotificationCenter defaultCenter]

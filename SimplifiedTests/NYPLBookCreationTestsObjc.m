@@ -18,17 +18,19 @@
 
 - (void)testBookCreationFromBookDoesNotCreateInstance
 {
-  // it's possible to create a book without acquisitions from the dictionary
-  // initializer...
+  // These are the minimum requirements for the `initWithDictionary`
+  // initializer to create a non-nil NYPLBook instance. With this initializer
+  // it's possible to create a book without acquisitions...
   NYPLBook *book = [[NYPLBook alloc] initWithDictionary:@{
     @"categories" : @[@"Fantasy"],
     @"id": @"666",
     @"title": @"The Lord of the Rings",
     @"updated": @"2020-09-08T09:22:45Z"
   }];
+  XCTAssertNotNil(book);
 
   // ...but the member-wise initializer (used by `bookWithMetadataFromBook:`)
-  // does not allow that. This ensures that the `nonnull` qualifier for
+  // doesn't allow that. This assertion ensures that the `nonnull` qualifier for
   // `bookWithMetadataFromBook:` is therefore respected.
   XCTAssertThrows([book bookWithMetadataFromBook:book]);
 }

@@ -102,9 +102,7 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
         if let error = error {
           NYPLErrorLogger.logError(error as NSError,
                                    summary: "Error creating notification for ready checkout",
-                                   message: nil,
-                                   metadata: [
-                                    "book": book.loggableDictionary()])
+                                   metadata: ["book": book.loggableDictionary()])
         }
       }
     }

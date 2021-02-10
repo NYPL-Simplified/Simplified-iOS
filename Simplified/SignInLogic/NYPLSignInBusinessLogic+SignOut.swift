@@ -9,6 +9,10 @@
 import Foundation
 
 extension NYPLSignInBusinessLogic {
+
+  /// Main entry point for logging a user out.
+  ///
+  /// - Important: Requires to be called from the main thread.
   func performLogOut() {
     #if FEATURE_DRM_CONNECTOR
 
@@ -24,72 +28,20 @@ extension NYPLSignInBusinessLogic {
     }
 
     let barcode = userAccount.barcode
-    let task = urlSession.dataTask(with: request) { [weak self] data, response, error in
-      guard let self = self else {
-        return
-      }
-
-      let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
-
-      if statusCode == 200, let data = data {
-        let profileDoc: UserProfileDocument
-        do {
-          profileDoc = try UserProfileDocument.fromData(data)
-        } catch {
-          Log.error(#file, "Unable to parse user profile at sign out (HTTP \(statusCode): Adobe device deauthorization won't be possible.")
-          NYPLErrorLogger.logUserProfileDocumentAuthError(
-            error as NSError,
-            summary: "SignOut: unable to parse user profile doc",
-            barcode: barcode,
-            metadata: [
-              "Request": request.loggableString,
-              "Response": response ?? "N/A",
-              "HTTP status code": statusCode
-          ])
-          self.uiDelegate?.businessLogic(self,
-                                         didEncounterSignOutError: error,
-                                         withHTTPStatusCode: statusCode)
-          return
-        }
-
-        if let drm = profileDoc.drm?.first,
-          let clientToken = drm.clientToken, drm.vendor != nil {
-
-          // Set the fresh Adobe token info into the user account so that the
-          // following `deauthorizeDevice` call can use it.
-          self.userAccount.setLicensor(drm.licensor)
-          Log.info(#file, "\nLicensory token updated to \(clientToken) for adobe user ID \(self.userAccount.userID ?? "N/A")")
-        } else {
-          Log.error(#file, "\nLicensor token invalid: \(profileDoc.toJson())")
-        }
-        
-        self.deauthorizeDevice()
-
-        #if OPENEBOOKS
-        self.urlSettingsProvider.accountMainFeedURL = nil
-        #endif
-      } else {
-        if statusCode == 401 {
-          self.deauthorizeDevice()
-        }
-        NYPLErrorLogger.logNetworkError(
-          error,
-          summary: "SignOut: token refresh failed",
-          request: request,
-          response: response,
-          metadata: [
-            "AuthMethod": self.selectedAuthentication?.methodDescription ?? "N/A",
-            "Hashed barcode": barcode?.md5hex() ?? "N/A",
-            "Returned data is nil?": (data == nil),
-            "HTTP status code": statusCode])
-
-        self.uiDelegate?.businessLogic(self,
-                                       didEncounterSignOutError: error,
-                                       withHTTPStatusCode: statusCode)
+    networker.executeRequest(request) { [weak self] result in
+      switch result {
+      case .success(let data, let response):
+        self?.processLogOut(data: data,
+                            response: response,
+                            for: request,
+                            barcode: barcode)
+      case .failure(let errorWithProblemDoc, let response):
+        self?.processLogOutError(errorWithProblemDoc,
+                                 response: response,
+                                 for: request,
+                                 barcode: barcode)
       }
     }
-
-    task.resume()
 
     #else
     if self.bookRegistry.syncing {
@@ -103,6 +55,77 @@ extension NYPLSignInBusinessLogic {
     #endif
   }
 
+  #if FEATURE_DRM_CONNECTOR
+  private func processLogOut(data: Data,
+                             response: URLResponse?,
+                             for request: URLRequest,
+                             barcode: String?) {
+    let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+
+    let profileDoc: UserProfileDocument
+    do {
+      profileDoc = try UserProfileDocument.fromData(data)
+    } catch {
+      Log.error(#file, "Unable to parse user profile at sign out (HTTP \(statusCode): Adobe device deauthorization won't be possible.")
+      NYPLErrorLogger.logUserProfileDocumentAuthError(
+        error as NSError,
+        summary: "SignOut: unable to parse user profile doc",
+        barcode: barcode,
+        metadata: [
+          "Request": request.loggableString,
+          "Response": response ?? "N/A",
+          "HTTP status code": statusCode
+      ])
+      self.uiDelegate?.businessLogic(self,
+                                     didEncounterSignOutError: error,
+                                     withHTTPStatusCode: statusCode)
+      return
+    }
+
+    if let drm = profileDoc.drm?.first,
+      let clientToken = drm.clientToken, drm.vendor != nil {
+
+      // Set the fresh Adobe token info into the user account so that the
+      // following `deauthorizeDevice` call can use it.
+      self.userAccount.setLicensor(drm.licensor)
+      Log.info(#file, "\nLicensory token updated to \(clientToken) for adobe user ID \(self.userAccount.userID ?? "N/A")")
+    } else {
+      Log.error(#file, "\nLicensor token invalid: \(profileDoc.toJson())")
+    }
+
+    self.deauthorizeDevice()
+
+    #if OPENEBOOKS
+    self.urlSettingsProvider.accountMainFeedURL = nil
+    #endif
+  }
+
+  private func processLogOutError(_ errorWithProblemDoc: NYPLUserFriendlyError,
+                                  response: URLResponse?,
+                                  for request: URLRequest,
+                                  barcode: String?) {
+    let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+
+    if statusCode == 401 {
+      self.deauthorizeDevice()
+    }
+
+    NYPLErrorLogger.logNetworkError(
+      errorWithProblemDoc,
+      summary: "SignOut: token refresh failed",
+      request: request,
+      response: response,
+      metadata: [
+        "AuthMethod": self.selectedAuthentication?.methodDescription ?? "N/A",
+        "Hashed barcode": barcode?.md5hex() ?? "N/A",
+        "HTTP status code": statusCode])
+
+    self.uiDelegate?.businessLogic(self,
+                                   didEncounterSignOutError: errorWithProblemDoc,
+                                   withHTTPStatusCode: statusCode)
+  }
+  #endif
+  
   private func completeLogOutProcess() {
     bookDownloadsCenter.reset(libraryAccountID)
     bookRegistry.reset(libraryAccountID)

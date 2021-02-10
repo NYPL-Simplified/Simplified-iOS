@@ -113,7 +113,6 @@
   if (self.URL == nil) {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
                               summary:@"RemoteViewController: Prevented load with no URL"
-                              message:nil
                              metadata:@{
                                @"ChildVCs": self.childViewControllers
                              }];
@@ -155,7 +154,6 @@
         };
         [NYPLErrorLogger logError:error
                           summary:@"RemoteViewController server-side load error"
-                          message:nil
                          metadata:metadata];
 
         return;
@@ -189,7 +187,6 @@
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnableToMakeVCAfterLoading
                                   summary:@"RemoteViewController: Failed to create VC after server-side load"
-                                  message:nil
                                  metadata:@{
                                    @"HTTPstatusCode": @(httpResponse.statusCode ?: -1),
                                    @"mimeType": response.MIMEType ?: @"N/A",
@@ -231,7 +228,6 @@
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
                                   summary:@"RemoteViewController: failed to reload accounts"
-                                  message:nil
                                  metadata:@{
                                    @"currentURL": self.URL ?: @"N/A",
                                    @"ChildVCs": self.childViewControllers
