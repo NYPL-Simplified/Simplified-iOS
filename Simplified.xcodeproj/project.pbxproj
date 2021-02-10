@@ -135,6 +135,10 @@
 		1798538C255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
 		1798538D255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
 		1798538E255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
+		17A5AB4F25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */; };
+		17A5AB5025D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */; };
+		17A5AB5125D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */; };
+		17A5AB5225D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */; };
 		17ADCF4F254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
 		17ADCF54254BBA4E00D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
 		17D08381248E938000092AA9 /* OverdriveProcessor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */; };
@@ -1896,6 +1900,7 @@
 		176F8A802519684D00CE5BFB /* AudioEngine.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AudioEngine.xcframework; path = Carthage/Build/iOS/AudioEngine.xcframework; sourceTree = "<group>"; };
 		179699D024131BA500EC309F /* UIColor+LabelColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+LabelColor.swift"; sourceTree = "<group>"; };
 		1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookLocation+Locator.swift"; sourceTree = "<group>"; };
+		17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCPPassphraseAuthenticationService.swift; sourceTree = "<group>"; };
 		17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarksBusinessLogicTests.swift; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OverdriveProcessor.framework; path = Carthage/Build/iOS/OverdriveProcessor.framework; sourceTree = "<group>"; };
@@ -2774,6 +2779,7 @@
 				2171ADA2251E38150003CABA /* LCPAuthenticationViewController.xib */,
 				2171ADA0251E38140003CABA /* LCPLibraryService.swift */,
 				211A7D49255AD9F500687940 /* LCPLicenseInfo.swift */,
+				17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */,
 			);
 			path = LCP;
 			sourceTree = "<group>";
@@ -4561,6 +4567,7 @@
 				73A794A725477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift in Sources */,
 				7347F064245A4DE200558D7F /* NYPLLinearView.m in Sources */,
 				7347F065245A4DE200558D7F /* NSDate+NYPLDateAdditions.m in Sources */,
+				17A5AB5125D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */,
 				7347F066245A4DE200558D7F /* NYPLBook.m in Sources */,
 				7342702E24DCB30B00A4F605 /* LibraryService.swift in Sources */,
 				7347F067245A4DE200558D7F /* NYPLUserNotifications.swift in Sources */,
@@ -4792,6 +4799,7 @@
 				739E6081244A0D8600D00301 /* NYPLEntryPointView.swift in Sources */,
 				739E6082244A0D8600D00301 /* NYPLOPDSGroup.m in Sources */,
 				739E6083244A0D8600D00301 /* NYPLBookButtonsView.m in Sources */,
+				17A5AB5025D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */,
 				739E6084244A0D8600D00301 /* NYPLAppReviewPrompt.swift in Sources */,
 				739E6085244A0D8600D00301 /* NYPLFacetBarView.swift in Sources */,
 				7342702624DCB28600A4F605 /* NYPLBook+Additions.swift in Sources */,
@@ -5358,6 +5366,7 @@
 				73FCA33025005BA4001B0C5D /* OPDS2Link.swift in Sources */,
 				73FCA33125005BA4001B0C5D /* NYPLBookAuthor.swift in Sources */,
 				73FCA33225005BA4001B0C5D /* NYPLCatalogSearchViewController.m in Sources */,
+				17A5AB5225D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */,
 				73FCA33325005BA4001B0C5D /* UIColor+LabelColor.swift in Sources */,
 				73FCA33425005BA4001B0C5D /* NYPLNetworkResponder.swift in Sources */,
 				73FCA33525005BA4001B0C5D /* NYPLReaderSettings.m in Sources */,
@@ -5482,6 +5491,7 @@
 				1183F341194F723D00DC322F /* NYPLCatalogLane.m in Sources */,
 				11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */,
 				739ECB2E25108EE800691A70 /* NYPLRootTabBarController+SE.swift in Sources */,
+				17A5AB4F25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */,
 				11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */,
 				E699BA402166598B00A0736A /* NYPLEntryPointView.swift in Sources */,
 				A46226271B39D4980063F549 /* NYPLOPDSGroup.m in Sources */,

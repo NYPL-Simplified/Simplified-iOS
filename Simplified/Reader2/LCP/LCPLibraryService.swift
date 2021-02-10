@@ -25,7 +25,7 @@ import ReadiumLCP
   private var lcpService = LCPService()
   
   /// ContentProtection unlocks protected publication, providing a custom `Fetcher`
-  lazy var contentProtection: ContentProtection? = lcpService.contentProtection()
+  lazy var contentProtection: ContentProtection? = lcpService.contentProtection(with: LCPPassphraseAuthenticationService())
   
   /// [LicenseDocument.id: passphrase callback]
   private var authenticationCallbacks: [String: (String?) -> Void] = [:]
