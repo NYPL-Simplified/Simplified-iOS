@@ -32,7 +32,7 @@ carthage build --platform iOS
 echo "Building r2-lcp-swift Carthage dependencies..."
 cd ../r2-lcp-swift
 rm -rf Carthage
-swift ../Certificates/SimplyE/iOS/LCPLib.swift -f
+swift ../Certificates/SimplyE/iOS/LCPLib.swift
 carthage checkout
 carthage build --platform iOS
 
