@@ -59,7 +59,7 @@ extension NYPLReadiumBookmark {
                           title: self.chapter,
                           locations: locations)
 
-    guard let resourceIndex = publication.readingOrder.firstIndex(withHref: locator.href) else {
+    guard let resourceIndex = publication.readingOrder.firstIndex(withHREF: locator.href) else {
       return nil
     }
 

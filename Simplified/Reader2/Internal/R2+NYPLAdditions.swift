@@ -45,7 +45,7 @@ extension Publication {
   /// - Returns: The `idref` related to the resource in question. This *should*
   /// be usable in R1 contexts.
   func idref(forHref href: String) -> String? {
-    let link = self.link(withHref: href)
+    let link = self.link(withHREF: href)
     return link?.properties["id"] as? String
   }
 
@@ -58,6 +58,6 @@ extension Publication {
   /// structures) pointed at by the given Locator.
   /// - parameter locator: The location for which we want the resource index of.
   func resourceIndex(forLocator locator: Locator) -> Int? {
-    return readingOrder.firstIndex(withHref: locator.href)
+    return readingOrder.firstIndex(withHREF: locator.href)
   }
 }
