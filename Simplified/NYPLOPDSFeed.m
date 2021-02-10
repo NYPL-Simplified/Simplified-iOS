@@ -75,7 +75,6 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
   if (URL == nil) {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
                               summary:@"NYPLOPDSFeed: nil URL"
-                              message:nil
                              metadata:@{
                                @"shouldResetCache": @(shouldResetCache)
                              }];
@@ -96,7 +95,6 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
     if (data == nil) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedNoData
                                 summary:@"NYPLOPDSFeed: no data from server"
-                                message:nil
                                metadata:@{
                                  @"Request": [request loggableString],
                                  @"Response": response ?: @"N/A",
@@ -126,11 +124,11 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
                                  summary:@"NYPLOPDSFeed: HTTP response error"
                                  request:request
                                 response:response
-                                 message:msg
                                 metadata:@{
                                   @"receivedData": dataString ?: @"N/A",
                                   @"receivedDataLength (bytes)": @(data.length),
-                                  @"problemDoc": problemDocDict ?: @"N/A"
+                                  @"problemDoc": problemDocDict ?: @"N/A",
+                                  @"context": msg ?: @"N/A"
                                 }];
 
         NYPLAsyncDispatch(^{handler(nil, problemDocDict);});
@@ -143,7 +141,6 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
       NYPLLOG(@"Failed to parse data as XML.");
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeFeedParseFail
                                 summary:@"NYPLOPDSFeed: Failed to parse data as XML"
-                                message:@"Error in NYPLOPDSFeed::withURL:"
                                metadata:@{
                                  @"request": request.loggableString,
                                  @"response": response ?: @"N/A",
@@ -159,7 +156,6 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
       NYPLLOG(@"Could not interpret XML as OPDS.");
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedParseFail
                                 summary:@"NYPLOPDSFeed: Failed to parse XML as OPDS"
-                                message:@"Error in NYPLOPDSFeed::withURL:"
                                metadata:@{
                                  @"request": request.loggableString,
                                  @"response": response ?: @"N/A",

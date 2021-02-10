@@ -18,10 +18,11 @@ extension Notification.Name {
   static let NYPLUserAccountDidChange = Notification.Name("NYPLUserAccountDidChangeNotification")
   static let NYPLDidSignOut = Notification.Name("NYPLDidSignOut")
   static let NYPLIsSigningIn = Notification.Name("NYPLIsSigningIn")
-
-  // TODO: i think this was called "OEAppDelegateDidReceiveCleverRedirectURL"
-  // in kyle's branch
   static let NYPLAppDelegateDidReceiveCleverRedirectURL = Notification.Name("NYPLAppDelegateDidReceiveCleverRedirectURL")
+  static let NYPLBookRegistryDidChange = Notification.Name("NYPLBookRegistryDidChange")
+  static let NYPLBookProcessingDidChange = Notification.Name("NYPLBookProcessingDidChange")
+  static let NYPLMyBooksDownloadCenterDidChange = Notification.Name("NYPLMyBooksDownloadCenterDidChange")
+  static let NYPLBookDetailDidClose = Notification.Name("NYPLBookDetailDidClose")
 }
 
 @objc extension NSNotification {
@@ -35,4 +36,8 @@ extension Notification.Name {
   public static let NYPLDidSignOut = Notification.Name.NYPLDidSignOut
   public static let NYPLIsSigningIn = Notification.Name.NYPLIsSigningIn
   public static let NYPLAppDelegateDidReceiveCleverRedirectURL = Notification.Name.NYPLAppDelegateDidReceiveCleverRedirectURL
+  public static let NYPLBookRegistryDidChange = Notification.Name.NYPLBookRegistryDidChange
+  public static let NYPLBookProcessingDidChange = Notification.Name.NYPLBookProcessingDidChange
+  public static let NYPLMyBooksDownloadCenterDidChange = Notification.Name.NYPLMyBooksDownloadCenterDidChange
+  public static let NYPLBookDetailDidClose = Notification.Name.NYPLBookDetailDidClose
 }

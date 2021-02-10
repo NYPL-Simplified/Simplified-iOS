@@ -16,7 +16,6 @@ extension NYPLSignInBusinessLogic {
     guard let signUpURL = libraryAccount?.details?.signUpUrl else {
       NYPLErrorLogger.logError(withCode: .nilSignUpURL,
                                summary: "SignUp Error in Settings: nil signUp URL",
-                               message: nil,
                                metadata: [
                                 "libraryAccountUUID": libraryAccountID,
                                 "libraryAccountName": libraryAccount?.name ?? "N/A",
@@ -89,7 +88,7 @@ extension NYPLSignInBusinessLogic {
       endpointVersion: APIKeys.cardCreatorVersion,
       endpointUsername: credentials.username,
       endpointPassword: credentials.password,
-      requestTimeoutInterval: requestTimeoutInterval)
+      requestTimeoutInterval: networker.requestTimeout)
 
     return cardCreatorConfiguration
   }
@@ -116,7 +115,7 @@ extension NYPLSignInBusinessLogic {
       endpointPassword: credentials.password,
       juvenileParentBarcode: parentBarcode,
       juvenilePlatformAPIInfo: platformAPI,
-      requestTimeoutInterval: requestTimeoutInterval)
+      requestTimeoutInterval: networker.requestTimeout)
 
     return JuvenileFlowCoordinator(configuration: config)
   }

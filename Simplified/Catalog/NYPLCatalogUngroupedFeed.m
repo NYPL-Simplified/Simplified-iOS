@@ -159,7 +159,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(refreshBooks)
-   name:NYPLBookRegistryDidChangeNotification
+   name:NSNotification.NYPLBookRegistryDidChange
    object:nil];
 
   return self;
