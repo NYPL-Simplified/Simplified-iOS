@@ -60,10 +60,10 @@ Before working on R2 integration, make sure you can build the app without R2. Fo
 For working on integrating R2 into SimplyE, first clone the following frameworks as siblings of `Simplified-iOS` on the file system:
 ```bash
 cd Simplified-iOS/..
-git clone https://github.com/NYPL-Simplified/r2-shared-swift
-git clone https://github.com/NYPL-Simplified/r2-streamer-swift
-git clone https://github.com/NYPL-Simplified/r2-navigator-swift
-git clone https://github.com/NYPL-Simplified/r2-lcp-swift
+git clone https://github.com/readium/r2-shared-swift
+git clone https://github.com/readium/r2-streamer-swift
+git clone https://github.com/readium/r2-navigator-swift
+git clone https://github.com/readium/r2-lcp-swift
 ```
 The first 2 repos are patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM and LCP DRM support in Readium 2.
 
