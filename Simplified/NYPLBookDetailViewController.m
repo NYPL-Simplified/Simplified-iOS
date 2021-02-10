@@ -281,22 +281,26 @@
 
 - (void)myBooksDidChange
 {
-  __auto_type myBooks = [NYPLMyBooksDownloadCenter sharedDownloadCenter];
-  __auto_type bookID = self.book.identifier;
-  NYPLMyBooksDownloadRightsManagement rights = [myBooks downloadInfoForBookIdentifier:bookID].rightsManagement;
-  self.bookDetailView.downloadProgress = [myBooks downloadProgressForBookIdentifier:bookID];
-  self.bookDetailView.downloadStarted = (rights != NYPLMyBooksDownloadRightsManagementUnknown);
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    __auto_type myBooks = [NYPLMyBooksDownloadCenter sharedDownloadCenter];
+    __auto_type bookID = self.book.identifier;
+    NYPLMyBooksDownloadRightsManagement rights = [myBooks downloadInfoForBookIdentifier:bookID].rightsManagement;
+    self.bookDetailView.downloadProgress = [myBooks downloadProgressForBookIdentifier:bookID];
+    self.bookDetailView.downloadStarted = (rights != NYPLMyBooksDownloadRightsManagementUnknown);
+  }];
 }
 
 - (void)bookRegistryDidChange
 {
-  NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
-  NYPLBook *newBook = [registry bookForIdentifier:self.book.identifier];
-  if(newBook) {
-    self.book = newBook;
-    self.bookDetailView.book = newBook;
-  }
-  self.bookDetailView.state = [registry stateForIdentifier:self.book.identifier];
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
+    NYPLBook *newBook = [registry bookForIdentifier:self.book.identifier];
+    if(newBook) {
+      self.book = newBook;
+      self.bookDetailView.book = newBook;
+    }
+    self.bookDetailView.state = [registry stateForIdentifier:self.book.identifier];
+  }];
 }
 
 @end
