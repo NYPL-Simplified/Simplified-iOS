@@ -33,8 +33,7 @@ class LCPPassphraseAuthenticationService: LCPAuthenticating {
       case .failure(let error, _):
         NYPLErrorLogger.logError(
           withCode: .lcpPassphraseAuthorizationFail,
-          summary: "Unable to retrieve LCP passphrase",
-          message: "Passphrase retrieval failed to load from \(hintURL)",
+          summary: "Unable to retrieve LCP passphrase from \(hintURL)",
           metadata: [
             NSUnderlyingErrorKey: error,
         ])
