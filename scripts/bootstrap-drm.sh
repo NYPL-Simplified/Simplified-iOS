@@ -15,8 +15,8 @@ cd ..
 git clone git@github.com:NYPL-Simplified/Certificates.git
 git clone git@github.com:NYPL-Simplified/DRM-iOS-AdeptConnector.git
 
-cd Simplified-iOS
-git checkout develop
+cd Simplified-iOS-cp-audiobooks
+git checkout story/SIMPLY-3426
 
 ./scripts/setup-repo-drm.sh
 
