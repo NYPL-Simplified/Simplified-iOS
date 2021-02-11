@@ -213,26 +213,35 @@ Authenticating with any of those barcodes should work.
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
+  UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
+  activityIndicator.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
+  [self.view addSubview:activityIndicator];
+  [activityIndicator startAnimating];
+  
+  __weak NYPLSettingsAccountDetailViewController *weakSelf = self;
+  
+  void (^completion)(void) = ^() {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [activityIndicator removeFromSuperview];
+      [weakSelf setupViews];
+      weakSelf.hiddenPIN = YES;
+      [weakSelf accountDidChange];
+      [weakSelf updateShowHidePINState];
+    });
+  };
+  
   if (self.businessLogic.libraryAccount.details != nil) {
-    [self setupViews];
+    [self.businessLogic checkCardCreationEligibilityWithCompletion:completion];
   } else {
-    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
-    activityIndicator.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
-    [self.view addSubview:activityIndicator];
-    [activityIndicator startAnimating];
-
     [self.businessLogic ensureAuthenticationDocumentIsLoaded:^(BOOL success) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        [activityIndicator removeFromSuperview];
-        if (success) {
-          [self setupViews];
-          self.hiddenPIN = YES;
-          [self accountDidChange];
-          [self updateShowHidePINState];
-        } else {
-          [self displayErrorMessage:NSLocalizedString(@"CheckConnection", nil)];
-        }
-      });
+      if (success) {
+        [weakSelf.businessLogic checkCardCreationEligibilityWithCompletion:completion];
+      } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [activityIndicator removeFromSuperview];
+          [weakSelf displayErrorMessage:NSLocalizedString(@"CheckConnection", nil)];
+        });
+      }
     }];
   }
 }
@@ -1219,8 +1228,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           }];
         } else {
           [NYPLErrorLogger logError:error
-                            summary:@"Show/Hide PIN"
-                            message:@"Error while trying to show the PIN"
+                            summary:@"Error while trying to show/hide the PIN"
                            metadata:nil];
         }
       }];
@@ -1380,7 +1388,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   __auto_type auth = self.businessLogic.selectedAuthentication;
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
                             summary:@"Barcode button was displayed"
-                            message:nil
                            metadata:@{
                              @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
                              @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",

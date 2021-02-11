@@ -21,27 +21,19 @@
     return alert
   }
 
-  fileprivate class func keepAction(handler: @escaping () -> ()) -> UIAlertAction
-  {
+  private class func keepAction(handler: @escaping () -> ()) -> UIAlertAction {
     return UIAlertAction(
-      title: NSLocalizedString("Keep", comment: ""),
+      title: NSLocalizedString("Keep",
+                               comment: "Button title for keeping an audiobook"),
       style: .cancel,
-      handler: { action in
-        NYPLErrorLogger.logAudiobookInfoEvent(
-          message: "User chose to keep the audiobook, and not return it.")
-        handler()
-    })
+      handler: { _ in handler() })
   }
 
-  fileprivate class func returnAction(handler: @escaping () -> ()) -> UIAlertAction
-  {
+  private class func returnAction(handler: @escaping () -> ()) -> UIAlertAction {
     return UIAlertAction(
-      title: NSLocalizedString("Return", comment: ""),
+      title: NSLocalizedString("Return",
+                               comment: "Button title for returning an audiobook"),
       style: .default,
-      handler: { action in
-        NYPLErrorLogger.logAudiobookInfoEvent(
-          message: "User chose to return the Audiobook early.")
-        handler()
-    })
+      handler: { _ in handler() })
   }
 }

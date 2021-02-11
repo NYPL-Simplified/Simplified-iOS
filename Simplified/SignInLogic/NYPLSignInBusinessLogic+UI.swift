@@ -22,8 +22,8 @@ extension NYPLSignInBusinessLogic {
   ///   - errorMessage: Error message to display, taking priority over `error`.
   ///   This can be a localization key.
   func finalizeSignIn(forDRMAuthorization drmSuccess: Bool,
-                      error: Error?,
-                      errorMessage: String?) {
+                      error: Error? = nil,
+                      errorMessage: String? = nil) {
     NYPLMainThreadRun.asyncIfNeeded {
       defer {
         self.uiDelegate?.businessLogicDidCompleteSignIn(self)
@@ -51,8 +51,8 @@ extension NYPLSignInBusinessLogic {
       // no need to force a login, as we just logged in successfully
       self.ignoreSignedInState = false
 
-      let completionHandler = self.completionHandler
-      self.completionHandler = nil
+      let completionHandler = self.refreshAuthCompletion
+      self.refreshAuthCompletion = nil
 
       if !self.isLoggingInAfterSignUp, let vc = self.uiDelegate as? UIViewController {
         // don't dismiss anything if the vc is not even on the view stack

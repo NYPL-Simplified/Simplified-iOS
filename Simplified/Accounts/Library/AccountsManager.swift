@@ -264,9 +264,9 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
         NYPLErrorLogger.logError(
           withCode: .libraryListLoadFail,
           summary: "Unable to load libraries list",
-          message: "Libraries list failed to load from \(targetUrl)",
           metadata: [
             NSUnderlyingErrorKey: error,
+            "targetUrl": targetUrl
         ])
         self.callAndClearLoadingCompletionHandlers(key: hash, false)
       }

@@ -29,7 +29,7 @@ static NSInteger sLinearViewTag = 1111;
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
   CellKindPIN,
-  CellKindLogInSignOut,
+  CellKindLogIn,
   CellKindRegistration
 };
 
@@ -38,6 +38,10 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
+// Note that this class does not actually have anything to do with logging out.
+// The compliance with the NYPLSignInOutBusinessLogicUIDelegate protocol
+// is merely so that we can use this VC with the NYPLSignInBusinessLogic
+// class which is handling signing out too.
 @interface NYPLAccountSignInViewController () <NYPLSignInOutBusinessLogicUIDelegate>
 
 // view state
@@ -46,7 +50,7 @@ typedef NS_ENUM(NSInteger, Section) {
 
 // UI
 @property (nonatomic) UIButton *barcodeScanButton;
-@property (nonatomic) UITableViewCell *logInSignOutCell;
+@property (nonatomic) UITableViewCell *logInCell;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) NSArray *tableData;
 
@@ -210,9 +214,9 @@ CGFloat const marginPadding = 2.0;
   [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
                    forControlEvents:UIControlEventTouchUpInside];
 
-  self.logInSignOutCell = [[UITableViewCell alloc]
-                           initWithStyle:UITableViewCellStyleDefault
-                           reuseIdentifier:nil];
+  self.logInCell = [[UITableViewCell alloc]
+                    initWithStyle:UITableViewCellStyleDefault
+                    reuseIdentifier:nil];
 
   [self setupTableData];
 }
@@ -276,7 +280,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
       break;
-    case CellKindLogInSignOut:
+    case CellKindLogIn:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       [self.businessLogic logIn];
       break;
@@ -377,10 +381,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
-    case CellKindLogInSignOut: {
-      self.logInSignOutCell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      [self updateLoginLogoutCellAppearance];
-      return self.logInSignOutCell;
+    case CellKindLogIn: {
+      self.logInCell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+      [self updateLoginCellAppearance];
+      return self.logInCell;
     }
     case CellKindRegistration: {
       return [self createRegistrationCell];
@@ -535,14 +539,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   NSArray *authCells;
 
   if (authenticationMethod.isOauth) {
-    // if authentication method is Oauth, just insert login/logout button, it will decide what to do by itself
-    authCells = @[@(CellKindLogInSignOut)];
-  } else if (authenticationMethod.isSaml && self.businessLogic.isSignedIn) {
-    // if authentication method is SAML and user is already logged, the only possible action is to logout
-    // add login/logout button, it will detect by itself that it should be log out in this case
-    authCells = @[@(CellKindLogInSignOut)];
+    // Oauth just needs the login button since it will open Safari for
+    // actual authentication
+    authCells = @[@(CellKindLogIn)];
   } else if (authenticationMethod.isSaml) {
-    // if authentication method is SAML and previous case wasn't fullfilled, make a list of all possible IDPs to login
+    // make a list of all possible IDPs to login via SAML
     NSMutableArray *multipleCells = @[].mutableCopy;
     for (OPDS2SamlIDP *idp in authenticationMethod.samlIdps) {
       NYPLSamlIdpCellType *idpCell = [[NYPLSamlIdpCellType alloc] initWithIdp:idp];
@@ -551,11 +552,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     authCells = multipleCells;
   } else if (authenticationMethod.pinKeyboard != LoginKeyboardNone) {
     // if authentication method has an information about pin keyboard, the login method is requires a pin
-    authCells = @[@(CellKindBarcode), @(CellKindPIN), @(CellKindLogInSignOut)];
+    authCells = @[@(CellKindBarcode), @(CellKindPIN), @(CellKindLogIn)];
   } else {
     // if all other cases failed, it means that server expects just a barcode, with a blank pin
     self.PINTextField.text = @"";
-    authCells = @[@(CellKindBarcode), @(CellKindLogInSignOut)];
+    authCells = @[@(CellKindBarcode), @(CellKindLogIn)];
   }
 
   return authCells;
@@ -672,7 +673,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   __auto_type auth = self.businessLogic.selectedAuthentication;
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
                             summary:@"Barcode button was displayed"
-                            message:nil
                            metadata:@{
                              @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
                              @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",
@@ -741,43 +741,42 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 
   [self setupTableData];
-  [self updateLoginLogoutCellAppearance];
+  [self updateLoginCellAppearance];
 }
 
-- (void)updateLoginLogoutCellAppearance
+- (void)updateLoginCellAppearance
 {
-  if (self.businessLogic.isCurrentlySigningIn) {
+  if (self.businessLogic.isValidatingCredentials) {
     return;
   }
-  if(self.businessLogic.isSignedIn && !self.forceEditability) {
-    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", @"Title for sign out action");
-    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
-    self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
-    self.logInSignOutCell.userInteractionEnabled = YES;
-  } else {
-    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
-    BOOL const barcodeHasText = [self.usernameTextField.text
-                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinHasText = [self.PINTextField.text
-                             stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinIsNotRequired = self.businessLogic.selectedAuthentication.pinKeyboard == LoginKeyboardNone;
-    BOOL const oauthLogin = self.businessLogic.selectedAuthentication.isOauth;
 
-    if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired) || oauthLogin) {
-        self.logInSignOutCell.userInteractionEnabled = YES;
-        self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
+  if (self.businessLogic.isSignedIn && !self.forceEditability) {
+    return;
+  }
+
+  self.logInCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
+  BOOL const barcodeHasText = [self.usernameTextField.text
+                               stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
+  BOOL const pinHasText = [self.PINTextField.text
+                           stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
+  BOOL const pinIsNotRequired = self.businessLogic.selectedAuthentication.pinKeyboard == LoginKeyboardNone;
+  BOOL const oauthLogin = self.businessLogic.selectedAuthentication.isOauth;
+
+  if ((barcodeHasText && (pinHasText || pinIsNotRequired)) || oauthLogin) {
+    self.logInCell.userInteractionEnabled = YES;
+    self.logInCell.textLabel.textColor = [NYPLConfiguration mainColor];
+  } else {
+    self.logInCell.userInteractionEnabled = NO;
+    if (@available(iOS 13.0, *)) {
+      self.logInCell.textLabel.textColor = [UIColor systemGray2Color];
     } else {
-        self.logInSignOutCell.userInteractionEnabled = NO;
-        if (@available(iOS 13.0, *)) {
-            self.logInSignOutCell.textLabel.textColor = [UIColor systemGray2Color];
-        } else {
-            self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
-        }
+      self.logInCell.textLabel.textColor = [UIColor lightGrayColor];
     }
   }
 }
 
-- (void)displayErrorMessage:(NSString *)errorMessage {
+- (void)displayErrorMessage:(NSString *)errorMessage
+{
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.text = errorMessage;
     [label sizeToFit];
@@ -787,14 +786,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)setActivityTitleWithText:(NSString *)text
 {
-  // since we are adding a subview to self.logInSignOutCell.contentView, there
-  // is no point in continuing if for some reason logInSignOutCell is nil.
-  if (self.logInSignOutCell.contentView == nil) {
+  // since we are adding a subview to self.logInCell.contentView, there
+  // is no point in continuing if for some reason logInCell is nil.
+  if (self.logInCell.contentView == nil) {
     return;
   }
 
   // check if we already added the activity view
-  if ([self.logInSignOutCell.contentView viewWithTag:sLinearViewTag] != nil) {
+  if ([self.logInCell.contentView viewWithTag:sLinearViewTag] != nil) {
     return;
   }
   
@@ -822,22 +821,23 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [linearView sizeToFit];
   [linearView autoSetDimensionsToSize:CGSizeMake(linearView.frame.size.width, linearView.frame.size.height)];
   
-  self.logInSignOutCell.textLabel.text = nil;
-  [self.logInSignOutCell.contentView addSubview:linearView];
+  self.logInCell.textLabel.text = nil;
+  [self.logInCell.contentView addSubview:linearView];
   [linearView autoCenterInSuperview];
 }
 
-- (void)removeActivityTitle {
-  UIView *view = [self.logInSignOutCell.contentView viewWithTag:sLinearViewTag];
+- (void)removeActivityTitle
+{
+  UIView *view = [self.logInCell.contentView viewWithTag:sLinearViewTag];
   [view removeFromSuperview];
-  [self updateLoginLogoutCellAppearance];
+  [self updateLoginCellAppearance];
 }
 
 #pragma mark - Text Input
 
 - (void)textFieldsDidChange
 {
-  [self updateLoginLogoutCellAppearance];
+  [self updateLoginCellAppearance];
 }
 
 - (void)keyboardDidShow:(NSNotification *const)notification
@@ -855,7 +855,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       CGRect visibleRect = self.view.frame;
       visibleRect.size.height -= keyboardSize.height + self.tableView.contentInset.top;
       if(!CGRectContainsPoint(visibleRect,
-                              CGPointMake(0, CGRectGetMaxY(self.logInSignOutCell.frame)))) {
+                              CGPointMake(0, CGRectGetMaxY(self.logInCell.frame)))) {
         // We use an explicit animation block here because |setContentOffset:animated:| does not seem
         // to work at all.
         [UIView animateWithDuration:0.25 animations:^{
@@ -883,7 +883,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }];
 }
 
-#pragma mark - NYPLSignInBusinessLogicUIDelegate
+#pragma mark - NYPLSignInOutBusinessLogicUIDelegate
 
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {

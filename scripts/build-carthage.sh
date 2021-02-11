@@ -50,7 +50,7 @@ if [ "$1" != "--no-private" ]; then
 
   # r2-lcp requires a private client library, available via Certificates repo
   echo "Fixing up the Cartfile for LCP..."
-  swift $CERTIFICATES_PATH_PREFIX/Certificates/SimplyE/iOS/LCPLib.swift -f
+  swift $CERTIFICATES_PATH_PREFIX/Certificates/SimplyE/iOS/LCPLib.swift
 fi
 
 if [ "$BUILD_CONTEXT" != "ci" ] || [ "$1" == "--no-private" ]; then

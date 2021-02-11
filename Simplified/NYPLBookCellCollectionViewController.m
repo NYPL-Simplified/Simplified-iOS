@@ -5,8 +5,8 @@
 #import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "UIView+NYPLViewAdditions.h"
-
 #import "NYPLBookCellCollectionViewController.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookCellCollectionViewController () <UICollectionViewDelegateFlowLayout>
 
@@ -61,7 +61,7 @@
   // Notifications are installed so the view will update while visible.
   [self.observers addObject:
    [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLBookRegistryDidChangeNotification
+    addObserverForName:NSNotification.NYPLBookRegistryDidChange
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
@@ -71,7 +71,7 @@
   
   [self.observers addObject:
    [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
+    addObserverForName:NSNotification.NYPLMyBooksDownloadCenterDidChange
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {

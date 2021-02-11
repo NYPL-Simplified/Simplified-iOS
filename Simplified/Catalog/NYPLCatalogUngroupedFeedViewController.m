@@ -215,11 +215,12 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   if (facetURL != nil) {
     [self.remoteViewController loadWithURL:facetURL];
   } else {
-    NSString *msg = [NSString stringWithFormat:@"Facet %@ is missing the `href` URL to load", facet.title];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              summary:NSStringFromClass([self class])
-                              message:msg
-                             metadata:@{@"methodName": @"facetView:didSelectFacetAtIndexPath:"}];
+                              summary:@"Facet missing the `href` URL to load"
+                             metadata:@{
+                               @"methodName": @"facetView:didSelectFacetAtIndexPath:",
+                               @"facet title": facet.title ?: @"N/A",
+                             }];
     [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
   }
 }
@@ -233,11 +234,12 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   if (newURL != nil) {
     [self.remoteViewController loadWithURL:newURL];
   } else {
-    NSString *msg = [NSString stringWithFormat:@"Facet %@ is missing the `href` URL to load", entryPointFacet.title];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              summary:NSStringFromClass([self class])
-                              message:msg
-                             metadata:@{@"methodName": @"entryPointViewDidSelectWithEntryPointFacet:"}];
+                              summary:@"Facet missing the `href` URL to load"
+                             metadata:@{
+                               @"methodName": @"entryPointViewDidSelectWithEntryPointFacet:",
+                               @"facet title": entryPointFacet.title ?: @"N/A",
+                             }];
     [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
   }
 }

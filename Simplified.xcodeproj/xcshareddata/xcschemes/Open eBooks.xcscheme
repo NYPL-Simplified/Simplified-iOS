@@ -66,6 +66,14 @@
                BlueprintName = "OpenEbooksTests"
                ReferencedContainer = "container:Simplified.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "NYPLSignInBusinessLogicTests/testCardCreatorSupport()">
+               </Test>
+               <Test
+                  Identifier = "NYPLSignInBusinessLogicTests/testUpdateUserAccountWithSAMLAuthentication()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

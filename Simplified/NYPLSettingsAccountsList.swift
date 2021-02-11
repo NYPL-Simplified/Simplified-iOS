@@ -137,10 +137,7 @@
         } else {
           self.showLoadingUI(loadState: .failure)
           NYPLErrorLogger.logError(withCode: .apiCall,
-                                   summary: "NYPLSettingsAccountsList",
-                                   message: "Accounts list failed to load",
-                                   metadata: [
-                                    "currentLibrary": self.manager.currentAccount?.debugDescription ?? "N/A"])
+                                   summary: "Accounts list failed to load")
         }
       }
     }

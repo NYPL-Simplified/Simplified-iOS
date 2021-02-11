@@ -6,13 +6,6 @@
 
 typedef NS_ENUM(NSInteger, NYPLBookState);
 
-// This is broadcast whenever the book registry is modified.
-static NSString *const _Nonnull NYPLBookRegistryDidChangeNotification =
-  @"NYPLBookRegistryDidChangeNotification";
-
-static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
-  @"NYPLBookProcessingDidChangeNotification";
-
 @protocol NYPLBookRegistryProvider <NSObject>
 
 - (nonnull NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(nonnull NSString *)identifier;

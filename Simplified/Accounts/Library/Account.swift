@@ -412,9 +412,9 @@ class OPDS2SamlIDP: NSObject, Codable {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       NYPLErrorLogger.logError(
         withCode: .noURL,
-        summary: "Authentication Document Load Error",
-        message: "Failed to load authentication document because its URL is invalid",
-        metadata: ["self.uuid": uuid]
+        summary: "Failed to load authentication document because its URL is invalid",
+        metadata: ["self.uuid": uuid,
+                   "urlString": authenticationDocumentUrl ?? "N/A"]
       )
       completion(false)
       return
@@ -439,11 +439,11 @@ class OPDS2SamlIDP: NSObject, Codable {
           let responseBody = String(data: serverData, encoding: .utf8)
           NYPLErrorLogger.logError(
             withCode: .authDocParseFail,
-            summary: "Authentication Document Load Error",
-            message: "Failed to parse authentication document data obtained from \(url)",
+            summary: "Authentication Document Data Parse Error",
             metadata: [
               "underlyingError": error,
-              "responseBody": responseBody ?? ""
+              "responseBody": responseBody ?? "N/A",
+              "url": url
             ]
           )
           completion(false)
@@ -451,9 +451,8 @@ class OPDS2SamlIDP: NSObject, Codable {
       case .failure(let error, _):
         NYPLErrorLogger.logError(
           withCode: .authDocLoadFail,
-          summary: "Authentication Document Load Error",
-          message: "Request to load authentication document at \(url) failed.",
-          metadata: ["underlyingError": error]
+          summary: "Authentication Document request failed to load",
+          metadata: ["loadError": error, "url": url]
         )
         completion(false)
       }

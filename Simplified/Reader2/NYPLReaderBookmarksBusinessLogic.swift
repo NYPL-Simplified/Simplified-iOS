@@ -133,7 +133,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     let chapter: String?
     if let locatorChapter = bookmarkLoc.locator.title {
       chapter = locatorChapter
-    } else if let tocLink = publication.tableOfContents.first(withHref: bookmarkLoc.locator.href) {
+    } else if let tocLink = publication.tableOfContents.first(withHREF: bookmarkLoc.locator.href) {
       chapter = tocLink.title
     } else {
       chapter = nil

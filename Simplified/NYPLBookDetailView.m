@@ -153,7 +153,6 @@ static NSString *DetailHTMLTemplate = nil;
   self.subtitleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.audiobookLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.authorsLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
-  self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
   self.summarySectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
   self.infoSectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
@@ -184,21 +183,28 @@ static NSString *DetailHTMLTemplate = nil;
   self.summaryTextView.clipsToBounds = YES;
   self.summaryTextView.textContainer.lineFragmentPadding = 0;
   self.summaryTextView.textContainerInset = UIEdgeInsetsZero;
-  
+  self.summaryTextView.textColor = UIColor.defaultLabelColor;
+  self.summaryTextView.adjustsFontForContentSizeCategory = YES;
+
   NSString *htmlString = [NSString stringWithFormat:DetailHTMLTemplate,
                           [NYPLConfiguration systemFontName],
-                          self.book.summary ? self.book.summary : @""];
+                          self.book.summary ?: @""];
   htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<p>" withString:@"<span>"];
   htmlString = [htmlString stringByReplacingOccurrencesOfString:@"</p>" withString:@"</span>"];
+
   NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
-  NSDictionary *attributes = @{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType};
-
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error:nil];
-    self.summaryTextView.attributedText = atrString;
-
-    self.summaryTextView.textColor = UIColor.defaultLabelColor;
-  }];
+  NSError *error = nil;
+  NSAttributedString *atrString = [[NSAttributedString alloc]
+                                   initWithData:htmlData
+                                   options:@{NSDocumentTypeDocumentAttribute:
+                                               NSHTMLTextDocumentType}
+                                   documentAttributes:nil
+                                   error:&error];
+  if (error) {
+    NYPLLOG_F(@"Attributed string rendering error for %@ book description: %@",
+              [self.book loggableShortString], error);
+  }
+  self.summaryTextView.attributedText = atrString;
 
   self.readMoreLabel = [[UIButton alloc] init];
   self.readMoreLabel.hidden = YES;
@@ -229,9 +235,9 @@ static NSString *DetailHTMLTemplate = nil;
 
   [[NYPLBookRegistry sharedRegistry]
    coverImageForBook:self.book handler:^(UIImage *image) {
-     self.coverImageView.image = image;
-     self.blurCoverImageView.image = image;
-   }];
+    self.coverImageView.image = image;
+    self.blurCoverImageView.image = image;
+  }];
 
   self.audiobookLabel = [[UILabel alloc] init];
   self.audiobookLabel.hidden = YES;
@@ -472,8 +478,7 @@ static NSString *DetailHTMLTemplate = nil;
   [self.distributorLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.distributorLabelKey autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.distributorLabelValue];
   [self.distributorLabelKey setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
-  
-  
+
   if (self.closeButton) {
     [self.closeButton autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
     [self.closeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.titleLabel];
@@ -502,11 +507,11 @@ static NSString *DetailHTMLTemplate = nil;
 + (void)initialize
 {
   DetailHTMLTemplate = [NSString
-                    stringWithContentsOfURL:[[NSBundle mainBundle]
-                                             URLForResource:@"DetailSummaryTemplate"
-                                             withExtension:@"html"]
-                    encoding:NSUTF8StringEncoding
-                    error:NULL];
+                        stringWithContentsOfURL:[[NSBundle mainBundle]
+                                                 URLForResource:@"DetailSummaryTemplate"
+                                                 withExtension:@"html"]
+                        encoding:NSUTF8StringEncoding
+                        error:NULL];
   
   assert(DetailHTMLTemplate);
 }
@@ -617,10 +622,10 @@ static NSString *DetailHTMLTemplate = nil;
                         duration:duration
                          options:UIViewAnimationOptionTransitionCrossDissolve
                       animations:^{
-                        self.downloadingView.hidden = YES;
-                      } completion:^(__unused BOOL finished) {
-                        self.downloadingView.hidden = YES;
-                      }];
+        self.downloadingView.hidden = YES;
+      } completion:^(__unused BOOL finished) {
+        self.downloadingView.hidden = YES;
+      }];
     }
   } else {
     if (self.downloadingView.isHidden) {
@@ -628,10 +633,10 @@ static NSString *DetailHTMLTemplate = nil;
                         duration:duration
                          options:UIViewAnimationOptionTransitionCrossDissolve
                       animations:^{
-                        self.downloadingView.hidden = NO;
-                      } completion:^(__unused BOOL finished) {
-                        self.downloadingView.hidden = NO;
-                      }];
+        self.downloadingView.hidden = NO;
+      } completion:^(__unused BOOL finished) {
+        self.downloadingView.hidden = NO;
+      }];
     }
   }
 }

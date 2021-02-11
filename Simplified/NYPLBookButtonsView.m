@@ -81,7 +81,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
   [self addSubview:self.activityIndicator];
   
   self.observer = [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLBookProcessingDidChangeNotification
+   addObserverForName:NSNotification.NYPLBookProcessingDidChange
    object:nil
    queue:[NSOperationQueue mainQueue]
    usingBlock:^(NSNotification *note) {

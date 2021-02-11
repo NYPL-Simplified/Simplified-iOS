@@ -8,50 +8,53 @@
 
 import Foundation
 
+/// Defines the interface required by the various pieces of the sign-in logic
+/// to obtain the credentials for performing basic authentication.
+@objc protocol NYPLBasicAuthCredentialsProvider: NSObjectProtocol {
+  var username: String? {get}
+  var pin: String? {get}
+}
+
 @objc class NYPLBasicAuth: NSObject {
   typealias BasicAuthCompletionHandler = (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
 
-  @objc static func authHandler(challenge: URLAuthenticationChallenge,
-                                completionHandler: @escaping BasicAuthCompletionHandler)
-  {
-    switch challenge.protectionSpace.authenticationMethod {
-    case NSURLAuthenticationMethodHTTPBasic:
-      let account = NYPLUserAccount.sharedAccount()
-      if let barcode = account.barcode, let pin = account.PIN {
-        authCustomHandler(challenge: challenge,
-                          completionHandler: completionHandler,
-                          username: barcode,
-                          password: pin)
-      } else {
-        completionHandler(.cancelAuthenticationChallenge, nil)
-      }
+  /// The object providing the credentials to respond to the authentication
+  /// challenge.
+  private var credentialsProvider: NYPLBasicAuthCredentialsProvider
 
-    case NSURLAuthenticationMethodServerTrust:
-      completionHandler(.performDefaultHandling, nil)
-
-    default:
-      completionHandler(.rejectProtectionSpace, nil)
-    }
+  @objc(initWithCredentialsProvider:)
+  init(credentialsProvider: NYPLBasicAuthCredentialsProvider) {
+    self.credentialsProvider = credentialsProvider
+    super.init()
   }
 
-  @objc static func authCustomHandler(challenge: URLAuthenticationChallenge!,
-                                      completionHandler: @escaping BasicAuthCompletionHandler,
-                                      username: String,
-                                      password: String)
+  /// Responds to the authentication challenge synchronously.
+  /// - Parameters:
+  ///   - challenge: The authentication challenge to respond to.
+  ///   - completion: Always called, synchronously.
+  @objc func handleChallenge(_ challenge: URLAuthenticationChallenge,
+                             completion: BasicAuthCompletionHandler)
   {
     switch challenge.protectionSpace.authenticationMethod {
     case NSURLAuthenticationMethodHTTPBasic:
-      if challenge.previousFailureCount == 0 {
-        let credentials = URLCredential(user: username,
-                                        password: password,
-                                        persistence: .none)
-        completionHandler(.useCredential, credentials)
-      } else {
-        completionHandler(.cancelAuthenticationChallenge, nil)
+      guard
+        let username = credentialsProvider.username,
+        let password = credentialsProvider.pin,
+        challenge.previousFailureCount == 0 else {
+          completion(.cancelAuthenticationChallenge, nil)
+          return
       }
 
+      let credentials = URLCredential(user: username,
+                                      password: password,
+                                      persistence: .none)
+      completion(.useCredential, credentials)
+
+    case NSURLAuthenticationMethodServerTrust:
+      completion(.performDefaultHandling, nil)
+
     default:
-      completionHandler(.rejectProtectionSpace, nil)
+      completion(.rejectProtectionSpace, nil)
     }
   }
 }
