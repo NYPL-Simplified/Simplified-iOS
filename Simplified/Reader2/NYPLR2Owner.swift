@@ -18,8 +18,8 @@ import R2Streamer
 /// Base module delegate, that sub-modules' delegate can extend.
 /// Provides basic shared functionalities.
 protocol ModuleDelegate: AnyObject {
-    func presentAlert(_ title: String, message: String, from viewController: UIViewController)
-    func presentError(_ error: Error?, from viewController: UIViewController)
+  func presentAlert(_ title: String, message: String, from viewController: UIViewController)
+  func presentError(_ error: Error?, from viewController: UIViewController)
 }
 
 

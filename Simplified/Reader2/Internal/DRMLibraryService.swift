@@ -12,7 +12,6 @@ import R2Shared
 
 struct DRMFulfilledPublication {
   let localURL: URL
-  let downloadTask: URLSessionDownloadTask?
   let suggestedFilename: String
 }
 

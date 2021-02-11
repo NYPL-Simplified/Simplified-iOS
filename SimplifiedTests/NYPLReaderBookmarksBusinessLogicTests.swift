@@ -54,10 +54,11 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       bookRegistryMock = NYPLBookRegistryMock()
       bookRegistryMock.addBook(book: fakeBook, state: .DownloadSuccessful)
       libraryAccountMock = NYPLLibraryAccountMock()
-      
+      let manifest = Manifest(metadata: Metadata(title: "fakeMetadata"))
+      let pub = Publication(manifest: manifest)
       bookmarkBusinessLogic = NYPLReaderBookmarksBusinessLogic(
         book: fakeBook,
-        r2Publication: Publication(metadata: Metadata(title: "fakeMetadata")),
+        r2Publication: pub,
         drmDeviceID: "fakeDeviceID",
         bookRegistryProvider: bookRegistryMock,
         currentLibraryAccountProvider: libraryAccountMock)

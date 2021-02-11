@@ -47,7 +47,6 @@ import ReadiumLCP
           .map {
             DRMFulfilledPublication(
               localURL: $0.localURL,
-              downloadTask: $0.downloadTask,
               suggestedFilename: $0.suggestedFilename
             )
         }
