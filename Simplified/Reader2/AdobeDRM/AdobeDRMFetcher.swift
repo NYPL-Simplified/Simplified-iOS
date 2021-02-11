@@ -30,8 +30,16 @@ class AdobeDRMFetcher: Fetcher {
     self.links = fetcher.links
   }
   
+  /// Known resources available in the medium, such as file paths on the file system.
   var links: [Link]
   
+  /// Get resource such as content file by its link.
+  ///
+  /// `AdobeDRMFetcher` `get` function open .epub resouorces using the `fetcher` passed to `init`.
+  ///  After resource is found and its data is read, AdobeDRMContainer decodes the resource data.
+  ///
+  /// - Parameter link: Resource link (URL of content HREF)
+  /// - Returns: Decrypted `Resource` object; `DataResource` in case of success or `FailureResource` otherwise.
   func get(_ link: Link) -> Resource {
     do {
       let resource = fetcher.get(link)
