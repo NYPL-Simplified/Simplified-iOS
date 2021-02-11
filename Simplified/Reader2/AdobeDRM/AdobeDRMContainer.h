@@ -20,9 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param fileURL file URL
 /// @param encryptionData encryption.xml data
 - (instancetype)initWithURL:(NSURL *)fileURL encryptionData: (NSData *)encryptionData;
-/// Decrypt encrypted data
-/// @param data Encrypted data
-- (NSData *)decodeData:(NSData *)data;
 /// Decrypt encrypted data for file ar path inside ePub file
 /// @param data Encrypted data
 /// @param path File path inside ePub file

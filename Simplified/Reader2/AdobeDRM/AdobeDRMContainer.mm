@@ -50,39 +50,6 @@ static id acsdrm_lock = nil;
   return self;
 }
 
-/// Searches encryption data for the first encrypted file
-/// @param data encryption.xml data
-- (NSString *)firstPathElement:(NSData *)data error:(NSError **)error {
-  NSString *encryptionString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-  // looking for encrypted file path
-  NSRegularExpression *filesRegEx = [NSRegularExpression regularExpressionWithPattern:@"CipherReference URI=\"(.+)\"" options:NSRegularExpressionCaseInsensitive error:error];
-  if (*error) {
-    return nil;
-  }
-  NSTextCheckingResult *result =  [filesRegEx firstMatchInString:encryptionString options:0 range:NSMakeRange(0, encryptionString.length)];
-  NSRange resultRange = [result rangeAtIndex:(result.numberOfRanges - 1)];
-  if (resultRange.location == NSNotFound) {
-    return nil;
-  }
-  return [encryptionString substringWithRange:resultRange];
-}
-
-- (NSData *)decodeData:(NSData *)data {
-  // When file path is not provided, we use the first element to get its path
-  // and later its encryption algorithm
-  self.epubDecodingError = nil;
-  NSError *error;
-  NSString *firstElementPath = [self firstPathElement:encryptionData error:&error];
-  if (error) {
-    self.epubDecodingError = error.localizedDescription;
-    return data;
-  } else if (firstElementPath) {
-    return [self decodeData:data at:firstElementPath];
-  } else {
-    return data;
-  }
-}
-
 - (NSData *)decodeData:(NSData *)data at:(NSString *)path {
 
   @synchronized (acsdrm_lock) {
