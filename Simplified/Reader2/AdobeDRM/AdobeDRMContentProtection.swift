@@ -34,7 +34,9 @@ class AdobeDRMContentProtection: ContentProtection {
       )
       completion(.success(protectedAsset))
     } catch {
-      completion(.failure(.parsingFailed(error)))
+      // .success(nil) means it is not an asset protected with Adobe DRM
+      // Streamer continues to iterate over available ContentProtections
+      completion(.success(nil))
     }
     
   }
