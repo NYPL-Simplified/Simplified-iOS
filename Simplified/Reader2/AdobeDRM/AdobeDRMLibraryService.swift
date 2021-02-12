@@ -33,7 +33,6 @@ class AdobeDRMLibraryService: DRMLibraryService {
     return deferred { completion in
       completion(.success(DRMFulfilledPublication(
         localURL: file,
-        downloadTask: nil,
         suggestedFilename: file.lastPathComponent
       )))
     }
