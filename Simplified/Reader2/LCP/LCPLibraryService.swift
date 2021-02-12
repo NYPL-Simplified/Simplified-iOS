@@ -25,7 +25,7 @@ import ReadiumLCP
   private var lcpService = LCPService()
   
   /// ContentProtection unlocks protected publication, providing a custom `Fetcher`
-  lazy var contentProtection: ContentProtection? = lcpService.contentProtection()
+  lazy var contentProtection: ContentProtection? = lcpService.contentProtection(with: LCPPassphraseAuthenticationService())
   
   /// [LicenseDocument.id: passphrase callback]
   private var authenticationCallbacks: [String: (String?) -> Void] = [:]
@@ -79,30 +79,6 @@ import ReadiumLCP
         completion(nil, nsError)
       }
     }
-  }
-}
-
-extension LCPLibraryService: LCPAuthenticationDelegate {
-  
-  /// Authenticate with passphrase.
-  /// The function calls the callback set for document ID in the license
-  /// - Parameters:
-  ///   - license: Information to show to the user about the license being opened.
-  ///   - passphrase: License passphrase
-  func authenticate(_ license: LCPAuthenticatedLicense, with passphrase: String) {
-    guard let callback = authenticationCallbacks.removeValue(forKey: license.document.id) else {
-      return
-    }
-    callback(passphrase)
-  }
-  
-  /// Cancel authentication. The function removes authentication callback associated with the license document ID
-  /// - Parameter license:Information to show to the user about the license being opened.
-  func didCancelAuthentication(of license: LCPAuthenticatedLicense) {
-    guard let callback = authenticationCallbacks.removeValue(forKey: license.document.id) else {
-      return
-    }
-    callback(nil)
   }
 }
 
