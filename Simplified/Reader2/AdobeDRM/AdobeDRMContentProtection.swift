@@ -17,6 +17,7 @@ class AdobeDRMContentProtection: ContentProtection {
     // Publication asset must be a FileAsset, as we are opening a file
     // If not, we can't open and use Adobe DRM
     guard let fileAsset = asset as? FileAsset else {
+      NYPLErrorLogger.logError(nil, summary: "AdobeDRMContentProtection.open expected asset of FileAsset type, received \(type(of: asset)))")
       completion(.failure(.unavailable(nil)))
       return
     }
