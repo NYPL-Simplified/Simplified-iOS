@@ -37,7 +37,7 @@ class AdobeDRMFetcher: Fetcher {
   
   /// Get resource such as content file by its link.
   ///
-  /// `AdobeDRMFetcher` `get` function open .epub resouorces using the `fetcher` passed to `init`.
+  /// `AdobeDRMFetcher` `get` function open .epub resources using the `fetcher` passed to `init`.
   ///  After resource is found and its data is read, AdobeDRMContainer decodes the resource data.
   ///
   /// - Parameter link: Resource link (URL of content HREF)
