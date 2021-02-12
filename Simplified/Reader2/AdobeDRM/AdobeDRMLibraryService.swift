@@ -11,6 +11,8 @@ import UIKit
 import R2Shared
 import R2Streamer
 
+#if FEATURE_DRM_CONNECTOR
+
 class AdobeDRMLibraryService: DRMLibraryService {
 
   var contentProtection: ContentProtection? = AdobeDRMContentProtection()
@@ -37,3 +39,5 @@ class AdobeDRMLibraryService: DRMLibraryService {
     }
   }
 }
+
+#endif

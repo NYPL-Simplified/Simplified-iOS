@@ -9,6 +9,8 @@
 import Foundation
 import R2Shared
 
+#if FEATURE_DRM_CONNECTOR
+
 class AdobeDRMContentProtection: ContentProtection {
   func open(asset: PublicationAsset, fetcher: Fetcher, credentials: String?, allowUserInteraction: Bool, sender: Any?, completion: @escaping (CancellableResult<ProtectedAsset?, Publication.OpeningError>) -> Void) {
     
@@ -37,3 +39,5 @@ class AdobeDRMContentProtection: ContentProtection {
     
   }
 }
+
+#endif

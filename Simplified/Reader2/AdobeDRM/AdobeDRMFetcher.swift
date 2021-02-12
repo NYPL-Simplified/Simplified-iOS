@@ -9,6 +9,8 @@
 import Foundation
 import R2Shared
 
+#if FEATURE_DRM_CONNECTOR
+
 /// Adobe DRM fetcher
 /// Decrypts .epub contents data
 class AdobeDRMFetcher: Fetcher {
@@ -56,3 +58,5 @@ class AdobeDRMFetcher: Fetcher {
     // No need to close anything.
   }
 }
+
+#endif

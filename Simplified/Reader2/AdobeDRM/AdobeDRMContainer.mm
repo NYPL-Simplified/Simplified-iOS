@@ -6,6 +6,8 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
+#ifdef FEATURE_DRM_CONNECTOR
+
 #import "AdobeDRMContainer.h"
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreorder"
@@ -113,3 +115,5 @@ static id acsdrm_lock = nil;
 }
 
 @end
+
+#endif
