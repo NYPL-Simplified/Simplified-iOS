@@ -30,12 +30,10 @@ FIREBASE_TOKEN=$(head -n 1 "$CERTIFICATES_PATH/Firebase/token.txt") ||
 FIREBASE_APP_ID=`/usr/libexec/PlistBuddy -c "Print :GOOGLE_APP_ID" "$CERTIFICATES_PATH/$APP_NAME_FOLDER/iOS/GoogleService-Info.plist"`
 
 # find ipa
-if [[ -d "$APPSTORE_EXPORT_PATH" ]]; then
-  IPA_PATH="$APPSTORE_EXPORT_PATH/$APP_NAME.ipa"
-elif [[ -d "$ADHOC_EXPORT_PATH" ]]; then
+if [[ -d "$ADHOC_EXPORT_PATH" ]]; then
   IPA_PATH="$ADHOC_EXPORT_PATH/$APP_NAME.ipa"
 else
-  fatal "Unable to upload to firebase: No known exported builds exist!"
+  fatal "Unable to upload to firebase: missing ad-hoc export!"
 fi
 
 # upload app binary
