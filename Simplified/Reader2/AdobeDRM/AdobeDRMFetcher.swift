@@ -15,7 +15,7 @@ import R2Shared
 /// Decrypts .epub contents data
 class AdobeDRMFetcher: Fetcher {
   
-  /// AdobeDRMContainer calls AAdobe DRM software
+  /// AdobeDRMContainer calls Adobe DRM software
   let container: AdobeDRMContainer
   
   /// ArchiveFetcher for the publication
