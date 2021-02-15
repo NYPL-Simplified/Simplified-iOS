@@ -105,12 +105,7 @@ static id acsdrm_lock = nil;
       self.epubDecodingError = [NSString stringWithUTF8String:error.utf8()];
       return data;
     }
-    // Copy filtered data from Buffer to an array of bytes
-    unsigned char *output = new unsigned char[filteredData->length()];
-    size_t outputLen = filteredData->length();
-    memcpy(output, filteredData->data(), outputLen);
-    NSData *decryptedData = [NSData dataWithBytes:output length: NSUInteger(outputLen)];
-    return decryptedData;
+    return [NSData dataWithBytes:filteredData->data() length: NSUInteger(filteredData->length())];
   }
 }
 
