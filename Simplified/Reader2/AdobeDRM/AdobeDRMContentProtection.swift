@@ -25,7 +25,7 @@ class AdobeDRMContentProtection: ContentProtection {
     do {
       // META-INF is a part of .epub structure
       // Adobe DRM expects to find encryption algorithms for each .epub file in it
-      // Othere DRM software may look for other files to underestand the type of .epub protection,
+      // Other DRM software may look for other files to underestand the type of .epub protection,
       // for example, LCP is looking for .lcpl file to open .epub files.
       let encryptionPath = "META-INF/encryption.xml"
       let resource = fetcher.get(encryptionPath)
