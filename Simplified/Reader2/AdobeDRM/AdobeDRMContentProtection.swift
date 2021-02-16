@@ -24,8 +24,13 @@ class AdobeDRMContentProtection: ContentProtection {
     
     do {
       // META-INF is a part of .epub structure
+      // Adobe DRM expects to find encryption algorithms for each .epub file in it
+      // Othere DRM software may look for other files to underestand the type of .epub protection,
+      // for example, LCP is looking for .lcpl file to open .epub files.
       let encryptionPath = "META-INF/encryption.xml"
       let resource = fetcher.get(encryptionPath)
+      // If encryption.xml doesn't exist, this is not an Adobe DRM .epub
+      // resource.read().get() throws in this case
       let encryptionData = try resource.read().get()
       let adobeFetcher = AdobeDRMFetcher(url: fileAsset.url, fetcher: fetcher, encryptionData: encryptionData)
       let protectedAsset = ProtectedAsset(
@@ -37,6 +42,8 @@ class AdobeDRMContentProtection: ContentProtection {
     } catch {
       // .success(nil) means it is not an asset protected with Adobe DRM
       // Streamer continues to iterate over available ContentProtections
+      // Don't use .failure(...) in this case, it means .epub is protected with this type of Content Protection,
+      // but it failed to open it.
       completion(.success(nil))
     }
     
