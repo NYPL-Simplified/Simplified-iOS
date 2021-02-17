@@ -27,6 +27,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   let publication: Publication
   private let book: NYPLBook
   private var bookmarksBusinessLogic: NYPLReaderBookmarksBusinessLogic
+  private var shouldRestoreLocalReadingProgress: Bool
 
   // UI
   let navigator: UIViewController & Navigator
@@ -58,6 +59,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 
     bookmarksBusinessLogic.syncBookmarks { (_, _) in }
 
+    shouldRestoreLocalReadingProgress = true
+    
     super.init(nibName: nil, bundle: nil)
 
     NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: Notification.Name(UIAccessibilityVoiceOverStatusChanged), object: nil)
@@ -109,8 +112,6 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       positionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       positionLabel.bottomAnchor.constraint(equalTo: navigator.view.bottomAnchor, constant: -20)
     ])
-    
-    restoreReadPosition()
   }
 
   override func willMove(toParent parent: UIViewController?) {
@@ -264,10 +265,11 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   // MARK: - Read Position
 
   private func restoreReadPosition() {
-    bookmarksBusinessLogic.restoreReadPosition(currentLocator: navigator.currentLocation, localFetchCompletion: { (localLocator) in
+    self.shouldRestoreLocalReadingProgress = false
+    bookmarksBusinessLogic.restoreReadPosition(currentLocator: navigator.currentLocation, localFetchCompletion: { [weak self] (localLocator) in
       if let localLocator = localLocator {
         NYPLMainThreadRun.asyncIfNeeded {
-          self.navigator.go(to: localLocator, animated: true) {}
+          self?.navigator.go(to: localLocator, animated: true) {}
         }
       }
     }) { [weak self] (serverLocator) in
@@ -363,7 +365,11 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-    bookmarksBusinessLogic.storeReadPosition(locator: locator)
+    if shouldRestoreLocalReadingProgress {
+      restoreReadPosition()
+    } else {
+      bookmarksBusinessLogic.storeReadPosition(locator: locator)
+    }
 
     positionLabel.text = {
       var chapterTitle = ""

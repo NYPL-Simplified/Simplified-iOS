@@ -13,16 +13,11 @@ extension NYPLBookLocation {
   static let r2Renderer = "readium2"
   
   convenience init?(locator: Locator, publication: Publication, renderer: String) {
-    guard let idref = publication.idref(forHref: locator.href) else {
-      Log.warn(#file, "Unable to find Publication's idref from locator's idref - \(locator.href)")
-      return nil
-    }
-    
     // Store all required properties of a locator object in a dictionary
     // Create a json string from it and use it as the location string in NYPLBookLocation
     // There is no specific format to follow, the value of the keys can be change if needed
     let dict: [String : Any] = [
-      NYPLBookLocation.hrefKey: idref,
+      NYPLBookLocation.hrefKey: locator.href,
       NYPLBookLocation.typeKey: locator.type,
       NYPLBookLocation.chapterProgressKey: locator.locations.progression ?? 0.0,
       NYPLBookLocation.bookProgressKey: locator.locations.totalProgression ?? 0.0
