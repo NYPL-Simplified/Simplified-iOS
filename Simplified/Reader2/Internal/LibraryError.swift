@@ -21,9 +21,9 @@ enum LibraryError: LocalizedError {
   var errorDescription: String? {
     switch self {
     case .invalidBook:
-      return NSLocalizedString("The book you were trying to open is invalid", comment: "Error message used when trying to import a publication that is not valid")
+      return NSLocalizedString("The book you were trying to open is invalid.", comment: "Error message used when trying to import a publication that is not valid")
     case .openFailed(let error):
-      return String(format: NSLocalizedString("An error was encountered while trying to open this book", comment: "Error message used when a low-level error occured while opening a publication"), error.localizedDescription)
+      return String(format: NSLocalizedString("An error was encountered while trying to open this book.", comment: "Error message used when a low-level error occured while opening a publication"), error.localizedDescription)
     }
   }
   
