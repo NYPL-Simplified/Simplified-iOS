@@ -57,7 +57,7 @@ extension NYPLR2Owner: ModuleDelegate {
                     message: String,
                     from viewController: UIViewController) {
     let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-    let dismissButton = UIAlertAction(title: NSLocalizedString("ok_button", comment: "Alert button"), style: .cancel)
+    let dismissButton = UIAlertAction(title: NSLocalizedString("OK", comment: "Alert button"), style: .cancel)
     alert.addAction(dismissButton)
     viewController.present(alert, animated: true)
   }
@@ -65,7 +65,7 @@ extension NYPLR2Owner: ModuleDelegate {
   func presentError(_ error: Error?, from viewController: UIViewController) {
     guard let error = error else { return }
     presentAlert(
-      NSLocalizedString("error_title", comment: "Alert title for errors"),
+      NSLocalizedString("Error", comment: "Alert title for errors"),
       message: error.localizedDescription,
       from: viewController
     )
