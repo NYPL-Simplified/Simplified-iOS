@@ -183,7 +183,6 @@ static NSString *DetailHTMLTemplate = nil;
   self.summaryTextView.clipsToBounds = YES;
   self.summaryTextView.textContainer.lineFragmentPadding = 0;
   self.summaryTextView.textContainerInset = UIEdgeInsetsZero;
-  self.summaryTextView.textColor = UIColor.defaultLabelColor;
   self.summaryTextView.adjustsFontForContentSizeCategory = YES;
 
   NSString *htmlString = [NSString stringWithFormat:DetailHTMLTemplate,
@@ -205,6 +204,11 @@ static NSString *DetailHTMLTemplate = nil;
               [self.book loggableShortString], error);
   }
   self.summaryTextView.attributedText = atrString;
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    // this needs to happen asynchronously because the HTML text may overwrite
+    // our color
+    self.summaryTextView.textColor = UIColor.defaultLabelColor;
+  }];
 
   self.readMoreLabel = [[UIButton alloc] init];
   self.readMoreLabel.hidden = YES;

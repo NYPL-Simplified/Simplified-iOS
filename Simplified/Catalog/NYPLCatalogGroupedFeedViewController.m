@@ -210,6 +210,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
     [self.navigationController popToRootViewControllerAnimated:NO];
   }
 
+  NYPLLOG_F(@"Presenting book: %@", [self.mostRecentBookSelected loggableShortString]);
   [[[NYPLBookDetailViewController alloc] initWithBook:self.mostRecentBookSelected] presentFromViewController:self];
 }
 
@@ -339,6 +340,7 @@ viewForHeaderInSection:(NSInteger const)section
   
   NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
   NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
+  NYPLLOG_F(@"Presenting book: %@", [book loggableShortString]);
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
   self.mostRecentBookSelected = book;
 }
@@ -390,6 +392,7 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLBook *const feedBook = lane.books[self.tempBookPosition];
   NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
   NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
+  NYPLLOG_F(@"Presenting book: %@", [book loggableShortString]);
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 

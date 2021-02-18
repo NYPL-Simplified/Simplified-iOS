@@ -341,8 +341,9 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   if (failureRequiringAlert) {
     dispatch_async(dispatch_get_main_queue(), ^{
       BOOL hasCredentials = [NYPLUserAccount.sharedAccount hasCredentials];
+      BOOL loginRequired = NYPLUserAccount.sharedAccount.authDefinition.needsAuth;
       if ([downloadTask.response indicatesAuthenticationNeedsRefresh:problemDoc]
-          || !hasCredentials) {
+          || (!hasCredentials && loginRequired)) {
 
         // re-auth so that when we "Try again" we won't fail for the same reason
         [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
@@ -866,12 +867,14 @@ didCompleteWithError:(NSError *)error
 {
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry]
                          stateForIdentifier:book.identifier];
-  
-  BOOL loginRequired = YES;
-  
+
+  BOOL loginRequired = NYPLUserAccount.sharedAccount.authDefinition.needsAuth;
+
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth)) {
+      if(!book.defaultAcquisitionIfBorrow
+         && (book.defaultAcquisitionIfOpenAccess || !loginRequired)) {
+
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
@@ -880,7 +883,6 @@ didCompleteWithError:(NSError *)error
          readiumBookmarks:nil
          genericBookmarks:nil];
         state = NYPLBookStateDownloadNeeded;
-        loginRequired = NO;
       }
       break;
     case NYPLBookStateDownloading:
