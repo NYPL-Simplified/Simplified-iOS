@@ -34,10 +34,16 @@
   if(!book) {
     @throw NSInvalidArgumentException;
   }
-  
+
   self.book = book;
-  
+
   self.title = book.title;
+  UILabel *label = [[UILabel alloc] init];
+  self.navigationItem.titleView = label;
+  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:self.book
+                                                        delegate:self];
+  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry]
+                               stateForIdentifier:self.book.identifier];
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
@@ -63,23 +69,15 @@
                                            selector:@selector(didCacheProblemDocument)
                                                name:NSNotification.NYPLProblemDocumentWasCached
                                              object:nil];
-  
+
   return self;
 }
 
 #pragma mark UIViewController
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
   [super viewDidLoad];
-
-  UILabel *label = [[UILabel alloc] init];
-  self.navigationItem.titleView = label;
-
-  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:self.book
-                                                        delegate:self];
-  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry]
-                               stateForIdentifier:self.book.identifier];
   [self.view addSubview:self.bookDetailView];
   [self.bookDetailView autoPinEdgesToSuperviewEdges];
 }
@@ -212,6 +210,8 @@
   [self.bookDetailView updateFonts];
 }
 
+// HACK ALERT: in the current usage in the app, this method MUST present
+// the `viewController` synchronously!
 - (void)presentFromViewController:(UIViewController *)viewController{
   NSUInteger index = [[NYPLRootTabBarController sharedController] selectedIndex];
 

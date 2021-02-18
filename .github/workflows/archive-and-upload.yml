@@ -68,6 +68,11 @@ jobs:
         run: ./scripts/xcode-export-adhoc.sh simplye
         env:
           BUILD_CONTEXT: ci
+      - name: Upload to Firebase
+        run: ./scripts/firebase-upload.sh simplye
+        env:
+          BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Upload to iOS-binaries
         run: ./scripts/ios-binaries-upload.sh simplye
         env:
@@ -78,11 +83,6 @@ jobs:
         run: ./scripts/xcode-export-appstore.sh simplye
         env:
           BUILD_CONTEXT: ci
-      - name: Upload to Firebase
-        run: ./scripts/firebase-upload.sh simplye
-        env:
-          BUILD_CONTEXT: ci
-          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Upload to TestFlight
         if: startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/testflight-upload.sh simplye
