@@ -43,15 +43,14 @@ cd Simplified-iOS
 
 ## Building Dependencies Individually
 
-After bootstrapping, it's unlikely you'll need to do that again, because the DRM dependencies very rarely change. 
+Unless the DRM dependencies change (which is very seldom) you shouldn't need to run the `bootstrap-drm.sh` script more than once.
 
-More common is the case of needing to update/rebuild the 3rd party dependencies managed by Carthage. To that end (and more), the `scripts` directory contains a number of scripts to rebuild them and perform other build/setup tasks from the command line, such as archiving and exporting. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
-
-For instance, to build all 3rd party dependencies minus DRM:
+Other 3rd party dependencies are managed via Carthage and a few git submodules. To rebuild them you can use the following idempotent script:
 ```bash
+cd Simplified-iOS #repo root
 ./scripts/build-3rd-party-dependencies.sh
 ```
-Both scripts must be run from the Simplified-iOS repo root.
+The `scripts` directory contains a number of other scripts to build dependencies more granularly and also to build/archive/test the app from the command line. These scripts are the same used by our CI system. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
 
 ## Building for Readium 2 Integration
 
@@ -65,19 +64,16 @@ git clone https://github.com/readium/r2-streamer-swift
 git clone https://github.com/readium/r2-navigator-swift
 git clone https://github.com/readium/r2-lcp-swift
 ```
-The first 2 repos are patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM and LCP DRM support in Readium 2.
-
-Then use the `feature/readium2` branch and rebuild the dependencies. This will take longer than on `develop`, because there are more Carthage dependencies to build and keep in sync:
+Then rebuild the dependencies:
 ```bash
 cd Simplified-iOS
-git checkout feature/readium2
 ./scripts/build-carthage-R2-integration.sh
 ```
 Finally, open `SimplifiedR2.workspace` and use the `SimplyE-R2dev` target to build the app.
 
 # Building Secondary Targets
 
-The Xcode project contains 2 additional targets beside the main one referenced earlier and the unit tests:
+The Xcode project contains 2 additional targets beside the ones referenced earlier:
 
 - **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace. It requires DRM.
 - **Open eBooks**: This is an app primarily targeted toward the education space. It requires DRM.
@@ -97,11 +93,11 @@ Questions, suggestions, and general discussion occurs via Slack: Email
 
 `develop` is the main development branch.
 
-Release branch names follow the convention: `release/<appname>/<version>`. For example, `release/simplye/3.7.0`.
+Release branch names follow the convention: `release/simplye/<version>` or `release/openebooks/<version>`. For example, `release/simplye/3.7.0`.
 
-Feature branch names (for feature whose development is a month or more): `feature/<feature-name>`, e.g. `feature/readium2`.
+Feature branch names (for features whose development is a month or more): `feature/<feature-name>`, e.g. `feature/my-new-screen`.
 
-Continuous integration is enabled on push events on `develop`, release and feature branches, archiving and uploading a device build of SimplyE to [iOS-binaries](https://github.com/NYPL-Simplified/iOS-binaries). Commits on release branches also send the same build to TestFlight.
+Continuous integration is enabled on push events on `develop`, release and feature branches. SimplyE device builds are uploaded to [iOS-binaries](https://github.com/NYPL-Simplified/iOS-binaries). Commits on release branches also send the same build to TestFlight.
 
 # License
 
