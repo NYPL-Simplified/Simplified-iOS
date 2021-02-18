@@ -34,10 +34,16 @@
   if(!book) {
     @throw NSInvalidArgumentException;
   }
-  
+
   self.book = book;
-  
+
   self.title = book.title;
+  UILabel *label = [[UILabel alloc] init];
+  self.navigationItem.titleView = label;
+  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:self.book
+                                                        delegate:self];
+  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry]
+                               stateForIdentifier:self.book.identifier];
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
@@ -63,23 +69,15 @@
                                            selector:@selector(didCacheProblemDocument)
                                                name:NSNotification.NYPLProblemDocumentWasCached
                                              object:nil];
-  
+
   return self;
 }
 
 #pragma mark UIViewController
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
   [super viewDidLoad];
-
-  UILabel *label = [[UILabel alloc] init];
-  self.navigationItem.titleView = label;
-
-  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:self.book
-                                                        delegate:self];
-  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry]
-                               stateForIdentifier:self.book.identifier];
   [self.view addSubview:self.bookDetailView];
   [self.bookDetailView autoPinEdgesToSuperviewEdges];
 }
@@ -212,6 +210,8 @@
   [self.bookDetailView updateFonts];
 }
 
+// HACK ALERT: in the current usage in the app, this method MUST present
+// the `viewController` synchronously!
 - (void)presentFromViewController:(UIViewController *)viewController{
   NSUInteger index = [[NYPLRootTabBarController sharedController] selectedIndex];
 
@@ -281,22 +281,26 @@
 
 - (void)myBooksDidChange
 {
-  __auto_type myBooks = [NYPLMyBooksDownloadCenter sharedDownloadCenter];
-  __auto_type bookID = self.book.identifier;
-  NYPLMyBooksDownloadRightsManagement rights = [myBooks downloadInfoForBookIdentifier:bookID].rightsManagement;
-  self.bookDetailView.downloadProgress = [myBooks downloadProgressForBookIdentifier:bookID];
-  self.bookDetailView.downloadStarted = (rights != NYPLMyBooksDownloadRightsManagementUnknown);
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    __auto_type myBooks = [NYPLMyBooksDownloadCenter sharedDownloadCenter];
+    __auto_type bookID = self.book.identifier;
+    NYPLMyBooksDownloadRightsManagement rights = [myBooks downloadInfoForBookIdentifier:bookID].rightsManagement;
+    self.bookDetailView.downloadProgress = [myBooks downloadProgressForBookIdentifier:bookID];
+    self.bookDetailView.downloadStarted = (rights != NYPLMyBooksDownloadRightsManagementUnknown);
+  }];
 }
 
 - (void)bookRegistryDidChange
 {
-  NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
-  NYPLBook *newBook = [registry bookForIdentifier:self.book.identifier];
-  if(newBook) {
-    self.book = newBook;
-    self.bookDetailView.book = newBook;
-  }
-  self.bookDetailView.state = [registry stateForIdentifier:self.book.identifier];
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
+    NYPLBook *newBook = [registry bookForIdentifier:self.book.identifier];
+    if(newBook) {
+      self.book = newBook;
+      self.bookDetailView.book = newBook;
+    }
+    self.bookDetailView.state = [registry stateForIdentifier:self.book.identifier];
+  }];
 }
 
 @end
