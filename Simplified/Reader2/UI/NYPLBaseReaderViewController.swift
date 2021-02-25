@@ -365,11 +365,14 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-    if shouldRestoreLocalReadingProgress {
-      restoreReadPosition()
-    } else {
+    Log.debug(#function, "readPos BEFORE=\(String(describing: book.progressionLocator))")
+    Log.info(#function, "#### new locator=\(locator)")
+//    if shouldRestoreLocalReadingProgress {
+//      self.shouldRestoreLocalReadingProgress = false
+//    } else {
       bookmarksBusinessLogic.storeReadPosition(locator: locator)
-    }
+      Log.debug(#function, "readPos AFTER=\(String(describing: book.progressionLocator))")
+//    }
 
     positionLabel.text = {
       var chapterTitle = ""

@@ -40,7 +40,12 @@ extension NYPLBook {
 
   var progressionLocator: Locator? {
     // TODO: SIMPLY-2609
-    return nil
+    // refactor: we shouldn't implicitly depend on NYPLBookRegistry
+    let lastSavedLocation = NYPLBookRegistry.shared().location(forIdentifier: identifier)
+    let locator = lastSavedLocation?.convertToLocator()
+
+    Log.info(#function, "restoring locator: \(String(describing: locator))")
+    return locator
   }
 }
 
