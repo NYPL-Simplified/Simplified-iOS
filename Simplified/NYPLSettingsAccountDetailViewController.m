@@ -543,7 +543,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       
       if (!NYPLSettings.shared.userPresentedAgeCheck) {
         __weak NYPLSettingsAccountDetailViewController *weakSelf = self;
-        [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL aboveAgeLimit) {
+        [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirement:^(BOOL aboveAgeLimit) {
           [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: @"CheckedCircle"]];
             weakSelf.selectedAccount.details.userAboveAgeLimit = aboveAgeLimit;

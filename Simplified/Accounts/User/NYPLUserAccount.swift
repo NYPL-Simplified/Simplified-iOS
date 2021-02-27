@@ -91,7 +91,7 @@ private enum StorageKey: String {
         }
 
         if self.needsAgeCheck {
-          NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { [weak self] meetsAgeRequirement in
+          AccountsManager.shared.ageCheck.verifyCurrentAccountAgeRequirement { [weak self] meetsAgeRequirement in
             DispatchQueue.main.async {
               mainFeed = self?.authDefinition?.coppaURL(isOfAge: meetsAgeRequirement)
               resolveFn()

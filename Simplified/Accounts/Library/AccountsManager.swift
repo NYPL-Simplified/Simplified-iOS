@@ -198,9 +198,9 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       // changing the `accountsSets` dictionary will also change `currentAccount`
       Log.debug(#function, "hadAccount=\(hadAccount) currentAccountID=\(currentAccountId ?? "N/A") currentAcct=\(String(describing: currentAccount))")
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { (success) in
+        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { [weak self] (success) in
           DispatchQueue.main.async {
-            var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
+            var mainFeed = URL(string: self?.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
               Log.debug(#function, "mainFeedURL=\(String(describing: mainFeed))")
               NYPLSettings.shared.accountMainFeedURL = mainFeed
@@ -214,8 +214,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
             // currently we do support multiple auth methods, and age check is dependant on which of them does user select
             // there is a logic in NYPLUserAcccount authDefinition setter to perform an age check, but it wasn't tested
             // most probably you can delete this check from here
-            if self.currentAccount?.details?.needsAgeCheck ?? false {
-              NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { [weak self] meetsAgeRequirement in
+            if self?.currentAccount?.details?.needsAgeCheck ?? false {
+              self?.ageCheck.verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
                 DispatchQueue.main.async {
                   mainFeed = self?.currentAccount?.details?.defaultAuth?.coppaURL(isOfAge: meetsAgeRequirement)
                   resolveFn()
