@@ -538,26 +538,24 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   
   switch(cellKind) {
     case CellKindAgeCheck: {
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      if (self.selectedAccount.details.userAboveAgeLimit == YES) {
-        [self confirmAgeChange:^(BOOL under13) {
-          if (under13) {
-            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-            self.selectedAccount.details.userAboveAgeLimit = NO;
-            //Delete Books in My Books
-            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
-            [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
+      
+      if (!NYPLSettings.shared.userPresentedAgeCheck) {
+        __weak NYPLSettingsAccountDetailViewController *weakSelf = self;
+        [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL aboveAgeLimit) {
+          [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: @"CheckedCircle"]];
+            weakSelf.selectedAccount.details.userAboveAgeLimit = aboveAgeLimit;
+            if (!aboveAgeLimit) {
+              [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:weakSelf.selectedAccountId];
+              [[NYPLBookRegistry sharedRegistry] reset:weakSelf.selectedAccountId];
+            }
             NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
             [catalog popToRootViewControllerAnimated:NO];
             [catalog updateFeedAndRegistryOnAccountChange];
-          }
+          }];
         }];
-      } else {
-        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        self.selectedAccount.details.userAboveAgeLimit = YES;
-        NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-        [catalog popToRootViewControllerAnimated:NO];
-        [catalog updateFeedAndRegistryOnAccountChange];
       }
       break;
     }
@@ -918,16 +916,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
       
-      UIImageView *accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:(self.selectedAccount.details.userAboveAgeLimit ? @"CheckboxOn" : @"CheckboxOff")]];
+      UIImageView *accessoryView = NYPLSettings.shared.userPresentedAgeCheck ? [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckedCircle"]] : nil;
       accessoryView.image = [accessoryView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-      accessoryView.tintColor = [UIColor defaultLabelColor];
+      accessoryView.tintColor = [UIColor systemGreenColor];
       self.ageCheckCell.accessoryView = accessoryView;
-      
-      self.ageCheckCell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.ageCheckCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.ageCheckCell.textLabel.text = NSLocalizedString(@"I am 13 years of age or older.",
-                                                           @"Statement that confirms if a user meets the age requirement to download books");
-      self.ageCheckCell.textLabel.numberOfLines = 2;
+      self.ageCheckCell.selectionStyle = NYPLSettings.shared.userPresentedAgeCheck ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleDefault;
+      self.ageCheckCell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+      self.ageCheckCell.textLabel.text = NSLocalizedString(@"Age Verification",
+                                                           @"Statement that confirms if a user completed the age verification");
       return self.ageCheckCell;
     }
     case CellKindSyncButton: {

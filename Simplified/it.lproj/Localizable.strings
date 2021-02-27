@@ -181,12 +181,17 @@
 "Authentication Required" = "Autenticazione necessaria";
 "Please sign in to use this functionality." = "Accedi con uno dei meccanismi di identificazione per poter usare questa funzionalità.";
 
+// Age Check
+"Age Verification" = "Verifica dell'età";
+"Please enter your birth year" = "Per favore inserisci il tuo anno di nascita";
+"Done" = "Finito";
+"Next" = "Continua";
+
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
 "Add Library" = "Aggiungi Biblioteca";
 "Report an Issue" = "Riferisci un problema";
 "Show Barcode" = "Mostra il codice a barre";
 "Hide Barcode" = "Nascondi il codice a barre";
-"I am 13 years of age or older." = "Ho almeno 13 anni";
 "Don't have a library card?" = "Non hai una tessera?";
 "Sync Bookmarks" = "Sincronizza i segnalibri";
 "Save your reading position and bookmarks to all your other devices." = "Salva la posizione di lettura e i segnalibri su tutti i tuoi altri dispositivi.";

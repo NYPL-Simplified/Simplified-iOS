@@ -25,6 +25,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   let NYPLAccountUUID = AccountsManager.NYPLAccountUUIDs[0]
 
   static let shared = AccountsManager()
+  
+  let ageCheck: NYPLAgeCheckVerification
 
   // For Objective-C classes
   class func sharedInstance() -> AccountsManager {
@@ -99,7 +101,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
   private override init() {
     self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
-
+    self.ageCheck = NYPLAgeCheck()
+    
     super.init()
 
     #if OPENEBOOKS
@@ -212,9 +215,9 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
             // there is a logic in NYPLUserAcccount authDefinition setter to perform an age check, but it wasn't tested
             // most probably you can delete this check from here
             if self.currentAccount?.details?.needsAgeCheck ?? false {
-              NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
+              NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { [weak self] meetsAgeRequirement in
                 DispatchQueue.main.async {
-                  mainFeed = self.currentAccount?.details?.defaultAuth?.coppaURL(isOfAge: meetsAgeRequirement)
+                  mainFeed = self?.currentAccount?.details?.defaultAuth?.coppaURL(isOfAge: meetsAgeRequirement)
                   resolveFn()
                 }
               }

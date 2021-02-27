@@ -1,0 +1,194 @@
+//
+//  NYPLAgeCheckViewController.swift
+//  Simplified
+//
+//  Created by Ernest Fan on 2021-02-22.
+//  Copyright © 2021 NYPL Labs. All rights reserved.
+//
+
+import UIKit
+
+class NYPLAgeCheckViewController: UIViewController {
+
+  // Constants
+  let textFieldHeight: CGFloat = 40.0
+  let minYear = 1900
+  let currentYear = Calendar.current.component(.year, from: Date())
+  let birthYearList: [Int]
+  
+  var birthYearSelected = 0
+  var ageCheckCompleted = false
+  
+  weak var completionDelegate: NYPLAgeCheckCompletionDelegate?
+  
+  init(completionDelegate: NYPLAgeCheckCompletionDelegate) {
+    self.completionDelegate = completionDelegate
+    
+    birthYearList = Array(minYear...currentYear)
+
+    super.init(nibName: nil, bundle: nil)
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    self.setupView()
+  }
+  
+  // We need to fail the age check because user can swipe down to dismiss the view controller in iOS 13+
+  deinit {
+    if !ageCheckCompleted {
+      completionDelegate?.ageCheckFailed()
+    }
+  }
+  
+  @objc func completeAgeCheck() {
+    guard birthYearSelected >= minYear && birthYearSelected <= currentYear else {
+      return
+    }
+    
+    completionDelegate?.ageCheckCompleted(birthYearSelected)
+    ageCheckCompleted = true
+    dismiss(animated: true, completion: nil)
+  }
+  
+  // MARK: - UI
+  
+  func updateBarButton() {
+    rightBarButtonItem.isEnabled = birthYearSelected >= minYear && birthYearSelected <= currentYear
+  }
+  
+  @objc func hidePickerView() {
+    self.view.endEditing(true)
+  }
+  
+  func setupView() {
+    self.title = NSLocalizedString("Age Verification", comment: "Title for Age Verification")
+    
+    if #available(iOS 13.0, *) {
+      view.backgroundColor = UIColor.systemGray6
+    } else {
+      view.backgroundColor = .white
+    }
+    
+    navigationItem.setRightBarButton(rightBarButtonItem, animated: true)
+    
+    inputTextField.translatesAutoresizingMaskIntoConstraints = false
+    titleLabel.translatesAutoresizingMaskIntoConstraints = false
+    
+    view.addSubview(inputTextField)
+    view.addSubview(titleLabel)
+    
+    inputTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    inputTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    inputTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50).isActive = true
+    inputTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50).isActive = true
+    inputTextField.heightAnchor.constraint(equalToConstant: textFieldHeight).isActive = true
+    view.bringSubviewToFront(inputTextField)
+    
+    titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    titleLabel.bottomAnchor.constraint(equalTo: view.centerYAnchor, constant: -30).isActive = true
+    titleLabel.widthAnchor.constraint(equalTo: inputTextField.widthAnchor).isActive = true
+    titleLabel.heightAnchor.constraint(equalToConstant: textFieldHeight).isActive = true
+    view.bringSubviewToFront(titleLabel)
+  }
+  
+  // MARK: - UI Components
+  
+  let titleLabel: UILabel = {
+    let label = UILabel()
+    label.text = NSLocalizedString("Please enter your birth year", comment: "Caption for asking user to enter their birth year")
+    label.textAlignment = .center
+    label.font = UIFont.customFont(forTextStyle: .headline)
+    return label
+  }()
+  
+  lazy var pickerView: UIPickerView = {
+    let view = UIPickerView()
+    view.dataSource = self
+    view.delegate = self
+    return view
+  }()
+  
+  lazy var inputTextField: UITextField = {
+    let textfield = UITextField()
+    textfield.text = ""
+    
+    textfield.delegate = self
+
+    // Input View
+    let toolbar = UIToolbar()
+    toolbar.sizeToFit()
+    let doneButton = UIBarButtonItem(title: NSLocalizedString("Done", comment: "Button title for hiding picker view"), style: .plain, target: self, action: #selector(hidePickerView))
+    let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+
+    toolbar.setItems([spaceButton, doneButton], animated: false)
+
+    textfield.inputAccessoryView = toolbar
+    textfield.inputView = pickerView
+    
+    // Styling
+    let placeHolderString = NSLocalizedString("Select Year", comment: "Placeholder for birth year textfield")
+    if #available(iOS 13.0, *) {
+      textfield.attributedPlaceholder = NSAttributedString(string: placeHolderString, attributes: [NSAttributedString.Key.foregroundColor: UIColor.label])
+      textfield.backgroundColor = .systemBackground
+      textfield.layer.borderColor = UIColor.separator.cgColor
+    } else {
+      textfield.backgroundColor = .white
+      textfield.attributedPlaceholder = NSAttributedString(string: placeHolderString, attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkText])
+      textfield.layer.borderColor = UIColor.darkGray.cgColor
+    }
+    
+    textfield.layer.borderWidth = 0.5
+    
+    textfield.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textFieldHeight))
+    textfield.rightView = UIImageView(image: UIImage(named: "ArrowDown"))
+    textfield.leftViewMode = .always
+    textfield.rightViewMode = .always
+    
+    return textfield
+  }()
+  
+  lazy var rightBarButtonItem: UIBarButtonItem = {
+    let item = UIBarButtonItem(title: NSLocalizedString("Next", comment: "Button title for completing age verification"), style: .plain, target: self, action: #selector(completeAgeCheck))
+    item.tintColor = .systemBlue
+    item.isEnabled = false
+    return item
+  }()
+}
+
+// MARK: - UITextFieldDelegate
+
+extension NYPLAgeCheckViewController: UITextFieldDelegate {
+  // Handle user's input by physical keyboard
+  func textFieldDidChangeSelection(_ textField: UITextField) {
+    birthYearSelected = Int(textField.text ?? "") ?? 0
+    updateBarButton()
+  }
+}
+
+// MARK: - UIPickerViewDelegate/Datasource
+
+extension NYPLAgeCheckViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+  func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    return 1
+  }
+  
+  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    return birthYearList.count
+  }
+  
+  func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    return "\(birthYearList[row])"
+  }
+  
+  func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    inputTextField.text = "\(birthYearList[row])"
+    birthYearSelected = birthYearList[row]
+    updateBarButton()
+  }
+}
