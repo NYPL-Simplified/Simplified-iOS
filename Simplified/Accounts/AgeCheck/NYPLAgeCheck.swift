@@ -1,6 +1,12 @@
 import Foundation
 
-protocol NYPLAgeCheckCompletionDelegate: class {
+protocol NYPLAgeCheckDelegate: class {
+  var minYear : Int { get }
+  var currentYear : Int { get }
+  var birthYearList : [Int] { get }
+  
+  func isValid(birthYear: Int) -> Bool
+  
   func ageCheckCompleted(_ birthYear: Int)
   func ageCheckFailed()
 }
@@ -9,20 +15,20 @@ protocol NYPLAgeCheckCompletionDelegate: class {
   func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
 }
 
-@objcMembers final class NYPLAgeCheck : NSObject, NYPLAgeCheckCompletionDelegate, NYPLAgeCheckVerification {
-  // Static methods and vars
-  static let sharedInstance = NYPLAgeCheck()
-
-  @objc class func shared() -> NYPLAgeCheck
-  {
-    return NYPLAgeCheck.sharedInstance
-  }
-  
+@objcMembers final class NYPLAgeCheck : NSObject, NYPLAgeCheckDelegate, NYPLAgeCheckVerification {
 
   // Members
   let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).ageCheck")
   var handlerList = [((Bool) -> ())]()
   var isPresenting = false
+  
+  var minYear: Int = 1900
+  
+  var currentYear: Int = Calendar.current.component(.year, from: Date())
+  
+  var birthYearList: [Int] {
+    return Array(minYear...currentYear)
+  }
 
   func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
   {
@@ -66,10 +72,14 @@ protocol NYPLAgeCheckCompletionDelegate: class {
   
   fileprivate func presentAgeVerificationView() {
     DispatchQueue.main.async {
-      let vc = NYPLAgeCheckViewController(completionDelegate: self)
+      let vc = NYPLAgeCheckViewController(ageCheckDelegate: self)
       let navigationVC = UINavigationController(rootViewController: vc)
-      NYPLRootTabBarController.shared()?.safelyPresentViewController(navigationVC, animated: true, completion: nil)
+      NYPLPresentationUtils.safelyPresent(navigationVC)
     }
+  }
+  
+  func isValid(birthYear: Int) -> Bool {
+    return birthYear >= minYear && birthYear <= currentYear
   }
   
   func ageCheckCompleted(_ birthYear: Int) {
@@ -77,19 +87,19 @@ protocol NYPLAgeCheckCompletionDelegate: class {
     NYPLSettings.shared.userPresentedAgeCheck = true
     self.isPresenting = false
     
-    self.serialQueue.async {
-      for handler in self.handlerList {
+    self.serialQueue.async { [weak self] in
+      for handler in self?.handlerList ?? [] {
         handler(aboveAgeLimit)
       }
-      self.handlerList.removeAll()
+      self?.handlerList.removeAll()
     }
   }
   
   func ageCheckFailed() {
     self.isPresenting = false
     NYPLSettings.shared.userPresentedAgeCheck = false
-    self.serialQueue.async {
-      self.handlerList.removeAll()
+    self.serialQueue.async { [weak self] in
+      self?.handlerList.removeAll()
     }
   }
 }

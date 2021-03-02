@@ -12,20 +12,15 @@ class NYPLAgeCheckViewController: UIViewController {
 
   // Constants
   let textFieldHeight: CGFloat = 40.0
-  let minYear = 1900
-  let currentYear = Calendar.current.component(.year, from: Date())
-  let birthYearList: [Int]
   
   var birthYearSelected = 0
   var ageCheckCompleted = false
   
-  weak var completionDelegate: NYPLAgeCheckCompletionDelegate?
+  weak var ageCheckDelegate: NYPLAgeCheckDelegate?
   
-  init(completionDelegate: NYPLAgeCheckCompletionDelegate) {
-    self.completionDelegate = completionDelegate
+  init(ageCheckDelegate: NYPLAgeCheckDelegate) {
+    self.ageCheckDelegate = ageCheckDelegate
     
-    birthYearList = Array(minYear...currentYear)
-
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -42,16 +37,16 @@ class NYPLAgeCheckViewController: UIViewController {
   // We need to fail the age check because user can swipe down to dismiss the view controller in iOS 13+
   deinit {
     if !ageCheckCompleted {
-      completionDelegate?.ageCheckFailed()
+      ageCheckDelegate?.ageCheckFailed()
     }
   }
   
   @objc func completeAgeCheck() {
-    guard birthYearSelected >= minYear && birthYearSelected <= currentYear else {
+    guard ageCheckDelegate?.isValid(birthYear: birthYearSelected) ?? false else {
       return
     }
     
-    completionDelegate?.ageCheckCompleted(birthYearSelected)
+    ageCheckDelegate?.ageCheckCompleted(birthYearSelected)
     ageCheckCompleted = true
     dismiss(animated: true, completion: nil)
   }
@@ -59,7 +54,7 @@ class NYPLAgeCheckViewController: UIViewController {
   // MARK: - UI
   
   func updateBarButton() {
-    rightBarButtonItem.isEnabled = birthYearSelected >= minYear && birthYearSelected <= currentYear
+    rightBarButtonItem.isEnabled = ageCheckDelegate?.isValid(birthYear: birthYearSelected) ?? false
   }
   
   @objc func hidePickerView() {
@@ -121,7 +116,11 @@ class NYPLAgeCheckViewController: UIViewController {
     textfield.delegate = self
 
     // Input View
-    let toolbar = UIToolbar()
+    // UIToolbar gives an autolayout warning on iOS 13 if initialized by UIToolbar()
+    // Initialize the toolbar with a frame like below fixes this issue
+    // @seealso https://stackoverflow.com/questions/54284029/uitoolbar-with-uibarbuttonitem-layoutconstraint-issue
+    
+    let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 30))
     toolbar.sizeToFit()
     let doneButton = UIBarButtonItem(title: NSLocalizedString("Done", comment: "Button title for hiding picker view"), style: .plain, target: self, action: #selector(hidePickerView))
     let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
@@ -179,16 +178,22 @@ extension NYPLAgeCheckViewController: UIPickerViewDelegate, UIPickerViewDataSour
   }
   
   func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-    return birthYearList.count
+    return ageCheckDelegate?.birthYearList.count ?? 0
   }
   
   func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-    return "\(birthYearList[row])"
+    guard let delegate = ageCheckDelegate else {
+      return ""
+    }
+    return "\(delegate.birthYearList[row])"
   }
   
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-    inputTextField.text = "\(birthYearList[row])"
-    birthYearSelected = birthYearList[row]
+    guard let delegate = ageCheckDelegate else {
+      return
+    }
+    inputTextField.text = "\(delegate.birthYearList[row])"
+    birthYearSelected = delegate.birthYearList[row]
     updateBarButton()
   }
 }

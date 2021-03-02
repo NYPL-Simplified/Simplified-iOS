@@ -2788,13 +2788,13 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
-		17631AE725E4885E006079C4 /* NYPLAgeCheck */ = {
+		17631AE725E4885E006079C4 /* AgeCheck */ = {
 			isa = PBXGroup;
 			children = (
 				E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */,
 				17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */,
 			);
-			path = NYPLAgeCheck;
+			path = AgeCheck;
 			sourceTree = "<group>";
 		};
 		2171AD9F251E37D30003CABA /* LCP */ = {
@@ -3284,7 +3284,7 @@
 		73DE53292525A2AD003E2C56 /* Accounts */ = {
 			isa = PBXGroup;
 			children = (
-				17631AE725E4885E006079C4 /* NYPLAgeCheck */,
+				17631AE725E4885E006079C4 /* AgeCheck */,
 				73DE532E2525A2E1003E2C56 /* Library */,
 				73DE532F2525A2EC003E2C56 /* User */,
 			);
