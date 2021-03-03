@@ -467,17 +467,9 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
     if(record) {
+      [self.coverRegistry removePinnedThumbnailImageForBookIdentifier:book.identifier];
       self.identifiersToRecords[book.identifier] = [[record recordWithBook:book] recordWithState:NYPLBookStateUnregistered];
       [self broadcastChange];
-      // Timer delays removing from identifiersToRecords to give interfaces enough time for update.
-      // NSOperationQueue's addOperationWithBlock doesn't provide enough time between broadcastChange and removeBookForIdentifier,
-      // as the result, cells don't update book information correctly.
-      __weak NYPLBookRegistry *weakSelf = self;
-      [NSTimer scheduledTimerWithTimeInterval:1 repeats:NO block:^(NSTimer * _Nonnull timer __unused) {
-        [weakSelf performSynchronizedWithoutBroadcasting:^{
-          [weakSelf removeBookForIdentifier:book.identifier];
-        }];
-      }];
     }
   }
 }
