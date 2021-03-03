@@ -12,7 +12,11 @@ import Foundation
   var accountMainFeedURL: URL? { get set }
 }
 
-@objcMembers class NYPLSettings: NSObject, NYPLFeedURLProvider {
+@objc protocol NYPLAgeCheckChoiceStorage {
+  var userPresentedAgeCheck: Bool { get set }
+}
+
+@objcMembers class NYPLSettings: NSObject, NYPLFeedURLProvider, NYPLAgeCheckChoiceStorage {
   static let shared = NYPLSettings()
 
   @objc class func sharedSettings() -> NYPLSettings {

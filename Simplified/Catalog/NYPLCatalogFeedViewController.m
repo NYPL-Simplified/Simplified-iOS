@@ -101,7 +101,8 @@
     return nil;
   }
 
-  [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirement:^(BOOL ageAboveLimit) {
+  [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
+                                                                   currentLibraryAccountProvider:[AccountsManager shared] :^(BOOL ageAboveLimit) {
     dispatch_async(dispatch_get_main_queue(), ^{
       NSURL *url;
       if (ageAboveLimit) {

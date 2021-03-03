@@ -101,7 +101,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
   private override init() {
     self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
-    self.ageCheck = NYPLAgeCheck()
+    self.ageCheck = NYPLAgeCheck(ageCheckChoiceStorage: NYPLSettings.shared)
     
     super.init()
 
@@ -215,7 +215,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
             // there is a logic in NYPLUserAcccount authDefinition setter to perform an age check, but it wasn't tested
             // most probably you can delete this check from here
             if self.currentAccount?.details?.needsAgeCheck ?? false {
-              self.ageCheck.verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
+              self.ageCheck.verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccount.sharedAccount(),
+                                                               currentLibraryAccountProvider: self) { meetsAgeRequirement in
                 DispatchQueue.main.async {
                   mainFeed = self.currentAccount?.details?.defaultAuth?.coppaURL(isOfAge: meetsAgeRequirement)
                   resolveFn()

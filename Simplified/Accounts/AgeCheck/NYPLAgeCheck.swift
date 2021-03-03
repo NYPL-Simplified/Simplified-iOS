@@ -12,7 +12,9 @@ protocol NYPLAgeCheckDelegate: class {
 }
 
 @objc protocol NYPLAgeCheckVerification {
-  func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
+  func verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccountProvider,
+                                          currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider,
+                                          _ completion: ((Bool) -> ())?) -> Void
 }
 
 @objcMembers final class NYPLAgeCheck : NSObject, NYPLAgeCheckDelegate, NYPLAgeCheckVerification {
@@ -21,6 +23,7 @@ protocol NYPLAgeCheckDelegate: class {
   let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).ageCheck")
   var handlerList = [((Bool) -> ())]()
   var isPresenting = false
+  let ageCheckChoiceStorage: NYPLAgeCheckChoiceStorage
   
   var minYear: Int = 1900
   
@@ -30,21 +33,28 @@ protocol NYPLAgeCheckDelegate: class {
     return Array(minYear...currentYear)
   }
 
-  func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
-  {
+  init(ageCheckChoiceStorage: NYPLAgeCheckChoiceStorage) {
+    self.ageCheckChoiceStorage = ageCheckChoiceStorage
+    
+    super.init()
+  }
+  
+  func verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccountProvider,
+                                          currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider,
+                                          _ completion: ((Bool) -> ())?) {
     serialQueue.async {
-      let userAccount = NYPLUserAccount.sharedAccount()
-      guard let accountDetails = AccountsManager.shared.currentAccount?.details else {
+      
+      guard let accountDetails = currentLibraryAccountProvider.currentAccount?.details else {
         completion?(false)
         return
       }
       
-      if userAccount.needsAuth == true || accountDetails.userAboveAgeLimit {
+      if userAccountProvider.needsAuth == true || accountDetails.userAboveAgeLimit {
         completion?(true)
         return
       }
       
-      if !accountDetails.userAboveAgeLimit && NYPLSettings.shared.userPresentedAgeCheck {
+      if !accountDetails.userAboveAgeLimit && self.ageCheckChoiceStorage.userPresentedAgeCheck {
         completion?(false)
         return
       }
@@ -84,7 +94,7 @@ protocol NYPLAgeCheckDelegate: class {
   
   func ageCheckCompleted(_ birthYear: Int) {
     let aboveAgeLimit = Calendar.current.component(.year, from: Date()) - birthYear > 13
-    NYPLSettings.shared.userPresentedAgeCheck = true
+    ageCheckChoiceStorage.userPresentedAgeCheck = true
     self.isPresenting = false
     
     self.serialQueue.async { [weak self] in
@@ -97,7 +107,7 @@ protocol NYPLAgeCheckDelegate: class {
   
   func ageCheckFailed() {
     self.isPresenting = false
-    NYPLSettings.shared.userPresentedAgeCheck = false
+    ageCheckChoiceStorage.userPresentedAgeCheck = false
     self.serialQueue.async { [weak self] in
       self?.handlerList.removeAll()
     }
