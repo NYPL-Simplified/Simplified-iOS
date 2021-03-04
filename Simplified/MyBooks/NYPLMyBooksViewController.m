@@ -92,7 +92,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(bookRegistryDidChange)
-   name:NYPLBookRegistryDidChangeNotification
+   name:NSNotification.NYPLBookRegistryDidChange
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
@@ -369,7 +369,7 @@ OK:
     if([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
-      [NYPLAccountSignInViewController requestCredentialsUsingExisting:NO completionHandler:nil];
+      [NYPLAccountSignInViewController requestCredentialsWithCompletion:nil];
       [self.refreshControl endRefreshing];
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }

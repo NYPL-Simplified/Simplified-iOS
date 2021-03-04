@@ -1,0 +1,20 @@
+default_platform(:ios)
+
+platform :ios do
+  lane :fetch_install_certs do
+    cert(
+      keychain_path: ENV['KEYCHAIN_PATH'],
+      generate_apple_certs: "false"
+    )
+  end
+
+  lane :fetch_install_provisioning do
+    sigh(
+      app_identifier: ENV['APP_BUNDLE_ID']
+    )
+    sigh(
+      app_identifier: ENV['APP_BUNDLE_ID'],
+      adhoc: "true"
+    )
+  end
+end

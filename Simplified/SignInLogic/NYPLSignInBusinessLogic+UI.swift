@@ -21,12 +21,9 @@ extension NYPLSignInBusinessLogic {
   ///   - error: The error encountered during sign-in, if any.
   ///   - errorMessage: Error message to display, taking priority over `error`.
   ///   This can be a localization key.
-  ///   - barcode: The new barcode, if available.
-  ///   - pin: The new PIN, if barcode is provided.
-  ///   - cookies: Cookies for SAML authentication.
   func finalizeSignIn(forDRMAuthorization drmSuccess: Bool,
-                      error: Error?,
-                      errorMessage: String?) {
+                      error: Error? = nil,
+                      errorMessage: String? = nil) {
     NYPLMainThreadRun.asyncIfNeeded {
       defer {
         self.uiDelegate?.businessLogicDidCompleteSignIn(self)
@@ -54,14 +51,18 @@ extension NYPLSignInBusinessLogic {
       // no need to force a login, as we just logged in successfully
       self.ignoreSignedInState = false
 
-      if let completionHandler = self.completionHandler {
-        self.completionHandler = nil
-        if self.isLoggingInAfterSignUp {
-          completionHandler()
-        } else {
+      let completionHandler = self.refreshAuthCompletion
+      self.refreshAuthCompletion = nil
+
+      if !self.isLoggingInAfterSignUp, let vc = self.uiDelegate as? UIViewController {
+        // don't dismiss anything if the vc is not even on the view stack
+        if vc.view.superview != nil || vc.presentingViewController != nil {
           self.uiDelegate?.dismiss(animated: true, completion: completionHandler)
+          return
         }
       }
+
+      completionHandler?()
     }
   }
 

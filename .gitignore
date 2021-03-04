@@ -9,6 +9,7 @@ Build
 adobe-rmsdk
 **/ReaderClientCert.sig
 **/APIKeys.swift
-Carthage
+Carthage*
 **/GoogleService-Info.plist
 **/NYPLSecrets.swift
+fastlane/report.xml

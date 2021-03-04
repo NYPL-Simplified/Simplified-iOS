@@ -120,8 +120,7 @@ class OPDS2SamlIDP: NSObject, Codable {
       return authType == .saml
     }
 
-    /// secured catalog would require user to log in prior to accessing it
-    var isCatalogSecured: Bool {
+    var catalogRequiresAuthentication: Bool {
       // you need an oauth token in order to access catalogs if authentication type is either oauth with intermediary (ex. Clever), or SAML
       return authType == .oauthIntermediary || authType == .saml
     }
@@ -166,7 +165,7 @@ class OPDS2SamlIDP: NSObject, Codable {
   let loansUrl:URL?
   var defaultAuth: Authentication? {
     guard auths.count > 1 else { return auths.first }
-    return auths.first(where: { !$0.isCatalogSecured }) ?? auths.first
+    return auths.first(where: { !$0.catalogRequiresAuthentication }) ?? auths.first
   }
   var needsAgeCheck: Bool {
     // this will tell if any authentication method requires age check
@@ -413,9 +412,9 @@ class OPDS2SamlIDP: NSObject, Codable {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       NYPLErrorLogger.logError(
         withCode: .noURL,
-        summary: "Authentication Document Load Error",
-        message: "Failed to load authentication document because its URL is invalid",
-        metadata: ["self.uuid": uuid]
+        summary: "Failed to load authentication document because its URL is invalid",
+        metadata: ["self.uuid": uuid,
+                   "urlString": authenticationDocumentUrl ?? "N/A"]
       )
       completion(false)
       return
@@ -440,11 +439,11 @@ class OPDS2SamlIDP: NSObject, Codable {
           let responseBody = String(data: serverData, encoding: .utf8)
           NYPLErrorLogger.logError(
             withCode: .authDocParseFail,
-            summary: "Authentication Document Load Error",
-            message: "Failed to parse authentication document data obtained from \(url)",
+            summary: "Authentication Document Data Parse Error",
             metadata: [
               "underlyingError": error,
-              "responseBody": responseBody ?? ""
+              "responseBody": responseBody ?? "N/A",
+              "url": url
             ]
           )
           completion(false)
@@ -452,9 +451,8 @@ class OPDS2SamlIDP: NSObject, Codable {
       case .failure(let error, _):
         NYPLErrorLogger.logError(
           withCode: .authDocLoadFail,
-          summary: "Authentication Document Load Error",
-          message: "Request to load authentication document at \(url) failed.",
-          metadata: ["underlyingError": error]
+          summary: "Authentication Document request failed to load",
+          metadata: ["loadError": error, "url": url]
         )
         completion(false)
       }

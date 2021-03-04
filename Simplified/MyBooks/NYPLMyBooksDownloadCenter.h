@@ -1,9 +1,6 @@
 @class NYPLBook;
 @class NYPLMyBooksDownloadInfo;
 
-static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
-  @"NYPLMyBooksDownloadCenterDidChangeNotification";
-
 @interface NYPLMyBooksDownloadCenter : NSObject
 
 + (id)new NS_UNAVAILABLE;

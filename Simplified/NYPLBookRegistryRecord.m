@@ -106,13 +106,11 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
   if (state) {
     self.state = state.integerValue;
   } else {
-    NSString *msg = [NSString stringWithFormat:
-                     @"Received state: %@ during BookRecord init. Input dict=%@",
-                     state, dictionary];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnknownBookState
-                              summary:@"NYPLBookRegistryRecord"
-                              message:msg
-                             metadata:nil];
+                              summary:@"Invalid nil state during BookRegistryRecord init"
+                             metadata:@{
+                               @"Input dict": dictionary ?: @"N/A"
+                             }];
     @throw NSInvalidArgumentException;
   }
   

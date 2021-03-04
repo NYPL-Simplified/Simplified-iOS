@@ -1,0 +1,25 @@
+name: Check SimplyE Build Number
+on:
+  push:
+    branches:
+      - develop
+      - release/**
+      - feature/**
+jobs:
+  check-binaries:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v2.3.4
+        with:
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Check Build Number
+        run: ./scripts/ios-binaries-check.sh simplye
+        env:
+          BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Trigger Archive+Upload
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: SimplyE Build
+          token: ${{ secrets.IOS_DEV_CI_PAT }}

@@ -68,7 +68,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
             task.currentRequest.URL.absoluteString,
             challenge.protectionSpace.authenticationMethod);
 
-    [NYPLBasicAuth authHandlerWithChallenge:challenge completionHandler:completionHandler];
+  NYPLBasicAuth *challenger = [[NYPLBasicAuth alloc] initWithCredentialsProvider:
+                               NYPLUserAccount.sharedAccount];
+  [challenger handleChallenge:challenge completion:completionHandler];
 }
 
 #pragma mark -
@@ -103,9 +105,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                                  summary:NSStringFromClass([self class])
                                  request:req
                                 response:response
-                                 message:@"NYPLSession error"
                                 metadata:@{
-                                  @"receivedData": dataString ?: @""
+                                  @"receivedData": dataString ?: @"N/A",
+                                  @"networking context": @"NYPLSession error"
                                 }];
         handler(nil, response, error);
         return;

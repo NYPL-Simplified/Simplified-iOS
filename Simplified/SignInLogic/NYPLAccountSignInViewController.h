@@ -12,37 +12,38 @@
 
 @property(readonly) NYPLSignInBusinessLogic *businessLogic;
 
+/// There are situations where the user appears signed in, but their
+/// credentials are expired. In that case, it is desired to show the
+/// sign-in modal with prefilled yet editable values. This flag provides
+/// a way to do so in conjuction with the @p isSignedIn() function on
+/// the @p NYPLSignInBusinessLogic.
+@property BOOL forceEditability;
+
 /**
  * Presents itself to begin the login process.
  *
+ * It's not recommended to use this api unless the following conditions
+ * are both true:
+ * - you are certain the user is logged out;
+ * - you need to perform some additional customization before presenting the VC.
+ *
+ * In all other cases you should use either the @p NYPLReauthenticator class
+ * or the @p requestCredentialsWithCompletion: method.
+ *
  * @param useExistingCredentials Should the screen be filled with the barcode when available?
- * @param authorizeImmediately Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview.
  * @param completionHandler Called upon successful authentication
  */
-- (void)presentUsingExistingCredentials:(BOOL const)useExistingBarcode
-                   authorizeImmediately:(BOOL)authorizeImmediately
-                      completionHandler:(void (^)(void))completionHandler;
+- (void)presentIfNeededUsingExistingCredentials:(BOOL const)useExistingBarcode
+                              completionHandler:(void (^)(void))completionHandler;
 
 /**
- * Present sign in view controller to begin a login process.
+ * Present sign in view controller to begin the login process.
  *
- * @param useExistingCredentials      Should the screen be filled with barcode and pin when available?
- * @param authorizeImmediately  Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview
- * @param completionHandler Called upon successful authentication.
+ * If unsure whether user is already logged in or not, use
+ * @p NYPLReauthenticator instead.
+ *
+ * @param completion Called upon successful authentication.
  */
-+ (void)requestCredentialsUsingExisting:(BOOL const)useExistingCredentials
-                   authorizeImmediately:(BOOL)authorizeImmediately
-                      completionHandler:(void (^)(void))completionHandler;
-
-// TODO: All calls to this method probably should go through NYPLAccount.
-// The existing barcode may only be used if set in the shared NYPLAccount.
-+ (void)requestCredentialsUsingExisting:(BOOL)useExistingBarcode
-                      completionHandler:(void (^)(void))completionHandler;
-
-// This method is here almost entirely so we can handle a bug that seems to occur
-// when the user updates, where the barcode and pin are entered but accoring to
-// ADEPT the device is not authorized. To be used, the account must have a barcode
-// and pin.
-+ (void)authorizeUsingExistingCredentialsWithCompletionHandler:(void (^)(void))completionHandler;
++ (void)requestCredentialsWithCompletion:(void (^)(void))completion;
 
 @end

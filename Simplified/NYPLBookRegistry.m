@@ -41,7 +41,7 @@ static NSString *const RecordsKey = @"records";
       @throw NSMallocException;
     }
     
-    [sharedRegistry load];
+    [sharedRegistry justLoad];
   });
   
   return sharedRegistry;
@@ -133,7 +133,7 @@ static NSString *const RecordsKey = @"records";
     }
 
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLBookRegistryDidChangeNotification
+     postNotificationName:NSNotification.NYPLBookRegistryDidChange
      object:self];
   }];
 }
@@ -142,14 +142,14 @@ static NSString *const RecordsKey = @"records";
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLBookProcessingDidChangeNotification
+     postNotificationName:NSNotification.NYPLBookProcessingDidChange
      object:self
      userInfo:@{@"identifier": identifier,
                 @"value": @(value)}];
   }];
 }
 
-- (void)load
+- (void)justLoad
 {
   [self loadWithoutBroadcastingForAccount:[AccountsManager sharedInstance].currentAccount.uuid];
   [self broadcastChange];
@@ -259,12 +259,6 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
-- (void)justLoad
-{
-  [self load];
-  [self broadcastChange];
-}
-
 - (void)syncResettingCache:(BOOL)shouldResetCache
          completionHandler:(void (^)(NSDictionary *errorDict))handler
 {
@@ -295,7 +289,6 @@ static NSString *const RecordsKey = @"records";
                                              NYPLUserAccount.sharedAccount.hasCredentials];
           [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeInvalidCredentials
                                     summary:@"Unable to sync loans"
-                                    message:nil
                                    metadata:@{
                                      @"shouldResetCache": @(shouldResetCache),
                                      @"hasCredentials": @(NYPLUserAccount.sharedAccount.hasCredentials),
@@ -330,7 +323,6 @@ static NSString *const RecordsKey = @"records";
         }];
        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeApiCall
                                  summary:@"Unable to fetch loans"
-                                 message:nil
                                 metadata:@{
                                   @"shouldResetCache": @(shouldResetCache),
                                   @"errorDict": error ?: @"N/A"

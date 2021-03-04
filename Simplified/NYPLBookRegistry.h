@@ -6,14 +6,28 @@
 
 typedef NS_ENUM(NSInteger, NYPLBookState);
 
-// This is broadcast whenever the book registry is modified.
-static NSString *const _Nonnull NYPLBookRegistryDidChangeNotification =
-  @"NYPLBookRegistryDidChangeNotification";
+@protocol NYPLBookRegistryProvider <NSObject>
 
-static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
-  @"NYPLBookProcessingDidChangeNotification";
+- (nonnull NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(nonnull NSString *)identifier;
 
-@interface NYPLBookRegistry : NSObject
+- (void)setLocation:(nullable NYPLBookLocation *)location
+      forIdentifier:(nonnull NSString *)identifier;
+
+- (nullable NYPLBookLocation *)locationForIdentifier:(nonnull NSString *)identifier;
+
+- (void)addReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
+             forIdentifier:(nonnull NSString *)identifier;
+  
+- (void)deleteReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
+                forIdentifier:(nonnull NSString *)identifier;
+
+- (void)replaceBookmark:(nonnull NYPLReadiumBookmark *)oldBookmark
+                   with:(nonnull NYPLReadiumBookmark *)newBookmark
+          forIdentifier:(nonnull NSString *)identifier;
+
+@end
+
+@interface NYPLBookRegistry : NSObject <NYPLBookRegistryProvider>
 
 // Returns all registered books.
 @property (atomic, readonly, nonnull) NSArray *allBooks;
@@ -39,7 +53,10 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
 // directory is not guaranteed to exist at the time this method is called.
 - (nullable NSURL *)registryDirectory;
 
-// Saves the registry. This should be called before the application is terminated.
+/**
+ Saves the registry to disk. This should be called before the application
+ is terminated.
+ */
 - (void)save;
 
 - (void)justLoad;
@@ -149,7 +166,10 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 - (void)addReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
              forIdentifier:(nonnull NSString *)identifier;
   
-// Delete bookmark for a book given its identifer
+/**
+ Delete bookmark for a book given its identifer and saves updated registry
+ to disk.
+ */
 - (void)deleteReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
                 forIdentifier:(nonnull NSString *)identifier;
 

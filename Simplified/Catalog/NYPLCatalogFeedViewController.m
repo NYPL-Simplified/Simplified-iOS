@@ -96,8 +96,7 @@
   if (!gatedXML) {
     NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAgeGateElement
-                              summary:NSStringFromClass([self class])
-                              message:@"Data received from Server lacks `gate` element for age-check."
+                              summary:@"Data received from Server lacks `gate` element for age-check."
                              metadata:nil];
     return nil;
   }
@@ -114,8 +113,7 @@
         [remoteVC loadWithURL:url];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                                  summary:NSStringFromClass([self class])
-                                  message:@"Server response for age verification lacks a URL to load."
+                                  summary:@"Server response for age verification lacks a URL to load."
                                  metadata:@{
                                    @"ageAboveLimit": @(ageAboveLimit),
                                    @"gateElementXMLAttributes": gatedXML.attributes,

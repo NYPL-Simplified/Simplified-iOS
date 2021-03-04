@@ -29,8 +29,12 @@ import Foundation
     #endif
     NYPLSettings.shared.useBetaLibraries = sender.isOn
   }
-  
-  // MARK: UIViewController
+
+  func r2SwitchDidChange(sender: UISwitch!) {
+    NYPLSettings.shared.useR2 = sender.isOn
+  }
+
+  // MARK:- UIViewController
   
   override func loadView() {
     self.view = UITableView(frame: CGRect.zero, style: .grouped)
@@ -42,21 +46,22 @@ import Foundation
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
   }
   
-  // MARK: UITableViewDataSource
+  // MARK:- UITableViewDataSource
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return 1
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
-    return 2
+    return 3
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if indexPath.section == 0 {
-      return cellForBetaLibraries()
+    switch indexPath.section {
+    case 0: return cellForBetaLibraries()
+    case 1: return cellForR2Toggle()
+    default: return cellForClearCache()
     }
-    return cellForClearCache()
   }
   
   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -64,36 +69,49 @@ import Foundation
     case 0:
       return "Library Settings"
     case 1:
-      return "Data Management"
+      return "eReader Settings"
     default:
-      return ""
+      return "Data Management"
     }
   }
   
-  func cellForBetaLibraries() -> UITableViewCell {
+  private func cellForBetaLibraries() -> UITableViewCell {
     let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "betaLibraryCell")
     cell.selectionStyle = .none
     cell.textLabel?.text = "Enable test libraries"
-    let betaLibrarySwitch = UISwitch.init()
+    let betaLibrarySwitch = UISwitch()
     betaLibrarySwitch.setOn(NYPLSettings.shared.useBetaLibraries, animated: false)
     betaLibrarySwitch.addTarget(self, action:#selector(librarySwitchDidChange), for:.valueChanged)
     cell.accessoryView = betaLibrarySwitch
     return cell
   }
+
+  private func cellForR2Toggle() -> UITableViewCell {
+    let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "R2ToggleCell")
+    cell.selectionStyle = .none
+    cell.textLabel?.text = "Enable Readium 2"
+    let r2Switch = UISwitch()
+    r2Switch.setOn(NYPLSettings.shared.useR2, animated: false)
+    r2Switch.addTarget(self,
+                       action:#selector(r2SwitchDidChange),
+                       for:.valueChanged)
+    cell.accessoryView = r2Switch
+    return cell
+  }
   
-  func cellForClearCache() -> UITableViewCell {
+  private func cellForClearCache() -> UITableViewCell {
     let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "clearCacheCell")
     cell.selectionStyle = .none
     cell.textLabel?.text = "Clear Cached Data"
     return cell
   }
   
-  // MARK: UITableViewDelegate
+  // MARK:- UITableViewDelegate
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     self.tableView.deselectRow(at: indexPath, animated: true)
     
-    if indexPath.section == 1 {
+    if indexPath.section == 2 {
       AccountsManager.shared.clearCache()
       let alert = NYPLAlertUtils.alert(title: "Data Management", message: "Cache Cleared")
       self.present(alert, animated: true, completion: nil)

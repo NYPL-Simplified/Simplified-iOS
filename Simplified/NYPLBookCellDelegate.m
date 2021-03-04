@@ -1,7 +1,9 @@
 @import MediaPlayer;
 @import NYPLAudiobookToolkit;
 @import PDFRendererProvider;
+#if FEATURE_OVERDRIVE
 @import OverdriveProcessor;
+#endif
 
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBook.h"
@@ -79,20 +81,31 @@
 
 - (void)didSelectReadForBook:(NYPLBook *)book
 { 
-  #if defined(FEATURE_DRM_CONNECTOR)
-    // Try to prevent blank books bug
-    if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID]
-                                           withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) &&
-        ([[NYPLUserAccount sharedAccount] hasCredentials])) {
-      [NYPLAccountSignInViewController authorizeUsingExistingCredentialsWithCompletionHandler:^{
+#if defined(FEATURE_DRM_CONNECTOR)
+  // Try to prevent blank books bug
+
+  NYPLUserAccount *user = [NYPLUserAccount sharedAccount];
+  if ([user hasCredentials]
+      && ![[NYPLADEPT sharedInstance] isUserAuthorized:[user userID]
+                                            withDevice:[user deviceID]]) {
+    // NOTE: This was cut and pasted while refactoring preexisting work:
+    // "This handles a bug that seems to occur when the user updates,
+    // where the barcode and pin are entered but according to ADEPT the device
+    // is not authorized. To be used, the account must have a barcode and pin."
+    NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
+    [reauthenticator authenticateIfNeeded:user
+                 usingExistingCredentials:YES
+                 authenticationCompletion:^{
+      dispatch_async(dispatch_get_main_queue(), ^{
         [self openBook:book];   // with successful DRM activation
-      }];
-    } else {
-      [self openBook:book];
-    }
-  #else
+      });
+    }];
+  } else {
     [self openBook:book];
-  #endif
+  }
+#else
+  [self openBook:book];
+#endif
 }
 
 - (void)openBook:(NYPLBook *)book
@@ -115,15 +128,23 @@
   }
 }
 
-- (void)openEPUB:(NYPLBook *)book {
-  NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
-  [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
-    if (enableSync == YES) {
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-      currentAccount.details.syncPermissionGranted = enableSync;
-    }
-  }];
+- (void)openEPUB:(NYPLBook *)book
+{
+  if (NYPLSettings.shared.useR2) {
+    // R2
+    [[NYPLRootTabBarController sharedController] presentBook:book];
+
+    [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
+      if (enableSync == YES) {
+        Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+        currentAccount.details.syncPermissionGranted = enableSync;
+      }
+    }];
+  } else {
+    // R1
+    NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
+    [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
+  }
 }
 
 - (void)openPDF:(NYPLBook *)book {
@@ -170,15 +191,28 @@
     
   NSMutableDictionary *dict = nil;
     
+#if FEATURE_OVERDRIVE
   if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
     dict = [(NSMutableDictionary *)json mutableCopy];
     dict[@"id"] = book.identifier;
   }
+#endif
+  
+  id<DRMDecryptor> audiobookDrmDecryptor = nil;
+
+#if defined(LCP)
+  if ([LCPAudiobooks canOpenBook:book]) {
+    LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:url];
+    dict = [[lcpAudiobooks contentDictionary] mutableCopy];
+    dict[@"id"] = book.identifier;
+    audiobookDrmDecryptor = lcpAudiobooks;
+  }
+#endif
   
   [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
-      id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
-
+      id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json decryptor:audiobookDrmDecryptor];
+      
       if (!audiobook) {
         if (error) {
           [self presentDRMKeyError:error];
@@ -259,18 +293,17 @@
                      (long)level, message];
 
     if (error) {
-      [NYPLErrorLogger logAudiobookIssue:error
-                                severity:NYPLSeverityError
-                                 message:msg];
-    } else {
-      if (level > LogLevelDebug) {
-        NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:NYPLErrorCodeAudiobookExternalError userInfo:nil];
-
-        NYPLSeverity severity = level == LogLevelInfo ? NYPLSeverityInfo : level == LogLevelWarn ? NYPLSeverityWarning : NYPLSeverityError;
-        [NYPLErrorLogger logAudiobookIssue:error
-                                  severity:severity
-                                   message:msg];
-      }
+      [NYPLErrorLogger logError:error
+                        summary:@"Error registering audiobook callback for logging"
+                       metadata:@{ @"context": msg ?: @"N/A" }];
+    } else if (level > LogLevelDebug) {
+      NSString *logLevel = (level == LogLevelInfo ?
+                            @"info" :
+                            (level == LogLevelWarn ? @"warning" : @"error"));
+      NSString *summary = [NSString stringWithFormat:@"NYPLAudiobookToolkit::AudiobookManager %@", logLevel];
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookExternalError
+                                summary:summary
+                               metadata:@{ @"context": msg ?: @"N/A" }];
     }
   }];
 }
@@ -330,11 +363,12 @@
   UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
   [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 
-  NSString *logMsg = [NSString stringWithFormat:@"bookID: %@; fileURL: %@", book.identifier, url];
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
                             summary:@"Audiobooks: corrupted audiobook"
-                            message:logMsg
-                           metadata:nil];
+                           metadata:@{
+                             @"book": book.loggableDictionary ?: @"N/A",
+                             @"fileURL": url ?: @"N/A"
+                           }];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
@@ -367,11 +401,13 @@
     
   [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:self.book.identifier];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateODAudiobookManifest) name:NYPLMyBooksDownloadCenterDidChangeNotification object:nil];
-    
+#if FEATURE_OVERDRIVE
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateODAudiobookManifest) name:NSNotification.NYPLMyBooksDownloadCenterDidChange object:nil];
+#endif
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
 }
 
+#if FEATURE_OVERDRIVE
 - (void)updateODAudiobookManifest {
   if ([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier] == NYPLBookStateDownloadSuccessful) {
     OverdriveAudiobook *odAudiobook = (OverdriveAudiobook *)self.manager.audiobook;
@@ -399,5 +435,6 @@
     [self.refreshAudiobookLock unlock];
   }
 }
+#endif
 
 @end

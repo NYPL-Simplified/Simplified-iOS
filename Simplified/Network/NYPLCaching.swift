@@ -184,17 +184,42 @@ extension HTTPURLResponse {
 }
 
 //------------------------------------------------------------------------------
+/// The possible strategies for caching for NYPLNetworkExecutor / Responder.
+///
+/// `ephemeral` caching corresponds to `NYPLSessionConfiguration::ephmeral`.
+/// `default` caching corresponds to the "stock" behavior of URLSession in
+/// processing caching headers, caching responses to memory and disk.
+/// `fallback` caching is like `default`, but the executor will attempt to cache
+/// responses even when these would not be cached by URLSession despite having a
+/// sufficient set of caching headers per https://tools.ietf.org/html/rfc7234 --
+/// see `HTTPURLResponse::modifyingCacheHeaders()`.
+enum NYPLCachingStrategy: NSInteger {
+  case ephemeral
+  case `default`
+  case fallback
+}
+
+//------------------------------------------------------------------------------
 class NYPLCaching {
 
   /// Makes a URLSessionConfiguration for standard HTTP requests with in-memory
   /// and disk caching enabled.
-  class func makeURLSessionConfiguration() -> URLSessionConfiguration {
+  /// - Parameter caching: The caching strategy to proces responses with.
+  /// Note that regardless of these caching strategies, the request caching
+  /// policy will always follow the one defined in the request protocol
+  /// implementation.
+  /// - Returns: A configuration with 8 max connections per host.
+  class func makeURLSessionConfiguration(caching: NYPLCachingStrategy) -> URLSessionConfiguration {
+    guard caching != .ephemeral else {
+      return .ephemeral
+    }
     let config = URLSessionConfiguration.default
     config.networkServiceType = .responsiveData
     config.shouldUseExtendedBackgroundIdleMode = true
     config.httpMaximumConnectionsPerHost = 8
     config.httpShouldUsePipelining = true
-
+    config.timeoutIntervalForRequest = 30
+    config.timeoutIntervalForResource = 60
     config.requestCachePolicy = .useProtocolCachePolicy
     config.urlCache = makeCache()
 

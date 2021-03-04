@@ -13,6 +13,8 @@ NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/audioboo
 NSString * const _Nonnull ContentTypeOctetStream = @"application/octet-stream";
 NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.overdrive.circulation.api+json;profile=audiobook";
 NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/json";
+NSString * const _Nonnull ContentTypeReadiumLCP = @"application/vnd.readium.lcp.license.v1.0+json";
+NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip";
 
 @interface NYPLBookAcquisitionPath ()
 
@@ -52,7 +54,9 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/js
       ContentTypeOpenAccessPDF,
       ContentTypeFeedbooksAudiobook,
       ContentTypeOverdriveAudiobook,
-      ContentTypeOctetStream
+      ContentTypeOctetStream,
+      ContentTypeReadiumLCP,
+      ContentTypeAudiobookZip
     ]];
   }
 
@@ -62,7 +66,14 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/js
 + (NSSet<NSString *> *_Nonnull)supportedSubtypesForType:(NSString *)type
 {
   static NSDictionary<NSString *, NSSet<NSString *> *> *subtypesForTypes = nil;
-  
+  /**
+   Subtypes are the supported types of nested and indirect acquisitions.
+   For example:
+   - When we open LCP library, we receive a feed of type ContentTypeOPDSCatalog containing ContentTypeReadiumLCP subtypes in it.
+   - When we tap an LCP-protected book in the app, the app doesn't download the book, but downloads a license file of type ContentTypeReadiumLCP
+    with content subtype of ContentTypeEpubZip if it is a book or ContentTypeAudiobookZip for an audiobook;
+    this file is later fulfilled by LCP library and we get a real epub book or audiobook.
+   */
   if (!subtypesForTypes) {
     subtypesForTypes = @{
       ContentTypeOPDSCatalog: [NSSet setWithArray:@[
@@ -74,7 +85,13 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/js
         ContentTypeOpenAccessAudiobook,
         ContentTypeFeedbooksAudiobook,
         ContentTypeOverdriveAudiobook,
-        ContentTypeOctetStream
+        ContentTypeOctetStream,
+        ContentTypeReadiumLCP,
+        ContentTypeAudiobookZip
+      ]],
+      ContentTypeReadiumLCP: [NSSet setWithArray:@[
+        ContentTypeEpubZip,
+        ContentTypeAudiobookZip
       ]],
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
       ContentTypeBearerToken: [NSSet setWithArray:@[
@@ -94,7 +111,8 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/js
   return [NSSet setWithArray:@[ContentTypeFindaway,
                                ContentTypeOpenAccessAudiobook,
                                ContentTypeFeedbooksAudiobook,
-                               ContentTypeOverdriveAudiobook]];
+                               ContentTypeOverdriveAudiobook,
+                               ContentTypeAudiobookZip ]];
 }
 
 - (BOOL)isEqual:(id const)object

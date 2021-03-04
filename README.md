@@ -1,107 +1,107 @@
+[![SimplyE Build](https://github.com/NYPL-Simplified/Simplified-iOS/workflows/SimplyE%20Build/badge.svg)](https://github.com/NYPL-Simplified/Simplified-iOS/actions?query=workflow%3A%22SimplyE%20Build%22) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+# SimplyE and Open eBooks
+
+This repo contains the client-side code for the New York Public Library's [SimplyE](https://www.nypl.org/books-music-movies/ebookcentral/simplye) and [Open eBooks](https://openebooks.net) apps.
+
+The 2 apps share most of the code base. App-specific source files will have a `SE` / `OE` prefix or suffix, while configuration files reside under the `SimplyE` and `OpenEbooks` directories at the root of the repo. 
+
+Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/releases) in this repo track both apps. However, you won't see any Open eBooks versions before 1.9.0 because historically Open eBooks lived in a separate repo. Releases that lack an app specifier, i.e. any version before v3.6.2, are SimplyE releases.
+
 # System Requirements
 
-- Install the latest Xcode (11.4 or higher) in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install Xcode 11.5 in `/Applications`, open it and make sure to install additional components if it asks you. (We have not upgraded to Xcode 12 yet because of issues related to Carthage.)
 - Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
+
+# Building without Adobe DRM nor Private Repos
+
+```bash
+git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
+cd Simplified-iOS
+git checkout develop
+
+# one-time set-up
+./scripts/setup-repo-nodrm.sh
+
+# idempotent script to rebuild all dependencies
+./scripts/build-3rd-party-dependencies.sh --no-private
+```
+Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
 
 # Building With Adobe DRM
 
-## Building the Application
+## Building the Application from Scratch
 
-01. Contact project lead and ensure you have repo access to all required submodules, including private ones. Also request a copy of the Adobe RMSDK archive, which is currently not on Github, unzip it and place it in a place of your choice.
-02. Then run:
+01. Contact project lead and ensure you have access to all the required private repos.
+02. Then simply run:
 ```bash
 git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
-git clone git@github.com:NYPL-Simplified/Certificates.git
 cd Simplified-iOS
-ln -s <rmsdk_path>/DRM_Connector_Prerelease adobe-rmsdk
-git checkout develop
-git submodule update --init --recursive
+./scripts/bootstrap-drm.sh
 ```
-03. Build dependencies (carthage, OpenSSL, cURL). You can also use this script at any other time if you ever need to rebuild them: it should be idempotent.
-```bash
-./scripts/build-3rd-parties-dependencies.sh
-```
-
-04. Open Simplified.xcodeproj and build the SimplyE target.
-
+03. Open Simplified.xcodeproj and build the `SimplyE` or `Open eBooks` targets.
 
 ## Building Dependencies Individually
 
-To build all Carthage dependencies from scratch you can use the following script. Note that this will wipe the Carthage folder if you already have it:
-```bash
-./scripts/build-carthage.sh
-```
-To run a `carthage update`, use the following script to avoid AudioEngine errors. Note, this will rebuild all Carthage dependencies:
-```bash
-./scripts/carthage-update-simplye.sh
-```
-To build OpenSSL and cURL from scratch, you can use the following script:
-```bash
-./scripts/build-openssl-curl.sh
-```
-Both scripts must be run from the Simplified-iOS repo root.
+Unless the DRM dependencies change (which is very seldom) you shouldn't need to run the `bootstrap-drm.sh` script more than once.
 
-# Building Without Adobe DRM
+Other 3rd party dependencies are managed via Carthage and a few git submodules. To rebuild them you can use the following idempotent script:
+```bash
+cd Simplified-iOS #repo root
+./scripts/build-3rd-party-dependencies.sh
+```
+The `scripts` directory contains a number of other scripts to build dependencies more granularly and also to build/archive/test the app from the command line. These scripts are the same used by our CI system. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
 
-**Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
+## Building for Readium 2 Integration
 
-01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
-02. `cd Simplified-iOS`
-03. `git submodule deinit adept-ios && git rm -rf adept-ios`
-04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
-05. `git submodule update --init --recursive`
-06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. Remove "NYPL-Simplified/NYPLAEToolkit" from `Cartfile` and `Cartfile.resolved`.
-08. `carthage bootstrap --platform ios --use-ssh`
-09. `cp Simplified/AppInfrastructure/APIKeys.swift.example Simplified/AppInfrastructure/APIKeys.swift` and edit accordingly.
-10. `cp Simplified/Accounts/Library/Accounts.json.example Simplified/Accounts/Library/Accounts.json`.
-11. `cp SimplyE/GoogleService-Info.plist.example SimplyE/GoogleService-Info.plist` and edit with you firebase project config.
-12. `cp SimplyE/ReaderClientCert.sig.example SimplyE/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file.
-13. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
-14. `open Simplified.xcodeproj`
-15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
-16. Remove `FEATURE_DRM_CONNECTOR` entries in _Build Settings_ -> _Swift Compiler - Custom Flags_ -> _Active Compilation Conditions_ in project settings
-17. Delete `NYPLAEToolkit.framework`, `AudioEngine.xcframework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
-18. Remove input and output filepaths for  `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
-19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
-20. Build.
+Before working on R2 integration, make sure you can build the app without R2. Follow the steps listed above for building the app with DRM.
+
+For working on integrating R2 into SimplyE, first clone the following frameworks as siblings of `Simplified-iOS` on the file system:
+```bash
+cd Simplified-iOS/..
+git clone https://github.com/NYPL-Simplified/r2-shared-swift
+git clone https://github.com/NYPL-Simplified/r2-streamer-swift
+git clone https://github.com/NYPL-Simplified/r2-navigator-swift
+git clone https://github.com/NYPL-Simplified/r2-lcp-swift
+```
+Then rebuild the dependencies:
+```bash
+cd Simplified-iOS
+./scripts/build-carthage-R2-integration.sh
+```
+Finally, open `SimplifiedR2.workspace` and use the `SimplyE-R2dev` target to build the app.
 
 # Building Secondary Targets
 
-The Xcode project contains 3 additional targets beside the main one referenced earlier:
+The Xcode project contains 2 additional targets beside the ones referenced earlier:
 
-- **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace.
-- **Open eBooks**: This is related to a project currently under development. It is not functional at the moment.
-- **SimplyETests**: Suite of unit tests.
+- **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace. It requires DRM.
+- **Open eBooks**: This is an app primarily targeted toward the education space. It requires DRM.
 
 # Contributing
 
-This codebase follows Google's  [Swift](https://google.github.io/swift/) and [Objective-C](https://google.github.io/styleguide/objcguide.xml) style guides,
-including the use of two-space indentation. More details are available in [our wiki](https://github.com/NYPL-Simplified/Simplified/wiki/Mobile-client-applications#code-style-1).
+This codebase follows Google's [Swift](https://google.github.io/swift/) and [Objective-C](https://google.github.io/styleguide/objcguide.xml) style guides, including the use of two-space indentation. More details are available in [our wiki](https://github.com/NYPL-Simplified/Simplified/wiki/Mobile-client-applications#code-style-1).
 
-The primary services/singletons within the program are as follows:
-
-* `AccountsManager`
-* `NYPLUserAccount`
-* `NYPLBookRegistry`
-* `NYPLKeychain`
-* `NYPLMyBooksDownloadCenter`
-* `NYPLMigrationManager`
-* `NYPLSettings`
-* `NYPLSettingsNYPLProblemDocumentCacheManager`
-
-Most of the above contain appropriate documentation in the header files.
-
-The rest of the program follows Apple's usual pattern of passive views,
+Most of the code follows Apple's usual pattern of passive views,
 relatively passive models, and one-off controllers for integrating everything.
 Immutability is preferred wherever possible.
 
 Questions, suggestions, and general discussion occurs via Slack: Email
 `swans062@umn.edu` for access.
 
+## Branching and CI
+
+`develop` is the main development branch.
+
+Release branch names follow the convention: `release/simplye/<version>` or `release/openebooks/<version>`. For example, `release/simplye/3.7.0`.
+
+Feature branch names (for features whose development is a month or more): `feature/<feature-name>`, e.g. `feature/my-new-screen`.
+
+Continuous integration is enabled on push events on `develop`, release and feature branches. SimplyE device builds are uploaded to [iOS-binaries](https://github.com/NYPL-Simplified/iOS-binaries). Commits on release branches also send the same build to TestFlight.
+
 # License
 
-Copyright © 2015 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2015-2021 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -46,7 +46,7 @@
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(bookRegistryDidChange)
-   name:NYPLBookRegistryDidChangeNotification
+   name:NSNotification.NYPLBookRegistryDidChange
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
@@ -258,7 +258,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     if([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
-      [NYPLAccountSignInViewController requestCredentialsUsingExisting:NO completionHandler:nil];
+      [NYPLAccountSignInViewController requestCredentialsWithCompletion:nil];
       [self.refreshControl endRefreshing];
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }

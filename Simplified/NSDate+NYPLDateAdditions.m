@@ -4,6 +4,11 @@
 
 + (NSDate *)dateWithRFC3339String:(NSString *const)string
 {
+  // sanity check
+  if (string == nil) {
+    return nil;
+  }
+
   static NSDateFormatter *dateFormatter;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -25,6 +30,11 @@
 
 + (NSDate *)dateWithISO8601DateString:(NSString *const)string
 {
+  // sanity check
+  if (string == nil) {
+    return nil;
+  }
+
   NSDate *date;
   NSISO8601DateFormatter *const ISODateFormatter = [[NSISO8601DateFormatter alloc] init];
 

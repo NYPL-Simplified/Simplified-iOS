@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import SimplyE
 
 class NYPLBookCreationTests: XCTestCase {
   var opdsEntry: NYPLOPDSEntry!
@@ -40,6 +41,8 @@ class NYPLBookCreationTests: XCTestCase {
     XCTAssertNotNil(book?.identifier)
     XCTAssertNotNil(book?.title)
     XCTAssertNotNil(book?.updated)
+    XCTAssertNoThrow(book?.loggableShortString())
+    XCTAssertNoThrow(book?.loggableDictionary())
 
     let bookNoUpdatedDate = NYPLBook(dictionary: [
       "acquisitions": acquisitions,

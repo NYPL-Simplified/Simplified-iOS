@@ -2,6 +2,7 @@
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
 
+#import "NSString+NYPLStringAdditions.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
 
@@ -15,6 +16,7 @@
 @property (nonatomic, strong) NSURLSessionDataTask *dataTask;
 @property (nonatomic, copy) UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
 @property (atomic, readwrite) NSURL *URL;
+@property BOOL needsReauthentication;
 
 @end
 
@@ -41,7 +43,7 @@
 
 - (void)showReloadViewWithMessage:(NSString*)message
 {
-  if (message != nil) {
+  if (message != nil && ![message isEmptyNoWhitespace]) {
     [self.reloadView setMessage:message];
   } else {
     [self.reloadView setDefaultMessage];
@@ -110,8 +112,7 @@
   // address this as well.
   if (self.URL == nil) {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              summary:@"RemoteViewController"
-                              message:@"Prevented attempt to load without a URL."
+                              summary:@"RemoteViewController: Prevented load with no URL"
                              metadata:@{
                                @"ChildVCs": self.childViewControllers
                              }];
@@ -128,54 +129,37 @@
   self.dataTask = [NYPLNetworkExecutor.shared addBearerAndExecute:request
                            completion:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 
+    NSHTTPURLResponse *httpResponse = nil;
+    if ([response isKindOfClass: [NSHTTPURLResponse class]]) {
+      httpResponse = (NSHTTPURLResponse *) response;
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
       [self.activityIndicatorView stopAnimating];
       self.activityIndicatorLabel.hidden = YES;
       NSURLSessionDataTask *dataTaskCopy = self.dataTask;
       self.dataTask = nil;
 
-      __auto_type user = [NYPLUserAccount sharedAccount];
+      NYPLProblemDocument *problemDoc = [NYPLProblemDocument
+                                         fromResponseError:error
+                                         responseData: data];
+      self.needsReauthentication = [response indicatesAuthenticationNeedsRefresh:problemDoc];
 
-      __block NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
-      BOOL authenticating = [reauthenticator authenticateUser:user
-                                          ifNeededForResponse:response
-                                                 responseData:data
-                                                responseError:error
-                                      authenticationPreflight:^{ self.reloadView.hidden = NO; }
-                                     authenticationCompletion:^{
-        // make sure to retain the reauthenticator until end of auth flow and
-        // then break any possible retain cycle
-        reauthenticator = nil;
-        NYPLLOG(@"Re-loading from RemoteVC because authentication expired");
-        [self load];
-      }];
-
-      if (authenticating) {
-        return;
-      }
-
-      if (error) {
-        self.reloadView.hidden = NO;
+      if (error || self.needsReauthentication || ![httpResponse isSuccess]) {
+        [self showReloadViewWithMessage:[self messageFromProblemDocument:problemDoc
+                                                                   error:error]];
         NSDictionary<NSString*, NSObject*> *metadata = @{
           @"remoteVC.URL": self.URL ?: @"none",
           @"connection.currentRequest": dataTaskCopy.currentRequest ?: @"none",
           @"connection.originalRequest": dataTaskCopy.originalRequest ?: @"none",
         };
         [NYPLErrorLogger logError:error
-                          summary:@"RemoteViewController"
-                          message:@"Server-side api call (likely related to Catalog loading) failed"
+                          summary:@"RemoteViewController server-side load error"
                          metadata:metadata];
 
         return;
       }
 
-      NSHTTPURLResponse *httpResponse;
-      if ([response isKindOfClass: [NSHTTPURLResponse class]]) {
-        httpResponse = (NSHTTPURLResponse *) response;
-        if (httpResponse.statusCode != 200) {
-          [self handleErrorResponse:httpResponse withData:data];
-        }
-      }
+      self.needsReauthentication = NO;
 
       UIViewController *const viewController = self.handler(self, data, response);
 
@@ -202,15 +186,16 @@
         [viewController didMoveToParentViewController:self];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnableToMakeVCAfterLoading
-                                  summary:@"RemoteViewController"
-                                  message:@"Failed to create VC after loading from server"
+                                  summary:@"RemoteViewController: Failed to create VC after server-side load"
                                  metadata:@{
                                    @"HTTPstatusCode": @(httpResponse.statusCode ?: -1),
                                    @"mimeType": response.MIMEType ?: @"N/A",
                                    @"URL": self.URL ?: @"N/A",
                                    @"response": response ?: @"N/A"
                                  }];
-        self.reloadView.hidden = NO;
+        [self showReloadViewWithMessage:
+         NSLocalizedString(@"An error was encountered while parsing the server response.",
+                           @"Generic error message for catalog load errors")];
       }
     });
   }];
@@ -223,12 +208,26 @@
   [AccountsManager.shared updateAccountSetWithCompletion:^(BOOL success) {
     dispatch_async(dispatch_get_main_queue(), ^{
       if (success) {
-        // since we have the accounts, now we can do a proper reload
-        [self load];
+        if (self.needsReauthentication) {
+          self.needsReauthentication = NO;
+
+          NYPLUserAccount *user = [NYPLUserAccount sharedAccount];
+          __block NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
+          [reauthenticator authenticateIfNeeded:user
+                       usingExistingCredentials:YES
+                       authenticationCompletion:^{
+            // make sure to retain the reauthenticator until end of auth
+            // flow and then break any possible retain cycle
+            reauthenticator = nil;
+            NYPLLOG(@"Re-loading from RemoteVC because authentication had expired");
+            [self load];
+          }];
+        } else {
+          [self load];
+        }
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                                  summary:@"RemoteViewController"
-                                  message:@"Failed to reload accounts after having found nil URL"
+                                  summary:@"RemoteViewController: failed to reload accounts"
                                  metadata:@{
                                    @"currentURL": self.URL ?: @"N/A",
                                    @"ChildVCs": self.childViewControllers
@@ -297,47 +296,19 @@
 
 #pragma mark Private Helpers
 
-- (void)handleErrorResponse:(NSHTTPURLResponse *)httpResponse withData:(NSData * _Nullable) data
+- (NSString *)messageFromProblemDocument:(NYPLProblemDocument *)problemDoc
+                                   error:(NSError *)error
 {
-  if ([httpResponse isProblemDocument]) {
-    NSError *problemDocumentParseError = nil;
-    NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
-    UIAlertController *alert;
-
-    if (problemDocumentParseError) {
-      [NYPLErrorLogger
-       logProblemDocumentParseError:problemDocumentParseError
-       problemDocumentData:data
-       url:httpResponse.URL
-       summary:@"Catalog api fail: Problem Doc parse error"
-       metadata:@{
-         @"message": @"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"
-       }];
-      alert = [NYPLAlertUtils
-               alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
-               message:NSLocalizedString(@"Unknown error parsing problem document",
-                                         @"Message for a problem document error")];
-    } else {
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeProblemDocMessageDisplayed
-                                summary:@"Catalog api fail: Problem Doc returned"
-                                message:@"Server-side api call (likely related to Catalog loading) failed"
-                               metadata:pDoc.dictionaryValue];
-      alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
-    }
-    [self presentViewController:alert animated:YES completion:nil];
-  } else {
-    // not a 200 but also no problem doc: this could be an error or not
-    // depending on the mimeType and the data
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnexpectedHTTPCodeWarning
-                              summary:@"Catalog api fail"
-                              message:@"Server-side api call (likely related to Catalog loading) returned a non-200 HTTP status"
-                             metadata:@{
-                               @"HTTPstatusCode": @(httpResponse.statusCode),
-                               @"mimeType": httpResponse.MIMEType,
-                               @"URL": self.URL ?: @"N/A",
-                               @"response.URL": httpResponse.URL ?: @"N/A"
-                             }];
+  if (problemDoc && !problemDoc.stringValue.isEmptyNoWhitespace) {
+    return problemDoc.stringValue;
   }
+
+  if (error && !error.localizedDescriptionWithRecovery.isEmptyNoWhitespace) {
+    return error.localizedDescriptionWithRecovery;
+  }
+
+  return NSLocalizedString(@"Load error. Please try signing out, then log in again.",
+                           @"message for edge-case errors possibly related to authentication");
 }
 
 @end

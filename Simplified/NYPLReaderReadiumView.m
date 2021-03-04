@@ -213,18 +213,21 @@ static void generateTOCElements(NSArray *const navigationElements,
 
 - (void)addObservers
 {
+  // TODO: see UserSettingsNavigationController::appearanceDidChange(to:)
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(applyCurrentFlowIndependentSettings)
    name:NYPLReaderSettingsColorSchemeDidChangeNotification
    object:nil];
   
+  // TODO: see UserSettingsNavigationController::fontDidChange(to:)
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(applyCurrentFlowIndependentSettings)
    name:NYPLReaderSettingsFontFaceDidChangeNotification
    object:nil];
-  
+
+  // TODO: see UserSettingsNavigationController::fontSizeDidChange(increase:)
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(applyCurrentFlowDependentSettings)
@@ -624,7 +627,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
       contentCFI = @"";
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilCFI
                                 summary:@"R1 eReader warning: no CFI from NYPLLocation"
-                                message:nil
                                metadata:@{
                                  @"Book": self.book.loggableDictionary ?: @"N/A",
                                  @"Registry locationString": location.locationString ?: @"N/A",
@@ -835,7 +837,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium 1.");
          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilCFI
                                    summary:@"eReader bug: R1 failed to generate CFI"
-                                   message:nil
                                   metadata:@{
                                     @"Book": self.book.loggableDictionary ?: @"N/A",
                                   }];

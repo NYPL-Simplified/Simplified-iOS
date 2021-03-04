@@ -258,8 +258,8 @@ private enum StorageKey: String {
   }
 
   // Oauth requires login to load catalog
-  var isCatalogSecured: Bool {
-    return authDefinition?.isCatalogSecured ?? false
+  var catalogRequiresAuthentication: Bool {
+    return authDefinition?.catalogRequiresAuthentication ?? false
   }
 
   // MARK: - Legacy
@@ -486,3 +486,14 @@ extension NYPLUserAccount: NYPLSignedInStateProvider {
     return hasCredentials()
   }
 }
+
+extension NYPLUserAccount: NYPLBasicAuthCredentialsProvider {
+  var username: String? {
+    return barcode
+  }
+
+  var pin: String? {
+    return PIN
+  }
+}
+
