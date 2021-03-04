@@ -467,14 +467,9 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
     if(record) {
+      [self.coverRegistry removePinnedThumbnailImageForBookIdentifier:book.identifier];
       self.identifiersToRecords[book.identifier] = [[record recordWithBook:book] recordWithState:NYPLBookStateUnregistered];
       [self broadcastChange];
-      // Queue this up so it happens after the broadcast is done.
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [self performSynchronizedWithoutBroadcasting:^{
-          [self removeBookForIdentifier:book.identifier];
-        }];
-      }];
     }
   }
 }
