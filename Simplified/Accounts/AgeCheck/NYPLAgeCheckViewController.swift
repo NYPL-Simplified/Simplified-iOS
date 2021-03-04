@@ -36,7 +36,7 @@ class NYPLAgeCheckViewController: UIViewController {
   // We need to fail the age check because user can swipe down to dismiss the view controller in iOS 13+
   deinit {
     if !(ageCheckDelegate?.ageCheckCompleted ?? false) {
-      ageCheckDelegate?.ageCheckFailed()
+      ageCheckDelegate?.didFailAgeCheck()
     }
   }
   
@@ -45,7 +45,7 @@ class NYPLAgeCheckViewController: UIViewController {
       return
     }
     
-    ageCheckDelegate?.ageCheckCompleted(birthYearSelected)
+    ageCheckDelegate?.didCompleteAgeCheck(birthYearSelected)
     ageCheckDelegate?.ageCheckCompleted = true
     dismiss(animated: true, completion: nil)
   }
@@ -77,7 +77,6 @@ class NYPLAgeCheckViewController: UIViewController {
     view.addSubview(inputTextField)
     view.addSubview(titleLabel)
     
-    inputTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     inputTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     inputTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50).isActive = true
     inputTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50).isActive = true

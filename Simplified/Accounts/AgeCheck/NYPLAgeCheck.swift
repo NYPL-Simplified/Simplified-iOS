@@ -8,8 +8,8 @@ protocol NYPLAgeCheckValidationDelegate: class {
   
   func isValid(birthYear: Int) -> Bool
   
-  func ageCheckCompleted(_ birthYear: Int)
-  func ageCheckFailed()
+  func didCompleteAgeCheck(_ birthYear: Int)
+  func didFailAgeCheck()
 }
 
 @objc protocol NYPLAgeCheckVerifying {
@@ -25,22 +25,21 @@ protocol NYPLAgeCheckValidationDelegate: class {
 @objcMembers final class NYPLAgeCheck : NSObject, NYPLAgeCheckValidationDelegate, NYPLAgeCheckVerifying {
   
   // Members
-  let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).ageCheck")
+  private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).ageCheck")
   var handlerList = [((Bool) -> ())]()
-  var isPresenting = false
+  private var isPresenting = false
   var ageCheckCompleted: Bool = false
-  let ageCheckChoiceStorage: NYPLAgeCheckChoiceStorage
+  private let ageCheckChoiceStorage: NYPLAgeCheckChoiceStorage
   
-  var minYear: Int = 1900
-  
-  var currentYear: Int = Calendar.current.component(.year, from: Date())
-  
-  var birthYearList: [Int] {
-    return Array(minYear...currentYear)
-  }
+  let minYear: Int
+  let currentYear: Int
+  let birthYearList: [Int]
 
   init(ageCheckChoiceStorage: NYPLAgeCheckChoiceStorage) {
     self.ageCheckChoiceStorage = ageCheckChoiceStorage
+    minYear = 1900
+    currentYear = Calendar.current.component(.year, from: Date())
+    birthYearList = Array(minYear...currentYear)
     
     super.init()
   }
@@ -98,7 +97,7 @@ protocol NYPLAgeCheckValidationDelegate: class {
     return birthYear >= minYear && birthYear <= currentYear
   }
   
-  func ageCheckCompleted(_ birthYear: Int) {
+  func didCompleteAgeCheck(_ birthYear: Int) {
     self.serialQueue.async { [weak self] in
       let aboveAgeLimit = Calendar.current.component(.year, from: Date()) - birthYear > 13
       self?.ageCheckChoiceStorage.userPresentedAgeCheck = true
@@ -111,7 +110,7 @@ protocol NYPLAgeCheckValidationDelegate: class {
     }
   }
   
-  func ageCheckFailed() {
+  func didFailAgeCheck() {
     self.serialQueue.async { [weak self] in
       self?.isPresenting = false
       self?.ageCheckChoiceStorage.userPresentedAgeCheck = false
