@@ -26,7 +26,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
   static let shared = AccountsManager()
   
-  let ageCheck: NYPLAgeCheckVerification
+  let ageCheck: NYPLAgeCheckVerifying
 
   // For Objective-C classes
   class func sharedInstance() -> AccountsManager {

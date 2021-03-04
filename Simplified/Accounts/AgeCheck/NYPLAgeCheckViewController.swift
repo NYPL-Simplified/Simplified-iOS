@@ -13,12 +13,11 @@ class NYPLAgeCheckViewController: UIViewController {
   // Constants
   let textFieldHeight: CGFloat = 40.0
   
-  var birthYearSelected = 0
-  var ageCheckCompleted = false
+  fileprivate var birthYearSelected = 0
   
-  weak var ageCheckDelegate: NYPLAgeCheckDelegate?
+  weak var ageCheckDelegate: NYPLAgeCheckValidationDelegate?
   
-  init(ageCheckDelegate: NYPLAgeCheckDelegate) {
+  init(ageCheckDelegate: NYPLAgeCheckValidationDelegate) {
     self.ageCheckDelegate = ageCheckDelegate
     
     super.init(nibName: nil, bundle: nil)
@@ -36,7 +35,7 @@ class NYPLAgeCheckViewController: UIViewController {
   
   // We need to fail the age check because user can swipe down to dismiss the view controller in iOS 13+
   deinit {
-    if !ageCheckCompleted {
+    if !(ageCheckDelegate?.ageCheckCompleted ?? false) {
       ageCheckDelegate?.ageCheckFailed()
     }
   }
@@ -47,7 +46,7 @@ class NYPLAgeCheckViewController: UIViewController {
     }
     
     ageCheckDelegate?.ageCheckCompleted(birthYearSelected)
-    ageCheckCompleted = true
+    ageCheckDelegate?.ageCheckCompleted = true
     dismiss(animated: true, completion: nil)
   }
   

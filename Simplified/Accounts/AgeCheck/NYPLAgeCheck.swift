@@ -1,9 +1,10 @@
 import Foundation
 
-protocol NYPLAgeCheckDelegate: class {
+protocol NYPLAgeCheckValidationDelegate: class {
   var minYear : Int { get }
   var currentYear : Int { get }
   var birthYearList : [Int] { get }
+  var ageCheckCompleted : Bool { get set }
   
   func isValid(birthYear: Int) -> Bool
   
@@ -11,18 +12,23 @@ protocol NYPLAgeCheckDelegate: class {
   func ageCheckFailed()
 }
 
-@objc protocol NYPLAgeCheckVerification {
+@objc protocol NYPLAgeCheckVerifying {
   func verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccountProvider,
                                           currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider,
-                                          _ completion: ((Bool) -> ())?) -> Void
+                                          completion: ((Bool) -> ())?) -> Void
 }
 
-@objcMembers final class NYPLAgeCheck : NSObject, NYPLAgeCheckDelegate, NYPLAgeCheckVerification {
+@objc protocol NYPLAgeCheckChoiceStorage {
+  var userPresentedAgeCheck: Bool { get set }
+}
 
+@objcMembers final class NYPLAgeCheck : NSObject, NYPLAgeCheckValidationDelegate, NYPLAgeCheckVerifying {
+  
   // Members
   let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).ageCheck")
   var handlerList = [((Bool) -> ())]()
   var isPresenting = false
+  var ageCheckCompleted: Bool = false
   let ageCheckChoiceStorage: NYPLAgeCheckChoiceStorage
   
   var minYear: Int = 1900
@@ -41,7 +47,7 @@ protocol NYPLAgeCheckDelegate: class {
   
   func verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccountProvider,
                                           currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider,
-                                          _ completion: ((Bool) -> ())?) {
+                                          completion: ((Bool) -> ())?) {
     serialQueue.async {
       
       guard let accountDetails = currentLibraryAccountProvider.currentAccount?.details else {
@@ -93,11 +99,11 @@ protocol NYPLAgeCheckDelegate: class {
   }
   
   func ageCheckCompleted(_ birthYear: Int) {
-    let aboveAgeLimit = Calendar.current.component(.year, from: Date()) - birthYear > 13
-    ageCheckChoiceStorage.userPresentedAgeCheck = true
-    self.isPresenting = false
-    
     self.serialQueue.async { [weak self] in
+      let aboveAgeLimit = Calendar.current.component(.year, from: Date()) - birthYear > 13
+      self?.ageCheckChoiceStorage.userPresentedAgeCheck = true
+      self?.isPresenting = false
+      
       for handler in self?.handlerList ?? [] {
         handler(aboveAgeLimit)
       }
@@ -106,9 +112,9 @@ protocol NYPLAgeCheckDelegate: class {
   }
   
   func ageCheckFailed() {
-    self.isPresenting = false
-    ageCheckChoiceStorage.userPresentedAgeCheck = false
     self.serialQueue.async { [weak self] in
+      self?.isPresenting = false
+      self?.ageCheckChoiceStorage.userPresentedAgeCheck = false
       self?.handlerList.removeAll()
     }
   }
