@@ -26,10 +26,10 @@ protocol NYPLAgeCheckValidationDelegate: class {
   
   // Members
   private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).ageCheck")
-  var handlerList = [((Bool) -> ())]()
+  private var handlerList = [((Bool) -> ())]()
   private var isPresenting = false
-  var ageCheckCompleted: Bool = false
   private let ageCheckChoiceStorage: NYPLAgeCheckChoiceStorage
+  var ageCheckCompleted: Bool = false
   
   let minYear: Int
   let currentYear: Int
