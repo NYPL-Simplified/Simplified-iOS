@@ -47,7 +47,7 @@ protocol NYPLAgeCheckValidationDelegate: class {
   func verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccountProvider,
                                           currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider,
                                           completion: ((Bool) -> ())?) {
-    serialQueue.async {
+    serialQueue.async { [weak self] in
       
       guard let accountDetails = currentLibraryAccountProvider.currentAccount?.details else {
         completion?(false)
@@ -59,29 +59,29 @@ protocol NYPLAgeCheckValidationDelegate: class {
         return
       }
       
-      if !accountDetails.userAboveAgeLimit && self.ageCheckChoiceStorage.userPresentedAgeCheck {
+      if !accountDetails.userAboveAgeLimit && (self?.ageCheckChoiceStorage.userPresentedAgeCheck ?? false) {
         completion?(false)
         return
       }
       
       // Queue the callback
       if let completion = completion {
-        self.handlerList.append(completion)
+        self?.handlerList.append(completion)
       }
       
       // We're already presenting the age verification, return
-      if self.isPresenting {
+      if self?.isPresenting ?? false {
         return
       }
       
       let accountDetailsCompletion: ((Bool) -> ()) = { aboveAgeLimit in
         accountDetails.userAboveAgeLimit = aboveAgeLimit
       }
-      self.handlerList.append(accountDetailsCompletion)
+      self?.handlerList.append(accountDetailsCompletion)
       
       // Perform age check presentation
-      self.isPresenting = true
-      self.presentAgeVerificationView()
+      self?.isPresenting = true
+      self?.presentAgeVerificationView()
     }
   }
   
