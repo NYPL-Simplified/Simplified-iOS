@@ -141,6 +141,8 @@
 		1798538E255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
 		17ADCF4F254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
 		17ADCF54254BBA4E00D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
+		17BE24C125F2ED5400AE707F /* NYPLAgeCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */; };
+		17BE24C625F2ED5800AE707F /* NYPLAgeCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */; };
 		17D08381248E938000092AA9 /* OverdriveProcessor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */; };
 		17DFC5ED251E7FBC003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (Required, ); }; };
 		17DFC5F0251E802A003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
@@ -5254,6 +5256,7 @@
 				73FCA2C125005BA4001B0C5D /* NYPLXML.m in Sources */,
 				730FC05725128D64004D7C2D /* OETutorialViewController.swift in Sources */,
 				73C3CF5725C8EB6B00CA8166 /* NYPLUserAccount.swift in Sources */,
+				17BE24C625F2ED5800AE707F /* NYPLAgeCheckViewController.swift in Sources */,
 				7380E71D254B40C3004613B1 /* StdLib+NYPLAdditions.swift in Sources */,
 				73FCA2C225005BA4001B0C5D /* NYPLSignInBusinessLogic.swift in Sources */,
 				7380E70B254B408C004613B1 /* NYPLEPUBViewController.swift in Sources */,
@@ -5371,6 +5374,7 @@
 				73FCA31925005BA4001B0C5D /* Account.swift in Sources */,
 				73FCA31A25005BA4001B0C5D /* NYPLBookDownloadFailedCell.m in Sources */,
 				730FC05925128D64004D7C2D /* OETutorialWelcomeViewController.swift in Sources */,
+				17BE24C125F2ED5400AE707F /* NYPLAgeCheck.swift in Sources */,
 				73FCA31B25005BA4001B0C5D /* NYPLBookDetailViewController.m in Sources */,
 				735F559B25A63F2700AC6582 /* LCPLibraryService.swift in Sources */,
 				73FCA31E25005BA4001B0C5D /* NYPLContentTypeBadge.swift in Sources */,
