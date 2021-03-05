@@ -141,7 +141,9 @@
 
   NYPLUserAccount * const user = NYPLUserAccount.sharedAccount;
   if (user.authDefinition.needsAgeCheck) {
-    [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+    [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
+                                                                     currentLibraryAccountProvider:[AccountsManager shared]
+                                                                                        completion:^(BOOL isOfAge)  {
       [NYPLMainThreadRun asyncIfNeeded: ^{
         mainFeedUrl = [user.authDefinition coppaURLWithIsOfAge:isOfAge];
         completion();
@@ -175,7 +177,9 @@
     };
 
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
-      [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+      [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
+                                                                       currentLibraryAccountProvider:[AccountsManager shared]
+                                                                                          completion:^(BOOL isOfAge) {
         dispatch_async(dispatch_get_main_queue(), ^{
           mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
           completion();
@@ -230,7 +234,9 @@
       [vc safelyPresentViewController:navController animated:YES completion:nil];
     };
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
-      [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+      [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
+                                                                       currentLibraryAccountProvider:[AccountsManager shared]
+                                                                                          completion:^(BOOL isOfAge) {
         mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
         completion();
       }];
