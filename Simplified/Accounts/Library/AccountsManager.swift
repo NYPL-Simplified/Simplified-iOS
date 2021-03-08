@@ -25,6 +25,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   let NYPLAccountUUID = AccountsManager.NYPLAccountUUIDs[0]
 
   static let shared = AccountsManager()
+  
+  let ageCheck: NYPLAgeCheckVerifying
 
   // For Objective-C classes
   class func sharedInstance() -> AccountsManager {
@@ -99,7 +101,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
   private override init() {
     self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
-
+    self.ageCheck = NYPLAgeCheck(ageCheckChoiceStorage: NYPLSettings.shared)
+    
     super.init()
 
     #if OPENEBOOKS
@@ -195,7 +198,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       // changing the `accountsSets` dictionary will also change `currentAccount`
       Log.debug(#function, "hadAccount=\(hadAccount) currentAccountID=\(currentAccountId ?? "N/A") currentAcct=\(String(describing: currentAccount))")
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { (success) in
+        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { success in
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
@@ -212,7 +215,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
             // there is a logic in NYPLUserAcccount authDefinition setter to perform an age check, but it wasn't tested
             // most probably you can delete this check from here
             if self.currentAccount?.details?.needsAgeCheck ?? false {
-              NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
+              self.ageCheck.verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccount.sharedAccount(),
+                                                               currentLibraryAccountProvider: self) { meetsAgeRequirement in
                 DispatchQueue.main.async {
                   mainFeed = self.currentAccount?.details?.defaultAuth?.coppaURL(isOfAge: meetsAgeRequirement)
                   resolveFn()

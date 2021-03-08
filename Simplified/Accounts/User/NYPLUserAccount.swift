@@ -32,6 +32,8 @@ private enum StorageKey: String {
 }
 
 @objc protocol NYPLUserAccountProvider: NSObjectProtocol {
+  var needsAuth:Bool { get }
+  
   static func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
 }
 
@@ -91,7 +93,8 @@ private enum StorageKey: String {
         }
 
         if self.needsAgeCheck {
-          NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { [weak self] meetsAgeRequirement in
+          AccountsManager.shared.ageCheck.verifyCurrentAccountAgeRequirement(userAccountProvider: self,
+                                                                             currentLibraryAccountProvider: AccountsManager.shared) { [weak self] meetsAgeRequirement in
             DispatchQueue.main.async {
               mainFeed = self?.authDefinition?.coppaURL(isOfAge: meetsAgeRequirement)
               resolveFn()
