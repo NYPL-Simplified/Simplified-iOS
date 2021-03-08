@@ -1043,35 +1043,31 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   if (section == sSection0AccountInfo) {
     return UITableViewAutomaticDimension;
-  } else {
-    return 0;
   }
+  return 0;
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
 {
   if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
       (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
     return UITableViewAutomaticDimension;
-  } else {
-    return 0;
   }
+  return 0;
 }
 -(CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
 {
   if (section == sSection0AccountInfo) {
     return 80;
-  } else {
-    return 0;
   }
+  return 0;
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForFooterInSection:(__unused NSInteger)section
 {
   if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
       (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
     return 44;
-  } else {
-    return 0;
   }
+  return 0;
 }
 
 - (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
@@ -1121,9 +1117,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
     self.accountInfoHeaderView = containerView;
     return containerView;
-  } else {
-    return nil;
   }
+  return nil;
 }
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
@@ -1172,9 +1167,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
 
     return container;
-  } else {
-    return nil;
   }
+  return nil;
 }
 
 #pragma mark - Text Input

@@ -195,10 +195,9 @@
         // One of the libraries is special, so sort it first. Lower ids are "more
         // special" than higher ids and thus show up earlier.
         return idA < idB
-      } else {
-        // Neither library is special so we just go alphabetically.
-        return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
       }
+      // Neither library is special so we just go alphabetically.
+      return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
     }
 
     for userAccount in sortedLibraryAccounts {
@@ -233,14 +232,12 @@
   // MARK: UITableViewDataSource
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    let numRows: Int
+    
     if section == 0 {
-      numRows = self.manager.currentAccount != nil ? 1 : 0
-    } else {
-      numRows = userAddedSecondaryAccounts.count
+      return self.manager.currentAccount != nil ? 1 : 0
     }
-
-    return numRows
+      
+    return userAddedSecondaryAccounts.count
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
@@ -254,9 +251,8 @@
         return UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
       }
       return cellForLibrary(account, indexPath)
-    } else {
-      return cellForLibrary(AccountsManager.shared.account(userAddedSecondaryAccounts[indexPath.row])!, indexPath)
     }
+    return cellForLibrary(AccountsManager.shared.account(userAddedSecondaryAccounts[indexPath.row])!, indexPath)
   }
   
   func cellForLibrary(_ account: Account, _ indexPath: IndexPath) -> UITableViewCell {
@@ -334,11 +330,7 @@
   }
   
   func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    if indexPath.section == 0 {
-      return false
-    } else {
-      return true
-    }
+    return indexPath.section != 0
   }
   
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

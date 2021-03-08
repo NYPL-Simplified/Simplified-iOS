@@ -90,7 +90,7 @@
 - (NSString *)timeUntilStringWithNames:(NSDictionary *)names appendPlural:(NSString *)appendPlural
 {
   NSTimeInterval seconds = [self timeIntervalSinceDate:[NSDate date]];
-  seconds = seconds > 0 ? seconds : 0;
+  seconds = MAX(seconds, 0);
   long minutes = seconds / 60;
   long hours = minutes / 60;
   long days = hours / 24;

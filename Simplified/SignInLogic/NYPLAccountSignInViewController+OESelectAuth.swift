@@ -28,15 +28,10 @@ extension NYPLSignInBusinessLogic {
     let matches = authentications.filter {
       switch loginChoice {
       case .firstBook:
-        if $0.authType == .basic {
-          return true
-        }
+        return $0.authType == .basic
       case .clever:
-        if $0.authType == .oauthIntermediary {
-          return true
-        }
+        return $0.authType == .oauthIntermediary
       }
-      return false
     }
 
     selectedAuthentication = matches.first

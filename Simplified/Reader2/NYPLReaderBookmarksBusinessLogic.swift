@@ -75,14 +75,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     }
 
     let idref = publication.idref(forHref: currentLocator.href)
-
-    for bookmark in bookmarks {
-      if bookmark.locationMatches(currentLocator, withIDref: idref) {
-        return bookmark
-      }
-    }
-
-    return nil
+    return bookmarks.first(where: { $0.locationMatches(currentLocator,
+                                                       withIDref: idref )})
   }
 
   /// Creates a new bookmark at the given location for the publication.

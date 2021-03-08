@@ -28,12 +28,8 @@
 
   func facetView(_ facetView: NYPLFacetView!, isActiveFacetForFacetGroupAt index: UInt) -> Bool {
     let group = self.facetGroups[Int(index)]
-    for facet in group.facets as! [NYPLCatalogFacet] {
-      if facet.active {
-        return true
-      }
-    }
-    return false
+    return group.facets.compactMap { $0 as? NYPLCatalogFacet }
+        .contains(where: { $0.active })
   }
 
   func facetView(_ facetView: NYPLFacetView!, activeFacetIndexForFacetGroupAt index: UInt) -> UInt {

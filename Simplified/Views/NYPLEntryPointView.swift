@@ -37,7 +37,7 @@ final class NYPLEntryPointView: UIView {
       subview.removeFromSuperview()
     }
 
-    facets = dataSource!.facetsForEntryPointView()
+    facets = dataSource?.facetsForEntryPointView() ?? []
     let titles = NYPLEntryPointView.titlesFrom(facets: facets)
     if titles.count < 2 {
       autoSetDimension(.height, toSize: 0.0)

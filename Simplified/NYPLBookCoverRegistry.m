@@ -131,27 +131,11 @@ static NSUInteger const memoryCacheInMegabytes = 2;
     }
     
     // If the image didn't load, that means we still need to download the pinned image.
-    [[self.session
-      dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
-      completionHandler:^(NSData *const data,
-                          __attribute__((unused)) NSURLResponse *response,
-                          __attribute__((unused)) NSError *error) {
-        @synchronized(self) {
-          [[NSFileManager defaultManager]
-           createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
-           contents:data
-           attributes:nil];
-        }
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          UIImage *const image = [UIImage imageWithData:data];
-          if(image) {
-            handler(image);
-          } else {
-            handler([NYPLTenPrintCoverView imageForBook:book]);
-          }
-        }];
-      }]
-     resume];
+    NSString *desiredFilepath =  [[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path];
+    [self getBookCoverImageWithURL:book.imageThumbnailURL
+                  createFileAtPath:desiredFilepath
+                           handler:handler
+                           forBook:book];
   } else {
     if(!book.imageThumbnailURL) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -159,22 +143,43 @@ static NSUInteger const memoryCacheInMegabytes = 2;
       }];
       return;
     }
-    [[self.session
-      dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
-      completionHandler:^(NSData *const data,
-                          __attribute__((unused)) NSURLResponse *response,
-                          __attribute__((unused)) NSError *error) {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          UIImage *const image = [UIImage imageWithData:data];
-          if(image) {
-            handler(image);
-          } else {
-            handler([NYPLTenPrintCoverView imageForBook:book]);
-          }
-        }];
-      }]
-     resume];
+      
+    [self getBookCoverImageWithURL:book.imageThumbnailURL
+                  createFileAtPath:nil
+                           handler:handler
+                           forBook:book];
   }
+}
+
+- (void) getBookCoverImageWithURL:(nonnull NSURL *)imageURL
+                     createFileAtPath:(nullable NSString *)path
+                              handler:(void (^)(UIImage *image))handler
+                              forBook:(nonnull NYPLBook *)book {
+  [[self.session
+    dataTaskWithRequest:[NSURLRequest requestWithURL:imageURL]
+    completionHandler:^(NSData *const data,
+                        __attribute__((unused)) NSURLResponse *response,
+                        __attribute__((unused)) NSError *error) {
+      
+      if (path) {
+        @synchronized(self) {
+          [[NSFileManager defaultManager]
+           createFileAtPath:path
+           contents:data
+           attributes:nil];
+        }
+      }
+        
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        UIImage *const image = [UIImage imageWithData:data];
+        if (image) {
+          handler(image);
+        } else {
+          handler([NYPLTenPrintCoverView imageForBook:book]);
+        }
+      }];
+  }]
+   resume];
 }
 
 - (void)thumbnailImagesForBooks:(NSSet *)books
