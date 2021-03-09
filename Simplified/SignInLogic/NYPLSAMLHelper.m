@@ -34,15 +34,24 @@
     self.businessLogic.cookies = cookies;
 
     // process the last redirection url to get the oauth token
-    [self.businessLogic handleRedirectURL:
-     [NSNotification
-      notificationWithName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
-      object:url
-      userInfo:nil]];
-
-    // and close the webview
-    [self.businessLogic.uiDelegate dismissViewControllerAnimated:YES
-                                                      completion:nil];
+    NSNotification *redirectNotification = [NSNotification
+                                            notificationWithName:NSNotification.NYPLAppDelegateDidReceiveCleverRedirectURL
+                                            object:url
+                                            userInfo:nil];
+    [self.businessLogic handleRedirectURL:redirectNotification completion:^(NSError *error, NSString *errorTitle, NSString *errorMessage) {
+      [NYPLMainThreadRun asyncIfNeeded:^{
+        // and close the webview
+        [self.businessLogic.uiDelegate dismissViewControllerAnimated:YES completion:^{
+          // Show error message if there is one once the webview is dismissed
+          if (error || errorTitle || errorMessage) {
+            [self.businessLogic.uiDelegate businessLogic:self.businessLogic
+                             didEncounterValidationError:error
+                                  userFriendlyErrorTitle:errorTitle
+                                              andMessage:errorMessage];
+          }
+        }];
+      }];
+    }];
   };
 
   // create a model for webview authentication process
