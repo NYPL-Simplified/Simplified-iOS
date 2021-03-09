@@ -26,4 +26,10 @@ extension NYPLBook {
       "contentType": NYPLBookContentTypeConverter.stringValue(of: defaultBookContentType())
     ]
   }
+
+  // TODO: SIMPLY-2656 Remove this hack if possible, or at least use DI for
+  // instead of implicitly using NYPLMyBooksDownloadCenter
+  var url: URL? {
+    return NYPLMyBooksDownloadCenter.shared()?.fileURL(forBookIndentifier: identifier)
+  }
 }

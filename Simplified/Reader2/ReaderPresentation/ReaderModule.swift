@@ -15,8 +15,17 @@ import UIKit
 import R2Shared
 
 
-/// The ReaderModule handles the presentation of publications to be read by the user.
-/// It contains sub-modules implementing ReaderFormatModule to handle each format of publication (eg. CBZ, EPUB).
+/// Base module delegate, that sub-modules' delegate can extend.
+/// Provides basic shared functionalities.
+protocol ModuleDelegate: AnyObject {
+  func presentAlert(_ title: String, message: String, from viewController: UIViewController)
+  func presentError(_ error: Error?, from viewController: UIViewController)
+}
+
+// MARK:-
+
+/// The ReaderModuleAPI declares what is needed to handle the presentation
+/// of a publication.
 protocol ReaderModuleAPI {
   
   var delegate: ModuleDelegate? { get }
@@ -30,6 +39,12 @@ protocol ReaderModuleAPI {
   
 }
 
+// MARK:-
+
+/// The ReaderModule handles the presentation of a publication.
+///
+/// It contains sub-modules implementing `ReaderFormatModule` to handle each
+/// publication format (e.g. EPUB, PDF, etc).
 final class ReaderModule: ReaderModuleAPI {
   
   weak var delegate: ModuleDelegate?

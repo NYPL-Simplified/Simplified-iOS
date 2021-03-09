@@ -25,10 +25,6 @@ extension NYPLBook {
     return url?.absoluteString
   }
 
-  var url: URL? {
-    return NYPLMyBooksDownloadCenter.shared()?.fileURL(forBookIndentifier: identifier)
-  }
-
   //TODO: SIMPLY-2656 this property seems architecturally unsound
 //  var href: String {
 //    guard let urlStr = url?.absoluteString else {

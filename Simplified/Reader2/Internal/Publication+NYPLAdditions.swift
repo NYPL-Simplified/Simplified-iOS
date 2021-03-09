@@ -1,5 +1,5 @@
 //
-//  R2+NYPLAdditions.swift
+//  Publication+NYPLAdditions.swift
 //  Simplified
 //
 //  Created by Ettore Pasquini on 6/11/20.

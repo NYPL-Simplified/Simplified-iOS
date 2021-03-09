@@ -15,7 +15,8 @@ import UIKit
 import R2Shared
 
 
-/// A ReaderFormatModule is a sub-module of ReaderModule that handles publication of a given format (eg. EPUB, CBZ).
+/// A ReaderFormatModule handles presentation of publications in a
+/// given format (eg. EPUB, CBZ).
 protocol ReaderFormatModule {
   
   var delegate: ReaderFormatModuleDelegate? { get }
@@ -28,6 +29,7 @@ protocol ReaderFormatModule {
   
 }
 
+/// The interface for a ReaderFormatModule to present errors to the user.
 protocol ReaderFormatModuleDelegate: AnyObject {
   
   /// Show error in Reader

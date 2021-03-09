@@ -15,6 +15,12 @@ import UIKit
 import R2Shared
 import R2Streamer
 
+/// The LibraryService makes a book ready for presentation without dealing
+/// with the specifics of how a book should be presented.
+///
+/// It sets up the various components necessary for presenting a book,
+/// such as the streamer, publication server, DRM systems.  Presentation
+/// iself is handled by the `ReaderModule`.
 final class LibraryService: Loggable {
   
   private let streamer: Streamer
@@ -43,7 +49,17 @@ final class LibraryService: Loggable {
   // MARK: Opening
   
   /// Opens the Readium 2 Publication for the given `book`.
-  func openBook(_ book: NYPLBook, sender: UIViewController, completion: @escaping (CancellableResult<Publication, LibraryError>) -> Void) {
+  ///
+  /// - Parameters:
+  ///   - book: The book to be opened.
+  ///   - sender: The VC that requested the opening and that will handle
+  ///   error alerts or other messages for the user.
+  ///   - completion: When this is called, the book is ready for
+  ///   presentation if there are no errors.
+  func openBook(_ book: NYPLBook,
+                sender: UIViewController,
+                completion: @escaping (CancellableResult<Publication, LibraryServiceError>) -> Void) {
+
     guard let bookUrl =  book.url else {
       completion(.failure(.invalidBook))
       return
@@ -62,7 +78,7 @@ final class LibraryService: Loggable {
         self.preparePresentation(of: publication, book: book)
         return .success(publication)
     }
-    .mapError { LibraryError.openFailed($0) }
+    .mapError { LibraryServiceError.openFailed($0) }
     .resolve(completion)
   }
   
