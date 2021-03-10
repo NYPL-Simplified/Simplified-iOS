@@ -3,7 +3,7 @@ on: workflow_dispatch
 jobs:
   upload-arc:
     runs-on: macOS-latest
-    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/feature/')
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/raman/bug/SIMPLY-3578_logging'
     steps:
       - name: Force Xcode 11.5
         run: sudo xcode-select -switch /Applications/Xcode_11.5.app
@@ -84,7 +84,7 @@ jobs:
         env:
           BUILD_CONTEXT: ci
       - name: Upload to TestFlight
-        if: startsWith(github.ref, 'refs/heads/release/')
+        if: startsWith(github.ref, 'refs/heads/release/') || github.ref == 'refs/heads/raman/bug/SIMPLY-3578_logging'
         run: ./scripts/testflight-upload.sh simplye
         env:
           BUILD_CONTEXT: ci

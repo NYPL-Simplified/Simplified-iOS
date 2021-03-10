@@ -5,6 +5,7 @@ on:
       - develop
       - release/**
       - feature/**
+      - raman/bug/SIMPLY-3578_logging
 jobs:
   check-binaries:
     runs-on: macOS-latest
