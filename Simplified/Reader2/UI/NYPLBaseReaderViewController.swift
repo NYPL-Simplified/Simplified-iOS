@@ -203,7 +203,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
     let currentLocation = navigator.currentLocation
     let positionsVC = NYPLReaderPositionsVC.newInstance()
 
-    positionsVC.tocBusinessLogic = NYPLReaderTOCBusinessLogic(book: book, r2Publication: publication, currentLocation: currentLocation)
+    positionsVC.tocBusinessLogic = NYPLReaderTOCBusinessLogic(r2Publication: publication,
+                                                              currentLocation: currentLocation)
     positionsVC.bookmarksBusinessLogic = bookmarksBusinessLogic
     positionsVC.delegate = self
 
