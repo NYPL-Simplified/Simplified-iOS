@@ -12,7 +12,9 @@ import R2Shared
 extension NYPLBookLocation {
   static let r2Renderer = "readium2"
   
-  convenience init?(locator: Locator, publication: Publication, renderer: String) {
+  convenience init?(locator: Locator,
+                    publication: Publication,
+                    renderer: String = NYPLBookLocation.r2Renderer) {
     // Store all required properties of a locator object in a dictionary
     // Create a json string from it and use it as the location string in NYPLBookLocation
     // There is no specific format to follow, the value of the keys can be change if needed

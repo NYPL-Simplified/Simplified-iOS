@@ -21,13 +21,12 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   private static let bookmarkOffImageName = "BookmarkOff"
 
   // TODO: SIMPLY-2656 See if we still need this.
-  weak var moduleDelegate: ReaderFormatModuleDelegate?
+  weak var moduleDelegate: ModuleDelegate?
 
   // Models and business logic references
   let publication: Publication
-  private let book: NYPLBook
-  private var bookmarksBusinessLogic: NYPLReaderBookmarksBusinessLogic
-  private var shouldRestoreLocalReadingProgress: Bool
+  private let bookmarksBusinessLogic: NYPLReaderBookmarksBusinessLogic
+  private let lastReadPositionPoster: NYPLLastReadPositionPoster
 
   // UI
   let navigator: UIViewController & Navigator
@@ -35,6 +34,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   private var bookmarkBarButton: UIBarButtonItem?
   private(set) var stackView: UIStackView!
   private lazy var positionLabel = UILabel()
+
+  // MARK: - Lifecycle
 
   /// Designated initializer.
   /// - Parameters:
@@ -44,12 +45,16 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   ///   - drm: Information about the DRM associated with the publication.
   init(navigator: UIViewController & Navigator,
        publication: Publication,
-       book: NYPLBook
-  ) {
+       book: NYPLBook) {
 
     self.navigator = navigator
     self.publication = publication
-    self.book = book
+
+    lastReadPositionPoster = NYPLLastReadPositionPoster(
+      book: book,
+      r2Publication: publication,
+      bookRegistryProvider: NYPLBookRegistry.shared())
+
     bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(
       book: book,
       r2Publication: publication,
@@ -59,8 +64,6 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 
     bookmarksBusinessLogic.syncBookmarks { (_, _) in }
 
-    shouldRestoreLocalReadingProgress = true
-    
     super.init(nibName: nil, bundle: nil)
 
     NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: Notification.Name(UIAccessibilityVoiceOverStatusChanged), object: nil)
@@ -74,6 +77,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   deinit {
     NotificationCenter.default.removeObserver(self)
   }
+
+  // MARK: - UIViewController
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -260,45 +265,6 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       updateBookmarkButton(withState: false)
     }
   }
-  
-  //----------------------------------------------------------------------------
-  // MARK: - Read Position
-
-  private func restoreReadPosition() {
-    self.shouldRestoreLocalReadingProgress = false
-    bookmarksBusinessLogic.restoreReadPosition(currentLocator: navigator.currentLocation, localFetchCompletion: { [weak self] (localLocator) in
-      if let localLocator = localLocator {
-        NYPLMainThreadRun.asyncIfNeeded {
-          self?.navigator.go(to: localLocator, animated: true) {}
-        }
-      }
-    }) { [weak self] (serverLocator) in
-      if let serverLocator = serverLocator {
-        NYPLMainThreadRun.asyncIfNeeded {
-          self?.presentReadPositionNavigationAlert(locator: serverLocator)
-        }
-      }
-    }
-  }
-  
-  private func presentReadPositionNavigationAlert(locator: Locator) {
-    let alert = UIAlertController(title: NSLocalizedString("Sync Reading Position", comment: "An alert title notifying the user the reading position has been synced"),
-                                  message: NSLocalizedString("Do you want to move to the page on which you left off?", comment: "An alert message asking the user to perform navigation to the synced reading position or not"),
-                                  preferredStyle: .alert)
-    
-    let stayAction = UIAlertAction.init(title: NSLocalizedString("Stay", comment: "Do not perform navigation"),
-                                        style: .cancel, handler: nil)
-    
-    let moveAction = UIAlertAction.init(title: NSLocalizedString("Move", comment: "Perform navigation"),
-                                        style: .default) { (_) in
-      self.navigator.go(to: locator, animated: true, completion: {})
-    }
-    
-    alert.addAction(stayAction)
-    alert.addAction(moveAction)
-    
-    NYPLPresentationUtils.safelyPresent(alert)
-  }
 
   //----------------------------------------------------------------------------
   // MARK: - Accessibility
@@ -365,14 +331,9 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-    Log.debug(#function, "readPos BEFORE=\(String(describing: book.progressionLocator))")
-    Log.info(#function, "#### new locator=\(locator)")
-//    if shouldRestoreLocalReadingProgress {
-//      self.shouldRestoreLocalReadingProgress = false
-//    } else {
-      bookmarksBusinessLogic.storeReadPosition(locator: locator)
-      Log.debug(#function, "readPos AFTER=\(String(describing: book.progressionLocator))")
-//    }
+    Log.info(#function, "R2 locator changed to: \(locator)")
+
+    lastReadPositionPoster.storeReadPosition(locator: locator)
 
     positionLabel.text = {
       var chapterTitle = ""

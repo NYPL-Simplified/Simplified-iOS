@@ -32,7 +32,9 @@ import R2Streamer
     }
 
     libraryService = LibraryService(publicationServer: server)
-    readerModule = ReaderModule(delegate: self, resourcesServer: server)
+    readerModule = ReaderModule(delegate: self,
+                                resourcesServer: server,
+                                bookRegistry: NYPLBookRegistry.shared())
 
     // Set Readium 2's logging minimum level.
     R2EnableLog(withMinimumSeverityLevel: .debug)

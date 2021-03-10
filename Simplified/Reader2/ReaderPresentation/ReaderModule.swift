@@ -35,7 +35,9 @@ protocol ReaderModuleAPI {
   /// - Parameter book: Our internal book model related to the `publication`.
   /// - Parameter navigationController: The navigation stack the book will be presented in.
   /// - Parameter completion: Called once the publication is presented, or if an error occured.
-  func presentPublication(publication: Publication, book: NYPLBook, in navigationController: UINavigationController, completion: @escaping () -> Void)
+  func presentPublication(_ publication: Publication,
+                          book: NYPLBook,
+                          in navigationController: UINavigationController)
   
 }
 
@@ -49,59 +51,71 @@ final class ReaderModule: ReaderModuleAPI {
   
   weak var delegate: ModuleDelegate?
   private let resourcesServer: ResourcesServer
-  
+  private let bookRegistry: NYPLBookRegistryProvider
+  private let progressSynchronizer: NYPLLastReadPositionSynchronizer
+
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
-  
-  init(delegate: ModuleDelegate?, resourcesServer: ResourcesServer) {
+
+  init(delegate: ModuleDelegate?,
+       resourcesServer: ResourcesServer,
+       bookRegistry: NYPLBookRegistryProvider) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
-    
-    formatModules = [
-      EPUBModule(delegate: self)
-    ]
+    self.bookRegistry = bookRegistry
+    self.progressSynchronizer = NYPLLastReadPositionSynchronizer(bookRegistry: bookRegistry)
 
+    formatModules = [
+      EPUBModule(delegate: self.delegate, resourcesServer: resourcesServer)
+    ]
   }
   
-  func presentPublication(publication: Publication,
+  func presentPublication(_ publication: Publication,
                           book: NYPLBook,
-                          in navigationController: UINavigationController,
-                          completion: @escaping () -> Void) {
+                          in navigationController: UINavigationController) {
     if delegate == nil {
       NYPLErrorLogger.logError(nil, summary: "ReaderModule delegate is not set")
     }
     
-    func present(_ viewController: UIViewController) {
-      let backItem = UIBarButtonItem()
-      backItem.title = NSLocalizedString("Back", comment: "Text for Back button")
-      viewController.navigationItem.backBarButtonItem = backItem
-      viewController.hidesBottomBarWhenPushed = true
-      navigationController.pushViewController(viewController, animated: true)
-    }
-    
-    guard let module = self.formatModules.first(where:{ $0.publicationFormats.contains(publication.format) }) else {
+    guard let formatModule = self.formatModules.first(where:{ $0.publicationFormats.contains(publication.format) }) else {
       delegate?.presentError(ReaderError.formatNotSupported, from: navigationController)
-      completion()
       return
     }
-    
+
+    // TODO: SIMPLY-2656 remove implicit dependency (NYPLUserAccount.shared)
+    let drmDeviceID = NYPLUserAccount.sharedAccount().deviceID
+    progressSynchronizer.sync(for: publication,
+                              book: book,
+                              drmDeviceID: drmDeviceID) { [weak self] in
+
+                                self?.finalizePresentation(for: publication,
+                                                           book: book,
+                                                           formatModule: formatModule,
+                                                           in: navigationController)
+    }
+  }
+
+  func finalizePresentation(for publication: Publication,
+                            book: NYPLBook,
+                            formatModule: ReaderFormatModule,
+                            in navigationController: UINavigationController) {
     do {
-      let readerViewController = try module.makeReaderViewController(for: publication, book: book, resourcesServer: resourcesServer)
-      present(readerViewController)
+      let lastSavedLocation = bookRegistry.location(forIdentifier: book.identifier)
+      let initialLocator = lastSavedLocation?.convertToLocator()
+
+      let readerVC = try formatModule.makeReaderViewController(
+        for: publication,
+        book: book,
+        initialLocation: initialLocator)
+
+      let backItem = UIBarButtonItem()
+      backItem.title = NSLocalizedString("Back", comment: "Text for Back button")
+      readerVC.navigationItem.backBarButtonItem = backItem
+      readerVC.hidesBottomBarWhenPushed = true
+      navigationController.pushViewController(readerVC, animated: true)
+
     } catch {
       delegate?.presentError(error, from: navigationController)
     }
-    
-    completion()
   }
-  
-}
-
-
-extension ReaderModule: ReaderFormatModuleDelegate {
-    
-  func presentError(_ error: Error?, from viewController: UIViewController) {
-    delegate?.presentError(error, from: viewController)
-  }
-  
 }

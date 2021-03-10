@@ -19,7 +19,10 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
 
   let userSettings: NYPLR1R2UserSettings
 
-  init(publication: Publication, book: NYPLBook, resourcesServer: ResourcesServer) {
+  init(publication: Publication,
+       book: NYPLBook,
+       initialLocation: Locator?,
+       resourcesServer: ResourcesServer) {
     let navigator = EPUBNavigatorViewController(publication: publication,
                                                 initialLocation: book.progressionLocator,
                                                 resourcesServer: resourcesServer)
