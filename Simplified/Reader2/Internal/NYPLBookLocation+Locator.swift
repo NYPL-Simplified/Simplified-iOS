@@ -22,7 +22,9 @@ extension NYPLBookLocation {
       NYPLBookLocation.hrefKey: locator.href,
       NYPLBookLocation.typeKey: locator.type,
       NYPLBookLocation.chapterProgressKey: locator.locations.progression ?? 0.0,
-      NYPLBookLocation.bookProgressKey: locator.locations.totalProgression ?? 0.0
+      NYPLBookLocation.bookProgressKey: locator.locations.totalProgression ?? 0.0,
+      NYPLBookLocation.titleKey: locator.title ?? "",
+      NYPLBookLocation.positionKey: locator.locations.position ?? 0.0
     ]
     
     guard let jsonString = serializeJSONString(dict) else {
@@ -44,15 +46,19 @@ extension NYPLBookLocation {
       Log.error(#file, "Failed to convert NYPLBookLocation to Locator object with location string: \(locationString ?? "N/A")")
       return nil
     }
-    
+
+    let title: String = dict[NYPLBookLocation.titleKey] as? String ?? ""
+    let position: Int? = dict[NYPLBookLocation.positionKey] as? Int
+
     let locations = Locator.Locations(fragments: [],
                                       progression: progressWithinChapter,
                                       totalProgression: progressWithinBook,
-                                      position: nil,
+                                      position: position,
                                       otherLocations: [:])
     
     return Locator(href: href,
                    type: type,
+                   title: title,
                    locations: locations)
   }
 }
@@ -62,4 +68,6 @@ private extension NYPLBookLocation {
   static let typeKey = "locatorType"
   static let chapterProgressKey = "progressWithinChapter"
   static let bookProgressKey = "progressWithinBook"
+  static let titleKey = "title"
+  static let positionKey = "position"
 }
