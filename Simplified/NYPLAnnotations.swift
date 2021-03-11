@@ -2,6 +2,10 @@ import UIKit
 
 @objcMembers final class NYPLAnnotations: NSObject {
 
+  // key names returned by the server in annotations api responses
+  static let serverCFIKey = "serverCFI"
+  static let serverDeviceKey = "device"
+
   // MARK: - Sync Settings
 
   /// Shows (if needed) the opt-in flow for syncing the user bookmarks and
@@ -216,11 +220,13 @@ import UIKit
                                  completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
+      completionHandler(nil)
       Log.debug(#file, "Account does not support sync or sync is disabled.")
       return
     }
 
     guard let url = url, let bookID = bookID else {
+      completionHandler(nil)
       Log.error(#file, "Required parameters are nil.")
       return
     }
@@ -267,12 +273,12 @@ import UIKit
               return
           }
           
-          var responseObject = ["serverCFI" : serverCFI]
+          var responseObject = [serverCFIKey : serverCFI]
           
           if let body = item["body"] as? [String:AnyObject],
             let device = body["http://librarysimplified.org/terms/device"] as? String,
             let time = body["http://librarysimplified.org/terms/time"] as? String {
-            responseObject["device"] = device
+            responseObject[serverDeviceKey] = device
             responseObject["time"] = time
           }
           completionHandler(responseObject)
@@ -321,7 +327,12 @@ import UIKit
         let location = ((parameters["target"] as? [String:Any])?["selector"] as? [String:Any])?["value"] as? String ?? "null"
         Log.debug(#file, "Success: Marked Reading Position To Server: \(location)")
       } else {
-        Log.error(#file, "Annotation not posted.")
+        NYPLErrorLogger.logError(withCode: .apiCall,
+                                 summary: "Error posting annotation",
+                                 metadata: [
+                                  "bookID": bookID,
+                                  "annotationID": id ?? "N/A",
+                                  "annotationURL": annotationsURL])
       }
     }
   }
@@ -350,7 +361,7 @@ import UIKit
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
 
       if let error = error as NSError? {
-        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+        Log.error(#file, "Annotation POST error (nsCode: \(error.code) Description: \(error.localizedDescription))")
         if (NetworkQueue.StatusCodes.contains(error.code)) && (queueOffline == true) {
           self.addToOfflineQueue(bookID, url, parameters)
         }
@@ -358,7 +369,7 @@ import UIKit
         return
       }
       guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-        Log.error(#file, "No response received from server")
+        Log.error(#file, "Annotation POST error: No response received from server")
         completionHandler(false, nil)
         return
       }

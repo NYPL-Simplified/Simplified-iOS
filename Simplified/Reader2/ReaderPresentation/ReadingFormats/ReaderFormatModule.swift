@@ -15,23 +15,19 @@ import UIKit
 import R2Shared
 
 
-/// A ReaderFormatModule is a sub-module of ReaderModule that handles publication of a given format (eg. EPUB, CBZ).
+/// A ReaderFormatModule handles presentation of publications in a
+/// given format (eg. EPUB, CBZ).
 protocol ReaderFormatModule {
   
-  var delegate: ReaderFormatModuleDelegate? { get }
+  var delegate: ModuleDelegate? { get }
   
   /// Publication types handled by this sub-module.
   var publicationFormats: [Publication.Format] { get }
   
   /// Creates the view controller to present the publication.
-  func makeReaderViewController(for publication: Publication, book: NYPLBook, resourcesServer: ResourcesServer) throws -> UIViewController
-  
-}
-
-protocol ReaderFormatModuleDelegate: AnyObject {
-  
-  /// Show error in Reader
-  func presentError(_ error: Error?, from viewController: UIViewController)
+  func makeReaderViewController(for publication: Publication,
+                                book: NYPLBook,
+                                initialLocation: Locator?) throws -> UIViewController
   
 }
 

@@ -12,20 +12,19 @@ import R2Shared
 extension NYPLBookLocation {
   static let r2Renderer = "readium2"
   
-  convenience init?(locator: Locator, publication: Publication, renderer: String) {
-    guard let idref = publication.idref(forHref: locator.href) else {
-      Log.warn(#file, "Unable to find Publication's idref from locator's idref - \(locator.href)")
-      return nil
-    }
-    
+  convenience init?(locator: Locator,
+                    publication: Publication,
+                    renderer: String = NYPLBookLocation.r2Renderer) {
     // Store all required properties of a locator object in a dictionary
     // Create a json string from it and use it as the location string in NYPLBookLocation
     // There is no specific format to follow, the value of the keys can be change if needed
     let dict: [String : Any] = [
-      NYPLBookLocation.hrefKey: idref,
+      NYPLBookLocation.hrefKey: locator.href,
       NYPLBookLocation.typeKey: locator.type,
       NYPLBookLocation.chapterProgressKey: locator.locations.progression ?? 0.0,
-      NYPLBookLocation.bookProgressKey: locator.locations.totalProgression ?? 0.0
+      NYPLBookLocation.bookProgressKey: locator.locations.totalProgression ?? 0.0,
+      NYPLBookLocation.titleKey: locator.title ?? "",
+      NYPLBookLocation.positionKey: locator.locations.position ?? 0.0
     ]
     
     guard let jsonString = serializeJSONString(dict) else {
@@ -47,15 +46,19 @@ extension NYPLBookLocation {
       Log.error(#file, "Failed to convert NYPLBookLocation to Locator object with location string: \(locationString ?? "N/A")")
       return nil
     }
-    
+
+    let title: String = dict[NYPLBookLocation.titleKey] as? String ?? ""
+    let position: Int? = dict[NYPLBookLocation.positionKey] as? Int
+
     let locations = Locator.Locations(fragments: [],
                                       progression: progressWithinChapter,
                                       totalProgression: progressWithinBook,
-                                      position: nil,
+                                      position: position,
                                       otherLocations: [:])
     
     return Locator(href: href,
                    type: type,
+                   title: title,
                    locations: locations)
   }
 }
@@ -65,4 +68,6 @@ private extension NYPLBookLocation {
   static let typeKey = "locatorType"
   static let chapterProgressKey = "progressWithinChapter"
   static let bookProgressKey = "progressWithinBook"
+  static let titleKey = "title"
+  static let positionKey = "position"
 }

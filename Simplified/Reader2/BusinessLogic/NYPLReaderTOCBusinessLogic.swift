@@ -15,12 +15,10 @@ typealias NYPLReaderTOCLink = (level: Int, link: Link)
 /// for a given Readium 2 Publication.
 class NYPLReaderTOCBusinessLogic {
   var tocElements: [NYPLReaderTOCLink] = []
-  private let book: NYPLBook
   private let publication: Publication
   private let currentLocation: Locator? // for current chapter
 
-  init(book: NYPLBook, r2Publication: Publication, currentLocation: Locator?) {
-    self.book = book
+  init(r2Publication: Publication, currentLocation: Locator?) {
     self.publication = r2Publication
     self.currentLocation = currentLocation
     self.tocElements = flatten(publication.tableOfContents)

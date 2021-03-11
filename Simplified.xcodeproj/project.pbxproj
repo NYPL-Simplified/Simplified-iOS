@@ -146,16 +146,16 @@
 		17DFC5F0251E802A003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
 		17DFC5F1251E802A003A19CC /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		17DFC5F2251E80D6003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
-		17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		17DFC5F8251E8644003A19CC /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		210715672592606A005F94AE /* R2LCPClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732752832578CB7900A073E2 /* R2LCPClient.framework */; };
 		2126FE2E25C059250095C45C /* ReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126FE2D25C059240095C45C /* ReaderError.swift */; };
 		2126FE2F25C059250095C45C /* ReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126FE2D25C059240095C45C /* ReaderError.swift */; };
-		2126FE3025C059550095C45C /* LibraryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryError.swift */; };
+		2126FE3025C059550095C45C /* LibraryServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryServiceError.swift */; };
 		2126FE3225C059580095C45C /* ReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126FE2D25C059240095C45C /* ReaderError.swift */; };
 		2126FE3525C059700095C45C /* ReaderModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DF7F9225AF5E1E0090402A /* ReaderModule.swift */; };
-		2126FE3925C0597D0095C45C /* LibraryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryError.swift */; };
-		2126FE3A25C0597E0095C45C /* LibraryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryError.swift */; };
+		2126FE3925C0597D0095C45C /* LibraryServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryServiceError.swift */; };
+		2126FE3A25C0597E0095C45C /* LibraryServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryServiceError.swift */; };
 		2126FE3B25C059800095C45C /* ReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126FE2D25C059240095C45C /* ReaderError.swift */; };
 		2126FE3C25C059810095C45C /* ReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126FE2D25C059240095C45C /* ReaderError.swift */; };
 		2126FE3F25C059920095C45C /* LCPLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171ADA0251E38140003CABA /* LCPLibraryService.swift */; };
@@ -167,11 +167,6 @@
 		212B99D7258A36FD00C8BF79 /* LCPAudiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */; };
 		212B99D8258A36FD00C8BF79 /* LCPAudiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */; };
 		2146872D2559A64B007B401A /* LCPLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171ADA0251E38140003CABA /* LCPLibraryService.swift */; };
-		2156B54125B2003A003AD8EC /* R2Navigator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7326AB3324BD272000C3BA29 /* R2Navigator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2156B54225B20044003AD8EC /* R2Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7326AB3224BD271F00C3BA29 /* R2Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2156B54325B2004A003AD8EC /* R2Streamer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7326AB2D24BD271F00C3BA29 /* R2Streamer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2156B54525B200EB003AD8EC /* R2LCPClient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2156B54425B200EA003AD8EC /* R2LCPClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2156B54725B200F7003AD8EC /* ReadiumLCP.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2156B54625B200F6003AD8EC /* ReadiumLCP.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2171ADA3251E38150003CABA /* LCPLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171ADA0251E38140003CABA /* LCPLibraryService.swift */; };
 		2171ADA7251E38560003CABA /* ReadiumLCP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2171ADA6251E38560003CABA /* ReadiumLCP.framework */; };
 		2198F910250A90EE000D9DAB /* AudioBookVendorsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2198F90F250A90EE000D9DAB /* AudioBookVendorsHelper.swift */; };
@@ -192,8 +187,8 @@
 		21C5047D2513C9F70016A6C8 /* AudioBookVendors+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EC1B8E2501538600A12384 /* AudioBookVendors+Extensions.swift */; };
 		21C5047F2513C9FA0016A6C8 /* AudioBookVendorsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2198F90F250A90EE000D9DAB /* AudioBookVendorsHelper.swift */; };
 		21C504802513C9FB0016A6C8 /* AudioBookVendorsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2198F90F250A90EE000D9DAB /* AudioBookVendorsHelper.swift */; };
-		21C7B87E25AE1DBA000E8BF3 /* LibraryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryError.swift */; };
-		21C7B87F25AE1DBA000E8BF3 /* LibraryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryError.swift */; };
+		21C7B87E25AE1DBA000E8BF3 /* LibraryServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryServiceError.swift */; };
+		21C7B87F25AE1DBA000E8BF3 /* LibraryServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7B87D25AE1DB9000E8BF3 /* LibraryServiceError.swift */; };
 		21DDE31325D2CE9A002CBCE3 /* AdobeDRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */; };
 		21DDE31825D2CE9B002CBCE3 /* AdobeDRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */; };
 		21DDE31925D2CE9C002CBCE3 /* AdobeDRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */; };
@@ -332,7 +327,7 @@
 		7335BA9F2453C5B6000295F2 /* NYPLReaderPositions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */; };
 		733875652423E1B0000FEB67 /* NYPLNetworkExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */; };
 		733875672423E540000FEB67 /* NYPLCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733875662423E540000FEB67 /* NYPLCaching.swift */; };
-		733DEC92241090C7008C74BC /* NYPLReaderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */; };
+		733DEC92241090C7008C74BC /* NYPLRootTabBarController+R2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */; };
 		733FF9BE2530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FF9BD2530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift */; };
 		733FF9BF2530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FF9BD2530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift */; };
 		733FF9C02530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FF9BD2530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift */; };
@@ -346,14 +341,14 @@
 		7342702624DCB28600A4F605 /* NYPLBook+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7340DA6724B7F27900361387 /* NYPLBook+Additions.swift */; };
 		7342702E24DCB30B00A4F605 /* LibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299E240F3BEA006B9EAD /* LibraryService.swift */; };
 		7342702F24DCB30B00A4F605 /* EPUBModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AC2410221E006B9EAD /* EPUBModule.swift */; };
-		7342703324DCB30B00A4F605 /* R2+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */; };
+		7342703324DCB30B00A4F605 /* Publication+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */; };
 		7342703424DCB31800A4F605 /* NYPLBaseReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713552417200F00C63B81 /* NYPLBaseReaderViewController.swift */; };
 		7342703524DCB31800A4F605 /* NYPLEPUBViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713502417200F00C63B81 /* NYPLEPUBViewController.swift */; };
 		7342703624DCB31800A4F605 /* UIViewController+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713672417240100C63B81 /* UIViewController+NYPL.swift */; };
 		7342703724DCB31800A4F605 /* NYPLUserSettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734917D0242D77D800059AA5 /* NYPLUserSettingsVC.swift */; };
 		7342703824DCB31800A4F605 /* NYPLReaderPositionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F3245225A5004C78BD /* NYPLReaderPositionsVC.swift */; };
 		7342703924DCB31800A4F605 /* NYPLReaderPositions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */; };
-		7342703A24DCB32000A4F605 /* NYPLReaderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */; };
+		7342703A24DCB32000A4F605 /* NYPLRootTabBarController+R2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */; };
 		7342703B24DCB32000A4F605 /* NYPLR2Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */; };
 		7342703C24DCB32000A4F605 /* NYPLR1R2UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */; };
 		7342703D24DCB32000A4F605 /* NYPLReaderTOCBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F624525AFF004C78BD /* NYPLReaderTOCBusinessLogic.swift */; };
@@ -632,8 +627,8 @@
 		735FED262427494900144C97 /* NYPLNetworkResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735FED252427494900144C97 /* NYPLNetworkResponder.swift */; };
 		7360D0D524BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
 		7360D0D624BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
-		7364D69C2492A38C0087B056 /* R2+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */; };
-		7364D69D2492A38C0087B056 /* R2+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */; };
+		7364D69C2492A38C0087B056 /* Publication+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */; };
+		7364D69D2492A38C0087B056 /* Publication+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */; };
 		736A54B8254B3C680031C3AA /* NYPLSAMLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 730263AB2540DE4200A53891 /* NYPLSAMLHelper.m */; };
 		736A54BD254B3C6D0031C3AA /* NYPLSignInBusinessLogic+DRM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737F4A6A254A137900A3C34B /* NYPLSignInBusinessLogic+DRM.swift */; };
 		736A54BE254B3C730031C3AA /* NYPLSignInBusinessLogic+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A794A525477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift */; };
@@ -651,7 +646,7 @@
 		737F4A6D254A137900A3C34B /* NYPLSignInBusinessLogic+DRM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737F4A6A254A137900A3C34B /* NYPLSignInBusinessLogic+DRM.swift */; };
 		7380E702254B3E77004613B1 /* NYPLBookContentMetadataFilesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift */; };
 		7380E703254B3E77004613B1 /* NYPLBookContentMetadataFilesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift */; };
-		7380E704254B407D004613B1 /* NYPLReaderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */; };
+		7380E704254B407D004613B1 /* NYPLRootTabBarController+R2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */; };
 		7380E706254B407D004613B1 /* NYPLR1R2UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */; };
 		7380E707254B407D004613B1 /* NYPLReaderTOCBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F624525AFF004C78BD /* NYPLReaderTOCBusinessLogic.swift */; };
 		7380E708254B407D004613B1 /* NYPLReaderBookmarksBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737DCB8B245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift */; };
@@ -664,7 +659,7 @@
 		7380E70F254B408C004613B1 /* NYPLReaderPositions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */; };
 		7380E713254B4091004613B1 /* LibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299E240F3BEA006B9EAD /* LibraryService.swift */; };
 		7380E714254B4091004613B1 /* EPUBModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AC2410221E006B9EAD /* EPUBModule.swift */; };
-		7380E718254B4092004613B1 /* R2+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */; };
+		7380E718254B4092004613B1 /* Publication+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */; };
 		7380E71C254B40C2004613B1 /* StdLib+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* StdLib+NYPLAdditions.swift */; };
 		7380E71D254B40C3004613B1 /* StdLib+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* StdLib+NYPLAdditions.swift */; };
 		7380E71E254B40D6004613B1 /* NYPLReaderTOCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F9245276CA004C78BD /* NYPLReaderTOCCell.swift */; };
@@ -852,7 +847,7 @@
 		739E60DC244A0D8600D00301 /* LibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299E240F3BEA006B9EAD /* LibraryService.swift */; };
 		739E60DD244A0D8600D00301 /* NYPLOPDSEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */; };
 		739E60DE244A0D8600D00301 /* NYPLReaderSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DC19271A12F92500721DBA /* NYPLReaderSettingsView.m */; };
-		739E60E0244A0D8600D00301 /* NYPLReaderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */; };
+		739E60E0244A0D8600D00301 /* NYPLRootTabBarController+R2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */; };
 		739E60E1244A0D8600D00301 /* NYPLIndeterminateProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */; };
 		739E60E2244A0D8600D00301 /* NSString+NYPLStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEB88198C43A600121439 /* NSString+NYPLStringAdditions.m */; };
 		739E60E3244A0D8600D00301 /* NYPLKeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */; };
@@ -993,6 +988,10 @@
 		73B80BAD25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */; };
 		73BDB06E25A639B6002C5C4C /* LCPAudiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */; };
 		73BDB06F25A639C5002C5C4C /* LCPAudiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */; };
+		73BDB07A25F198D200556C35 /* R2Streamer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		73BDB08125F198F800556C35 /* R2Navigator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B18244A1D8600A7A649 /* R2Navigator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		73BDB08325F1992B00556C35 /* R2Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		73BDB08425F1994F00556C35 /* ReadiumLCP.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2171ADA6251E38560003CABA /* ReadiumLCP.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73BF0CCE245769D80009FC61 /* NYPLReaderTOCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F9245276CA004C78BD /* NYPLReaderTOCCell.swift */; };
 		73C3CF5425C8EB6900CA8166 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		73C3CF5525C8EB6A00CA8166 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
@@ -1016,15 +1015,25 @@
 		73D8D27825A68D3B00DF5F69 /* NYPLUserSettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734917D0242D77D800059AA5 /* NYPLUserSettingsVC.swift */; };
 		73D8D27925A68D3B00DF5F69 /* NYPLReaderPositionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F3245225A5004C78BD /* NYPLReaderPositionsVC.swift */; };
 		73D8D27A25A68D3B00DF5F69 /* NYPLReaderPositions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */; };
-		73D8D27B25A68D4300DF5F69 /* NYPLReaderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */; };
+		73D8D27B25A68D4300DF5F69 /* NYPLRootTabBarController+R2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */; };
 		73D8D27C25A68D4300DF5F69 /* NYPLR1R2UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */; };
 		73D8D27D25A68D4300DF5F69 /* NYPLReaderTOCBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F624525AFF004C78BD /* NYPLReaderTOCBusinessLogic.swift */; };
 		73D8D27E25A68D4300DF5F69 /* NYPLReaderBookmarksBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737DCB8B245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift */; };
 		73D8D27F25A68D4300DF5F69 /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
 		73D8D28025A68D4300DF5F69 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
 		73D8D28125A68D4F00DF5F69 /* EPUBModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AC2410221E006B9EAD /* EPUBModule.swift */; };
-		73D8D28225A68D5600DF5F69 /* R2+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */; };
+		73D8D28225A68D5600DF5F69 /* Publication+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */; };
 		73D8D28325A6921400DF5F69 /* StdLib+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* StdLib+NYPLAdditions.swift */; };
+		73DB56C625F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */; };
+		73DB56C725F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */; };
+		73DB56C825F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */; };
+		73DB56C925F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */; };
+		73DB56CA25F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */; };
+		73DB56CC25F7F739003788EE /* NYPLLastReadPositionPoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */; };
+		73DB56CD25F7F739003788EE /* NYPLLastReadPositionPoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */; };
+		73DB56CE25F7F73A003788EE /* NYPLLastReadPositionPoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */; };
+		73DB56CF25F7F73A003788EE /* NYPLLastReadPositionPoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */; };
+		73DB56D025F7F73B003788EE /* NYPLLastReadPositionPoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */; };
 		73DE53312525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */; };
 		73DEB54E2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
 		73DEB54F2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
@@ -1648,14 +1657,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		17DFC5F5251E84C5003A19CC /* CopyFiles */ = {
+		17DFC5F5251E84C5003A19CC /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in CopyFiles */,
+				17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in Embed Frameworks */,
 			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		17DFC5F7251E863A003A19CC /* CopyFiles */ = {
@@ -1674,11 +1684,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2156B54325B2004A003AD8EC /* R2Streamer.framework in Embed Frameworks */,
-				2156B54225B20044003AD8EC /* R2Shared.framework in Embed Frameworks */,
-				2156B54125B2003A003AD8EC /* R2Navigator.framework in Embed Frameworks */,
-				2156B54525B200EB003AD8EC /* R2LCPClient.framework in Embed Frameworks */,
-				2156B54725B200F7003AD8EC /* ReadiumLCP.framework in Embed Frameworks */,
+				73BDB08425F1994F00556C35 /* ReadiumLCP.framework in Embed Frameworks */,
+				73BDB08325F1992B00556C35 /* R2Shared.framework in Embed Frameworks */,
+				73BDB08125F198F800556C35 /* R2Navigator.framework in Embed Frameworks */,
+				73BDB07A25F198D200556C35 /* R2Streamer.framework in Embed Frameworks */,
 				736CF272252278AA0081D30A /* AudioEngine.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -1922,7 +1931,7 @@
 		219901F924FD2E56001BC727 /* jwk_public */ = {isa = PBXFileReference; lastKnownFileType = text; path = jwk_public; sourceTree = "<group>"; };
 		2199020524FD3334001BC727 /* NYPLJWKConversionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLJWKConversionTest.swift; sourceTree = "<group>"; };
 		2199020724FD35DC001BC727 /* JWKResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWKResponse.swift; sourceTree = "<group>"; };
-		21C7B87D25AE1DB9000E8BF3 /* LibraryError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryError.swift; sourceTree = "<group>"; };
+		21C7B87D25AE1DB9000E8BF3 /* LibraryServiceError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryServiceError.swift; sourceTree = "<group>"; };
 		21DDE32725D2CEFC002CBCE3 /* AdobeDRMContentProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdobeDRMContentProtection.swift; sourceTree = "<group>"; };
 		21DDE32D25D31DB4002CBCE3 /* AdobeDRMFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdobeDRMFetcher.swift; sourceTree = "<group>"; };
 		21DE2A8025B1FF5A00BCC9E0 /* R2Shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2Shared.framework; path = "../r2-lcp-swift/Carthage/Build/iOS/R2Shared.framework"; sourceTree = "<group>"; };
@@ -2035,7 +2044,7 @@
 		733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkExecutor.swift; sourceTree = "<group>"; };
 		733875662423E540000FEB67 /* NYPLCaching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCaching.swift; sourceTree = "<group>"; };
 		733DEC8B24108D8D008C74BC /* DRMLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DRMLibraryService.swift; sourceTree = "<group>"; };
-		733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderExtensions.swift; sourceTree = "<group>"; };
+		733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+R2.swift"; sourceTree = "<group>"; };
 		733E3E05257ED49C00BEBA32 /* xcode-settings.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-settings.sh"; sourceTree = "<group>"; };
 		733E3E06257ED49C00BEBA32 /* ios-binaries-upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "ios-binaries-upload.sh"; sourceTree = "<group>"; };
 		733E3E07257ED49C00BEBA32 /* xcode-archive.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-archive.sh"; sourceTree = "<group>"; };
@@ -2079,7 +2088,7 @@
 		735FED252427494900144C97 /* NYPLNetworkResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkResponder.swift; sourceTree = "<group>"; };
 		73609AD8245B53CB00F0E08B /* update-certificates.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "update-certificates.sh"; path = "scripts/update-certificates.sh"; sourceTree = SOURCE_ROOT; };
 		7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserFriendlyError.swift; sourceTree = "<group>"; };
-		7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "R2+NYPLAdditions.swift"; sourceTree = "<group>"; };
+		7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publication+NYPLAdditions.swift"; sourceTree = "<group>"; };
 		7364FC6025B7C5AB00B0A9FD /* firebase-upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "firebase-upload.sh"; sourceTree = "<group>"; };
 		73735306256828EA00FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "OpenEBooks_OPDS2_Catalog_Feed-QA.json"; sourceTree = "<group>"; };
 		7375AE5925382AC900C85211 /* NYPLUserAccountMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountMock.swift; sourceTree = "<group>"; };
@@ -2143,6 +2152,8 @@
 		73DA43A62404BA5600985482 /* build-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-carthage.sh"; path = "scripts/build-carthage.sh"; sourceTree = SOURCE_ROOT; };
 		73DA43A72404BA5600985482 /* build_curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = build_curl.sh; path = scripts/build_curl.sh; sourceTree = SOURCE_ROOT; };
 		73DA43A82404BA5600985482 /* build-openssl-curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-openssl-curl.sh"; path = "scripts/build-openssl-curl.sh"; sourceTree = SOURCE_ROOT; };
+		73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLLastReadPositionSynchronizer.swift; sourceTree = "<group>"; };
+		73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLastReadPositionPoster.swift; sourceTree = "<group>"; };
 		73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibraryAccountURLsProvider.swift; sourceTree = "<group>"; };
 		73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkR2Location.swift; sourceTree = "<group>"; };
 		73DED81925A630AA00A4D63B /* SwiftSoup.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftSoup.framework; path = Carthage/Build/iOS/SwiftSoup.framework; sourceTree = "<group>"; };
@@ -3071,6 +3082,51 @@
 			name = Logging;
 			sourceTree = "<group>";
 		};
+		7361615225F7015B00395337 /* ReadingFormats */ = {
+			isa = PBXGroup;
+			children = (
+				21DF7F9725AF5E560090402A /* ReaderFormatModule.swift */,
+				73A229AC2410221E006B9EAD /* EPUBModule.swift */,
+			);
+			path = ReadingFormats;
+			sourceTree = "<group>";
+		};
+		7361615325F705A500395337 /* ReaderPresentation */ = {
+			isa = PBXGroup;
+			children = (
+				733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */,
+				21DF7F9225AF5E1E0090402A /* ReaderModule.swift */,
+				2126FE2D25C059240095C45C /* ReaderError.swift */,
+				7361615225F7015B00395337 /* ReadingFormats */,
+			);
+			path = ReaderPresentation;
+			sourceTree = "<group>";
+		};
+		7361615425F706D600395337 /* ReaderStackConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */,
+				73A2299E240F3BEA006B9EAD /* LibraryService.swift */,
+				733DEC8B24108D8D008C74BC /* DRMLibraryService.swift */,
+				21C7B87D25AE1DB9000E8BF3 /* LibraryServiceError.swift */,
+				21F238B72498F7FB004DC0B1 /* AdobeDRM */,
+				2171AD9F251E37D30003CABA /* LCP */,
+			);
+			path = ReaderStackConfiguration;
+			sourceTree = "<group>";
+		};
+		7361615525F75E3900395337 /* BusinessLogic */ = {
+			isa = PBXGroup;
+			children = (
+				734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */,
+				7386C1F624525AFF004C78BD /* NYPLReaderTOCBusinessLogic.swift */,
+				737DCB8B245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift */,
+				73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */,
+				73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */,
+			);
+			path = BusinessLogic;
+			sourceTree = "<group>";
+		};
 		7384C751252D1F720012C2DD /* MyBooks */ = {
 			isa = PBXGroup;
 			children = (
@@ -3158,17 +3214,11 @@
 		73A22980240F26C6006B9EAD /* Reader2 */ = {
 			isa = PBXGroup;
 			children = (
-				733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */,
-				73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */,
-				734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */,
-				7386C1F624525AFF004C78BD /* NYPLReaderTOCBusinessLogic.swift */,
-				737DCB8B245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift */,
-				73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */,
-				1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */,
-				73F7136D2417260700C63B81 /* UI */,
+				7361615525F75E3900395337 /* BusinessLogic */,
 				73DB2D0924132C8B008346ED /* Internal */,
-				21F238B72498F7FB004DC0B1 /* AdobeDRM */,
-				2171AD9F251E37D30003CABA /* LCP */,
+				7361615425F706D600395337 /* ReaderStackConfiguration */,
+				7361615325F705A500395337 /* ReaderPresentation */,
+				73F7136D2417260700C63B81 /* UI */,
 			);
 			path = Reader2;
 			sourceTree = "<group>";
@@ -3247,14 +3297,9 @@
 		73DB2D0924132C8B008346ED /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				2126FE2D25C059240095C45C /* ReaderError.swift */,
-				21C7B87D25AE1DB9000E8BF3 /* LibraryError.swift */,
-				73A2299E240F3BEA006B9EAD /* LibraryService.swift */,
-				73A229AC2410221E006B9EAD /* EPUBModule.swift */,
-				21DF7F9725AF5E560090402A /* ReaderFormatModule.swift */,
-				21DF7F9225AF5E1E0090402A /* ReaderModule.swift */,
-				733DEC8B24108D8D008C74BC /* DRMLibraryService.swift */,
-				7364D69B2492A38C0087B056 /* R2+NYPLAdditions.swift */,
+				7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */,
+				73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */,
+				1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -3744,7 +3789,7 @@
 				A823D80A192BABA400B55DE2 /* Frameworks */,
 				A823D80B192BABA400B55DE2 /* Resources */,
 				145DA48C215441260055DB93 /* Copy Frameworks (Carthage) */,
-				17DFC5F5251E84C5003A19CC /* CopyFiles */,
+				17DFC5F5251E84C5003A19CC /* Embed Frameworks */,
 				73DA43AD2404CA9500985482 /* Crashlytics */,
 			);
 			buildRules = (
@@ -4214,6 +4259,7 @@
 				"$(SRCROOT)/../r2-navigator-swift/Carthage/Build/iOS/SwiftSoup.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/OverdriveProcessor.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/ZIPFoundation.framework",
+				"$(SRCROOT)/../r2-lcp-swift/Carthage/Build/iOS/R2LCPClient.framework",
 			);
 			name = "Copy Frameworks (Carthage)";
 			outputFileListPaths = (
@@ -4233,6 +4279,7 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SwiftSoup.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/OverdriveProcessor.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ZIPFoundation.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/R2LCPClient.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4526,7 +4573,7 @@
 				7347F04A245A4DE200558D7F /* NYPLMyBooksNavigationController.m in Sources */,
 				7347F04B245A4DE200558D7F /* NYPLBookCellCollectionViewController.m in Sources */,
 				73B551092511748900D05B86 /* NYPLLoginCellTypes.swift in Sources */,
-				7342703324DCB30B00A4F605 /* R2+NYPLAdditions.swift in Sources */,
+				7342703324DCB30B00A4F605 /* Publication+NYPLAdditions.swift in Sources */,
 				730FC05225128225004D7C2D /* NYPLSettings.swift in Sources */,
 				73085E3625030D27008F6244 /* SEMigrations.swift in Sources */,
 				21C5047F2513C9FA0016A6C8 /* AudioBookVendorsHelper.swift in Sources */,
@@ -4575,6 +4622,7 @@
 				7347F068245A4DE200558D7F /* NYPLCatalogLane.m in Sources */,
 				7347F069245A4DE200558D7F /* NYPLBookNormalCell.m in Sources */,
 				730EDFF02515380D0038DD9F /* NYPLAnnouncementBusinessLogic.swift in Sources */,
+				73DB56C825F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */,
 				7353940E25085DBC0043C800 /* NYPLPresentationUtils.swift in Sources */,
 				7347F06A245A4DE200558D7F /* NYPLCatalogNavigationController.m in Sources */,
 				7342703D24DCB32000A4F605 /* NYPLReaderTOCBusinessLogic.swift in Sources */,
@@ -4650,6 +4698,7 @@
 				7347312A25142FE200BE3D2C /* NYPLSettings+SE.swift in Sources */,
 				21DDE33025D31DB4002CBCE3 /* AdobeDRMFetcher.swift in Sources */,
 				7347F09D245A4DE200558D7F /* Account.swift in Sources */,
+				73DB56CE25F7F73A003788EE /* NYPLLastReadPositionPoster.swift in Sources */,
 				7347F09E245A4DE200558D7F /* NYPLBookDownloadFailedCell.m in Sources */,
 				7347F09F245A4DE200558D7F /* NYPLBookDetailViewController.m in Sources */,
 				7347F0A2245A4DE200558D7F /* NYPLContentTypeBadge.swift in Sources */,
@@ -4672,7 +4721,7 @@
 				7380E703254B3E77004613B1 /* NYPLBookContentMetadataFilesHelper.swift in Sources */,
 				7347F0B2245A4DE200558D7F /* NYPLRootTabBarController.m in Sources */,
 				7347F0B3245A4DE200558D7F /* ExtendedNavBarView.swift in Sources */,
-				2126FE3025C059550095C45C /* LibraryError.swift in Sources */,
+				2126FE3025C059550095C45C /* LibraryServiceError.swift in Sources */,
 				730D17CD25535954004CAC83 /* NYPLSignInBusinessLogic+BookmarkSyncing.swift in Sources */,
 				7347F0B4245A4DE200558D7F /* OPDS2Link.swift in Sources */,
 				734B789225659611006FB8AD /* URLResponse+NYPLAuthentication.swift in Sources */,
@@ -4688,7 +4737,7 @@
 				7347F0BE245A4DE200558D7F /* NYPLOPDSEntry.m in Sources */,
 				7347F0BF245A4DE200558D7F /* NYPLReaderSettingsView.m in Sources */,
 				7347F0C0245A4DE200558D7F /* NYPLIndeterminateProgressView.m in Sources */,
-				7342703A24DCB32000A4F605 /* NYPLReaderExtensions.swift in Sources */,
+				7342703A24DCB32000A4F605 /* NYPLRootTabBarController+R2.swift in Sources */,
 				7347F0C1245A4DE200558D7F /* NSString+NYPLStringAdditions.m in Sources */,
 				7347F0C2245A4DE200558D7F /* NYPLKeychainManager.swift in Sources */,
 				7347F0C3245A4DE200558D7F /* NYPLErrorLogger.swift in Sources */,
@@ -4808,6 +4857,7 @@
 				739E6085244A0D8600D00301 /* NYPLFacetBarView.swift in Sources */,
 				7342702624DCB28600A4F605 /* NYPLBook+Additions.swift in Sources */,
 				73B5510F2511751300D05B86 /* NYPLLibraryDescriptionCell.swift in Sources */,
+				73DB56C725F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */,
 				739E6086244A0D8600D00301 /* NYPLDismissibleViewController.m in Sources */,
 				739E6087244A0D8600D00301 /* main.m in Sources */,
 				739E6088244A0D8600D00301 /* UIViewController+NYPL.swift in Sources */,
@@ -4834,7 +4884,7 @@
 				739E6095244A0D8600D00301 /* NYPLNetworkExecutor.swift in Sources */,
 				739E6096244A0D8600D00301 /* NYPLBookAcquisitionPath.m in Sources */,
 				739E6097244A0D8600D00301 /* NYPLOPDSAcquisitionAvailability.m in Sources */,
-				7364D69D2492A38C0087B056 /* R2+NYPLAdditions.swift in Sources */,
+				7364D69D2492A38C0087B056 /* Publication+NYPLAdditions.swift in Sources */,
 				739E6098244A0D8600D00301 /* NYPLReachability.m in Sources */,
 				739E6099244A0D8600D00301 /* NYPLReaderViewController.m in Sources */,
 				739E609A244A0D8600D00301 /* NYPLCatalogLaneCell.m in Sources */,
@@ -4871,7 +4921,7 @@
 				739E60B4244A0D8600D00301 /* NYPLR1R2UserSettings.swift in Sources */,
 				739E60B5244A0D8600D00301 /* NYPLMyBooksViewController.m in Sources */,
 				73B550FA2511723000D05B86 /* NYPLCatalogs+SE.swift in Sources */,
-				21C7B87F25AE1DBA000E8BF3 /* LibraryError.swift in Sources */,
+				21C7B87F25AE1DBA000E8BF3 /* LibraryServiceError.swift in Sources */,
 				739E60B6244A0D8600D00301 /* NYPLBookDetailTableView.swift in Sources */,
 				739E60B7244A0D8600D00301 /* Account.swift in Sources */,
 				739E60B8244A0D8600D00301 /* NYPLBookDownloadFailedCell.m in Sources */,
@@ -4883,6 +4933,7 @@
 				739E60BC244A0D8600D00301 /* NYPLContentTypeBadge.swift in Sources */,
 				739E60BD244A0D8600D00301 /* NYPLZXingEncoder.m in Sources */,
 				21DDE32F25D31DB4002CBCE3 /* AdobeDRMFetcher.swift in Sources */,
+				73DB56CD25F7F739003788EE /* NYPLLastReadPositionPoster.swift in Sources */,
 				73B5510C251174F900D05B86 /* NSString+JSONParse.swift in Sources */,
 				1798538C255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */,
 				739E60BE244A0D8600D00301 /* NYPLProblemReportViewController.m in Sources */,
@@ -4921,7 +4972,7 @@
 				739E60DC244A0D8600D00301 /* LibraryService.swift in Sources */,
 				739E60DD244A0D8600D00301 /* NYPLOPDSEntry.m in Sources */,
 				739E60DE244A0D8600D00301 /* NYPLReaderSettingsView.m in Sources */,
-				739E60E0244A0D8600D00301 /* NYPLReaderExtensions.swift in Sources */,
+				739E60E0244A0D8600D00301 /* NYPLRootTabBarController+R2.swift in Sources */,
 				73F11E0B251941FD00FCD22B /* DPLAAudiobooks.swift in Sources */,
 				2126FE2F25C059250095C45C /* ReaderError.swift in Sources */,
 				739E60E1244A0D8600D00301 /* NYPLIndeterminateProgressView.m in Sources */,
@@ -4973,7 +5024,7 @@
 				73EB0A6825821DF4006BC997 /* NYPLBookState.swift in Sources */,
 				73EB0A6925821DF4006BC997 /* APIKeys.swift in Sources */,
 				73EB0A6A25821DF4006BC997 /* NYPLAttributedString.m in Sources */,
-				73D8D27B25A68D4300DF5F69 /* NYPLReaderExtensions.swift in Sources */,
+				73D8D27B25A68D4300DF5F69 /* NYPLRootTabBarController+R2.swift in Sources */,
 				73EB0A6C25821DF4006BC997 /* NYPLAnnouncementViewController.swift in Sources */,
 				73EB0A6D25821DF4006BC997 /* NYPLBookContentType.swift in Sources */,
 				73EB0A6E25821DF4006BC997 /* NYPLAgeCheck.swift in Sources */,
@@ -5019,6 +5070,7 @@
 				73EB0A9025821DF4006BC997 /* OPDS2CatalogsFeed.swift in Sources */,
 				73EB0A9125821DF4006BC997 /* BundledHTMLViewController.swift in Sources */,
 				73EB0A9225821DF4006BC997 /* NYPLBookDetailView.m in Sources */,
+				73DB56C925F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */,
 				73EB0A9325821DF4006BC997 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */,
 				73D8D27925A68D3B00DF5F69 /* NYPLReaderPositionsVC.swift in Sources */,
 				73D8D27C25A68D4300DF5F69 /* NYPLR1R2UserSettings.swift in Sources */,
@@ -5136,10 +5188,11 @@
 				73EB0AFB25821DF4006BC997 /* OPDS2Link.swift in Sources */,
 				73EB0AFC25821DF4006BC997 /* NYPLSignInBusinessLogic+BookmarkSyncing.swift in Sources */,
 				73EB0AFD25821DF4006BC997 /* NYPLBookAuthor.swift in Sources */,
-				2126FE3A25C0597E0095C45C /* LibraryError.swift in Sources */,
+				2126FE3A25C0597E0095C45C /* LibraryServiceError.swift in Sources */,
 				73EB0AFE25821DF4006BC997 /* NSNotification+NYPL.swift in Sources */,
 				73EB0AFF25821DF4006BC997 /* URLResponse+NYPLAuthentication.swift in Sources */,
 				73EB0B0025821DF4006BC997 /* NYPLCatalogSearchViewController.m in Sources */,
+				73DB56CF25F7F73A003788EE /* NYPLLastReadPositionPoster.swift in Sources */,
 				73D8D27025A68CC400DF5F69 /* NYPLReaderTOCCell.swift in Sources */,
 				73EB0B0125821DF4006BC997 /* UIColor+LabelColor.swift in Sources */,
 				73EB0B0225821DF4006BC997 /* NYPLNetworkResponder.swift in Sources */,
@@ -5157,7 +5210,7 @@
 				73EB0B0E25821DF4006BC997 /* NYPLErrorLogger.swift in Sources */,
 				73EB0B0F25821DF4006BC997 /* NSString+JSONParse.swift in Sources */,
 				73EB0B1025821DF4006BC997 /* NYPLOPDSEntryGroupAttributes.m in Sources */,
-				73D8D28225A68D5600DF5F69 /* R2+NYPLAdditions.swift in Sources */,
+				73D8D28225A68D5600DF5F69 /* Publication+NYPLAdditions.swift in Sources */,
 				73EB0B1125821DF4006BC997 /* NYPLMyBooksDownloadCenter.m in Sources */,
 				73EB0B1225821DF4006BC997 /* NYPLProblemDocumentCacheManager.swift in Sources */,
 				73EB0B1325821DF4006BC997 /* NYPLBookDetailButtonsView.m in Sources */,
@@ -5230,6 +5283,7 @@
 				73FCA2BF25005BA4001B0C5D /* NYPLBookCellCollectionViewController.m in Sources */,
 				7380E720254B4169004613B1 /* NYPLBookContentMetadataFilesHelper.swift in Sources */,
 				73FCA2C025005BA4001B0C5D /* NYPLKeychainStoredVariable.swift in Sources */,
+				73DB56CA25F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */,
 				73FCA2C125005BA4001B0C5D /* NYPLXML.m in Sources */,
 				730FC05725128D64004D7C2D /* OETutorialViewController.swift in Sources */,
 				73C3CF5725C8EB6B00CA8166 /* NYPLUserAccount.swift in Sources */,
@@ -5248,6 +5302,7 @@
 				73FCA2CB25005BA4001B0C5D /* NYPLProblemDocument.swift in Sources */,
 				73FCA2CC25005BA4001B0C5D /* NYPLReturnPromptHelper.swift in Sources */,
 				7380E70D254B408C004613B1 /* NYPLUserSettingsVC.swift in Sources */,
+				73DB56D025F7F73B003788EE /* NYPLLastReadPositionPoster.swift in Sources */,
 				73FCA2CD25005BA4001B0C5D /* NYPLReaderBookmarkCell.swift in Sources */,
 				73FCA2CE25005BA4001B0C5D /* NYPLOpenSearchDescription.m in Sources */,
 				73FCA2CF25005BA4001B0C5D /* NYPLReaderTOCElement.m in Sources */,
@@ -5255,7 +5310,7 @@
 				7380E71F254B40D6004613B1 /* NYPLReaderTOCCell.swift in Sources */,
 				7380E70E254B408C004613B1 /* NYPLReaderPositionsVC.swift in Sources */,
 				21DDE33125D31DB4002CBCE3 /* AdobeDRMFetcher.swift in Sources */,
-				7380E718254B4092004613B1 /* R2+NYPLAdditions.swift in Sources */,
+				7380E718254B4092004613B1 /* Publication+NYPLAdditions.swift in Sources */,
 				739ECB292510207E00691A70 /* NYPLCatalogs+OE.swift in Sources */,
 				73FCA2D125005BA4001B0C5D /* NYPLReaderTOCViewController.m in Sources */,
 				73FCA2D225005BA4001B0C5D /* OPDS2CatalogsFeed.swift in Sources */,
@@ -5314,7 +5369,7 @@
 				73085E1B2502DE88008F6244 /* NYPLPresentationUtils.swift in Sources */,
 				7380E708254B407D004613B1 /* NYPLReaderBookmarksBusinessLogic.swift in Sources */,
 				73FCA30125005BA4001B0C5D /* NYPLSession.m in Sources */,
-				7380E704254B407D004613B1 /* NYPLReaderExtensions.swift in Sources */,
+				7380E704254B407D004613B1 /* NYPLRootTabBarController+R2.swift in Sources */,
 				73FCA30225005BA4001B0C5D /* NYPLSettingsEULAViewController.m in Sources */,
 				73FCA30325005BA4001B0C5D /* NYPLMyBooksDownloadInfo.m in Sources */,
 				7380E714254B4091004613B1 /* EPUBModule.swift in Sources */,
@@ -5335,7 +5390,7 @@
 				73FCA31025005BA4001B0C5D /* NYPLBasicAuth.swift in Sources */,
 				73FCA31125005BA4001B0C5D /* OPDS2AuthenticationDocument.swift in Sources */,
 				73FCA31225005BA4001B0C5D /* NYPLBookRegistryRecord.m in Sources */,
-				2126FE3925C0597D0095C45C /* LibraryError.swift in Sources */,
+				2126FE3925C0597D0095C45C /* LibraryServiceError.swift in Sources */,
 				7380E70A254B408C004613B1 /* NYPLBaseReaderViewController.swift in Sources */,
 				21DDE31A25D2CEA6002CBCE3 /* AdobeDRMLibraryService.swift in Sources */,
 				733FF9C02530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift in Sources */,
@@ -5508,6 +5563,7 @@
 				A46226271B39D4980063F549 /* NYPLOPDSGroup.m in Sources */,
 				B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */,
 				A93F9F9721CDACF700BD3B0C /* NYPLAppReviewPrompt.swift in Sources */,
+				73DB56C625F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */,
 				8C835DD5234D0B900050A18D /* NYPLFacetBarView.swift in Sources */,
 				111197341986D7550014462F /* NYPLDismissibleViewController.m in Sources */,
 				A823D81D192BABA400B55DE2 /* main.m in Sources */,
@@ -5528,7 +5584,7 @@
 				A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
 				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m in Sources */,
-				7364D69C2492A38C0087B056 /* R2+NYPLAdditions.swift in Sources */,
+				7364D69C2492A38C0087B056 /* Publication+NYPLAdditions.swift in Sources */,
 				733875652423E1B0000FEB67 /* NYPLNetworkExecutor.swift in Sources */,
 				733FF9BE2530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift in Sources */,
 				2D87909D20127AA300E2763F /* NYPLBookAcquisitionPath.m in Sources */,
@@ -5570,7 +5626,7 @@
 				2D754BC22002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m in Sources */,
 				734917DA242EB79700059AA5 /* NYPLR1R2UserSettings.swift in Sources */,
 				116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */,
-				21C7B87E25AE1DBA000E8BF3 /* LibraryError.swift in Sources */,
+				21C7B87E25AE1DBA000E8BF3 /* LibraryServiceError.swift in Sources */,
 				E6B3269F1EE066DE00DB877A /* NYPLBookDetailTableView.swift in Sources */,
 				734B78992565F7DE006FB8AD /* NYPLReauthenticator.swift in Sources */,
 				175E480824EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift in Sources */,
@@ -5583,6 +5639,7 @@
 				085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */,
 				21DDE32E25D31DB4002CBCE3 /* AdobeDRMFetcher.swift in Sources */,
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
+				73DB56CC25F7F739003788EE /* NYPLLastReadPositionPoster.swift in Sources */,
 				A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */,
 				1798538B255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */,
 				110AD83D19E497D6005724C3 /* NYPLOPDSAttribute.m in Sources */,
@@ -5616,7 +5673,7 @@
 				730B7868249AB9D7008F28B3 /* StdLib+NYPLAdditions.swift in Sources */,
 				AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */,
 				11DC19281A12F92500721DBA /* NYPLReaderSettingsView.m in Sources */,
-				733DEC92241090C7008C74BC /* NYPLReaderExtensions.swift in Sources */,
+				733DEC92241090C7008C74BC /* NYPLRootTabBarController+R2.swift in Sources */,
 				113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */,
 				119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				E6B6E76F1F6859A4007EE361 /* NYPLKeychainManager.swift in Sources */,
@@ -6016,7 +6073,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6076,7 +6133,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6483,7 +6540,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6540,7 +6597,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

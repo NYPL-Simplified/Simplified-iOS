@@ -1,5 +1,5 @@
 //
-//  LibraryError.swift
+//  LibraryServiceError.swift
 //  Simplified
 //
 //  Created by Mickaël Menu on 12.06.19.
@@ -13,7 +13,7 @@
 import Foundation
 import R2Shared
 
-enum LibraryError: LocalizedError {
+enum LibraryServiceError: LocalizedError {
   
   case invalidBook
   case openFailed(Error)
