@@ -163,7 +163,7 @@
 {
   [super viewDidLoad];
   NYPLSettings *settings = [NYPLSettings sharedSettings];
-  if (settings.userHasSeenWelcomeScreen == YES) {
+  if (settings.userHasSeenWelcomeScreen) {
     Account *account = [[AccountsManager sharedInstance] currentAccount];
 
     __block NSURL *mainFeedUrl = [NSURL URLWithString:account.catalogUrl];
@@ -203,7 +203,7 @@
 #ifdef SIMPLYE
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   
-  if (settings.userHasSeenWelcomeScreen == NO) {
+  if (!settings.userHasSeenWelcomeScreen) {
     Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
 
     __block NSURL *mainFeedUrl = [NSURL URLWithString:currentAccount.catalogUrl];

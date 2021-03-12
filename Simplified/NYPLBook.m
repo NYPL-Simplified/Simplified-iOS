@@ -407,13 +407,8 @@ static NSString *const UpdatedKey = @"updated";
     for (int i = 0; i < (int)authorStrings.count; i++) {
       if ((int)authorLinks.count > i) {
         NSURL *url = [NSURL URLWithString:authorLinks[i]];
-        if (url) {
-          [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                        relatedBooksURL:url]];
-        } else {
-          [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                        relatedBooksURL:nil]];
-        }
+        [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
+                                                      relatedBooksURL:url]];
       } else {
         [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
                                                       relatedBooksURL:nil]];

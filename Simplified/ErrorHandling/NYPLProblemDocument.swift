@@ -105,9 +105,8 @@ import Foundation
       return problemDocFromError
     } else if let responseData = responseData {
       return try? NYPLProblemDocument.fromData(responseData)
-    } else {
-      return nil
     }
+      return nil
   }
 
   /**

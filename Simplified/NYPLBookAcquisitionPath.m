@@ -177,39 +177,52 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
   NSMutableSet *const mutableAcquisitionPathSet = [NSMutableSet set];
   NSMutableArray *const mutableAcquisitionPaths = [NSMutableArray array];
 
-  for (NYPLOPDSAcquisition *const acquisition in acquisitions) {
-    if ([types containsObject:acquisition.type]
-        && NYPLOPDSAcquisitionRelationSetContainsRelation(relations, acquisition.relation))
-    {
+    for (NYPLOPDSAcquisition *const acquisition in acquisitions) {
+      BOOL containsType = [types containsObject:acquisition.type];
+      BOOL containsRelation = NYPLOPDSAcquisitionRelationSetContainsRelation(relations, acquisition.relation);
+      BOOL shouldAdd = containsType && containsRelation;
+        
+      if (!shouldAdd) {
+        continue;
+      }
+        
       if (acquisition.indirectAcquisitions.count == 0) {
         [mutableAcquisitionPaths addObject:
          [[NYPLBookAcquisitionPath alloc]
           initWithRelation:acquisition.relation
           types:@[acquisition.type]
           url:acquisition.hrefURL]];
-      } else {
-        NSMutableSet<NSString *> *supportedSubtypes = [[NYPLBookAcquisitionPath supportedSubtypesForType:acquisition.type] mutableCopy];
-        [supportedSubtypes intersectSet:types];
-        for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
-          if (![supportedSubtypes containsObject:indirectAcquisition.type]) {
-            continue;
-          }
-          for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
-            [mutableTypePath insertObject:acquisition.type atIndex:0];
-            NYPLBookAcquisitionPath *const acquisitionPath =
-            [[NYPLBookAcquisitionPath alloc]
-             initWithRelation:acquisition.relation
-             types:[mutableTypePath copy]
-             url:acquisition.hrefURL];
-            if (![mutableAcquisitionPathSet containsObject:acquisitionPath]) {
-              [mutableAcquisitionPaths addObject:acquisitionPath];
-              [mutableAcquisitionPathSet addObject:acquisitionPath];
-            }
-          }
-        }
+          continue;
       }
-    }
-  }
+        
+      NSMutableSet<NSString *> *supportedSubtypes = [[NYPLBookAcquisitionPath
+                                                      supportedSubtypesForType:acquisition.type]
+                                                     mutableCopy];
+      [supportedSubtypes intersectSet:types];
+        
+      for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
+            
+        if (![supportedSubtypes containsObject:indirectAcquisition.type]) {
+                continue;
+        }
+            
+        for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
+                
+          [mutableTypePath insertObject:acquisition.type atIndex:0];
+                
+          NYPLBookAcquisitionPath *const acquisitionPath = [[NYPLBookAcquisitionPath alloc]
+                                                            initWithRelation:acquisition.relation
+                                                            types:[mutableTypePath copy]
+                                                            url:acquisition.hrefURL];
+            
+            if (![mutableAcquisitionPathSet containsObject:acquisitionPath]) {
+                [mutableAcquisitionPaths addObject:acquisitionPath];
+                [mutableAcquisitionPathSet addObject:acquisitionPath];
+            }
+                
+        } // mutableTypePath in mutableTypePaths(indirectAcquisition, types)
+      } // indirectAcquisition in acquisition.indirectAcquisitions
+    } // acquisition in acquisitions
 
   return [mutableAcquisitionPaths copy];
 }

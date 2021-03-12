@@ -187,10 +187,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 -(BOOL)tableView:(__attribute__((unused)) UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemDeveloperSettings) {
-    return true;
-  }
-  return false;
+  return SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemDeveloperSettings;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView

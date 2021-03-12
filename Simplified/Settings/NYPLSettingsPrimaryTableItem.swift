@@ -12,20 +12,17 @@ class NYPLSettingsPrimaryTableItem {
   private let vc: UIViewController?
   private let handler: ((UISplitViewController, UITableViewController)->())?
   
-  init(indexPath: IndexPath, title: String, viewController: UIViewController) {
+  init(indexPath: IndexPath,
+       title: String,
+       viewController: UIViewController? = nil,
+       selectionHandler: ((UISplitViewController, UITableViewController)->())? = nil) {
+    
     path = indexPath
     name = title
     vc = viewController
-    handler = nil
-  }
-  
-  init(indexPath: IndexPath, title: String, selectionHandler: @escaping (UISplitViewController, UITableViewController)->()) {
-    path = indexPath
-    name = title
-    vc = nil
     handler = selectionHandler
   }
-  
+    
   func handleItemTouched(splitVC: UISplitViewController, tableVC: UITableViewController) {
     if vc != nil {
       splitVC.showDetailViewController(vc!, sender: nil)

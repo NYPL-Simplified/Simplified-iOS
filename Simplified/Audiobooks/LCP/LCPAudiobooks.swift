@@ -94,7 +94,6 @@ extension LCPAudiobooks: DRMDecryptor {
       } catch {
         NYPLErrorLogger.logError(error, summary: "Error decrypting LCP audio file \(url)")
         completion(error)
-        return
       }
     }
   }
