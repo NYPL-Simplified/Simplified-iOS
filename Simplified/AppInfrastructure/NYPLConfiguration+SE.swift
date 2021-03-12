@@ -20,9 +20,8 @@ extension NYPLConfiguration {
     let libAccount = AccountsManager.sharedInstance().currentAccount
     if let mainColor = libAccount?.details?.mainColor {
       return NYPLAppTheme.themeColorFromString(name: mainColor)
-    } else {
-      return UIColor.defaultLabelColor()
     }
+    return UIColor.defaultLabelColor()
   }
 
   @objc static func iconLogoBlueColor() -> UIColor {

@@ -26,13 +26,7 @@ extension URLResponse {
   /// authentication needs to be refreshed.
   @objc(indicatesAuthenticationNeedsRefresh:)
   func indicatesAuthenticationNeedsRefresh(with problemDoc: NYPLProblemDocument?) -> Bool {
-    if let problemDoc = problemDoc, isProblemDocument() {
-      if problemDoc.type == NYPLProblemDocument.TypeInvalidCredentials {
-        return true
-      }
-    }
-
-    return false
+    return isProblemDocument() && problemDoc?.type == NYPLProblemDocument.TypeInvalidCredentials 
   }
 }
 

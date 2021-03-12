@@ -141,7 +141,9 @@
 
   NYPLUserAccount * const user = NYPLUserAccount.sharedAccount;
   if (user.authDefinition.needsAgeCheck) {
-    [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+    [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
+                                                                     currentLibraryAccountProvider:[AccountsManager shared]
+                                                                                        completion:^(BOOL isOfAge)  {
       [NYPLMainThreadRun asyncIfNeeded: ^{
         mainFeedUrl = [user.authDefinition coppaURLWithIsOfAge:isOfAge];
         completion();
@@ -161,7 +163,7 @@
 {
   [super viewDidLoad];
   NYPLSettings *settings = [NYPLSettings sharedSettings];
-  if (settings.userHasSeenWelcomeScreen == YES) {
+  if (settings.userHasSeenWelcomeScreen) {
     Account *account = [[AccountsManager sharedInstance] currentAccount];
 
     __block NSURL *mainFeedUrl = [NSURL URLWithString:account.catalogUrl];
@@ -175,7 +177,9 @@
     };
 
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
-      [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+      [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
+                                                                       currentLibraryAccountProvider:[AccountsManager shared]
+                                                                                          completion:^(BOOL isOfAge) {
         dispatch_async(dispatch_get_main_queue(), ^{
           mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
           completion();
@@ -199,7 +203,7 @@
 #ifdef SIMPLYE
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   
-  if (settings.userHasSeenWelcomeScreen == NO) {
+  if (!settings.userHasSeenWelcomeScreen) {
     Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
 
     __block NSURL *mainFeedUrl = [NSURL URLWithString:currentAccount.catalogUrl];
@@ -230,7 +234,9 @@
       [vc safelyPresentViewController:navController animated:YES completion:nil];
     };
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
-      [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+      [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
+                                                                       currentLibraryAccountProvider:[AccountsManager shared]
+                                                                                          completion:^(BOOL isOfAge) {
         mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
         completion();
       }];

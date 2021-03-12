@@ -169,7 +169,7 @@ class OPDS2SamlIDP: NSObject, Codable {
   }
   var needsAgeCheck: Bool {
     // this will tell if any authentication method requires age check
-    return auths.reduce(false) { $0 || $1.needsAgeCheck }
+    return auths.contains(where: { $0.needsAgeCheck })
   }
 
   fileprivate var urlAnnotations:URL?
@@ -180,8 +180,8 @@ class OPDS2SamlIDP: NSObject, Codable {
   
   var eulaIsAccepted:Bool {
     get {
-      guard let result = getAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey) else { return false }
-      return result as! Bool
+      return getAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey) as? Bool ?? false
+
     }
     set {
       setAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey,
@@ -190,8 +190,7 @@ class OPDS2SamlIDP: NSObject, Codable {
   }
   var syncPermissionGranted:Bool {
     get {
-      guard let result = getAccountDictionaryKey(accountSyncEnabledKey) else { return false }
-      return result as! Bool
+      return getAccountDictionaryKey(accountSyncEnabledKey) as? Bool ?? false
     }
     set {
       setAccountDictionaryKey(accountSyncEnabledKey, toValue: newValue as AnyObject)
@@ -199,8 +198,8 @@ class OPDS2SamlIDP: NSObject, Codable {
   }
   var userAboveAgeLimit:Bool {
     get {
-      guard let result = getAccountDictionaryKey(userAboveAgeKey) else { return false }
-      return result as! Bool
+      return getAccountDictionaryKey(userAboveAgeKey) as? Bool ?? false
+
     }
     set {
       setAccountDictionaryKey(userAboveAgeKey, toValue: newValue as AnyObject)

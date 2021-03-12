@@ -190,12 +190,17 @@
 "Authentication Required" = "Authentication Required";
 "Please sign in to use this functionality." = "Please sign in to use this functionality.";
 
+// Age Check
+"Age Verification" = "Age Verification";
+"Please enter your birth year" = "Please enter your birth year";
+"Done" = "Done";
+"Next" = "Next";
+
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
 "Add Library" = "Add Library";
 "Report an Issue" = "Report an Issue";
 "Show Barcode" = "Show Barcode";
 "Hide Barcode" = "Hide Barcode";
-"I am 13 years of age or older." = "I am 13 years of age or older.";
 "Don't have a library card?" = "Don't have a library card?";
 "Sync Bookmarks" = "Sync Bookmarks";
 "Save your reading position and bookmarks to all your other devices." = "Save your reading position and bookmarks to all your other devices.";

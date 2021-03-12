@@ -50,7 +50,7 @@ extension NYPLSignInBusinessLogic {
 
     NotificationCenter.default
       .addObserver(self,
-                   selector: #selector(handleRedirectURL(_:)),
+                   selector: #selector(handleRedirectURL(_:completion:)),
                    name: .NYPLAppDelegateDidReceiveCleverRedirectURL,
                    object: nil)
 
@@ -67,7 +67,7 @@ extension NYPLSignInBusinessLogic {
 
   //----------------------------------------------------------------------------
   // this is used by both Clever and SAML authentication
-  @objc func handleRedirectURL(_ notification: Notification) {
+  @objc func handleRedirectURL(_ notification: Notification, completion: (_ error: Error?, _ errorTitle: String?, _ errorMessage: String?)->()) {
     NotificationCenter.default
       .removeObserver(self, name: .NYPLAppDelegateDidReceiveCleverRedirectURL, object: nil)
 
@@ -77,6 +77,7 @@ extension NYPLSignInBusinessLogic {
                                metadata: [
                                 "authMethod": selectedAuthentication?.methodDescription ?? "N/A",
                                 "context": uiDelegate?.context ?? "N/A"])
+      completion(nil, nil, nil)
       return
     }
 
@@ -89,14 +90,10 @@ extension NYPLSignInBusinessLogic {
                                  metadata: [
                                   "loginURL": urlStr,
                                   "context": uiDelegate?.context ?? "N/A"])
-
-        NYPLMainThreadRun.asyncIfNeeded {
-          self.uiDelegate?.businessLogic(self,
-                                         didEncounterValidationError: nil,
-                                         userFriendlyErrorTitle: NSLocalizedString("SettingsAccountViewControllerLoginFailed", comment: "Title for login error alert"),
-                                         andMessage: NSLocalizedString("An error occurred during the authentication process",
-          comment: "Generic error message while handling sign-in redirection during authentication"))
-        }
+        completion(nil,
+                   NSLocalizedString("SettingsAccountViewControllerLoginFailed", comment: "Title for login error alert"),
+                   NSLocalizedString("An error occurred during the authentication process",
+                                     comment: "Generic error message while handling sign-in redirection during authentication"))
         return
     }
 
@@ -109,6 +106,7 @@ extension NYPLSignInBusinessLogic {
                                metadata: [
                                 "loginURL": urlStr,
                                 "context": uiDelegate?.context ?? "N/A"])
+      completion(nil, nil, nil)
       return
     }
 
@@ -123,14 +121,12 @@ extension NYPLSignInBusinessLogic {
     if
       let rawError = kvpairs["error"],
       let error = rawError.replacingOccurrences(of: "+", with: " ").removingPercentEncoding,
-      let parsedError = error.parseJSONString as? [String: String] {
+      let parsedError = error.parseJSONString as? [String: Any] {
 
-      NYPLMainThreadRun.asyncIfNeeded {
-        self.uiDelegate?.businessLogic(self,
-                                       didEncounterValidationError: nil,
-                                       userFriendlyErrorTitle: NSLocalizedString("SettingsAccountViewControllerLoginFailed", comment: "Title for login error alert"),
-                                       andMessage: parsedError["title"])
-      }
+      completion(nil,
+                 NSLocalizedString("SettingsAccountViewControllerLoginFailed", comment: "Title for login error alert"),
+                 parsedError["title"] as? String)
+      return
     }
 
     guard
@@ -145,11 +141,13 @@ extension NYPLSignInBusinessLogic {
                                   "payloadDictionary": kvpairs,
                                   "redirectURL": url,
                                   "context": uiDelegate?.context ?? "N/A"])
+        completion(nil, nil, nil)
         return
     }
 
     self.authToken = authToken
     self.patron = parsedPatron
     validateCredentials()
+    completion(nil, nil, nil)
   }
 }

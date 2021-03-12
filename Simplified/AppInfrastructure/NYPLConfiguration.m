@@ -18,10 +18,7 @@
   if(customURL) return customURL;
 
   NSURL *const accountURL = [NYPLSettings sharedSettings].accountMainFeedURL;
-  
-  if(accountURL) return accountURL;
-
-  return nil;
+  return accountURL;
 }
 
 + (NSURL *)minimumVersionURL

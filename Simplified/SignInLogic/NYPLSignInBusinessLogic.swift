@@ -40,7 +40,7 @@ extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 extension NYPLADEPT: NYPLDRMAuthorizing {}
 #endif
 
-class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
+class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentLibraryAccountProvider {
   /// Makes a business logic object with a network request executor that
   /// performs no persistent storage for caching.
   @objc convenience init(libraryAccountID: String,
@@ -167,6 +167,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider {
 
   @objc var libraryAccount: Account? {
     return libraryAccountsProvider.account(libraryAccountID)
+  }
+  
+  var currentAccount: Account? {
+    return libraryAccount
   }
 
   @objc var selectedIDP: OPDS2SamlIDP?

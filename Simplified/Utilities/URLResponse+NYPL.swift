@@ -15,17 +15,14 @@ extension URLResponse {
   /// - Returns: `true` is the response contains a problem Document,
   /// `false` otherwise.
   @objc func isProblemDocument() -> Bool {
-    guard let mimeType = mimeType else {
-      return false
-    }
-
-    return mimeType == "application/problem+json" ||
-      mimeType == "application/api-problem+json"
+    
+    return ["application/problem+json",
+            "application/api-problem+json"].contains(mimeType)
   }
 }
 
 extension HTTPURLResponse {
   @objc func isSuccess() -> Bool {
-    return statusCode >= 200 && statusCode <= 299
+    return (200...299).contains(statusCode)
   }
 }

@@ -120,10 +120,12 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 // a chance to update their copy with the new one, without having to keep it in the registry after.
 - (void)updateAndRemoveBook:(nonnull NYPLBook *)book;
 
-// This method should be called whenever new book information is retrieved from a server, but may
-// not include user-specific information. We want to update the metadata, but not overwrite the
-// existing availability information and acquisition URLs.
-- (void)updateBookMetadata:(nonnull NYPLBook *)book;
+/// Returns the given book after updating its metadata.
+/// @note This method should be called whenever new book information is retrieved from a server, but may
+///  not include user-specific information. We want to update the metadata, but not overwrite the existing
+///  availability information and acquisition URLs.
+/// @param book The book we want to update
+- (nullable NYPLBook *)updatedBookMetadata:(nonnull NYPLBook *)book;
 
 // Returns the book for a given identifier if it is registered, else nil.
 - (nullable NYPLBook *)bookForIdentifier:(nonnull NSString *)identifier;

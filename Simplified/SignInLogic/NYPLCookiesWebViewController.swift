@@ -44,6 +44,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
   }
   private let webView = WKWebView()
   private var previousRequest: URLRequest?
+  private var wasBookFound = false
 
   init() {
     super.init(nibName: nil, bundle: nil)
@@ -187,8 +188,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
     // load customized request
     webView.load(mutableRequest)
   }
-
-  private var wasBookFound = false
+  
   func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
 
     if #available(iOS 11.0, *) { } else {

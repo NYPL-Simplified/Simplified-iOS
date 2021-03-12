@@ -467,19 +467,14 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
     if(record) {
+      [self.coverRegistry removePinnedThumbnailImageForBookIdentifier:book.identifier];
       self.identifiersToRecords[book.identifier] = [[record recordWithBook:book] recordWithState:NYPLBookStateUnregistered];
       [self broadcastChange];
-      // Queue this up so it happens after the broadcast is done.
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [self performSynchronizedWithoutBroadcasting:^{
-          [self removeBookForIdentifier:book.identifier];
-        }];
-      }];
     }
   }
 }
 
-- (void)updateBookMetadata:(NYPLBook *)book
+- (NYPLBook *)updatedBookMetadata:(NYPLBook *)book
 {
   if(!book) {
     @throw NSInvalidArgumentException;
@@ -489,9 +484,13 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
     if(record) {
       book = [record.book bookWithMetadataFromBook:book];
-      self.identifiersToRecords[book.identifier] = [record recordWithBook:book];
+      NYPLBookRegistryRecord *const updatedRecord = [record recordWithBook:book];
+      self.identifiersToRecords[book.identifier] = updatedRecord;
+      NYPLBook *updatedBook = updatedRecord.book;
       [self broadcastChange];
+      return updatedBook;
     }
+    return nil;
   }
 }
 
@@ -591,12 +590,8 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
         return NSOrderedAscending;
       return NSOrderedSame;
     }];
-
-    if (sortedArray) {
-      return sortedArray;
-    } else {
-      return [NSArray array];
-    }
+      
+    return sortedArray ?: [NSArray array];
   }
 }
   
