@@ -47,7 +47,7 @@ carthage build --platform iOS
 
 echo "Building r2-navigator-swift Carthage dependencies..."
 cd ../r2-navigator-swift
-git checkout 2.0.0-beta.1
+git checkout 2.0.0-beta.1.nypl
 rm -rf Carthage
 carthage checkout
 carthage build --platform iOS
@@ -57,7 +57,9 @@ cd ../Simplified-iOS
 
 # remove R2 dependencies from Carthage since we'll build them in the R2 workspace
 sed -i '' "s|github \"readium/r2|#github \"readium/r2|" Cartfile
+sed -i '' "s|github \"NYPL-Simplified/r2|#github \"NYPL-Simplified/r2|" Cartfile
 sed -i '' "s|github \"readium/r2.*||" Cartfile.resolved
+sed -i '' "s|github \"NYPL-Simplified/r2.*||" Cartfile.resolved
 
 carthage checkout
 ./Carthage/Checkouts/NYPLAEToolkit/scripts/fetch-audioengine.sh
