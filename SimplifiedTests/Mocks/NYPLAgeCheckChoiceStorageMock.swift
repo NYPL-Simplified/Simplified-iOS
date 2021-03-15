@@ -1,5 +1,5 @@
 //
-//  NYPLAgeCheckChoiceStorage.swift
+//  NYPLAgeCheckChoiceStorageMock.swift
 //  SimplyETests
 //
 //  Created by Ernest Fan on 2021-03-11.

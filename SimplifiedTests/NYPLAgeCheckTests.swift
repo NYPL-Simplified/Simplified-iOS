@@ -12,7 +12,6 @@ import XCTest
 class NYPLAgeCheckTests: XCTestCase {
 
   // Classes/mocks needed for testing
-  var libraryAccountMock: NYPLLibraryAccountMock!
   var ageCheckChoiceStorageMock: NYPLAgeCheckChoiceStorageMock!
   var userAccountProviderMock: NYPLUserAccountProviderMock!
   var simplyeLibraryAccountProviderMock: NYPLCurrentLibraryAccountProviderMock!
@@ -31,7 +30,6 @@ class NYPLAgeCheckTests: XCTestCase {
   override func setUpWithError() throws {
     try super.setUpWithError()
     
-    libraryAccountMock = NYPLLibraryAccountMock()
     ageCheckChoiceStorageMock = NYPLAgeCheckChoiceStorageMock()
     simplyeLibraryAccountProviderMock = NYPLCurrentLibraryAccountProviderMock()
     userAccountProviderMock = NYPLUserAccountProviderMock()
