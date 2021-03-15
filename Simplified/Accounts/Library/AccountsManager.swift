@@ -256,7 +256,6 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     guard !wasAlreadyLoading else { return }
 
-    Log.debug(#file, "loadCatalog:: GETting \(targetUrl)...")
     NYPLNetworkExecutor.shared.GET(targetUrl) { result in
       switch result {
       case .success(let data, _):

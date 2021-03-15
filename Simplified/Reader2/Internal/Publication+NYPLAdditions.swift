@@ -1,5 +1,5 @@
 //
-//  R2+NYPLAdditions.swift
+//  Publication+NYPLAdditions.swift
 //  Simplified
 //
 //  Created by Ettore Pasquini on 6/11/20.
@@ -24,11 +24,10 @@ extension Publication {
   /// - Returns: The Link object matching the given ID, if it exists in the
   /// publication.
   func link(withIDref idref: String) -> Link? {
-    // The Publication stores all positions from the Epub in various
-    // collections of Link objects. For bookmarks, these are contained inside
+    // The Publication stores all bookmarks (and TOC; positions in general) in
     // the `readingOrder` list. Each `Link` stores its metadata in a
     // `properties` dictionary.
-    return link { $0.properties["id"] as? String == idref }
+    return readingOrder.first { $0.properties["id"] as? String == idref }
   }
 
   /// Derives the `idref` (often used in Readium 1) from a Readium 2 `href`.
@@ -45,7 +44,7 @@ extension Publication {
   /// - Returns: The `idref` related to the resource in question. This *should*
   /// be usable in R1 contexts.
   func idref(forHref href: String) -> String? {
-    let link = self.link(withHref: href)
+    let link = self.link(withHREF: href)
     return link?.properties["id"] as? String
   }
 
@@ -58,6 +57,6 @@ extension Publication {
   /// structures) pointed at by the given Locator.
   /// - parameter locator: The location for which we want the resource index of.
   func resourceIndex(forLocator locator: Locator) -> Int? {
-    return readingOrder.firstIndex(withHref: locator.href)
+    return readingOrder.firstIndex(withHREF: locator.href)
   }
 }

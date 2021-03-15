@@ -419,7 +419,6 @@ class OPDS2SamlIDP: NSObject, Codable {
       return
     }
 
-    Log.info(#function, "GETting auth doc at \(url)")
     NYPLNetworkExecutor.shared.GET(url) { result in
       switch result {
       case .success(let serverData, _):

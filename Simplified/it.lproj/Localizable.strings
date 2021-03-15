@@ -169,8 +169,12 @@
 "%@ through chapter" = "%@ del capitolo";
 "There are no bookmarks for this book." = "Non ci sono segnalibri per questo libro.";
 
-// Settings
-"SettingsConnectionFailureMessage" = "Non è stato possibile caricare la pagina per via di un errore nella connessione a internet.";
+// Reader error messages (R2)
+"Content Protection Error" = "Errore nella protezione del contenuto";
+"The book you were trying to open is invalid." = "Il libro che stavi cercando di leggere è in un formato non valido.";
+"An error was encountered while trying to open this book." = "Si è verificato un errore durante l'apertura di questo libro.";
+"The book you were trying to read is in an unsupported format." = "Il libro che stavi cercando di aprire è in un formato non supportato.";
+"The book you were trying to read is corrupted. Please try downloading it again." = "Il libro che stavi cercando di leggere è danneggiato. Prova a scaricarlo di nuovo.";
 
 // NYPLSettings
 "The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";

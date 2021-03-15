@@ -174,6 +174,13 @@
 "%@ through chapter" = "%@ through chapter";
 "There are no bookmarks for this book." = "There are no bookmarks for this book.";
 
+// Reader error messages (R2)
+"Content Protection Error" = "Content Protection Error";
+"The book you were trying to open is invalid." = "The book you were trying to open is invalid.";
+"An error was encountered while trying to open this book." = "An error was encountered while trying to open this book.";
+"The book you were trying to read is in an unsupported format." = "The book you were trying to read is in an unsupported format.";
+"The book you were trying to read is corrupted. Please try downloading it again." = "The book you were trying to read is corrupted. Please try downloading it again.";
+
 // NYPLSettings
 "The page could not load due to a connection error." = "The page could not load due to a connection error.";
 
@@ -253,15 +260,3 @@
 "Open eBooks provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works." =
 "The Open eBooks app provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works.\n\nChildren from low-income areas may qualify for access in several ways.";
 "You need to login to access the collection." = "You need to login to access the collection.";
-
-// LCPAuthenticationViewController localizable strings
-// Passphrase request screen
-"Passphrase Required" = "Passphrase Required";
-"Incorrect Passphrase" = "Incorrect Passphrase";
-"This publication is protected by Readium LCP." = "This publication is protected by Readium LCP.";
-"In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:" = "In order to open it, we need to know the passphrase required by:\n\n%@\n\nTo help you remember it, the following hint is available:";
-// Button to contact the support when entering the passphrase
-"Website" = "Website";
-"Phone" = "Phone";
-"Mail" = "Mail";
-"Support" = "Support";

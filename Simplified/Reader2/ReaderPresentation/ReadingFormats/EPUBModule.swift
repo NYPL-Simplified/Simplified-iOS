@@ -1,6 +1,6 @@
 //
 //  EPUB.swift
-//  r2-testapp-swift
+//  Simplified
 //
 //  Created by Mickaël Menu on 22.02.19.
 //
@@ -17,27 +17,29 @@ import R2Shared
 
 final class EPUBModule: ReaderFormatModule {
   
-  weak var delegate: ReaderFormatModuleDelegate?
+  weak var delegate: ModuleDelegate?
+  let resourcesServer: ResourcesServer
   
-  init(delegate: ReaderFormatModuleDelegate?) {
+  init(delegate: ModuleDelegate?, resourcesServer: ResourcesServer) {
     self.delegate = delegate
+    self.resourcesServer = resourcesServer
   }
   
   var publicationFormats: [Publication.Format] {
     return [.epub, .webpub]
   }
   
-  func makeReaderVC(for publication: Publication,
-                    book: NYPLBook,
-                    drm: DRM?,
-                    resourcesServer: ResourcesServer) throws -> UIViewController {
+  func makeReaderViewController(for publication: Publication,
+                                book: NYPLBook,
+                                initialLocation: Locator?) throws -> UIViewController {
+      
     guard publication.metadata.identifier != nil else {
       throw ReaderError.epubNotValid
     }
     
     let epubVC = NYPLEPUBViewController(publication: publication,
                                         book: book,
-                                        drm: drm,
+                                        initialLocation: initialLocation,
                                         resourcesServer: resourcesServer)
     epubVC.moduleDelegate = delegate
     return epubVC

@@ -11,18 +11,14 @@ import R2Shared
 import R2Navigator
 
 /// Encapsulates all of the SimplyE business logic related to bookmarking.
-class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDelegate {
+class NYPLReaderBookmarksBusinessLogic: NSObject {
 
   var bookmarks: [NYPLReadiumBookmark] = []
-  private let book: NYPLBook
+  let book: NYPLBook
   private let publication: Publication
-  private let syncManager: NYPLReadiumViewSyncManager? = nil
   private let drmDeviceID: String?
   private let bookRegistryProvider: NYPLBookRegistryProvider
   private let currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
-  private var lastReadPositionUploadDate: Date
-  private var queuedReadPosition: String = ""
-  private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).bookmarkBusinessLogic", target: .global(qos: .utility))
 
   init(book: NYPLBook,
        r2Publication: Publication,
@@ -35,10 +31,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     self.bookRegistryProvider = bookRegistryProvider
     bookmarks = bookRegistryProvider.readiumBookmarks(forIdentifier: book.identifier)
     self.currentLibraryAccountProvider = currentLibraryAccountProvider
-    self.lastReadPositionUploadDate = Date().addingTimeInterval(-120)
-    
+
     super.init()
-    NotificationCenter.default.addObserver(self, selector: #selector(postQueuedReadPositionInSerialQueue), name: UIApplication.willResignActiveNotification, object: nil)
   }
 
   func bookmark(at index: Int) -> NYPLReadiumBookmark? {
@@ -127,7 +121,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     let chapter: String?
     if let locatorChapter = bookmarkLoc.locator.title {
       chapter = locatorChapter
-    } else if let tocLink = publication.tableOfContents.first(withHref: bookmarkLoc.locator.href) {
+    } else if let tocLink = publication.tableOfContents.first(withHREF: bookmarkLoc.locator.href) {
       chapter = tocLink.title
     } else {
       chapter = nil
@@ -336,118 +330,6 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     completion()
   }
 
-  // MARK: - Read Position
-  
-  func storeReadPosition(locator: Locator) {
-    // Avoid overwriting location when reader first open
-    guard (locator.locations.totalProgression ?? 0) != 0,
-      let bookLocation = NYPLBookLocation(locator: locator, publication: publication, renderer: NYPLBookLocation.r2Renderer) else {
-      return
-    }
-    
-    bookRegistryProvider.setLocation(bookLocation, forIdentifier: book.identifier)
-    postReadPosition(locationString: bookLocation.locationString)
-  }
-  
-  /// Restore locally stored location and  sync location from server
-  /// Both local and server fetch completions are only called if fetch succeed
-  func restoreReadPosition(currentLocator: Locator?, localFetchCompletion: (Locator?) -> (), serverFetchCompletion: @escaping (Locator?) -> ()) {
-    var currentLocation:NYPLBookLocation?
-    
-    if let currentLocator = currentLocator {
-      currentLocation = NYPLBookLocation(locator: currentLocator, publication: publication, renderer: NYPLBookLocation.r2Renderer)
-    }
-    
-    if let lastSavedLocation = bookRegistryProvider.location(forIdentifier: book.identifier),
-      let locator = lastSavedLocation.convertToLocator() {
-      localFetchCompletion(locator)
-      currentLocation = lastSavedLocation
-    }
-    
-    syncReadPosition(bookID: book.identifier, currentLocation: currentLocation, url: book.annotationsURL) { (serverLocationString) in
-      guard let locationString = serverLocationString,
-        let locator = NYPLBookLocation(locationString: locationString, renderer: NYPLBookLocation.r2Renderer).convertToLocator() else {
-        Log.debug(#file, "Unable to create locator from server stored location string - \(serverLocationString ?? "")")
-        return
-      }
-      
-      serverFetchCompletion(locator)
-    }
-  }
-  
-  /// Post the read position to server if we have synced the read position from server
-  /// There is a 120 seconds interval to avoid high frequency of requests
-  /// - Parameters:
-  /// - locationString: A json string that contains required information to create a Locator object
-  private func postReadPosition(locationString: String) {
-    serialQueue.async { [weak self] in
-      self?.queuedReadPosition = locationString
-      
-      if Date() > self?.lastReadPositionUploadDate.addingTimeInterval(120) ?? Date() {
-        self?.postQueuedReadPosition()
-      }
-    }
-  }
-  
-  private func postQueuedReadPosition() {
-    if self.queuedReadPosition != "" {
-      NYPLAnnotations.postReadingPosition(forBook: self.book.identifier, annotationsURL: nil, cfi: self.queuedReadPosition)
-      self.queuedReadPosition = ""
-      self.lastReadPositionUploadDate = Date()
-    }
-  }
-  
-  @objc private func postQueuedReadPositionInSerialQueue() {
-    serialQueue.async { [weak self] in
-      self?.postQueuedReadPosition()
-    }
-  }
-  
-  /// GET the read position from server
-  /// The read position from server should only be returned
-  /// if it comes from a different device and does not match current location
-  private func syncReadPosition(bookID: String,
-                                currentLocation: NYPLBookLocation?,
-                                url: URL?,
-                                completion: @escaping (String?) -> ()) {
-    NYPLAnnotations.syncReadingPosition(ofBook: bookID, toURL: url) { [weak self] (responseObject) in
-      guard let responseObject = responseObject else {
-        Log.debug(#file, "No Server Annotation for this book exists.")
-        completion(nil)
-        return
-      }
-      
-      let deviceID = responseObject["device"] ?? ""
-      let serverLocationString = responseObject["serverCFI"]
-      
-      // Pass through without presenting the Alert Controller if:
-      // 1 - There is no recent page saved on the server
-      // 2 - The most recent page on the server comes from the same device
-      // 3 - The server and the client have the same page marked
-      
-      if (serverLocationString == nil ||
-        deviceID == self?.drmDeviceID ||
-        currentLocation?.locationString == serverLocationString) {
-        completion(nil)
-        return
-      }
-      
-      completion(serverLocationString)
-    }
-  }
-
-  // MARK: - NYPLReadiumViewSyncManagerDelegate
-
-  func patronDecidedNavigation(_ toLatestPage: Bool, withNavDict dict: [AnyHashable : Any]!) {
-
-  }
-
-  func uploadFinished(for bookmark: NYPLReadiumBookmark!, inBook bookID: String!) {
-
-  }
-    
-  // Helper
-    
   private func handleBookmarksSyncFail(message: String,
                                        completion: @escaping (Bool, [NYPLReadiumBookmark]) -> ()) {
     Log.info(#file, message)

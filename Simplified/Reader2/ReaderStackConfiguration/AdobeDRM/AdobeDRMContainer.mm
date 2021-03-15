@@ -6,6 +6,8 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
+#ifdef FEATURE_DRM_CONNECTOR
+
 #import "AdobeDRMContainer.h"
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreorder"
@@ -48,39 +50,6 @@ static id acsdrm_lock = nil;
     
   }
   return self;
-}
-
-/// Searches encryption data for the first encrypted file
-/// @param data encryption.xml data
-- (NSString *)firstPathElement:(NSData *)data error:(NSError **)error {
-  NSString *encryptionString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-  // looking for encrypted file path
-  NSRegularExpression *filesRegEx = [NSRegularExpression regularExpressionWithPattern:@"CipherReference URI=\"(.+)\"" options:NSRegularExpressionCaseInsensitive error:error];
-  if (*error) {
-    return nil;
-  }
-  NSTextCheckingResult *result =  [filesRegEx firstMatchInString:encryptionString options:0 range:NSMakeRange(0, encryptionString.length)];
-  NSRange resultRange = [result rangeAtIndex:(result.numberOfRanges - 1)];
-  if (resultRange.location == NSNotFound) {
-    return nil;
-  }
-  return [encryptionString substringWithRange:resultRange];
-}
-
-- (NSData *)decodeData:(NSData *)data {
-  // When file path is not provided, we use the first element to get its path
-  // and later its encryption algorithm
-  self.epubDecodingError = nil;
-  NSError *error;
-  NSString *firstElementPath = [self firstPathElement:encryptionData error:&error];
-  if (error) {
-    self.epubDecodingError = error.localizedDescription;
-    return data;
-  } else if (firstElementPath) {
-    return [self decodeData:data at:firstElementPath];
-  } else {
-    return data;
-  }
 }
 
 - (NSData *)decodeData:(NSData *)data at:(NSString *)path {
@@ -136,18 +105,10 @@ static id acsdrm_lock = nil;
       self.epubDecodingError = [NSString stringWithUTF8String:error.utf8()];
       return data;
     }
-    // Copy filtered data from Buffer to an array of bytes
-    unsigned char *output = new unsigned char[filteredData->length()];
-    size_t outputLen = filteredData->length();
-    memcpy(output, filteredData->data(), outputLen);
-    NSData *decryptedData = [NSData dataWithBytes:output length: NSUInteger(outputLen)];
-    NSMutableData *result = [NSMutableData dataWithData:decryptedData];
-    // Data padding is required in Readium 2
-    // number of bytes to trim from the result (1 means this last byte will be cut off)
-    const char padding[] = {1};
-    [result appendBytes:padding length:1];
-    return [result copy];
+    return [NSData dataWithBytes:filteredData->data() length: NSUInteger(filteredData->length())];
   }
 }
 
 @end
+
+#endif
