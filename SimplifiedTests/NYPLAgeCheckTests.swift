@@ -120,7 +120,7 @@ class NYPLAgeCheckTests: XCTestCase {
     }
     
     ageCheck.didFailAgeCheck()
-    waitForExpectations(timeout: 3, handler: nil)
+    waitForExpectations(timeout: 1, handler: nil)
     
     XCTAssertFalse(ageCheckChoiceStorageMock.userPresentedAgeCheck)
   }
