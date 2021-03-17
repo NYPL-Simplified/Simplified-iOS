@@ -281,6 +281,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
 
     button.type = NYPLRoundedButtonTypeNormal;
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
+      // TODO: SIMPLY-3621 integrate this logic in NYPLBookDetailButtonsView
       [self.book.defaultAcquisition.availability
        matchUnavailable:nil
        limited:^(NYPLOPDSAcquisitionAvailabilityLimited *const _Nonnull limited) {

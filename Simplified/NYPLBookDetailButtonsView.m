@@ -15,9 +15,9 @@
 @property (nonatomic) NYPLRoundedButton *deleteButton;
 @property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) NYPLRoundedButton *readButton;
-@property (nonatomic) NYPLRoundedButton *cancelButton;
+@property (nonatomic) NYPLRoundedButton *cancelButton;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
 @property (nonatomic) NSArray *visibleButtons;
-@property (nonatomic) NSMutableArray *constraints;
+@property (nonatomic) NSMutableArray *constraints;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
 @property (nonatomic) id observer;
 
 @end
@@ -34,28 +34,28 @@
   self.constraints = [[NSMutableArray alloc] init];
   
   self.deleteButton = [NYPLRoundedButton button];
-  self.deleteButton.fromDetailView = YES;
-  self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;
+  self.deleteButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
   [self.deleteButton addTarget:self action:@selector(didSelectReturn) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.deleteButton];
 
   self.downloadButton = [NYPLRoundedButton button];
-  self.downloadButton.fromDetailView = YES;
-  self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;
+  self.downloadButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
   [self.downloadButton addTarget:self action:@selector(didSelectDownload) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.downloadButton];
 
   self.readButton = [NYPLRoundedButton button];
-  self.readButton.fromDetailView = YES;
-  self.readButton.titleLabel.minimumScaleFactor = 0.8f;
+  self.readButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.readButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
   
-  self.cancelButton = [NYPLRoundedButton button];
-  self.cancelButton.fromDetailView = YES;
-  self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;
-  [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.cancelButton];
+  self.cancelButton = [NYPLRoundedButton button];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.cancelButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  [self addSubview:self.cancelButton];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
   
   self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.activityIndicator.color = [NYPLConfiguration mainColor];
@@ -216,7 +216,7 @@
       }
       break;
     }
-    case NYPLBookButtonsStateDownloadInProgress:
+    case NYPLBookButtonsStateDownloadInProgress:// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
     {
       if (self.showReturnButtonIfApplicable)
       {
@@ -227,7 +227,7 @@
       }
       break;
     }
-    case NYPLBookButtonsStateDownloadFailed:
+    case NYPLBookButtonsStateDownloadFailed:// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
     {
       if (self.showReturnButtonIfApplicable)
       {
@@ -287,6 +287,7 @@
 
     // Provide End-Date for checked out loans
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
+      // TODO: SIMPLY-3621 difference with NYPLBookButtonsView
       if ([self.book.defaultAcquisition.availability.until timeIntervalSinceNow] > 0
           && self.state != NYPLBookButtonsStateHolding) {
         button.type = NYPLRoundedButtonTypeClock;
