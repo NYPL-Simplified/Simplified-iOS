@@ -284,14 +284,19 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
       [self.book.defaultAcquisition.availability
        matchUnavailable:nil
        limited:^(NYPLOPDSAcquisitionAvailabilityLimited *const _Nonnull limited) {
-         if (limited.until && [limited.until timeIntervalSinceNow] > 0) {
+         if ([limited.until timeIntervalSinceNow] > 0) {
            button.type = NYPLRoundedButtonTypeClock;
            button.endDate = limited.until;
          }
        }
        unlimited:nil
        reserved:nil
-       ready:nil];
+       ready:^(NYPLOPDSAcquisitionAvailabilityReady *const _Nonnull limited) {
+        if ([limited.until timeIntervalSinceNow] > 0) {
+          button.type = NYPLRoundedButtonTypeClock;
+          button.endDate = limited.until;
+        }
+      }];
     }
 
     [visibleButtons addObject:button];

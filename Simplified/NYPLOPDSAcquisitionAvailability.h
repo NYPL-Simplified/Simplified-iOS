@@ -17,12 +17,12 @@ extern NYPLOPDSAcquisitionAvailabilityCopies const NYPLOPDSAcquisitionAvailabili
 /// @c YES for limited, unlimited, and ready states, else @c NO.
 @property (nonatomic, readonly) BOOL available;
 
-/// When this availability state began. Always @c nil unless @c Limited
-/// or @c Reserved.
+/// When this availability state began.
+/// See https://git.io/JmCQT for full semantics.
 @property (nonatomic, readonly, nullable) NSDate *since;
 
-/// When this availability state will end. Always @c nil unless @c Limited
-/// or @c Reserved.
+/// When this availability state will end.
+/// See https://git.io/JmCQT for full semantics.
 @property (nonatomic, readonly, nullable) NSDate *until;
 
 - (void)

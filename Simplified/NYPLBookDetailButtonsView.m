@@ -253,7 +253,7 @@
   
   BOOL fulfillmentIdRequired = NO;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier];
-  BOOL hasRevokeLink = (self.book.revokeURL && state && (state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed));
+  BOOL hasRevokeLink = (self.book.revokeURL && (state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed));
 
   #if defined(FEATURE_DRM_CONNECTOR)
   
@@ -287,7 +287,8 @@
 
     // Provide End-Date for checked out loans
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      if (self.book.defaultAcquisition.availability.until && [self.book.defaultAcquisition.availability.until timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
+      if ([self.book.defaultAcquisition.availability.until timeIntervalSinceNow] > 0
+          && self.state != NYPLBookButtonsStateHolding) {
         button.type = NYPLRoundedButtonTypeClock;
         button.endDate = self.book.defaultAcquisition.availability.until;
       } else {

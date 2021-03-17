@@ -9,7 +9,7 @@ typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
   NYPLBookButtonsStateCanBorrow,
   NYPLBookButtonsStateCanHold,
   NYPLBookButtonsStateHolding,
-  NYPLBookButtonsStateHoldingFOQ, // Front Of Queue
+  NYPLBookButtonsStateHoldingFOQ, //Front Of Queue: a book that was Reserved and now it's Ready for borrow
   NYPLBookButtonsStateDownloadNeeded,
   NYPLBookButtonsStateDownloadSuccessful,
   NYPLBookButtonsStateUsed,
