@@ -46,7 +46,7 @@ protocol NYPLRequestExecuting {
   /// - Parameter credentialsProvider: The object responsible with providing cretdentials
   /// - Parameter cachingStrategy: The strategy to cache responses with.
   /// - Parameter delegateQueue: The queue where callbacks will be called.
-  init(credentialsProvider: NYPLBasicAuthCredentialsProvider? = nil,
+  @objc init(credentialsProvider: NYPLBasicAuthCredentialsProvider? = nil,
        cachingStrategy: NYPLCachingStrategy,
        delegateQueue: OperationQueue? = nil) {
     self.responder = NYPLNetworkResponder(credentialsProvider: credentialsProvider,
@@ -219,4 +219,30 @@ extension NYPLNetworkExecutor {
     }
     return executeRequest(req, completion: completionWrapper)
   }
+    
+  /// Performs a POST request using the specified request
+  /// - Parameters:
+  ///   - request: Request to be posted..
+  ///   - completion: Always called when the api call either returns or times out
+  @discardableResult
+  @objc
+  func POST(_ request: URLRequest,
+            completion: ((_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void)?) -> URLSessionDataTask {
+      
+    if (request.httpMethod != "POST") {
+      var newRequest = request
+      newRequest.httpMethod = "POST"
+      return POST(newRequest, completion: completion)
+    }
+      
+    let completionWrapper: (_ result: NYPLResult<Data>) -> Void = { result in
+      switch result {
+        case let .success(data, response): completion?(data, response, nil)
+        case let .failure(error, response): completion?(nil, response, error)
+      }
+    }
+    
+    return executeRequest(request, completion: completionWrapper)
+    }
+    
 }

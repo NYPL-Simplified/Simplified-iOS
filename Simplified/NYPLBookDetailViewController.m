@@ -19,6 +19,7 @@
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) NYPLBookDetailView *bookDetailView;
+@property (nonatomic) NYPLNetworkExecutor *executor;
 
 -(void)didCacheProblemDocument;
 
@@ -36,6 +37,11 @@
   }
 
   self.book = book;
+    
+  self.executor = [[NYPLNetworkExecutor alloc]
+                   initWithCredentialsProvider:nil
+                   cachingStrategy:NYPLCachingStrategyEphemeral
+                   delegateQueue:nil];
 
   self.title = book.title;
   UILabel *label = [[UILabel alloc] init];
@@ -193,8 +199,11 @@
 {
   NSURL *reportURL = problemReportViewController.book.reportURL;
   if (reportURL) {
-    NSURLRequest *r = [NSURLRequest postRequestWithProblemDocument:@{@"type":type} url:reportURL];
-    [[NYPLSession sharedSession] uploadWithRequest:r completionHandler:nil];
+    NSURLRequest *request = [NSURLRequest
+                             postRequestWithProblemDocument:@{@"type":type}
+                             url:reportURL];
+    
+    [self.executor POST:request completion:nil];
   }
   if (problemReportViewController.navigationController) {
     [problemReportViewController.navigationController popViewControllerAnimated:YES];
