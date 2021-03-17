@@ -67,8 +67,9 @@
    object:nil
    queue:[NSOperationQueue mainQueue]
    usingBlock:^(NSNotification *note) {
-     if([note.userInfo[@"identifier"] isEqualToString:self.book.identifier]) {
-       [self updateProcessingState];
+     if ([note.userInfo[NYPLNotificationKeys.bookProcessingBookIDKey] isEqualToString:self.book.identifier]) {
+       BOOL isProcessing = [note.userInfo[NYPLNotificationKeys.bookProcessingValueKey] boolValue];
+       [self updateProcessingState:isProcessing];
      }
    }];
   
@@ -107,16 +108,15 @@
   }
 }
 
-- (void)updateProcessingState
+- (void)updateProcessingState:(BOOL)isCurrentlyProcessing
 {
-  BOOL state = [[NYPLBookRegistry sharedRegistry] processingForIdentifier:self.book.identifier];
-  if(state) {
+  if (isCurrentlyProcessing) {
     [self.activityIndicator startAnimating];
   } else {
     [self.activityIndicator stopAnimating];
   }
   for(NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton, self.cancelButton]) {
-    button.enabled = !state;
+    button.enabled = !isCurrentlyProcessing;
   }
 }
 
@@ -175,7 +175,6 @@
                               @{ButtonKey: self.deleteButton,
                                 TitleKey: title,
                                 HintKey: hint}];
-
       }
       break;
     }
@@ -313,7 +312,10 @@
 {
   _book = book;
   [self updateButtons];
-  [self updateProcessingState];
+
+  BOOL isCurrentlyProcessing = [[NYPLBookRegistry sharedRegistry]
+                                processingForIdentifier:self.book.identifier];
+  [self updateProcessingState:isCurrentlyProcessing];
 }
 
 - (void)setState:(NYPLBookButtonsState const)state
@@ -382,15 +384,14 @@
 - (void)didSelectRead
 {
   self.activityIndicator.center = self.readButton.center;
+  [self updateProcessingState:YES];
   [self.delegate didSelectReadForBook:self.book];
 }
 
 - (void)didSelectDownload
 {
-  if (@available (iOS 10.0, *)) {
-    if (self.state == NYPLBookButtonsStateCanHold) {
-      [NYPLUserNotifications requestAuthorization];
-    }
+  if (self.state == NYPLBookButtonsStateCanHold) {
+    [NYPLUserNotifications requestAuthorization];
   }
   self.activityIndicator.center = self.downloadButton.center;
   [self.delegate didSelectDownloadForBook:self.book];
