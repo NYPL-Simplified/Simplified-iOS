@@ -20,7 +20,14 @@ extension Notification.Name {
   static let NYPLIsSigningIn = Notification.Name("NYPLIsSigningIn")
   static let NYPLAppDelegateDidReceiveCleverRedirectURL = Notification.Name("NYPLAppDelegateDidReceiveCleverRedirectURL")
   static let NYPLBookRegistryDidChange = Notification.Name("NYPLBookRegistryDidChange")
+
+  /// The `userInfo` dictionary contains the following key-value pairs:
+  /// - an `bookProcessingBookIDKey` key whose value is a String indicating
+  /// the book identifier;
+  /// - a `bookProcessingValueKey` key whose value is a Bool indicating
+  /// if there's some processing going on for the book.
   static let NYPLBookProcessingDidChange = Notification.Name("NYPLBookProcessingDidChange")
+
   static let NYPLMyBooksDownloadCenterDidChange = Notification.Name("NYPLMyBooksDownloadCenterDidChange")
   static let NYPLBookDetailDidClose = Notification.Name("NYPLBookDetailDidClose")
 }
@@ -40,4 +47,9 @@ extension Notification.Name {
   public static let NYPLBookProcessingDidChange = Notification.Name.NYPLBookProcessingDidChange
   public static let NYPLMyBooksDownloadCenterDidChange = Notification.Name.NYPLMyBooksDownloadCenterDidChange
   public static let NYPLBookDetailDidClose = Notification.Name.NYPLBookDetailDidClose
+}
+
+class NYPLNotificationKeys: NSObject {
+  @objc public static let bookProcessingBookIDKey = "identifier"
+  @objc public static let bookProcessingValueKey = "value"
 }

@@ -15,9 +15,9 @@
 @property (nonatomic) NYPLRoundedButton *deleteButton;
 @property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) NYPLRoundedButton *readButton;
-@property (nonatomic) NYPLRoundedButton *cancelButton;
+@property (nonatomic) NYPLRoundedButton *cancelButton;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
 @property (nonatomic) NSArray *visibleButtons;
-@property (nonatomic) NSMutableArray *constraints;
+@property (nonatomic) NSMutableArray *constraints;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
 @property (nonatomic) id observer;
 
 @end
@@ -34,28 +34,28 @@
   self.constraints = [[NSMutableArray alloc] init];
   
   self.deleteButton = [NYPLRoundedButton button];
-  self.deleteButton.fromDetailView = YES;
-  self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;
+  self.deleteButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
   [self.deleteButton addTarget:self action:@selector(didSelectReturn) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.deleteButton];
 
   self.downloadButton = [NYPLRoundedButton button];
-  self.downloadButton.fromDetailView = YES;
-  self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;
+  self.downloadButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
   [self.downloadButton addTarget:self action:@selector(didSelectDownload) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.downloadButton];
 
   self.readButton = [NYPLRoundedButton button];
-  self.readButton.fromDetailView = YES;
-  self.readButton.titleLabel.minimumScaleFactor = 0.8f;
+  self.readButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.readButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
   
-  self.cancelButton = [NYPLRoundedButton button];
-  self.cancelButton.fromDetailView = YES;
-  self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;
-  [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.cancelButton];
+  self.cancelButton = [NYPLRoundedButton button];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.cancelButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  [self addSubview:self.cancelButton];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
   
   self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.activityIndicator.color = [NYPLConfiguration mainColor];
@@ -67,8 +67,9 @@
    object:nil
    queue:[NSOperationQueue mainQueue]
    usingBlock:^(NSNotification *note) {
-     if([note.userInfo[@"identifier"] isEqualToString:self.book.identifier]) {
-       [self updateProcessingState];
+     if ([note.userInfo[NYPLNotificationKeys.bookProcessingBookIDKey] isEqualToString:self.book.identifier]) {
+       BOOL isProcessing = [note.userInfo[NYPLNotificationKeys.bookProcessingValueKey] boolValue];
+       [self updateProcessingState:isProcessing];
      }
    }];
   
@@ -107,16 +108,15 @@
   }
 }
 
-- (void)updateProcessingState
+- (void)updateProcessingState:(BOOL)isCurrentlyProcessing
 {
-  BOOL state = [[NYPLBookRegistry sharedRegistry] processingForIdentifier:self.book.identifier];
-  if(state) {
+  if (isCurrentlyProcessing) {
     [self.activityIndicator startAnimating];
   } else {
     [self.activityIndicator stopAnimating];
   }
   for(NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton, self.cancelButton]) {
-    button.enabled = !state;
+    button.enabled = !isCurrentlyProcessing;
   }
 }
 
@@ -175,7 +175,6 @@
                               @{ButtonKey: self.deleteButton,
                                 TitleKey: title,
                                 HintKey: hint}];
-
       }
       break;
     }
@@ -217,7 +216,7 @@
       }
       break;
     }
-    case NYPLBookButtonsStateDownloadInProgress:
+    case NYPLBookButtonsStateDownloadInProgress:// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
     {
       if (self.showReturnButtonIfApplicable)
       {
@@ -228,7 +227,7 @@
       }
       break;
     }
-    case NYPLBookButtonsStateDownloadFailed:
+    case NYPLBookButtonsStateDownloadFailed:// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
     {
       if (self.showReturnButtonIfApplicable)
       {
@@ -254,7 +253,7 @@
   
   BOOL fulfillmentIdRequired = NO;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier];
-  BOOL hasRevokeLink = (self.book.revokeURL && state && (state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed));
+  BOOL hasRevokeLink = (self.book.revokeURL && (state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed));
 
   #if defined(FEATURE_DRM_CONNECTOR)
   
@@ -288,7 +287,9 @@
 
     // Provide End-Date for checked out loans
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      if (self.book.defaultAcquisition.availability.until && [self.book.defaultAcquisition.availability.until timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
+      // TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+      if ([self.book.defaultAcquisition.availability.until timeIntervalSinceNow] > 0
+          && self.state != NYPLBookButtonsStateHolding) {
         button.type = NYPLRoundedButtonTypeClock;
         button.endDate = self.book.defaultAcquisition.availability.until;
       } else {
@@ -313,7 +314,10 @@
 {
   _book = book;
   [self updateButtons];
-  [self updateProcessingState];
+
+  BOOL isCurrentlyProcessing = [[NYPLBookRegistry sharedRegistry]
+                                processingForIdentifier:self.book.identifier];
+  [self updateProcessingState:isCurrentlyProcessing];
 }
 
 - (void)setState:(NYPLBookButtonsState const)state
@@ -382,15 +386,14 @@
 - (void)didSelectRead
 {
   self.activityIndicator.center = self.readButton.center;
+  [self updateProcessingState:YES];
   [self.delegate didSelectReadForBook:self.book];
 }
 
 - (void)didSelectDownload
 {
-  if (@available (iOS 10.0, *)) {
-    if (self.state == NYPLBookButtonsStateCanHold) {
-      [NYPLUserNotifications requestAuthorization];
-    }
+  if (self.state == NYPLBookButtonsStateCanHold) {
+    [NYPLUserNotifications requestAuthorization];
   }
   self.activityIndicator.center = self.downloadButton.center;
   [self.delegate didSelectDownloadForBook:self.book];
