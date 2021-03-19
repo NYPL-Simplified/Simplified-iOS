@@ -212,7 +212,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
     // if model has a way of handling a book file
     if let bookHandler = model?.bookFoundHandler {
       // get a list of supported mime types for books
-      let supportedTypes = NYPLBookAcquisitionPath.supportedTypes()
+      let supportedTypes = NYPLOPDSAcquisitionPath.supportedTypes()
 
       // if current response will load a supported type of book
       if let responseType = navigationResponse.response.mimeType, supportedTypes.contains(responseType) {

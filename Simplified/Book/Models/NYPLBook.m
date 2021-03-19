@@ -536,8 +536,8 @@ static NSString *const UpdatedKey = @"updated";
   }
 
   for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
-    NSArray *const paths = [NYPLBookAcquisitionPath
-                            supportedAcquisitionPathsForAllowedTypes:[NYPLBookAcquisitionPath supportedTypes]
+    NSArray *const paths = [NYPLOPDSAcquisitionPath
+                            supportedAcquisitionPathsForAllowedTypes:[NYPLOPDSAcquisitionPath supportedTypes]
                             allowedRelations:NYPLOPDSAcquisitionRelationSetAll
                             acquisitions:@[acquisition]];
 
@@ -571,14 +571,14 @@ static NSString *const UpdatedKey = @"updated";
     return NYPLBookContentTypeUnsupported;
   }
   
-  NSArray<NYPLBookAcquisitionPath *> *const paths =
-  [NYPLBookAcquisitionPath
-   supportedAcquisitionPathsForAllowedTypes:[NYPLBookAcquisitionPath supportedTypes]
+  NSArray<NYPLOPDSAcquisitionPath *> *const paths =
+  [NYPLOPDSAcquisitionPath
+   supportedAcquisitionPathsForAllowedTypes:[NYPLOPDSAcquisitionPath supportedTypes]
    allowedRelations:NYPLOPDSAcquisitionRelationSetAll
    acquisitions:@[acquisition]];
 
   NYPLBookContentType defaultType = NYPLBookContentTypeUnsupported;
-  for (NYPLBookAcquisitionPath *const path in paths) {
+  for (NYPLOPDSAcquisitionPath *const path in paths) {
     NSString *finalTypeString = path.types.lastObject;
     NYPLBookContentType const contentType = NYPLBookContentTypeFromMIMEType(finalTypeString);
     

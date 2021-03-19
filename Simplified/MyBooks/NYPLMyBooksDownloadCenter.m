@@ -152,7 +152,7 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
            [[self downloadInfoForBookIdentifier:book.identifier]
             withRightsManagement:NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON];
 #endif
-    } else if ([NYPLBookAcquisitionPath.supportedTypes containsObject:downloadTask.response.MIMEType]) {
+    } else if ([NYPLOPDSAcquisitionPath.supportedTypes containsObject:downloadTask.response.MIMEType]) {
       // if response type represents supported type of book, proceed
       NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".", downloadTask.response.MIMEType);
       NYPLMyBooksDownloadInfo *info =

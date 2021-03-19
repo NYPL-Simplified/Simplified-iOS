@@ -34,7 +34,7 @@ extern NSString * const _Nonnull ContentTypeAudiobookZip;
 
 /// Represents a single path the application can take through an acquisition
 /// process.
-@interface NYPLBookAcquisitionPath : NSObject
+@interface NYPLOPDSAcquisitionPath : NSObject
 
 /// The relation of the initial acquisition step.
 @property (nonatomic, readonly) NYPLOPDSAcquisitionRelation relation;
@@ -64,7 +64,7 @@ extern NSString * const _Nonnull ContentTypeAudiobookZip;
 /// @param acqusitions The OPDS acquisitions to search.
 /// @return The array of possible acquisition paths supported by the application, limited
 /// by the types and relations supplied, deduplicated, in the order they appear.
-+ (NSArray<NYPLBookAcquisitionPath *> *_Nonnull)
++ (NSArray<NYPLOPDSAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions;

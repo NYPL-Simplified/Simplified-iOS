@@ -261,7 +261,7 @@
       __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
       [manager setPlaybackCompletionHandler:^{
         NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, ContentTypeFeedbooksAudiobook, nil];
-        NSArray<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
+        NSArray<NYPLOPDSAcquisitionPath *> *paths = [NYPLOPDSAcquisitionPath
                                                      supportedAcquisitionPathsForAllowedTypes:types
                                                      allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
                                                                        NYPLOPDSAcquisitionRelationSetGeneric)

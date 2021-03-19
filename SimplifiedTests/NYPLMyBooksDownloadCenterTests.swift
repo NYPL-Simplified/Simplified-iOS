@@ -93,7 +93,7 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
     XCTAssertNotNil(optBook)
     let book = optBook!
 
-    for contentType in NYPLBookAcquisitionPath.supportedTypes() {
+    for contentType in NYPLOPDSAcquisitionPath.supportedTypes() {
       XCTAssert(book.canCompleteDownload(withContentType: contentType))
     }
 
