@@ -21,7 +21,7 @@
 
 #import <PureLayout/PureLayout.h>
 
-@interface NYPLBookDetailView () <NYPLBookDetailDownloadingDelegate, BookDetailTableViewDelegate>
+@interface NYPLBookDetailView () <NYPLBookDownloadCancellationDelegate, BookDetailTableViewDelegate>
 
 @property (nonatomic, weak) id<NYPLBookDetailViewDelegate, NYPLCatalogLaneCellDelegate> detailViewDelegate;
 
@@ -162,6 +162,7 @@ static NSString *DetailHTMLTemplate = nil;
 - (void)createButtonsView
 {
   self.buttonsView = [[NYPLBookDetailButtonsView alloc] init];
+  [self.buttonsView configureForBookDetailsContext];
   self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
   self.buttonsView.showReturnButtonIfApplicable = YES;
   self.buttonsView.delegate = [NYPLBookCellDelegate sharedDelegate];
@@ -529,7 +530,7 @@ static NSString *DetailHTMLTemplate = nil;
   [super updateConstraints];
 }
 
-#pragma mark NYPLBookDetailDownloadingDelegate
+#pragma mark NYPLBookDownloadCancellationDelegate
 
 - (void)didSelectCancelForBookDetailDownloadingView:
 (__attribute__((unused)) NYPLBookDetailDownloadingView *)bookDetailDownloadingView

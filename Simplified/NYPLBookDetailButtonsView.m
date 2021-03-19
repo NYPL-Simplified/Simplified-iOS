@@ -1,12 +1,20 @@
+//
+//  NYPLBookButtonsView.m
+//  Simplified
+//
+//  Created by Ben Anderman on 8/27/15.
+//  Copyright (c) 2015 NYPL Labs. All rights reserved.
+//
+
+@import PureLayout;
+
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLBookDetailButtonsView.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
-
 #import "NYPLRootTabBarController.h"
 #import "NYPLOPDS.h"
-#import <PureLayout/PureLayout.h>
 #import "SimplyE-Swift.h"
 
 @interface NYPLBookDetailButtonsView ()
@@ -15,9 +23,9 @@
 @property (nonatomic) NYPLRoundedButton *deleteButton;
 @property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) NYPLRoundedButton *readButton;
-@property (nonatomic) NYPLRoundedButton *cancelButton;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+@property (nonatomic) NYPLRoundedButton *cancelButton;
 @property (nonatomic) NSArray *visibleButtons;
-@property (nonatomic) NSMutableArray *constraints;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+@property (nonatomic) NSMutableArray *constraints;
 @property (nonatomic) id observer;
 
 @end
@@ -34,28 +42,24 @@
   self.constraints = [[NSMutableArray alloc] init];
   
   self.deleteButton = [NYPLRoundedButton button];
-  self.deleteButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
-  self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.deleteButton addTarget:self action:@selector(didSelectReturn) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.deleteButton];
 
   self.downloadButton = [NYPLRoundedButton button];
-  self.downloadButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
-  self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.downloadButton addTarget:self action:@selector(didSelectDownload) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.downloadButton];
 
   self.readButton = [NYPLRoundedButton button];
-  self.readButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
-  self.readButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.readButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
   
-  self.cancelButton = [NYPLRoundedButton button];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
-  self.cancelButton.fromDetailView = YES;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
-  self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
-  [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
-  [self addSubview:self.cancelButton];// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+  self.cancelButton = [NYPLRoundedButton button];
+  self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;
+  [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.cancelButton];
   
   self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.activityIndicator.color = [NYPLConfiguration mainColor];
@@ -79,6 +83,14 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self.observer];
+}
+
+- (void)configureForBookDetailsContext
+{
+  self.deleteButton.fromDetailView = YES;
+  self.downloadButton.fromDetailView = YES;
+  self.readButton.fromDetailView = YES;
+  self.cancelButton.fromDetailView = YES;
 }
 
 - (void)updateButtonFrames
@@ -216,7 +228,7 @@
       }
       break;
     }
-    case NYPLBookButtonsStateDownloadInProgress:// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+    case NYPLBookButtonsStateDownloadInProgress:
     {
       if (self.showReturnButtonIfApplicable)
       {
@@ -227,7 +239,7 @@
       }
       break;
     }
-    case NYPLBookButtonsStateDownloadFailed:// TODO: SIMPLY-3621 difference with NYPLBookButtonsView
+    case NYPLBookButtonsStateDownloadFailed:
     {
       if (self.showReturnButtonIfApplicable)
       {
@@ -286,17 +298,24 @@
     [UIView setAnimationsEnabled:YES];
 
     // Provide End-Date for checked out loans
+    button.type = NYPLRoundedButtonTypeNormal;
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      // TODO: SIMPLY-3621 difference with NYPLBookButtonsView
-      if ([self.book.defaultAcquisition.availability.until timeIntervalSinceNow] > 0
-          && self.state != NYPLBookButtonsStateHolding) {
-        button.type = NYPLRoundedButtonTypeClock;
-        button.endDate = self.book.defaultAcquisition.availability.until;
-      } else {
-        button.type = NYPLRoundedButtonTypeNormal;
+      [self.book.defaultAcquisition.availability
+       matchUnavailable:nil
+       limited:^(NYPLOPDSAcquisitionAvailabilityLimited *const _Nonnull limited) {
+        if ([limited.until timeIntervalSinceNow] > 0) {
+          button.type = NYPLRoundedButtonTypeClock;
+          button.endDate = limited.until;
+        }
       }
-    } else {
-      button.type = NYPLRoundedButtonTypeNormal;
+       unlimited:nil
+       reserved:nil
+       ready:^(NYPLOPDSAcquisitionAvailabilityReady *const _Nonnull limited) {
+        if ([limited.until timeIntervalSinceNow] > 0) {
+          button.type = NYPLRoundedButtonTypeClock;
+          button.endDate = limited.until;
+        }
+      }];
     }
     
     [visibleButtons addObject:button];
