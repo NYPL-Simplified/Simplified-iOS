@@ -266,11 +266,6 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
   return self;
 }
 
-- (BOOL)available
-{
-  return NO;
-}
-
 - (NSDate *_Nullable)since
 {
   return nil;
@@ -312,11 +307,6 @@ ready:(__unused void (^ _Nullable const)(NYPLOPDSAcquisitionAvailabilityReady *_
   return self;
 }
 
-- (BOOL)available
-{
-  return YES;
-}
-
 - (void)
 matchUnavailable:(__unused void (^ _Nullable const)
                   (NYPLOPDSAcquisitionAvailabilityUnavailable *_Nonnull unavailable))unavailable
@@ -333,11 +323,6 @@ ready:(__unused void (^ _Nullable const)(NYPLOPDSAcquisitionAvailabilityReady *_
 @end
 
 @implementation NYPLOPDSAcquisitionAvailabilityUnlimited
-
-- (BOOL)available
-{
-  return YES;
-}
 
 - (NSDate *_Nullable)since
 {
@@ -381,11 +366,6 @@ ready:(__unused void (^ _Nullable const)(NYPLOPDSAcquisitionAvailabilityReady *_
   return self;
 }
 
-- (BOOL)available
-{
-  return NO;
-}
-
 - (void)
 matchUnavailable:(__unused void (^ _Nullable const)
                   (NYPLOPDSAcquisitionAvailabilityUnavailable *_Nonnull unavailable))unavailable
@@ -412,11 +392,6 @@ ready:(__unused void (^ _Nullable const)(NYPLOPDSAcquisitionAvailabilityReady *_
   self.until = until;
 
   return self;
-}
-
-- (BOOL)available
-{
-  return YES;
 }
 
 - (void)
