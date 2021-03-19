@@ -193,18 +193,23 @@ static NSString *DetailHTMLTemplate = nil;
   htmlString = [htmlString stringByReplacingOccurrencesOfString:@"</p>" withString:@"</span>"];
 
   NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
-  NSError *error = nil;
-  NSAttributedString *atrString = [[NSAttributedString alloc]
-                                   initWithData:htmlData
-                                   options:@{NSDocumentTypeDocumentAttribute:
-                                               NSHTMLTextDocumentType}
-                                   documentAttributes:nil
-                                   error:&error];
-  if (error) {
-    NYPLLOG_F(@"Attributed string rendering error for %@ book description: %@",
-              [self.book loggableShortString], error);
+  NSAttributedString *attrString;
+  if (htmlData) {
+    NSError *error = nil;
+    attrString = [[NSAttributedString alloc]
+                  initWithData:htmlData
+                  options:@{NSDocumentTypeDocumentAttribute:
+                              NSHTMLTextDocumentType}
+                  documentAttributes:nil
+                  error:&error];
+    if (error) {
+      NYPLLOG_F(@"Attributed string rendering error for %@ book description: %@",
+                [self.book loggableShortString], error);
+    }
+  } else {
+    attrString = [[NSAttributedString alloc] initWithString:@""];
   }
-  self.summaryTextView.attributedText = atrString;
+  self.summaryTextView.attributedText = attrString;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     // this needs to happen asynchronously because the HTML text may overwrite
     // our color
