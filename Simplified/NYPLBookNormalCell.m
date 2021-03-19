@@ -3,7 +3,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
-#import "NYPLBookDetailButtonsView.h"
+#import "NYPLBookButtonsView.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLBookNormalCell.h"
@@ -11,7 +11,7 @@
 @interface NYPLBookNormalCell ()
 
 @property (nonatomic) UILabel *authors;
-@property (nonatomic) NYPLBookDetailButtonsView *buttonsView;
+@property (nonatomic) NYPLBookButtonsView *buttonsView;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) UIImageView *unreadImageView;
 @property (nonatomic) UIImageView *contentBadge;
@@ -88,7 +88,7 @@
   }
 
   if(!self.buttonsView) {
-    self.buttonsView = [[NYPLBookDetailButtonsView alloc] init];
+    self.buttonsView = [[NYPLBookButtonsView alloc] init];
     self.buttonsView.delegate = self.delegate;
     self.buttonsView.showReturnButtonIfApplicable = YES;
     [self.contentView addSubview:self.buttonsView];

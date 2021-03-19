@@ -1,7 +1,7 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookCellDelegate.h"
-#import "NYPLBookDetailButtonsView.h"
+#import "NYPLBookButtonsView.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
@@ -38,7 +38,7 @@
 @property (nonatomic) NYPLContentBadgeImageView *contentTypeBadge;
 @property (nonatomic) UIButton *closeButton;
 
-@property (nonatomic) NYPLBookDetailButtonsView *buttonsView;
+@property (nonatomic) NYPLBookButtonsView *buttonsView;
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
@@ -161,7 +161,7 @@ static NSString *DetailHTMLTemplate = nil;
 
 - (void)createButtonsView
 {
-  self.buttonsView = [[NYPLBookDetailButtonsView alloc] init];
+  self.buttonsView = [[NYPLBookButtonsView alloc] init];
   [self.buttonsView configureForBookDetailsContext];
   self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
   self.buttonsView.showReturnButtonIfApplicable = YES;

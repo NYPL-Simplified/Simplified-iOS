@@ -10,14 +10,14 @@
 
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLBookDetailButtonsView.h"
+#import "NYPLBookButtonsView.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
 
-@interface NYPLBookDetailButtonsView ()
+@interface NYPLBookButtonsView ()
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) NYPLRoundedButton *deleteButton;
@@ -30,7 +30,7 @@
 
 @end
 
-@implementation NYPLBookDetailButtonsView
+@implementation NYPLBookButtonsView
 
 - (instancetype)init
 {

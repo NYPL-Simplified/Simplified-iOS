@@ -1,7 +1,7 @@
 #import "NYPLBookButtonsState.h"
 
 @class NYPLBook;
-@class NYPLBookDetailButtonsView;
+@class NYPLBookButtonsView;
 @class NYPLBookDetailDownloadFailedView;
 
 @protocol NYPLBookButtonsDelegate
@@ -14,14 +14,14 @@
 
 @protocol NYPLBookDownloadCancellationDelegate
 
-- (void)didSelectCancelForBookDetailDownloadingView:(NYPLBookDetailButtonsView *)view;
-- (void)didSelectCancelForBookDetailDownloadFailedView:(NYPLBookDetailButtonsView *)failedView;
+- (void)didSelectCancelForBookDetailDownloadingView:(NYPLBookButtonsView *)view;
+- (void)didSelectCancelForBookDetailDownloadFailedView:(NYPLBookButtonsView *)failedView;
 
 @end
 
 /// This view class handles the buttons for managing a book all in one place,
 /// because that's always identical and used in book cells and book detail views.
-@interface NYPLBookDetailButtonsView : UIView
+@interface NYPLBookButtonsView : UIView
 
 @property (nonatomic, weak) NYPLBook *book;
 @property (nonatomic) NYPLBookButtonsState state;

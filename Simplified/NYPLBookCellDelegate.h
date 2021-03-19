@@ -1,6 +1,6 @@
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
-#import "NYPLBookDetailButtonsView.h"
+#import "NYPLBookButtonsView.h"
 
 /* This class implements a shared delegate that performs all of its duties via the shared registry,
 shared cover registry, shared download center, et cetera. */

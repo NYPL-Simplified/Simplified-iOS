@@ -505,7 +505,7 @@
 		7347F0C4245A4DE200558D7F /* NYPLOPDSEntryGroupAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = A499BF251B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m */; };
 		7347F0C5245A4DE200558D7F /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		7347F0C6245A4DE200558D7F /* NYPLProblemDocumentCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */; };
-		7347F0C7245A4DE200558D7F /* NYPLBookDetailButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */; };
+		7347F0C7245A4DE200558D7F /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookButtonsView.m */; };
 		7347F0C8245A4DE200558D7F /* NYPLMyBooksSimplifiedBearerToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF10B9201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m */; };
 		7347F0C9245A4DE200558D7F /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		7347F0CA245A4DE200558D7F /* RemoteHTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */; };
@@ -864,7 +864,7 @@
 		739E60E5244A0D8600D00301 /* NYPLOPDSEntryGroupAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = A499BF251B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m */; };
 		739E60E6244A0D8600D00301 /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		739E60E7244A0D8600D00301 /* NYPLProblemDocumentCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */; };
-		739E60E8244A0D8600D00301 /* NYPLBookDetailButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */; };
+		739E60E8244A0D8600D00301 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookButtonsView.m */; };
 		739E60E9244A0D8600D00301 /* NYPLMyBooksSimplifiedBearerToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF10B9201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m */; };
 		739E60EA244A0D8600D00301 /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		739E60EB244A0D8600D00301 /* RemoteHTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */; };
@@ -1239,7 +1239,7 @@
 		73EB0B1025821DF4006BC997 /* NYPLOPDSEntryGroupAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = A499BF251B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m */; };
 		73EB0B1125821DF4006BC997 /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		73EB0B1225821DF4006BC997 /* NYPLProblemDocumentCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */; };
-		73EB0B1325821DF4006BC997 /* NYPLBookDetailButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */; };
+		73EB0B1325821DF4006BC997 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookButtonsView.m */; };
 		73EB0B1425821DF4006BC997 /* NYPLMyBooksSimplifiedBearerToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF10B9201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m */; };
 		73EB0B1525821DF4006BC997 /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		73EB0B1625821DF4006BC997 /* AudioBookVendors+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EC1B8E2501538600A12384 /* AudioBookVendors+Extensions.swift */; };
@@ -1478,7 +1478,7 @@
 		73FCA34125005BA4001B0C5D /* NYPLOPDSEntryGroupAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = A499BF251B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m */; };
 		73FCA34225005BA4001B0C5D /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		73FCA34325005BA4001B0C5D /* NYPLProblemDocumentCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */; };
-		73FCA34425005BA4001B0C5D /* NYPLBookDetailButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */; };
+		73FCA34425005BA4001B0C5D /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookButtonsView.m */; };
 		73FCA34525005BA4001B0C5D /* NYPLMyBooksSimplifiedBearerToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF10B9201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m */; };
 		73FCA34625005BA4001B0C5D /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		73FCA34725005BA4001B0C5D /* RemoteHTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */; };
@@ -1603,7 +1603,7 @@
 		E627B554216D4A9700A7D1D5 /* NYPLBookContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = E627B553216D4A9700A7D1D5 /* NYPLBookContentType.m */; };
 		E63F2C6C1EAA81B3002B6373 /* ExtendedNavBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63F2C6B1EAA81B3002B6373 /* ExtendedNavBarView.swift */; };
 		E65977C51F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */; };
-		E66A6C441EAFB63300AA282D /* NYPLBookDetailButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */; };
+		E66A6C441EAFB63300AA282D /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookButtonsView.m */; };
 		E671FF7D1E3A7068002AB13F /* NYPLNetworkQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E671FF7C1E3A7068002AB13F /* NYPLNetworkQueue.swift */; };
 		E683953B217663B100371072 /* NYPLFacetViewDefaultDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E683953A217663B100371072 /* NYPLFacetViewDefaultDataSource.swift */; };
 		E6845D971FB38D1300EBF69A /* NYPLReadiumViewSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E6845D961FB38D1300EBF69A /* NYPLReadiumViewSyncManager.m */; };
@@ -2271,8 +2271,8 @@
 		E627B559216D4ADD00A7D1D5 /* NYPLBookContentType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLBookContentType.h; sourceTree = "<group>"; };
 		E63F2C6B1EAA81B3002B6373 /* ExtendedNavBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedNavBarView.swift; sourceTree = "<group>"; };
 		E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NYPL_Launch_Screen.storyboard; sourceTree = "<group>"; };
-		E66A6C421EAFB63300AA282D /* NYPLBookDetailButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailButtonsView.h; sourceTree = "<group>"; };
-		E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailButtonsView.m; sourceTree = "<group>"; };
+		E66A6C421EAFB63300AA282D /* NYPLBookButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsView.h; sourceTree = "<group>"; };
+		E66A6C431EAFB63300AA282D /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLCirculationAnalytics.swift; sourceTree = "<group>"; };
 		E671FF7C1E3A7068002AB13F /* NYPLNetworkQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLNetworkQueue.swift; sourceTree = "<group>"; };
 		E683953A217663B100371072 /* NYPLFacetViewDefaultDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLFacetViewDefaultDataSource.swift; sourceTree = "<group>"; };
@@ -3239,8 +3239,8 @@
 		73B5DFE126052B3A00225C12 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				E66A6C421EAFB63300AA282D /* NYPLBookDetailButtonsView.h */,
-				E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */,
+				E66A6C421EAFB63300AA282D /* NYPLBookButtonsView.h */,
+				E66A6C431EAFB63300AA282D /* NYPLBookButtonsView.m */,
 				11580AC61986A77B00949A15 /* NYPLBookCell.h */,
 				11580AC71986A77B00949A15 /* NYPLBookCell.m */,
 				1120749119D20BF9008203A4 /* NYPLBookCellCollectionViewController.h */,
@@ -4812,7 +4812,7 @@
 				21C504782513C9F00016A6C8 /* JWKResponse.swift in Sources */,
 				7347F0C5245A4DE200558D7F /* NYPLMyBooksDownloadCenter.m in Sources */,
 				7347F0C6245A4DE200558D7F /* NYPLProblemDocumentCacheManager.swift in Sources */,
-				7347F0C7245A4DE200558D7F /* NYPLBookDetailButtonsView.m in Sources */,
+				7347F0C7245A4DE200558D7F /* NYPLBookButtonsView.m in Sources */,
 				7347F0C8245A4DE200558D7F /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,
 				7347F0C9245A4DE200558D7F /* NYPLAnnotations.swift in Sources */,
 				2126FE6425C0890F0095C45C /* ReaderFormatModule.swift in Sources */,
@@ -5048,7 +5048,7 @@
 				739E60E5244A0D8600D00301 /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				739E60E6244A0D8600D00301 /* NYPLMyBooksDownloadCenter.m in Sources */,
 				739E60E7244A0D8600D00301 /* NYPLProblemDocumentCacheManager.swift in Sources */,
-				739E60E8244A0D8600D00301 /* NYPLBookDetailButtonsView.m in Sources */,
+				739E60E8244A0D8600D00301 /* NYPLBookButtonsView.m in Sources */,
 				73BF0CCE245769D80009FC61 /* NYPLReaderTOCCell.swift in Sources */,
 				739E60E9244A0D8600D00301 /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,
 				739E60EA244A0D8600D00301 /* NYPLAnnotations.swift in Sources */,
@@ -5280,7 +5280,7 @@
 				73D8D28225A68D5600DF5F69 /* Publication+NYPLAdditions.swift in Sources */,
 				73EB0B1125821DF4006BC997 /* NYPLMyBooksDownloadCenter.m in Sources */,
 				73EB0B1225821DF4006BC997 /* NYPLProblemDocumentCacheManager.swift in Sources */,
-				73EB0B1325821DF4006BC997 /* NYPLBookDetailButtonsView.m in Sources */,
+				73EB0B1325821DF4006BC997 /* NYPLBookButtonsView.m in Sources */,
 				73EB0B1425821DF4006BC997 /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,
 				73EB0B1525821DF4006BC997 /* NYPLAnnotations.swift in Sources */,
 				73EB0B1625821DF4006BC997 /* AudioBookVendors+Extensions.swift in Sources */,
@@ -5519,7 +5519,7 @@
 				73FCA34325005BA4001B0C5D /* NYPLProblemDocumentCacheManager.swift in Sources */,
 				73E64E6A252BB82600276953 /* NYPLWelcomeEULAViewController.swift in Sources */,
 				7353940C250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift in Sources */,
-				73FCA34425005BA4001B0C5D /* NYPLBookDetailButtonsView.m in Sources */,
+				73FCA34425005BA4001B0C5D /* NYPLBookButtonsView.m in Sources */,
 				73FCA34525005BA4001B0C5D /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,
 				21DDE32B25D2CEFC002CBCE3 /* AdobeDRMContentProtection.swift in Sources */,
 				21DF7F9625AF5E1E0090402A /* ReaderModule.swift in Sources */,
@@ -5754,7 +5754,7 @@
 				A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
 				8C40D6A72375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift in Sources */,
-				E66A6C441EAFB63300AA282D /* NYPLBookDetailButtonsView.m in Sources */,
+				E66A6C441EAFB63300AA282D /* NYPLBookButtonsView.m in Sources */,
 				7386C1FA245276CA004C78BD /* NYPLReaderTOCCell.swift in Sources */,
 				2DEF10BA201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,
 				2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */,
