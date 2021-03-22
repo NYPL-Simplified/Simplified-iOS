@@ -148,7 +148,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       // On the previous implementation, we do not add the handler to the list if it is nil.
       // If the first handler is nil, the second handler would find the list empty and continue loading
       // And the same loading request would happen more than once, adding a empty completion block void such situation
-      let h: ((Bool) -> ()) = handler != nil ? handler! : { _ in }
+      let h: ((Bool) -> ()) = handler ?? { _ in }
       loadingCompletionHandlers[key]!.append(h)
     }
     return !wasEmpty
