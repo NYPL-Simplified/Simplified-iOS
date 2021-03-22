@@ -1636,6 +1636,13 @@
 			remoteGlobalIDString = A823D80C192BABA400B55DE2;
 			remoteInfo = SimplyE;
 		};
+		59D9CC1B25FFDE1B00C89B81 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 59D9CBF525FFDBC500C89B81;
+			remoteInfo = TenPrintCoverTests;
+		};
 		5A569A2B1B8351C6003B5B61 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */;
@@ -2647,6 +2654,7 @@
 			isa = PBXGroup;
 			children = (
 				1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */,
+				59D9CC1C25FFDE1B00C89B81 /* TenPrintCoverTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3914,6 +3922,13 @@
 			fileType = archive.ar;
 			path = libTenPrintCover.a;
 			remoteRef = 1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		59D9CC1C25FFDE1B00C89B81 /* TenPrintCoverTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TenPrintCoverTests.xctest;
+			remoteRef = 59D9CC1B25FFDE1B00C89B81 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5A569A2C1B8351C6003B5B61 /* libADEPT.a */ = {
