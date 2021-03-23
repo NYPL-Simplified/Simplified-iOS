@@ -181,7 +181,7 @@ extension HTTPURLResponse {
 /// responses even when these would not be cached by URLSession despite having a
 /// sufficient set of caching headers per https://tools.ietf.org/html/rfc7234 --
 /// see `HTTPURLResponse::modifyingCacheHeaders()`.
-enum NYPLCachingStrategy: NSInteger {
+@objc enum NYPLCachingStrategy: NSInteger {
   case ephemeral
   case `default`
   case fallback
