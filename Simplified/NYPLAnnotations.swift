@@ -408,7 +408,9 @@ import UIKit
 
   // Completion handler will return a nil parameter if there are any failures with
   // the network request, deserialization, or sync permission is not allowed.
-  class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
+  class func getServerBookmarks(forBook bookID:String?,
+                                atURL annotationURL:URL?,
+                                completionHandler: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
@@ -433,93 +435,29 @@ import UIKit
         completionHandler(nil)
         return
       }
+
       guard let data = data,
-        let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
+        let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+        let json = jsonObject as? [String: Any] else {
           Log.error(#file, "JSON could not be created from data.")
           completionHandler(nil)
           return
       }
 
-      guard let first = json["first"] as? [String:AnyObject],
-        let items = first["items"] as? [AnyObject] else {
+      guard let first = json["first"] as? [String: Any],
+        let items = first["items"] as? [[String: Any]] else {
           Log.error(#file, "Missing required key from Annotations response, or no items exist.")
           completionHandler(nil)
           return
       }
 
-      var bookmarks = [NYPLReadiumBookmark]()
-
-      for item in items {
-        if let bookmark = createBookmark(fromBook: bookID, serverAnnotation: item) {
-          bookmarks.append(bookmark)
-        } else {
-          Log.error(#file, "Could not create bookmark element from item.")
-          continue
-        }
+      let bookmarks = items.compactMap {
+        NYPLBookmarkFactory.make(fromServerAnnotation: $0, bookID: bookID)
       }
+
       completionHandler(bookmarks)
     }
     dataTask.resume()
-  }
-
-  private class func createBookmark(fromBook bookID: String, serverAnnotation annotation: AnyObject) -> NYPLReadiumBookmark? {
-
-    guard let target = annotation["target"] as? [String:AnyObject],
-    let source = target["source"] as? String,
-    let annotationID = annotation["id"] as? String,
-    let motivation = annotation["motivation"] as? String else {
-      Log.error(#file, "Error parsing key/values for target.")
-      return nil
-    }
-
-    if source == bookID && motivation.contains("bookmarking") {
-
-      guard let selector = target["selector"] as? [String:AnyObject],
-        let serverCFI = selector["value"] as? String,
-        let body = annotation["body"] as? [String:AnyObject] else {
-          Log.error(#file, "ServerCFI could not be parsed.")
-          return nil
-      }
-
-      guard let device = body["http://librarysimplified.org/terms/device"] as? String,
-      let time = body["http://librarysimplified.org/terms/time"] as? String,
-      let progressWithinChapter = (body["http://librarysimplified.org/terms/progressWithinChapter"] as? NSNumber)?.floatValue,
-      let progressWithinBook = (body["http://librarysimplified.org/terms/progressWithinBook"] as? NSNumber)?.floatValue else {
-        Log.error(#file, "Error reading required bookmark key/values from body")
-        return nil
-      }
-      let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
-
-      guard let data = serverCFI.data(using: String.Encoding.utf8),
-        let serverCfiJsonObject = (try? JSONSerialization.jsonObject(with: data,
-          options: [])) as? [String: Any],
-        let serverIdrefString = serverCfiJsonObject["idref"] as? String
-         else {
-          Log.error(#file, "Error serializing serverCFI into JSON.")
-          return nil
-      }
-      
-      var serverCfiString: String?
-      
-      if let serverCfiJson = serverCfiJsonObject["contentCFI"] as? String {
-        serverCfiString = serverCfiJson
-      }
-      
-      return NYPLReadiumBookmark(annotationId: annotationID,
-                                 contentCFI: serverCfiString,
-                                 idref: serverIdrefString,
-                                 chapter: chapter,
-                                 page: nil,
-                                 location: serverCFI,
-                                 progressWithinChapter: progressWithinChapter,
-                                 progressWithinBook: progressWithinBook,
-                                 time:time,
-                                 device:device)
-
-    } else {
-      Log.error(#file, "Bookmark not created from Annotation Element. 'Motivation' Type: \(motivation)")
-    }
-    return nil
   }
 
   class func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark]) {
