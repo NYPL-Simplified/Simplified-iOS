@@ -3,8 +3,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
-#import "NYPLRoundedButton.h"
-#import "NYPLBookCellDelegate.h"
+#import "NYPLBookButtonsView.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLBookNormalCell.h"
@@ -24,7 +23,8 @@
 #pragma mark UIView
 
 - (void)layoutSubviews
-{  
+{
+  [super layoutSubviews];
   self.cover.frame = CGRectMake(20,
                                 5,
                                 (CGRectGetHeight([self contentFrame]) - 10) * (10 / 12.0),
@@ -52,7 +52,6 @@
                              (CGRectGetHeight([self contentFrame]) -
                               CGRectGetHeight(frame) - 5));
   self.buttonsView.frame = frame;
-  
   CGRect unreadImageViewFrame = self.unreadImageView.frame;
   unreadImageViewFrame.origin.x = (CGRectGetMinX(self.cover.frame) -
                                    CGRectGetWidth(unreadImageViewFrame) - 5);
@@ -80,13 +79,6 @@
     [self.contentView addSubview:self.cover];
   }
 
-  if(!self.buttonsView) {
-    self.buttonsView = [[NYPLBookButtonsView alloc] init];
-    self.buttonsView.delegate = self.delegate;
-    [self.contentView addSubview:self.buttonsView];
-  }
-  self.buttonsView.book = book;
-  
   if(!self.title) {
     self.title = [[UILabel alloc] init];
     self.title.numberOfLines = 2;
@@ -94,6 +86,17 @@
     [self.contentView addSubview:self.title];
     [self.contentView setNeedsLayout];
   }
+
+  if(!self.buttonsView) {
+    self.buttonsView = [[NYPLBookButtonsView alloc] init];
+    self.buttonsView.delegate = self.delegate;
+    self.buttonsView.showReturnButtonIfApplicable = YES;
+    [self.contentView addSubview:self.buttonsView];
+    self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.buttonsView autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self.title];
+    [self.buttonsView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.cover];
+  }
+  self.buttonsView.book = book;
   
   if(!self.unreadImageView) {
     self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];

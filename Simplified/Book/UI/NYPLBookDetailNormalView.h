@@ -1,4 +1,4 @@
-#import "NYPLBookButtonsView.h"
+#import "NYPLBookButtonsState.h"
 @class NYPLBook;
 
 @interface NYPLBookDetailNormalView : UIView

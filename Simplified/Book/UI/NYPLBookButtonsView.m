@@ -6,43 +6,16 @@
 //  Copyright (c) 2015 NYPL Labs. All rights reserved.
 //
 
+@import PureLayout;
+
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLBookButtonsView.h"
+#import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
-
 #import "NYPLRootTabBarController.h"
 #import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
-
-NYPLBookButtonsState
-NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> const availability)
-{
-  __block NYPLBookButtonsState state;
-
-  if (!availability) {
-    @throw NSInvalidArgumentException;
-  }
-
-  [availability
-   matchUnavailable:^(__unused NYPLOPDSAcquisitionAvailabilityUnavailable *_Nonnull unavailable) {
-     state = NYPLBookButtonsStateCanHold;
-   }
-   limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
-     state = NYPLBookButtonsStateCanBorrow;
-   }
-   unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
-     state = NYPLBookButtonsStateCanBorrow;
-   }
-   reserved:^(__unused NYPLOPDSAcquisitionAvailabilityReserved *_Nonnull reserved) {
-     state = NYPLBookButtonsStateHolding;
-   }
-   ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
-     state = NYPLBookButtonsStateHoldingFOQ;
-   }];
-
-  return state;
-}
 
 @interface NYPLBookButtonsView ()
 
@@ -50,7 +23,9 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
 @property (nonatomic) NYPLRoundedButton *deleteButton;
 @property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) NYPLRoundedButton *readButton;
+@property (nonatomic) NYPLRoundedButton *cancelButton;
 @property (nonatomic) NSArray *visibleButtons;
+@property (nonatomic) NSMutableArray *constraints;
 @property (nonatomic) id observer;
 
 @end
@@ -64,17 +39,27 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
     return self;
   }
   
+  self.constraints = [[NSMutableArray alloc] init];
+  
   self.deleteButton = [NYPLRoundedButton button];
+  self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.deleteButton addTarget:self action:@selector(didSelectReturn) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.deleteButton];
 
   self.downloadButton = [NYPLRoundedButton button];
+  self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.downloadButton addTarget:self action:@selector(didSelectDownload) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.downloadButton];
 
   self.readButton = [NYPLRoundedButton button];
+  self.readButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
+  
+  self.cancelButton = [NYPLRoundedButton button];
+  self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;
+  [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.cancelButton];
   
   self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.activityIndicator.color = [NYPLConfiguration mainColor];
@@ -83,14 +68,14 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
   
   self.observer = [[NSNotificationCenter defaultCenter]
                    addObserverForName:NSNotification.NYPLBookProcessingDidChange
-                   object:nil
-                   queue:[NSOperationQueue mainQueue]
-                   usingBlock:^(NSNotification *note) {
-    if ([note.userInfo[NYPLNotificationKeys.bookProcessingBookIDKey] isEqualToString:self.book.identifier]) {
-      BOOL isProcessing = [note.userInfo[NYPLNotificationKeys.bookProcessingValueKey] boolValue];
-      [self updateProcessingState:isProcessing];
-    }
-  }];
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(NSNotification *note) {
+     if ([note.userInfo[NYPLNotificationKeys.bookProcessingBookIDKey] isEqualToString:self.book.identifier]) {
+       BOOL isProcessing = [note.userInfo[NYPLNotificationKeys.bookProcessingValueKey] boolValue];
+       [self updateProcessingState:isProcessing];
+     }
+   }];
   
   return self;
 }
@@ -100,29 +85,39 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
   [[NSNotificationCenter defaultCenter] removeObserver:self.observer];
 }
 
-- (void)updateButtonFrames
+- (void)configureForBookDetailsContext
 {
-  NYPLRoundedButton *lastButton = nil;
-  for (NYPLRoundedButton *button in self.visibleButtons) {
-    [button sizeToFit];
-    CGRect frame = button.frame;
-    if (!lastButton) {
-      frame.origin = CGPointZero;
-    } else {
-      frame.origin = CGPointMake(CGRectGetMaxX(lastButton.frame) + 5,
-                                 CGRectGetMinY(lastButton.frame));
-    }
-    lastButton = button;
-    button.frame = frame;
-  }
+  self.deleteButton.fromDetailView = YES;
+  self.downloadButton.fromDetailView = YES;
+  self.readButton.fromDetailView = YES;
+  self.cancelButton.fromDetailView = YES;
 }
 
-- (void)sizeToFit
+- (void)updateButtonFrames
 {
-  NYPLRoundedButton *lastButton = [self.visibleButtons lastObject];
-  CGRect frame = self.frame;
-  frame.size = CGSizeMake(CGRectGetMaxX(lastButton.frame), CGRectGetMaxY(lastButton.frame));
-  self.frame = frame;
+  [NSLayoutConstraint deactivateConstraints:self.constraints];
+
+  if (self.visibleButtons.count == 0) {
+    return;
+  }
+  
+  [self.constraints removeAllObjects];
+  int count = 0;
+  NYPLRoundedButton *lastButton = nil;
+  for (NYPLRoundedButton *button in self.visibleButtons) {
+    [self.constraints addObject:[button autoPinEdgeToSuperviewEdge:ALEdgeTop]];
+    [self.constraints addObject:[button autoPinEdgeToSuperviewEdge:ALEdgeBottom]];
+    if (!lastButton) {
+      [self.constraints addObject:[button autoPinEdgeToSuperviewEdge:ALEdgeLeading]];
+    } else {
+      [self.constraints addObject:[button autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:lastButton withOffset:6.0]];
+    }
+    if (count == (int)self.visibleButtons.count - 1) {
+      [self.constraints addObject:[button autoPinEdgeToSuperviewEdge:ALEdgeTrailing]];
+    }
+    lastButton = button;
+    count++;
+  }
 }
 
 - (void)updateProcessingState:(BOOL)isCurrentlyProcessing
@@ -132,7 +127,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
   } else {
     [self.activityIndicator stopAnimating];
   }
-  for(NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
+  for(NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton, self.cancelButton]) {
     button.enabled = !isCurrentlyProcessing;
   }
 }
@@ -234,15 +229,38 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
       break;
     }
     case NYPLBookButtonsStateDownloadInProgress:
-    case NYPLBookButtonsStateDownloadFailed:
+    {
+      if (self.showReturnButtonIfApplicable)
+      {
+        visibleButtonInfo = @[@{ButtonKey: self.cancelButton,
+                                TitleKey: NSLocalizedString(@"Cancel", nil),
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the download for the current book: %@", nil), self.book.title],
+                                AddIndicatorKey: @(NO)}];
+      }
       break;
+    }
+    case NYPLBookButtonsStateDownloadFailed:
+    {
+      if (self.showReturnButtonIfApplicable)
+      {
+        visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                                TitleKey: NSLocalizedString(@"Retry", nil),
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Retry the failed download for this book: %@", nil), self.book.title],
+                                AddIndicatorKey: @(NO)},
+                              @{ButtonKey: self.cancelButton,
+                                TitleKey: NSLocalizedString(@"Cancel", nil),
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the failed download for this book: %@", nil), self.book.title],
+                                AddIndicatorKey: @(NO)}];
+      }
+      break;
+    }
     case NYPLBookButtonsStateUnsupported:
       // The app should never show books it cannot support, but if it mistakenly does,
       // no actions will be available.
       visibleButtonInfo = @[];
       break;
   }
-  
+
   NSMutableArray *visibleButtons = [NSMutableArray array];
   
   BOOL fulfillmentIdRequired = NO;
@@ -279,17 +297,17 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
     // Re-enable animations as per usual.
     [UIView setAnimationsEnabled:YES];
 
+    // Provide End-Date for checked out loans
     button.type = NYPLRoundedButtonTypeNormal;
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      // TODO: SIMPLY-3621 integrate this logic in NYPLBookDetailButtonsView
       [self.book.defaultAcquisition.availability
        matchUnavailable:nil
        limited:^(NYPLOPDSAcquisitionAvailabilityLimited *const _Nonnull limited) {
-         if ([limited.until timeIntervalSinceNow] > 0) {
-           button.type = NYPLRoundedButtonTypeClock;
-           button.endDate = limited.until;
-         }
-       }
+        if ([limited.until timeIntervalSinceNow] > 0) {
+          button.type = NYPLRoundedButtonTypeClock;
+          button.endDate = limited.until;
+        }
+      }
        unlimited:nil
        reserved:nil
        ready:^(NYPLOPDSAcquisitionAvailabilityReady *const _Nonnull limited) {
@@ -299,10 +317,10 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
         }
       }];
     }
-
+    
     [visibleButtons addObject:button];
   }
-  for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
+  for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton, self.cancelButton]) {
     if (![visibleButtons containsObject:button]) {
       button.hidden = YES;
     }
@@ -332,7 +350,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
 - (void)didSelectReturn
 {
   self.activityIndicator.center = self.deleteButton.center;
-
+  
   NSString *title = nil;
   NSString *message = nil;
   NSString *confirmButtonTitle = nil;
@@ -398,6 +416,24 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
   }
   self.activityIndicator.center = self.downloadButton.center;
   [self.delegate didSelectDownloadForBook:self.book];
+}
+
+- (void)didSelectCancel
+{
+  switch([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier]) {
+    case NYPLBookStateSAMLStarted:
+    case NYPLBookStateDownloading: {
+      [self.downloadingDelegate didSelectCancelForBookDetailDownloadingView:self];
+      break;
+    }
+    case NYPLBookStateDownloadFailed: {
+      [self.downloadingDelegate didSelectCancelForBookDetailDownloadFailedView:self];
+      break;
+    }
+    default:
+      break;
+  }
+  
 }
 
 @end

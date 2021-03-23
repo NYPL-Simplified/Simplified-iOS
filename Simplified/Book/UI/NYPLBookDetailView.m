@@ -1,7 +1,7 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookCellDelegate.h"
-#import "NYPLBookDetailButtonsView.h"
+#import "NYPLBookButtonsView.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
@@ -21,7 +21,7 @@
 
 #import <PureLayout/PureLayout.h>
 
-@interface NYPLBookDetailView () <NYPLBookDetailDownloadingDelegate, BookDetailTableViewDelegate>
+@interface NYPLBookDetailView () <NYPLBookDownloadCancellationDelegate, BookDetailTableViewDelegate>
 
 @property (nonatomic, weak) id<NYPLBookDetailViewDelegate, NYPLCatalogLaneCellDelegate> detailViewDelegate;
 
@@ -38,7 +38,7 @@
 @property (nonatomic) NYPLContentBadgeImageView *contentTypeBadge;
 @property (nonatomic) UIButton *closeButton;
 
-@property (nonatomic) NYPLBookDetailButtonsView *buttonsView;
+@property (nonatomic) NYPLBookButtonsView *buttonsView;
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
@@ -161,7 +161,8 @@ static NSString *DetailHTMLTemplate = nil;
 
 - (void)createButtonsView
 {
-  self.buttonsView = [[NYPLBookDetailButtonsView alloc] init];
+  self.buttonsView = [[NYPLBookButtonsView alloc] init];
+  [self.buttonsView configureForBookDetailsContext];
   self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
   self.buttonsView.showReturnButtonIfApplicable = YES;
   self.buttonsView.delegate = [NYPLBookCellDelegate sharedDelegate];
@@ -192,18 +193,23 @@ static NSString *DetailHTMLTemplate = nil;
   htmlString = [htmlString stringByReplacingOccurrencesOfString:@"</p>" withString:@"</span>"];
 
   NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
-  NSError *error = nil;
-  NSAttributedString *atrString = [[NSAttributedString alloc]
-                                   initWithData:htmlData
-                                   options:@{NSDocumentTypeDocumentAttribute:
-                                               NSHTMLTextDocumentType}
-                                   documentAttributes:nil
-                                   error:&error];
-  if (error) {
-    NYPLLOG_F(@"Attributed string rendering error for %@ book description: %@",
-              [self.book loggableShortString], error);
+  NSAttributedString *attrString;
+  if (htmlData) {
+    NSError *error = nil;
+    attrString = [[NSAttributedString alloc]
+                  initWithData:htmlData
+                  options:@{NSDocumentTypeDocumentAttribute:
+                              NSHTMLTextDocumentType}
+                  documentAttributes:nil
+                  error:&error];
+    if (error) {
+      NYPLLOG_F(@"Attributed string rendering error for %@ book description: %@",
+                [self.book loggableShortString], error);
+    }
+  } else {
+    attrString = [[NSAttributedString alloc] initWithString:@""];
   }
-  self.summaryTextView.attributedText = atrString;
+  self.summaryTextView.attributedText = attrString;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     // this needs to happen asynchronously because the HTML text may overwrite
     // our color
@@ -529,7 +535,7 @@ static NSString *DetailHTMLTemplate = nil;
   [super updateConstraints];
 }
 
-#pragma mark NYPLBookDetailDownloadingDelegate
+#pragma mark NYPLBookDownloadCancellationDelegate
 
 - (void)didSelectCancelForBookDetailDownloadingView:
 (__attribute__((unused)) NYPLBookDetailDownloadingView *)bookDetailDownloadingView

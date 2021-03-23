@@ -2,14 +2,10 @@
 #import "SimplyE-Swift.h"
 
 #import "NSDate+NYPLDateAdditions.h"
-#import "NYPLBook.h"
 #import "NYPLConfiguration.h"
-#import "NYPLLinearView.h"
-#import "NYPLBookButtonsView.h"
 #import "NYPLOPDS.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
-
 #import "NYPLBookDetailNormalView.h"
 
 @interface NYPLBookDetailNormalView ()

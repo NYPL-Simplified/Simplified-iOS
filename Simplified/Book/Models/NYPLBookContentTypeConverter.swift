@@ -1,5 +1,5 @@
 //
-//  NYPLBookContentType.swift
+//  NYPLBookContentTypeConverter.swift
 //  Simplified
 //
 //  Created by Ettore Pasquini on 8/17/20.

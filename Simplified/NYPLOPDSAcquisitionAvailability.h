@@ -14,9 +14,6 @@ extern NYPLOPDSAcquisitionAvailabilityCopies const NYPLOPDSAcquisitionAvailabili
 
 @protocol NYPLOPDSAcquisitionAvailability
 
-/// @c YES for limited, unlimited, and ready states, else @c NO.
-@property (nonatomic, readonly) BOOL available;
-
 /// When this availability state began.
 /// See https://git.io/JmCQT for full semantics.
 @property (nonatomic, readonly, nullable) NSDate *since;

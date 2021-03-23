@@ -106,7 +106,7 @@ class UserProfileDocumentTests: XCTestCase {
   {
     "simplified:authorization_identifier": "23333999999666",
     "drm": [{
-      "drm:vendor": "NYPL",
+      "drm:vendor": "the_vendor",
       "drm:scheme": "http://librarysimplified.org/terms/drm/scheme/ACS",
       "drm:clientToken": "NYNYPL|1566686661|52ccc666-b666-23ea-1238-0eab1234154d|666stru4hIMzf7NRP3XhcjxfSapaNGodE2GGGGY8KGc@"
     }],
@@ -142,6 +142,11 @@ class UserProfileDocumentTests: XCTestCase {
       let profileDoc = try UserProfileDocument.fromData(data)
       XCTAssertNotNil(profileDoc)
       XCTAssertEqual(profileDoc.authorizationIdentifier, "23333999999666")
+      XCTAssertNotNil(profileDoc.drm)
+      if let drms = profileDoc.drm {
+        XCTAssert(drms.count == 1)
+        XCTAssert(drms[0].vendor == "the_vendor")
+      }
 
       let cal = NSCalendar(identifier: .gregorian)!
       cal.timeZone = TimeZone(secondsFromGMT: 0)!

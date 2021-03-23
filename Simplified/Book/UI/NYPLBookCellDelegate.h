@@ -1,4 +1,3 @@
-#import "NYPLBookNormalCell.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookButtonsView.h"

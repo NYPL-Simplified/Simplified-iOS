@@ -1,8 +1,9 @@
 #import "NYPLBookCell.h"
-#import "NYPLBookButtonsView.h"
+#import "NYPLBookButtonsState.h"
 
 @class NYPLBook;
 @class NYPLBookNormalCell;
+@protocol NYPLBookButtonsDelegate;
 
 @interface NYPLBookNormalCell : NYPLBookCell
 
