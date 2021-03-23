@@ -2617,14 +2617,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		110AF8901961D822004887C3 /* Book */ = {
-			isa = PBXGroup;
-			children = (
-				73B5DFE126052B3A00225C12 /* UI */,
-			);
-			name = Book;
-			sourceTree = "<group>";
-		};
 		1112A81A1A322C53002B8CC1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -3182,18 +3174,11 @@
 				11A16E6D195B60DF004147F4 /* NYPLBookNormalCell.h */,
 				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
 				A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */,
-			);
-			path = UI;
-			sourceTree = "<group>";
-		};
-		73B5DFE126052B3A00225C12 /* UI */ = {
-			isa = PBXGroup;
-			children = (
 				085D31D51BE29E38007F7672 /* NYPLProblemReportViewController.h */,
 				085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */,
 				085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */,
 			);
-			name = UI;
+			path = UI;
 			sourceTree = "<group>";
 		};
 		73B5DFF426055BF700225C12 /* Date-Time */ = {
@@ -3638,7 +3623,6 @@
 				73225DE5250B46CE00EF1877 /* AppInfrastructure */,
 				21E7E07424FEA7C100189224 /* Audiobooks */,
 				73B5DFD72605296300225C12 /* Book */,
-				110AF8901961D822004887C3 /* Book */,
 				739ECB2725101F1600691A70 /* Catalog */,
 				73DE53322525A588003E2C56 /* ErrorHandling */,
 				73B5DFFD2605648F00225C12 /* Holds */,
