@@ -50,7 +50,7 @@ extension NYPLSignInBusinessLogic {
 
     NotificationCenter.default
       .addObserver(self,
-                   selector: #selector(handleRedirectURL(_:completion:)),
+                   selector: #selector(handleRedirectURL(_:)),
                    name: .NYPLAppDelegateDidReceiveCleverRedirectURL,
                    object: nil)
 
@@ -66,8 +66,17 @@ extension NYPLSignInBusinessLogic {
   }
 
   //----------------------------------------------------------------------------
+  
+  // As per Apple Developer Documentation, selector for NSNotification must have
+  // one and only one argument (an instance of NSNotification).
+  // See https://developer.apple.com/documentation/foundation/nsnotificationcenter/1415360-addobserver
+  // for more information.
+  @objc func handleRedirectURL(_ notification: Notification) {
+    self.handleRedirectURL(notification, completion: nil)
+  }
+  
   // this is used by both Clever and SAML authentication
-  @objc func handleRedirectURL(_ notification: Notification, completion: (_ error: Error?, _ errorTitle: String?, _ errorMessage: String?)->()) {
+  @objc func handleRedirectURL(_ notification: Notification, completion: ((_ error: Error?, _ errorTitle: String?, _ errorMessage: String?)->())?) {
     NotificationCenter.default
       .removeObserver(self, name: .NYPLAppDelegateDidReceiveCleverRedirectURL, object: nil)
 
@@ -77,7 +86,7 @@ extension NYPLSignInBusinessLogic {
                                metadata: [
                                 "authMethod": selectedAuthentication?.methodDescription ?? "N/A",
                                 "context": uiDelegate?.context ?? "N/A"])
-      completion(nil, nil, nil)
+      completion?(nil, nil, nil)
       return
     }
 
@@ -90,7 +99,7 @@ extension NYPLSignInBusinessLogic {
                                  metadata: [
                                   "loginURL": urlStr,
                                   "context": uiDelegate?.context ?? "N/A"])
-        completion(nil,
+        completion?(nil,
                    NSLocalizedString("SettingsAccountViewControllerLoginFailed", comment: "Title for login error alert"),
                    NSLocalizedString("An error occurred during the authentication process",
                                      comment: "Generic error message while handling sign-in redirection during authentication"))
@@ -106,7 +115,7 @@ extension NYPLSignInBusinessLogic {
                                metadata: [
                                 "loginURL": urlStr,
                                 "context": uiDelegate?.context ?? "N/A"])
-      completion(nil, nil, nil)
+      completion?(nil, nil, nil)
       return
     }
 
@@ -123,7 +132,7 @@ extension NYPLSignInBusinessLogic {
       let error = rawError.replacingOccurrences(of: "+", with: " ").removingPercentEncoding,
       let parsedError = error.parseJSONString as? [String: Any] {
 
-      completion(nil,
+      completion?(nil,
                  NSLocalizedString("SettingsAccountViewControllerLoginFailed", comment: "Title for login error alert"),
                  parsedError["title"] as? String)
       return
@@ -141,13 +150,13 @@ extension NYPLSignInBusinessLogic {
                                   "payloadDictionary": kvpairs,
                                   "redirectURL": url,
                                   "context": uiDelegate?.context ?? "N/A"])
-        completion(nil, nil, nil)
+        completion?(nil, nil, nil)
         return
     }
 
     self.authToken = authToken
     self.patron = parsedPatron
     validateCredentials()
-    completion(nil, nil, nil)
+    completion?(nil, nil, nil)
   }
 }
