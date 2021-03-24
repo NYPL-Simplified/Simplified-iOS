@@ -1,6 +1,6 @@
 #import "NYPLOPDSIndirectAcquisition.h"
 
-#import "NYPLBookAcquisitionPath.h"
+#import "NYPLOPDSAcquisitionPath.h"
 
 NSString * const _Nonnull ContentTypeOPDSCatalog = @"application/atom+xml;type=entry;profile=opds-catalog";
 NSString * const _Nonnull ContentTypeAdobeAdept = @"application/vnd.adobe.adept+xml";
@@ -16,7 +16,7 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/js
 NSString * const _Nonnull ContentTypeReadiumLCP = @"application/vnd.readium.lcp.license.v1.0+json";
 NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip";
 
-@interface NYPLBookAcquisitionPath ()
+@interface NYPLOPDSAcquisitionPath ()
 
 @property (nonatomic) NYPLOPDSAcquisitionRelation relation;
 @property (nonatomic, nonnull) NSArray<NSString *> *types;
@@ -24,7 +24,7 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
 
 @end
 
-@implementation NYPLBookAcquisitionPath : NSObject
+@implementation NYPLOPDSAcquisitionPath : NSObject
 
 - (instancetype _Nonnull)initWithRelation:(NYPLOPDSAcquisitionRelation const)relation
                                     types:(NSArray<NSString *> *const _Nonnull)types
@@ -117,11 +117,11 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
 
 - (BOOL)isEqual:(id const)object
 {
-  if (![object isKindOfClass:[NYPLBookAcquisitionPath class]]) {
+  if (![object isKindOfClass:[NYPLOPDSAcquisitionPath class]]) {
     return NO;
   }
 
-  NYPLBookAcquisitionPath *const path = object;
+  NYPLOPDSAcquisitionPath *const path = object;
 
   return self.relation == path.relation && [self.types isEqualToArray:path.types];
 }
@@ -146,7 +146,7 @@ mutableTypePaths(
     if (indirectAcquisition.indirectAcquisitions.count == 0) {
       return [NSMutableArray arrayWithObject:[NSMutableArray arrayWithObject:indirectAcquisition.type]];
     } else {
-      NSMutableSet<NSString *> *supportedSubtypes = [[NYPLBookAcquisitionPath supportedSubtypesForType:indirectAcquisition.type] mutableCopy];
+      NSMutableSet<NSString *> *supportedSubtypes = [[NYPLOPDSAcquisitionPath supportedSubtypesForType:indirectAcquisition.type] mutableCopy];
       [supportedSubtypes intersectSet:allowedTypes];
       NSMutableArray<NSMutableArray<NSString *> *> *const mutableTypePathsResults = [NSMutableArray array];
       for (NYPLOPDSIndirectAcquisition *const nestedIndirectAcquisition in indirectAcquisition.indirectAcquisitions) {
@@ -169,7 +169,7 @@ mutableTypePaths(
 }
 
 
-+ (NSArray<NYPLBookAcquisitionPath *> *_Nonnull)
++ (NSArray<NYPLOPDSAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
@@ -188,14 +188,14 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
         
       if (acquisition.indirectAcquisitions.count == 0) {
         [mutableAcquisitionPaths addObject:
-         [[NYPLBookAcquisitionPath alloc]
+         [[NYPLOPDSAcquisitionPath alloc]
           initWithRelation:acquisition.relation
           types:@[acquisition.type]
           url:acquisition.hrefURL]];
           continue;
       }
         
-      NSMutableSet<NSString *> *supportedSubtypes = [[NYPLBookAcquisitionPath
+      NSMutableSet<NSString *> *supportedSubtypes = [[NYPLOPDSAcquisitionPath
                                                       supportedSubtypesForType:acquisition.type]
                                                      mutableCopy];
       [supportedSubtypes intersectSet:types];
@@ -210,7 +210,7 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
                 
           [mutableTypePath insertObject:acquisition.type atIndex:0];
                 
-          NYPLBookAcquisitionPath *const acquisitionPath = [[NYPLBookAcquisitionPath alloc]
+          NYPLOPDSAcquisitionPath *const acquisitionPath = [[NYPLOPDSAcquisitionPath alloc]
                                                             initWithRelation:acquisition.relation
                                                             types:[mutableTypePath copy]
                                                             url:acquisition.hrefURL];

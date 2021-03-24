@@ -2,20 +2,20 @@ import XCTest
 
 @testable import SimplyE
 
-class NYPLBookAcquisitionPathTests: XCTestCase {
+class NYPLOPDSAcquisitionPathTests: XCTestCase {
 
   let acquisitions: [NYPLOPDSAcquisition] = try!
     NYPLOPDSEntry(xml:
       NYPLXML(data:
         Data.init(contentsOf:
-          Bundle.init(for: NYPLBookAcquisitionPathTests.self)
-            .url(forResource: "NYPLBookAcquisitionPathEntry", withExtension: "xml")!)))
+          Bundle.init(for: NYPLOPDSAcquisitionPathTests.self)
+            .url(forResource: "NYPLOPDSAcquisitionPathEntry", withExtension: "xml")!)))
       .acquisitions;
 
   func testSimplifiedAdeptEpubAcquisition() {
-    let acquisitionPaths: Array<NYPLBookAcquisitionPath> =
-      NYPLBookAcquisitionPath.supportedAcquisitionPaths(
-        forAllowedTypes: NYPLBookAcquisitionPath.supportedTypes(),
+    let acquisitionPaths: Array<NYPLOPDSAcquisitionPath> =
+      NYPLOPDSAcquisitionPath.supportedAcquisitionPaths(
+        forAllowedTypes: NYPLOPDSAcquisitionPath.supportedTypes(),
         allowedRelations: [.borrow, .openAccess],
         acquisitions: acquisitions)
 

@@ -1,9 +1,9 @@
 #import "NYPLBookContentType.h"
-#import "NYPLBookAcquisitionPath.h"
+#import "NYPLOPDSAcquisitionPath.h"
 
 NYPLBookContentType NYPLBookContentTypeFromMIMEType(NSString *const string)
 {
-  if ([[NYPLBookAcquisitionPath audiobookTypes] containsObject:string]) {
+  if ([[NYPLOPDSAcquisitionPath audiobookTypes] containsObject:string]) {
     return NYPLBookContentTypeAudiobook;
   } else if ([string isEqualToString:ContentTypeEpubZip]) {
     return NYPLBookContentTypeEPUB;
