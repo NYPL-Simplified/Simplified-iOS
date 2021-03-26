@@ -290,6 +290,34 @@
 		730EE001251567820038DD9F /* NYPLLibraryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730EE000251567820038DD9F /* NYPLLibraryNavigationController.m */; };
 		730EE002251567820038DD9F /* NYPLLibraryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730EE000251567820038DD9F /* NYPLLibraryNavigationController.m */; };
 		730EE003251567820038DD9F /* NYPLLibraryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730EE000251567820038DD9F /* NYPLLibraryNavigationController.m */; };
+		730EF24126093E40008E1DC3 /* invalid-locator-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23826093E3E008E1DC3 /* invalid-locator-1.json */; };
+		730EF24226093E40008E1DC3 /* invalid-locator-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23826093E3E008E1DC3 /* invalid-locator-1.json */; };
+		730EF24326093E40008E1DC3 /* invalid-locator-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23926093E3E008E1DC3 /* invalid-locator-2.json */; };
+		730EF24426093E40008E1DC3 /* invalid-locator-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23926093E3E008E1DC3 /* invalid-locator-2.json */; };
+		730EF24526093E40008E1DC3 /* invalid-bookmark-3.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23A26093E3E008E1DC3 /* invalid-bookmark-3.json */; };
+		730EF24626093E40008E1DC3 /* invalid-bookmark-3.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23A26093E3E008E1DC3 /* invalid-bookmark-3.json */; };
+		730EF24726093E40008E1DC3 /* invalid-bookmark-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23B26093E3F008E1DC3 /* invalid-bookmark-2.json */; };
+		730EF24826093E40008E1DC3 /* invalid-bookmark-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23B26093E3F008E1DC3 /* invalid-bookmark-2.json */; };
+		730EF24926093E40008E1DC3 /* invalid-bookmark-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23C26093E3F008E1DC3 /* invalid-bookmark-1.json */; };
+		730EF24A26093E40008E1DC3 /* invalid-bookmark-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23C26093E3F008E1DC3 /* invalid-bookmark-1.json */; };
+		730EF24B26093E40008E1DC3 /* invalid-bookmark-0.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23D26093E3F008E1DC3 /* invalid-bookmark-0.json */; };
+		730EF24C26093E40008E1DC3 /* invalid-bookmark-0.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23D26093E3F008E1DC3 /* invalid-bookmark-0.json */; };
+		730EF24D26093E40008E1DC3 /* invalid-locator-3.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23E26093E3F008E1DC3 /* invalid-locator-3.json */; };
+		730EF24E26093E40008E1DC3 /* invalid-locator-3.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23E26093E3F008E1DC3 /* invalid-locator-3.json */; };
+		730EF24F26093E40008E1DC3 /* invalid-locator-4.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23F26093E40008E1DC3 /* invalid-locator-4.json */; };
+		730EF25026093E40008E1DC3 /* invalid-locator-4.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF23F26093E40008E1DC3 /* invalid-locator-4.json */; };
+		730EF25126093E40008E1DC3 /* invalid-bookmark-4.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF24026093E40008E1DC3 /* invalid-bookmark-4.json */; };
+		730EF25226093E40008E1DC3 /* invalid-bookmark-4.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF24026093E40008E1DC3 /* invalid-bookmark-4.json */; };
+		730EF25826093E53008E1DC3 /* valid-locator-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25326093E52008E1DC3 /* valid-locator-1.json */; };
+		730EF25926093E53008E1DC3 /* valid-locator-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25326093E52008E1DC3 /* valid-locator-1.json */; };
+		730EF25A26093E53008E1DC3 /* valid-bookmark-0.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25426093E53008E1DC3 /* valid-bookmark-0.json */; };
+		730EF25B26093E53008E1DC3 /* valid-bookmark-0.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25426093E53008E1DC3 /* valid-bookmark-0.json */; };
+		730EF25C26093E53008E1DC3 /* valid-bookmark-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25526093E53008E1DC3 /* valid-bookmark-1.json */; };
+		730EF25D26093E53008E1DC3 /* valid-bookmark-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25526093E53008E1DC3 /* valid-bookmark-1.json */; };
+		730EF25E26093E53008E1DC3 /* valid-locator-0.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25626093E53008E1DC3 /* valid-locator-0.json */; };
+		730EF25F26093E53008E1DC3 /* valid-locator-0.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25626093E53008E1DC3 /* valid-locator-0.json */; };
+		730EF26026093E53008E1DC3 /* valid-bookmark-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25726093E53008E1DC3 /* valid-bookmark-2.json */; };
+		730EF26126093E53008E1DC3 /* valid-bookmark-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 730EF25726093E53008E1DC3 /* valid-bookmark-2.json */; };
 		730EF263260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730EF262260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift */; };
 		730EF264260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730EF262260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift */; };
 		730EF266260967FF008E1DC3 /* NYPLBookmarkFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730EF265260967FF008E1DC3 /* NYPLBookmarkFactory.swift */; };
@@ -2069,6 +2097,20 @@
 		730D17CB25535954004CAC83 /* NYPLSignInBusinessLogic+BookmarkSyncing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+BookmarkSyncing.swift"; sourceTree = "<group>"; };
 		730EDFFF251567820038DD9F /* NYPLLibraryNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLLibraryNavigationController.h; sourceTree = "<group>"; };
 		730EE000251567820038DD9F /* NYPLLibraryNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLLibraryNavigationController.m; sourceTree = "<group>"; };
+		730EF23826093E3E008E1DC3 /* invalid-locator-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-locator-1.json"; path = "Simplified-Bookmarks-Spec/invalid-locator-1.json"; sourceTree = SOURCE_ROOT; };
+		730EF23926093E3E008E1DC3 /* invalid-locator-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-locator-2.json"; path = "Simplified-Bookmarks-Spec/invalid-locator-2.json"; sourceTree = SOURCE_ROOT; };
+		730EF23A26093E3E008E1DC3 /* invalid-bookmark-3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-bookmark-3.json"; path = "Simplified-Bookmarks-Spec/invalid-bookmark-3.json"; sourceTree = SOURCE_ROOT; };
+		730EF23B26093E3F008E1DC3 /* invalid-bookmark-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-bookmark-2.json"; path = "Simplified-Bookmarks-Spec/invalid-bookmark-2.json"; sourceTree = SOURCE_ROOT; };
+		730EF23C26093E3F008E1DC3 /* invalid-bookmark-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-bookmark-1.json"; path = "Simplified-Bookmarks-Spec/invalid-bookmark-1.json"; sourceTree = SOURCE_ROOT; };
+		730EF23D26093E3F008E1DC3 /* invalid-bookmark-0.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-bookmark-0.json"; path = "Simplified-Bookmarks-Spec/invalid-bookmark-0.json"; sourceTree = SOURCE_ROOT; };
+		730EF23E26093E3F008E1DC3 /* invalid-locator-3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-locator-3.json"; path = "Simplified-Bookmarks-Spec/invalid-locator-3.json"; sourceTree = SOURCE_ROOT; };
+		730EF23F26093E40008E1DC3 /* invalid-locator-4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-locator-4.json"; path = "Simplified-Bookmarks-Spec/invalid-locator-4.json"; sourceTree = SOURCE_ROOT; };
+		730EF24026093E40008E1DC3 /* invalid-bookmark-4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "invalid-bookmark-4.json"; path = "Simplified-Bookmarks-Spec/invalid-bookmark-4.json"; sourceTree = SOURCE_ROOT; };
+		730EF25326093E52008E1DC3 /* valid-locator-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "valid-locator-1.json"; path = "Simplified-Bookmarks-Spec/valid-locator-1.json"; sourceTree = SOURCE_ROOT; };
+		730EF25426093E53008E1DC3 /* valid-bookmark-0.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "valid-bookmark-0.json"; path = "Simplified-Bookmarks-Spec/valid-bookmark-0.json"; sourceTree = SOURCE_ROOT; };
+		730EF25526093E53008E1DC3 /* valid-bookmark-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "valid-bookmark-1.json"; path = "Simplified-Bookmarks-Spec/valid-bookmark-1.json"; sourceTree = SOURCE_ROOT; };
+		730EF25626093E53008E1DC3 /* valid-locator-0.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "valid-locator-0.json"; path = "Simplified-Bookmarks-Spec/valid-locator-0.json"; sourceTree = SOURCE_ROOT; };
+		730EF25726093E53008E1DC3 /* valid-bookmark-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "valid-bookmark-2.json"; path = "Simplified-Bookmarks-Spec/valid-bookmark-2.json"; sourceTree = SOURCE_ROOT; };
 		730EF262260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLBookmarkSpecTests.swift; path = Bookmarks/NYPLBookmarkSpecTests.swift; sourceTree = "<group>"; };
 		730EF265260967FF008E1DC3 /* NYPLBookmarkFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkFactory.swift; sourceTree = "<group>"; };
 		730FC04F25127FA2004D7C2D /* NYPLSettings+OE.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NYPLSettings+OE.swift"; sourceTree = "<group>"; };
@@ -2859,6 +2901,20 @@
 		730EF23226093DE3008E1DC3 /* Bookmarks */ = {
 			isa = PBXGroup;
 			children = (
+				730EF23D26093E3F008E1DC3 /* invalid-bookmark-0.json */,
+				730EF23C26093E3F008E1DC3 /* invalid-bookmark-1.json */,
+				730EF23B26093E3F008E1DC3 /* invalid-bookmark-2.json */,
+				730EF23A26093E3E008E1DC3 /* invalid-bookmark-3.json */,
+				730EF24026093E40008E1DC3 /* invalid-bookmark-4.json */,
+				730EF23826093E3E008E1DC3 /* invalid-locator-1.json */,
+				730EF23926093E3E008E1DC3 /* invalid-locator-2.json */,
+				730EF23E26093E3F008E1DC3 /* invalid-locator-3.json */,
+				730EF23F26093E40008E1DC3 /* invalid-locator-4.json */,
+				730EF25426093E53008E1DC3 /* valid-bookmark-0.json */,
+				730EF25526093E53008E1DC3 /* valid-bookmark-1.json */,
+				730EF25726093E53008E1DC3 /* valid-bookmark-2.json */,
+				730EF25626093E53008E1DC3 /* valid-locator-0.json */,
+				730EF25326093E52008E1DC3 /* valid-locator-1.json */,
 				730EF262260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift */,
 			);
 			name = Bookmarks;
@@ -4054,16 +4110,30 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D8790A320129AC400E2763F /* NYPLOPDSAcquisitionPathEntry.xml in Resources */,
+				730EF25E26093E53008E1DC3 /* valid-locator-0.json in Resources */,
+				730EF25126093E40008E1DC3 /* invalid-bookmark-4.json in Resources */,
+				730EF24726093E40008E1DC3 /* invalid-bookmark-2.json in Resources */,
 				2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */,
 				B51C1E18229456E2003B49A5 /* gpl_authentication_document.json in Resources */,
 				B51C1E19229456E2003B49A5 /* nypl_authentication_document.json in Resources */,
+				730EF24926093E40008E1DC3 /* invalid-bookmark-1.json in Resources */,
+				730EF24126093E40008E1DC3 /* invalid-locator-1.json in Resources */,
 				B51C1E17229456E2003B49A5 /* acl_authentication_document.json in Resources */,
+				730EF24F26093E40008E1DC3 /* invalid-locator-4.json in Resources */,
 				219901FB24FD2E56001BC727 /* jwk_public in Resources */,
 				B51C1E1A229456E2003B49A5 /* dpl_authentication_document.json in Resources */,
+				730EF24D26093E40008E1DC3 /* invalid-locator-3.json in Resources */,
+				730EF25A26093E53008E1DC3 /* valid-bookmark-0.json in Resources */,
 				2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */,
+				730EF26026093E53008E1DC3 /* valid-bookmark-2.json in Resources */,
+				730EF25826093E53008E1DC3 /* valid-locator-1.json in Resources */,
+				730EF24526093E40008E1DC3 /* invalid-bookmark-3.json in Resources */,
 				219901F524FD2DE9001BC727 /* jwk.json in Resources */,
+				730EF25C26093E53008E1DC3 /* valid-bookmark-1.json in Resources */,
+				730EF24326093E40008E1DC3 /* invalid-locator-2.json in Resources */,
 				B51C1DFC22860513003B49A5 /* OPDS2CatalogsFeed.json in Resources */,
 				2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */,
+				730EF24B26093E40008E1DC3 /* invalid-bookmark-0.json in Resources */,
 				17BE24EF25FB114900AE707F /* simplye_authentication_document.json in Resources */,
 				73A794C72549098700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */,
 			);
@@ -4074,17 +4144,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				7320AB3A251EBC9900E3F04D /* NYPLOPDSAcquisitionPathEntry.xml in Resources */,
+				730EF24C26093E40008E1DC3 /* invalid-bookmark-0.json in Resources */,
+				730EF24226093E40008E1DC3 /* invalid-locator-1.json in Resources */,
+				730EF24626093E40008E1DC3 /* invalid-bookmark-3.json in Resources */,
+				730EF24A26093E40008E1DC3 /* invalid-bookmark-1.json in Resources */,
 				7320AB3B251EBC9900E3F04D /* UpdateCheckNeedsUpdate.json in Resources */,
+				730EF25F26093E53008E1DC3 /* valid-locator-0.json in Resources */,
 				7320AB3C251EBC9900E3F04D /* gpl_authentication_document.json in Resources */,
+				730EF25226093E40008E1DC3 /* invalid-bookmark-4.json in Resources */,
 				7320AB3D251EBC9900E3F04D /* nypl_authentication_document.json in Resources */,
+				730EF24E26093E40008E1DC3 /* invalid-locator-3.json in Resources */,
 				7320AB3E251EBC9900E3F04D /* acl_authentication_document.json in Resources */,
 				7320AB3F251EBC9900E3F04D /* jwk_public in Resources */,
+				730EF24826093E40008E1DC3 /* invalid-bookmark-2.json in Resources */,
 				7320AB40251EBC9900E3F04D /* dpl_authentication_document.json in Resources */,
 				7320AB41251EBC9900E3F04D /* UpdateCheckUnknown.json in Resources */,
 				7320AB42251EBC9900E3F04D /* jwk.json in Resources */,
 				7320AB43251EBC9900E3F04D /* OPDS2CatalogsFeed.json in Resources */,
 				7320AB44251EBC9900E3F04D /* UpdateCheckUpToDate.json in Resources */,
 				73A794C82549098700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */,
+				730EF24426093E40008E1DC3 /* invalid-locator-2.json in Resources */,
+				730EF25026093E40008E1DC3 /* invalid-locator-4.json in Resources */,
+				730EF25926093E53008E1DC3 /* valid-locator-1.json in Resources */,
+				730EF26126093E53008E1DC3 /* valid-bookmark-2.json in Resources */,
+				730EF25D26093E53008E1DC3 /* valid-bookmark-1.json in Resources */,
+				730EF25B26093E53008E1DC3 /* valid-bookmark-0.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
