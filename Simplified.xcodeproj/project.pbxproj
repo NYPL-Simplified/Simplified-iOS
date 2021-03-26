@@ -236,7 +236,6 @@
 		2D754BBB2002E2FB0061D34F /* NYPLOPDSAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D754BBA2002E2FB0061D34F /* NYPLOPDSAcquisition.m */; };
 		2D754BC22002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D754BC12002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m */; };
 		2D87909D20127AA300E2763F /* NYPLOPDSAcquisitionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D87909C20127AA300E2763F /* NYPLOPDSAcquisitionPath.m */; };
-		2D8790A320129AC400E2763F /* NYPLOPDSAcquisitionPathEntry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2D8790A220129AC400E2763F /* NYPLOPDSAcquisitionPathEntry.xml */; };
 		2D8790A520129AF200E2763F /* NYPLOPDSAcquisitionPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8790A420129AF200E2763F /* NYPLOPDSAcquisitionPathTests.swift */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
 		2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB436371D4C049200F8E69D /* NYPLReachability.m */; };
@@ -369,6 +368,8 @@
 		7327528D2578D68500A073E2 /* NYPLReauthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734B78982565F7DE006FB8AD /* NYPLReauthenticator.swift */; };
 		7327528E2578D69300A073E2 /* URLResponse+NYPLAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734B789025659611006FB8AD /* URLResponse+NYPLAuthentication.swift */; };
 		7327A89323EE017300954748 /* NYPLMainThreadChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */; };
+		732F4748260AD76E00E2CB64 /* NYPLOPDSAcquisitionPathEntry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2D8790A220129AC400E2763F /* NYPLOPDSAcquisitionPathEntry.xml */; };
+		732F4749260B1AEF00E2CB64 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */ = {isa = PBXBuildFile; fileRef = 73A794C62549095700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml */; };
 		732F474B260B224A00E2CB64 /* NYPLBookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */; };
 		732F474C260B224A00E2CB64 /* NYPLBookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */; };
 		732F474D260B224A00E2CB64 /* NYPLBookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */; };
@@ -1002,7 +1003,6 @@
 		73A794BD2548E36100C59CC1 /* NYPLBookCreationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A794BC2548E36100C59CC1 /* NYPLBookCreationTests.swift */; };
 		73A794BE2548E36100C59CC1 /* NYPLBookCreationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A794BC2548E36100C59CC1 /* NYPLBookCreationTests.swift */; };
 		73A794C72549098700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */ = {isa = PBXBuildFile; fileRef = 73A794C62549095700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml */; };
-		73A794C82549098700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */ = {isa = PBXBuildFile; fileRef = 73A794C62549095700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml */; };
 		73A794CA25492C9800C59CC1 /* NYPLFake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A794C925492C9800C59CC1 /* NYPLFake.swift */; };
 		73A794CB25492C9800C59CC1 /* NYPLFake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A794C925492C9800C59CC1 /* NYPLFake.swift */; };
 		73A7BA4C25A62FCF00C2906C /* ReadiumLCP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A7BA4B25A62FCE00C2906C /* ReadiumLCP.framework */; };
@@ -4109,7 +4109,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D8790A320129AC400E2763F /* NYPLOPDSAcquisitionPathEntry.xml in Resources */,
 				730EF25E26093E53008E1DC3 /* valid-locator-0.json in Resources */,
 				730EF25126093E40008E1DC3 /* invalid-bookmark-4.json in Resources */,
 				730EF24726093E40008E1DC3 /* invalid-bookmark-2.json in Resources */,
@@ -4135,6 +4134,7 @@
 				2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */,
 				730EF24B26093E40008E1DC3 /* invalid-bookmark-0.json in Resources */,
 				17BE24EF25FB114900AE707F /* simplye_authentication_document.json in Resources */,
+				732F4748260AD76E00E2CB64 /* NYPLOPDSAcquisitionPathEntry.xml in Resources */,
 				73A794C72549098700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4144,6 +4144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7320AB3A251EBC9900E3F04D /* NYPLOPDSAcquisitionPathEntry.xml in Resources */,
+				732F4749260B1AEF00E2CB64 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */,
 				730EF24C26093E40008E1DC3 /* invalid-bookmark-0.json in Resources */,
 				730EF24226093E40008E1DC3 /* invalid-locator-1.json in Resources */,
 				730EF24626093E40008E1DC3 /* invalid-bookmark-3.json in Resources */,
@@ -4162,7 +4163,6 @@
 				7320AB42251EBC9900E3F04D /* jwk.json in Resources */,
 				7320AB43251EBC9900E3F04D /* OPDS2CatalogsFeed.json in Resources */,
 				7320AB44251EBC9900E3F04D /* UpdateCheckUpToDate.json in Resources */,
-				73A794C82549098700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */,
 				730EF24426093E40008E1DC3 /* invalid-locator-2.json in Resources */,
 				730EF25026093E40008E1DC3 /* invalid-locator-4.json in Resources */,
 				730EF25926093E53008E1DC3 /* valid-locator-1.json in Resources */,
