@@ -17,7 +17,6 @@
 @end
 
 static NSString *const BookKey = @"metadata";
-static NSString *const LocationKey = @"location";
 static NSString *const StateKey = @"state";
 static NSString *const FulfillmentIdKey = @"fulfillmentId";
 static NSString *const ReadiumBookmarksKey = @"bookmarks";
@@ -99,7 +98,7 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
   if(![self.book isKindOfClass:[NYPLBook class]]) return nil;
   
   self.location = [[NYPLBookLocation alloc]
-                   initWithDictionary:NYPLNullToNil(dictionary[LocationKey])];
+                   initWithDictionary:NYPLNullToNil(dictionary[NYPLBookmarkDictionaryRepresentation.locationKey])];
   if(self.location && ![self.location isKindOfClass:[NYPLBookLocation class]]) return nil;
   
   NSNumber *state = [NYPLBookStateHelper bookStateFromString:dictionary[StateKey]];
@@ -134,17 +133,17 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
 - (NSDictionary *)dictionaryRepresentation
 {
   NSMutableArray *readiumBookmarks = [NSMutableArray array];
-  for (NYPLReadiumBookmark *readium in self.readiumBookmarks) {
-    [readiumBookmarks addObject:readium.dictionaryRepresentation];
+  for (NYPLReadiumBookmark *readiumBookmark in self.readiumBookmarks) {
+    [readiumBookmarks addObject:readiumBookmark.dictionaryRepresentation];
   }
 
   NSMutableArray *genericBookmarks = [NSMutableArray array];
-  for (NYPLBookLocation *generic in self.genericBookmarks) {
-    [genericBookmarks addObject:generic.dictionaryRepresentation];
+  for (NYPLBookLocation *genericBookmark in self.genericBookmarks) {
+    [genericBookmarks addObject:genericBookmark.dictionaryRepresentation];
   }
   
   return @{BookKey: [self.book dictionaryRepresentation],
-           LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
+           NYPLBookmarkDictionaryRepresentation.locationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
            StateKey: [NYPLBookStateHelper stringValueFromBookState:self.state],
            FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
            ReadiumBookmarksKey: NYPLNullFromNil(readiumBookmarks),

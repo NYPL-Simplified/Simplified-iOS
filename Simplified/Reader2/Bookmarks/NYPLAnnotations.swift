@@ -2,12 +2,6 @@ import UIKit
 import R2Shared
 
 @objcMembers final class NYPLAnnotations: NSObject {
-
-  // key names used internally in intermediate objects between the data
-  // structures in server responses and our strongly typed  classes.
-  static let internalCFIKey = "serverCFI"
-  static let internalDeviceKey = "device"
-
   // MARK: - Sync Settings
 
   /// Shows (if needed) the opt-in flow for syncing the user bookmarks and

@@ -200,12 +200,13 @@ const double RequestTimeInterval = 120;
                               NSDictionary *const locationDictionary =
                               NYPLJSONObjectFromData([location dataUsingEncoding:NSUTF8StringEncoding]);
 
-                              NSString *contentCFI = locationDictionary[@"contentCFI"];
-                              if (!contentCFI) {
-                                contentCFI = @"";
-                              }
-                              dictionary[@"openPageRequest"] =
-                              @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
+                              NSString *contentCFI = locationDictionary[NYPLBookmarkDictionaryRepresentation.cfiKey];
+
+                              dictionary[@"openPageRequest"] = @{
+                                NYPLBookmarkDictionaryRepresentation.idrefKey:
+                                  locationDictionary[NYPLBookmarkDictionaryRepresentation.idrefKey],
+                                NYPLBookmarkDictionaryRepresentation.cfiKey:
+                                  contentCFI ?: @""};
 
                               if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
                                 [self.delegate patronDecidedNavigation:YES withNavDict:dictionary];
