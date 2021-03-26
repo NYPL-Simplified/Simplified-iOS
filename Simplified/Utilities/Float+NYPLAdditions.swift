@@ -22,5 +22,9 @@ extension Float {
 
     return abs(a - b) < Float.ulpOfOne
   }
+
+  func roundTo(decimalPlaces: Int) -> String {
+    return String(format: "%.\(decimalPlaces)f%%", self) as String
+  }
 }
 

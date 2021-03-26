@@ -122,6 +122,7 @@ class NYPLBookmarkFactory {
       let device = body[NYPLBookmarkSpec.Body.Device.key] as? String,
       let time = body[NYPLBookmarkSpec.Body.Time.key] as? String,
 
+      // TODO: SIMPLY-3644 fix
       let progressWithinChapter = (body["http://librarysimplified.org/terms/progressWithinChapter"] as? NSNumber)?.floatValue,
       let progressWithinBook = (body["http://librarysimplified.org/terms/progressWithinBook"] as? NSNumber)?.floatValue
       else {
@@ -147,11 +148,11 @@ class NYPLBookmarkFactory {
         return nil
     }
 
-    let serverCFIString = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorContentCFIKey] as? String
+    let serverCFI = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorContentCFIKey] as? String
     let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
 
     return NYPLReadiumBookmark(annotationId: annotationID,
-                               contentCFI: serverCFIString,
+                               contentCFI: serverCFI,
                                idref: idref,
                                chapter: chapter,
                                page: nil,

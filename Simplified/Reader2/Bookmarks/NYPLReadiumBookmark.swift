@@ -51,6 +51,7 @@
     // This location structure originally comes from R1 Reader's Javascript
     // and its not available in R2, we are mimicking the structure
     // in order to pass the needed information to the server
+    // TODO: SIMPLY-3644 refactor per spec
     self.location = location ?? "{\"idref\":\"\(idref)\",\"contentCFI\":\"\(contentCFI ?? "")\"}"
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook
@@ -103,7 +104,9 @@
   }
   
   override func isEqual(_ object: Any?) -> Bool {
-    let other = object as! NYPLReadiumBookmark
+    guard let other = object as? NYPLReadiumBookmark else {
+      return false
+    }
 
     if let contentCFI = self.contentCFI,
       let otherContentCFI = other.contentCFI,
@@ -129,8 +132,3 @@ extension NYPLReadiumBookmark {
   }
 }
 
-extension Float {
-  func roundTo(decimalPlaces: Int) -> String {
-    return String(format: "%.\(decimalPlaces)f%%", self) as String
-  }
-}

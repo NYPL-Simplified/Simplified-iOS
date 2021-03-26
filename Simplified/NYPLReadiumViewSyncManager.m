@@ -112,7 +112,7 @@ const double RequestTimeInterval = 120;
 {
   __weak NYPLReadiumViewSyncManager *const weakSelf = self;
 
-  [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL completionHandler:^(NSDictionary * _Nullable responseObject) {
+  [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL completion:^(NYPLReadiumBookmark * _Nullable bookmark) {
 
     // Still on a background thread
 
@@ -120,18 +120,19 @@ const double RequestTimeInterval = 120;
       return;
     }
 
-    if (!responseObject) {
-      NYPLLOG(@"No Server Annotation for this book exists.");
+    if (!bookmark) {
+      NYPLLOG_F(@"No reading position annotation exists on the server for bookID: %@.",
+                bookID);
       weakSelf.shouldPostLastRead = YES;
       return;
     }
 
-    NSString* serverLocationString = responseObject[@"serverCFI"];
+    NSString* serverLocationString = bookmark.location;
     NSDictionary *responseJSON = [NSJSONSerialization
                                   JSONObjectWithData:[serverLocationString
                                                       dataUsingEncoding:NSUTF8StringEncoding]
                                   options:NSJSONReadingMutableContainers error:nil];
-    NSString* deviceIDString = responseObject[@"device"];
+    NSString* deviceIDString = bookmark.device;
 
     NSString* currentLocationString = location.locationString;
     NYPLLOG_F(@"serverLocationString %@",serverLocationString);

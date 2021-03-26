@@ -221,16 +221,16 @@ import R2Shared
   /// Reads the current reading position from the server, parses the response
   /// and returns the result to the `completionHandler`.
   class func syncReadingPosition(ofBook bookID: String?, toURL url:URL?,
-                                 completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
+                                 completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
-      completionHandler(nil)
+      completion(nil)
       Log.debug(#file, "Account does not support sync or sync is disabled.")
       return
     }
 
     guard let url = url, let bookID = bookID else {
-      completionHandler(nil)
+      completion(nil)
       Log.error(#file, "Required parameters are nil.")
       return
     }
@@ -239,62 +239,35 @@ import R2Shared
                              timeoutInterval: NYPLDefaultRequestTimeout)
     request.httpMethod = "GET"
     setDefaultAnnotationHeaders(forRequest: &request)
-    
+
     let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      
+
       if let error = error as NSError? {
         Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-        completionHandler(nil)
+        completion(nil)
         return
       }
       guard let data = data,
-        let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
+        let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+        let json = jsonObject as? [String: Any] else {
           Log.error(#file, "Response from annotation server could not be serialized.")
-          completionHandler(nil)
+          completion(nil)
           return
       }
 
       guard let first = json["first"] as? [String:AnyObject],
-        let items = first["items"] as? [AnyObject] else {
+        let items = first["items"] as? [[String: AnyObject]] else {
           Log.error(#file, "Missing required key from Annotations response, or no items exist.")
-          completionHandler(nil)
+          completion(nil)
           return
       }
-      
-      for item in items {
-        // TODO: SIMPLY-3644 refactor this server read-pos reading code, should
-        // be able to modify NYPLBookmarkFactory::make(fromServerBookmark:bookID)
-        guard let target = item[NYPLBookmarkSpec.Target.key] as? [String: AnyObject],
-          let source = target[NYPLBookmarkSpec.Target.Source.key] as? String,
-          let motivation = item[NYPLBookmarkSpec.Motivation.key] as? String else {
-            completionHandler(nil)
-            continue
-        }
-        
-        if source == bookID && motivation == NYPLBookmarkSpec.Motivation.readingProgress.rawValue {
-          
-          guard let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String:AnyObject],
-            let selectorValue = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as? String else {
-              Log.error(#file, "No CFI saved for title on the server.")
-              completionHandler(nil)
-              return
-          }
-          
-          var responseObject = [internalCFIKey : selectorValue]
-          
-          if let body = item[NYPLBookmarkSpec.Body.key] as? [String:AnyObject],
-            let device = body[NYPLBookmarkSpec.Body.Device.key] as? String,
-            let time = body[NYPLBookmarkSpec.Body.Time.key] as? String {
-            responseObject[internalDeviceKey] = device
-            responseObject["time"] = time
-          }
-          completionHandler(responseObject)
-          return
-        }
-      }
-      Log.error(#file, "No Annotation Item found for this title.")
-      completionHandler(nil)
-      return
+
+      let readPos = items
+        .compactMap { NYPLBookmarkFactory.make(fromServerAnnotation: $0,
+                                               annotationType: .readingProgress,
+                                               bookID: bookID) }
+        .first
+      completion(readPos)
     }
     dataTask.resume()
   }
