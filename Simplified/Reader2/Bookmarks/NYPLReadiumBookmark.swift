@@ -116,8 +116,8 @@
     } else {
       // R2
       return self.idref == other.idref
-        && self.progressWithinBook == other.progressWithinBook
-        && self.progressWithinChapter == other.progressWithinChapter
+        && self.progressWithinBook =~= other.progressWithinBook
+        && self.progressWithinChapter =~= other.progressWithinChapter
         && self.chapter == other.chapter
     }
   }

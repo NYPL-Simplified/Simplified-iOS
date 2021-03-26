@@ -14,20 +14,6 @@ enum NYPLResult<SuccessInfo> {
   case failure(NYPLUserFriendlyError, URLResponse?)
 }
 
-protocol NYPLRequestExecuting {
-  /// Execute a given request.
-  /// - Parameters:
-  ///   - req: The request to perform.
-  ///   - completion: Always called when the resource is either fetched from
-  /// the network or from the cache.
-  /// - Returns: The task issueing the given request.
-  @discardableResult
-  func executeRequest(_ req: URLRequest,
-                      completion: @escaping (_: NYPLResult<Data>) -> Void) -> URLSessionDataTask
-
-  var requestTimeout: TimeInterval {get}
-}
-
 /// A class that is capable of executing network requests in a thread-safe way.
 /// This class implements caching according to server response caching headers,
 /// but can also be configured to have a fallback mechanism to cache responses
@@ -47,12 +33,14 @@ protocol NYPLRequestExecuting {
   /// - Parameter cachingStrategy: The strategy to cache responses with.
   /// - Parameter delegateQueue: The queue where callbacks will be called.
   @objc init(credentialsProvider: NYPLBasicAuthCredentialsProvider? = nil,
-       cachingStrategy: NYPLCachingStrategy,
-       delegateQueue: OperationQueue? = nil) {
+             cachingStrategy: NYPLCachingStrategy,
+             delegateQueue: OperationQueue? = nil) {
     self.responder = NYPLNetworkResponder(credentialsProvider: credentialsProvider,
                                           useFallbackCaching: cachingStrategy == .fallback)
 
-    let config = NYPLCaching.makeURLSessionConfiguration(caching: cachingStrategy)
+    let config = NYPLCaching.makeURLSessionConfiguration(
+      caching: cachingStrategy,
+      requestTimeout: NYPLNetworkExecutor.defaultRequestTimeout)
     self.urlSession = URLSession(configuration: config,
                                  delegate: self.responder,
                                  delegateQueue: delegateQueue)
@@ -93,10 +81,6 @@ extension NYPLNetworkExecutor: NYPLRequestExecuting {
     Log.info(#file, "Task \(task.taskIdentifier): starting request \(req.loggableString)")
     task.resume()
     return task
-  }
-
-  var requestTimeout: TimeInterval {
-    return urlSession.configuration.timeoutIntervalForRequest
   }
 }
 

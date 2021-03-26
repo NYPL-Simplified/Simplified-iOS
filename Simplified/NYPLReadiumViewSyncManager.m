@@ -84,7 +84,8 @@ const double RequestTimeInterval = 120;
     switch (self.syncStatus) {
       case NYPLReadPositionSyncStatusIdle: {
         self.syncStatus = NYPLReadPositionSyncStatusBusy;
-        [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:location];
+        [NYPLAnnotations postReadingPositionForBook:self.bookID
+                                      selectorValue:location];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(RequestTimeInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
           @synchronized(self) {
             self.syncStatus = NYPLReadPositionSyncStatusIdle;
@@ -125,9 +126,13 @@ const double RequestTimeInterval = 120;
       return;
     }
 
-    NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:[responseObject[@"serverCFI"] dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
-    NSString* deviceIDString = responseObject[@"device"];
     NSString* serverLocationString = responseObject[@"serverCFI"];
+    NSDictionary *responseJSON = [NSJSONSerialization
+                                  JSONObjectWithData:[serverLocationString
+                                                      dataUsingEncoding:NSUTF8StringEncoding]
+                                  options:NSJSONReadingMutableContainers error:nil];
+    NSString* deviceIDString = responseObject[@"device"];
+
     NSString* currentLocationString = location.locationString;
     NYPLLOG_F(@"serverLocationString %@",serverLocationString);
     NYPLLOG_F(@"currentLocationString %@",currentLocationString);
@@ -223,16 +228,17 @@ const double RequestTimeInterval = 120;
 {
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
   if (currentAccount.details.syncPermissionGranted) {
-    [NYPLAnnotations postBookmarkForBook:bookID toURL:nil bookmark:bookmark
-                       completionHandler:^(NSString * _Nullable serverAnnotationID) {
-                         if (serverAnnotationID) {
-                           NYPLLOG_F(@"Bookmark upload success: %@", location);
-                         } else {
-                           NYPLLOG_F(@"Bookmark failed to upload: %@", location);
-                         }
-                         bookmark.annotationId = serverAnnotationID;
-                         [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
-                       }];
+    [NYPLAnnotations postBookmark:bookmark
+                        forBookID:bookID
+                       completion:^(NSString * _Nullable serverAnnotationID) {
+      if (serverAnnotationID) {
+        NYPLLOG_F(@"Bookmark upload success: %@", location);
+      } else {
+        NYPLLOG_F(@"Bookmark failed to upload: %@", location);
+      }
+      bookmark.annotationId = serverAnnotationID;
+      [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
+    }];
   } else {
     [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
     NYPLLOG(@"Bookmark saving locally. Sync is not enabled for account.");
@@ -346,7 +352,8 @@ const double RequestTimeInterval = 120;
 {
   @synchronized(self) {
     if (self.queuedReadingPosition) {
-      [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:self.queuedReadingPosition];
+      [NYPLAnnotations postReadingPositionForBook:self.bookID
+                                    selectorValue:self.queuedReadingPosition];
       self.queuedReadingPosition = nil;
     }
   }

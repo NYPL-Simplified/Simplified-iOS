@@ -83,8 +83,8 @@ class NYPLLastReadPositionSynchronizer {
           return
         }
 
-        let deviceID = responseObject[NYPLAnnotations.serverDeviceKey] ?? ""
-        let serverLocationString = responseObject[NYPLAnnotations.serverCFIKey]
+        let deviceID = responseObject[NYPLAnnotations.internalDeviceKey] ?? ""
+        let serverLocationString = responseObject[NYPLAnnotations.internalCFIKey]
 
         // Pass through returning nil (meaning the server doesn't have a
         // last read location worth restoring) if:

@@ -10,6 +10,7 @@ import Foundation
 import R2Shared
 
 class NYPLBookmarkFactory {
+
   private let book: NYPLBook
   private let publication: Publication
   private let drmDeviceID: String?
@@ -20,7 +21,7 @@ class NYPLBookmarkFactory {
     self.drmDeviceID = drmDeviceID
   }
 
-  func make(from bookmarkLoc: NYPLBookmarkR2Location,
+  func make(fromR2Location bookmarkLoc: NYPLBookmarkR2Location,
             usingBookRegistry bookRegistry: NYPLBookRegistryProvider) -> NYPLReadiumBookmark? {
 
     guard let progression = bookmarkLoc.locator.locations.progression else {
@@ -46,10 +47,10 @@ class NYPLBookmarkFactory {
       let registryLocationJSON = try? JSONSerialization.jsonObject(with: data),
       let registryLocationDict = registryLocationJSON as? [String: Any] {
 
-      cfi = registryLocationDict["contentCFI"] as? String
+      cfi = registryLocationDict[NYPLBookmarkSpec.Target.Selector.Value.locatorContentCFIKey] as? String
 
       // backup idref from R1 in case parsing from R2 fails for some reason
-      idref = registryLocationDict["idref"] as? String
+      idref = registryLocationDict[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
     }
 
     // get the idref from R2 data structures. Should be more reliable than R1's
@@ -80,13 +81,25 @@ class NYPLBookmarkFactory {
       device: drmDeviceID)
   }
 
+  class func make(fromServerBookmark annotation: [String: Any],
+                  bookID: String) -> NYPLReadiumBookmark? {
+    return make(fromServerAnnotation: annotation,
+                annotationType: .bookmark,
+                bookID: bookID)
+  }
+
   class func make(fromServerAnnotation annotation: [String: Any],
+                  annotationType: NYPLBookmarkSpec.Motivation,
                   bookID: String) -> NYPLReadiumBookmark? {
 
-    guard let target = annotation["target"] as? [String: AnyObject],
-      let source = target["source"] as? String,
-      let annotationID = annotation["id"] as? String,
-      let motivation = annotation["motivation"] as? String else {
+    guard let annotationID = annotation[NYPLBookmarkSpec.Id.key] as? String else {
+      Log.error(#file, "Missing AnnotationID:\(annotation)")
+      return nil
+    }
+
+    guard let target = annotation[NYPLBookmarkSpec.Target.key] as? [String: AnyObject],
+      let source = target[NYPLBookmarkSpec.Target.Source.key] as? String,
+      let motivation = annotation[NYPLBookmarkSpec.Motivation.key] as? String else {
         Log.error(#file, "Error parsing required key/values for target.")
         return nil
     }
@@ -100,47 +113,49 @@ class NYPLBookmarkFactory {
       return nil
     }
 
-    guard motivation.contains("bookmarking") else {
+    guard motivation.contains(annotationType.rawValue) else {
       return nil
     }
 
-    guard let selector = target["selector"] as? [String: AnyObject],
-      let serverCFI = selector["value"] as? String,
-      let body = annotation["body"] as? [String: AnyObject] else {
-        Log.error(#file, "ServerCFI could not be parsed.")
-        return nil
-    }
+    guard
+      let body = annotation[NYPLBookmarkSpec.Body.key] as? [String: AnyObject],
+      let device = body[NYPLBookmarkSpec.Body.Device.key] as? String,
+      let time = body[NYPLBookmarkSpec.Body.Time.key] as? String,
 
-    guard let device = body["http://librarysimplified.org/terms/device"] as? String,
-      let time = body["http://librarysimplified.org/terms/time"] as? String,
       let progressWithinChapter = (body["http://librarysimplified.org/terms/progressWithinChapter"] as? NSNumber)?.floatValue,
-      let progressWithinBook = (body["http://librarysimplified.org/terms/progressWithinBook"] as? NSNumber)?.floatValue else {
+      let progressWithinBook = (body["http://librarysimplified.org/terms/progressWithinBook"] as? NSNumber)?.floatValue
+      else {
         Log.error(#file, "Error reading required bookmark key/values from body")
         return nil
     }
-    let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
 
-    guard let data = serverCFI.data(using: String.Encoding.utf8),
-      let serverCfiJsonObject = (try? JSONSerialization.jsonObject(with: data,
-                                                                   options: [])) as? [String: Any],
-      let serverIdrefString = serverCfiJsonObject["idref"] as? String
+    guard
+      let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String: AnyObject],
+      let selectorValueEscJSON = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as? String
       else {
-        Log.error(#file, "Error serializing serverCFI into JSON.")
+        Log.error(#file, "Error reading required Selector Value from Target.")
         return nil
     }
 
-    var serverCfiString: String?
-
-    if let serverCfiJson = serverCfiJsonObject["contentCFI"] as? String {
-      serverCfiString = serverCfiJson
+    guard
+      let selectorValueData = selectorValueEscJSON.data(using: String.Encoding.utf8),
+      let selectorValueJSON = (try? JSONSerialization.jsonObject(with: selectorValueData,
+                                                                 options: [])) as? [String: Any],
+      let idref = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
+      else {
+        Log.error(#file, "Error serializing serverCFI into JSON. Selector.Value=\(selectorValueEscJSON)")
+        return nil
     }
 
+    let serverCFIString = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorContentCFIKey] as? String
+    let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
+
     return NYPLReadiumBookmark(annotationId: annotationID,
-                               contentCFI: serverCfiString,
-                               idref: serverIdrefString,
+                               contentCFI: serverCFIString,
+                               idref: idref,
                                chapter: chapter,
                                page: nil,
-                               location: serverCFI,
+                               location: selectorValueEscJSON,
                                progressWithinChapter: progressWithinChapter,
                                progressWithinBook: progressWithinBook,
                                time:time,

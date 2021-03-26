@@ -89,7 +89,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   /// lacked progress information.
   func addBookmark(_ bookmarkLoc: NYPLBookmarkR2Location) -> NYPLReadiumBookmark? {
     guard let bookmark =
-      bookmarksFactory.make(from: bookmarkLoc,
+      bookmarksFactory.make(fromR2Location: bookmarkLoc,
                             usingBookRegistry: bookRegistry) else {
                               //TODO: log error
                               return nil
@@ -112,9 +112,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
         return
     }
     
-    NYPLAnnotations.postBookmark(forBook: book.identifier,
-                                 toURL: nil,
-                                 bookmark: bookmark) { (serverAnnotationID) in
+    NYPLAnnotations.postBookmark(bookmark, forBookID: book.identifier) { serverAnnotationID in
       Log.debug(#function, serverAnnotationID != nil ? "Bookmark upload succeed" : "Bookmark failed to upload")
       bookmark.annotationId = serverAnnotationID
       self.bookRegistry.add(bookmark, forIdentifier: self.book.identifier)
