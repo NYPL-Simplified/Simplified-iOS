@@ -955,9 +955,11 @@ didCompleteWithError:(NSError *)error
           return;
         }
           
-        if ([[OverdriveAPIExecutor shared] hasValidPatronTokenWithScope:scope]) {
+        if ([[OverdriveAPIExecutor shared] hasValidPatronTokenWithUsername:[[NYPLUserAccount sharedAccount] barcode] scope:scope]) {
           // Use existing Patron Token
-          NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:requestURLString scope:scope];
+          NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:requestURLString
+                                                                                        username:[[NYPLUserAccount sharedAccount] barcode]
+                                                                                           scope:scope];
           [self addDownloadTaskWithRequest:request book:book];
         } else {
           [[OverdriveAPIExecutor shared]
@@ -980,7 +982,9 @@ didCompleteWithError:(NSError *)error
               return;
             }
               
-            NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:requestURLString scope:scope];
+            NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:requestURLString
+                                                                                          username:[[NYPLUserAccount sharedAccount] barcode]
+                                                                                             scope:scope];
             [self addDownloadTaskWithRequest:request book:book];
           }];
         }
