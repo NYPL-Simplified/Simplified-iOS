@@ -11,6 +11,7 @@
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReaderSettings.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLReadiumViewSyncManager.h"
 
 #import "NYPLReaderViewController.h"
 #import "SimplyE-Swift.h"

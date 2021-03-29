@@ -61,6 +61,7 @@ fileprivate let nullString = "null"
 
   // ereader
   case nilCFI = 500
+  case bookmarkReadError = 501
 
   // Parse failure
   case parseProfileDataCorrupted = 600

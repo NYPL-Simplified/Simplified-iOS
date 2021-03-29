@@ -25,7 +25,8 @@
 
   /// Date formatted as per RFC 3339
   let time:String
-  
+
+  /// Deprecated. 
   init?(annotationId:String?,
         contentCFI:String?,
         idref:String?,
