@@ -1,11 +1,7 @@
 import UIKit
+import R2Shared
 
 @objcMembers final class NYPLAnnotations: NSObject {
-
-  // key names returned by the server in annotations api responses
-  static let serverCFIKey = "serverCFI"
-  static let serverDeviceKey = "device"
-
   // MARK: - Sync Settings
 
   /// Shows (if needed) the opt-in flow for syncing the user bookmarks and
@@ -216,133 +212,111 @@ import UIKit
 
   // MARK: - Reading Position
 
+  /// Reads the current reading position from the server, parses the response
+  /// and returns the result to the `completionHandler`.
   class func syncReadingPosition(ofBook bookID: String?, toURL url:URL?,
-                                 completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
+                                 completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
-      completionHandler(nil)
+      completion(nil)
       Log.debug(#file, "Account does not support sync or sync is disabled.")
       return
     }
 
     guard let url = url, let bookID = bookID else {
-      completionHandler(nil)
+      completion(nil)
       Log.error(#file, "Required parameters are nil.")
       return
     }
 
-    var request = URLRequest.init(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
+    var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData,
+                             timeoutInterval: NYPLDefaultRequestTimeout)
     request.httpMethod = "GET"
     setDefaultAnnotationHeaders(forRequest: &request)
-    
+
     let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      
+
       if let error = error as NSError? {
         Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-        completionHandler(nil)
+        completion(nil)
         return
       }
       guard let data = data,
-        let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
+        let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+        let json = jsonObject as? [String: Any] else {
           Log.error(#file, "Response from annotation server could not be serialized.")
-          completionHandler(nil)
+          completion(nil)
           return
       }
 
       guard let first = json["first"] as? [String:AnyObject],
-        let items = first["items"] as? [AnyObject] else {
+        let items = first["items"] as? [[String: AnyObject]] else {
           Log.error(#file, "Missing required key from Annotations response, or no items exist.")
-          completionHandler(nil)
+          completion(nil)
           return
       }
-      
-      for item in items {
-        guard let target = item["target"] as? [String:AnyObject],
-          let source = target["source"] as? String,
-          let motivation = item["motivation"] as? String else {
-            completionHandler(nil)
-            continue
-        }
-        
-        if source == bookID && motivation == "http://librarysimplified.org/terms/annotation/idling" {
-          
-          guard let selector = target["selector"] as? [String:AnyObject],
-            let serverCFI = selector["value"] as? String else {
-              Log.error(#file, "No CFI saved for title on the server.")
-              completionHandler(nil)
-              return
-          }
-          
-          var responseObject = [serverCFIKey : serverCFI]
-          
-          if let body = item["body"] as? [String:AnyObject],
-            let device = body["http://librarysimplified.org/terms/device"] as? String,
-            let time = body["http://librarysimplified.org/terms/time"] as? String {
-            responseObject[serverDeviceKey] = device
-            responseObject["time"] = time
-          }
-          completionHandler(responseObject)
-          return
-        }
-      }
-      Log.error(#file, "No Annotation Item found for this title.")
-      completionHandler(nil)
-      return
+
+      let readPos = items
+        .compactMap { NYPLBookmarkFactory.make(fromServerAnnotation: $0,
+                                               annotationType: .readingProgress,
+                                               bookID: bookID) }
+        .first
+      completion(readPos)
     }
     dataTask.resume()
   }
-  
-  class func postReadingPosition(forBook bookID: String, annotationsURL:URL?, cfi: String) {
 
+  class func postReadingPosition(forBook bookID: String, selectorValue: String) {
     if !syncIsPossibleAndPermitted() {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
       return
     }
     // If no specific URL is provided, post to annotation URL provided by OPDS Main Feed.
     let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
-    guard let annotationsURL = annotationsURL ?? mainFeedAnnotationURL else {
-        Log.error(#file, "Required parameter was nil.")
-        return
+    guard let annotationsURL = mainFeedAnnotationURL else {
+      Log.error(#file, "Required parameter was nil.")
+      return
     }
 
+    // TODO: SIMPLY-3644 refactor reading position serialization
     let parameters = [
-      "@context": "http://www.w3.org/ns/anno.jsonld",
-      "type": "Annotation",
-      "motivation": "http://librarysimplified.org/terms/annotation/idling",
-      "target": [
-        "source": bookID,
-        "selector": [
-          "type": "oa:FragmentSelector",
-          "value": cfi
+      NYPLBookmarkSpec.Context.key: NYPLBookmarkSpec.Context.value,
+      NYPLBookmarkSpec.type.key: NYPLBookmarkSpec.type.value,
+      NYPLBookmarkSpec.Body.key: [
+        NYPLBookmarkSpec.Body.Time.key : NSDate().rfc3339String(),
+        NYPLBookmarkSpec.Body.Device.key : NYPLUserAccount.sharedAccount().deviceID
+      ],
+      NYPLBookmarkSpec.Motivation.key: NYPLBookmarkSpec.Motivation.readingProgress.rawValue,
+      NYPLBookmarkSpec.Target.key: [
+        NYPLBookmarkSpec.Target.Source.key: bookID,
+        NYPLBookmarkSpec.Target.Selector.key: [
+          NYPLBookmarkSpec.Target.Selector.type.key: NYPLBookmarkSpec.Target.Selector.type.value,
+          NYPLBookmarkSpec.Target.Selector.Value.key: selectorValue
         ]
       ],
-      "body": [
-        "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
-        "http://librarysimplified.org/terms/device" : NYPLUserAccount.sharedAccount().deviceID
-      ]
-      ] as [String : Any]
-    
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: nil, queueOffline: true) { (success, id) in
-      if success {
-        let location = ((parameters["target"] as? [String:Any])?["selector"] as? [String:Any])?["value"] as? String ?? "null"
-        Log.debug(#file, "Success: Marked Reading Position To Server: \(location)")
-      } else {
+      ] as [String: Any]
+
+    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, queueOffline: true) { (success, id) in
+      guard success else {
         NYPLErrorLogger.logError(withCode: .apiCall,
                                  summary: "Error posting annotation",
                                  metadata: [
                                   "bookID": bookID,
                                   "annotationID": id ?? "N/A",
                                   "annotationURL": annotationsURL])
+        return
       }
+      Log.debug(#file, "Successfully saved Reading Position to server: \(selectorValue)")
     }
   }
-  
-  private class func postAnnotation(forBook bookID: String,
-                                    withAnnotationURL url: URL,
-                                    withParameters parameters: [String:Any],
-                                    timeout: Double?,
-                                    queueOffline: Bool,
-                                    _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
+
+  /// Serializes the `parameters` into JSON and POSTs them to the server.
+  class func postAnnotation(forBook bookID: String,
+                            withAnnotationURL url: URL,
+                            withParameters parameters: [String:Any],
+                            timeout: TimeInterval = NYPLDefaultRequestTimeout,
+                            queueOffline: Bool,
+                            _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
 
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
@@ -354,10 +328,8 @@ import UIKit
     request.httpMethod = "POST"
     request.httpBody = jsonData
     setDefaultAnnotationHeaders(forRequest: &request)
-    if let timeout = timeout {
-      request.timeoutInterval = timeout
-    }
-    
+    request.timeoutInterval = timeout
+
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
 
       if let error = error as NSError? {
@@ -424,7 +396,7 @@ import UIKit
       return
     }
 
-    var request = URLRequest.init(url: annotationURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
+    var request = URLRequest(url: annotationURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: NYPLDefaultRequestTimeout)
     request.httpMethod = "GET"
     setDefaultAnnotationHeaders(forRequest: &request)
     
@@ -452,7 +424,7 @@ import UIKit
       }
 
       let bookmarks = items.compactMap {
-        NYPLBookmarkFactory.make(fromServerAnnotation: $0, bookID: bookID)
+        NYPLBookmarkFactory.make(fromServerBookmark: $0, bookID: bookID)
       }
 
       completionHandler(bookmarks)
@@ -498,7 +470,7 @@ import UIKit
     var request = URLRequest(url: url)
     request.httpMethod = "DELETE"
     setDefaultAnnotationHeaders(forRequest: &request)
-    request.timeoutInterval = 20.0
+    request.timeoutInterval = NYPLDefaultRequestTimeout
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
       let response = response as? HTTPURLResponse
@@ -537,7 +509,7 @@ import UIKit
     for localBookmark in bookmarks {
       if localBookmark.annotationId == nil {
         uploadGroup.enter()
-        postBookmark(forBook: bookID, toURL: nil, bookmark: localBookmark, completionHandler: { serverID in
+        postBookmark(localBookmark, forBookID: bookID) { serverID in
           if let ID = serverID {
             localBookmark.annotationId = ID
             bookmarksUpdated.append(localBookmark)
@@ -546,7 +518,7 @@ import UIKit
             bookmarksFailedToUpdate.append(localBookmark)
           }
           uploadGroup.leave()
-        })
+        }
       }
     }
 
@@ -556,46 +528,12 @@ import UIKit
     }
   }
 
-  class func postBookmark(forBook bookID: String,
-                          toURL annotationsURL: URL?,
-                          bookmark: NYPLReadiumBookmark,
-                          completionHandler: @escaping (_ serverID: String?) -> ())
-  {
-    if !syncIsPossibleAndPermitted() {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
-      completionHandler(nil)
-      return
-    }
-    let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
-    guard let annotationsURL = annotationsURL ?? mainFeedAnnotationURL else {
-        Log.error(#file, "Required parameter was nil.")
-        completionHandler(nil)
-        return
-    }
-
-    let parameters = [
-      "@context": "http://www.w3.org/ns/anno.jsonld",
-      "type": "Annotation",
-      "motivation": "http://www.w3.org/ns/oa#bookmarking",
-      "target": [
-        "source": bookID,
-        "selector": [
-          "type": "oa:FragmentSelector",
-          "value": bookmark.location
-        ]
-      ],
-      "body": [
-        "http://librarysimplified.org/terms/time" : bookmark.time,
-        "http://librarysimplified.org/terms/device" : bookmark.device ?? "",
-        "http://librarysimplified.org/terms/chapter" : bookmark.chapter ?? "",
-        "http://librarysimplified.org/terms/progressWithinChapter" : bookmark.progressWithinChapter,
-        "http://librarysimplified.org/terms/progressWithinBook" : bookmark.progressWithinBook,
-      ]
-      ] as [String : Any]
-
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: 20.0, queueOffline: false) { (success, id) in
-      completionHandler(id)
-    }
+  class func postBookmark(_ bookmark: NYPLReadiumBookmark,
+                          forBookID bookID: String,
+                          completion: @escaping (_ serverID: String?) -> ()) {
+    // TODO: SIMPLY-3644 distinguish based on renderer (R1 / R2)
+    //                   or maybe just post R2 bookmarks?
+    postR1Bookmark(bookmark, forBookID: bookID, completion: completion)
   }
 
   // MARK: -

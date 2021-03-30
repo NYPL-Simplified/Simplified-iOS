@@ -1,5 +1,5 @@
 //
-//  Bookmark.swift
+//  NYPLReadiumBookmark+R2.swift
 //
 //  Created by Ettore Pasquini on 4/23/20.
 //  Copyright © 2020 NYPL Labs. All rights reserved.
@@ -7,22 +7,6 @@
 
 import Foundation
 import R2Shared
-
-// TODO: SIMPLY-2820
-// Possibly meld into NYPLReadiumBookmark.
-class NYPLBookmarkR2Location {
-  var resourceIndex: Int
-  var locator: Locator
-  var creationDate: Date
-
-  init(resourceIndex: Int,
-       locator: Locator,
-       creationDate: Date = Date()) {
-    self.resourceIndex = resourceIndex
-    self.locator = locator
-    self.creationDate = creationDate
-  }
-}
 
 extension NYPLReadiumBookmark {
 

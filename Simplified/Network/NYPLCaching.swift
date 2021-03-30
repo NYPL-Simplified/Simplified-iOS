@@ -197,7 +197,8 @@ class NYPLCaching {
   /// policy will always follow the one defined in the request protocol
   /// implementation.
   /// - Returns: A configuration with 8 max connections per host.
-  class func makeURLSessionConfiguration(caching: NYPLCachingStrategy) -> URLSessionConfiguration {
+  class func makeURLSessionConfiguration(caching: NYPLCachingStrategy,
+                                         requestTimeout: TimeInterval) -> URLSessionConfiguration {
     guard caching != .ephemeral else {
       return .ephemeral
     }
@@ -206,8 +207,8 @@ class NYPLCaching {
     config.shouldUseExtendedBackgroundIdleMode = true
     config.httpMaximumConnectionsPerHost = 8
     config.httpShouldUsePipelining = true
-    config.timeoutIntervalForRequest = 30
-    config.timeoutIntervalForResource = 60
+    config.timeoutIntervalForRequest = requestTimeout
+    config.timeoutIntervalForResource = requestTimeout * 2
     config.requestCachePolicy = .useProtocolCachePolicy
     config.urlCache = makeCache()
 

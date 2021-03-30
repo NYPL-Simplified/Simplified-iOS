@@ -48,30 +48,35 @@ class NYPLLastReadPositionPoster {
   /// - Parameter locator: The new local progress to be stored.
   func storeReadPosition(locator: Locator) {
     // Avoid overwriting location when reader first open
-    guard (locator.locations.totalProgression ?? 0) != 0,
-      let bookLocation = NYPLBookLocation(locator: locator, publication: publication) else {
-        return
+    guard (locator.locations.totalProgression ?? 0) != 0 else {
+      return
     }
 
-    bookRegistryProvider.setLocation(bookLocation, forIdentifier: book.identifier)
-    postReadPosition(locationString: bookLocation.locationString)
+    // TODO: SIMPLY-3645 don't use old school location
+    guard let location = NYPLBookLocation(locator: locator, publication: publication) else {
+      return
+    }
+    bookRegistryProvider.setLocation(location, forIdentifier: book.identifier)
+    postReadPosition(selectorValue: location.locationString)
   }
 
+  /// Deprecated
+  ///
   /// Post the read position to server.
   ///
   /// Requests are throttled by a `throttlingInterval` to avoid an unreasonably
   /// high frequency of updates.
   ///
-  /// - Parameters:
-  /// - locationString: A JSON string (CFI) that contains the required
-  /// information to create a Locator object.
-  private func postReadPosition(locationString: String) {
+  /// - Parameter selectorValue: A JSON string that includes a serialized
+  /// [locator](https://git.io/JYTyx) that uniquely identifies a position
+  /// within the book.
+  private func postReadPosition(selectorValue: String) {
     serialQueue.async { [weak self] in
       guard let self = self else { return }
 
       // save location string anyway so that if the app becomes inactive
       // we still have a chance to post it.
-      self.queuedReadPosition = locationString
+      self.queuedReadPosition = selectorValue
 
       if Date() > self.lastReadPositionUploadDate.addingTimeInterval(NYPLLastReadPositionPoster.throttlingInterval) {
         self.postQueuedReadPosition()
@@ -82,8 +87,7 @@ class NYPLLastReadPositionPoster {
   private func postQueuedReadPosition() {
     if self.queuedReadPosition != "" {
       NYPLAnnotations.postReadingPosition(forBook: book.identifier,
-                                          annotationsURL: nil,
-                                          cfi: self.queuedReadPosition)
+                                          selectorValue: self.queuedReadPosition)
       self.queuedReadPosition = ""
       self.lastReadPositionUploadDate = Date()
     }

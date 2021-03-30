@@ -75,26 +75,23 @@ class NYPLLastReadPositionSynchronizer {
     let localLocation = bookRegistry.location(forIdentifier: book.identifier)
 
     NYPLAnnotations
-      .syncReadingPosition(ofBook: book.identifier, toURL: book.annotationsURL) { responseObject in
+      .syncReadingPosition(ofBook: book.identifier, toURL: book.annotationsURL) { bookmark in
 
-        guard let responseObject = responseObject else {
-          Log.info(#function, "No Server Annotation for \(book.loggableShortString()) exists.")
+        guard let bookmark = bookmark else {
+          Log.info(#function, "No reading position annotation exists on the server for \(book.loggableShortString()).")
           completion(nil)
           return
         }
 
-        let deviceID = responseObject[NYPLAnnotations.serverDeviceKey] ?? ""
-        let serverLocationString = responseObject[NYPLAnnotations.serverCFIKey]
+        let deviceID = bookmark.device ?? ""
+        let serverLocationString = bookmark.location
 
         // Pass through returning nil (meaning the server doesn't have a
         // last read location worth restoring) if:
-        // 1 - There is no recent page saved on the server, or
-        // 2 - The most recent page on the server comes from the same device, or
-        // 3 - The server and the client have the same page marked
-
-        if serverLocationString == nil ||
-          deviceID == drmDeviceID ||
-          localLocation?.locationString == serverLocationString {
+        // 1 - The most recent page on the server comes from the same device, or
+        // 2 - The server and the client have the same page marked
+        if deviceID == drmDeviceID
+          || localLocation?.locationString == serverLocationString {
 
           // server location does not differ from or should take no precedence
           // over the local position

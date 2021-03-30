@@ -59,6 +59,9 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
  */
 - (void)save;
 
+/**
+ Loads the registry from disk.
+ */
 - (void)justLoad;
 
 /**
