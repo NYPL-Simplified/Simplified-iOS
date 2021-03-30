@@ -36,7 +36,17 @@ class NYPLReaderTOCBusinessLogic {
     guard tocElements.indices.contains(index) else {
       return nil
     }
-    return Locator(link: tocElements[index].link)
+    do {
+      let tocLink = tocElements[index].link
+      // R2 doesn't navigate to hrefs containing URI-escaped characters
+      let normalizedLink = try Link(json: tocLink.json, normalizeHREF: { href in
+        href.removingPercentEncoding ?? href
+      })
+      return Locator(link: normalizedLink)
+    } catch {
+      NYPLErrorLogger.logError(error, summary: "NYPLReaderTOCBusinessLogic tocLocator failed to parse link JSON", metadata: ["publication": publication.metadata, "tocElementLink": tocElements[index].link])
+      return Locator(link: tocElements[index].link)
+    }
   }
 
   func shouldSelectTOCItem(at index: Int) -> Bool {
