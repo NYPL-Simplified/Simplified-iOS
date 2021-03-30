@@ -15,15 +15,14 @@ extension NYPLAnnotations {
                             forBookID bookID: String,
                             completion: @escaping (_ serverID: String?) -> ())
   {
-    if !syncIsPossibleAndPermitted() {
+    guard syncIsPossibleAndPermitted() else {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
       completion(nil)
       return
     }
-    let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
-    guard let annotationsURL = mainFeedAnnotationURL else {
-      Log.error(#file, "Required parameter was nil.")
-      completion(nil)
+
+    guard let annotationsURL = NYPLAnnotations.annotationsURL else {
+      Log.error(#file, "Annotations URL was nil while posting R1 bookmark")
       return
     }
 
