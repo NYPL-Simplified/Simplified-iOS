@@ -267,34 +267,23 @@ import R2Shared
   }
 
   class func postReadingPosition(forBook bookID: String, selectorValue: String) {
-    if !syncIsPossibleAndPermitted() {
+    guard syncIsPossibleAndPermitted() else {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
       return
     }
-    // If no specific URL is provided, post to annotation URL provided by OPDS Main Feed.
-    let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
-    guard let annotationsURL = mainFeedAnnotationURL else {
-      Log.error(#file, "Required parameter was nil.")
+
+    guard let annotationsURL = NYPLAnnotations.annotationsURL else {
+      Log.error(#file, "Annotations URL was nil while updating reading position")
       return
     }
 
-    // TODO: SIMPLY-3644 refactor reading position serialization
-    let parameters = [
-      NYPLBookmarkSpec.Context.key: NYPLBookmarkSpec.Context.value,
-      NYPLBookmarkSpec.type.key: NYPLBookmarkSpec.type.value,
-      NYPLBookmarkSpec.Body.key: [
-        NYPLBookmarkSpec.Body.Time.key : NSDate().rfc3339String(),
-        NYPLBookmarkSpec.Body.Device.key : NYPLUserAccount.sharedAccount().deviceID
-      ],
-      NYPLBookmarkSpec.Motivation.key: NYPLBookmarkSpec.Motivation.readingProgress.rawValue,
-      NYPLBookmarkSpec.Target.key: [
-        NYPLBookmarkSpec.Target.Source.key: bookID,
-        NYPLBookmarkSpec.Target.Selector.key: [
-          NYPLBookmarkSpec.Target.Selector.type.key: NYPLBookmarkSpec.Target.Selector.type.value,
-          NYPLBookmarkSpec.Target.Selector.Value.key: selectorValue
-        ]
-      ],
-      ] as [String: Any]
+    // Format bookmark for submission to server according to spec
+    let bookmark = NYPLBookmarkSpec(time: NSDate(),
+                                    device: NYPLUserAccount.sharedAccount().deviceID ?? "",
+                                    motivation: .readingProgress,
+                                    bookID: bookID,
+                                    selectorValue: selectorValue)
+    let parameters = bookmark.dictionaryForJSONSerialization()
 
     postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, queueOffline: true) { (success, id) in
       guard success else {
@@ -313,7 +302,7 @@ import R2Shared
   /// Serializes the `parameters` into JSON and POSTs them to the server.
   class func postAnnotation(forBook bookID: String,
                             withAnnotationURL url: URL,
-                            withParameters parameters: [String:Any],
+                            withParameters parameters: [String: Any],
                             timeout: TimeInterval = NYPLDefaultRequestTimeout,
                             queueOffline: Bool,
                             _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
@@ -331,7 +320,6 @@ import R2Shared
     request.timeoutInterval = timeout
 
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-
       if let error = error as NSError? {
         Log.error(#file, "Annotation POST error (nsCode: \(error.code) Description: \(error.localizedDescription))")
         if (NetworkQueue.StatusCodes.contains(error.code)) && (queueOffline == true) {
@@ -359,7 +347,6 @@ import R2Shared
   }
 
   private class func annotationID(fromNetworkData data: Data?) -> String? {
-
     guard let data = data else {
       Log.error(#file, "No Annotation ID saved: No data received from server.")
       return nil
@@ -531,7 +518,7 @@ import R2Shared
   class func postBookmark(_ bookmark: NYPLReadiumBookmark,
                           forBookID bookID: String,
                           completion: @escaping (_ serverID: String?) -> ()) {
-    // TODO: SIMPLY-3644 distinguish based on renderer (R1 / R2)
+    // TODO: SIMPLY-3655 distinguish based on renderer (R1 / R2)
     //                   or maybe just post R2 bookmarks?
     postR1Bookmark(bookmark, forBookID: bookID, completion: completion)
   }
@@ -550,18 +537,14 @@ import R2Shared
     return syncIsPossible(NYPLUserAccount.sharedAccount()) && acct?.details?.syncPermissionGranted == true
   }
 
-    @objc class func addingDefaultAnnotationHeaders(to request: URLRequest) -> URLRequest {
-        var request = request
-        for (headerKey, headerValue) in NYPLAnnotations.headers {
-            request.setValue(headerValue, forHTTPHeaderField: headerKey)
-        }
-        return request
-    }
+  static var annotationsURL: URL? {
+    return NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
+  }
 
-  class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
-      for (headerKey, headerValue) in NYPLAnnotations.headers {
-          request.setValue(headerValue, forHTTPHeaderField: headerKey)
-      }
+  private class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
+    for (headerKey, headerValue) in NYPLAnnotations.headers {
+      request.setValue(headerValue, forHTTPHeaderField: headerKey)
+    }
   }
 
   class var headers: [String:String] {

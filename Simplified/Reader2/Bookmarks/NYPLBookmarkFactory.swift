@@ -47,10 +47,10 @@ class NYPLBookmarkFactory {
       let registryLocationJSON = try? JSONSerialization.jsonObject(with: data),
       let registryLocationDict = registryLocationJSON as? [String: Any] {
 
-      cfi = registryLocationDict[NYPLBookmarkSpec.Target.Selector.Value.locatorContentCFIKey] as? String
+      cfi = registryLocationDict[NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorCFIKey] as? String
 
       // backup idref from R1 in case parsing from R2 fails for some reason
-      idref = registryLocationDict[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
+      idref = registryLocationDict[NYPLBookmarkR1Key.idref.rawValue] as? String
     }
 
     // get the idref from R2 data structures. Should be more reliable than R1's
@@ -122,7 +122,7 @@ class NYPLBookmarkFactory {
       let device = body[NYPLBookmarkSpec.Body.Device.key] as? String,
       let time = body[NYPLBookmarkSpec.Body.Time.key] as? String,
 
-      // TODO: SIMPLY-3644 fix
+      // TODO: SIMPLY-3655 update to R2 spec or remove
       let progressWithinChapter = (body["http://librarysimplified.org/terms/progressWithinChapter"] as? NSNumber)?.floatValue,
       let progressWithinBook = (body["http://librarysimplified.org/terms/progressWithinBook"] as? NSNumber)?.floatValue
       else {
@@ -142,13 +142,14 @@ class NYPLBookmarkFactory {
       let selectorValueData = selectorValueEscJSON.data(using: String.Encoding.utf8),
       let selectorValueJSON = (try? JSONSerialization.jsonObject(with: selectorValueData,
                                                                  options: [])) as? [String: Any],
-      let idref = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
+      // TODO: SIMPLY-3655 update to R2 spec
+      let idref = selectorValueJSON[NYPLBookmarkR1Key.idref.rawValue] as? String
       else {
         Log.error(#file, "Error serializing serverCFI into JSON. Selector.Value=\(selectorValueEscJSON)")
         return nil
     }
 
-    let serverCFI = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorContentCFIKey] as? String
+    let serverCFI = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorCFIKey] as? String
     let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
 
     return NYPLReadiumBookmark(annotationId: annotationID,
