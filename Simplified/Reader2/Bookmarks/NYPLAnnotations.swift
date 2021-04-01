@@ -214,22 +214,24 @@ import R2Shared
 
   /// Reads the current reading position from the server, parses the response
   /// and returns the result to the `completionHandler`.
+  //TODO: SIMPLY-3655 Refactor with `getServerBookmarks(forBook:atURL:completion:)
   class func syncReadingPosition(ofBook bookID: String?, toURL url:URL?,
                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
-    if !syncIsPossibleAndPermitted() {
-      completion(nil)
+    guard syncIsPossibleAndPermitted() else {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
+      completion(nil)
       return
     }
 
     guard let url = url, let bookID = bookID else {
-      completion(nil)
       Log.error(#file, "Required parameters are nil.")
+      completion(nil)
       return
     }
 
-    var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData,
+    var request = URLRequest(url: url,
+                             cachePolicy: .reloadIgnoringLocalCacheData,
                              timeoutInterval: NYPLDefaultRequestTimeout)
     request.httpMethod = "GET"
     setDefaultAnnotationHeaders(forRequest: &request)
@@ -241,6 +243,7 @@ import R2Shared
         completion(nil)
         return
       }
+
       guard let data = data,
         let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
         let json = jsonObject as? [String: Any] else {
@@ -249,8 +252,8 @@ import R2Shared
           return
       }
 
-      guard let first = json["first"] as? [String:AnyObject],
-        let items = first["items"] as? [[String: AnyObject]] else {
+      guard let first = json["first"] as? [String: Any],
+        let items = first["items"] as? [[String: Any]] else {
           Log.error(#file, "Missing required key from Annotations response, or no items exist.")
           completion(nil)
           return
@@ -355,7 +358,7 @@ import R2Shared
       Log.error(#file, "No Annotation ID saved: JSON could not be created from data.")
       return nil
     }
-    if let annotationID = json["id"] as? String {
+    if let annotationID = json[NYPLBookmarkSpec.Id.key] as? String {
       return annotationID
     } else {
       Log.error(#file, "No Annotation ID saved: Key/Value not found in JSON response.")
@@ -369,21 +372,23 @@ import R2Shared
   // the network request, deserialization, or sync permission is not allowed.
   class func getServerBookmarks(forBook bookID:String?,
                                 atURL annotationURL:URL?,
-                                completionHandler: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
+                                completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
 
-    if !syncIsPossibleAndPermitted() {
+    guard syncIsPossibleAndPermitted() else {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
-      completionHandler(nil)
+      completion(nil)
       return
     }
 
     guard let bookID = bookID, let annotationURL = annotationURL else {
       Log.error(#file, "Required parameter was nil.")
-      completionHandler(nil)
+      completion(nil)
       return
     }
 
-    var request = URLRequest(url: annotationURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: NYPLDefaultRequestTimeout)
+    var request = URLRequest(url: annotationURL,
+                             cachePolicy: .reloadIgnoringLocalCacheData,
+                             timeoutInterval: NYPLDefaultRequestTimeout)
     request.httpMethod = "GET"
     setDefaultAnnotationHeaders(forRequest: &request)
     
@@ -391,30 +396,32 @@ import R2Shared
       
       if let error = error as NSError? {
         Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-        completionHandler(nil)
+        completion(nil)
         return
       }
 
       guard let data = data,
         let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
         let json = jsonObject as? [String: Any] else {
-          Log.error(#file, "JSON could not be created from data.")
-          completionHandler(nil)
+          Log.error(#file, "Response from annotation server could not be serialized.")
+          completion(nil)
           return
       }
 
       guard let first = json["first"] as? [String: Any],
         let items = first["items"] as? [[String: Any]] else {
           Log.error(#file, "Missing required key from Annotations response, or no items exist.")
-          completionHandler(nil)
+          completion(nil)
           return
       }
 
       let bookmarks = items.compactMap {
-        NYPLBookmarkFactory.make(fromServerBookmark: $0, bookID: bookID)
+        NYPLBookmarkFactory.make(fromServerAnnotation: $0,
+                                 annotationType: .bookmark,
+                                 bookID: bookID)
       }
 
-      completionHandler(bookmarks)
+      completion(bookmarks)
     }
     dataTask.resume()
   }

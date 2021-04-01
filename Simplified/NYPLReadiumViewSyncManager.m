@@ -276,7 +276,7 @@ const double RequestTimeInterval = 120;
          }
        }
 
-       [NYPLAnnotations getServerBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReadiumBookmark *> * _Nullable serverBookmarks) {
+       [NYPLAnnotations getServerBookmarksForBook:self.bookID atURL:self.annotationsURL completion:^(NSArray<NYPLReadiumBookmark *> * _Nullable serverBookmarks) {
 
          if (!serverBookmarks) {
            NYPLLOG(@"Ending sync without running completion. Returning original list of bookmarks.");

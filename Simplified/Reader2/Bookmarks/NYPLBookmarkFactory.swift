@@ -81,13 +81,6 @@ class NYPLBookmarkFactory {
       device: drmDeviceID)
   }
 
-  class func make(fromServerBookmark annotation: [String: Any],
-                  bookID: String) -> NYPLReadiumBookmark? {
-    return make(fromServerAnnotation: annotation,
-                annotationType: .bookmark,
-                bookID: bookID)
-  }
-
   class func make(fromServerAnnotation annotation: [String: Any],
                   annotationType: NYPLBookmarkSpec.Motivation,
                   bookID: String) -> NYPLReadiumBookmark? {
