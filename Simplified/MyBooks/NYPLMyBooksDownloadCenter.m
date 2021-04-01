@@ -348,10 +348,10 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
       }
       case NYPLMyBooksDownloadRightsManagementAxis: {
 #if defined(OPENEBOOKS) && defined(FEATURE_DRM_CONNECTOR)
-        AxisService *axis = [[AxisService alloc] initWithDelegate:self];
-        [axis fulfillAxisLicenseWithFileURL:tmpSavedFileURL
-                                    forBook:book
-                               downloadTask:downloadTask];
+        AxisService *axis = [[AxisService alloc]
+                             initWithDelegate:self
+                             fileURL:tmpSavedFileURL];
+        [axis fulfillAxisLicenseForBook:book downloadTask:downloadTask];
 #endif
         break;
       }
