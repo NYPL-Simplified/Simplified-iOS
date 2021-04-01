@@ -26,6 +26,9 @@
 #import <ReadiumLCP/ReadiumLCP-Swift.h>
 #endif
 
+@interface NYPLMyBooksDownloadCenter () <AxisNowDelegate>
+@end
+
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
@@ -66,6 +69,7 @@
   
   return sharedDownloadCenter;
 }
+
 
 #pragma mark NSObject
 
@@ -128,7 +132,11 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
   // We update the rights management status based on the MIME type given to us by the server. We do
   // this only once at the point when we first start receiving data.
   if(bytesWritten == totalBytesWritten) {
-    if([downloadTask.response.MIMEType isEqualToString:ContentTypeAdobeAdept]) {
+      if ([downloadTask.response.MIMEType isEqualToString:ContentTypeAxis360]) {
+          self.bookIdentifierToDownloadInfo[book.identifier] =
+          [[self downloadInfoForBookIdentifier:book.identifier]
+           withRightsManagement:NYPLMyBooksDownloadRightsManagementAxis];
+      } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeAdobeAdept]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
@@ -335,6 +343,21 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                                      forDownloadTask:downloadTask];
         break;
       }
+        case NYPLMyBooksDownloadRightsManagementAxis: {
+            
+//            [self fulfillLCPLicense:tmpSavedFileURL forBook:book downloadTask:downloadTask];
+            [self fulfillAxisNowLicense:tmpSavedFileURL forBook:book downloadTask:downloadTask];
+            
+            
+            //guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "")
+//            NSString *profileURL = AccountsManager.shared.currentAccount.details.userProfileUrl;
+//            NSLog(@"");
+            
+            
+            
+            
+            break;
+        }
     }
   }
   
@@ -1428,6 +1451,69 @@ didFinishDownload:(BOOL)didFinishDownload
 }
 
 #endif
+
+- (void)fulfillAxisNowLicense:(NSURL *)fileUrl
+                      forBook:(NYPLBook *)book
+                 downloadTask:(NSURLSessionDownloadTask *)downloadTask {
+    
+    NSURL *destinationURL = [[fileUrl URLByDeletingLastPathComponent]
+                             URLByAppendingPathComponent:book.title];
+    
+    if (![NSFileManager.defaultManager fileExistsAtPath:destinationURL.path]) {
+        [NSFileManager.defaultManager createDirectoryAtPath:destinationURL.path
+                                withIntermediateDirectories:false
+                                                 attributes:nil
+                                                      error:nil];
+    }
+    
+    __weak NYPLMyBooksDownloadCenter *weakSelf = self;
+    
+    AxisService *axis = [[AxisService alloc] initFromFileAtURL:fileUrl destinationURL:destinationURL delegate:weakSelf];
+    
+    [axis execute];
+//
+    
+//    NSData *licenseData = [NSData dataWithContentsOfURL:fileUrl];
+//    id jsonObject = [NSJSONSerialization JSONObjectWithData:licenseData options:0 error:nil];
+//
+//
+//    NSString *isbn = [jsonObject objectForKey:@"isbn"];
+//    NSString *bookVaultId = [jsonObject objectForKey:@"book_vault_uuid"];
+//
+//    if (isbn && bookVaultId) {
+//        NSURL *bookDirectory = fileUrl;
+//        AxisNowManager *manager = [[AxisNowManager alloc] initWithIsbn:isbn bookVaultId:bookVaultId directoryURL:bookDirectory];
+//        [manager downloadLicenseFromFileAt:fileUrl completion:^(NSURL *dest) {
+//            NSLog(dest.path);
+//        }];
+        
+        
+        //==============
+
+//        [manager execute];
+//        [manager generateLicenseURL]
+
+        
+//        NSURL *baseURL = [NSURL URLWithString:@"https://node.axisnow.com/license"];
+//        NSURL *licenseURL = [licenseURL URLByAppendingPathComponent:bookVaultId]
+//    URLByAppendingPathComponent:<#(nonnull NSString *)#>
+
+
+
+//    } else {
+//        NSLog(@"wtf!!!");
+//    }
+//
+    
+}
+
+- (void)axisNowDidFinishDownload {
+    NSLog(@"");
+}
+
+- (void)axisNowDownloadDidFailWithError:(NSError * _Nullable)error {
+    NSLog(@"");
+}
 
 
 #pragma mark - LCP

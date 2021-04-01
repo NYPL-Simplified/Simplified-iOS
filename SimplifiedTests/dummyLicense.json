@@ -1,0 +1,65 @@
+{
+  "id": "12f9366f-e208-4bcf-91a1-7f9348fa81c0",
+  "version": "1",
+  "issued": "2021-03-30T14:54:32.737Z",
+  "provider": "Baker And taylor",
+  "encryption": {
+    "content_key": {
+      "algorithm": "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+      "encrypted_value": "IfAm+PuuNtl7V6k9i3YDf+rEkERSFt5Fg4TSqWpc28WYOfgprYO1x8+gToLKfEsnotcoOVZXJ+JCzYLSpmrcFbmcUDUKzjtiD5va5nGNkV0aANP7s5LyDwiBT9F6B0UuijNBcehyR2iMBF4KC59QO9hEWVl8duF0NQYQGYE6i1dGQt1OEU9fIAK1Y2o2G3DF379p1DC+AQBtvyJnvEF+F+Qi93S3apcGZc0GRBSeLKd1RyuoK3t9eaGdvFfrOQQM/98ClrTe1zlRO9KViwdTQrWUywpVzXVAcba/tkEr0HkLXBjYwvSUh7LK+9WmqfCDo0uW6jLUpO7vBYFuEPmhvu9kDOVByoXfzz9ndWC3"
+    },
+    "profile": "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+    "user_key": {
+      "algorithm": "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+      "key_check": "B5nV4qUvqZIBNIJpH2iW0/y3pr4dIF1pjuatp4ZL93tEpz0/JBU5ydBX4v4Udnw4TuW+hc+CqsE8fzOwg/+QsYaCI/kRTxjPhR6Hwl6m5GTraRdH4Yh/YEPo1AHiD3tsTqZ8VRDyTQ4pFmrqJvkRFfh9IS96IY9Vwl4CfszAldbvA1P2YQKY3RPmPmtEcD4b7N4oIzRtjUxgpOB13vSipgZ+kmsR301LOEr4NAqHr68Day2UlqnxaBzjwklgiv9B7I8rtsBwClGpv8y8QesdwE3XRJmaLzHgv8HHpa9XeG+ZLGyf4ng/gARonYmDGbw78GU4Sa1/qPSqsDBLZ7PG6TwmpXx/Nar161EIDdt/",
+      "text_hint": ""
+    }
+  },
+  "links": [
+    {
+      "hint": {
+        "href": ""
+      },
+      "publication": {
+        "href": ""
+      }
+    }
+  ],
+  "rights": {
+    "copy": 0,
+    "end": "2021-05-24T17:06:00.000Z",
+    "print": 0,
+    "start": "2021-03-30T14:54:32.737Z",
+    "tts": false
+  },
+  "drmrights": {
+    "copy": {
+      "copyright": false,
+      "days": 0,
+      "notice": "",
+      "percentage": 0,
+      "permission": false,
+      "watermark": false
+    },
+    "devices": 6,
+    "preview": null,
+    "print": {
+      "copyright": false,
+      "days": 0,
+      "notice": "",
+      "percentage": 0,
+      "permission": false,
+      "watermark": false
+    },
+    "reflow": true,
+    "ttsread": false
+  },
+  "signature": {
+    "algorithm": "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+    "certificate": "BgIAAACkAABSU0ExcAgAAAEAAQABAAEDAiMXw04gru37C/T7+R5g70yHfsWkpKESM6/OzKV+E4t2QSppeFXn8j7+nOx61SXEwSns2ArgjnPcmlNFrBqi7Mi56ZC64bKv7baKOmE1z4YZ6TPJZJA7gL40B/vf6r+g9USBNlqj66+uA34KwiRCUEoK10HPidaH7ENt5+9nv0w87fcYVy1sWHAuNwP4TqifQGiEa/OAzaCVeMqcH+l3pFiHBJAThHseqDVRQZEJ1oAt15j0I700vN+yXICudpuFLuMaI8rG4PsS9PDMS0cjw0hn7vMEP02oak0hg29WJT9FBAL5jcuXTkYZtKAgJNZOFemEfbyRlj1QP6EW5hxqfLwAAQGCAgoBgjA=",
+    "value": "DowwiiS1e2uw8DRhyWcjzuDPBTZiBlMs4DUU/svwoZALqY6WD+UtF3XkN3DfdYbPDnbSJxrQBoxlRb7wi8LATAONDR199XLFKnyL2ck5ZfPIiRUCkSSzDSZT/xcTb5flW9qmisE74WVLKoHnlCGFshgv5WscofzDUQiPvH+ZNfIIAgZsS6pSmq4Hu63rd3ViSLKYzLx0kD5N5HUGD0r/UC5qVMBVfWdE9vdjJEQx+JwyE87h8X2Ukw/DV73xueyAlCFagejh922KBZziyWQporjGtCsIT6iJWhWJuGdC0D3Ab0RlOqA6GFkSbvkJVg60xXLfKcpjhDAvxNKpQnhqHyQbNKShGzE/bRh+8c8I",
+    "LicenseConicalForm": null,
+    "RawHashLicenseConicalForm": null,
+    "RawAESkey": null
+  }
+}

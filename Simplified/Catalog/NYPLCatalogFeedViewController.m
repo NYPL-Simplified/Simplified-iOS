@@ -43,8 +43,12 @@
      response:response metadata:nil];
     return nil;
   }
-
-  NYPLXML *const XML = [NYPLXML XMLWithData:data];
+    
+  NSString *filepath = [[NSBundle mainBundle] pathForResource:@"44628feed" ofType:@"xml"];
+  NSData *newData = [NSData dataWithContentsOfFile:filepath];
+    NYPLXML *const XML = [NYPLXML XMLWithData:newData];
+    
+//  NYPLXML *const XML = [NYPLXML XMLWithData:data];
   if(!XML) {
     NYPLLOG(@"Cannot initialize due to invalid XML.");
     [NYPLErrorLogger

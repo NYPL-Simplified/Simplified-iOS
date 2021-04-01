@@ -4,6 +4,7 @@
 
 NSString * const _Nonnull ContentTypeOPDSCatalog = @"application/atom+xml;type=entry;profile=opds-catalog";
 NSString * const _Nonnull ContentTypeAdobeAdept = @"application/vnd.adobe.adept+xml";
+NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplified.axisnow+json";
 NSString * const _Nonnull ContentTypeBearerToken = @"application/vnd.librarysimplified.bearer-token+json";
 NSString * const _Nonnull ContentTypeEpubZip = @"application/epub+zip";
 NSString * const _Nonnull ContentTypeFindaway = @"application/vnd.librarysimplified.findaway.license+json";
@@ -47,6 +48,7 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
     types = [NSSet setWithArray:@[
       ContentTypeOPDSCatalog,
       ContentTypeAdobeAdept,
+      ContentTypeAxis360,
       ContentTypeBearerToken,
       ContentTypeEpubZip,
       ContentTypeFindaway,
@@ -78,6 +80,7 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
     subtypesForTypes = @{
       ContentTypeOPDSCatalog: [NSSet setWithArray:@[
         ContentTypeAdobeAdept,
+        ContentTypeAxis360,
         ContentTypeBearerToken,
         ContentTypeFindaway,
         ContentTypeEpubZip,

@@ -42,6 +42,11 @@ struct OPDS2AuthenticationDocument: Codable {
     let description: String?
     let links: [OPDS2Link]?
   }
+    
+    struct PublicKey: Codable {
+        let type: String
+        let value: String
+    }
   
   let features: Features?
   let links: [OPDS2Link]?
@@ -51,6 +56,7 @@ struct OPDS2AuthenticationDocument: Codable {
   let colorScheme: String?
   let announcements: [Announcement]?
   let id: String
+  let publicKey: PublicKey
   
   static func fromData(_ data: Data) throws -> OPDS2AuthenticationDocument {
     let jsonDecoder = JSONDecoder()

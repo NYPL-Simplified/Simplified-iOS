@@ -8,6 +8,7 @@
 extern NSString * const _Nonnull ContentTypeOPDSCatalog;
 /// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeAdobeAdept;
+extern NSString * const _Nonnull ContentTypeAxis360;
 /// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeBearerToken;
 /// The constant value is fully lowercased.
