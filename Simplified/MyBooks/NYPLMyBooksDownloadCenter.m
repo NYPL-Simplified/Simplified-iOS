@@ -26,6 +26,11 @@
 #import <ReadiumLCP/ReadiumLCP-Swift.h>
 #endif
 
+#if defined(OPENEBOOKS) && defined(FEATURE_DRM_CONNECTOR)
+@interface NYPLMyBooksDownloadCenter () <NYPLBookDownloadBroadcasting>
+@end
+#endif
+
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
@@ -132,6 +137,12 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
+#if defined(OPENEBOOKS) && defined(FEATURE_DRM_CONNECTOR)
+    } else if ([downloadTask.response.MIMEType isEqualToString:ContentTypeAxis360]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementAxis];
+#endif
     } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeReadiumLCP]) {
         self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
@@ -335,6 +346,16 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                                      forDownloadTask:downloadTask];
         break;
       }
+      case NYPLMyBooksDownloadRightsManagementAxis: {
+#if defined(OPENEBOOKS) && defined(FEATURE_DRM_CONNECTOR)
+        AxisService *axis = [[AxisService alloc] initWithDelegate:self];
+        [axis fulfillAxisLicenseWithFileURL:tmpSavedFileURL
+                                    forBook:book
+                               downloadTask:downloadTask];
+#endif
+        break;
+      }
+        
     }
   }
   
