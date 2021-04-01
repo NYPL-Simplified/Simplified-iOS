@@ -286,11 +286,11 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
 
       switch result {
       case .success(let responseData, _):
-        #if FEATURE_DRM_CONNECTOR
-        self.drmAuthorizeUserData(responseData, loggingContext: loggingContext)
-        #else
+//        #if FEATURE_DRM_CONNECTOR
+//        self.drmAuthorizeUserData(responseData, loggingContext: loggingContext)
+//        #else
         self.finalizeSignIn(forDRMAuthorization: true)
-        #endif
+//        #endif
 
       case .failure(let errorWithProblemDoc, let response):
         self.handleNetworkError(errorWithProblemDoc as NSError,

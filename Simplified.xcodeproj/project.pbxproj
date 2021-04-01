@@ -248,6 +248,7 @@
 		52592BB821220A1100587288 /* NYPLLocalization.m in Sources */ = {isa = PBXBuildFile; fileRef = 52592BB721220A1100587288 /* NYPLLocalization.m */; };
 		59A78B8A261656C20038BCDC /* AxisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A78B89261656C20038BCDC /* AxisService.swift */; };
 		59A78B8B261656C20038BCDC /* AxisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A78B89261656C20038BCDC /* AxisService.swift */; };
+		59A78BA9261676D30038BCDC /* 44628feed.xml in Resources */ = {isa = PBXBuildFile; fileRef = 59A78BA3261676D30038BCDC /* 44628feed.xml */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		5A6929101B95ACD100FB4C10 /* sdk.css in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290F1B95ACD100FB4C10 /* sdk.css */; };
@@ -2060,6 +2061,7 @@
 		52592BB721220A1100587288 /* NYPLLocalization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLLocalization.m; sourceTree = "<group>"; };
 		52592BBB21220A4F00587288 /* NYPLLocalization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLLocalization.h; sourceTree = "<group>"; };
 		59A78B89261656C20038BCDC /* AxisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AxisService.swift; sourceTree = "<group>"; };
+		59A78BA3261676D30038BCDC /* 44628feed.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 44628feed.xml; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		5A5B90111B946763002C53E9 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "usr/lib/libc++.1.dylib"; sourceTree = SDKROOT; };
 		5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
@@ -3503,6 +3505,7 @@
 				738170142526504800BA2C44 /* GoogleService-Info.plist */,
 				73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */,
 				73735306256828EA00FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json */,
+				59A78BA3261676D30038BCDC /* 44628feed.xml */,
 				7358EE7B250062BD00DDA0CC /* OEImages.xcassets */,
 				7358EE902500642900DDA0CC /* OELaunchScreen.xib */,
 				73E64E6B252BB89A00276953 /* eula.html */,
@@ -4297,6 +4300,7 @@
 				738170152526504800BA2C44 /* GoogleService-Info.plist in Resources */,
 				73FCA39D25005BA4001B0C5D /* OpenDyslexic3-Regular.ttf in Resources */,
 				73085E212502E2CE008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json in Resources */,
+				59A78BA9261676D30038BCDC /* 44628feed.xml in Resources */,
 				73E64E6C252BB89A00276953 /* eula.html in Resources */,
 				7373530B25682E3200FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json in Resources */,
 			);
