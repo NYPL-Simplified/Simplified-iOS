@@ -20,7 +20,6 @@ protocol NYPLBookDownloadBroadcasting {
 
 @objc
 class AxisService: NSObject {
-  static let axisError = NSError(domain: "Axis Service failed", code: 500, userInfo: nil)
   
   private weak var delegate: NYPLBookDownloadBroadcasting?
   private let isbn: String
@@ -65,32 +64,24 @@ class AxisService: NSObject {
   ///   - downloadTask: downloadTask download task
   @objc func fulfillAxisLicense(forBook book: NYPLBook,
                                 downloadTask: URLSessionDownloadTask) {
-
-    
-//    let contentDownloader = AxisBookContentDownloader(isbn: isbn,
-//                                                      bookVaultId: bookVaultId,
-//                                                      dedicatedWriteURL: downloadURL)
-//    
-//    contentDownloader.startDownloadingContent { (result) in
-//      switch result {
-//      case .success:
-//        self.downloadOPFFromContainerURL(forBook: book)
-//      case .failure(let error):
-//        print(error)
-//      }
-//    }
-    
-//    self.downloadOPFFromContainerURL(forBook: book)
     
     let dispatchGroup = DispatchGroup()
-//    downloadLicense(group: dispatchGroup, forBook: book)
+    downloadLicense(group: dispatchGroup, forBook: book)
+    dispatchGroup.wait()
     downloadEncryption(group: dispatchGroup, forBook: book)
+    dispatchGroup.wait()
     downloadContainer(group: dispatchGroup, forBook: book)
+    dispatchGroup.wait()
     downloadPackage(group: dispatchGroup, forBook: book)
+    dispatchGroup.wait()
     downloadAssetsFromPackage(group: dispatchGroup, forBook: book)
     
     dispatchGroup.notify(queue: DispatchQueue.main) {
-      print("All items downloaded!")
+      print("Book content downloaded!")
+      //      _ = self.delegate?.replaceBook(
+      //        book,
+      //        withFileAtURL: self.dedicatedWriteURL,
+      //        forDownloadTask: downloadTask)
     }
   }
   
@@ -104,71 +95,21 @@ class AxisService: NSObject {
       return
     }
     
-    AxisContentDownloader().downloadContent(from: licenseURL) { (result) in
-      switch result {
-      case .success(let data):
-        do {
-          try AxisAssetWriter().writeAsset(data, atURL: writeURL)
-          group.leave()
-        } catch {
-          print(error)
-          group.leave()
-          self.delegate?.failDownloadWithAlert(forBook: book)
-        }
-      case .failure(let error):
-        print(error)
-        group.leave()
-        self.delegate?.failDownloadWithAlert(forBook: book)
-      }
-      
-    }
+    downloadItem(from: licenseURL, at: writeURL, forBook: book, group: group)
   }
   
   private func downloadEncryption(group: DispatchGroup, forBook book: NYPLBook) {
     group.enter()
-    let baseURL = URL(string: "https://node.axisnow.com/content/stream/\(self.isbn)/")!
-    let containerURL = baseURL.appendingPathComponent("META-INF/encryption.xml")
+    let encryptionURL = baseURL.appendingPathComponent("META-INF/encryption.xml")
     let writeURL = self.dedicatedWriteURL.appendingPathComponent("encryption.xml")
-    AxisContentDownloader().downloadContent(from: containerURL) { (result) in
-      switch result {
-      case .success(let data):
-        do {
-          try AxisAssetWriter().writeAsset(data, atURL: writeURL)
-          group.leave()
-        } catch {
-          print(error)
-          group.leave()
-          self.delegate?.failDownloadWithAlert(forBook: book)
-        }
-      case .failure(let error):
-        print(error)
-        group.leave()
-        self.delegate?.failDownloadWithAlert(forBook: book)
-      }
-    }
+    downloadItem(from: encryptionURL, at: writeURL, forBook: book, group: group)
   }
   
   private func downloadContainer(group: DispatchGroup, forBook book: NYPLBook) {
     group.enter()
     let containerURL = baseURL.appendingPathComponent("META-INF/container.xml")
     let writeURL = self.dedicatedWriteURL.appendingPathComponent("container.xml")
-    AxisContentDownloader().downloadContent(from: containerURL) { (result) in
-      switch result {
-      case .success(let data):
-        do {
-          try AxisAssetWriter().writeAsset(data, atURL: writeURL)
-          group.leave()
-        } catch {
-          print(error)
-          group.leave()
-          self.delegate?.failDownloadWithAlert(forBook: book)
-        }
-      case .failure(let error):
-        print(error)
-        group.leave()
-        self.delegate?.failDownloadWithAlert(forBook: book)
-      }
-    }
+    downloadItem(from: containerURL, at: writeURL, forBook: book, group: group)
   }
   
   func downloadPackage(group: DispatchGroup, forBook book: NYPLBook) {
@@ -177,28 +118,10 @@ class AxisService: NSObject {
       group.leave()
       return
     }
-
+    
     let packageURL = baseURL.appendingPathComponent(endpoint)
-    AxisContentDownloader().downloadContent(from: packageURL) { (result) in
-      switch result {
-      case .success(let data):
-        do {
-          try AxisAssetWriter().writeAsset(
-            data,
-            atURL: self.dedicatedWriteURL.appendingPathComponent(endpoint)
-          )
-          group.leave()
-        } catch {
-          print(error)
-          group.leave()
-          self.delegate?.failDownloadWithAlert(forBook: book)
-        }
-      case .failure(let error):
-        print(error)
-        group.leave()
-        self.delegate?.failDownloadWithAlert(forBook: book)
-      }
-    }
+    let writeURL = self.dedicatedWriteURL.appendingPathComponent(endpoint)
+    downloadItem(from: packageURL, at: writeURL, forBook: book, group: group)
   }
   
   private func getContainerEndpoint() -> String? {
@@ -221,8 +144,8 @@ class AxisService: NSObject {
     guard
       let data = try? Data(contentsOf: packageURL),
       let xml = NYPLXML(data: data)
-    else {
-      return
+      else {
+        return
     }
     
     let axisXML = AxisXML(xml: xml)
@@ -230,88 +153,36 @@ class AxisService: NSObject {
     
     for href in hrefs {
       let linkURL = baseURL.appendingPathComponent(href)
+      let writeURL = self.dedicatedWriteURL.appendingPathComponent(href)
       group.enter()
-      AxisContentDownloader().downloadContent(from: linkURL) { (result) in
-        switch result {
-        case .success(let data):
-          print("")
-          let writeURL = self.dedicatedWriteURL.appendingPathComponent(href)
-          do {
-            try AxisAssetWriter().writeAsset(data, atURL: writeURL)
-            group.leave()
-          } catch {
-            print(error)
-            group.leave()
-            self.delegate?.failDownloadWithAlert(forBook: book)
-          }
-        case .failure(let error):
+      downloadItem(from: linkURL, at: writeURL, forBook: book, group: group)
+    }
+  }
+  
+  private func downloadItem(from url: URL,
+                            at writeURL: URL,
+                            forBook book: NYPLBook,
+                            group: DispatchGroup) {
+    
+    AxisContentDownloader().downloadContent(from: url) { (result) in
+      switch result {
+      case .success(let data):
+        do {
+          try AxisAssetWriter().writeAsset(data, atURL: writeURL)
+          group.leave()
+        } catch {
           print(error)
           group.leave()
           self.delegate?.failDownloadWithAlert(forBook: book)
         }
+      case .failure(let error):
+        print(error)
+        group.leave()
+        self.delegate?.failDownloadWithAlert(forBook: book)
       }
     }
   }
-
-    
-    
-  
-//  private func downloadOPFFromContainerURL(forBook book: NYPLBook) {
-//    guard let endpoint = getPackageEndpointFromContainer() else {
-//      return
-//    }
-//
-//    let packageURL = baseURL.appendingPathComponent(endpoint)
-//
-//    AxisContentDownloader().downloadContent(from: packageURL) { (result) in
-//      switch result {
-//      case .success(let data):
-//        do {
-//          try AxisAssetWriter().writeAsset(
-//            data,
-//            atURL: self.dedicatedWriteURL.appendingPathComponent(endpoint))
-//        } catch {
-//          self.delegate?.failDownloadWithAlert(forBook: book)
-//        }
-//      case .failure(let error):
-//        print(error)
-//      }
-//    }
-//  }
-//
-//  private func getPackageEndpointFromContainer() -> String? {
-//    let containerURL = dedicatedWriteURL.appendingPathComponent("container.xml")
-//    guard
-//      let data = try? Data(contentsOf: containerURL),
-//      let xml = NYPLXML(data: data)
-//      else {
-//        return nil
-//    }
-//
-//    let axisXML = AxisXML(xml: xml)
-//    return axisXML.findRecursivelyInAttributes("full-path").first
-//  }
-//
-//  private func downloadContentFromPackage(forBook book: NYPLBook) {
-//
-//    guard
-//      let packageEndpoint = getPackageEndpointFromContainer(),
-//      let data = try? Data(contentsOf: baseURL.appendingPathComponent(packageEndpoint)),
-//      let xml = NYPLXML(data: data)
-//      else {
-//      return
-//    }
-//
-//    let axisXML = AxisXML(xml: xml)
-//    let hrefs = axisXML.findRecursivelyInAttributes("href")
-    
-    
-    
-//  }
-  
   
 }
-
-
 
 #endif

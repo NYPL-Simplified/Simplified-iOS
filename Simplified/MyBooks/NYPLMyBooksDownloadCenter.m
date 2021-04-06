@@ -1293,6 +1293,9 @@ didCompleteWithError:(NSError *)error
       withFileAtURL:(NSURL *)sourceLocation
     forDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 {
+  
+  // TODO: Determine whether the source location is a directory or a single file and take appropriate action
+  
   NSError *replaceError = nil;
   NSURL *destURL = [self fileURLForBookIndentifier:book.identifier];
   BOOL success = [[NSFileManager defaultManager] replaceItemAtURL:destURL
