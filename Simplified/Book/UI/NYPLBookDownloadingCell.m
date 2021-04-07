@@ -104,7 +104,7 @@
   self.authorsLabel.textColor = [NYPLConfiguration backgroundColor];
   [self.contentView addSubview:self.authorsLabel];
   
-  self.cancelButton = [NYPLRoundedButton button];
+  self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.layer.borderWidth = 0;
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)

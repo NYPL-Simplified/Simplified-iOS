@@ -1,7 +1,8 @@
-#import "NYPLRoundedButton.h"
+//#import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLReloadView.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLReloadView ()
 
@@ -36,7 +37,7 @@ static CGFloat const width = 280;
   self.messageLabel.textColor = [UIColor grayColor];
   [self addSubview:self.messageLabel];
   
-  self.reloadButton = [NYPLRoundedButton button];
+  self.reloadButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
   [self.reloadButton setTitle:NSLocalizedString(@"TryAgain", nil)
                      forState:UIControlStateNormal];
   [self.reloadButton addTarget:self

@@ -3,6 +3,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookDownloadFailedCell ()
 
@@ -78,7 +79,7 @@
   self.buttonContainerView = [[UIView alloc] init];
   [self.contentView addSubview:self.buttonContainerView];
   
-  self.cancelButton = [NYPLRoundedButton button];
+  self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [UIColor grayColor];
   self.cancelButton.layer.borderWidth = 0;
@@ -101,7 +102,7 @@
   self.titleLabel.textColor = [NYPLConfiguration backgroundColor];
   [self.contentView addSubview:self.titleLabel];
   
-  self.tryAgainButton = [NYPLRoundedButton button];
+  self.tryAgainButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
   self.tryAgainButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tryAgainButton.tintColor = [UIColor grayColor];
   self.tryAgainButton.layer.borderWidth = 0;

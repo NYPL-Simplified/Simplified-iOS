@@ -93,7 +93,7 @@ CGFloat const toolbarHeight = 40;
                        stringByAppendingString:@":"];
     [self.linearView addSubview:groupLabel];
 
-    NYPLRoundedButton *const button = [NYPLRoundedButton button];
+    NYPLRoundedButton *const button = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
     button.tag = groupIndex;
     button.titleLabel.font = [UIFont systemFontOfSize:12];
     if([self.dataSource facetView:self isActiveFacetForFacetGroupAtIndex:groupIndex]) {
