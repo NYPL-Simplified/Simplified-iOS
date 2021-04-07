@@ -210,14 +210,14 @@
     <published>2016-01-15T00:00:00Z</published>
     <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
     <updated>2021-03-30T04:09:29Z</updated>
-    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163960/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
-      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
-        <opds:indirectAcquisition type="application/epub+zip"/>
-      </opds:indirectAcquisition>
-      <opds:availability status="available"/>
-      <opds:holds total="0"/>
-      <opds:copies available="9999" total="10000"/>
-    </link>
+<!--    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163960/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">-->
+<!--      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">-->
+<!--        <opds:indirectAcquisition type="application/epub+zip"/>-->
+<!--      </opds:indirectAcquisition>-->
+<!--      <opds:availability status="available"/>-->
+<!--      <opds:holds total="0"/>-->
+<!--      <opds:copies available="9999" total="10000"/>-->
+<!--    </link>-->
     <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163960/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
       <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
       <opds:availability status="available"/>
