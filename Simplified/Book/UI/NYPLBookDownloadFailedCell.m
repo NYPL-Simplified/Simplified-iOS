@@ -1,7 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLConfiguration.h"
-#import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
 

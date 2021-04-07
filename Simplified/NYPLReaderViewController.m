@@ -6,7 +6,6 @@
 #import "NYPLReaderReadiumView.h"
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
-#import "NYPLRoundedButton.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReaderSettings.h"

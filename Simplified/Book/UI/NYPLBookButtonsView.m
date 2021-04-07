@@ -12,7 +12,6 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLBookButtonsView.h"
 #import "NYPLConfiguration.h"
-#import "NYPLRoundedButton.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
