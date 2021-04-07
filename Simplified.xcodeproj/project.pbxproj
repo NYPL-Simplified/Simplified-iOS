@@ -250,6 +250,11 @@
 		598CDC03261D3B5F006A5AB3 /* AxisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A78B89261656C20038BCDC /* AxisService.swift */; };
 		598CDC04261D3B5F006A5AB3 /* AxisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A78B89261656C20038BCDC /* AxisService.swift */; };
 		598CDC05261D3B60006A5AB3 /* AxisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A78B89261656C20038BCDC /* AxisService.swift */; };
+		598CDC16261D6891006A5AB3 /* 44628feed.xml in Resources */ = {isa = PBXBuildFile; fileRef = 598CDC10261D6891006A5AB3 /* 44628feed.xml */; };
+		598CDC17261D6891006A5AB3 /* 44628feed.xml in Resources */ = {isa = PBXBuildFile; fileRef = 598CDC10261D6891006A5AB3 /* 44628feed.xml */; };
+		598CDC18261D6891006A5AB3 /* 44628feed.xml in Resources */ = {isa = PBXBuildFile; fileRef = 598CDC10261D6891006A5AB3 /* 44628feed.xml */; };
+		598CDC19261D6891006A5AB3 /* 44628feed.xml in Resources */ = {isa = PBXBuildFile; fileRef = 598CDC10261D6891006A5AB3 /* 44628feed.xml */; };
+		598CDC1A261D6891006A5AB3 /* 44628feed.xml in Resources */ = {isa = PBXBuildFile; fileRef = 598CDC10261D6891006A5AB3 /* 44628feed.xml */; };
 		59A78B8A261656C20038BCDC /* AxisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A78B89261656C20038BCDC /* AxisService.swift */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
@@ -2062,6 +2067,7 @@
 		52545184217A76FF00BBC1B4 /* NYPLUserNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserNotifications.swift; sourceTree = "<group>"; };
 		52592BB721220A1100587288 /* NYPLLocalization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLLocalization.m; sourceTree = "<group>"; };
 		52592BBB21220A4F00587288 /* NYPLLocalization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLLocalization.h; sourceTree = "<group>"; };
+		598CDC10261D6891006A5AB3 /* 44628feed.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 44628feed.xml; sourceTree = "<group>"; };
 		59A78B89261656C20038BCDC /* AxisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AxisService.swift; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		5A5B90111B946763002C53E9 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "usr/lib/libc++.1.dylib"; sourceTree = SDKROOT; };
@@ -3506,6 +3512,7 @@
 				738170142526504800BA2C44 /* GoogleService-Info.plist */,
 				73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */,
 				73735306256828EA00FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json */,
+				598CDC10261D6891006A5AB3 /* 44628feed.xml */,
 				7358EE7B250062BD00DDA0CC /* OEImages.xcassets */,
 				7358EE902500642900DDA0CC /* OELaunchScreen.xib */,
 				73E64E6B252BB89A00276953 /* eula.html */,
@@ -4201,6 +4208,7 @@
 				7347F110245A4DE200558D7F /* Accounts.json in Resources */,
 				7347F111245A4DE200558D7F /* InfoPlist.strings in Resources */,
 				7347F112245A4DE200558D7F /* reader.html in Resources */,
+				598CDC18261D6891006A5AB3 /* 44628feed.xml in Resources */,
 				7347F113245A4DE200558D7F /* DetailSummaryTemplate.html in Resources */,
 				7347F114245A4DE200558D7F /* Localizable.strings in Resources */,
 				73FCA3AA25005D33001B0C5D /* Images.xcassets in Resources */,
@@ -4230,6 +4238,7 @@
 				739E613B244A0D8600D00301 /* Accounts.json in Resources */,
 				739E613C244A0D8600D00301 /* InfoPlist.strings in Resources */,
 				739E613D244A0D8600D00301 /* reader.html in Resources */,
+				598CDC17261D6891006A5AB3 /* 44628feed.xml in Resources */,
 				739E613E244A0D8600D00301 /* DetailSummaryTemplate.html in Resources */,
 				739E613F244A0D8600D00301 /* Localizable.strings in Resources */,
 				739E6140244A0D8600D00301 /* Images.xcassets in Resources */,
@@ -4259,6 +4268,7 @@
 				73EB0B6025821DF4006BC997 /* Accounts.json in Resources */,
 				73EB0B6125821DF4006BC997 /* InfoPlist.strings in Resources */,
 				73EB0B6225821DF4006BC997 /* reader.html in Resources */,
+				598CDC19261D6891006A5AB3 /* 44628feed.xml in Resources */,
 				73EB0B6325821DF4006BC997 /* DetailSummaryTemplate.html in Resources */,
 				73EB0B6425821DF4006BC997 /* Localizable.strings in Resources */,
 				73EB0B6525821DF4006BC997 /* Images.xcassets in Resources */,
@@ -4300,6 +4310,7 @@
 				738170152526504800BA2C44 /* GoogleService-Info.plist in Resources */,
 				73FCA39D25005BA4001B0C5D /* OpenDyslexic3-Regular.ttf in Resources */,
 				73085E212502E2CE008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json in Resources */,
+				598CDC1A261D6891006A5AB3 /* 44628feed.xml in Resources */,
 				73E64E6C252BB89A00276953 /* eula.html in Resources */,
 				7373530B25682E3200FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json in Resources */,
 			);
@@ -4319,6 +4330,7 @@
 				03F94CCF1DD627AA00CE8F4F /* Accounts.json in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
+				598CDC16261D6891006A5AB3 /* 44628feed.xml in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
 				032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */,
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
