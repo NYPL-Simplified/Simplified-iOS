@@ -227,7 +227,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       return
     }
 
-    if let bookmark = bookmarksBusinessLogic.isBookmarkExisting(at: loc) {
+    if let bookmark = bookmarksBusinessLogic.bookmarkExisting(at: loc) {
       deleteBookmark(bookmark)
     } else {
       addBookmark(at: loc)
@@ -261,7 +261,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
     // in which case the bookmark icon will be lit up and should stay lit up.
     if
       let loc = bookmarksBusinessLogic.currentLocation(in: navigator),
-      bookmarksBusinessLogic.isBookmarkExisting(at: loc) == nil {
+      bookmarksBusinessLogic.bookmarkExisting(at: loc) == nil {
 
       updateBookmarkButton(withState: false)
     }
@@ -352,7 +352,7 @@ extension NYPLBaseReaderViewController: NavigatorDelegate {
     }()
     
     if let resourceIndex = publication.resourceIndex(forLocator: locator),
-      let _ = bookmarksBusinessLogic.isBookmarkExisting(at: NYPLBookmarkR2Location(resourceIndex: resourceIndex, locator: locator)) {
+      let _ = bookmarksBusinessLogic.bookmarkExisting(at: NYPLBookmarkR2Location(resourceIndex: resourceIndex, locator: locator)) {
       updateBookmarkButton(withState: true)
     } else {
       updateBookmarkButton(withState: false)

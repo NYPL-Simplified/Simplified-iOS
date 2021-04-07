@@ -68,7 +68,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   /// - Parameter location: The Readium 2 location to be checked.
   /// - Returns: The bookmark at the given `location` if it exists,
   /// otherwise nil.
-  func isBookmarkExisting(at location: NYPLBookmarkR2Location?) -> NYPLReadiumBookmark? {
+  func bookmarkExisting(at location: NYPLBookmarkR2Location?) -> NYPLReadiumBookmark? {
     guard let currentLocator = location?.locator else {
       return nil
     }
