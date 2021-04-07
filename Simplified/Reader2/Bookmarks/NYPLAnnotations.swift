@@ -214,8 +214,8 @@ import R2Shared
 
   /// Reads the current reading position from the server, parses the response
   /// and returns the result to the `completionHandler`.
-  //TODO: SIMPLY-3655 Refactor with `getServerBookmarks(forBook:atURL:completion:)
   class func syncReadingPosition(ofBook bookID: String?, toURL url:URL?,
+  // TODO: SIMPLY-3668 Refactor with `syncReadingPosition(...)`
                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
@@ -525,7 +525,7 @@ import R2Shared
   class func postBookmark(_ bookmark: NYPLReadiumBookmark,
                           forBookID bookID: String,
                           completion: @escaping (_ serverID: String?) -> ()) {
-    // TODO: SIMPLY-3655 distinguish based on renderer (R1 / R2)
+    // TODO: SIMPLY-3645 distinguish based on renderer (R1 / R2)
     //                   or maybe just post R2 bookmarks?
     postR1Bookmark(bookmark, forBookID: bookID, completion: completion)
   }

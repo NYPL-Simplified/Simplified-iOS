@@ -90,11 +90,13 @@ class NYPLBookmarkFactory {
       return nil
     }
 
-    guard let target = annotation[NYPLBookmarkSpec.Target.key] as? [String: AnyObject],
+    guard let target = annotation[NYPLBookmarkSpec.Target.key] as? [String: Any],
       let source = target[NYPLBookmarkSpec.Target.Source.key] as? String,
-      let motivation = annotation[NYPLBookmarkSpec.Motivation.key] as? String else {
-        Log.error(#file, "Error parsing required key/values for target.")
-        return nil
+      let motivation = annotation[NYPLBookmarkSpec.Motivation.key] as? String,
+      let body = annotation[NYPLBookmarkSpec.Body.key] as? [String: Any]
+    else {
+      Log.error(#file, "Error parsing required info (target, source, motivation, body) in annotation: \(annotation)")
+      return nil
     }
 
     guard source == bookID else {
@@ -110,44 +112,48 @@ class NYPLBookmarkFactory {
       return nil
     }
 
-    guard
-      let body = annotation[NYPLBookmarkSpec.Body.key] as? [String: AnyObject],
-      let device = body[NYPLBookmarkSpec.Body.Device.key] as? String,
-      let time = body[NYPLBookmarkSpec.Body.Time.key] as? String,
-
-      // TODO: SIMPLY-3655 update to R2 spec or remove
-      let progressWithinChapter = (body["http://librarysimplified.org/terms/progressWithinChapter"] as? NSNumber)?.floatValue,
-      let progressWithinBook = (body["http://librarysimplified.org/terms/progressWithinBook"] as? NSNumber)?.floatValue
-      else {
-        Log.error(#file, "Error reading required bookmark key/values from body")
+    guard let device = body[NYPLBookmarkSpec.Body.Device.key] as? String,
+      let time = body[NYPLBookmarkSpec.Body.Time.key] as? String else {
+        Log.error(#file, "Error reading `device` info from `body`:\(body)")
         return nil
     }
 
     guard
-      let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String: AnyObject],
+      let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String: Any],
       let selectorValueEscJSON = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as? String
       else {
-        Log.error(#file, "Error reading required Selector Value from Target.")
+        Log.error(#file, "Error reading required Selector Value from Target: \(target)")
         return nil
     }
 
     guard
       let selectorValueData = selectorValueEscJSON.data(using: String.Encoding.utf8),
-      let selectorValueJSON = (try? JSONSerialization.jsonObject(with: selectorValueData,
-                                                                 options: [])) as? [String: Any],
-      // TODO: SIMPLY-3655 update to R2 spec
-      let idref = selectorValueJSON[NYPLBookmarkR1Key.idref.rawValue] as? String
+      let selectorValueJSON = (try? JSONSerialization.jsonObject(with: selectorValueData)) as? [String: Any]
       else {
-        Log.error(#file, "Error serializing serverCFI into JSON. Selector.Value=\(selectorValueEscJSON)")
+        Log.error(#file, "Error serializing `selector`. SelectorValue=\(selectorValueEscJSON)")
         return nil
     }
 
+    let href = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
+    let legacyIDref = selectorValueJSON[NYPLBookmarkR1Key.idref.rawValue] as? String
+    guard let chapterID = href ?? legacyIDref else {
+        Log.error(#file, "Error reading chapter ID from server annotation. SelectorValue=\(selectorValueEscJSON)")
+        return nil
+    }
+
+    let progress = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey]
+    let legacyProgress = body["http://librarysimplified.org/terms/progressWithinChapter"]
+    let progressWithinChapter = ((progress as? Float) ?? legacyProgress as? Float) ?? 0.0
+
+    // non-essential info
     let serverCFI = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorCFIKey] as? String
     let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
+    let bookProgress = body["http://librarysimplified.org/terms/progressWithinBook"]
+    let progressWithinBook = Float(bookProgress as? String ?? "") ?? 0.0
 
     return NYPLReadiumBookmark(annotationId: annotationID,
                                contentCFI: serverCFI,
-                               idref: idref,
+                               idref: chapterID,
                                chapter: chapter,
                                page: nil,
                                location: selectorValueEscJSON,
@@ -155,5 +161,32 @@ class NYPLBookmarkFactory {
                                progressWithinBook: progressWithinBook,
                                time:time,
                                device:device)
+  }
+
+  class func makeLocatorString(chapterHref: String, chapterProgression: Float) -> String? {
+    guard chapterProgression >= 0.0, chapterProgression <= 1.0 else {
+      return nil
+    }
+
+    return """
+    {
+      "\(NYPLBookmarkSpec.Target.Selector.Value.locatorTypeKey)": "\(NYPLBookmarkSpec.Target.Selector.Value.locatorTypeValue)",
+      "\(NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey)": "\(chapterHref)",
+      "\(NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey)": \(chapterProgression)
+    }
+    """
+  }
+
+  class func makeLegacyLocatorString(idref: String,
+                                     chapterProgression: Float,
+                                     cfi: String) -> String {
+    return """
+    {
+      "\(NYPLBookmarkSpec.Target.Selector.Value.locatorTypeKey)": "\(NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorTypeValue)",
+      "\(NYPLBookmarkR1Key.idref.rawValue)": "\(idref)",
+      "\(NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorCFIKey)": "\(cfi)",
+      "\(NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey)": \(chapterProgression)
+    }
+    """
   }
 }

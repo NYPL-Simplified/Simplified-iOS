@@ -10,7 +10,7 @@ import Foundation
 
 /// - Important: all these functions are deprecated. Do not use in new code.
 extension NYPLAnnotations {
-  /// Important: this is deprecated. Do not use in new code.
+  /// - Important: this is deprecated. Do not use in new code.
   class func postR1Bookmark(_ bookmark: NYPLReadiumBookmark,
                             forBookID bookID: String,
                             completion: @escaping (_ serverID: String?) -> ())

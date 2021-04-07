@@ -85,8 +85,13 @@
     // This location structure originally comes from R1 Reader's Javascript
     // and its not available in R2, we are mimicking the structure
     // in order to pass the needed information to the server
-    self.location = location ?? "{\"idref\":\"\(idref)\",\"contentCFI\":\"\(contentCFI ?? "")\"}"
+    guard let loc = location ?? NYPLBookmarkFactory
+      .makeLocatorString(chapterHref: idref,
+                         chapterProgression: progressWithinChapter) else {
+                          return nil
+    }
 
+    self.location = loc
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook
     self.time = time ?? NSDate().rfc3339String()
@@ -95,11 +100,11 @@
   
   init?(dictionary:NSDictionary)
   {
-    guard let contentCFI = dictionary[NYPLBookmarkDictionaryRepresentation.cfiKey] as? String,
+    guard
       let idref = dictionary[NYPLBookmarkDictionaryRepresentation.idrefKey] as? String,
-      let location = dictionary[NYPLBookmarkDictionaryRepresentation.locationKey] as? String,
-      let time = dictionary[NYPLBookmarkDictionaryRepresentation.timeKey] as? String else {
-        Log.error(#file, "Bookmark failed to init from dictionary.")
+      let location = dictionary[NYPLBookmarkDictionaryRepresentation.locationKey] as? String
+      else {
+        Log.error(#file, "Bookmark creation from dictionary failed: missing required info:\(dictionary).")
         return nil
     }
 
@@ -108,16 +113,19 @@
     } else {
       self.annotationId = nil
     }
-    self.contentCFI = contentCFI
+
+    self.contentCFI = dictionary[NYPLBookmarkDictionaryRepresentation.cfiKey] as? String
     self.idref = idref
     self.location = location
-    self.time = time
+    self.time = dictionary[NYPLBookmarkDictionaryRepresentation.timeKey] as? String ?? NSDate().rfc3339String()
     self.chapter = dictionary[NYPLBookmarkDictionaryRepresentation.chapterKey] as? String
     self.page = dictionary[NYPLBookmarkDictionaryRepresentation.pageKey] as? String
     self.device = dictionary[NYPLBookmarkDictionaryRepresentation.deviceKey] as? String
+
     if let progressChapter = dictionary[NYPLBookmarkDictionaryRepresentation.chapterProgressKey] as? NSNumber {
       self.progressWithinChapter = progressChapter.floatValue
     }
+
     if let progressBook = dictionary[NYPLBookmarkDictionaryRepresentation.bookProgressKey] as? NSNumber {
       self.progressWithinBook = progressBook.floatValue
     }
