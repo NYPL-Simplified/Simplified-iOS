@@ -26,6 +26,11 @@
 #import <ReadiumLCP/ReadiumLCP-Swift.h>
 #endif
 
+#if defined(AXIS)
+@interface NYPLMyBooksDownloadCenter () <NYPLBookDownloadBroadcasting>
+@end
+#endif
+
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
@@ -132,6 +137,12 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
+#if defined(AXIS)
+    } else if ([downloadTask.response.MIMEType isEqualToString:ContentTypeAxis360]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementAxis];
+#endif
     } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeReadiumLCP]) {
         self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
@@ -335,6 +346,17 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                                      forDownloadTask:downloadTask];
         break;
       }
+      case NYPLMyBooksDownloadRightsManagementAxis: {
+#if defined(AXIS)
+        NYPLAxisService *axis = [[NYPLAxisService alloc]
+                                 initWithDelegate:self
+                                 fileURL:tmpSavedFileURL
+                                 forBook:book];
+        [axis fulfillAxisLicenseWithDownloadTask:downloadTask];
+#endif
+        break;
+      }
+        
     }
   }
   
