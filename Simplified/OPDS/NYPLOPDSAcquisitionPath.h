@@ -31,6 +31,8 @@ extern NSString * const _Nonnull ContentTypeOverdriveAudiobookActual;
 extern NSString * const _Nonnull ContentTypeReadiumLCP;
 /// The constant value is fully lowercased.
 extern NSString * const _Nonnull ContentTypeAudiobookZip;
+/// The constant value is fully lowercased.
+extern NSString * const _Nonnull ContentTypeAxis360;
 
 /// Represents a single path the application can take through an acquisition
 /// process.
