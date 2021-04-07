@@ -1,0 +1,1960 @@
+<feed xmlns:app="http://www.w3.org/2007/app" xmlns:bib="http://bib.schema.org/" xmlns:bibframe="http://bibframe.org/vocab/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:drm="http://librarysimplified.org/terms/drm" xmlns:opds="http://opds-spec.org/2010/catalog" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:schema="http://schema.org/" xmlns:simplified="http://librarysimplified.org/terms/" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://qa-circulation.openebooks.us/USOEI/groups/</id>
+  <title>Open eBooks (QA Server)</title>
+  <updated>2021-03-31T06:40:06Z</updated>
+  <link href="https://qa-circulation.openebooks.us/USOEI/groups/" rel="self"/>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>The Goose Girl</title>
+    <author>
+      <name>Hale, Shannon</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Hale%2C%20Shannon/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Hale, Shannon"/>
+    </author>
+    <schema:Series name="Books of Bayern">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Books%20of%20Bayern/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Books of Bayern"/>
+    </schema:Series>
+    <summary type="html">In this first book in New York Times bestselling, Newbery Honor-winning author Shannon Hale's beloved YA fantasy series Books of Bayern, Princess Ani must become a goose girl before she can become queen.Anidori-Kiladra Talianna Isilee, Crown Princess of Kildenree, spends the first years of her life listening to her aunt's stories and learning the language of the birds, especially the swans. As she grows up, Ani develops the skills of animal speech, but she never feels quite comfortable speaking with people. So when Ani's mother sends her away to be married in a foreign land, she finds herself at the mercy of her silver-tongued lady in waiting, who leads a mutiny that leaves her alone, destitute, and fleeing for her life. To survive, Ani takes on work as a royal goose girl, hiding in plain sight while she develops her forbidden talents and works to discover her own true, powerful voice.Don't miss any of these other books from New York Times bestselling author Shannon Hale:The Books of BayernThe Goose GirlEnna BurningRiver SecretsForest BornThe Princess Academy trilogyPrincess AcademyPrincess Academy: Palace of StonePrincess Academy: The Forgotten SistersBook of a Thousand DaysDangerousGraphic Novelswith Dean Hale, illustrated by Nathan HaleRapunzel's Revenge Calamity JackFor AdultsAustenlandMidnight in AustenlandThe Actor and the Housewife</summary>
+    <simplified:pwid>4f590154-059f-effc-53d3-ab1d3f620449</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781599904078/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781599904078/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="12-14" scheme="http://schema.org/typicalAgeRange" label="12-14"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Fantasy" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Fantasy"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Romance" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Romance"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Folklore" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Folklore"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Bloomsbury USA</dcterms:publisher>
+    <bib:publisherImprint>Bloomsbury Childrens Books</bib:publisherImprint>
+    <dcterms:issued>2008-12-01</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163795/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0010163795</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163795" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-15T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:08:59Z</updated>
+<!--    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163795/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">-->
+<!--      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">-->
+<!--        <opds:indirectAcquisition type="application/epub+zip"/>-->
+<!--      </opds:indirectAcquisition>-->
+<!--      <opds:availability status="available"/>-->
+<!--      <opds:holds total="0"/>-->
+<!--      <opds:copies available="9999" total="9999"/>-->
+<!--    </link>-->
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163795/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163795/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0010163795" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0010163795/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Adrenaline Crush</title>
+    <author>
+      <name>Crompton, Laurie Boyle</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Crompton%2C%20Laurie%20Boyle/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Crompton, Laurie Boyle"/>
+    </author>
+    <summary type="html">When seventeen-year-old Dyna, an avid thrill-seeker, falls and shatters her leg, her life changes dramatically and she finds herself caught between her boyfriend, who supports her newfound desire for safety, and a young Iraq war veteran she meets at rehab who challenges her to take chances again.</summary>
+    <simplified:pwid>a0e707b0-f172-b5dd-1465-2c7974d732a1</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780374300623/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780374300623/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="12-14" scheme="http://schema.org/typicalAgeRange" label="12-14"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Contemporary%20Romance" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Contemporary Romance"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Farrar Straus &amp; Giroux</bib:publisherImprint>
+    <dcterms:issued>2014-09-23</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014634572/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0014634572</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014634572" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2015-10-16T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:13:51Z</updated>
+<!--    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014634572/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">-->
+<!--      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">-->
+<!--        <opds:indirectAcquisition type="application/epub+zip"/>-->
+<!--      </opds:indirectAcquisition>-->
+<!--      <opds:availability status="available"/>-->
+<!--      <opds:holds total="0"/>-->
+<!--      <opds:copies available="9999" total="9999"/>-->
+<!--    </link>-->
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014634572/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014634572/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0014634572" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0014634572/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Sense and Sensibility</title>
+    <author>
+      <name>Austen, Jane</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Austen%2C%20Jane/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Austen, Jane"/>
+    </author>
+    <simplified:pwid>a710509a-dc75-6d9b-550c-617f31a1b6f7</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781682280232/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781682280232/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Classics" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Classics"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Plympton Inc</dcterms:publisher>
+    <bib:publisherImprint>Plympton Inc</bib:publisherImprint>
+    <dcterms:issued>2015-10-01</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450466/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0018450466</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450466" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-03-01T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:15:16Z</updated>
+<!--    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450466/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">-->
+<!--      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">-->
+<!--        <opds:indirectAcquisition type="application/epub+zip"/>-->
+<!--      </opds:indirectAcquisition>-->
+<!--      <opds:availability status="available"/>-->
+<!--      <opds:holds total="0"/>-->
+<!--      <opds:copies available="9999" total="9999"/>-->
+<!--    </link>-->
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450466/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450466/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0018450466" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0018450466/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Immortal Beloved</title>
+    <author>
+      <name>Tiernan, Cate</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Tiernan%2C%20Cate/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Tiernan, Cate"/>
+    </author>
+    <schema:Series name="Immortal Beloved">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Immortal%20Beloved/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Immortal Beloved"/>
+    </schema:Series>
+    <summary type="html">After seeing her best friend, a Dark Immortal called Incy, torture a human with magick, Nastasya, a spoiled party girl, enters a home for wayword immortals and finally begins to deal with life, even as she learns that someone wants her dead.</summary>
+    <simplified:pwid>77b02d1a-2b11-2151-1484-51d297dd6ace</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316173193/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316173193/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="15-18" scheme="http://schema.org/typicalAgeRange" label="15-18"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Adventure" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Adventure"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Hachette Book Group USA</dcterms:publisher>
+    <bib:publisherImprint>Little Brown &amp; Co</bib:publisherImprint>
+    <dcterms:issued>2010-09-07</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522147/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0011522147</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522147" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2015-09-01T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-30T04:09:56Z</updated>
+<!--    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522147/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">-->
+<!--      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">-->
+<!--        <opds:indirectAcquisition type="application/epub+zip"/>-->
+<!--      </opds:indirectAcquisition>-->
+<!--      <opds:availability status="available"/>-->
+<!--      <opds:holds total="0"/>-->
+<!--      <opds:copies available="9999" total="9999"/>-->
+<!--    </link>-->
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522147/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522147/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0011522147" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0011522147/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Dreams of the Dead</title>
+    <author>
+      <name>Randall, Thomas</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Randall%2C%20Thomas/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Randall, Thomas"/>
+    </author>
+    <schema:Series name="The Waking">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/The%20Waking/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="The Waking"/>
+    </schema:Series>
+    <summary type="html">An appealing new look for a thrilling horror series set in modern Japan</summary>
+    <simplified:pwid>60ddcb75-ce77-cd80-fdb5-93fd09da4dde</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781599906171/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781599906171/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="12-14" scheme="http://schema.org/typicalAgeRange" label="12-14"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Horror" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Horror"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Historical%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Historical Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Bloomsbury USA</dcterms:publisher>
+    <bib:publisherImprint>Bloomsbury Childrens Books</bib:publisherImprint>
+    <dcterms:issued>2010-12-15</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163960/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0010163960</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163960" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-15T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-30T04:09:29Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163960/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="10000"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163960/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="10000"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163960/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0010163960" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0010163960/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Lizard Radio</title>
+    <author>
+      <name>Schmatz, Pat</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Schmatz%2C%20Pat/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Schmatz, Pat"/>
+    </author>
+    <summary type="html">Attending summer camp in a strict, gender-rigid culture, 15-year-old Kivali, who was abandoned as an infant and raised by an ardent nonconformist, questions her sense of identity and her beliefs as she becomes aware of her special intuitive powers.</summary>
+    <simplified:pwid>48097c97-b87b-bb38-e6dd-d2e0f646d14d</simplified:pwid>
+    <link href="https://covers.nypl.org/Content%20Cafe/ISBN/9780763679514/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Content%20Cafe/ISBN/9780763679514/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="15-18" scheme="http://schema.org/typicalAgeRange" label="15-18"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Dystopian%20SF" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Dystopian SF"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/LGBTQ%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="LGBTQ Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Candlewick Pr Inc</dcterms:publisher>
+    <bib:publisherImprint>Candlewick Pr Inc</bib:publisherImprint>
+    <dcterms:issued>2015-09-08</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017627744/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0017627744</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017627744" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2017-01-17T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:19:49Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017627744/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017627744/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017627744/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0017627744" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0017627744/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Chains</title>
+    <author>
+      <name>Hartley, A. J.</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Hartley%2C%20A.%20J./eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Hartley, A. J."/>
+    </author>
+    <schema:Series name="Steeplejack">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Steeplejack/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Steeplejack"/>
+    </schema:Series>
+    <summary type="html">Anglet Sutonga is more realistic than most teenagers, but still dreams of rising above the impoverished streets of Bar-Selehm. When an opportunity comes along, will she take it? And what does she risk in order not to throw away her shot? A novelette set before the events of A.J. Hartley's Steeplejack.At the Publisher's request, this title is being sold without Digital Rights Management Software (DRM) applied.</summary>
+    <simplified:pwid>77ee4a66-c355-5ab8-e384-3616d319b183</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780765392022/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780765392022/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="15-18" scheme="http://schema.org/typicalAgeRange" label="15-18"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Adventure" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Adventure"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Steampunk" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Steampunk"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Tor Books</bib:publisherImprint>
+    <dcterms:issued>2016-06-22</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018766963/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0018766963</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018766963" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-07T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:25:08Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018766963/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018766963/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018766963/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0018766963" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0018766963/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Been Here All Along</title>
+    <author>
+      <name>Hall, Sandy</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Hall%2C%20Sandy/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Hall, Sandy"/>
+    </author>
+    <summary type="html">Gideon always has a plan. It includes running for class president, becoming head of the yearbook committee, and having his choice of colleges. It does NOT include falling head over heels for his best friend, Kyle. It’s a distraction, it’s pointless—Kyle is already dating the head cheerleader, Ruby—and Gideon doesn’t know what to do. Kyle finally feels like he has a handle on life. He has a wonderful girlfriend, a best friend willing to debate the finer points of Lord of the Rings, and social acceptance as captain of the basketball team. So when both Ruby and Gideon start acting really weird, just as his spot on the team is threatened, Kyle can’t quite figure out what he did wrong.Sandy Hall, the author of A Little Something Different, is back with her signature wit in this quirky and heartfelt LGBT YA novel.</summary>
+    <simplified:pwid>37a4706d-3249-e535-8a68-8d1bf3de1780</simplified:pwid>
+    <link href="https://covers.nypl.org/Content%20Cafe/ISBN/9781250100665/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Content%20Cafe/ISBN/9781250100665/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="15-18" scheme="http://schema.org/typicalAgeRange" label="15-18"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Romance" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Romance"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/LGBTQ%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="LGBTQ Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Swoon Reads</bib:publisherImprint>
+    <dcterms:issued>2016-08-30</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018391321/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0018391321</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018391321" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2017-01-04T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:19:26Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018391321/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018391321/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018391321/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0018391321" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0018391321/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Nightlight</title>
+    <author>
+      <name>Cadnum, Michael</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Cadnum%2C%20Michael/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Cadnum, Michael"/>
+    </author>
+    <summary type="html">Paul Wright&amp;rsquo;s family sends him to find his cousin, a photographer whose subjects have become increasingly macabre. Paul investigates Len&amp;rsquo;s last known address, a cabin in California&amp;rsquo;s Napa Valley, only to discover the frightening and sinister truth behind his cousin&amp;rsquo;s obsession with the past.</summary>
+    <simplified:pwid>a709f549-e4c2-7494-7a71-d3abf962cf53</simplified:pwid>
+    <link href="https://covers.nypl.org/Content%20Cafe/ISBN/9781504023610/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Content%20Cafe/ISBN/9781504023610/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Horror" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Horror"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Suspense/Thriller" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Suspense/Thriller"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Open Road Media</dcterms:publisher>
+    <bib:publisherImprint>Open Road Media</bib:publisherImprint>
+    <dcterms:issued>2015-10-13</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017718600/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0017718600</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017718600" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-12-06T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:18:31Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017718600/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017718600/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017718600/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0017718600" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0017718600/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>How Ya Like Me Now</title>
+    <author>
+      <name>Halpin, Brendan</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Halpin%2C%20Brendan/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Halpin, Brendan"/>
+    </author>
+    <summary type="html">When Eddie moves in with his cousin Alex, his world is turned upside down  Eddie&amp;rsquo;s life is changing. When his widowed mom is sent to rehab, he goes to Boston to live with his aunt, uncle, and cousin Alex, a smart-mouthed extrovert whom the withdrawn Eddie has a hard time understanding.   As they negotiate the difficulties of girls, homework, friendship, and more girls, both boys will come to realize that they have a lot to learn from each other&amp;mdash;and that it&amp;rsquo;s easier to face the world when someone has your back.</summary>
+    <simplified:pwid>25164e6e-187c-db4e-d3b3-cc5e3e407715</simplified:pwid>
+    <link href="https://covers.nypl.org/Content%20Cafe/ISBN/9781504006828/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Content%20Cafe/ISBN/9781504006828/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="15-18" scheme="http://schema.org/typicalAgeRange" label="15-18"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Open Road Media</dcterms:publisher>
+    <bib:publisherImprint>Open Road Media Teen &amp; Tween</bib:publisherImprint>
+    <dcterms:issued>2015-04-07</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016664808/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0016664808</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016664808" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-12-06T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:17:57Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016664808/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016664808/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016664808/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0016664808" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0016664808/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Calvin</title>
+    <author>
+      <name>Leavitt, Martine</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Leavitt%2C%20Martine/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Leavitt, Martine"/>
+    </author>
+    <summary type="html">As a result of coincidences and delusions, a 17-year-old with schizophrenia, who believes that his life is tied to the famed comic strip Calvin &amp;amp; Hobbes, appeals to artist Bill Watterson to draw one final strip of his main character as a healthy teen. By the award-winning author of Keturah and Lord Death. Simultaneous eBook.</summary>
+    <simplified:pwid>79f733a7-35e5-30a7-e3b1-e262cd1a511a</simplified:pwid>
+    <link href="https://covers.nypl.org/Content%20Cafe/ISBN/9780374303570/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Content%20Cafe/ISBN/9780374303570/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="12-14" scheme="http://schema.org/typicalAgeRange" label="12-14"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Farrar Straus &amp; Giroux</bib:publisherImprint>
+    <dcterms:issued>2015-11-17</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017105975/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0017105975</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017105975" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2017-01-04T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:18:08Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017105975/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017105975/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017105975/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0017105975" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0017105975/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>The Infinity of You &amp; Me</title>
+    <author>
+      <name>Coyle, J. Q.</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Coyle%2C%20J.%20Q./eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Coyle, J. Q."/>
+    </author>
+    <summary type="html">"The clever, fast-moving plot features a strong, appealing heroine, Sylvia Plath's poetry, romance, betrayal, and heart-stopping suspense." - Kirkus Reviews"This ambitious sci-fi novel, filled with multiverses and what-ifs... contains complex world building that would appeal to fans of TV's Orphan Black." - Booklist Almost fifteen, Alicia is smart and funny with a deep connection to the poet Sylvia Plath, but she’s ultimately failing at life. With a laundry list of diagnoses, she hallucinates different worlds—strange, decaying, otherworldly yet undeniably real worlds that are completely unlike her own with her single mom and one true friend. In one particularly vivid hallucination, Alicia is drawn to a boy her own age named Jax who’s trapped in a dying universe. Days later, her long-lost father shows up at her birthday party, telling her that the hallucinations aren’t hallucinations, but real worlds; she and Jax are bound by a strange past and intertwining present. This leads her on a journey to find out who she is while trying to save the people and worlds she loves. J.Q. Coyle’s The Infinity of You &amp;amp; Me is a wild ride through unruly hearts and vivid worlds guaranteed to captivate.</summary>
+    <simplified:pwid>cb7e26fc-4bba-453f-e8ce-5c7784be3325</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250099235/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250099235/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="12-14" scheme="http://schema.org/typicalAgeRange" label="12-14"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Science%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Science Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Suspense/Thriller" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Suspense/Thriller"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>St Martins Pr Griffin</bib:publisherImprint>
+    <dcterms:issued>2016-11-08</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018715173/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0018715173</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018715173" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-07T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:25:07Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018715173/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018715173/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018715173/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0018715173" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0018715173/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Hearts at Stake</title>
+    <author>
+      <name>Harvey, Alyxandra</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Harvey%2C%20Alyxandra/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Harvey, Alyxandra"/>
+    </author>
+    <schema:Series name="The Drake Chronicles">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/The%20Drake%20Chronicles/eng/All%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="The Drake Chronicles"/>
+    </schema:Series>
+    <summary type="html">Watch out, Buffy! A reluctant vampire princess takes on all comers in an action-packed, romantic, and snarky addition to this red-hot genre</summary>
+    <simplified:pwid>3e385a98-236d-e798-3f15-97ed7473e082</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780802721877/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780802721877/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Young Adult" scheme="http://schema.org/audience" label="Young Adult"/>
+    <category term="12-14" scheme="http://schema.org/typicalAgeRange" label="12-14"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Fantasy" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Fantasy"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Romance" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Romance"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Adventure" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Adventure"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Bloomsbury USA</dcterms:publisher>
+    <bib:publisherImprint>Bloomsbury Childrens Books</bib:publisherImprint>
+    <dcterms:issued>2010-05-23</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163699/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0010163699</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163699" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-15T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:08:06Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163699/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163699/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010163699/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0010163699" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0010163699/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Anne of the Island</title>
+    <author>
+      <name>Montgomery, L. M.</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Montgomery%2C%20L.%20M./eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Montgomery, L. M."/>
+    </author>
+    <simplified:pwid>b90adf4c-0db9-170f-a298-3935305b6b8e</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781682280997/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781682280997/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Classics" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Classics"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Plympton Inc</dcterms:publisher>
+    <bib:publisherImprint>Plympton Inc</bib:publisherImprint>
+    <dcterms:issued>2015-12-01</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450614/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0018450614</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450614" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-03-01T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/406" rel="collection" title="High School"/>
+    <updated>2021-03-31T04:15:45Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450614/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450614/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018450614/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0018450614" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0018450614/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Judy Moody's Mini Mysteries and Other Sneaky Stuff for Super Sleuths</title>
+    <contributor opf:role="ill">
+      <name>Smith, Matt</name>
+    </contributor>
+    <contributor opf:role="ill">
+      <name>Reynolds, Peter H.</name>
+    </contributor>
+    <author>
+      <name>McDonald, Megan</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/McDonald%2C%20Megan/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="McDonald, Megan"/>
+    </author>
+    <schema:Series name="Judy Moody">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Judy%20Moody/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Judy Moody"/>
+    </schema:Series>
+    <summary type="html">"Join detective Judy Drewdy to create a way-official detective kit, solve six mini-mysteries, and sharpen real-and-actual sleuth skills.  Chock-full of advice for the would-be sleuth and bursting with activities, here is an uber RARE diversion for fans of Judy and for anyone who loves a good mystery. "The Great Class Heist" is just one of the whodunits tackled by Judy Drewdy and agents Dills Pickle (aka Frank), Spuds Houdini (Rocky), and James Madagascar (Stink), who need readers' help in cracking these addition to six solve-it-yourself missions, kids can get in the mood to:  Create a detective kit Sketch suspects Test powers of observation Puzzle through ridonkulus logic puzzles Write super-sneaky codes And more!"--</summary>
+    <simplified:pwid>4583f9fb-1430-cf06-814e-099164d2212d</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780763661991/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780763661991/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="8-9" scheme="http://schema.org/typicalAgeRange" label="8-9"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Short%20Stories" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Short Stories"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Mystery" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Mystery"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Candlewick Pr Inc</dcterms:publisher>
+    <bib:publisherImprint>Candlewick Pr Inc</bib:publisherImprint>
+    <dcterms:issued>2012-08-14</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0011887092</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-21T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-31T04:14:55Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0011887092" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0011887092/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>The Curse of the Ancient Emerald</title>
+    <author>
+      <name>Dixon, Franklin W.</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Dixon%2C%20Franklin%20W./eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Dixon, Franklin W."/>
+    </author>
+    <schema:Series name="Hardy Boys Adventures">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Hardy%20Boys%20Adventures/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Hardy Boys Adventures"/>
+    </schema:Series>
+    <summary type="html">Frank and Joe must take the shine off a jewel thief who sends ominous riddles in this Hardy Boys adventure.First a priceless painting disappears from the museum; then two ancient samurai swords vanish from a private collection. A string of robberies has hit Bayport, and all signs point to &amp;amp;;the Phantom,&amp;amp;; a recently released ex-con who last struck more than twenty years ago. There&amp;amp;;s only one problem: the Phantom has vanished into thin air, and not even Frank and Joe Hardy can track him down.Then the boys begin receiving threatening notes in the mail, each one containing a strange riddle. And it looks like the Phantom&amp;amp;;s next target could be the valuable Emerald of Astara, the 2,500-year-old crown jewel of the Bayport Historical Museum. Can the Hardys crack the Phantom&amp;amp;;s code before he strikes again?</summary>
+    <simplified:pwid>b63d38fd-b462-34ed-2b63-9ff6cb95976c</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781481424776/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781481424776/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Adventure" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Adventure"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Mystery" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Mystery"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Simon &amp; Schuster</dcterms:publisher>
+    <bib:publisherImprint>Aladdin</bib:publisherImprint>
+    <dcterms:issued>2015-06-09</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016693095/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0016693095</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016693095" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-20T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-31T04:07:45Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016693095/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016693095/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016693095/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0016693095" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0016693095/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Princess Luna and the Festival of the Winter Moon</title>
+    <author>
+      <name>Berrow, G. M.</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Berrow%2C%20G.%20M./eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Berrow, G. M."/>
+    </author>
+    <schema:Series name="My Little Pony: the Princess Collection">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/My%20Little%20Pony:%20the%20Princess%20Collection/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="My Little Pony: the Princess Collection"/>
+    </schema:Series>
+    <summary type="html">When Princess Luna discovers that Celestia is orchestrating a surprise festival in her honor, Luna is worried about what might happen, especially after all the teror she caused as Nightmare Moon.</summary>
+    <simplified:pwid>e89024c8-5c45-3e92-a0da-dca8d28f2842</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316301671/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316301671/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Hachette Book Group USA</dcterms:publisher>
+    <bib:publisherImprint>Little Brown &amp; Co</bib:publisherImprint>
+    <dcterms:issued>2015-11-03</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017527207/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0017527207</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017527207" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2017-12-19T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-31T04:20:39Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017527207/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017527207/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017527207/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0017527207" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0017527207/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Considine Curse</title>
+    <author>
+      <name>Gareth P. Jones</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Gareth%20P.%20Jones/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Gareth P. Jones"/>
+    </author>
+    <summary type="html">Winner of the Blue Peter Book Award 2012 Fourteen-year-old Mariel returns to England for her grandmother's funeral. It is the first time she has been back since she emigrated with her mother as a baby, and it is the beginning of the uncovering of some really extraordinary truths about the Considine family. Why did Mariel's mum argue with Grandma all those years ago? Why does Amelia wear so much perfume? Why is there a very large cat flap in Louvre House? Why does Gerald seem scared of his brother's appetite? Did Grandma Considine really break her neck falling down the stairs? And most importantly, what is the dark secret that lies at the heart of the family?</summary>
+    <simplified:pwid>be020096-eb35-d7d9-067a-5c408b36217f</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781408813409/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781408813409/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Humorous%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Humorous Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Mystery" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Mystery"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Bloomsbury Pub Plc</dcterms:publisher>
+    <bib:publisherImprint>Bloomsbury Childrens Books</bib:publisherImprint>
+    <dcterms:issued>2011-08-02</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295177/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0010295177</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295177" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2015-10-09T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-31T04:10:26Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295177/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295177/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295177/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0010295177" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0010295177/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>The Black Cauldron 50th Anniversary Edition</title>
+    <author>
+      <name>Alexander, Lloyd</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Alexander%2C%20Lloyd/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Alexander, Lloyd"/>
+    </author>
+    <schema:Series name="The Chronicles of Prydain">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/The%20Chronicles%20of%20Prydain/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="The Chronicles of Prydain"/>
+    </schema:Series>
+    <summary type="html">Henry Holt Books for Young Readers is proud to publish this 50th Anniversary Edition of Lloyd Alexander's classic Newbery Honor winner The Black Cauldron, the second book in the Chronicles of Prydain, with a new introduction by fellow Newbery Honor winner Rebecca Stead. In the land of Prydain, evil is never far away. Arawn, Lord of the Land of Death, has been building an army of dark warriors to take over Prydain, and the only way to stop him is to destroy the Black Cauldron he uses to create his dreaded soldiers. Taran the Assistant Pig-Keeper and his loyal companions must journey deep into Arawn's domain to destroy the Black Cauldron. For each of them, the quest has a special meaning.  For Taran, it is the glorious opportunity to use his first sword in battle.  But war requires a sacrifice greater than he'd ever imagined. . . .</summary>
+    <simplified:pwid>9d3c10b9-4b87-efdb-9d89-7c7b1a20485f</simplified:pwid>
+    <link href="https://covers.nypl.org/Content%20Cafe/ISBN/9781627795449/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Content%20Cafe/ISBN/9781627795449/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Fantasy" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Fantasy"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Folklore" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Folklore"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Adventure" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Adventure"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Henry Holt &amp; Co</bib:publisherImprint>
+    <dcterms:issued>2015-09-01</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016531996/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0016531996</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016531996" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2017-01-04T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-31T04:17:53Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016531996/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016531996/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016531996/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0016531996" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0016531996/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Snivel</title>
+    <contributor opf:role="ill">
+      <name>Dob, Bob</name>
+    </contributor>
+    <author>
+      <name>Basye, Dale E.</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Basye%2C%20Dale%20E./eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Basye, Dale E."/>
+    </author>
+    <schema:Series name="Heck">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Heck/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Heck"/>
+    </schema:Series>
+    <summary type="html">Dale E. Basye sends Milton and Marlo to Snivel, the circle reserved for crybabies, for their latest hilarious escapade in Heck. Snivel is a camp&amp;amp;;a bummer camp&amp;amp;;a dismal place where it's always raining, and Unhappy Campers are besieged by swarms of strange mosquitoes that suck the color right out of them. Soon the Fausters discover that some Unhappy Campers have been disappearing. So after Marlo gets chosen for a special project and never comes back, Milton makes up his mind to find her and all the missing children.Can Milton find his sister and get the heck out of Snivel? With the help of some new friends, his pet ferret, and Vincent Van Gogh's ear, he just might have a chance.</summary>
+    <simplified:pwid>03dc90f2-e879-a272-37c3-19ad7d449d5e</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780375898846/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780375898846/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Horror" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Horror"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Humorous%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Humorous Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Fantasy" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Fantasy"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Random House Digital</dcterms:publisher>
+    <bib:publisherImprint>Random House Childrens Books</bib:publisherImprint>
+    <dcterms:issued>2012-05-22</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010126104/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0010126104</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010126104" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-15T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-31T05:02:06Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010126104/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010126104/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010126104/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0010126104" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0010126104/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Slam Dunk Sabotage</title>
+    <author>
+      <name>Dixon, Franklin W.</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Dixon%2C%20Franklin%20W./eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Dixon, Franklin W."/>
+    </author>
+    <schema:Series name="Hardy Boys">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Hardy%20Boys/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Hardy Boys"/>
+    </schema:Series>
+    <summary type="html">The Hardys and their high school basketball team, the Bayport Bombers, are getting ready to play for their championship. One more victory will put them on top. But somebody&amp;amp;;s got a different game plan: Blast the Bombers out of contention by knocking Frank and Joe out of the way&amp;amp;;for good.</summary>
+    <simplified:pwid>099c8b00-3612-7293-2997-06f1c6a94689</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781439114186/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781439114186/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Adventure" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Adventure"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Mystery" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Mystery"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Simon &amp; Schuster</dcterms:publisher>
+    <bib:publisherImprint>Aladdin</bib:publisherImprint>
+    <dcterms:issued>2012-12-11</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016687383/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0016687383</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016687383" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-18T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-30T04:07:08Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016687383/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016687383/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016687383/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0016687383" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0016687383/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Kenny and the Dragon</title>
+    <contributor opf:role="ill">
+      <name>DiTerlizzi, Tony</name>
+    </contributor>
+    <author>
+      <name>DiTerlizzi, Tony</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/DiTerlizzi%2C%20Tony/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="DiTerlizzi, Tony"/>
+    </author>
+    <schema:Series name="Kenny and the Dragon">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Kenny%20and%20the%20Dragon/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Kenny and the Dragon"/>
+    </schema:Series>
+    <summary type="html">Now in paperback, the New York Times bestselling tale of chivalry and showmanship from Tony DiTerlizzi.Kenny is a little rabbit with a very big problem. His two best friends are heading into a battle of legendary proportions&amp;amp;;with each other! In one corner there&amp;amp;rsquo;s Grahame, a well-read and cultured dragon with sophisticated tastes. In the other there&amp;amp;rsquo;s George, a retired knight and dragon slayer who would be content to spend the rest of his days in his bookshop. Neither really wants to fight, but the village townsfolk are set on removing Grahame from their midst and calling George out of retirement. Can Kenny avert disaster? Tony DiTerlizzi puts a fun-filled, thoroughly theatrical spin on Kenneth Grahame&amp;amp;rsquo;s classic tale of subterfuge and showmanship with this lighthearted romp of a retelling.</summary>
+    <simplified:pwid>105b8403-f5bf-4124-0b3b-b5f330d6b3ec</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781442428867/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781442428867/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Folklore" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Folklore"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Adventure" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Adventure"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Simon &amp; Schuster</dcterms:publisher>
+    <bib:publisherImprint>Simon &amp; Schuster Books for Young</bib:publisherImprint>
+    <dcterms:issued>2010-12-07</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016680190/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0016680190</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016680190" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-15T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-30T21:45:22Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016680190/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016680190/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016680190/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0016680190" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0016680190/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>An Author's Odyssey</title>
+    <author>
+      <name>Colfer, Chris</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Colfer%2C%20Chris/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Colfer, Chris"/>
+    </author>
+    <schema:Series name="The Land of Stories">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/The%20Land%20of%20Stories/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="The Land of Stories"/>
+    </schema:Series>
+    <summary type="html">Entering worlds crafted from Conner's imagination, the twins and their friends forge ties with astonishing new allies as they race to end the Masked Man's reign of terror. By the best-selling author of Struck by Lightning. Simultaneous eBook. 500,000 first printing.</summary>
+    <simplified:pwid>1613ab1c-20ac-cdbd-9cff-552f6703fe1c</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316383165/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316383165/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Fantasy" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Fantasy"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Folklore" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Folklore"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Hachette Book Group USA</dcterms:publisher>
+    <bib:publisherImprint>Little Brown &amp; Co</bib:publisherImprint>
+    <dcterms:issued>2016-07-12</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017934291/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0017934291</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017934291" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2017-12-19T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-31T04:19:56Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017934291/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017934291/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0017934291/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0017934291" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0017934291/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Crusade</title>
+    <author>
+      <name>Wulf, Linda Press</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Wulf%2C%20Linda%20Press/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Wulf, Linda Press"/>
+    </author>
+    <summary type="html">Robert: Left on the steps of a church as a baby, Robert was often hungry but never stole food like the other orphans in town. Introverted and extraordinarily intelligent, he knew all the Latin prayers and hymns by heart by the time he was five years old.Georgette: Her own mother died in childbirth, leaving Georgette with a father who, seventeen at the time, had neither experience nor aptitude as a nurturing parent, and a brother known in town as Le Fuer - The Spitfire - for his terrible temper.Perhaps to replace something missing from their own lives, both Robert and Georgette are drawn to the news of a crusader, twelve or thirteen, no older than themselves, travelling down through France with thousands of followers - all, unbelievably, children too.Of those thousands, this is the incredible story of two. A story of hardship, loss and love.</summary>
+    <simplified:pwid>402bdb60-c75e-ae0f-5706-5d4ac3014db8</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781408813386/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781408813386/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Historical%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Historical Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Bloomsbury Pub Plc</dcterms:publisher>
+    <bib:publisherImprint>Bloomsbury Childrens Books</bib:publisherImprint>
+    <dcterms:issued>2011-01-04</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295206/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0010295206</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295206" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-14T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-30T04:09:40Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295206/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295206/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0010295206/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0010295206" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0010295206/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Smells Like Dog</title>
+    <author>
+      <name>Selfors, Suzanne</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Selfors%2C%20Suzanne/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Selfors, Suzanne"/>
+    </author>
+    <schema:Series name="Smells Like Dog">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Smells%20Like%20Dog/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Smells Like Dog"/>
+    </schema:Series>
+    <summary type="html">When farm boy Homer Pudding's explorer-uncle dies and leaves him a droopy dog with a mysterious coin hidden on its collar, it leads him to The City, where they meet Madame la Directeur, the conniving head of the Museum of Natural History, who is trying to steal the coin and take Homer's place in a secret society of adventurers.</summary>
+    <simplified:pwid>d483f2d7-8d89-d5d3-65c5-3327d55a4fd0</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316167840/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316167840/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="8-9" scheme="http://schema.org/typicalAgeRange" label="8-9"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Hachette Book Group USA</dcterms:publisher>
+    <bib:publisherImprint>Little Brown &amp; Co</bib:publisherImprint>
+    <dcterms:issued>2010-05-01</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0011522021</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-27T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-30T04:09:49Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0011522021" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0011522021/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Middle School, the Worst Years of My Life</title>
+    <author>
+      <name>Patterson, James</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Patterson%2C%20James/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Patterson, James"/>
+    </author>
+    <contributor opf:role="asn">
+      <name>Tebbetts, Chris</name>
+    </contributor>
+    <contributor opf:role="ill">
+      <name>Park, Laura</name>
+    </contributor>
+    <schema:Series name="Middle School">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Middle%20School/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Middle School"/>
+    </schema:Series>
+    <summary type="html">NOW A MAJOR MOTION PICTURE!In his acclaimed and #1 bestselling middle-grade comic debut, Children's Choice Award Author of the Year James Patterson has never been more hilarious--or heartwarming. Rafe Khatchadorian has enough problems at home without throwing his first year of middle school into the mix. Luckily, he's got an ace plan for the best year ever, if only he can pull it off: With his best friend Leonardo the Silent awarding him points, Rafe tries to break every rule in his school's oppressive Code of Conduct. Chewing gum in class--5,000 points! Running in the hallway--10,000 points! Pulling the fire alarm--50,000 points! But when Rafe's game starts to catch up with him, he'll have to decide if winning is all that matters, or if he's finally ready to face the rules, bullies, and truths he's been avoiding.James Patterson's debut middle-grade novel addresses some of middle schoolers' biggest issues: bullies, first crushes, and finding out what makes each of us special, all with a hilarious main character and fantastic in-text illustrations that are sure to have young readers begging for more!</summary>
+    <simplified:pwid>e9d998a2-4f60-fbbf-ea30-84b1b1afcdf8</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316134712/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316134712/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Comics%20%26%20Graphic%20Novels" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Comics &amp; Graphic Novels"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Hachette Book Group USA</dcterms:publisher>
+    <bib:publisherImprint>Jimmy Patterson</bib:publisherImprint>
+    <dcterms:issued>2011-06-27</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0013215043/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0013215043</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0013215043" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-14T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-30T18:51:18Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0013215043/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0013215043/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0013215043/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0013215043" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0013215043/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Who's Afraid of Fourth Grade?</title>
+    <contributor opf:role="ill">
+      <name>John And Wendy</name>
+    </contributor>
+    <author>
+      <name>Krulik, Nancy E.</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Krulik%2C%20Nancy%20E./eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Krulik, Nancy E."/>
+    </author>
+    <schema:Series name="Katie Kazoo, Switcheroo Super Special">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Katie%20Kazoo%2C%20Switcheroo%20Super%20Special/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Katie Kazoo, Switcheroo Super Special"/>
+    </schema:Series>
+    <summary type="html">At first, Katie and her friends can't wait to enter the fourth grade! But with the pressure of new classes, teachers, and friends, Katie isn't so sure she likes it after all. And to make matters worse, the magic wind appears twice-and turns her into her new friend Emma Weber, who has her hands full with three younger siblings to help take care of, and then into her former best friend Suzanne as she's about to make her fashion runway debut! What's a fourth-grader to do?</summary>
+    <simplified:pwid>355e4a0a-b089-0a38-5aa9-b9833ce483d2</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781101098035/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781101098035/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="8-9" scheme="http://schema.org/typicalAgeRange" label="8-9"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Fantasy" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Fantasy"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Penguin USA</dcterms:publisher>
+    <bib:publisherImprint>Grosset &amp; Dunlap</bib:publisherImprint>
+    <dcterms:issued>2004-07-22</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009349321/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0009349321</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009349321" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-10-09T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-31T05:00:55Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009349321/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009349321/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009349321/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0009349321" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0009349321/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Lunch Money</title>
+    <contributor opf:role="ill">
+      <name>Selznick, Brian</name>
+    </contributor>
+    <author>
+      <name>Clements, Andrew</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Clements%2C%20Andrew/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Clements, Andrew"/>
+    </author>
+    <summary type="html">Meet Greg Kenton, billionaire in the making. Greg Kenton has two obsessions -- making money and his long-standing competition with his annoying neighbor, Maura Shaw. So when Greg discovers that Maura is cutting into his booming Chunky Comics business with her own original illustrated minibooks, he's ready to declare war.&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp; The problem is, Greg has to admit that Maura's books are good, and soon the longtime enemies become unlikely business partners. But their budding partnership is threatened when the principal bans the sale of their comics in school. Suddenly, the two former rivals find themselves united against an adversary tougher than they ever were to each other. Will their enterprise -- and their friendship -- prevail?</summary>
+    <simplified:pwid>48e19e72-6d11-6a82-4ebc-3430af5d5eef</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781442462199/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781442462199/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="9-11" scheme="http://schema.org/typicalAgeRange" label="9-11"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Simon &amp; Schuster</dcterms:publisher>
+    <bib:publisherImprint>Atheneum</bib:publisherImprint>
+    <dcterms:issued>2012-04-17</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016685195/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0016685195</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016685195" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-18T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/417" rel="collection" title="Middle Grades"/>
+    <updated>2021-03-30T04:06:15Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016685195/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016685195/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016685195/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0016685195" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0016685195/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>A Fairy Friend</title>
+    <contributor opf:role="ill">
+      <name>Keane, Claire</name>
+    </contributor>
+    <author>
+      <name>Fliess, Sue</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Fliess%2C%20Sue/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Fliess, Sue"/>
+    </author>
+    <summary type="html">Soar into an enchanting miniature world full of fairies. These playful creatures are all around us, if you know just where to look. And if you want to have one come to you, build a fairy house of twigs and blooms and wait patiently for a fairy to take up residence.Children are fascinated with miniature worlds and the fairies who inhabit them. A forever friend awaits each reader in the pages of this lovely picture book with illustrations by a Disney animator.</summary>
+    <simplified:pwid>d11d3213-8224-e11e-f0c5-79fc4363d35e</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250121080/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250121080/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="6-7" scheme="http://schema.org/typicalAgeRange" label="6-7"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Fantasy" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Fantasy"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Henry Holt &amp; Co</bib:publisherImprint>
+    <dcterms:issued>2016-05-10</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018984533/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0018984533</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018984533" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-07T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:23:10Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018984533/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018984533/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018984533/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0018984533" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0018984533/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Becoming Bach</title>
+    <author>
+      <name>Leonard, Tom</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Leonard%2C%20Tom/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Leonard, Tom"/>
+    </author>
+    <summary type="html">For Johann Sebastian there was always music. His family had been musicians, or bachs as they were called in Germany, for 200 years. He always wanted to be a bach. As he grew, he saw patterns in everything. Patterns he would turn into melodies and song, eventually growing into one of the most important and celebrated musical composers of all time. This is the story of Johann Sebastian Bach.</summary>
+    <simplified:pwid>74932665-1404-4479-a860-6fc1d527551c</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250154439/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250154439/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="5-6" scheme="http://schema.org/typicalAgeRange" label="5-6"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Music" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Music"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Biography%20%26%20Memoir" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Biography &amp; Memoir"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Roaring Brook</bib:publisherImprint>
+    <dcterms:issued>2017-02-28</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020024283/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0020024283</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020024283" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-07T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:24:52Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020024283/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020024283/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020024283/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0020024283" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0020024283/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Chocolate Me!</title>
+    <contributor opf:role="ill">
+      <name>Evans, Shane W.</name>
+    </contributor>
+    <author>
+      <name>Diggs, Taye</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Diggs%2C%20Taye/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Diggs, Taye"/>
+    </author>
+    <summary type="html">A timely book about how it feels to be teased and taunted, and how each of us is sweet and lovely and delicious on the inside, no matter how we look.The boy is teased for looking different than the other kids. His skin is darker, his hair curlier. He tells his mother he wishes he could be more like everyone else. And she helps him to see how beautiful he really, truly is.For years before they both achieved acclaim in their respective professions, good friends Taye Diggs and Shane W. Evans wanted to collaborate on Chocolate Me!, a book based on experiences of feeling different and trying to fit in as kids. Now, both men are fathers and see more than ever the need for a picture book that encourages all people, especially kids, to love themselves.</summary>
+    <simplified:pwid>c7831144-7332-371b-bfdf-a01096586e6b</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781466800267/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781466800267/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="6-7" scheme="http://schema.org/typicalAgeRange" label="6-7"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Feiwel &amp; Friends</bib:publisherImprint>
+    <dcterms:issued>2011-09-27</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018204773/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0018204773</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018204773" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-28T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:14:57Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018204773/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018204773/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0018204773/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0018204773" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0018204773/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>The Dragon's Scales</title>
+    <author>
+      <name>Albee, Sarah</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Albee%2C%20Sarah/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Albee, Sarah"/>
+    </author>
+    <schema:Series name="Step into Reading">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Step%20into%20Reading/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Step into Reading"/>
+    </schema:Series>
+    <summary type="html">When a hot-tempered dragon seizes the local bridge, the people of Berryville are cut off from their supply of beloved strawberries until they can correctly answer three questions related to weight. The grownups of the town are stumped, but one very smart little girl saves the day with some facts she learned in school.&amp;amp;#160;&amp;amp;#160;</summary>
+    <simplified:pwid>6876e553-fcf7-153f-db5f-79bb91b62001</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780307555755/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780307555755/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="6-7" scheme="http://schema.org/typicalAgeRange" label="6-7"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Fantasy" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Fantasy"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Folklore" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Folklore"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Random House Digital</dcterms:publisher>
+    <bib:publisherImprint>Random House Childrens Books</bib:publisherImprint>
+    <dcterms:issued>2010-04-14</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009304564/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0009304564</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009304564" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-15T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T05:01:16Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009304564/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009304564/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0009304564/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0009304564" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0009304564/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Bear in the Chair</title>
+    <author>
+      <name>Seeger, Laura Vaccaro</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Seeger%2C%20Laura%20Vaccaro/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Seeger, Laura Vaccaro"/>
+    </author>
+    <schema:Series name="Dog and Bear">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Dog%20and%20Bear/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Dog and Bear"/>
+    </schema:Series>
+    <summary type="html">Dog and Bear are best friends who could not be more different. Follow one of their very first adventures in this board book edition of Bear in the Chair.Bear is stuck on a tall chair. Dog, as usual, wants to play. But how will Bear get down? Through teamwork and ingenuity, Dog and Bear figure out a way to get Bear down in this hilarious, succinct story for board book readers.New York Times Bestselling author and artist Laura Vaccaro Seeger's many books for children include First the Egg, Green, and the Dog and Bear series, and have won numerous awards and citations, including two Caldecott Honors, two Theodore Geisel Honors, and the Boston Globe-Horn Book Award. Her book I Used to Be Afraid was published in 2015. Laura lives on Long Island with her husband, Chris, and their two sons, Drew and Dylan.</summary>
+    <simplified:pwid>be8ee1dd-3e00-fb21-9dca-e6edce06f99c</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250155375/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250155375/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="5-6" scheme="http://schema.org/typicalAgeRange" label="5-6"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Roaring Brook</bib:publisherImprint>
+    <dcterms:issued>2017-02-21</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020067425/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0020067425</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020067425" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-07T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:22:49Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020067425/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020067425/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0020067425/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0020067425" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0020067425/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>The Bear Who Wasn't There</title>
+    <author>
+      <name>Pham, Leuyen</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Pham%2C%20Leuyen/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Pham, Leuyen"/>
+    </author>
+    <contributor opf:role="ill">
+      <name>Pham, Leuyen</name>
+    </contributor>
+    <summary type="html">This book is about Bear... so what happens when he doesn't show up on his page?  Who will find him? Will it be Giraffe, who himself seems to always be in the wrong place at the wrong time, or Cow, or perhaps even the author herself? One thing's for sure--it probably won't be Duck.  Duck doesn't seem concerned that Bear is missing.  In fact, he seems to be trying to steal the show for himself! Duck would much prefer that the reader pick up his own book, The Duck Who Showed Up. He even disguises himself as Bear in an attempt to fool the reader.  But after pages and pages of Duck's antics and search-party chaos, Bear appears somewhere utterly unexpected. In fact, it looks like someone may have tried to get rid of him on purpose....LeUyen Pham's The Bear Who Wasn't There takes readers a hilarious search for the missing title character.</summary>
+    <simplified:pwid>0643107d-bcf3-20a8-ccdf-360a4e9d911c</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250140067/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781250140067/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="5-6" scheme="http://schema.org/typicalAgeRange" label="5-6"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Humorous%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Humorous Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Roaring Brook</bib:publisherImprint>
+    <dcterms:issued>2016-11-15</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019755660/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0019755660</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019755660" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-07T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:24:38Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019755660/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019755660/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019755660/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0019755660" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0019755660/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Wonderful Winter</title>
+    <author>
+      <name>Goldstone, Bruce</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Goldstone%2C%20Bruce/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Goldstone, Bruce"/>
+    </author>
+    <schema:Series name="Season Facts and Fun">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Season%20Facts%20and%20Fun/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Season Facts and Fun"/>
+    </schema:Series>
+    <summary type="html">Winter is a  season of wondering and waiting. We wonder why some trees  lose their leaves while others stay green all winter long. We wait for  the first snowfall—and then wonder at how amazing each snowflake is.  We wonder how animals manage to  live in the cold. And we can't wait to  celebrate Christmas, Hanukkah, and Kwanzaa.  With  vivid photographs, lively explanations, and creative craft ideas, Bruce  Goldstone presents all the fascinating facts that make winter so  wonderful!This title has Common Core connections.</summary>
+    <simplified:pwid>a4182448-1348-0a11-e2fb-85be1657ea7b</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780805099829/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780805099829/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="6-7" scheme="http://schema.org/typicalAgeRange" label="6-7"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Science" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Science"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Sports" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Sports"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Henry Holt &amp; Co</bib:publisherImprint>
+    <dcterms:issued>2016-11-08</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019728547/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0019728547</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019728547" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-07T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:24:36Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019728547/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019728547/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019728547/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0019728547" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0019728547/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Oskar and the Eight Blessings</title>
+    <contributor opf:role="ill">
+      <name>Siegel, Mark</name>
+    </contributor>
+    <author>
+      <name>Simon, Richard</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Simon%2C%20Richard/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Simon, Richard"/>
+    </author>
+    <author>
+      <name>Simon, Tanya</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Simon%2C%20Tanya/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Simon, Tanya"/>
+    </author>
+    <summary type="html">As he walks the length of Manhattan on Christmas Eve and the seventh day of Hanukkah, a young refugee from Nazi Germany recieves eight small acts of kindness in this heartwarming, timeless picture book.</summary>
+    <simplified:pwid>27505816-0448-2f66-37db-e12e2ec2e90a</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781626725584/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781626725584/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="5-6" scheme="http://schema.org/typicalAgeRange" label="5-6"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Historical%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Historical Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Roaring Brook</bib:publisherImprint>
+    <dcterms:issued>2015-09-08</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019056293/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0019056293</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019056293" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-07T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:22:38Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019056293/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019056293/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0019056293/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0019056293" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0019056293/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Good Night, Owl!</title>
+    <contributor opf:role="ill">
+      <name>Hutchins, Pat</name>
+    </contributor>
+    <author>
+      <name>Hutchins, Pat</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Hutchins%2C%20Pat/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Hutchins, Pat"/>
+    </author>
+    <summary type="html">Owl can&amp;amp;;t get to sleep in this Classic Board Book edition of Pat Hutchins&amp;amp;;s beloved Good-Night, Owl!How is Owl supposed to sleep the day away with the bees buzzing, the woodpecker pecking, the doves cooing, and the squirrels crunching? But when night falls and everything is finally quiet, suddenly there&amp;amp;;s a new sound&amp;amp;;and it&amp;amp;;s coming from Owl! From author-illustrator Pat Hutchins, this bedtime story with a surprise ending will send little ones off to sleep with a smile.</summary>
+    <simplified:pwid>4b719ba8-1dba-2468-6c9a-e42c654e22df</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781442454019/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781442454019/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="5-6" scheme="http://schema.org/typicalAgeRange" label="5-6"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Simon &amp; Schuster</dcterms:publisher>
+    <bib:publisherImprint>Simon &amp; Schuster Books for Young</bib:publisherImprint>
+    <dcterms:issued>2012-02-21</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016684555/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0016684555</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016684555" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-18T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-30T04:05:58Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016684555/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016684555/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016684555/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0016684555" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0016684555/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>The Smurfs 23</title>
+    <author>
+      <name>Peyo</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Peyo/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Peyo"/>
+    </author>
+    <schema:Series name="Smurfs">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Smurfs/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Smurfs"/>
+    </schema:Series>
+    <summary type="html">When Papa Smurf is away, the Smurfs will play! Handy Smurf has invented some machines to ease the burden of the hard-working Smurfs (not including Lazy Smurf!). Soon, the whole Village is interested in these inventions that improve the quality of life. Seduced by the easy life, The Smurfs rely more and more on these robots to perform their daily tasks, however small they may be. Will the Village survive the occupation of these high-functioning robots?</summary>
+    <simplified:pwid>21c65e64-d7ec-38eb-8af0-4f964e934eba</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781629919676/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781629919676/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="8-9" scheme="http://schema.org/typicalAgeRange" label="8-9"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Comics%20%26%20Graphic%20Novels" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Comics &amp; Graphic Novels"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Macmillan</dcterms:publisher>
+    <bib:publisherImprint>Papercutz</bib:publisherImprint>
+    <dcterms:issued>2018-07-10</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0023411866/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0023411866</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0023411866" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-11-14T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:29:46Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0023411866/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0023411866/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0023411866/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0023411866" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0023411866/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>The Crazy Carnival Case</title>
+    <contributor opf:role="ill">
+      <name>Jones, Jan Naimo</name>
+    </contributor>
+    <author>
+      <name>Keene, Carolyn</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Keene%2C%20Carolyn/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Keene, Carolyn"/>
+    </author>
+    <schema:Series name="Nancy Drew Notebooks">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Nancy%20Drew%20Notebooks/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Nancy Drew Notebooks"/>
+    </schema:Series>
+    <summary type="html">Nancy, Bess, and George are having a blast at the River Heights Carnival, sampling yummy snacks and trying to win prizes. Most of all, the girls can&amp;amp;;t wait for their favorite local singing star, Isabelle Santoro, to perform. But Isabelle may cancel if she finds out that someone&amp;amp;;s ruining all the fun with really annoying pranks. Snooty Brenda Carlton, annoying Orson Wong, and Chloe &amp;amp;;Cruncher&amp;amp;; Mondesky, the pie-contest queen, all make good suspects. Nancy&amp;amp;;s clue book is filling up, and she&amp;amp;;s got to solve this puzzle fast&amp;amp;;so the fun, and the show, can go on!</summary>
+    <simplified:pwid>125fec93-46fd-0061-5920-a28f1a6217bc</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781442480728/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9781442480728/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="7-8" scheme="http://schema.org/typicalAgeRange" label="7-8"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Mystery" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Mystery"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Simon &amp; Schuster</dcterms:publisher>
+    <bib:publisherImprint>Aladdin</bib:publisherImprint>
+    <dcterms:issued>2012-10-09</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016686823/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0016686823</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016686823" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-18T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:05:17Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016686823/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016686823/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0016686823/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0016686823" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0016686823/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Escape North! the Story of Harriet Tubman</title>
+    <contributor opf:role="ill">
+      <name>Flavin, Teresa</name>
+    </contributor>
+    <author>
+      <name>Kulling, Monica</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Kulling%2C%20Monica/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Kulling, Monica"/>
+    </author>
+    <schema:Series name="Step into Reading">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Step%20into%20Reading/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Step into Reading"/>
+    </schema:Series>
+    <summary type="html">Celebrates the remarkable life and diverse accomplishments of this slave turned heroine, from her days as a conductor on the Underground Railroad to her service as a spy during the Civil War. Simultaneous.</summary>
+    <simplified:pwid>fa154823-6bfe-212f-5747-088b84dd7f33</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780385374798/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780385374798/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="7-8" scheme="http://schema.org/typicalAgeRange" label="7-8"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Life%20Strategies" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Life Strategies"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Random House Digital</dcterms:publisher>
+    <bib:publisherImprint>Random House Childrens Books</bib:publisherImprint>
+    <dcterms:issued>2013-11-27</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014012279/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0014012279</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014012279" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2018-08-15T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T05:01:48Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014012279/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014012279/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0014012279/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0014012279" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0014012279/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Judy Moody's Mini Mysteries and Other Sneaky Stuff for Super Sleuths</title>
+    <contributor opf:role="ill">
+      <name>Smith, Matt</name>
+    </contributor>
+    <contributor opf:role="ill">
+      <name>Reynolds, Peter H.</name>
+    </contributor>
+    <author>
+      <name>McDonald, Megan</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/McDonald%2C%20Megan/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="McDonald, Megan"/>
+    </author>
+    <schema:Series name="Judy Moody">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Judy%20Moody/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Judy Moody"/>
+    </schema:Series>
+    <summary type="html">"Join detective Judy Drewdy to create a way-official detective kit, solve six mini-mysteries, and sharpen real-and-actual sleuth skills.  Chock-full of advice for the would-be sleuth and bursting with activities, here is an uber RARE diversion for fans of Judy and for anyone who loves a good mystery. "The Great Class Heist" is just one of the whodunits tackled by Judy Drewdy and agents Dills Pickle (aka Frank), Spuds Houdini (Rocky), and James Madagascar (Stink), who need readers' help in cracking these addition to six solve-it-yourself missions, kids can get in the mood to:  Create a detective kit Sketch suspects Test powers of observation Puzzle through ridonkulus logic puzzles Write super-sneaky codes And more!"--</summary>
+    <simplified:pwid>4583f9fb-1430-cf06-814e-099164d2212d</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780763661991/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780763661991/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="8-9" scheme="http://schema.org/typicalAgeRange" label="8-9"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Short%20Stories" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Short Stories"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Mystery" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Mystery"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Candlewick Pr Inc</dcterms:publisher>
+    <bib:publisherImprint>Candlewick Pr Inc</bib:publisherImprint>
+    <dcterms:issued>2012-08-14</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0011887092</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-21T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-31T04:14:55Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011887092/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0011887092" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0011887092/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <entry xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
+    <title>Smells Like Dog</title>
+    <author>
+      <name>Selfors, Suzanne</name>
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/contributor/Selfors%2C%20Suzanne/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Selfors, Suzanne"/>
+    </author>
+    <schema:Series name="Smells Like Dog">
+      <link href="https://qa-circulation.openebooks.us/USOEI/works/series/Smells%20Like%20Dog/eng/Children" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="series" title="Smells Like Dog"/>
+    </schema:Series>
+    <summary type="html">When farm boy Homer Pudding's explorer-uncle dies and leaves him a droopy dog with a mysterious coin hidden on its collar, it leads him to The City, where they meet Madame la Directeur, the conniving head of the Museum of Natural History, who is trying to steal the coin and take Homer's place in a secret society of adventurers.</summary>
+    <simplified:pwid>d483f2d7-8d89-d5d3-65c5-3327d55a4fd0</simplified:pwid>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316167840/Large/Logo" type="image/png" rel="http://opds-spec.org/image"/>
+    <link href="http://contentcafecloud.baker-taylor.com/Jacket.svc/D65D0665-050A-487B-9908-16E6D8FF5C3E/9780316167840/Medium/Logo" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Children" scheme="http://schema.org/audience" label="Children"/>
+    <category term="8-9" scheme="http://schema.org/typicalAgeRange" label="8-9"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Hachette Book Group USA</dcterms:publisher>
+    <bib:publisherImprint>Little Brown &amp; Co</bib:publisherImprint>
+    <dcterms:issued>2010-05-01</dcterms:issued>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021/report" rel="issues"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0011522021</id>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2016-01-27T00:00:00Z</published>
+    <link href="https://qa-circulation.openebooks.us/USOEI/groups/429" rel="collection" title="Early Grades"/>
+    <updated>2021-03-30T04:09:49Z</updated>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021/borrow/4" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021/borrow/15" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies available="9999" total="9999"/>
+    </link>
+    <link href="https://qa-circulation.openebooks.us/USOEI/works/Axis%20360%20ID/0011522021/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/annotations/Axis%20360%20ID/0011522021" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+    <link href="https://qa-circulation.openebooks.us/USOEI/analytics/Axis%20360%20ID/0011522021/open_book" rel="http://librarysimplified.org/terms/rel/analytics/open-book"/>
+  </entry>
+  <link href="https://qa-circulation.openebooks.us/USOEI/groups/" rel="start" title="All Books"/>
+  <link href="https://qa-circulation.openebooks.us/USOEI/authentication_document" rel="http://opds-spec.org/auth/document"/>
+  <link href="https://qa-circulation.openebooks.us/USOEI/search/?entrypoint=All" type="application/opensearchdescription+xml" rel="search"/>
+  <link href="https://qa-circulation.openebooks.us/USOEI/loans/" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="http://opds-spec.org/shelf"/>
+  <link href="https://qa-circulation.openebooks.us/USOEI/annotations/" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+  <link role="navigation" href="http://openebooks.net/index.html" type="text/html" rel="related" title="Home"/>
+  <link role="navigation" href="http://openebooks.net/about.html" type="text/html" rel="related" title="About"/>
+  <link role="navigation" href="http://openebooks.net/faq.html" type="text/html" rel="related" title="FAQs"/>
+  <link role="navigation" href="http://openebooks.net/resources.html" type="text/html" rel="related" title="Resources"/>
+  <link role="navigation" href="https://openebooks.zendesk.com/" type="text/html" rel="related" title="Help Center"/>
+  <link href="mailto:leonardrichardson@nypl.org" rel="help"/>
+</feed>

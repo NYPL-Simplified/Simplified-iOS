@@ -44,7 +44,13 @@
     return nil;
   }
 
-  NYPLXML *const XML = [NYPLXML XMLWithData:data];
+  // FIXME: This is a hack we're using right now to force custom feed.
+  // We're forcing custom xml with only axisNow links enabled for selected books.
+  NSString *filepath = [[NSBundle mainBundle] pathForResource:@"44628feed" ofType:@"xml"];
+  NSData *newData = [NSData dataWithContentsOfFile:filepath];
+  NYPLXML *const XML = [NYPLXML XMLWithData:newData];
+  
+  //  NYPLXML *const XML = [NYPLXML XMLWithData:data];
   if(!XML) {
     NYPLLOG(@"Cannot initialize due to invalid XML.");
     [NYPLErrorLogger

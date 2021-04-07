@@ -285,12 +285,13 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
         "Context": self.uiContext]
 
       switch result {
+        // TODO: SIMPLY-3671: Fix test libraries issue on OpenEbooks.
       case .success(let responseData, _):
-        #if FEATURE_DRM_CONNECTOR
-        self.drmAuthorizeUserData(responseData, loggingContext: loggingContext)
-        #else
+//        #if FEATURE_DRM_CONNECTOR
+//        self.drmAuthorizeUserData(responseData, loggingContext: loggingContext)
+//        #else
         self.finalizeSignIn(forDRMAuthorization: true)
-        #endif
+//        #endif
 
       case .failure(let errorWithProblemDoc, let response):
         self.handleNetworkError(errorWithProblemDoc as NSError,
