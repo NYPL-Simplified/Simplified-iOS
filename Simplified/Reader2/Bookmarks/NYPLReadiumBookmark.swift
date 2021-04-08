@@ -10,16 +10,16 @@
 /// that a user won't be able to retrieve the bookmarks from disk anymore.
 ///
 @objc class NYPLBookmarkDictionaryRepresentation: NSObject {
-  fileprivate static let annotationIdKey = "annotationId"
+  static let annotationIdKey = "annotationId"
   @objc static let idrefKey = "idref"
   @objc static let locationKey = "location"
   @objc static let cfiKey = "contentCFI"
-  fileprivate static let timeKey = "time"
-  fileprivate static let chapterKey = "chapter"
-  fileprivate static let pageKey = "page"
-  fileprivate static let deviceKey = "device"
-  fileprivate static let chapterProgressKey = "progressWithinChapter"
-  fileprivate static let bookProgressKey = "progressWithinBook"
+  static let timeKey = "time"
+  static let chapterKey = "chapter"
+  static let pageKey = "page"
+  static let deviceKey = "device"
+  static let chapterProgressKey = "progressWithinChapter"
+  static let bookProgressKey = "progressWithinBook"
 }
 
 /// Internal representation of an annotation. This may represent an actual

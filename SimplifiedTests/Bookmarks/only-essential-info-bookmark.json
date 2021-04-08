@@ -1,0 +1,13 @@
+{
+  "id": "urn:uuid:715885bc-23d3-4d7d-bd87-f5e7a042c4ba",
+  "body": {
+    "http://librarysimplified.org/terms/device": "urn:uuid:c83db5b1-9130-4b86-93ea-634b00235c7c"
+  },
+  "motivation": "http://www.w3.org/ns/oa#bookmarking",
+  "target": {
+    "selector": {
+      "value": "{\n  \"href\": \"/xyz.html\",\n  \"progressWithinChapter\": 0.888\n}\n"
+    },
+    "source": "urn:uuid:1daa8de6-94e8-4711-b7d1-e43b572aa6e0"
+  }
+}

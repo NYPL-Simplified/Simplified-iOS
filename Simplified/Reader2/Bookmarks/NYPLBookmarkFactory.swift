@@ -112,11 +112,14 @@ class NYPLBookmarkFactory {
       return nil
     }
 
-    guard let device = body[NYPLBookmarkSpec.Body.Device.key] as? String,
-      let time = body[NYPLBookmarkSpec.Body.Time.key] as? String else {
-        Log.error(#file, "Error reading `device` info from `body`:\(body)")
-        return nil
+    guard let device = body[NYPLBookmarkSpec.Body.Device.key] as? String else {
+      Log.error(#file, "Error reading `device` info from `body`:\(body)")
+      return nil
     }
+
+    // while time is required by the Spec, we don't need to impact the user
+    // experience just because we are missing or can't parse the time
+    let time = (body[NYPLBookmarkSpec.Body.Time.key] as? String) ?? NSDate().rfc3339String()
 
     guard
       let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String: Any],
@@ -143,13 +146,13 @@ class NYPLBookmarkFactory {
 
     let progress = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey]
     let legacyProgress = body["http://librarysimplified.org/terms/progressWithinChapter"]
-    let progressWithinChapter = ((progress as? Float) ?? legacyProgress as? Float) ?? 0.0
+    let progressWithinChapter = ((progress as? Double) ?? legacyProgress as? Double) ?? 0.0
 
     // non-essential info
     let serverCFI = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorCFIKey] as? String
     let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
     let bookProgress = body["http://librarysimplified.org/terms/progressWithinBook"]
-    let progressWithinBook = Float(bookProgress as? String ?? "") ?? 0.0
+    let progressWithinBook = Float(bookProgress as? Double ?? 0.0)
 
     return NYPLReadiumBookmark(annotationId: annotationID,
                                contentCFI: serverCFI,
@@ -157,7 +160,7 @@ class NYPLBookmarkFactory {
                                chapter: chapter,
                                page: nil,
                                location: selectorValueEscJSON,
-                               progressWithinChapter: progressWithinChapter,
+                               progressWithinChapter: Float(progressWithinChapter),
                                progressWithinBook: progressWithinBook,
                                time:time,
                                device:device)

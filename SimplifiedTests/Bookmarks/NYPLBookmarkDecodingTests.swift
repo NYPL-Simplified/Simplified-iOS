@@ -50,18 +50,6 @@ class NYPLBookmarkDecodingTests: XCTestCase {
                                 XCTFail("Failed to create bookmark from valid data")
                                 return
     }
-    let madeLocatorData = madeBookmark.location.data(using: .utf8)!
-    let madeJSONObject: Any
-    do {
-      try madeJSONObject = JSONSerialization.jsonObject(with: madeLocatorData)
-    } catch {
-      XCTFail("Unable to convert created selector from created bookmark to JSON: \(error)")
-      return
-    }
-    guard let madeSelectorJSON = madeJSONObject as? [String: Any] else {
-      XCTFail("Cannot cast JSON object to [String: Any]")
-      return
-    }
 
     // verify
     XCTAssertNil(wrong1)
@@ -70,12 +58,8 @@ class NYPLBookmarkDecodingTests: XCTestCase {
                    locator.trimmingCharacters(in: .whitespacesAndNewlines))
     XCTAssertEqual(madeBookmark.device, device)
     XCTAssertEqual(madeBookmark.time, time)
-    let parsedType = madeSelectorJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorTypeKey] as? String
-    let parsedChapterID = madeSelectorJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
-    let parsedProgress = madeSelectorJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Float
-    XCTAssertEqual(parsedType, NYPLBookmarkSpec.Target.Selector.Value.locatorTypeValue)
-    XCTAssertEqual(parsedChapterID, "/xyz.html")
-    XCTAssertEqual(parsedProgress, 0.5)
+    XCTAssertEqual(madeBookmark.progressWithinChapter, 0.666)
+    verifyLocator(href: "/xyz.html", chapterProgress: 0.666, forBookmark: madeBookmark)
   }
 
   func testMakeReadingProgressFromJSON() throws {
@@ -106,18 +90,6 @@ class NYPLBookmarkDecodingTests: XCTestCase {
                                 XCTFail("Failed to create bookmark from valid data")
                                 return
     }
-    let madeLocatorData = madeBookmark.location.data(using: .utf8)!
-    let madeJSONObject: Any
-    do {
-      try madeJSONObject = JSONSerialization.jsonObject(with: madeLocatorData)
-    } catch {
-      XCTFail("Unable to convert created selector from created bookmark to JSON: \(error)")
-      return
-    }
-    guard let madeSelectorJSON = madeJSONObject as? [String: Any] else {
-      XCTFail("Cannot cast JSON object to [String: Any]")
-      return
-    }
 
     // verify
     XCTAssertNil(wrong1)
@@ -126,12 +98,8 @@ class NYPLBookmarkDecodingTests: XCTestCase {
                    locator.trimmingCharacters(in: .whitespacesAndNewlines))
     XCTAssertEqual(madeBookmark.device, device)
     XCTAssertEqual(madeBookmark.time, time)
-    let parsedType = madeSelectorJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorTypeKey] as? String
-    let parsedChapterID = madeSelectorJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
-    let parsedProgress = madeSelectorJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Float
-    XCTAssertEqual(parsedType, NYPLBookmarkSpec.Target.Selector.Value.locatorTypeValue)
-    XCTAssertEqual(parsedChapterID, "/xyz.html")
-    XCTAssertEqual(parsedProgress, 0.5)
+    XCTAssertEqual(madeBookmark.progressWithinChapter, 0.666)
+    verifyLocator(href: "/xyz.html", chapterProgress: 0.666, forBookmark: madeBookmark)
   }
 
   // MARK:- Invalid bookmarks tests
@@ -244,26 +212,61 @@ class NYPLBookmarkDecodingTests: XCTestCase {
     XCTAssertNil(bookmark, "should not deserialize a Bookmark without a Body-device section")
   }
 
-  func testInvalidNoBodyTimeReadingProgressFromJSON() throws {
+  func testMakeBookmarkFromOnlyEssentialInfo() throws {
     // preconditions: get expected values from manually reading from disk
-    let bookmarkURL = bundle.url(forResource: "invalid-bookmark-6",
+    let bookmarkURL = bundle.url(forResource: "only-essential-info-bookmark",
                                  withExtension: "json")!
     let bookmarkData = try Data(contentsOf: bookmarkURL)
     let json = try JSONSerialization.jsonObject(with: bookmarkData) as! [String: Any]
+    let annotationID = json[NYPLBookmarkSpec.Id.key] as! String
+    let body = json[NYPLBookmarkSpec.Body.key] as! [String: Any]
+    let device = body[NYPLBookmarkSpec.Body.Device.key] as! String
     let target = json[NYPLBookmarkSpec.Target.key] as! [String: Any]
     let bookID = target[NYPLBookmarkSpec.Target.Source.key] as! String
-    let motivation = json[NYPLBookmarkSpec.Motivation.key] as! String
-    XCTAssertEqual(motivation, NYPLBookmarkSpec.Motivation.readingProgress.rawValue)
-    let body = json[NYPLBookmarkSpec.Body.key] as! [String: Any]
-    let time = body[NYPLBookmarkSpec.Body.Time.key]
-    XCTAssertNil(time)
+    let selector = target[NYPLBookmarkSpec.Target.Selector.key] as! [String: Any]
+    let locator = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as! String
+    XCTAssertNil(body[NYPLBookmarkSpec.Body.Time.key],
+                 "Body.time not nil, defeating purpose of unit test")
 
-    // test: make a locator with the data we manually read
-    let bookmark = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                            annotationType: .readingProgress,
-                                            bookID: bookID)
+    // test: make a bookmark with the data we manually read
+    guard let madeBookmark =
+      NYPLBookmarkFactory.make(fromServerAnnotation: json,
+                               annotationType: .bookmark,
+                               bookID: bookID) else {
+                                XCTFail("Failed to create bookmark from valid data")
+                                return
+    }
 
     // verify
-    XCTAssertNil(bookmark, "should not deserialize a Bookmark without a Body-time section")
+    XCTAssertEqual(madeBookmark.annotationId, annotationID)
+    XCTAssertEqual(madeBookmark.location.trimmingCharacters(in: .whitespacesAndNewlines),
+                   locator.trimmingCharacters(in: .whitespacesAndNewlines))
+    XCTAssertEqual(madeBookmark.device, device)
+    XCTAssertEqual(madeBookmark.idref, "/xyz.html")
+    XCTAssertEqual(madeBookmark.progressWithinChapter, 0.888)
+    verifyLocator(href: "/xyz.html", chapterProgress: 0.888, forBookmark: madeBookmark)
+  }
+
+  // MARKL:- Helpers for repeated testing
+
+  private func verifyLocator(href: String,
+                             chapterProgress: Float,
+                             forBookmark bookmark: NYPLReadiumBookmark) {
+    let locatorData = bookmark.location.data(using: .utf8)!
+    let jsonObject: Any
+    do {
+      try jsonObject = JSONSerialization.jsonObject(with: locatorData)
+    } catch {
+      XCTFail("Unable to convert created selector from created bookmark to JSON: \(error)")
+      return
+    }
+    guard let selectorJSON = jsonObject as? [String: Any] else {
+      XCTFail("Cannot cast JSON object to [String: Any]")
+      return
+    }
+    let parsedChapterID = selectorJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
+    let parsedProgress = selectorJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Double
+    XCTAssertEqual(parsedChapterID, href)
+    XCTAssertEqual(Float(parsedProgress!), chapterProgress)
   }
 }
