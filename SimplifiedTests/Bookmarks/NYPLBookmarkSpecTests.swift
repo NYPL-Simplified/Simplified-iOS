@@ -41,7 +41,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     let json = try JSONSerialization.jsonObject(with: locatorData) as! [String: Any]
     let typeValue = json[NYPLBookmarkSpec.Target.Selector.Value.locatorTypeKey] as! String
     let chapterID = json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as! String
-    let progress = json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as! Float
+    let progress = Float(json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as! Double)
 
     // test: make a locator, encode it to binary, parse binary back to JSON
     guard let madeLocatorString = NYPLBookmarkFactory
@@ -65,7 +65,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     // verify: parsing manually created locator should reveal same info of locator on disk
     let parsedType = madeJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorTypeKey] as? String
     let parsedChapterID = madeJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
-    let parsedProgress = madeJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Float
+    let parsedProgress = madeJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Double
     XCTAssertNotNil(parsedType)
     XCTAssertNotNil(parsedChapterID)
     XCTAssertNotNil(parsedProgress)
@@ -74,7 +74,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     XCTAssertNotEqual(parsedProgress, 0.0)
     XCTAssertEqual(parsedType, typeValue)
     XCTAssertEqual(parsedChapterID, chapterID)
-    XCTAssertEqual(parsedProgress, progress)
+    XCTAssertEqual(Float(parsedProgress!), progress)
   }
 
   func testMakeOldFormatLocatorFromJSON() throws {
@@ -84,7 +84,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     let json = try JSONSerialization.jsonObject(with: locatorData) as! [String: Any]
     let typeValue = json[NYPLBookmarkSpec.Target.Selector.Value.locatorTypeKey] as! String
     let chapterID = json[NYPLBookmarkR1Key.idref.rawValue] as! String
-    let progress = json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as! Float
+    let progress = Float(json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as! Double)
     let cfi = json[NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorCFIKey] as! String
 
     // test: make a locator, encode it to binary, parse binary back to JSON
@@ -120,7 +120,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     XCTAssertFalse(parsedCFI!.isEmpty)
     XCTAssertEqual(parsedType!, typeValue)
     XCTAssertEqual(parsedChapterID!, chapterID)
-    XCTAssertEqual(parsedProgress!, progress)
+    XCTAssertEqual(Float(parsedProgress!), progress)
     XCTAssertEqual(parsedCFI!, cfi)
   }
 
@@ -130,7 +130,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     let locatorData = try Data(contentsOf: locatorURL)
     let json = try JSONSerialization.jsonObject(with: locatorData) as! [String: Any]
     let chapterID = json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as! String
-    let progress = json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as! Float
+    let progress = Float(json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as! Double)
     XCTAssertLessThan(progress, 0.0)
 
     // test

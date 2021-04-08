@@ -1,0 +1,16 @@
+{
+  "body": {
+    "http://librarysimplified.org/terms/time": "2021-04-01T01:20:05Z",
+    "http://librarysimplified.org/terms/device": "urn:uuid:680f188b-b7bd-4b19-8379-f1dfeb491da8"
+  },
+  "motivation": "http://librarysimplified.org/terms/annotation/idling",
+  "type": "Annotation",
+  "id": "https://circulation.librarysimplified.org/NYNYPL/annotations/3169837",
+  "target": {
+    "selector": {
+      "type": "FragmentSelector",
+      "value": "{\"idref\":\"c001\",\"contentCFI\":\"/4/4/638/1:30\"}"
+    },
+    "source": "urn:librarysimplified.org/terms/id/Overdrive%20ID/365e31df-d292-44d6-98b6-20acd2542a28"
+  }
+}
