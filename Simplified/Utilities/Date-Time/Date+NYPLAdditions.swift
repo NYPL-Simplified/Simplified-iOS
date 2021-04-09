@@ -78,3 +78,9 @@ public extension Date {
     return NSLocalizedString("\(dateType.rawValue)_suffix_long", comment: "Date Suffix (Long)")
   }
 }
+
+@objc extension NSDate {
+  func longTimeUntilString() -> String {
+    return (self as Date).timeUntilString(suffixType: .long)
+  }
+}
