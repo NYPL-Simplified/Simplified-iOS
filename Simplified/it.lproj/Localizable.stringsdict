@@ -13,9 +13,9 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>1 year</string>
+			<string>1 anno</string>
 			<key>other</key>
-			<string>%d years</string>
+			<string>%d anni</string>
 		</dict>
 	</dict>
 	<key>month_suffix_long</key>
@@ -29,9 +29,9 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>1 month</string>
+			<string>1 mese</string>
 			<key>other</key>
-			<string>%d months</string>
+			<string>%d mesi</string>
 		</dict>
 	</dict>
 	<key>week_suffix_long</key>
@@ -45,9 +45,9 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>1 week</string>
+			<string>1 settimana</string>
 			<key>other</key>
-			<string>%d weeks</string>
+			<string>%d settimane</string>
 		</dict>
 	</dict>
 	<key>day_suffix_long</key>
@@ -61,9 +61,9 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>1 day</string>
+			<string>1 giorno</string>
 			<key>other</key>
-			<string>%d days</string>
+			<string>%d giorni</string>
 		</dict>
 	</dict>
 	<key>hour_suffix_long</key>
@@ -77,9 +77,9 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>1 hour</string>
+			<string>1 ora</string>
 			<key>other</key>
-			<string>%d hours</string>
+			<string>%d ore</string>
 		</dict>
 	</dict>
 </dict>
