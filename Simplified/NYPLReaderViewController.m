@@ -164,7 +164,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
 
   // Bookmark button
-  NYPLRoundedButton *const bookmarkButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
+  NYPLRoundedButton *const bookmarkButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   bookmarkButton.bounds = CGRectMake(0, 0, 44.0f, 44.0f);
   bookmarkButton.layer.borderWidth = 0.0f;
   bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];

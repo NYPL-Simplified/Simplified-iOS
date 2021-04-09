@@ -40,22 +40,22 @@
   
   self.constraints = [[NSMutableArray alloc] init];
   
-  self.deleteButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
+  self.deleteButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.deleteButton addTarget:self action:@selector(didSelectReturn) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.deleteButton];
 
-  self.downloadButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
+  self.downloadButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.downloadButton addTarget:self action:@selector(didSelectDownload) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.downloadButton];
 
-  self.readButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
+  self.readButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.readButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
   
-  self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
+  self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.cancelButton];

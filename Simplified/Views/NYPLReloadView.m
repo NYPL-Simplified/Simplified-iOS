@@ -36,7 +36,7 @@ static CGFloat const width = 280;
   self.messageLabel.textColor = [UIColor grayColor];
   [self addSubview:self.messageLabel];
   
-  self.reloadButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
+  self.reloadButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   [self.reloadButton setTitle:NSLocalizedString(@"TryAgain", nil)
                      forState:UIControlStateNormal];
   [self.reloadButton addTarget:self

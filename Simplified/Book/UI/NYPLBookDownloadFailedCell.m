@@ -78,7 +78,7 @@
   self.buttonContainerView = [[UIView alloc] init];
   [self.contentView addSubview:self.buttonContainerView];
   
-  self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
+  self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [UIColor grayColor];
   self.cancelButton.layer.borderWidth = 0;
@@ -101,7 +101,7 @@
   self.titleLabel.textColor = [NYPLConfiguration backgroundColor];
   [self.contentView addSubview:self.titleLabel];
   
-  self.tryAgainButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:FALSE];
+  self.tryAgainButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.tryAgainButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tryAgainButton.tintColor = [UIColor grayColor];
   self.tryAgainButton.layer.borderWidth = 0;

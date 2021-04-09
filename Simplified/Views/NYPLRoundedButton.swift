@@ -83,16 +83,18 @@ private let NYPLRoundedButtonPadding: CGFloat = 6.0
     let padY = NYPLRoundedButtonPadding
     
     if (self.type == .normal || self.isFromDetailView) {
-      self.contentEdgeInsets = isFromDetailView ? UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 20) : UIEdgeInsets(top: padY, left: padX, bottom: padY, right: padX)
+      if isFromDetailView {
+        self.contentEdgeInsets = UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 20)
+      } else {
+        self.contentEdgeInsets = UIEdgeInsets(top: padY, left: padX, bottom: padY, right: padX)
+      }
       self.iconView.isHidden = true
       self.label.isHidden = true
     } else {
       self.iconView.image = UIImage.init(named: "Clock")?.withRenderingMode(.alwaysTemplate)
       self.iconView.isHidden = false
       self.label.isHidden = false
-      if let endDate = self.endDate {
-        self.label.text = endDate.timeUntilString(suffixType: .short)
-      }
+      self.label.text = self.endDate?.timeUntilString(suffixType: .short) ?? ""
       self.label.sizeToFit()
       
       self.iconView.frame = CGRect(x: padX, y: padY/2, width: 14, height: 14)
