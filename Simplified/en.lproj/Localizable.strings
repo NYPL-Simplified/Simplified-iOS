@@ -260,3 +260,10 @@
 "Open eBooks provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works." =
 "The Open eBooks app provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works.\n\nChildren from low-income areas may qualify for access in several ways.";
 "You need to login to access the collection." = "You need to login to access the collection.";
+
+// Date+NYPLAdditions
+"year_suffix_short" = "%d y";
+"month_suffix_short" = "%d m";
+"week_suffix_short" = "%d w";
+"day_suffix_short" = "%d d";
+"hour_suffix_short" = "%d h";
