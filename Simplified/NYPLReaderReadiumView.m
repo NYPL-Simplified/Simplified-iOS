@@ -762,7 +762,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                   location:location.locationString
                                   progressWithinChapter:progressWithinChapter
                                   progressWithinBook:self.progressWithinBook
-                                  time:nil
+                                  creationTime:[[NSDate alloc] init]
                                   device:[[NYPLUserAccount sharedAccount] deviceID]];
   
   if (bookmark) {

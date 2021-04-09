@@ -47,10 +47,9 @@ extension NYPLReadiumBookmark {
       return nil
     }
 
-    let creationDate = NSDate(rfc3339String: self.time) as Date?
     return NYPLBookmarkR2Location(resourceIndex: resourceIndex,
                                   locator: locator,
-                                  creationDate: creationDate ?? Date())
+                                  creationDate: creationTime)
   }
 
 

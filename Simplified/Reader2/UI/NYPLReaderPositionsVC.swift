@@ -151,7 +151,7 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
       if let cell = cell as? NYPLReaderBookmarkCell, let bookmark = bookmark {
         cell.config(withChapterName: bookmark.chapter ?? "",
                     percentInChapter: bookmark.percentInChapter,
-                    rfc3339DateString: bookmark.time)
+                    rfc3339DateString: bookmark.timestamp)
       }
       return cell
     }

@@ -209,7 +209,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
                                  location: nil,
                                  progressWithinChapter: progressWithinChapter,
                                  progressWithinBook: progressWithinBook,
-                                 time:nil,
+                                 creationTime: Date(),
                                  device:device)
     }
 }

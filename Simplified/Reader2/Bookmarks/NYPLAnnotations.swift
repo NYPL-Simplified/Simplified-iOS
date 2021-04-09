@@ -158,7 +158,7 @@ import R2Shared
                                            _ parameters: [String:Any],
                                            _ timeout: Double?,
                                            _ completion: @escaping (Bool)->()) {
-    guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
+    guard let jsonData = makeSubmissionData(fromRepresentation: parameters) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
       completion(false)
       return
@@ -270,32 +270,23 @@ import R2Shared
   }
 
   class func postReadingPosition(forBook bookID: String, selectorValue: String) {
-    guard syncIsPossibleAndPermitted() else {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
-      return
-    }
-
-    guard let annotationsURL = NYPLAnnotations.annotationsURL else {
-      Log.error(#file, "Annotations URL was nil while updating reading position")
-      return
-    }
-
-    // Format bookmark for submission to server according to spec
-    let bookmark = NYPLBookmarkSpec(time: NSDate(),
+    // Format annotation for submission to server according to spec
+    let bookmark = NYPLBookmarkSpec(time: Date(),
                                     device: NYPLUserAccount.sharedAccount().deviceID ?? "",
                                     motivation: .readingProgress,
                                     bookID: bookID,
                                     selectorValue: selectorValue)
     let parameters = bookmark.dictionaryForJSONSerialization()
 
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, queueOffline: true) { (success, id) in
+    postAnnotation(forBook: bookID,
+                   withParameters: parameters,
+                   queueOffline: true) { success, id in
       guard success else {
         NYPLErrorLogger.logError(withCode: .apiCall,
-                                 summary: "Error posting annotation",
+                                 summary: "Error posting reading progress",
                                  metadata: [
                                   "bookID": bookID,
-                                  "annotationID": id ?? "N/A",
-                                  "annotationURL": annotationsURL])
+                                  "annotationID": id ?? "N/A"])
         return
       }
       Log.debug(#file, "Successfully saved Reading Position to server: \(selectorValue)")
@@ -304,19 +295,30 @@ import R2Shared
 
   /// Serializes the `parameters` into JSON and POSTs them to the server.
   class func postAnnotation(forBook bookID: String,
-                            withAnnotationURL url: URL,
                             withParameters parameters: [String: Any],
                             timeout: TimeInterval = NYPLDefaultRequestTimeout,
                             queueOffline: Bool,
                             _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
 
-    guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
+    guard syncIsPossibleAndPermitted() else {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      completionHandler(false, nil)
+      return
+    }
+
+    guard let annotationsURL = NYPLAnnotations.annotationsURL else {
+      Log.error(#file, "Annotations URL was nil while attempting to post")
+      completionHandler(false, nil)
+      return
+    }
+
+    guard let jsonData = makeSubmissionData(fromRepresentation: parameters) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
       completionHandler(false, nil)
       return
     }
     
-    var request = URLRequest(url: url)
+    var request = URLRequest(url: annotationsURL)
     request.httpMethod = "POST"
     request.httpBody = jsonData
     setDefaultAnnotationHeaders(forRequest: &request)
@@ -326,7 +328,7 @@ import R2Shared
       if let error = error as NSError? {
         Log.error(#file, "Annotation POST error (nsCode: \(error.code) Description: \(error.localizedDescription))")
         if (NetworkQueue.StatusCodes.contains(error.code)) && (queueOffline == true) {
-          self.addToOfflineQueue(bookID, url, parameters)
+          self.addToOfflineQueue(bookID, annotationsURL, parameters)
         }
         completionHandler(false, nil)
         return
@@ -522,12 +524,35 @@ import R2Shared
     }
   }
 
+  /// Posts an explicit bookmark to the server.
+  ///
+  /// To post a reading progress annotation,
+  /// use `postReadingPosition(forBook:selectorValue:)`.
+  ///
+  /// - Parameters:
+  ///   - bookmark: The bookmark to save to the server.
+  ///   - bookID: The book ID the bookmark refers to.
+  ///   - completion: Always called at the end of the api call.
   class func postBookmark(_ bookmark: NYPLReadiumBookmark,
                           forBookID bookID: String,
                           completion: @escaping (_ serverID: String?) -> ()) {
-    // TODO: SIMPLY-3645 distinguish based on renderer (R1 / R2)
-    //                   or maybe just post R2 bookmarks?
-    postR1Bookmark(bookmark, forBookID: bookID, completion: completion)
+
+    let serializableBookmark = bookmark
+      .serializableRepresentation(forMotivation: .bookmark, bookID: bookID)
+
+    postAnnotation(forBook: bookID,
+                   withParameters: serializableBookmark,
+                   queueOffline: false) { success, id in
+
+                    if success == false {
+                      NYPLErrorLogger.logError(withCode: .apiCall,
+                                               summary: "Error posting bookmark",
+                                               metadata: [
+                                                "bookID": bookID,
+                                                "annotationID": id ?? "N/A"])
+                    }
+                    completion(id)
+    }
   }
 
   // MARK: -
@@ -575,9 +600,14 @@ import R2Shared
             "Content-Type" : "application/json"]
   }
 
+  class func makeSubmissionData(fromRepresentation dict: [String: Any]) -> Data? {
+    return try? JSONSerialization.data(withJSONObject: dict,
+                                       options: [.prettyPrinted])
+  }
+
   private class func addToOfflineQueue(_ bookID: String?, _ url: URL, _ parameters: [String:Any]) {
     let libraryID = AccountsManager.shared.currentAccount?.uuid ?? ""
-    let parameterData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
+    let parameterData = makeSubmissionData(fromRepresentation: parameters)
     NetworkQueue.shared().addRequest(libraryID, bookID, url, .POST, parameterData, headers)
   }
 }
