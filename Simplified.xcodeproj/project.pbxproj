@@ -163,6 +163,11 @@
 		17E81F0A261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
 		17E81F0B261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
 		17E81F11261522B9001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
+		17E81F2C261FF758001003C2 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 17E81F32261FF758001003C2 /* Localizable.stringsdict */; };
+		17E81F2D261FF758001003C2 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 17E81F32261FF758001003C2 /* Localizable.stringsdict */; };
+		17E81F2E261FF758001003C2 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 17E81F32261FF758001003C2 /* Localizable.stringsdict */; };
+		17E81F2F261FF758001003C2 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 17E81F32261FF758001003C2 /* Localizable.stringsdict */; };
+		17E81F30261FF758001003C2 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 17E81F32261FF758001003C2 /* Localizable.stringsdict */; };
 		210715672592606A005F94AE /* R2LCPClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732752832578CB7900A073E2 /* R2LCPClient.framework */; };
 		2126FE2E25C059250095C45C /* ReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126FE2D25C059240095C45C /* ReaderError.swift */; };
 		2126FE2F25C059250095C45C /* ReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126FE2D25C059240095C45C /* ReaderError.swift */; };
@@ -2002,6 +2007,7 @@
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OverdriveProcessor.framework; path = Carthage/Build/iOS/OverdriveProcessor.framework; sourceTree = "<group>"; };
 		17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLRoundedButton.swift; sourceTree = "<group>"; };
+		17E81F31261FF758001003C2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		2126FE2D25C059240095C45C /* ReaderError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderError.swift; sourceTree = "<group>"; };
 		212B99D2258A36FD00C8BF79 /* LCPAudiobooks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LCPAudiobooks.swift; sourceTree = "<group>"; };
 		2156B54425B200EA003AD8EC /* R2LCPClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2LCPClient.framework; path = Carthage/Build/iOS/R2LCPClient.framework; sourceTree = "<group>"; };
@@ -3776,6 +3782,7 @@
 				73DA43A12404B4A900985482 /* Cartfile */,
 				73DA43A32404B92E00985482 /* Cartfile.resolved */,
 				735394012508161A0043C800 /* README.md */,
+				17E81F32261FF758001003C2 /* Localizable.stringsdict */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -4179,6 +4186,7 @@
 				7347F10B245A4DE200558D7F /* NYPLProblemReportViewController.xib in Resources */,
 				7347F10C245A4DE200558D7F /* readium-shared-js_all.js in Resources */,
 				7347F10D245A4DE200558D7F /* ReaderClientCert.sig in Resources */,
+				17E81F2E261FF758001003C2 /* Localizable.stringsdict in Resources */,
 				7347F10E245A4DE200558D7F /* software-licenses.html in Resources */,
 				7347F10F245A4DE200558D7F /* NYPL_Launch_Screen.storyboard in Resources */,
 				7347F110245A4DE200558D7F /* Accounts.json in Resources */,
@@ -4208,6 +4216,7 @@
 				739E6136244A0D8600D00301 /* NYPLProblemReportViewController.xib in Resources */,
 				739E6137244A0D8600D00301 /* readium-shared-js_all.js in Resources */,
 				739E6138244A0D8600D00301 /* ReaderClientCert.sig in Resources */,
+				17E81F2D261FF758001003C2 /* Localizable.stringsdict in Resources */,
 				739E6139244A0D8600D00301 /* software-licenses.html in Resources */,
 				739E613A244A0D8600D00301 /* NYPL_Launch_Screen.storyboard in Resources */,
 				739E613B244A0D8600D00301 /* Accounts.json in Resources */,
@@ -4237,6 +4246,7 @@
 				73EB0B5B25821DF4006BC997 /* NYPLProblemReportViewController.xib in Resources */,
 				73EB0B5C25821DF4006BC997 /* readium-shared-js_all.js in Resources */,
 				73EB0B5D25821DF4006BC997 /* ReaderClientCert.sig in Resources */,
+				17E81F2F261FF758001003C2 /* Localizable.stringsdict in Resources */,
 				73EB0B5E25821DF4006BC997 /* software-licenses.html in Resources */,
 				73EB0B5F25821DF4006BC997 /* NYPL_Launch_Screen.storyboard in Resources */,
 				73EB0B6025821DF4006BC997 /* Accounts.json in Resources */,
@@ -4263,6 +4273,7 @@
 			files = (
 				73FCA38A25005BA4001B0C5D /* OFL.txt in Resources */,
 				73FCA38B25005BA4001B0C5D /* simplified.js in Resources */,
+				17E81F30261FF758001003C2 /* Localizable.stringsdict in Resources */,
 				73FCA38C25005BA4001B0C5D /* NYPLProblemReportViewController.xib in Resources */,
 				73FCA38D25005BA4001B0C5D /* readium-shared-js_all.js in Resources */,
 				735FCB3A2506FAD0009A8C95 /* ReaderClientCert.sig in Resources */,
@@ -4297,6 +4308,7 @@
 				085D31D91BE29ED4007F7672 /* NYPLProblemReportViewController.xib in Resources */,
 				5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */,
 				2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */,
+				17E81F2C261FF758001003C2 /* Localizable.stringsdict in Resources */,
 				2D6256911D41582A0080A81F /* software-licenses.html in Resources */,
 				E65977C51F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard in Resources */,
 				03F94CCF1DD627AA00CE8F4F /* Accounts.json in Resources */,
@@ -5962,7 +5974,6 @@
 				E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */,
 				1111973F1988226F0014462F /* NYPLBookDetailDownloadFailedView.m in Sources */,
 				AE77EE7AACC975280BAB9A4C /* NYPLOPDSFeed.m in Sources */,
-				114C8CDA19BF55F900719B72 /* NYPLRoundedButton.m in Sources */,
 				73DE897A260BEA13003D9135 /* NYPLRequestExecuting.swift in Sources */,
 				AE77EB0CB5B94AEC591E2D91 /* NYPLOPDSLink.m in Sources */,
 				AE77E7E37D89FB3EED630624 /* NYPLOPDSType.m in Sources */,
@@ -5997,6 +6008,14 @@
 				032A310E1DC02EC00001E4AF /* es */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		17E81F32261FF758001003C2 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				17E81F31261FF758001003C2 /* en */,
+			);
+			name = Localizable.stringsdict;
 			sourceTree = "<group>";
 		};
 		A823D819192BABA400B55DE2 /* InfoPlist.strings */ = {

@@ -262,20 +262,8 @@
 "You need to login to access the collection." = "You need to login to access the collection.";
 
 // Date+NYPLAdditions
-"year_suffix_short" = "y";
-"month_suffix_short" = "m";
-"week_suffix_short" = "w";
-"day_suffix_short" = "d";
-"hour_suffix_short" = "h";
-
-"year_suffix_long" = "year";
-"month_suffix_long" = "month";
-"week_suffix_long" = "week";
-"day_suffix_long" = "day";
-"hour_suffix_long" = "hour";
-
-"year_suffix_plural" = "years";
-"month_suffix_plural" = "months";
-"week_suffix_plural" = "weeks";
-"day_suffix_plural" = "days";
-"hour_suffix_plural" = "hours";
+"year_suffix_short" = "%d y";
+"month_suffix_short" = "%d m";
+"week_suffix_short" = "%d w";
+"day_suffix_short" = "%d d";
+"hour_suffix_short" = "%d h";
