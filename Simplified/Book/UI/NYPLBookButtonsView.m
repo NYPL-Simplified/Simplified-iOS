@@ -12,7 +12,6 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLBookButtonsView.h"
 #import "NYPLConfiguration.h"
-#import "NYPLRoundedButton.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
@@ -41,22 +40,22 @@
   
   self.constraints = [[NSMutableArray alloc] init];
   
-  self.deleteButton = [NYPLRoundedButton button];
+  self.deleteButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.deleteButton addTarget:self action:@selector(didSelectReturn) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.deleteButton];
 
-  self.downloadButton = [NYPLRoundedButton button];
+  self.downloadButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.downloadButton addTarget:self action:@selector(didSelectDownload) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.downloadButton];
 
-  self.readButton = [NYPLRoundedButton button];
+  self.readButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.readButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
   
-  self.cancelButton = [NYPLRoundedButton button];
+  self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.cancelButton];
@@ -87,10 +86,10 @@
 
 - (void)configureForBookDetailsContext
 {
-  self.deleteButton.fromDetailView = YES;
-  self.downloadButton.fromDetailView = YES;
-  self.readButton.fromDetailView = YES;
-  self.cancelButton.fromDetailView = YES;
+  [self.deleteButton setFromDetailView:YES];
+  [self.downloadButton setFromDetailView:YES];
+  [self.readButton setFromDetailView:YES];
+  [self.cancelButton setFromDetailView:YES];
 }
 
 - (void)updateButtonFrames
@@ -298,22 +297,22 @@
     [UIView setAnimationsEnabled:YES];
 
     // Provide End-Date for checked out loans
-    button.type = NYPLRoundedButtonTypeNormal;
+    [button setType:NYPLRoundedButtonTypeNormal];
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
       [self.book.defaultAcquisition.availability
        matchUnavailable:nil
        limited:^(NYPLOPDSAcquisitionAvailabilityLimited *const _Nonnull limited) {
         if ([limited.until timeIntervalSinceNow] > 0) {
-          button.type = NYPLRoundedButtonTypeClock;
-          button.endDate = limited.until;
+          [button setType:NYPLRoundedButtonTypeClock];
+          [button setEndDate:limited.until];
         }
       }
        unlimited:nil
        reserved:nil
        ready:^(NYPLOPDSAcquisitionAvailabilityReady *const _Nonnull limited) {
         if ([limited.until timeIntervalSinceNow] > 0) {
-          button.type = NYPLRoundedButtonTypeClock;
-          button.endDate = limited.until;
+          [button setType:NYPLRoundedButtonTypeClock];
+          [button setEndDate:limited.until];
         }
       }];
     }

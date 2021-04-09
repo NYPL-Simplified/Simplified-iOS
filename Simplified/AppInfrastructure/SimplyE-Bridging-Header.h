@@ -38,7 +38,6 @@
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReloadView.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLRoundedButton.h"
 #import "NYPLSAMLHelper.h"
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLXML.h"

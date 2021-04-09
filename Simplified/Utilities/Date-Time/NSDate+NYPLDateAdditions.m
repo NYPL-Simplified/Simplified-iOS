@@ -66,56 +66,6 @@
   return [dateFormatter stringFromDate:self];
 }
 
-- (NSString *)shortTimeUntilString
-{
-  return [self timeUntilStringWithNames:@{@"year": @"y",
-                                          @"month": @"m",
-                                          @"week": @"w",
-                                          @"day": @"d",
-                                          @"hour": @"h",
-                                          } appendPlural:@""];
-}
-
-// FIXME: These strings need to be localized and pluralization needs to be handled properly.
-- (NSString *)longTimeUntilString
-{
-  return [self timeUntilStringWithNames:@{@"year": @" year",
-                                          @"month": @" month",
-                                          @"week": @" week",
-                                          @"day": @" day",
-                                          @"hour": @" hour"
-                                          } appendPlural:@"s"];
-}
-
-- (NSString *)timeUntilStringWithNames:(NSDictionary *)names appendPlural:(NSString *)appendPlural
-{
-  NSTimeInterval seconds = [self timeIntervalSinceDate:[NSDate date]];
-  seconds = MAX(seconds, 0);
-  long minutes = seconds / 60;
-  long hours = minutes / 60;
-  long days = hours / 24;
-  long weeks = days / 7;
-  long months = days / 30;
-  long years = days / 365;
-  
-  if(years >= 4) {
-    // Switch to years after ~48 months.
-    return [NSString stringWithFormat:@"%ld%@%@", years, names[@"year"], years != 1 ? appendPlural : @""];
-  } else if(months >= 4) {
-    // Switch to months after ~16 weeks.
-    return [NSString stringWithFormat:@"%ld%@%@", months, names[@"month"], months != 1 ? appendPlural : @""];
-  } else if(weeks >= 4) {
-    // Switch to weeks after 28 days.
-    return [NSString stringWithFormat:@"%ld%@%@", weeks, names[@"week"], weeks != 1 ? appendPlural : @""];
-  } else if(days >= 2) {
-    // Switch to days after 48 hours.
-    return [NSString stringWithFormat:@"%ld%@%@", days, names[@"day"], days != 1 ? appendPlural : @""];
-  } else {
-    // Use hours.
-    return [NSString stringWithFormat:@"%ld%@%@", hours, names[@"hour"], hours != 1 ? appendPlural : @""];
-  }
-}
-
 - (NSDateComponents *)UTCComponents
 {
   NSCalendar *const calendar = [[NSCalendar alloc]

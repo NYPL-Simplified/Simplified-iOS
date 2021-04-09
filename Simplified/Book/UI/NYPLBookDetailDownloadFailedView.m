@@ -3,7 +3,6 @@
 
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
-#import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "NYPLBookDetailDownloadFailedView.h"

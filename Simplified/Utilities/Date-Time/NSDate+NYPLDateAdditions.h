@@ -12,10 +12,6 @@
 
 - (nonnull NSString *)RFC3339String;
 
-- (nonnull NSString *)shortTimeUntilString;
-
-- (nonnull NSString *)longTimeUntilString;
-
 - (nonnull NSDateComponents *)UTCComponents;
 
 @end
