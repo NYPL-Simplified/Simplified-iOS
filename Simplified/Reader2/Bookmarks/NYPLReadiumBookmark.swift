@@ -60,7 +60,7 @@
 
   /// Date formatted as per RFC 3339
   var timestamp: String {
-    return (creationTime as NSDate).rfc3339String()
+    return creationTime.rfc3339String
   }
 
   /// Deprecated. 

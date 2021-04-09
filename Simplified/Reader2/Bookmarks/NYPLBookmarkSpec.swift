@@ -178,7 +178,7 @@ struct NYPLBookmarkSpec {
        bookID: String,
        selectorValue: String) {
     self.id = Id(value: id)
-    self.body = Body(time: (time as NSDate).rfc3339String(), device: device, others: bodyOthers)
+    self.body = Body(time: time.rfc3339String, device: device, others: bodyOthers)
     self.motivation = motivation
     self.target = Target(bookID: bookID, selectorValue: selectorValue)
   }
