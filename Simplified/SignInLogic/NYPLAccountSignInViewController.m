@@ -102,6 +102,8 @@ CGFloat const marginPadding = 2.0;
                         drmAuthorizer:
 #if FEATURE_DRM_CONNECTOR
                         [NYPLADEPT sharedInstance]
+#elif AXIS
+                        [NYPLAxisDRMAuthorizer sharedInstance]
 #else
                         nil
 #endif
