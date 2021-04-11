@@ -286,7 +286,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
 
       switch result {
       case .success(let responseData, _):
-        #if FEATURE_DRM_CONNECTOR
+        #if FEATURE_DRM_CONNECTOR || AXIS
         self.drmAuthorizeUserData(responseData, loggingContext: loggingContext)
         #else
         self.finalizeSignIn(forDRMAuthorization: true)
