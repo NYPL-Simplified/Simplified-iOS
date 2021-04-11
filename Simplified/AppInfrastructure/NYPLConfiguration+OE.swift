@@ -29,10 +29,10 @@ extension NYPLConfiguration {
   private static let betaFeedFileUrl = URL(fileURLWithPath:
     Bundle.main.path(forResource: "OpenEBooks_OPDS2_Catalog_Feed-QA",
                      ofType: "json")!)
-  private static let betaFeedFileUrlHash = feedFileUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  private static let betaFeedFileUrlHash = betaFeedFileUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 
   static var betaUrl = betaFeedFileUrl
-  static var betaUrlHash = feedFileUrlHash
+  static var betaUrlHash = betaFeedFileUrlHash
 
   // MARK:-
 
