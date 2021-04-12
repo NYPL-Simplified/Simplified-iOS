@@ -59,7 +59,7 @@ class NYPLR1BookmarkDecodingTests: XCTestCase {
     XCTAssertEqual(madeBookmark.location.trimmingCharacters(in: .whitespacesAndNewlines),
                    locator.trimmingCharacters(in: .whitespacesAndNewlines))
     XCTAssertEqual(madeBookmark.device, device)
-    XCTAssertEqual(madeBookmark.time, time)
+    XCTAssertEqual(madeBookmark.timestamp, time)
     XCTAssertEqual(madeBookmark.idref, "c001")
     XCTAssertEqual(madeBookmark.progressWithinChapter, 0.7471264600753784)
     XCTAssertEqual(madeBookmark.progressWithinBook, 0.6000000238418579)
@@ -106,7 +106,7 @@ class NYPLR1BookmarkDecodingTests: XCTestCase {
     XCTAssertEqual(madeBookmark.location.trimmingCharacters(in: .whitespacesAndNewlines),
                    locator.trimmingCharacters(in: .whitespacesAndNewlines))
     XCTAssertEqual(madeBookmark.device, device)
-    XCTAssertEqual(madeBookmark.time, time)
+    XCTAssertEqual(madeBookmark.timestamp, time)
     XCTAssertEqual(madeBookmark.idref, "c001")
     XCTAssertEqual(madeBookmark.contentCFI, "/4/4/638/1:30")
   }
@@ -152,7 +152,7 @@ class NYPLR1BookmarkDecodingTests: XCTestCase {
                    diskRepresentation[NYPLBookmarkDictionaryRepresentation.pageKey] as? String)
     XCTAssertEqual(bookmark.progressWithinBook, bookProgress)
     XCTAssertEqual(bookmark.progressWithinChapter, chapterProgress)
-    XCTAssertEqual(bookmark.time,
+    XCTAssertEqual(bookmark.timestamp,
                    diskRepresentation[NYPLBookmarkDictionaryRepresentation.timeKey] as? String)
   }
 }

@@ -73,9 +73,15 @@ struct NYPLBookmarkSpec {
     }
     let device: Device
 
-    init(time: String, device: String) {
+    /// Extra metadata that the app can use for display to the user.
+    ///
+    /// For example, total book progress info.
+    let others: [String: String]?
+
+    init(time: String, device: String, others: [String: String]? = nil) {
       self.time = Time(value: time)
       self.device = Device(value: device)
+      self.others = others
     }
   }
 
@@ -165,27 +171,54 @@ struct NYPLBookmarkSpec {
   let target: Target
 
   init(id: String? = nil,
-       time: NSDate,
+       time: Date,
        device: String,
+       bodyOthers: [String: String]? = nil,
        motivation: Motivation,
        bookID: String,
        selectorValue: String) {
     self.id = Id(value: id)
-    self.body = Body(time: time.rfc3339String(), device: device)
+    self.body = Body(time: time.rfc3339String, device: device, others: bodyOthers)
     self.motivation = motivation
     self.target = Target(bookID: bookID, selectorValue: selectorValue)
   }
+}
 
+// MARK:- iOS-only Additions
+
+extension NYPLBookmarkSpec.Body {
+  struct BookProgress {
+    static let key = "http://librarysimplified.org/terms/progressWithinBook"
+
+    /// The `BookProgress` value is a % value ranged [0...1]
+    let value: Float
+
+    var dictionaryValue: [String: String] {
+      return [
+        BookProgress.key: String(value)
+      ]
+    }
+  }
+}
+
+// MARK:- Utilities
+
+extension NYPLBookmarkSpec {
   /// - returns: A dictionary that can be given to `JSONSerialization` as a
   /// JSON object to be serialized into a binary Data blob.
   func dictionaryForJSONSerialization() -> [String: Any] {
-    return [
+    var newBody: [String: Any] = [
+      NYPLBookmarkSpec.Body.Time.key: body.time.value,
+      NYPLBookmarkSpec.Body.Device.key: body.device.value
+    ]
+    if let others = body.others {
+      newBody.merge(others, uniquingKeysWith: { (current, _) in current })
+    }
+
+    var dict: [String: Any] = [
       NYPLBookmarkSpec.Context.key: NYPLBookmarkSpec.Context.value,
       NYPLBookmarkSpec.type.key: NYPLBookmarkSpec.type.value,
-      NYPLBookmarkSpec.Body.key: [
-        NYPLBookmarkSpec.Body.Time.key : body.time.value,
-        NYPLBookmarkSpec.Body.Device.key : body.device.value
-      ],
+      NYPLBookmarkSpec.Body.key: newBody,
       NYPLBookmarkSpec.Motivation.key: motivation.rawValue,
       NYPLBookmarkSpec.Target.key: [
         NYPLBookmarkSpec.Target.Source.key: target.source.value,
@@ -194,7 +227,13 @@ struct NYPLBookmarkSpec {
           NYPLBookmarkSpec.Target.Selector.Value.key: target.selector.value.selectorValue
         ]
       ]
-      ] as [String: Any]
+    ]
+
+    if let idValue = self.id.value {
+      dict[NYPLBookmarkSpec.Id.key] = idValue
+    }
+
+    return dict
   }
 }
 

@@ -31,7 +31,7 @@
   var chapter:String?
   var page:String?
 
-  var location:String
+  var location:String //TODO: SIMPLY-3670 could be a computed property
   var idref:String
 
   /// The CFI is location information generated from the R1 reader
@@ -56,19 +56,23 @@
   
   var device:String?
 
+  let creationTime: Date
+
   /// Date formatted as per RFC 3339
-  let time:String
+  var timestamp: String {
+    return creationTime.rfc3339String
+  }
 
   /// Deprecated. 
   init?(annotationId:String?,
         contentCFI:String?,
-        idref:String?,
+        idref:String?, //TODO: SIMPLY-3670 if we make it from R2, this value will actually be an href
         chapter:String?,
         page:String?,
-        location:String?,
+        location:String?,//TODO: SIMPLY-3670 contains redundant info
         progressWithinChapter:Float,
         progressWithinBook:Float,
-        time:String?,
+        creationTime:Date,
         device:String?)
   {
     guard let idref = idref else {
@@ -81,10 +85,6 @@
     self.chapter = chapter ?? ""
     self.page = page ?? ""
 
-    // TODO: SIMPLY-3655 refactor per spec
-    // This location structure originally comes from R1 Reader's Javascript
-    // and its not available in R2, we are mimicking the structure
-    // in order to pass the needed information to the server
     guard let loc = location ?? NYPLBookmarkFactory
       .makeLocatorString(chapterHref: idref,
                          chapterProgression: progressWithinChapter) else {
@@ -94,7 +94,7 @@
     self.location = loc
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook
-    self.time = time ?? NSDate().rfc3339String()
+    self.creationTime = creationTime
     self.device = device
   }
   
@@ -117,7 +117,8 @@
     self.contentCFI = dictionary[NYPLBookmarkDictionaryRepresentation.cfiKey] as? String
     self.idref = idref
     self.location = location
-    self.time = dictionary[NYPLBookmarkDictionaryRepresentation.timeKey] as? String ?? NSDate().rfc3339String()
+    let time = dictionary[NYPLBookmarkDictionaryRepresentation.timeKey] as? String
+    self.creationTime = NYPLBookmarkFactory.makeCreationTime(fromRFC3339timestamp: time)
     self.chapter = dictionary[NYPLBookmarkDictionaryRepresentation.chapterKey] as? String
     self.page = dictionary[NYPLBookmarkDictionaryRepresentation.pageKey] as? String
     self.device = dictionary[NYPLBookmarkDictionaryRepresentation.deviceKey] as? String
@@ -139,7 +140,7 @@
       NYPLBookmarkDictionaryRepresentation.chapterKey: self.chapter ?? "",
       NYPLBookmarkDictionaryRepresentation.pageKey: self.page ?? "",
       NYPLBookmarkDictionaryRepresentation.locationKey: self.location,
-      NYPLBookmarkDictionaryRepresentation.timeKey: self.time,
+      NYPLBookmarkDictionaryRepresentation.timeKey: self.timestamp,
       NYPLBookmarkDictionaryRepresentation.deviceKey: self.device ?? "",
       NYPLBookmarkDictionaryRepresentation.chapterProgressKey: self.progressWithinChapter,
       NYPLBookmarkDictionaryRepresentation.bookProgressKey: self.progressWithinBook
@@ -172,6 +173,23 @@
 extension NYPLReadiumBookmark {
   override var description: String {
     return "\(dictionaryRepresentation)"
+  }
+}
+
+extension NYPLReadiumBookmark {
+  func serializableRepresentation(forMotivation motivation: NYPLBookmarkSpec.Motivation,
+                                  bookID: String) -> [String: Any] {
+
+    let extras = NYPLBookmarkSpec.Body.BookProgress(value: progressWithinBook)
+    let spec = NYPLBookmarkSpec(id: annotationId,
+                                time: creationTime,
+                                device: device ?? "",
+                                bodyOthers: extras.dictionaryValue,
+                                motivation: motivation,
+                                bookID: bookID,
+                                selectorValue: location)
+
+    return spec.dictionaryForJSONSerialization()
   }
 }
 

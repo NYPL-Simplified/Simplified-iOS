@@ -57,7 +57,7 @@ class NYPLBookmarkDecodingTests: XCTestCase {
     XCTAssertEqual(madeBookmark.location.trimmingCharacters(in: .whitespacesAndNewlines),
                    locator.trimmingCharacters(in: .whitespacesAndNewlines))
     XCTAssertEqual(madeBookmark.device, device)
-    XCTAssertEqual(madeBookmark.time, time)
+    XCTAssertEqual(madeBookmark.timestamp, time)
     XCTAssertEqual(madeBookmark.progressWithinChapter, 0.666)
     verifyLocator(href: "/xyz.html", chapterProgress: 0.666, forBookmark: madeBookmark)
   }
@@ -97,7 +97,7 @@ class NYPLBookmarkDecodingTests: XCTestCase {
     XCTAssertEqual(madeBookmark.location.trimmingCharacters(in: .whitespacesAndNewlines),
                    locator.trimmingCharacters(in: .whitespacesAndNewlines))
     XCTAssertEqual(madeBookmark.device, device)
-    XCTAssertEqual(madeBookmark.time, time)
+    XCTAssertEqual(madeBookmark.timestamp, time)
     XCTAssertEqual(madeBookmark.progressWithinChapter, 0.666)
     verifyLocator(href: "/xyz.html", chapterProgress: 0.666, forBookmark: madeBookmark)
   }

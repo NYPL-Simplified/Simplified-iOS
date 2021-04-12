@@ -159,7 +159,7 @@ segmentControlTypeWithInteger(NSInteger const integer)
       if (bookmark != nil) {
         [cell configWithChapterName:bookmark.chapter ?: @""
                    percentInChapter:bookmark.percentInChapter
-                  rfc3339DateString:bookmark.time];
+                  rfc3339DateString:bookmark.timestamp];
       }
 
       return cell;

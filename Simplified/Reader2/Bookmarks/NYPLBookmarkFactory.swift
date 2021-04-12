@@ -21,6 +21,8 @@ class NYPLBookmarkFactory {
     self.drmDeviceID = drmDeviceID
   }
 
+  // MARK:- Bookmarks creation
+
   func make(fromR2Location bookmarkLoc: NYPLBookmarkR2Location,
             usingBookRegistry bookRegistry: NYPLBookRegistryProvider) -> NYPLReadiumBookmark? {
 
@@ -77,7 +79,7 @@ class NYPLBookmarkFactory {
       location: registryLoc?.locationString,
       progressWithinChapter: chapterProgress,
       progressWithinBook: totalProgress,
-      time: (bookmarkLoc.creationDate as NSDate).rfc3339String(),
+      creationTime: bookmarkLoc.creationDate,
       device: drmDeviceID)
   }
 
@@ -117,9 +119,8 @@ class NYPLBookmarkFactory {
       return nil
     }
 
-    // while time is required by the Spec, we don't need to impact the user
-    // experience just because we are missing or can't parse the time
-    let time = (body[NYPLBookmarkSpec.Body.Time.key] as? String) ?? NSDate().rfc3339String()
+    let creationTime = NYPLBookmarkFactory.makeCreationTime(fromRFC3339timestamp:
+      body[NYPLBookmarkSpec.Body.Time.key] as? String)
 
     guard
       let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String: Any],
@@ -151,7 +152,7 @@ class NYPLBookmarkFactory {
     // non-essential info
     let serverCFI = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorCFIKey] as? String
     let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
-    let bookProgress = body["http://librarysimplified.org/terms/progressWithinBook"]
+    let bookProgress = body[NYPLBookmarkSpec.Body.BookProgress.key]
     let progressWithinBook = Float(bookProgress as? Double ?? 0.0)
 
     return NYPLReadiumBookmark(annotationId: annotationID,
@@ -162,9 +163,11 @@ class NYPLBookmarkFactory {
                                location: selectorValueEscJSON,
                                progressWithinChapter: Float(progressWithinChapter),
                                progressWithinBook: progressWithinBook,
-                               time:time,
+                               creationTime: creationTime,
                                device:device)
   }
+
+  // MARK:- Locators
 
   class func makeLocatorString(chapterHref: String, chapterProgression: Float) -> String? {
     guard chapterProgression >= 0.0, chapterProgression <= 1.0 else {
@@ -191,5 +194,15 @@ class NYPLBookmarkFactory {
       "\(NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey)": \(chapterProgression)
     }
     """
+  }
+
+  // MARK:- Helpers
+
+  class func makeCreationTime(fromRFC3339timestamp time: String?) -> Date {
+    if let rfc3339time = time, let date = NSDate(rfc3339String: rfc3339time) {
+      return date as Date
+    } else {
+      return Date()
+    }
   }
 }
