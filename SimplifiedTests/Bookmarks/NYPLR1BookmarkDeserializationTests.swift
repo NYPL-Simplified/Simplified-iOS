@@ -1,5 +1,5 @@
 //
-//  NYPLR1BookmarkDecodingTests.swift
+//  NYPLR1BookmarkDeserializationTests.swift
 //  Simplified
 //
 //  Created by Ettore Pasquini on 4/7/21.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import SimplyE
 
-class NYPLR1BookmarkDecodingTests: XCTestCase {
+class NYPLR1BookmarkDeserializationTests: XCTestCase {
   var bundle: Bundle!
 
   override func setUpWithError() throws {
@@ -32,22 +32,24 @@ class NYPLR1BookmarkDecodingTests: XCTestCase {
     let time = body[NYPLBookmarkSpec.Body.Time.key] as! String
     let target = json[NYPLBookmarkSpec.Target.key] as! [String: Any]
     let bookID = target[NYPLBookmarkSpec.Target.Source.key] as! String
-    let selector = target[NYPLBookmarkSpec.Target.Selector.key] as! [String: Any]
-    let locator = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as! String
+    let publication = NYPLFake.bookmarkSpecPublication
 
     // test: make bookmark with the wrong book id or annotation type
     let wrong1 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
                                           annotationType: .bookmark,
-                                          bookID: "ciccio")
+                                          bookID: "ciccio",
+                                          publication: publication)
     let wrong2 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
                                           annotationType: .readingProgress,
-                                          bookID: bookID)
+                                          bookID: bookID,
+                                          publication: publication)
 
     // test: make a bookmark with the data we manually read
     guard let madeBookmark =
       NYPLBookmarkFactory.make(fromServerAnnotation: json,
                                annotationType: .bookmark,
-                               bookID: bookID) else {
+                               bookID: bookID,
+                               publication: publication) else {
                                 XCTFail("Failed to create bookmark from valid data")
                                 return
     }
@@ -56,8 +58,9 @@ class NYPLR1BookmarkDecodingTests: XCTestCase {
     XCTAssertNil(wrong1)
     XCTAssertNil(wrong2)
     XCTAssertEqual(madeBookmark.annotationId, annotationID)
-    XCTAssertEqual(madeBookmark.location.trimmingCharacters(in: .whitespacesAndNewlines),
-                   locator.trimmingCharacters(in: .whitespacesAndNewlines))
+    XCTAssertEqual(madeBookmark.href, "/xyz.html")
+    XCTAssert(madeBookmark.location.contains(madeBookmark.href!))
+    XCTAssert(madeBookmark.location.contains("0.7471264"))
     XCTAssertEqual(madeBookmark.device, device)
     XCTAssertEqual(madeBookmark.timestamp, time)
     XCTAssertEqual(madeBookmark.idref, "c001")
@@ -77,24 +80,26 @@ class NYPLR1BookmarkDecodingTests: XCTestCase {
     let time = body[NYPLBookmarkSpec.Body.Time.key] as! String
     let target = json[NYPLBookmarkSpec.Target.key] as! [String: Any]
     let bookID = target[NYPLBookmarkSpec.Target.Source.key] as! String
-    let selector = target[NYPLBookmarkSpec.Target.Selector.key] as! [String: Any]
-    let locator = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as! String
     let motivationRaw = json[NYPLBookmarkSpec.Motivation.key] as! String
     let motivation = NYPLBookmarkSpec.Motivation(rawValue: motivationRaw)!
+    let publication = NYPLFake.bookmarkSpecPublication
 
     // test: make bookmark with the wrong book id or annotation type
     let wrong1 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
                                           annotationType: motivation,
-                                          bookID: "ciccio")
+                                          bookID: "ciccio",
+                                          publication: publication)
     let wrong2 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
                                           annotationType: .bookmark,
-                                          bookID: bookID)
+                                          bookID: bookID,
+                                          publication: publication)
 
     // test: make a bookmark with the data we manually read
     guard let madeBookmark =
       NYPLBookmarkFactory.make(fromServerAnnotation: json,
                                annotationType: motivation,
-                               bookID: bookID) else {
+                               bookID: bookID,
+                               publication: publication) else {
                                 XCTFail("Failed to create bookmark from valid data")
                                 return
     }
@@ -103,12 +108,11 @@ class NYPLR1BookmarkDecodingTests: XCTestCase {
     XCTAssertNil(wrong1)
     XCTAssertNil(wrong2)
     XCTAssertEqual(madeBookmark.annotationId, annotationID)
-    XCTAssertEqual(madeBookmark.location.trimmingCharacters(in: .whitespacesAndNewlines),
-                   locator.trimmingCharacters(in: .whitespacesAndNewlines))
+    XCTAssertEqual(madeBookmark.href, "/xyz.html")
+    XCTAssert(madeBookmark.location.contains(madeBookmark.href!))
     XCTAssertEqual(madeBookmark.device, device)
     XCTAssertEqual(madeBookmark.timestamp, time)
     XCTAssertEqual(madeBookmark.idref, "c001")
-    XCTAssertEqual(madeBookmark.contentCFI, "/4/4/638/1:30")
   }
 
   // This covers the case of bookmarks retrieved from disk

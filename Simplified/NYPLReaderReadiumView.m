@@ -756,12 +756,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NYPLReadiumBookmark *bookmark = [[NYPLReadiumBookmark alloc]
                                   initWithAnnotationId:nil
                                   contentCFI:contentCFI
+                                  href:nil
                                   idref:idref
                                   chapter:chapter
                                   page:nil
                                   location:location.locationString
                                   progressWithinChapter:progressWithinChapter
-                                  progressWithinBook:self.progressWithinBook
+                                  progressWithinBook:[NSNumber numberWithFloat:self.progressWithinBook]
                                   creationTime:[[NSDate alloc] init]
                                   device:[[NYPLUserAccount sharedAccount] deviceID]];
   

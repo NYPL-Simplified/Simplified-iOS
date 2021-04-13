@@ -40,7 +40,7 @@ class NYPLLastReadPositionSynchronizer {
             drmDeviceID: String?,
             completion: @escaping () -> Void) {
 
-    syncReadPosition(for: book, drmDeviceID: drmDeviceID) { serverLocator in
+    syncReadPosition(for: book, publication: publication, drmDeviceID: drmDeviceID) { serverLocator in
       NYPLMainThreadRun.asyncIfNeeded {
         if let serverLocator = serverLocator {
           self.presentNavigationAlert(for: serverLocator,
@@ -69,13 +69,14 @@ class NYPLLastReadPositionSynchronizer {
   ///   completion will return that position, and `nil` in all other case.
   ///   This closure is not retained by `self`.
   private func syncReadPosition(for book: NYPLBook,
+                                publication: Publication,
                                 drmDeviceID: String?,
                                 completion: @escaping (Locator?) -> ()) {
 
     let localLocation = bookRegistry.location(forIdentifier: book.identifier)
 
     NYPLAnnotations
-      .syncReadingPosition(ofBook: book.identifier, toURL: book.annotationsURL) { bookmark in
+      .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL) { bookmark in
 
         guard let bookmark = bookmark else {
           Log.info(#function, "No reading position annotation exists on the server for \(book.loggableShortString()).")

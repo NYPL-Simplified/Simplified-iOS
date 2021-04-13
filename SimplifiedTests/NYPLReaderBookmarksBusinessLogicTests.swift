@@ -203,12 +203,13 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       bookmarkCounter += 1
       return NYPLReadiumBookmark(annotationId: "fakeAnnotationID\(bookmarkCounter)",
                                  contentCFI: "",
+                                 href: nil,
                                  idref: idref,
                                  chapter: chapter,
                                  page: nil,
                                  location: nil,
                                  progressWithinChapter: progressWithinChapter,
-                                 progressWithinBook: progressWithinBook,
+                                 progressWithinBook: NSNumber(value: progressWithinBook),
                                  creationTime: Date(),
                                  device:device)
     }
