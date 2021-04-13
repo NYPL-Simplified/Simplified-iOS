@@ -120,13 +120,15 @@ class NYPLR1BookmarkDeserializationTests: XCTestCase {
     // preconditions
     let bookProgress: Float = 0.3684210479259491
     let chapterProgress: Float = 0.666
+    let idref = "mikhail_feminine_sign_text-12"
+    let cfi = "/4[mikhail_feminine_sign_text-12]/2/72/1:0"
     let diskRepresentation: [String: Any] = [
       NYPLBookmarkDictionaryRepresentation.annotationIdKey: "https://circulation.librarysimplified.org/NYNYPL/annotations/3195762",
       NYPLBookmarkDictionaryRepresentation.chapterKey: "Current Chapter",
-      NYPLBookmarkDictionaryRepresentation.cfiKey: "/4[mikhail_feminine_sign_text-12]/2/72/1:0",
+      NYPLBookmarkDictionaryRepresentation.cfiKey: cfi,
       NYPLBookmarkDictionaryRepresentation.deviceKey: "urn:uuid:789166c5-ed87-413a-8d9f-f306f6f02362",
-      NYPLBookmarkDictionaryRepresentation.idrefKey: "mikhail_feminine_sign_text-12",
-      NYPLBookmarkDictionaryRepresentation.locationKey: "{\"idref\":\"mikhail_feminine_sign_text-12\",\"contentCFI\":\"/4[mikhail_feminine_sign_text-12]/2/72/1:0\"}",
+      NYPLBookmarkDictionaryRepresentation.idrefKey: idref,
+      NYPLBookmarkDictionaryRepresentation.locationKey: "{\"idref\":\"\(idref)\",\"contentCFI\":\"\(cfi)\"}",
       NYPLBookmarkDictionaryRepresentation.pageKey: "",
       NYPLBookmarkDictionaryRepresentation.bookProgressKey: NSNumber(value: bookProgress),
       NYPLBookmarkDictionaryRepresentation.chapterProgressKey: NSNumber(value: chapterProgress),
@@ -150,8 +152,8 @@ class NYPLR1BookmarkDeserializationTests: XCTestCase {
                    diskRepresentation[NYPLBookmarkDictionaryRepresentation.deviceKey] as? String)
     XCTAssertEqual(bookmark.idref,
                    diskRepresentation[NYPLBookmarkDictionaryRepresentation.idrefKey] as? String)
-    XCTAssertEqual(bookmark.location,
-                   diskRepresentation[NYPLBookmarkDictionaryRepresentation.locationKey] as? String)
+    XCTAssert(bookmark.location.contains("\"idref\": \"\(idref)\""))
+    XCTAssert(bookmark.location.contains("\"contentCFI\": \"\(cfi)\""))
     XCTAssertEqual(bookmark.page!,
                    diskRepresentation[NYPLBookmarkDictionaryRepresentation.pageKey] as? String)
     XCTAssertEqual(bookmark.progressWithinBook, bookProgress)

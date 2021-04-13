@@ -22,7 +22,6 @@ class NYPLBookmarkFactory {
   // MARK:- Bookmarks creation
 
   func make(fromR2Location bookmarkLoc: NYPLBookmarkR2Location) -> NYPLReadiumBookmark? {
-
     guard let progression = bookmarkLoc.locator.locations.progression else {
       return nil
     }
@@ -107,6 +106,7 @@ class NYPLBookmarkFactory {
     }
 
     guard motivation.contains(annotationType.rawValue) else {
+      Log.error(#file, "Can't create bookmark, `\(motivation)` motivation does not match expected `\(annotationType.rawValue)` motivation.")
       return nil
     }
 
@@ -114,9 +114,6 @@ class NYPLBookmarkFactory {
       Log.error(#file, "Error reading `device` info from `body`:\(body)")
       return nil
     }
-
-    let creationTime = NYPLBookmarkFactory.makeCreationTime(fromRFC3339timestamp:
-      body[NYPLBookmarkSpec.Body.Time.key] as? String)
 
     guard
       let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String: Any],
@@ -126,21 +123,9 @@ class NYPLBookmarkFactory {
         return nil
     }
 
-    guard
-      let selectorValueData = selectorValueEscJSON.data(using: String.Encoding.utf8),
-      let selectorValueJSON = (try? JSONSerialization.jsonObject(with: selectorValueData)) as? [String: Any]
-      else {
-        Log.error(#file, "Error serializing `selector`. SelectorValue=\(selectorValueEscJSON)")
+    guard let (href, idref, progress) =
+      parseLocatorString(selectorValueEscJSON, publication: publication) else {
         return nil
-    }
-
-    // either the `href` or `idref` may be nil: e.g. if we retrieved a bookmark
-    // saved by R1, `href` will be nil, and viceversa for R2. However, they
-    // should not be nil at the same time
-    var href = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
-    let legacyIDref = selectorValueJSON[NYPLBookmarkR1Key.idref.rawValue] as? String
-    if href == nil && legacyIDref != nil {
-      href = publication?.href(forIdref: legacyIDref)
     }
 
     // if we can't derive the href, we cannot use this bookmark in R2
@@ -149,9 +134,10 @@ class NYPLBookmarkFactory {
       return nil
     }
 
-    let progress = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey]
     let legacyProgress = body["http://librarysimplified.org/terms/progressWithinChapter"]
-    let progressWithinChapter = ((progress as? Double) ?? legacyProgress as? Double) ?? 0.0
+    let progressWithinChapter = (progress ?? legacyProgress as? Double) ?? 0.0
+    let creationTime = NYPLBookmarkFactory.makeCreationTime(fromRFC3339timestamp:
+      body[NYPLBookmarkSpec.Body.Time.key] as? String)
 
     // non-essential info
     let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
@@ -165,22 +151,42 @@ class NYPLBookmarkFactory {
     return NYPLReadiumBookmark(annotationId: annotationID,
                                contentCFI: nil,
                                href: href,
-                               idref: legacyIDref,
+                               idref: idref,
                                chapter: chapter,
                                page: nil,
-                               location: selectorValueEscJSON,
+                               location: nil,
                                progressWithinChapter: Float(progressWithinChapter),
                                progressWithinBook: progressWithinBook,
                                creationTime: creationTime,
                                device:device)
   }
 
-  func parseLocatorString(_ selectorValueEscJSON: String) -> (href: String?, idref: String?, progression: Double)? {
+  // MARK:- Locators / Selector Values
+
+  class func parseLocatorString(
+    _ selectorValueEscJSON: String,
+    publication: Publication?) -> (href: String?, idref: String?, progression: Double?)? {
+
+    guard let (selectorHref, idref, progress) = parseLocatorString(selectorValueEscJSON) else {
+      return nil
+    }
+
+    var href = selectorHref
+    if selectorHref == nil && idref != nil {
+      href = publication?.href(forIdref: idref)
+    }
+
+    return (href, idref, progress)
+  }
+
+  class func parseLocatorString(
+    _ selectorValueEscJSON: String) -> (href: String?, idref: String?, progression: Double?)? {
+
     guard
       let selectorValueData = selectorValueEscJSON.data(using: String.Encoding.utf8),
       let selectorValueJSON = (try? JSONSerialization.jsonObject(with: selectorValueData)) as? [String: Any]
       else {
-        Log.error(#file, "Error serializing `selector`. SelectorValue=\(selectorValueEscJSON)")
+        Log.error(#file, "Error serializing locator. SelectorValue=\(selectorValueEscJSON)")
         return nil
     }
 
@@ -188,15 +194,11 @@ class NYPLBookmarkFactory {
     // saved by R1, `href` will be nil, and viceversa for R2. However, they
     // should not be nil at the same time
     let href = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
-    let legacyIDref = selectorValueJSON[NYPLBookmarkR1Key.idref.rawValue] as? String
-    guard let progress = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Double else {
-      return nil
-    }
+    let idref = selectorValueJSON[NYPLBookmarkR1Key.idref.rawValue] as? String
+    let progress = selectorValueJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Double
 
-    return (href: href, idref: legacyIDref, progression: progress)
+    return (href: href, idref: idref, progression: progress)
   }
-
-  // MARK:- Locators
 
   class func makeLocatorString(chapterHref: String, chapterProgression: Float) -> String {
     var progression = chapterProgression
