@@ -82,10 +82,10 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       // Make sure BookRegistry contains no bookmark
       XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
       
-      guard let firstBookmark = newBookmark(idref: "Intro",
-                                          chapter: "1",
-                                          progressWithinChapter: 0.1,
-                                          progressWithinBook: 0.1) else {
+      guard let firstBookmark = newBookmark(href: "Intro",
+                                            chapter: "1",
+                                            progressWithinChapter: 0.1,
+                                            progressWithinBook: 0.1) else {
         XCTFail("Failed to create new bookmark")
         return
       }
@@ -104,11 +104,11 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       // Make sure BookRegistry contains no bookmark
       XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
       
-      guard let firstBookmark = newBookmark(idref: "Intro",
-                                          chapter: "1",
-                                          progressWithinChapter: 0.1,
-                                          progressWithinBook: 0.1),
-        let secondBookmark = newBookmark(idref: "Intro",
+      guard let firstBookmark = newBookmark(href: "Intro",
+                                            chapter: "1",
+                                            progressWithinChapter: 0.1,
+                                            progressWithinBook: 0.1),
+        let secondBookmark = newBookmark(href: "Intro",
                                          chapter: "1",
                                          progressWithinChapter: 0.2,
                                          progressWithinBook: 0.1) else {
@@ -135,11 +135,11 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       // Make sure BookRegistry contains no bookmark
       XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
       
-      guard let firstBookmark = newBookmark(idref: "Intro",
-                                          chapter: "1",
-                                          progressWithinChapter: 0.1,
-                                          progressWithinBook: 0.1),
-        let secondBookmark = newBookmark(idref: "Intro",
+      guard let firstBookmark = newBookmark(href: "Intro",
+                                            chapter: "1",
+                                            progressWithinChapter: 0.1,
+                                            progressWithinBook: 0.1),
+        let secondBookmark = newBookmark(href: "Intro",
                                          chapter: "1",
                                          progressWithinChapter: 0.2,
                                          progressWithinBook: 0.1) else {
@@ -167,11 +167,11 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       // Make sure BookRegistry contains no bookmark
       XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
       
-      guard let firstBookmark = newBookmark(idref: "Intro",
-                                          chapter: "1",
-                                          progressWithinChapter: 0.1,
-                                          progressWithinBook: 0.1),
-        let secondBookmark = newBookmark(idref: "Intro",
+      guard let firstBookmark = newBookmark(href: "Intro",
+                                            chapter: "1",
+                                            progressWithinChapter: 0.1,
+                                            progressWithinBook: 0.1),
+        let secondBookmark = newBookmark(href: "Intro",
                                          chapter: "1",
                                          progressWithinChapter: 0.2,
                                          progressWithinBook: 0.1) else {
@@ -193,22 +193,23 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
 
     // MARK: Helper
     
-    func newBookmark(idref: String,
-                     chapter: String,
-                     progressWithinChapter: Float,
-                     progressWithinBook: Float,
-                     device: String? = nil) -> NYPLReadiumBookmark? {
+    private func newBookmark(href: String,
+                             chapter: String,
+                             progressWithinChapter: Float,
+                             progressWithinBook: Float,
+                             device: String? = nil) -> NYPLReadiumBookmark? {
       // Annotation id needs to be unique
       // contentCFI should be empty string for R2 bookmark
       bookmarkCounter += 1
       return NYPLReadiumBookmark(annotationId: "fakeAnnotationID\(bookmarkCounter)",
                                  contentCFI: "",
-                                 idref: idref,
+                                 href: href,
+                                 idref: nil,
                                  chapter: chapter,
                                  page: nil,
                                  location: nil,
                                  progressWithinChapter: progressWithinChapter,
-                                 progressWithinBook: progressWithinBook,
+                                 progressWithinBook: NSNumber(value: progressWithinBook),
                                  creationTime: Date(),
                                  device:device)
     }

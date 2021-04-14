@@ -15,6 +15,7 @@ extension NYPLBookLocation {
   convenience init?(locator: Locator,
                     publication: Publication,
                     renderer: String = NYPLBookLocation.r2Renderer) {
+    // TODO: SIMPLY-3667 refactor creation of NYPLBookmarkSpec's `selector`
     // Store all required properties of a locator object in a dictionary
     // Create a json string from it and use it as the location string in NYPLBookLocation
     // There is no specific format to follow, the value of the keys can be change if needed

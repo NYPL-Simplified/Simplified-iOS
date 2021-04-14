@@ -11,8 +11,7 @@ import XCTest
 
 /**
  things to test:
-  - SIMPLY-3645: bookmark creation from R2 locator (new format)
-  - SIMPLY-3645: bookmark post request body (new format)
+  - SIMPLY-3668: bookmark post request body (new format)
  */
 class NYPLBookmarkSpecTests: XCTestCase {
   var bundle: Bundle!
@@ -44,11 +43,8 @@ class NYPLBookmarkSpecTests: XCTestCase {
     let progress = Float(json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as! Double)
 
     // test: make a locator, encode it to binary, parse binary back to JSON
-    guard let madeLocatorString = NYPLBookmarkFactory
-      .makeLocatorString(chapterHref: chapterID, chapterProgression: progress) else {
-        XCTFail("Unable to create locator")
-        return
-    }
+    let madeLocatorString = NYPLBookmarkFactory
+      .makeLocatorString(chapterHref: chapterID, chapterProgression: progress)
     let madeLocatorData = madeLocatorString.data(using: .utf8)!
     let madeJSONObject: Any
     do {
@@ -138,7 +134,25 @@ class NYPLBookmarkSpecTests: XCTestCase {
       .makeLocatorString(chapterHref: chapterID, chapterProgression: progress)
 
     // verify
-    XCTAssertNil(madeLocatorString)
+    let madeLocatorData = madeLocatorString.data(using: .utf8)!
+    let madeJSONObject: Any
+    do {
+      try madeJSONObject = JSONSerialization.jsonObject(with: madeLocatorData)
+    } catch {
+      XCTFail("Unable to convert created locator to JSON: \(error)")
+      return
+    }
+    guard let madeJSON = madeJSONObject as? [String: Any] else {
+      XCTFail("Cannot cast JSON object to [String: Any]")
+      return
+    }
+
+    // verify: parsing manually created locator should reveal same info of locator on disk
+    let parsedChapterID = madeJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
+    let parsedProgress = madeJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Double
+    XCTAssertEqual(parsedChapterID, chapterID)
+    XCTAssertEqual(parsedProgress, 0.0)
+    XCTAssertEqual(Float(parsedProgress!), 0.0)
   }
 
   func testInvalidLocatorTooBigProgressFromJSON() throws {
@@ -155,7 +169,24 @@ class NYPLBookmarkSpecTests: XCTestCase {
       .makeLocatorString(chapterHref: chapterID, chapterProgression: progress)
 
     // verify
-    XCTAssertNil(madeLocatorString)
-  }
+    let madeLocatorData = madeLocatorString.data(using: .utf8)!
+    let madeJSONObject: Any
+    do {
+      try madeJSONObject = JSONSerialization.jsonObject(with: madeLocatorData)
+    } catch {
+      XCTFail("Unable to convert created locator to JSON: \(error)")
+      return
+    }
+    guard let madeJSON = madeJSONObject as? [String: Any] else {
+      XCTFail("Cannot cast JSON object to [String: Any]")
+      return
+    }
 
+    // verify: parsing manually created locator should reveal same info of locator on disk
+    let parsedChapterID = madeJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterIDKey] as? String
+    let parsedProgress = madeJSON[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as? Double
+    XCTAssertEqual(parsedChapterID, chapterID)
+    XCTAssertEqual(parsedProgress, 1.0)
+    XCTAssertEqual(Float(parsedProgress!), 1.0)
+  }
 }

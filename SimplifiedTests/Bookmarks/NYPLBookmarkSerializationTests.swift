@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import R2Shared
 @testable import SimplyE
 
 class NYPLBookmarkSerializationTests: XCTestCase {
@@ -18,6 +19,25 @@ class NYPLBookmarkSerializationTests: XCTestCase {
 
   override func tearDownWithError() throws {
     bundle = nil
+  }
+
+  func testSerializeFromR2() throws {
+    let locations = Locator.Locations(progression: Double(0.666),
+                                      totalProgression: Double(0.33333),
+                                      position: 123)
+    let locator = Locator(href: "/xyz.html",
+                          type: MediaType.xhtml.string,
+                          locations: locations)
+    let r2Location = NYPLBookmarkR2Location(resourceIndex: 1,
+                                           locator: locator)
+    let factory = NYPLBookmarkFactory(publication: NYPLFake.dummyPublication,
+                                      drmDeviceID: "deviceID")
+    let bookmark = factory.make(fromR2Location: r2Location)
+    XCTAssertNotNil(bookmark)
+    XCTAssertEqual(bookmark?.progressWithinChapter, Float(locations.progression!))
+    XCTAssertEqual(bookmark?.progressWithinBook, Float(locations.totalProgression!))
+    XCTAssertEqual(bookmark?.href, locator.href)
+    XCTAssertEqual(Int(bookmark!.page!), locations.position!)
   }
 
   func testSerializeBookmarkRoundrip() throws {
@@ -57,7 +77,8 @@ class NYPLBookmarkSerializationTests: XCTestCase {
     guard let bookmark =
       NYPLBookmarkFactory.make(fromServerAnnotation: json,
                                annotationType: motivation,
-                               bookID: bookID) else {
+                               bookID: bookID,
+                               publication: NYPLFake.dummyPublication) else {
                                 XCTFail("Failed to create bookmark from valid data")
                                 return
     }

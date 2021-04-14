@@ -212,10 +212,26 @@ import R2Shared
 
   // MARK: - Reading Position
 
+  /// _Deprecated_: for objc compatibility only.
+  ///
+  /// Use `syncReadingPosition(ofBook:publication:toURL:completion:)` instead.
+  ///
+  /// TODO: SIMPLY-2656 remove once we remove R1's code
+  class func syncReadingPosition(ofBook bookID: String?,
+                                 toURL url:URL?,
+                                 completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
+    syncReadingPosition(ofBook: bookID,
+                        publication: nil,
+                        toURL: url,
+                        completion: completion)
+  }
+
   /// Reads the current reading position from the server, parses the response
   /// and returns the result to the `completionHandler`.
-  class func syncReadingPosition(ofBook bookID: String?, toURL url:URL?,
   // TODO: SIMPLY-3668 Refactor with `syncReadingPosition(...)`
+  class func syncReadingPosition(ofBook bookID: String?,
+                                 publication: Publication?,
+                                 toURL url:URL?,
                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
@@ -262,7 +278,8 @@ import R2Shared
       let readPos = items
         .compactMap { NYPLBookmarkFactory.make(fromServerAnnotation: $0,
                                                annotationType: .readingProgress,
-                                               bookID: bookID) }
+                                               bookID: bookID,
+                                               publication: publication) }
         .first
       completion(readPos)
     }
@@ -370,9 +387,26 @@ import R2Shared
 
   // MARK: - Bookmarks
 
+  /// for OBJC / R1 compatibility only.
+  ///
+  /// - _Deprecated_: Use
+  /// `getServerBookmarks(forBook:publication:atURL:completion:)` instead.
+  ///
+  /// TODO: SIMPLY-2656 remove once we remove R1's code
+  class func getServerBookmarks(forBook bookID:String?,
+                                atURL annotationURL:URL?,
+                                completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
+    getServerBookmarks(forBook: bookID,
+                       publication: nil,
+                       atURL: annotationURL,
+                       completion: completion)
+  }
+
   // Completion handler will return a nil parameter if there are any failures with
   // the network request, deserialization, or sync permission is not allowed.
+  // TODO: SIMPLY-3668 Refactor with `getServerBookmarks(...)`
   class func getServerBookmarks(forBook bookID:String?,
+                                publication: Publication?,
                                 atURL annotationURL:URL?,
                                 completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
 
@@ -420,7 +454,8 @@ import R2Shared
       let bookmarks = items.compactMap {
         NYPLBookmarkFactory.make(fromServerAnnotation: $0,
                                  annotationType: .bookmark,
-                                 bookID: bookID)
+                                 bookID: bookID,
+                                 publication: publication)
       }
 
       completion(bookmarks)

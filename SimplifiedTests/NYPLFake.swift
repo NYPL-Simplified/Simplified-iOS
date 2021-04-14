@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import R2Shared
 @testable import SimplyE
 
 class NYPLFake {
@@ -58,5 +59,37 @@ class NYPLFake {
     }
   }
   """
+
+  class var dummyPublication: Publication {
+    return Publication(
+      manifest: Manifest(
+        metadata: Metadata(title: "Title"),
+        readingOrder: [
+          Link(href: "chapter1", type: "text/html"),
+          Link(href: "chapter2", type: "text/html")
+        ]
+      )
+    )
+  }
+
+  class var bookmarkSpecPublication: Publication {
+    return Publication(
+      manifest: Manifest(
+        metadata: Metadata(title: "Title"),
+        readingOrder: [
+          Link(href: "/xyz.html",
+               type: "text/html",
+               properties: Properties([
+                Publication.idrefKey: "c001"
+               ])),
+          Link(href: "dos.html",
+               type: "text/html",
+               properties: Properties([
+                Publication.idrefKey: "c002"
+               ]))
+        ]
+      )
+    )
+  }
 
 }

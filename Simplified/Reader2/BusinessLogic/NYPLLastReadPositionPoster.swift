@@ -52,7 +52,6 @@ class NYPLLastReadPositionPoster {
       return
     }
 
-    // TODO: SIMPLY-3645 don't use old school location
     guard let location = NYPLBookLocation(locator: locator, publication: publication) else {
       return
     }

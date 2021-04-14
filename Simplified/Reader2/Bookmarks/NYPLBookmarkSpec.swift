@@ -191,9 +191,13 @@ extension NYPLBookmarkSpec.Body {
     static let key = "http://librarysimplified.org/terms/progressWithinBook"
 
     /// The `BookProgress` value is a % value ranged [0...1]
-    let value: Float
+    let value: Float?
 
     var dictionaryValue: [String: String] {
+      guard let value = value else {
+        return [:]
+      }
+
       return [
         BookProgress.key: String(value)
       ]

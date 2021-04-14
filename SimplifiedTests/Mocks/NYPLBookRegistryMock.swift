@@ -37,7 +37,7 @@ class NYPLBookRegistryMock: NSObject, NYPLBookRegistrySyncing, NYPLBookRegistryP
     
   func readiumBookmarks(forIdentifier identifier: String) -> [NYPLReadiumBookmark] {
     guard let record = identifiersToRecords[identifier] else { return [NYPLReadiumBookmark]() }
-    return record.readiumBookmarks.sorted{ $0.progressWithinBook > $1.progressWithinBook }
+    return record.readiumBookmarks.sorted { $0.lessThan($1) }
   }
   
   func location(forIdentifier identifier: String) -> NYPLBookLocation? {
