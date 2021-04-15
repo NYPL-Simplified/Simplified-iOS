@@ -425,6 +425,7 @@ class OPDS2SamlIDP: NSObject, Codable {
         do {
           self.authenticationDocument = try
             OPDS2AuthenticationDocument.fromData(serverData)
+          completion(true)
           if let provider = signedInStateProvider,
             provider.isSignedIn(),
             let announcements = self.authenticationDocument?.announcements {
@@ -432,7 +433,6 @@ class OPDS2SamlIDP: NSObject, Codable {
               NYPLAnnouncementBusinessLogic.shared.presentAnnouncements(announcements)
             }
           }
-          completion(true)
         } catch (let error) {
           let responseBody = String(data: serverData, encoding: .utf8)
           NYPLErrorLogger.logError(
