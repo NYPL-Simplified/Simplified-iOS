@@ -8,7 +8,7 @@
 
 import Foundation
 
-#if FEATURE_DRM_CONNECTOR
+#if FEATURE_DRM_CONNECTOR || AXIS
 
 extension NYPLSignInBusinessLogic {
 
@@ -39,101 +39,14 @@ extension NYPLSignInBusinessLogic {
                                summary: "SignIn: no authorization ID in user profile doc",
                                metadata: loggingContext)
     }
-
-    guard
-      let drm = profileDoc.drm?.first,
-      drm.vendor != nil,
-      let clientToken = drm.clientToken else {
-
-        let drm = profileDoc.drm?.first
-        Log.info(#file, "\nLicensor: \(drm?.licensor ?? ["N/A": "N/A"])")
-
-        NYPLErrorLogger.logError(withCode: .noLicensorToken,
-                                 summary: "SignIn: no licensor token in user profile doc",
-                                 metadata: loggingContext)
-
-        finalizeSignIn(forDRMAuthorization: false,
-                       errorMessage: "No credentials were received to authorize access to books with DRM.")
-        return
-    }
-
-
-    Log.info(#file, "\nLicensor: \(drm.licensor)")
-    userAccount.setLicensor(drm.licensor)
-
-    var licensorItems = clientToken.replacingOccurrences(of: "\n", with: "").components(separatedBy: "|")
-    let tokenPassword = licensorItems.last
-    licensorItems.removeLast()
-    let tokenUsername = (licensorItems as NSArray).componentsJoined(by: "|")
-
-    drmAuthorize(username: tokenUsername,
-                 password: tokenPassword,
+    
+    #if FEATURE_DRM_CONNECTOR
+    authorizeWithAdobe(userProfile: profileDoc, loggingContext: loggingContext)
+    #elseif AXIS
+    drmAuthorize(username: profileDoc.authorizationIdentifier ?? "",
+                 password: profileDoc.authorizationIdentifier,
                  loggingContext: loggingContext)
-  }
-
-  /// Perform the DRM authorization request with the given credentials
-  ///
-  /// - Parameters:
-  ///   - username: Adobe DRM token username.
-  ///   - password: Adobe DRM token password. The only reason why this is
-  ///   optional is because ADEPT already handles `nil` values, so we don't
-  ///   have to do the same here.
-  ///   - loggingContext: Information to report when logging errors.
-  private func drmAuthorize(username: String,
-                            password: String?,
-                            loggingContext: [String: Any]) {
-
-    let vendor = userAccount.licensor?["vendor"] as? String
-
-    Log.info(#file, """
-      ***DRM Auth/Activation Attempt***
-      Token username: \(username)
-      Token password: \(password ?? "N/A")
-      VendorID: \(vendor ?? "N/A")
-      """)
-
-    drmAuthorizer?
-      .authorize(withVendorID: vendor,
-                 username: username,
-                 password: password) { success, error, deviceID, userID in
-
-                  // make sure to cancel the previously scheduled selector
-                  // from the same thread it was scheduled on
-                  NYPLMainThreadRun.asyncIfNeeded { [weak self] in
-                    if let self = self {
-                      NSObject.cancelPreviousPerformRequests(withTarget: self)
-                    }
-                  }
-
-                  Log.info(#file, """
-                    Activation success: \(success)
-                    Error: \(error?.localizedDescription ?? "N/A")
-                    DeviceID: \(deviceID ?? "N/A")
-                    UserID: \(userID ?? "N/A")
-                    ***DRM Auth/Activation completion***
-                    """)
-
-                  var success = success
-
-                  if success, let userID = userID, let deviceID = deviceID {
-                    NYPLMainThreadRun.asyncIfNeeded {
-                      self.userAccount.setUserID(userID)
-                      self.userAccount.setDeviceID(deviceID)
-                    }
-                  } else {
-                    success = false
-                    NYPLErrorLogger.logLocalAuthFailed(error: error as NSError?,
-                                                       library: self.libraryAccount,
-                                                       metadata: loggingContext)
-                  }
-
-                  self.finalizeSignIn(forDRMAuthorization: success,
-                                      error: error as NSError?)
-    }
-
-    NYPLMainThreadRun.asyncIfNeeded { [weak self] in
-      self?.perform(#selector(self?.dismissAfterUnexpectedDRMDelay), with: self, afterDelay: 25)
-    }
+    #endif
   }
 
   @objc func dismissAfterUnexpectedDRMDelay(_ arg: Any) {

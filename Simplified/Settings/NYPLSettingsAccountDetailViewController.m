@@ -153,6 +153,8 @@ Authenticating with any of those barcodes should work.
   id<NYPLDRMAuthorizing> drmAuthorizer = nil;
 #if defined(FEATURE_DRM_CONNECTOR)
   drmAuthorizer = [NYPLADEPT sharedInstance];
+#elif defined(AXIS)
+  drmAuthorizer = [NYPLAxisDRMAuthorizer sharedInstance];
 #endif
 
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
