@@ -9,14 +9,27 @@
 import Foundation
 
 #if AXIS
+
+@objc protocol NYPLDeviceInfoProviding {
+  var deviceID: String { get }
+  var clientIP: String { get }
+}
+
 @objcMembers
-class NYPLAxisDRMAuthorizer: NSObject, NYPLDRMAuthorizing {
+class NYPLAxisDRMAuthorizer: NSObject, NYPLDRMAuthorizing, NYPLDeviceInfoProviding {
   
-  static let deviceIDKey = "NYPLAxisDRMAuthorizerKey"
+  static private let deviceIDKey = "NYPLAxisDRMAuthorizerKey"
   
   static let sharedInstance = NYPLAxisDRMAuthorizer()
   
-  static var deviceID: String {
+  // MARK: - NYPLDeviceInfoProviding
+  
+  /// Device IP address is only needed when generating a url for downloading license. Generating actual
+  /// device IP address would be more costly and would provide a result no different than what the hard
+  /// coded IP address already provides. Also, this is consistent with what Android is doing.
+  let clientIP = "192.168.1.254"
+  
+  var deviceID: String {
     if
       let id = UserDefaults.standard.string(forKey: NYPLAxisDRMAuthorizer.deviceIDKey) {
       return id
@@ -26,6 +39,8 @@ class NYPLAxisDRMAuthorizer: NSObject, NYPLDRMAuthorizing {
     UserDefaults.standard.set(id, forKey: NYPLAxisDRMAuthorizer.deviceIDKey)
     return id
   }
+  
+  // MARK: - NYPLDRMAuthorizing
   
   /// Not applicable for Axis
   var workflowsInProgress: Bool {
@@ -44,7 +59,7 @@ class NYPLAxisDRMAuthorizer: NSObject, NYPLDRMAuthorizing {
                  password: String!,
                  completion: ((Bool, Error?, String?, String?) -> Void)!) {
     
-    completion(true, nil, NYPLAxisDRMAuthorizer.deviceID, username)
+    completion(true, nil, deviceID, username)
   }
   
   /// There is no mechanism for deauthorizing the user in Axis. Returning succeeding completion.
