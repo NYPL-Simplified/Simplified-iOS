@@ -87,7 +87,8 @@ class NYPLBookmarkFactory {
       return nil
     }
 
-    guard let target = annotation[NYPLBookmarkSpec.Target.key] as? [String: Any],
+    guard
+      let target = annotation[NYPLBookmarkSpec.Target.key] as? [String: Any],
       let source = target[NYPLBookmarkSpec.Target.Source.key] as? String,
       let motivation = annotation[NYPLBookmarkSpec.Motivation.key] as? String,
       let body = annotation[NYPLBookmarkSpec.Body.key] as? [String: Any]
@@ -143,6 +144,10 @@ class NYPLBookmarkFactory {
     let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
     let progressWithinBook: NSNumber?
     if let bookProgress = body[NYPLBookmarkSpec.Body.BookProgress.key] as? Double {
+      progressWithinBook = NSNumber(value: bookProgress)
+    } else if let bookProgressStr = body[NYPLBookmarkSpec.Body.BookProgress.key] as? String,
+      let bookProgress = Double(bookProgressStr)
+    {
       progressWithinBook = NSNumber(value: bookProgress)
     } else {
       progressWithinBook = nil

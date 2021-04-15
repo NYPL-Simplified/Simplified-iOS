@@ -1087,6 +1087,10 @@
 		73CEF830252699CA006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
 		73CEF831252699DD006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
 		73CEF832252699DD006B2820 /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CEF82F252699C9006B2820 /* FirebaseCrashlytics.framework */; };
+		73D4DC192627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73D4DC182627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift */; };
+		73D4DC1A2627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73D4DC182627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift */; };
+		73D4DC212627B1DB005CAFFA /* annotation-response.json in Resources */ = {isa = PBXBuildFile; fileRef = 73D4DC202627B1DA005CAFFA /* annotation-response.json */; };
+		73D4DC222627B1DB005CAFFA /* annotation-response.json in Resources */ = {isa = PBXBuildFile; fileRef = 73D4DC202627B1DA005CAFFA /* annotation-response.json */; };
 		73D8D26825A68C6500DF5F69 /* NYPLR2Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */; };
 		73D8D26E25A68CA900DF5F69 /* LibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299E240F3BEA006B9EAD /* LibraryService.swift */; };
 		73D8D27025A68CC400DF5F69 /* NYPLReaderTOCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F9245276CA004C78BD /* NYPLReaderTOCCell.swift */; };
@@ -2275,6 +2279,8 @@
 		73CEF8352526FE80006B2820 /* run */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run; sourceTree = "<group>"; };
 		73CEF8362526FE80006B2820 /* upload-symbols */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "upload-symbols"; sourceTree = "<group>"; };
 		73CEF83E25270F38006B2820 /* adobe-rmsdk-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "adobe-rmsdk-build.sh"; path = "scripts/adobe-rmsdk-build.sh"; sourceTree = SOURCE_ROOT; };
+		73D4DC182627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLAnnotationResponseTests.swift; path = Bookmarks/NYPLAnnotationResponseTests.swift; sourceTree = "<group>"; };
+		73D4DC202627B1DA005CAFFA /* annotation-response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "annotation-response.json"; path = "Bookmarks/annotation-response.json"; sourceTree = "<group>"; };
 		73DA43A12404B4A900985482 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
 		73DA43A32404B92E00985482 /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = SOURCE_ROOT; };
 		73DA43A62404BA5600985482 /* build-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-carthage.sh"; path = "scripts/build-carthage.sh"; sourceTree = SOURCE_ROOT; };
@@ -2950,10 +2956,12 @@
 				73F6BF9D261E511100A71AB8 /* valid-R1-bookmark-1.json */,
 				73F6BF97261E511100A71AB8 /* valid-R1-readingprogress-1.json */,
 				73F6BFA5261E60C400A71AB8 /* only-essential-info-bookmark.json */,
+				73D4DC202627B1DA005CAFFA /* annotation-response.json */,
 				730EF262260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift */,
 				7340A8B526151FDA00B2D5FA /* NYPLBookmarkDeserializationTests.swift */,
 				73F6BFA2261E515E00A71AB8 /* NYPLR1BookmarkDeserializationTests.swift */,
 				733EE5992620D2F6006A735C /* NYPLBookmarkSerializationTests.swift */,
+				73D4DC182627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift */,
 			);
 			name = Bookmarks;
 			sourceTree = "<group>";
@@ -4159,6 +4167,7 @@
 				B51C1E17229456E2003B49A5 /* acl_authentication_document.json in Resources */,
 				730EF24F26093E40008E1DC3 /* invalid-locator-4.json in Resources */,
 				219901FB24FD2E56001BC727 /* jwk_public in Resources */,
+				73D4DC212627B1DB005CAFFA /* annotation-response.json in Resources */,
 				B51C1E1A229456E2003B49A5 /* dpl_authentication_document.json in Resources */,
 				730EF24D26093E40008E1DC3 /* invalid-locator-3.json in Resources */,
 				730EF25A26093E53008E1DC3 /* valid-bookmark-0.json in Resources */,
@@ -4193,6 +4202,7 @@
 				730EF24C26093E40008E1DC3 /* invalid-bookmark-0.json in Resources */,
 				730EF24226093E40008E1DC3 /* invalid-locator-1.json in Resources */,
 				730EF24626093E40008E1DC3 /* invalid-bookmark-3.json in Resources */,
+				73D4DC222627B1DB005CAFFA /* annotation-response.json in Resources */,
 				730EF24A26093E40008E1DC3 /* invalid-bookmark-1.json in Resources */,
 				7320AB3B251EBC9900E3F04D /* UpdateCheckNeedsUpdate.json in Resources */,
 				730EF25F26093E53008E1DC3 /* valid-locator-0.json in Resources */,
@@ -4750,6 +4760,7 @@
 				7384C800242BB43400D5F960 /* NYPLCachingTests.swift in Sources */,
 				5D3A28D522D400D00042B3BD /* UserProfileDocumentTests.swift in Sources */,
 				7307A5ED23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift in Sources */,
+				73D4DC192627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift in Sources */,
 				735771A8253763E800067CEA /* NYPLBookRegistryMock.swift in Sources */,
 				737F4A532549D78100A3C34B /* NYPLBookCreationTestsObjc.m in Sources */,
 				735771A02537635600067CEA /* NYPLSignInBusinessLogicTests.swift in Sources */,
@@ -4808,6 +4819,7 @@
 				735DD0CD2522A0730096D1F9 /* String+NYPLAdditionsTests.swift in Sources */,
 				730D17C12552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift in Sources */,
 				735DD0AF252293700096D1F9 /* NYPLMyBooksDownloadCenterTests.swift in Sources */,
+				73D4DC1A2627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift in Sources */,
 				7311FD2C25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */,
 				7320AB51251EC07300E3F04D /* NYPLOPDSAcquisitionPathTests.swift in Sources */,
 				735DD0D12522A0730096D1F9 /* URLRequest+NYPLTests.swift in Sources */,

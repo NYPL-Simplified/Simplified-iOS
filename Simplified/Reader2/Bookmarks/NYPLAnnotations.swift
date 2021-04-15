@@ -228,7 +228,6 @@ import R2Shared
 
   /// Reads the current reading position from the server, parses the response
   /// and returns the result to the `completionHandler`.
-  // TODO: SIMPLY-3668 Refactor with `syncReadingPosition(...)`
   class func syncReadingPosition(ofBook bookID: String?,
                                  publication: Publication?,
                                  toURL url:URL?,
@@ -249,38 +248,15 @@ import R2Shared
     var request = URLRequest(url: url,
                              cachePolicy: .reloadIgnoringLocalCacheData,
                              timeoutInterval: NYPLDefaultRequestTimeout)
-    request.httpMethod = "GET"
     setDefaultAnnotationHeaders(forRequest: &request)
 
-    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-
-      if let error = error as NSError? {
-        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-        completion(nil)
-        return
-      }
-
-      guard let data = data,
-        let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
-        let json = jsonObject as? [String: Any] else {
-          Log.error(#file, "Response from annotation server could not be serialized.")
-          completion(nil)
-          return
-      }
-
-      guard let first = json["first"] as? [String: Any],
-        let items = first["items"] as? [[String: Any]] else {
-          Log.error(#file, "Missing required key from Annotations response, or no items exist.")
-          completion(nil)
-          return
-      }
-
-      let readPos = items
-        .compactMap { NYPLBookmarkFactory.make(fromServerAnnotation: $0,
-                                               annotationType: .readingProgress,
-                                               bookID: bookID,
-                                               publication: publication) }
-        .first
+    let dataTask = URLSession.shared.dataTask(with: request) { (data, _, error) in
+      let bookmarks = parseAnnotationsResponse(data,
+                                               error: error,
+                                               motivation: .readingProgress,
+                                               publication: publication,
+                                               bookID: bookID)
+      let readPos = bookmarks?.first
       completion(readPos)
     }
     dataTask.resume()
@@ -310,81 +286,6 @@ import R2Shared
     }
   }
 
-  /// Serializes the `parameters` into JSON and POSTs them to the server.
-  class func postAnnotation(forBook bookID: String,
-                            withParameters parameters: [String: Any],
-                            timeout: TimeInterval = NYPLDefaultRequestTimeout,
-                            queueOffline: Bool,
-                            _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
-
-    guard syncIsPossibleAndPermitted() else {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
-      completionHandler(false, nil)
-      return
-    }
-
-    guard let annotationsURL = NYPLAnnotations.annotationsURL else {
-      Log.error(#file, "Annotations URL was nil while attempting to post")
-      completionHandler(false, nil)
-      return
-    }
-
-    guard let jsonData = makeSubmissionData(fromRepresentation: parameters) else {
-      Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
-      completionHandler(false, nil)
-      return
-    }
-    
-    var request = URLRequest(url: annotationsURL)
-    request.httpMethod = "POST"
-    request.httpBody = jsonData
-    setDefaultAnnotationHeaders(forRequest: &request)
-    request.timeoutInterval = timeout
-
-    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      if let error = error as NSError? {
-        Log.error(#file, "Annotation POST error (nsCode: \(error.code) Description: \(error.localizedDescription))")
-        if (NetworkQueue.StatusCodes.contains(error.code)) && (queueOffline == true) {
-          self.addToOfflineQueue(bookID, annotationsURL, parameters)
-        }
-        completionHandler(false, nil)
-        return
-      }
-      guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-        Log.error(#file, "Annotation POST error: No response received from server")
-        completionHandler(false, nil)
-        return
-      }
-
-      if statusCode == 200 {
-        Log.debug(#file, "Annotation POST: Success 200.")
-        let serverAnnotationID = annotationID(fromNetworkData: data)
-        completionHandler(true, serverAnnotationID)
-      } else {
-        Log.error(#file, "Annotation POST: Response Error. Status Code: \(statusCode)")
-        completionHandler(false, nil)
-      }
-    }
-    task.resume()
-  }
-
-  private class func annotationID(fromNetworkData data: Data?) -> String? {
-    guard let data = data else {
-      Log.error(#file, "No Annotation ID saved: No data received from server.")
-      return nil
-    }
-    guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
-      Log.error(#file, "No Annotation ID saved: JSON could not be created from data.")
-      return nil
-    }
-    if let annotationID = json[NYPLBookmarkSpec.Id.key] as? String {
-      return annotationID
-    } else {
-      Log.error(#file, "No Annotation ID saved: Key/Value not found in JSON response.")
-      return nil
-    }
-  }
-
   // MARK: - Bookmarks
 
   /// for OBJC / R1 compatibility only.
@@ -404,7 +305,6 @@ import R2Shared
 
   // Completion handler will return a nil parameter if there are any failures with
   // the network request, deserialization, or sync permission is not allowed.
-  // TODO: SIMPLY-3668 Refactor with `getServerBookmarks(...)`
   class func getServerBookmarks(forBook bookID:String?,
                                 publication: Publication?,
                                 atURL annotationURL:URL?,
@@ -425,39 +325,14 @@ import R2Shared
     var request = URLRequest(url: annotationURL,
                              cachePolicy: .reloadIgnoringLocalCacheData,
                              timeoutInterval: NYPLDefaultRequestTimeout)
-    request.httpMethod = "GET"
     setDefaultAnnotationHeaders(forRequest: &request)
-    
+
     let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      
-      if let error = error as NSError? {
-        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-        completion(nil)
-        return
-      }
-
-      guard let data = data,
-        let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
-        let json = jsonObject as? [String: Any] else {
-          Log.error(#file, "Response from annotation server could not be serialized.")
-          completion(nil)
-          return
-      }
-
-      guard let first = json["first"] as? [String: Any],
-        let items = first["items"] as? [[String: Any]] else {
-          Log.error(#file, "Missing required key from Annotations response, or no items exist.")
-          completion(nil)
-          return
-      }
-
-      let bookmarks = items.compactMap {
-        NYPLBookmarkFactory.make(fromServerAnnotation: $0,
-                                 annotationType: .bookmark,
-                                 bookID: bookID,
-                                 publication: publication)
-      }
-
+      let bookmarks = parseAnnotationsResponse(data,
+                                               error: error,
+                                               motivation: .bookmark,
+                                               publication: publication,
+                                               bookID: bookID)
       completion(bookmarks)
     }
     dataTask.resume()
@@ -590,7 +465,116 @@ import R2Shared
     }
   }
 
-  // MARK: -
+  // MARK:- Helpers / Private methods
+
+  class func parseAnnotationsResponse(_ data: Data?,
+                                      error: Error?,
+                                      motivation: NYPLBookmarkSpec.Motivation,
+                                      publication: Publication?,
+                                      bookID: String) -> [NYPLReadiumBookmark]? {
+    if let error = error as NSError? {
+      Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+      return nil
+    }
+
+    guard let data = data,
+      let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+      let json = jsonObject as? [String: Any] else {
+        Log.error(#file, "Response from annotation server could not be serialized.")
+        return nil
+    }
+
+    guard let first = json["first"] as? [String: Any],
+      let items = first["items"] as? [[String: Any]] else {
+        Log.error(#file, "Missing required key from Annotations response, or no items exist.")
+        return nil
+    }
+
+    let bookmarks = items.compactMap {
+      NYPLBookmarkFactory.make(fromServerAnnotation: $0,
+                               annotationType: motivation,
+                               bookID: bookID,
+                               publication: publication)
+    }
+
+    return bookmarks
+  }
+
+  /// Serializes the `parameters` into JSON and POSTs them to the server.
+  private class func postAnnotation(
+    forBook bookID: String,
+    withParameters parameters: [String: Any],
+    timeout: TimeInterval = NYPLDefaultRequestTimeout,
+    queueOffline: Bool,
+    _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
+
+    guard syncIsPossibleAndPermitted() else {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      completionHandler(false, nil)
+      return
+    }
+
+    guard let annotationsURL = NYPLAnnotations.annotationsURL else {
+      Log.error(#file, "Annotations URL was nil while attempting to post")
+      completionHandler(false, nil)
+      return
+    }
+
+    guard let jsonData = makeSubmissionData(fromRepresentation: parameters) else {
+      Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
+      completionHandler(false, nil)
+      return
+    }
+
+    var request = URLRequest(url: annotationsURL)
+    request.httpMethod = "POST"
+    request.httpBody = jsonData
+    setDefaultAnnotationHeaders(forRequest: &request)
+    request.timeoutInterval = timeout
+
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+      if let error = error as NSError? {
+        Log.error(#file, "Annotation POST error (nsCode: \(error.code) Description: \(error.localizedDescription))")
+        if (NetworkQueue.StatusCodes.contains(error.code)) && (queueOffline == true) {
+          self.addToOfflineQueue(bookID, annotationsURL, parameters)
+        }
+        completionHandler(false, nil)
+        return
+      }
+      guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
+        Log.error(#file, "Annotation POST error: No response received from server")
+        completionHandler(false, nil)
+        return
+      }
+
+      if statusCode == 200 {
+        Log.debug(#file, "Annotation POST: Success 200.")
+        let serverAnnotationID = annotationID(fromNetworkData: data)
+        completionHandler(true, serverAnnotationID)
+      } else {
+        Log.error(#file, "Annotation POST: Response Error. Status Code: \(statusCode)")
+        completionHandler(false, nil)
+      }
+    }
+    task.resume()
+  }
+
+  private class func annotationID(fromNetworkData data: Data?) -> String? {
+    guard let data = data else {
+      Log.error(#file, "No Annotation ID saved: No data received from server.")
+      return nil
+    }
+    guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
+      Log.error(#file, "No Annotation ID saved: JSON could not be created from data.")
+      return nil
+    }
+    if let annotationID = json[NYPLBookmarkSpec.Id.key] as? String {
+      return annotationID
+    } else {
+      Log.error(#file, "No Annotation ID saved: Key/Value not found in JSON response.")
+      return nil
+    }
+  }
 
   /// Annotation-syncing is possible only if the given `account` is signed-in
   /// and if the currently selected library supports it.
