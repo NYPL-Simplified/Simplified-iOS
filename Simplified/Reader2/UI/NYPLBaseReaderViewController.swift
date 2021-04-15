@@ -52,7 +52,6 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 
     lastReadPositionPoster = NYPLLastReadPositionPoster(
       book: book,
-      r2Publication: publication,
       bookRegistryProvider: NYPLBookRegistry.shared())
 
     bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(

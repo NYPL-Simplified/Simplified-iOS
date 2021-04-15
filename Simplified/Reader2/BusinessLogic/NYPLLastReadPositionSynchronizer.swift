@@ -14,6 +14,10 @@ import R2Shared
 class NYPLLastReadPositionSynchronizer {
   private let bookRegistry: NYPLBookRegistryProvider
 
+  private enum NavigationChoice: Int {
+    case stay, moveToServerLocator
+  }
+
   /// Designated initializer.
   ///
   /// - Parameters:
@@ -34,27 +38,44 @@ class NYPLLastReadPositionSynchronizer {
   ///   - book: The book whose position needs syncing.
   ///   - drmDeviceID: The device ID is used to identify if the last read
   ///   position retrieved from the server was from a different device.
-  ///   - completion: Called when syncing is complete.
+  ///   - completion: Called when syncing is complete. The `Locator` parameter
+  ///  will be not nil if a more recent position was found on the server and
+  ///  the user chose to move to that position.
   func sync(for publication: Publication,
             book: NYPLBook,
             drmDeviceID: String?,
-            completion: @escaping () -> Void) {
+            completion: @escaping (Locator?) -> Void) {
 
     syncReadPosition(for: book, publication: publication, drmDeviceID: drmDeviceID) { serverLocator in
       NYPLMainThreadRun.asyncIfNeeded {
         if let serverLocator = serverLocator {
-          self.presentNavigationAlert(for: serverLocator,
-                                      publication: publication,
-                                      book: book,
-                                      completion: completion)
+          self.presentNavigationAlert() { [weak self] navChoice in
+            switch navChoice {
+            case .stay:
+              let locator = self?.lastSavedLocator(for: book,
+                                                   publication: publication)
+              completion(locator)
+            case .moveToServerLocator:
+              let loc = NYPLBookLocation(locator: serverLocator)
+              self?.bookRegistry.setLocation(loc, forIdentifier: book.identifier)
+              completion(serverLocator)
+            }
+          }
         } else {
-          completion()
+          let locator = self.lastSavedLocator(for: book, publication: publication)
+          completion(locator)
         }
       }
     }
   }
 
   // MARK:- Private methods
+
+  private func lastSavedLocator(for book: NYPLBook,
+                                publication: Publication) -> Locator? {
+    let lastSavedLocation = bookRegistry.location(forIdentifier: book.identifier)
+    return lastSavedLocation?.convertToLocator(for: publication)
+  }
 
   /// Fetch the read position from the server and return it to the client
   /// if it differs from the local position or if it comes from a
@@ -102,31 +123,23 @@ class NYPLLastReadPositionSynchronizer {
 
         // we got a server location that differs from the local: return that
         // so that clients can decide what to do
-        let bookLocation = NYPLBookLocation(locationString: serverLocationString,
-                                            renderer: NYPLBookLocation.r2Renderer)
-        completion(bookLocation?.convertToLocator())
+        completion(bookmark.locator(forPublication: publication))
     }
   }
 
-  private func presentNavigationAlert(for serverLocator: Locator,
-                                      publication: Publication,
-                                      book: NYPLBook,
-                                      completion: @escaping () -> Void) {
+  private func presentNavigationAlert(completion: @escaping (NavigationChoice) -> ()) {
     let alert = UIAlertController(title: NSLocalizedString("Sync Reading Position", comment: "An alert title notifying the user the reading position has been synced"),
                                   message: NSLocalizedString("Do you want to move to the page on which you left off?", comment: "An alert message asking the user to perform navigation to the synced reading position or not"),
                                   preferredStyle: .alert)
 
     let stayText = NSLocalizedString("Stay", comment: "Do not perform navigation")
     let stayAction = UIAlertAction(title: stayText, style: .cancel) { _ in
-      completion()
+      completion(.stay)
     }
 
     let moveText = NSLocalizedString("Move", comment: "Perform navigation")
     let moveAction = UIAlertAction(title: moveText, style: .default) { _ in
-      let loc = NYPLBookLocation(locator: serverLocator,
-                                 publication: publication)
-      self.bookRegistry.setLocation(loc, forIdentifier: book.identifier)
-      completion()
+      completion(.moveToServerLocator)
     }
 
     alert.addAction(stayAction)
