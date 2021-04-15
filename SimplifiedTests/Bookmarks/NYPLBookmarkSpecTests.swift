@@ -9,10 +9,6 @@
 import XCTest
 @testable import SimplyE
 
-/**
- things to test:
-  - SIMPLY-3668: bookmark post request body (new format)
- */
 class NYPLBookmarkSpecTests: XCTestCase {
   var bundle: Bundle!
 
