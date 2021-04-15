@@ -357,11 +357,14 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
       }
       case NYPLMyBooksDownloadRightsManagementAxis: {
 #if defined(AXIS)
-        NYPLAxisService *axis = [[NYPLAxisService alloc]
-                                 initWithDelegate:self
-                                 fileURL:tmpSavedFileURL
-                                 forBook:book];
-        [axis fulfillAxisLicenseWithDownloadTask:downloadTask];
+        id<NYPLDeviceInfoProviding> deviceInfoProvider = NYPLAxisDRMAuthorizer.sharedInstance;
+        NYPLAxisService *axisService = [[NYPLAxisService alloc]
+                                        initWithDelegate:self
+                                        fileURL:tmpSavedFileURL
+                                        deviceInfoProvider:deviceInfoProvider
+                                        forBook:book];
+        
+        [axisService fulfillAxisLicenseWithDownloadTask:downloadTask];
 #endif
         break;
       }
