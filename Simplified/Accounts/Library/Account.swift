@@ -402,7 +402,7 @@ class OPDS2SamlIDP: NSObject, Codable {
   /// Load authentication documents from the network or cache.
   /// Providing the signedInStateProvider might lead to presentation of announcements
   /// - Parameter signedInStateProvider: The object providing user signed in state for presenting announcement. nil means no announcements will be present
-  /// - Parameter completion: Always invoked at the end of the load process.
+  /// - Parameter completion: Always invoked at the end of the load process but before showing the announcements UI (when needed).
   /// No guarantees are being made about whether this is called on the main
   /// thread or not. This closure is not retained by `self`.
   @objc(loadAuthenticationDocumentUsingSignedInStateProvider:completion:)
