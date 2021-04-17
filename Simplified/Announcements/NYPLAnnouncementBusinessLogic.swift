@@ -22,7 +22,7 @@ class NYPLAnnouncementBusinessLogic: NYPLAnnouncementProvider {
     let presentableAnnouncements = announcements.filter {
       shouldPresentAnnouncement(id: $0.id)
     }
-    guard let alert = NYPLAlertUtils.alert(announcements: presentableAnnouncements, announcementProvider: self) else {
+    guard let alert = self.alert(announcements: presentableAnnouncements) else {
       return
     }
     NYPLRootTabBarController.shared()?.safelyPresentViewController(alert, animated: true, completion: nil)
@@ -74,27 +74,15 @@ class NYPLAnnouncementBusinessLogic: NYPLAnnouncementProvider {
                                           "presentedAnnouncements": presentedAnnouncements])
     }
   }
-}
-
-// Wrapper for unit testing
-extension NYPLAnnouncementBusinessLogic {
-  func testing_shouldPresentAnnouncement(id: String) -> Bool {
-    shouldPresentAnnouncement(id: id)
-  }
-    
-  func testing_deletePresentedAnnouncement(id: String) {
-    deletePresentedAnnouncement(id: id)
-  }
-}
-
-extension NYPLAlertUtils {
+  
+  // MARK: - Helper
+  
   /**
-   Generates an alert view that presents another alert when being dismissed
-   - Parameter announcements: an array of announcements that goes into alert message.
-   - Returns: The alert controller to be presented.
-   */
-  class func alert(announcements: [Announcement], announcementProvider: NYPLAnnouncementProvider) -> UIAlertController? {
-    weak var provider: NYPLAnnouncementProvider? = announcementProvider
+  Generates an alert view that presents another alert when being dismissed
+  - Parameter announcements: an array of announcements that goes into alert message.
+  - Returns: The alert controller to be presented.
+  */
+  private func alert(announcements: [Announcement]) -> UIAlertController? {
     let title = NSLocalizedString("Announcement", comment: "")
     var currentAlert: UIAlertController? = nil
     
@@ -107,9 +95,9 @@ extension NYPLAlertUtils {
     for (i, alert) in alerts.enumerated() {
       if i > 0 {
         let action = UIAlertAction.init(title: NSLocalizedString("OK", comment: ""),
-                                        style: .default) { _ in
+                                        style: .default) { [weak self] _ in
           NYPLRootTabBarController.shared()?.safelyPresentViewController(alert, animated: true, completion: nil)
-          provider?.addPresentedAnnouncement(id: announcements[i - 1].id)
+          self?.addPresentedAnnouncement(id: announcements[i - 1].id)
         }
         currentAlert?.addAction(action)
       }
@@ -118,11 +106,22 @@ extension NYPLAlertUtils {
     
     // Add dismiss button to the last announcement
     if let last = announcements.last {
-      currentAlert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
-        NYPLAnnouncementBusinessLogic.shared.addPresentedAnnouncement(id: last.id)
+      currentAlert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .default) { [weak self] _ in
+        self?.addPresentedAnnouncement(id: last.id)
       })
     }
     
     return alerts.first
+  }
+}
+
+// Wrapper for unit testing
+extension NYPLAnnouncementBusinessLogic {
+  func testing_shouldPresentAnnouncement(id: String) -> Bool {
+    shouldPresentAnnouncement(id: id)
+  }
+    
+  func testing_deletePresentedAnnouncement(id: String) {
+    deletePresentedAnnouncement(id: id)
   }
 }
