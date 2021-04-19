@@ -15,12 +15,13 @@ class NYPLAnnouncementBusinessLogic {
   /// Present the announcement in a view controller
   /// This method should be called on main thread
   func presentAnnouncements(_ announcements: [Announcement]) {
-    for announcement in announcements {
-      if shouldPresentAnnouncement(id: announcement.id) {
-        let vc = NYPLAnnouncementViewController(announcement: announcement)
-        NYPLRootTabBarController.shared()?.safelyPresentViewController(vc, animated: true, completion: nil)
-      }
+    let presentableAnnouncements = announcements.filter {
+      shouldPresentAnnouncement(id: $0.id)
     }
+    guard let alert = self.alert(announcements: presentableAnnouncements) else {
+      return
+    }
+    NYPLRootTabBarController.shared()?.safelyPresentViewController(alert, animated: true, completion: nil)
   }
   
   // MARK: - Read
@@ -68,6 +69,45 @@ class NYPLAnnouncementBusinessLogic {
                                metadata: ["filePathURL": filePathURL,
                                           "presentedAnnouncements": presentedAnnouncements])
     }
+  }
+  
+  // MARK: - Helper
+  
+  /**
+  Generates an alert view that presents another alert when being dismissed
+  - Parameter announcements: an array of announcements that goes into alert message.
+  - Returns: The alert controller to be presented.
+  */
+  private func alert(announcements: [Announcement]) -> UIAlertController? {
+    let title = NSLocalizedString("Announcement", comment: "")
+    var currentAlert: UIAlertController? = nil
+    
+    let alerts = announcements.map {
+      UIAlertController.init(title: title, message: $0.content, preferredStyle: .alert)
+    }
+    
+    // Present another alert when the current alert is being dismiss
+    // Add the presented announcement to the presentedAnnouncement document
+    for (i, alert) in alerts.enumerated() {
+      if i > 0 {
+        let action = UIAlertAction.init(title: NSLocalizedString("OK", comment: ""),
+                                        style: .default) { [weak self] _ in
+          NYPLRootTabBarController.shared()?.safelyPresentViewController(alert, animated: true, completion: nil)
+          self?.addPresentedAnnouncement(id: announcements[i - 1].id)
+        }
+        currentAlert?.addAction(action)
+      }
+      currentAlert = alert
+    }
+    
+    // Add dismiss button to the last announcement
+    if let last = announcements.last {
+      currentAlert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .default) { [weak self] _ in
+        self?.addPresentedAnnouncement(id: last.id)
+      })
+    }
+    
+    return alerts.first
   }
 }
 
