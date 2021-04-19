@@ -203,6 +203,7 @@
           break;
         case NYPLBookContentTypePDF:
         case NYPLBookContentTypeEPUB:
+        case NYPLBookContentTypeAxis:
           buttonInfo = @{ButtonKey: self.readButton,
                          TitleKey: NSLocalizedString(@"Read", nil),
                          HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],

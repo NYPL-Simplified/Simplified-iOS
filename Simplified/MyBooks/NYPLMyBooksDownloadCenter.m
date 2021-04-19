@@ -568,6 +568,17 @@ didCompleteWithError:(NSError *)error
       }
       break;
     }
+    case NYPLBookContentTypeAxis: {
+      NSError *error = nil;
+      /// We're deleting path extension because with AXIS books, we don't get an epub file. Instead, we
+      /// get a file with book_vault_id and isbn key. From that file, we download all the files associated
+      /// with the book (xhtml, jpg, xml etc).
+      bookURL = bookURL.URLByDeletingPathExtension;
+      if(![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]) {
+        NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
+      }
+      break;
+    }
     case NYPLBookContentTypeUnsupported:
       break;
   }
@@ -1356,8 +1367,15 @@ didCompleteWithError:(NSError *)error
       withFileAtURL:(NSURL *)sourceLocation
     forDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 {
-  NSError *replaceError = nil;
+  
+#if defined(AXIS)
+  NSURL *destURL = [[self fileURLForBookIndentifier:book.identifier]
+                    URLByDeletingPathExtension];
+#else
   NSURL *destURL = [self fileURLForBookIndentifier:book.identifier];
+#endif
+  
+  NSError *replaceError = nil;
   BOOL success = [[NSFileManager defaultManager] replaceItemAtURL:destURL
                                                     withItemAtURL:sourceLocation
                                                    backupItemName:nil
@@ -1378,7 +1396,7 @@ didCompleteWithError:(NSError *)error
                           @"sourceFileURL": sourceLocation ?: @"N/A",
                         }];
   }
-
+  
   return success;
 }
 
