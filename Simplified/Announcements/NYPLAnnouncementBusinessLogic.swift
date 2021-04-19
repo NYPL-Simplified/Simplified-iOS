@@ -2,12 +2,8 @@ import Foundation
 
 private let announcementsFilename: String = "NYPLPresentedAnnouncementsList"
 
-protocol NYPLAnnouncementProvider: class {
-  func addPresentedAnnouncement(id: String)
-}
-
 /// This class is not thread safe
-class NYPLAnnouncementBusinessLogic: NYPLAnnouncementProvider {
+class NYPLAnnouncementBusinessLogic {
   static let shared = NYPLAnnouncementBusinessLogic()
 
   private var presentedAnnouncements: Set<String> = Set<String>()
