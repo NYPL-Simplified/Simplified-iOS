@@ -206,7 +206,6 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
                                  href: href,
                                  idref: nil,
                                  chapter: chapter,
-                                 page: nil,
                                  location: nil,
                                  progressWithinChapter: progressWithinChapter,
                                  progressWithinBook: NSNumber(value: progressWithinBook),

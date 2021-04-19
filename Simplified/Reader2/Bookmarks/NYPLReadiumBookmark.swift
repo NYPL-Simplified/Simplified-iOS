@@ -19,7 +19,6 @@ import R2Shared
   @objc static let cfiKey = "contentCFI"
   static let timeKey = "time"
   static let chapterKey = "chapter"
-  static let pageKey = "page"
   static let deviceKey = "device"
   static let chapterProgressKey = "progressWithinChapter"
   static let bookProgressKey = "progressWithinBook"
@@ -31,7 +30,6 @@ import R2Shared
   /// The bookmark ID. Optional because only the server assigns it.
   var annotationId:String?
 
-  var page:String?
   let chapter: String?
 
   /// R2 chapter ID.
@@ -117,7 +115,6 @@ import R2Shared
   ///   - idref: _Deprecated_. The legacy chapter identifier.
   ///   Required if `href` is missing.
   ///   - chapter: The chapter title, for display purposes.
-  ///   - page: The page number, for display purposes.
   ///   - location: _Deprecated_. This can be derived from `href` and
   ///   `progressWithinChapter`. Currently used as a backup for other parameters.
   ///   - progressWithinChapter: A value between [0...1] to identify the
@@ -131,7 +128,6 @@ import R2Shared
         href: String?,
         idref: String?,
         chapter:String?,
-        page:String?,
         location:String?,
         progressWithinChapter:Float,
         progressWithinBook: NSNumber?,
@@ -159,7 +155,6 @@ import R2Shared
     self.annotationId = annotationId
     self.contentCFI = contentCFI
     self.chapter = chapter ?? ""
-    self.page = page ?? ""
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook?.floatValue
     self.creationTime = creationTime
@@ -202,7 +197,6 @@ import R2Shared
     let time = dictionary[NYPLBookmarkDictionaryRepresentation.timeKey] as? String
     self.creationTime = NYPLBookmarkFactory.makeCreationTime(fromRFC3339timestamp: time)
     self.chapter = dictionary[NYPLBookmarkDictionaryRepresentation.chapterKey] as? String
-    self.page = dictionary[NYPLBookmarkDictionaryRepresentation.pageKey] as? String
     self.device = dictionary[NYPLBookmarkDictionaryRepresentation.deviceKey] as? String
 
     if let progressChapter = dictionary[NYPLBookmarkDictionaryRepresentation.chapterProgressKey] as? NSNumber {
@@ -230,7 +224,6 @@ extension NYPLReadiumBookmark {
       NYPLBookmarkDictionaryRepresentation.cfiKey: self.contentCFI ?? "",
       NYPLBookmarkDictionaryRepresentation.hrefKey: self.href ?? "",
       NYPLBookmarkDictionaryRepresentation.chapterKey: self.chapter ?? "",
-      NYPLBookmarkDictionaryRepresentation.pageKey: self.page ?? "",
       NYPLBookmarkDictionaryRepresentation.locationKey: self.location,
       NYPLBookmarkDictionaryRepresentation.timeKey: self.timestamp,
       NYPLBookmarkDictionaryRepresentation.deviceKey: self.device ?? "",
@@ -287,15 +280,9 @@ extension NYPLReadiumBookmark {
       return nil
     }
 
-    var position: Int? = nil
-    if let page = page, let pos = Int(page) {
-      position = pos
-    }
-
     let totalProgress = (progressWithinBook != nil) ? Double(progressWithinBook!) : nil
     let locations = Locator.Locations(progression: Double(progressWithinChapter),
-                                      totalProgression: totalProgress,
-                                      position: position)
+                                      totalProgression: totalProgress)
     return Locator(href: href,
                    type: publication.metadata.type ?? MediaType.xhtml.string,
                    title: chapter,

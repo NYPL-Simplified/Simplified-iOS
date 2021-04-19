@@ -36,13 +36,6 @@ class NYPLBookmarkFactory {
       progressWithinBook = nil
     }
 
-    let page: String?
-    if let position = bookmarkLoc.locator.locations.position {
-      page = "\(position)"
-    } else {
-      page = nil
-    }
-
     let chapter: String?
     if let locatorChapter = bookmarkLoc.locator.title {
       chapter = locatorChapter
@@ -58,7 +51,6 @@ class NYPLBookmarkFactory {
       href: href,
       idref: nil,
       chapter: chapter,
-      page: page,
       location: nil,
       progressWithinChapter: chapterProgress,
       progressWithinBook: progressWithinBook,
@@ -158,7 +150,6 @@ class NYPLBookmarkFactory {
                                href: href,
                                idref: idref,
                                chapter: chapter,
-                               page: nil,
                                location: nil,
                                progressWithinChapter: Float(progressWithinChapter),
                                progressWithinBook: progressWithinBook,

@@ -129,7 +129,6 @@ class NYPLR1BookmarkDeserializationTests: XCTestCase {
       NYPLBookmarkDictionaryRepresentation.deviceKey: "urn:uuid:789166c5-ed87-413a-8d9f-f306f6f02362",
       NYPLBookmarkDictionaryRepresentation.idrefKey: idref,
       NYPLBookmarkDictionaryRepresentation.locationKey: "{\"idref\":\"\(idref)\",\"contentCFI\":\"\(cfi)\"}",
-      NYPLBookmarkDictionaryRepresentation.pageKey: "",
       NYPLBookmarkDictionaryRepresentation.bookProgressKey: NSNumber(value: bookProgress),
       NYPLBookmarkDictionaryRepresentation.chapterProgressKey: NSNumber(value: chapterProgress),
       NYPLBookmarkDictionaryRepresentation.timeKey: "2021-04-07T23:49:14Z",
@@ -154,8 +153,6 @@ class NYPLR1BookmarkDeserializationTests: XCTestCase {
                    diskRepresentation[NYPLBookmarkDictionaryRepresentation.idrefKey] as? String)
     XCTAssert(bookmark.location.contains("\"idref\": \"\(idref)\""))
     XCTAssert(bookmark.location.contains("\"contentCFI\": \"\(cfi)\""))
-    XCTAssertEqual(bookmark.page!,
-                   diskRepresentation[NYPLBookmarkDictionaryRepresentation.pageKey] as? String)
     XCTAssertEqual(bookmark.progressWithinBook, bookProgress)
     XCTAssertEqual(bookmark.progressWithinChapter, chapterProgress)
     XCTAssertEqual(bookmark.timestamp,

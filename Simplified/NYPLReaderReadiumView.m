@@ -759,7 +759,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                   href:nil
                                   idref:idref
                                   chapter:chapter
-                                  page:nil
                                   location:location.locationString
                                   progressWithinChapter:progressWithinChapter
                                   progressWithinBook:[NSNumber numberWithFloat:self.progressWithinBook]

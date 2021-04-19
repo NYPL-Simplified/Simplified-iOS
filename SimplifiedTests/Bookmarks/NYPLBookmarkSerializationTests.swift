@@ -37,7 +37,6 @@ class NYPLBookmarkSerializationTests: XCTestCase {
     XCTAssertEqual(bookmark?.progressWithinChapter, Float(locations.progression!))
     XCTAssertEqual(bookmark?.progressWithinBook, Float(locations.totalProgression!))
     XCTAssertEqual(bookmark?.href, locator.href)
-    XCTAssertEqual(Int(bookmark!.page!), locations.position!)
   }
 
   func testSerializeBookmarkRoundrip() throws {
