@@ -1099,8 +1099,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dictionary[@"package"] = self.package.dictionary;
   dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
   dictionary[@"openPageRequest"] = @{
-    NYPLBookmarkDictionaryRepresentation.idrefKey: bookmark.idref,
-    @"elementCfi": bookmark.contentCFI
+    NYPLBookmarkDictionaryRepresentation.idrefKey: bookmark.idref ?: @"",
+    @"elementCfi": bookmark.contentCFI ?: @""
   };
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
