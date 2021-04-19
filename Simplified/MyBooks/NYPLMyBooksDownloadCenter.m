@@ -1294,8 +1294,17 @@ didCompleteWithError:(NSError *)error
       withFileAtURL:(NSURL *)sourceLocation
     forDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 {
-  NSError *replaceError = nil;
+  
   NSURL *destURL = [self fileURLForBookIndentifier:book.identifier];
+  
+#if defined(AXIS)
+  NSString *isbn = sourceLocation.lastPathComponent;
+  destURL = [[[self fileURLForBookIndentifier:book.identifier]
+              URLByDeletingLastPathComponent]
+             URLByAppendingPathComponent:isbn];
+#endif
+  
+  NSError *replaceError = nil;
   BOOL success = [[NSFileManager defaultManager] replaceItemAtURL:destURL
                                                     withItemAtURL:sourceLocation
                                                    backupItemName:nil
@@ -1316,7 +1325,7 @@ didCompleteWithError:(NSError *)error
                           @"sourceFileURL": sourceLocation ?: @"N/A",
                         }];
   }
-
+  
   return success;
 }
 
