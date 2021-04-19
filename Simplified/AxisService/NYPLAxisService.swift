@@ -35,15 +35,19 @@ class NYPLAxisService: NSObject {
   private let fileURL: URL
   private let baseURL: URL
   private let book: NYPLBook
+  private let deviceInfoProvider: NYPLDeviceInfoProviding
   
   /// Failable initializer that extracts `isbn` and `book_vault_id` from the downloaded file. Returns
   /// nil if keys are not present and notifies delegate.
   /// - Parameters:
   ///   - delegate: An object confirming to NYPLBookDownloadBroadcasting protocol.
   ///   - fileURL: Local url of the downloaded file.
+  ///   - deviceInfoProvider: An NYPLDeviceInfoProviding object to get deviceID and clientIP
+  ///   required for license URL generation
   ///   - book: NYPLBook object
   @objc init?(delegate: NYPLBookDownloadBroadcasting,
               fileURL: URL,
+              deviceInfoProvider: NYPLDeviceInfoProviding,
               forBook book: NYPLBook) {
     /*
      The downloaded file is supposed to have a key for isbn and
@@ -71,6 +75,7 @@ class NYPLAxisService: NSObject {
     self.dedicatedWriteURL = fileURL.deletingLastPathComponent().appendingPathComponent(isbn)
     self.baseURL = AxisHelper.baseURL.appendingPathComponent(AxisHelper.isbnKey)
     self.book = book
+    self.deviceInfoProvider = deviceInfoProvider
   }
   
   /// Fulfill AxisNow license. Notifies NYPLBookDownloadBroadcasting upon completion or failure.
