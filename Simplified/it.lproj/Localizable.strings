@@ -232,7 +232,7 @@
 "Add Your Library" = "Aggiungi la tua biblioteca";
 
 // NYPLSettingsPrivacyPolicyViewController
-"SettingsAccountViewControllerMessageTooManyActivations" = "Sono stati autorizzati troppi dispositivi con questa tessera di biblioteca.";
+"SettingsAccountViewControllerMessageTooManyActivations" = "Sono stati autorizzati troppi dispositivi per questo utente.";
 
 // NYPLWelcomeScreen
 "Age Verification" = "Verifica dell'età";

@@ -1,3 +1,5 @@
+import R2Shared
+
 /// This class specifies the keys used to represent a NYPLReadiumBookmark
 /// as a dictionary.
 ///
@@ -255,6 +257,20 @@ extension NYPLReadiumBookmark {
 
   override var description: String {
     return "\(dictionaryRepresentation)"
+  }
+
+  func locator(forPublication publication: Publication) -> Locator? {
+    guard let href = href else {
+      return nil
+    }
+
+    let totalProgression = Double(progressWithinBook ?? 0.0)
+    let locations = Locator.Locations(progression: Double(progressWithinChapter),
+                                      totalProgression: totalProgression)
+    return Locator(href: href,
+                   type: publication.metadata.type ?? MediaType.xhtml.string,
+                   title: chapter ?? "",
+                   locations: locations)
   }
 }
 

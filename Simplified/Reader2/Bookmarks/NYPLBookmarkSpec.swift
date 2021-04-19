@@ -138,6 +138,10 @@ struct NYPLBookmarkSpec {
         /// identify the position in the book. In that case, the value for
         /// `locatorTypeKey` is expressed by this constant.
         static let legacyLocatorTypeValue = "LocatorLegacyCFI"
+        /// The locator key identifying the chapter id of the bookmark in the
+        /// legacy format. This key appear inside the legacy `selectorValue`
+        /// strings used in R1.
+        static let locatorLegacyChapterIDKey = "idref"
         /// This is a key related to an optional Selector Value field,
         /// provided for backward compatibility with R1 bookmarks.
         static let legacyLocatorCFIKey = "contentCFI"

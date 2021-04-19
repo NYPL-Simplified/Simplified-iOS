@@ -51,7 +51,6 @@ final class ReaderModule: ReaderModuleAPI {
   
   weak var delegate: ModuleDelegate?
   private let resourcesServer: ResourcesServer
-  private let bookRegistry: NYPLBookRegistryProvider
   private let progressSynchronizer: NYPLLastReadPositionSynchronizer
 
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
@@ -62,7 +61,6 @@ final class ReaderModule: ReaderModuleAPI {
        bookRegistry: NYPLBookRegistryProvider) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
-    self.bookRegistry = bookRegistry
     self.progressSynchronizer = NYPLLastReadPositionSynchronizer(bookRegistry: bookRegistry)
 
     formatModules = [
@@ -86,23 +84,21 @@ final class ReaderModule: ReaderModuleAPI {
     let drmDeviceID = NYPLUserAccount.sharedAccount().deviceID
     progressSynchronizer.sync(for: publication,
                               book: book,
-                              drmDeviceID: drmDeviceID) { [weak self] in
-
+                              drmDeviceID: drmDeviceID) { [weak self] initialLocator in
                                 self?.finalizePresentation(for: publication,
                                                            book: book,
                                                            formatModule: formatModule,
+                                                           positioningAt: initialLocator,
                                                            in: navigationController)
     }
   }
 
-  func finalizePresentation(for publication: Publication,
-                            book: NYPLBook,
-                            formatModule: ReaderFormatModule,
-                            in navigationController: UINavigationController) {
+  private func finalizePresentation(for publication: Publication,
+                                    book: NYPLBook,
+                                    formatModule: ReaderFormatModule,
+                                    positioningAt initialLocator: Locator?,
+                                    in navigationController: UINavigationController) {
     do {
-      let lastSavedLocation = bookRegistry.location(forIdentifier: book.identifier)
-      let initialLocator = lastSavedLocation?.convertToLocator()
-
       let readerVC = try formatModule.makeReaderViewController(
         for: publication,
         book: book,
