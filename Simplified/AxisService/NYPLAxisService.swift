@@ -51,7 +51,7 @@ class NYPLAxisService: NSObject {
               forBook book: NYPLBook) {
     /*
      The downloaded file is supposed to have a key for isbn and
-     book_vauld_uuid. Those keys are needed to download license.json,
+     book_vault_uuid. Those keys are needed to download license.json,
      encryption.xml, container.xml, package.opf, and assets enclosed in
      package.opf.
      */
@@ -72,10 +72,12 @@ class NYPLAxisService: NSObject {
     self.fileURL = fileURL
     self.delegate = delegate
     self.bookVaultId = bookVaultId
-    self.dedicatedWriteURL = fileURL.deletingLastPathComponent().appendingPathComponent(isbn)
-    self.baseURL = AxisHelper.baseURL.appendingPathComponent(AxisHelper.isbnKey)
+    self.baseURL = AxisHelper.baseURL.appendingPathComponent(isbn)
     self.book = book
     self.deviceInfoProvider = deviceInfoProvider
+    self.dedicatedWriteURL = fileURL
+      .deletingLastPathComponent()
+      .appendingPathComponent(book.identifier.sha256())
   }
   
   /// Fulfill AxisNow license. Notifies NYPLBookDownloadBroadcasting upon completion or failure.
