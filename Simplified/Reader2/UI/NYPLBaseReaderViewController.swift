@@ -420,8 +420,7 @@ extension NYPLBaseReaderViewController: NYPLReaderPositionsDelegate {
       navigationController?.popViewController(animated: true)
     }
 
-    let r2bookmark = bookmark.convertToR2(from: publication)
-    if let locator = r2bookmark?.locator {
+    if let locator = bookmark.locator(forPublication: publication) {
       navigator.go(to: locator)
     }
   }

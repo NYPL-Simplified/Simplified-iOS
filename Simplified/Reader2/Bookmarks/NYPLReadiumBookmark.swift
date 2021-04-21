@@ -19,7 +19,6 @@ import R2Shared
   @objc static let cfiKey = "contentCFI"
   static let timeKey = "time"
   static let chapterKey = "chapter"
-  static let pageKey = "page"
   static let deviceKey = "device"
   static let chapterProgressKey = "progressWithinChapter"
   static let bookProgressKey = "progressWithinBook"
@@ -31,8 +30,7 @@ import R2Shared
   /// The bookmark ID. Optional because only the server assigns it.
   var annotationId:String?
 
-  var chapter:String?
-  var page:String?
+  let chapter: String?
 
   /// R2 chapter ID.
   let href: String?
@@ -81,10 +79,10 @@ import R2Shared
   /// platforms, hence its legacy and optional status.
   ///
   /// - Important: This is _deprecated_.
-  var contentCFI:String?
+  let contentCFI: String?
 
-  var progressWithinChapter:Float = 0.0
-  var progressWithinBook:Float?
+  let progressWithinChapter: Float
+  let progressWithinBook: Float?
 
   var percentInChapter:String {
     return (self.progressWithinChapter * 100).roundTo(decimalPlaces: 0)
@@ -96,7 +94,7 @@ import R2Shared
   /// understand if a bookmark needs to be added to the current list.
   /// - See: NYPLReaderBookmarksBusinessLogic::updateLocalBookmarks(...)
   /// - See: NYPLLatReadPositionSynchronizer::syncReadPosition(...)
-  var device:String?
+  let device: String?
 
   let creationTime: Date
 
@@ -117,7 +115,6 @@ import R2Shared
   ///   - idref: _Deprecated_. The legacy chapter identifier.
   ///   Required if `href` is missing.
   ///   - chapter: The chapter title, for display purposes.
-  ///   - page: The page number, for display purposes.
   ///   - location: _Deprecated_. This can be derived from `href` and
   ///   `progressWithinChapter`. Currently used as a backup for other parameters.
   ///   - progressWithinChapter: A value between [0...1] to identify the
@@ -131,7 +128,6 @@ import R2Shared
         href: String?,
         idref: String?,
         chapter:String?,
-        page:String?,
         location:String?,
         progressWithinChapter:Float,
         progressWithinBook: NSNumber?,
@@ -159,7 +155,6 @@ import R2Shared
     self.annotationId = annotationId
     self.contentCFI = contentCFI
     self.chapter = chapter ?? ""
-    self.page = page ?? ""
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook?.floatValue
     self.creationTime = creationTime
@@ -202,17 +197,20 @@ import R2Shared
     let time = dictionary[NYPLBookmarkDictionaryRepresentation.timeKey] as? String
     self.creationTime = NYPLBookmarkFactory.makeCreationTime(fromRFC3339timestamp: time)
     self.chapter = dictionary[NYPLBookmarkDictionaryRepresentation.chapterKey] as? String
-    self.page = dictionary[NYPLBookmarkDictionaryRepresentation.pageKey] as? String
     self.device = dictionary[NYPLBookmarkDictionaryRepresentation.deviceKey] as? String
 
     if let progressChapter = dictionary[NYPLBookmarkDictionaryRepresentation.chapterProgressKey] as? NSNumber {
       self.progressWithinChapter = progressChapter.floatValue
     } else if let progressFromLocation = progressFromLocation {
       self.progressWithinChapter = Float(progressFromLocation)
+    } else {
+      self.progressWithinChapter = 0.0
     }
 
     if let progressBook = dictionary[NYPLBookmarkDictionaryRepresentation.bookProgressKey] as? NSNumber {
       self.progressWithinBook = progressBook.floatValue
+    } else {
+      self.progressWithinBook = nil
     }
   }
 }
@@ -226,7 +224,6 @@ extension NYPLReadiumBookmark {
       NYPLBookmarkDictionaryRepresentation.cfiKey: self.contentCFI ?? "",
       NYPLBookmarkDictionaryRepresentation.hrefKey: self.href ?? "",
       NYPLBookmarkDictionaryRepresentation.chapterKey: self.chapter ?? "",
-      NYPLBookmarkDictionaryRepresentation.pageKey: self.page ?? "",
       NYPLBookmarkDictionaryRepresentation.locationKey: self.location,
       NYPLBookmarkDictionaryRepresentation.timeKey: self.timestamp,
       NYPLBookmarkDictionaryRepresentation.deviceKey: self.device ?? "",
@@ -259,49 +256,37 @@ extension NYPLReadiumBookmark {
     return "\(dictionaryRepresentation)"
   }
 
+  /// Creates a Locator object that can be used in Readium 2.
+  ///
+  /// Not every single piece of data contained in this bookmark is considered
+  /// for this conversion: only what's strictly necessary to be able to point
+  /// at the same location inside the `Publication`.
+  ///
+  /// - Complexity: O(*n*) where *n* is the length of the internal
+  /// `Publication.readingOrder` data structure.
+  ///
+  /// - Parameter publication: The R2 publication object where the bookmark is
+  /// located.
+
+  /// - Returns: A Locator pointing at the same position this bookmark is
+  /// pointing to.
   func locator(forPublication publication: Publication) -> Locator? {
-    guard let href = href else {
+    let href: String
+    if let r2href = self.href {
+      href = r2href
+    } else if let idref = self.idref, let r1href = publication.link(withIDref: idref)?.href {
+      href = r1href
+    } else {
       return nil
     }
 
-    let totalProgression = Double(progressWithinBook ?? 0.0)
+    let totalProgress = (progressWithinBook != nil) ? Double(progressWithinBook!) : nil
     let locations = Locator.Locations(progression: Double(progressWithinChapter),
-                                      totalProgression: totalProgression)
+                                      totalProgression: totalProgress)
     return Locator(href: href,
                    type: publication.metadata.type ?? MediaType.xhtml.string,
-                   title: chapter ?? "",
+                   title: chapter,
                    locations: locations)
-  }
-}
-
-// MARK:- Comparisons
-
-extension NYPLReadiumBookmark {
-  override func isEqual(_ object: Any?) -> Bool {
-    guard let other = object as? NYPLReadiumBookmark else {
-      return false
-    }
-
-    let progressIsEqual = (self.progressWithinChapter =~= other.progressWithinChapter)
-
-    switch self.chapterID {
-    case .href(let href):
-      return href == other.href && progressIsEqual
-    case .idref(let idref):
-      return idref == other.idref && (progressIsEqual || self.contentCFI == other.contentCFI)
-    }
-  }
-
-  @objc func lessThan(_ bookmark: NYPLReadiumBookmark) -> Bool {
-    if let progress1 = progressWithinBook, let progress2 = bookmark.progressWithinBook {
-      return progress1 < progress2
-    }
-
-    if href == bookmark.href {
-      return progressWithinChapter < bookmark.progressWithinChapter
-    }
-
-    return creationTime < bookmark.creationTime
   }
 }
 
