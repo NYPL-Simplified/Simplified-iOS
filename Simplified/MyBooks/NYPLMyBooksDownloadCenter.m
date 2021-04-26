@@ -352,7 +352,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
         NYPLAxisService *axisService = [[NYPLAxisService alloc]
                                         initWithDelegate:self
                                         fileURL:tmpSavedFileURL
-                                        deviceInfoProvider:deviceInfoProvider
+                                        deviceInfoProviding:deviceInfoProvider
                                         forBook:book];
         
         [axisService fulfillAxisLicenseWithDownloadTask:downloadTask];
