@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
-@import ZXingObjC;
+
+#import <ZXingObjC/ZXBarcodeFormat.h>
+@class ZXEncodeHints;
 
 /// The ZXingObj framework encoder throws exceptions, which Swift is not
 /// built to handle, so this class wraps the encoding function.

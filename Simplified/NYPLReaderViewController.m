@@ -482,9 +482,9 @@ spineItemTitle:(NSString *const)title
 {
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification,
-                                    [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil),
-                                     pageIndex + 1,
-                                     pageCount]);
+                                    [NSString stringWithFormat:NSLocalizedString(@"Page %lu of %lu", nil),
+                                     (unsigned long)pageIndex + 1,
+                                     (unsigned long)pageCount]);
   }
   
   [self.bottomViewProgressView setProgress:progressWithinBook animated:NO];

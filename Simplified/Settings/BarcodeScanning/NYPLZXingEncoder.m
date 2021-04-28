@@ -1,3 +1,8 @@
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wquoted-include-in-framework-header"
+@import ZXingObjC;
+#pragma clang diagnostic pop
+
 #import "NYPLZXingEncoder.h"
 #import "SimplyE-Swift.h"
 
