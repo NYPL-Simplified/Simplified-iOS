@@ -5,8 +5,8 @@ jobs:
     runs-on: macOS-latest
     if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/feature/')
     steps:
-      - name: Force Xcode 11.5
-        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Force Xcode 12.4
+        run: sudo xcode-select -switch /Applications/Xcode_12.4.app
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
       - name: Check Firebase Tools
@@ -28,14 +28,6 @@ jobs:
           repository: NYPL-Simplified/Certificates
           token: ${{ secrets.IOS_DEV_CI_PAT }}
           path: ./Certificates
-      - name: Checkout NYPLAEToolkit
-        uses: actions/checkout@v2.3.4
-        with:
-          repository: NYPL-Simplified/NYPLAEToolkit
-          token: ${{ secrets.IOS_DEV_CI_PAT }}
-          path: ./NYPLAEToolkit
-      - name: Fetch AudioEngine
-        run: ./NYPLAEToolkit/scripts/fetch-audioengine.sh
       - name: Setup iOS Distribution Details
         env:
           BUILD_CONTEXT: ci
