@@ -78,8 +78,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
       continue;
     }
     
-    [[NYPLBookRegistry sharedRegistry] updateBookMetadata:book];
-    NYPLBook *updatedBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
+    NYPLBook *updatedBook = [[NYPLBookRegistry sharedRegistry] updatedBookMetadata:book];
     if(updatedBook) {
       book = updatedBook;
     }

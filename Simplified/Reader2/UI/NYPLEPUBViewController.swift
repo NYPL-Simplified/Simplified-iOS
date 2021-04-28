@@ -19,11 +19,24 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
 
   let userSettings: NYPLR1R2UserSettings
 
-  init(publication: Publication, book: NYPLBook, drm: DRM?, resourcesServer: ResourcesServer) {
+  init(publication: Publication,
+       book: NYPLBook,
+       initialLocation: Locator?,
+       resourcesServer: ResourcesServer) {
+
+    // this config was suggested by R2 engineers as a way to limit the possible
+    // race conditions between restoring the initial location without
+    // interfering with the web view layout timing
+    // See: https://github.com/readium/r2-navigator-swift/issues/153
+    var config = EPUBNavigatorViewController.Configuration()
+    config.preloadPreviousPositionCount = 0
+    config.preloadNextPositionCount = 0
+    config.debugState = true
+
     let navigator = EPUBNavigatorViewController(publication: publication,
-                                                license: drm?.license,
-                                                initialLocation: book.progressionLocator,
-                                                resourcesServer: resourcesServer)
+                                                initialLocation: initialLocation,
+                                                resourcesServer: resourcesServer,
+                                                config: config)
     userSettings = NYPLR1R2UserSettings(r2UserSettings: navigator.userSettings)
 
     // EPUBNavigatorViewController::init creates a UserSettings object and sets
@@ -32,7 +45,7 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
     // to re-set that to reflect our ad-hoc configuration.
     publication.userProperties = navigator.userSettings.userProperties
 
-    super.init(navigator: navigator, publication: publication, book: book, drm: drm)
+    super.init(navigator: navigator, publication: publication, book: book)
 
     navigator.delegate = self
   }

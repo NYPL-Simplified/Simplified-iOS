@@ -24,16 +24,12 @@
       // a variable here to ensure it lives long enough to initialize `image`.
       ZXImage *const zxImage = [ZXImage imageWithMatrix:result];
       UIImage *image = [[UIImage alloc] initWithCGImage:[zxImage cgimage]];
-      if (image) {
-        return image;
-      } else {
-        return nil;
-      }
-    } else {
-      NSString *errorMessage = [error localizedDescription];
-      NYPLLOG_F(@"Error encoding barcode string. Description: %@", errorMessage);
-      return nil;
+      return image;
     }
+      
+    NSString *errorMessage = [error localizedDescription];
+    NYPLLOG_F(@"Error encoding barcode string. Description: %@", errorMessage);
+    return nil;
   }
   @catch (NSException *exception) {
     NYPLLOG_F(@"Exception thrown during barcode image encoding: %@",exception.name);

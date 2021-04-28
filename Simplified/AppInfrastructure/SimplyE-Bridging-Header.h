@@ -36,7 +36,6 @@
 #import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderSettingsView.h"
-#import "NYPLReadiumViewSyncManager.h"
 #import "NYPLReloadView.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLRoundedButton.h"

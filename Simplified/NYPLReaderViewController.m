@@ -4,7 +4,6 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReaderReadiumView.h"
-#import "NYPLReadiumViewSyncManager.h"
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLRoundedButton.h"
@@ -12,6 +11,7 @@
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReaderSettings.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLReadiumViewSyncManager.h"
 
 #import "NYPLReaderViewController.h"
 #import "SimplyE-Swift.h"

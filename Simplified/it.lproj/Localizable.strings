@@ -169,8 +169,12 @@
 "%@ through chapter" = "%@ del capitolo";
 "There are no bookmarks for this book." = "Non ci sono segnalibri per questo libro.";
 
-// Settings
-"SettingsConnectionFailureMessage" = "Non è stato possibile caricare la pagina per via di un errore nella connessione a internet.";
+// Reader error messages (R2)
+"Content Protection Error" = "Errore nella protezione del contenuto";
+"The book you were trying to open is invalid." = "Il libro che stavi cercando di leggere è in un formato non valido.";
+"An error was encountered while trying to open this book." = "Si è verificato un errore durante l'apertura di questo libro.";
+"The book you were trying to read is in an unsupported format." = "Il libro che stavi cercando di aprire è in un formato non supportato.";
+"The book you were trying to read is corrupted. Please try downloading it again." = "Il libro che stavi cercando di leggere è danneggiato. Prova a scaricarlo di nuovo.";
 
 // NYPLSettings
 "The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";
@@ -181,12 +185,17 @@
 "Authentication Required" = "Autenticazione necessaria";
 "Please sign in to use this functionality." = "Accedi con uno dei meccanismi di identificazione per poter usare questa funzionalità.";
 
+// Age Check
+"Age Verification" = "Verifica dell'età";
+"Please enter your birth year" = "Per favore inserisci il tuo anno di nascita";
+"Done" = "Finito";
+"Next" = "Continua";
+
 // NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
 "Add Library" = "Aggiungi Biblioteca";
 "Report an Issue" = "Riferisci un problema";
 "Show Barcode" = "Mostra il codice a barre";
 "Hide Barcode" = "Nascondi il codice a barre";
-"I am 13 years of age or older." = "Ho almeno 13 anni";
 "Don't have a library card?" = "Non hai una tessera?";
 "Sync Bookmarks" = "Sincronizza i segnalibri";
 "Save your reading position and bookmarks to all your other devices." = "Salva la posizione di lettura e i segnalibri su tutti i tuoi altri dispositivi.";

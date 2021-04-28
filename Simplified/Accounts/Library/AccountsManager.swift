@@ -25,6 +25,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   let NYPLAccountUUID = AccountsManager.NYPLAccountUUIDs[0]
 
   static let shared = AccountsManager()
+  
+  let ageCheck: NYPLAgeCheckVerifying
 
   // For Objective-C classes
   class func sharedInstance() -> AccountsManager {
@@ -99,7 +101,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
   private override init() {
     self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
-
+    self.ageCheck = NYPLAgeCheck(ageCheckChoiceStorage: NYPLSettings.shared)
+    
     super.init()
 
     #if OPENEBOOKS
@@ -142,9 +145,11 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
         loadingCompletionHandlers[key] = [(Bool)->()]()
       }
       wasEmpty = loadingCompletionHandlers[key]!.isEmpty
-      if let handler = handler {
-        loadingCompletionHandlers[key]!.append(handler)
-      }
+      // On the previous implementation, we do not add the handler to the list if it is nil.
+      // If the first handler is nil, the second handler would find the list empty and continue loading
+      // And the same loading request would happen more than once, adding a empty completion block void such situation
+      let h: ((Bool) -> ()) = handler ?? { _ in }
+      loadingCompletionHandlers[key]!.append(h)
     }
     return !wasEmpty
   }
@@ -195,7 +200,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       // changing the `accountsSets` dictionary will also change `currentAccount`
       Log.debug(#function, "hadAccount=\(hadAccount) currentAccountID=\(currentAccountId ?? "N/A") currentAcct=\(String(describing: currentAccount))")
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { (success) in
+        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { success in
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
@@ -212,7 +217,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
             // there is a logic in NYPLUserAcccount authDefinition setter to perform an age check, but it wasn't tested
             // most probably you can delete this check from here
             if self.currentAccount?.details?.needsAgeCheck ?? false {
-              NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
+              self.ageCheck.verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccount.sharedAccount(),
+                                                               currentLibraryAccountProvider: self) { meetsAgeRequirement in
                 DispatchQueue.main.async {
                   mainFeed = self.currentAccount?.details?.defaultAuth?.coppaURL(isOfAge: meetsAgeRequirement)
                   resolveFn()
@@ -252,7 +258,6 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     guard !wasAlreadyLoading else { return }
 
-    Log.debug(#file, "loadCatalog:: GETting \(targetUrl)...")
     NYPLNetworkExecutor.shared.GET(targetUrl) { result in
       switch result {
       case .success(let data, _):
@@ -283,20 +288,16 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     }
 
     // Check primary account set first
-    if let accounts = accountSetsCopy[accountSetKey] {
-      if let account = accounts.filter({ $0.uuid == uuid }).first {
+    if let accounts = accountSetsCopy[accountSetKey],
+        let account = accounts.first(where: { $0.uuid == uuid }) {
         return account
-      }
     }
 
     // Check existing account lists
-    for accountEntry in accountSetsCopy {
-      if accountEntry.key == accountSetKey {
-        continue
-      }
-      if let account = accountEntry.value.filter({ $0.uuid == uuid }).first {
-        return account
-      }
+    for accountEntry in accountSetsCopy where accountEntry.key != accountSetKey {
+        if let account = accountEntry.value.first(where: { $0.uuid == uuid }) {
+            return account
+        }
     }
 
     return nil
@@ -338,22 +339,17 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       let authDocCaches = appSupportDirContents.filter { (url) -> Bool in
         return url.lastPathComponent.starts(with: "authentication_document_") && url.pathExtension == "json"
       }
-      for cache in libraryListCaches {
-        do {
-          try FileManager.default.removeItem(at: cache)
-        } catch {
-          Log.error("ClearCache", "Unable to clear cache for: \(cache)")
+        
+      let allCaches = libraryListCaches + authDocCaches
+        for cache in allCaches {
+          do {
+            try FileManager.default.removeItem(at: cache)
+          } catch {
+            Log.error("ClearCache", "Unable to clear cache for: \(cache)")
+          }
         }
-      }
-      for cache in authDocCaches {
-        do {
-          try FileManager.default.removeItem(at: cache)
-        } catch {
-          Log.error("ClearCache", "Unable to clear cache for: \(cache)")
-        }
-      }
-    } catch {
-      Log.error("ClearCache", "Unable to clear cache")
+     } catch {
+       Log.error("ClearCache", "Unable to clear cache")
     }
   }
 }

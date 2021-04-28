@@ -23,7 +23,7 @@ extension NYPLBook {
     let downloadedType = downloadedContentType.lowercased()
 
     // if the content type matches one of the supported types exactly, go ahead
-    if NYPLBookAcquisitionPath.supportedTypes().contains(downloadedType) {
+    if NYPLOPDSAcquisitionPath.supportedTypes().contains(downloadedType) {
       return true
     }
 

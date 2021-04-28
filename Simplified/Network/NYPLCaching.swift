@@ -39,11 +39,7 @@ extension HTTPURLResponse {
       }
     }
 
-    if lastModifiedHeader != nil && eTagHeader != nil {
-      return true
-    }
-
-    return false
+    return (lastModifiedHeader != nil && eTagHeader != nil)
   }
 
   /**
@@ -120,11 +116,7 @@ extension HTTPURLResponse {
       return value
     }
 
-    if let value = responseHeaders[header.lowercased()] as? String {
-      return value
-    }
-
-    return nil
+    return responseHeaders[header.lowercased()] as? String
   }
 
   /// Creates a new response by adding caching headers sufficient to avoid
@@ -134,10 +126,11 @@ extension HTTPURLResponse {
   /// that directive is present in `Cache-Control`, otherwise it's 3 hours.
   func modifyingCacheHeaders() -> HTTPURLResponse {
     // don't mess with failed responses
-    guard statusCode >= 200 && statusCode <= 299 else {
+    
+    guard (200...299).contains(statusCode) else {
       return self
     }
-
+    
     // convert existing headers into a [String: String] dictionary we can use
     // later
     let headerPairs: [(String, String)] = self.allHeaderFields.compactMap {
@@ -151,12 +144,7 @@ extension HTTPURLResponse {
     // use `max-age` value if present, otherwise use 3 hours for both
     // `max-age` and `Expires`.
     if self.expiresHeader == nil {
-      let maxAge: TimeInterval = {
-        if let age = self.cacheControlMaxAge {
-          return age
-        }
-        return 60 * 60 * 3
-      }()
+      let maxAge: TimeInterval = self.cacheControlMaxAge ?? 60 * 60 * 3
       let in3HoursDate = Date().addingTimeInterval(maxAge)
       headers["Expires"] = in3HoursDate.rfc1123String
     }
@@ -193,7 +181,7 @@ extension HTTPURLResponse {
 /// responses even when these would not be cached by URLSession despite having a
 /// sufficient set of caching headers per https://tools.ietf.org/html/rfc7234 --
 /// see `HTTPURLResponse::modifyingCacheHeaders()`.
-enum NYPLCachingStrategy: NSInteger {
+@objc enum NYPLCachingStrategy: NSInteger {
   case ephemeral
   case `default`
   case fallback
@@ -209,7 +197,8 @@ class NYPLCaching {
   /// policy will always follow the one defined in the request protocol
   /// implementation.
   /// - Returns: A configuration with 8 max connections per host.
-  class func makeURLSessionConfiguration(caching: NYPLCachingStrategy) -> URLSessionConfiguration {
+  class func makeURLSessionConfiguration(caching: NYPLCachingStrategy,
+                                         requestTimeout: TimeInterval) -> URLSessionConfiguration {
     guard caching != .ephemeral else {
       return .ephemeral
     }
@@ -218,8 +207,8 @@ class NYPLCaching {
     config.shouldUseExtendedBackgroundIdleMode = true
     config.httpMaximumConnectionsPerHost = 8
     config.httpShouldUsePipelining = true
-    config.timeoutIntervalForRequest = 30
-    config.timeoutIntervalForResource = 60
+    config.timeoutIntervalForRequest = requestTimeout
+    config.timeoutIntervalForResource = requestTimeout * 2
     config.requestCachePolicy = .useProtocolCachePolicy
     config.urlCache = makeCache()
 
@@ -251,11 +240,10 @@ class NYPLCaching {
                            diskCapacity: maxDiskCapacity,
                            directory: nil)
       return cache
-    } else {
-      let cache = URLCache(memoryCapacity: maxMemoryCapacity,
-                           diskCapacity: maxDiskCapacity,
-                           diskPath: nil)
-      return cache
+    } 
+    let cache = URLCache(memoryCapacity: maxMemoryCapacity,
+                         diskCapacity: maxDiskCapacity,
+                         diskPath: nil)
+    return cache
     }
-  }
 }

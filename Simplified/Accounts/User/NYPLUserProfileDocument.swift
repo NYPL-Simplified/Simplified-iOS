@@ -66,8 +66,8 @@ import Foundation
   func toJson() -> String {
     let jsonEncoder = JSONEncoder()
     let jsonData = try? jsonEncoder.encode(self)
-    if (jsonData != nil) {
-      return String(data: jsonData!, encoding: .utf8) ?? ""
+    if let jsonData = jsonData {
+      return String(data: jsonData, encoding: .utf8) ?? ""
     }
     return ""
   }

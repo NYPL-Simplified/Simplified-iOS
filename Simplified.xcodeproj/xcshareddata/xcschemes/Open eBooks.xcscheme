@@ -75,6 +75,16 @@
                </Test>
             </SkippedTests>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "59D9CBF425FFDBC500C89B81"
+               BuildableName = "TenPrintCoverTests.xctest"
+               BlueprintName = "TenPrintCoverTests"
+               ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -101,6 +111,11 @@
          <EnvironmentVariable
             key = "MTC_MAX_HIT_COUNT"
             value = "99999"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DYLD_PRINT_STATISTICS_DETAILS"
+            value = "1"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable

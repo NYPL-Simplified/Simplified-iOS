@@ -622,7 +622,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry] locationForIdentifier:self.book.identifier];
   if([location.renderer isEqualToString:renderer]) {
     NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
-    NSString *contentCFI = locationDictionary[@"contentCFI"];
+    NSString *contentCFI = locationDictionary[NYPLBookmarkDictionaryRepresentation.cfiKey];
     if (!contentCFI) {
       contentCFI = @"";
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNilCFI
@@ -631,11 +631,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                  @"Book": self.book.loggableDictionary ?: @"N/A",
                                  @"Registry locationString": location.locationString ?: @"N/A",
                                  @"renderer": location.renderer ?: @"N/A",
-                                 @"openPageRequest idref": locationDictionary[@"idref"] ?: @"N/A",
+                                 @"openPageRequest idref": locationDictionary[NYPLBookmarkDictionaryRepresentation.idrefKey] ?: @"N/A",
                                }];
     }
-    dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
-    NYPLLOG_F(@"Readium Initialize: Open Page Req idref: %@ elementCfi: %@", locationDictionary[@"idref"], contentCFI);
+    dictionary[@"openPageRequest"] = @{
+      NYPLBookmarkDictionaryRepresentation.idrefKey:
+        locationDictionary[NYPLBookmarkDictionaryRepresentation.idrefKey],
+      @"elementCfi": contentCFI
+    };
+    NYPLLOG_F(@"Readium Initialize: Open Page Req idref: %@ elementCfi: %@",
+              locationDictionary[NYPLBookmarkDictionaryRepresentation.idrefKey],
+              contentCFI);
   }
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
@@ -723,7 +729,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSData *data = [location.locationString dataUsingEncoding:NSUTF8StringEncoding];
   if (data) {
     NSDictionary *const locationDictionary = NYPLJSONObjectFromData(data);
-    NSString *idref = locationDictionary[@"idref"];
+    NSString *idref = locationDictionary[NYPLBookmarkDictionaryRepresentation.idrefKey];
     return self.bookMapDictionary[idref][@"tocElementTitle"];
   } else {
     return nil;
@@ -738,8 +744,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   if (location.locationString) {
     locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
   }
-  NSString *contentCFI = NYPLNullToNil(locationDictionary[@"contentCFI"]);
-  NSString *idref = NYPLNullToNil(locationDictionary[@"idref"]);
+  NSString *contentCFI = NYPLNullToNil(locationDictionary[NYPLBookmarkDictionaryRepresentation.cfiKey]);
+  NSString *idref = NYPLNullToNil(locationDictionary[NYPLBookmarkDictionaryRepresentation.idrefKey]);
   NSString *chapter = self.bookMapDictionary[idref][@"tocElementTitle"];
 
   float progressWithinChapter = 0.0;
@@ -1091,8 +1097,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   dictionary[@"package"] = self.package.dictionary;
   dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
-  
-  dictionary[@"openPageRequest"] = @{@"idref": bookmark.idref, @"elementCfi": bookmark.contentCFI};
+  dictionary[@"openPageRequest"] = @{
+    NYPLBookmarkDictionaryRepresentation.idrefKey: bookmark.idref,
+    @"elementCfi": bookmark.contentCFI
+  };
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
     

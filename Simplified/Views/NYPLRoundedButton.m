@@ -1,7 +1,7 @@
-@import PureLayout;
-
 #import "NYPLRoundedButton.h"
 #import "NSDate+NYPLDateAdditions.h"
+
+static const CGFloat NYPLRoundedButtonPadding = 6;
 
 @interface NYPLRoundedButton ()
 
@@ -49,9 +49,12 @@
 
 - (void)updateViews
 {
+  const CGFloat padx = NYPLRoundedButtonPadding + 2;
+  const CGFloat pady = NYPLRoundedButtonPadding;
+
   if(self.type == NYPLRoundedButtonTypeNormal || self.fromDetailView) {
     if (!self.fromDetailView) {
-      self.contentEdgeInsets = UIEdgeInsetsZero;
+      self.contentEdgeInsets = UIEdgeInsetsMake(pady, padx, pady, padx);
     } else {
       self.contentEdgeInsets = UIEdgeInsetsMake(8, 20, 8, 20);
     }
@@ -64,11 +67,12 @@
     self.label.text = [self.endDate shortTimeUntilString];
     [self.label sizeToFit];
 
-    self.iconView.frame = CGRectMake(8, 3, 14, 14);
+    self.iconView.frame = CGRectMake(padx, pady/2, 14, 14);
     CGRect frame = self.label.frame;
     frame.origin = CGPointMake(self.iconView.center.x - frame.size.width/2, CGRectGetMaxY(self.iconView.frame));
     self.label.frame = frame;
-    self.contentEdgeInsets = UIEdgeInsetsMake(6, self.iconView.frame.size.width + 8, 6, 0);
+    self.contentEdgeInsets = UIEdgeInsetsMake(pady, CGRectGetMaxX(self.iconView.frame) + padx,
+                                              pady, padx);
   }
 }
 
@@ -99,7 +103,7 @@
 - (CGSize)sizeThatFits:(CGSize const)size
 {
   CGSize s = [super sizeThatFits:size];
-  s.width += 16;
+  s.width += NYPLRoundedButtonPadding * 2;
   return s;
 }
 

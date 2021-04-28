@@ -22,7 +22,7 @@ class NYPLFake {
 
   class var opdsEntry: NYPLOPDSEntry {
     let bundle = Bundle(for: NYPLFake.self)
-    let url = bundle.url(forResource: "NYPLBookAcquisitionPathEntry",
+    let url = bundle.url(forResource: "NYPLOPDSAcquisitionPathEntry",
                          withExtension: "xml")!
     let xml = try! NYPLXML(data: Data(contentsOf: url))
     let entry = NYPLOPDSEntry(xml: xml)
@@ -31,7 +31,7 @@ class NYPLFake {
 
   class var opdsEntryMinimal: NYPLOPDSEntry {
     let bundle = Bundle(for: NYPLFake.self)
-    let url = bundle.url(forResource: "NYPLBookAcquisitionPathEntryMinimal",
+    let url = bundle.url(forResource: "NYPLOPDSAcquisitionPathEntryMinimal",
                          withExtension: "xml")!
     return try! NYPLOPDSEntry(xml: NYPLXML(data: Data(contentsOf: url)))
   }

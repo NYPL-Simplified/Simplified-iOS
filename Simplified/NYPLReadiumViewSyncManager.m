@@ -84,7 +84,8 @@ const double RequestTimeInterval = 120;
     switch (self.syncStatus) {
       case NYPLReadPositionSyncStatusIdle: {
         self.syncStatus = NYPLReadPositionSyncStatusBusy;
-        [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:location];
+        [NYPLAnnotations postReadingPositionForBook:self.bookID
+                                      selectorValue:location];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(RequestTimeInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
           @synchronized(self) {
             self.syncStatus = NYPLReadPositionSyncStatusIdle;
@@ -111,7 +112,7 @@ const double RequestTimeInterval = 120;
 {
   __weak NYPLReadiumViewSyncManager *const weakSelf = self;
 
-  [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL completionHandler:^(NSDictionary * _Nullable responseObject) {
+  [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL completion:^(NYPLReadiumBookmark * _Nullable bookmark) {
 
     // Still on a background thread
 
@@ -119,15 +120,20 @@ const double RequestTimeInterval = 120;
       return;
     }
 
-    if (!responseObject) {
-      NYPLLOG(@"No Server Annotation for this book exists.");
+    if (!bookmark) {
+      NYPLLOG_F(@"No reading position annotation exists on the server for bookID: %@.",
+                bookID);
       weakSelf.shouldPostLastRead = YES;
       return;
     }
 
-    NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:[responseObject[@"serverCFI"] dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
-    NSString* deviceIDString = responseObject[@"device"];
-    NSString* serverLocationString = responseObject[@"serverCFI"];
+    NSString* serverLocationString = bookmark.location;
+    NSDictionary *responseJSON = [NSJSONSerialization
+                                  JSONObjectWithData:[serverLocationString
+                                                      dataUsingEncoding:NSUTF8StringEncoding]
+                                  options:NSJSONReadingMutableContainers error:nil];
+    NSString* deviceIDString = bookmark.device;
+
     NSString* currentLocationString = location.locationString;
     NYPLLOG_F(@"serverLocationString %@",serverLocationString);
     NYPLLOG_F(@"currentLocationString %@",currentLocationString);
@@ -194,12 +200,13 @@ const double RequestTimeInterval = 120;
                               NSDictionary *const locationDictionary =
                               NYPLJSONObjectFromData([location dataUsingEncoding:NSUTF8StringEncoding]);
 
-                              NSString *contentCFI = locationDictionary[@"contentCFI"];
-                              if (!contentCFI) {
-                                contentCFI = @"";
-                              }
-                              dictionary[@"openPageRequest"] =
-                              @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
+                              NSString *contentCFI = locationDictionary[NYPLBookmarkDictionaryRepresentation.cfiKey];
+
+                              dictionary[@"openPageRequest"] = @{
+                                NYPLBookmarkDictionaryRepresentation.idrefKey:
+                                  locationDictionary[NYPLBookmarkDictionaryRepresentation.idrefKey],
+                                NYPLBookmarkDictionaryRepresentation.cfiKey:
+                                  contentCFI ?: @""};
 
                               if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
                                 [self.delegate patronDecidedNavigation:YES withNavDict:dictionary];
@@ -223,16 +230,17 @@ const double RequestTimeInterval = 120;
 {
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
   if (currentAccount.details.syncPermissionGranted) {
-    [NYPLAnnotations postBookmarkForBook:bookID toURL:nil bookmark:bookmark
-                       completionHandler:^(NSString * _Nullable serverAnnotationID) {
-                         if (serverAnnotationID) {
-                           NYPLLOG_F(@"Bookmark upload success: %@", location);
-                         } else {
-                           NYPLLOG_F(@"Bookmark failed to upload: %@", location);
-                         }
-                         bookmark.annotationId = serverAnnotationID;
-                         [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
-                       }];
+    [NYPLAnnotations postBookmark:bookmark
+                        forBookID:bookID
+                       completion:^(NSString * _Nullable serverAnnotationID) {
+      if (serverAnnotationID) {
+        NYPLLOG_F(@"Bookmark upload success: %@", location);
+      } else {
+        NYPLLOG_F(@"Bookmark failed to upload: %@", location);
+      }
+      bookmark.annotationId = serverAnnotationID;
+      [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
+    }];
   } else {
     [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
     NYPLLOG(@"Bookmark saving locally. Sync is not enabled for account.");
@@ -346,7 +354,8 @@ const double RequestTimeInterval = 120;
 {
   @synchronized(self) {
     if (self.queuedReadingPosition) {
-      [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:self.queuedReadingPosition];
+      [NYPLAnnotations postReadingPositionForBook:self.bookID
+                                    selectorValue:self.queuedReadingPosition];
       self.queuedReadingPosition = nil;
     }
   }
