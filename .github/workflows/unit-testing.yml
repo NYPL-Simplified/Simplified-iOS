@@ -35,7 +35,7 @@ jobs:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Carthage Bootstrap
-        uses: ettore/carthage-bootstrap@main
+        uses: NYPL-Simplified/carthage-bootstrap@main
         with:
           github-token: ${{ secrets.IOS_DEV_CI_PAT }}
           platform: iOS
