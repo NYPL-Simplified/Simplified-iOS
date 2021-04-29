@@ -46,12 +46,11 @@ jobs:
         env:
           BUILD_CONTEXT: ci
       - name: Carthage Bootstrap
-        uses: devbotsxyz/carthage-bootstrap@v1
+        uses: ettore/carthage-bootstrap@main
         with:
           github-token: ${{ secrets.IOS_DEV_CI_PAT }}
           platform: iOS
-          cache: false
-          verbose: true
+          use-xcframeworks: true
       - name: Archive SimplyE
         run: ./scripts/xcode-archive.sh simplye
         env:

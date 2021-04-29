@@ -33,13 +33,13 @@ jobs:
         run: ./scripts/build-3rd-party-dependencies.sh
         env:
           BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Carthage Bootstrap
-        uses: devbotsxyz/carthage-bootstrap@v1
+        uses: ettore/carthage-bootstrap@main
         with:
           github-token: ${{ secrets.IOS_DEV_CI_PAT }}
           platform: iOS
-          cache: false
-          verbose: true
+          use-xcframeworks: true
       - name: Run SimplyE tests
         run: ./scripts/xcode-test.sh simplye
         env:
