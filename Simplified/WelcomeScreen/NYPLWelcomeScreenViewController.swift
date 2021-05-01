@@ -184,8 +184,16 @@ import PureLayout
       return
     }
     
-    let pickLibrary = {
-      let listVC = NYPLWelcomeScreenAccountList { account in
+    let presentLibraryFinder = {
+      var userAccounts = [Account]()
+      if let simplyEAccount = AccountsManager.shared.account(AccountsManager.NYPLAccountUUIDs[2]) {
+        userAccounts.append(simplyEAccount)
+      }
+      let finderBusinessLogic = NYPLLibraryFinderBusinessLogic(userAccounts: userAccounts)
+      let finderVC = NYPLLibraryFinderViewController(dataProvider: finderBusinessLogic) { [weak self] account in
+        guard let self = self else {
+          return
+        }
         if account.details != nil {
           self.completion?(account)
         } else {
@@ -208,11 +216,11 @@ import PureLayout
           }
         }
       }
-      self.navigationController?.pushViewController(listVC, animated: true)
+      self.navigationController?.pushViewController(finderVC, animated: true)
     }
 
     if AccountsManager.shared.accountsHaveLoaded {
-      pickLibrary()
+      presentLibraryFinder()
     } else {
       // Show loading overlay while loading library list, which is required for pickLibrary
       let loadingOverlay = addLoadingOverlayView()
@@ -223,7 +231,7 @@ import PureLayout
             self.showLoadingFailureAlert()
             return
           }
-          pickLibrary()
+          presentLibraryFinder()
         }
       }
     }
