@@ -17,6 +17,7 @@ protocol NYPLLibraryFinderDataProviding {
 }
 
 class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
+  // TODO: Use `let` instead of `var` if userAccounts is not intended to change
   var userAccounts: [Account]
   var newLibraryAccounts: [Account]
   

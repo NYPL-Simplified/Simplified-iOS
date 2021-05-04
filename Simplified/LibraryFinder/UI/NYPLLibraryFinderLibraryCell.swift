@@ -75,21 +75,6 @@ class NYPLLibraryFinderLibraryCell: UICollectionViewCell {
     backgroundColor = NYPLLibraryFinderConfiguration.cellBackgroundColor
     layer.cornerRadius = NYPLLibraryFinderConfiguration.cellCornerRadius(type: self.type)
     
-    let leftStackView = UIStackView(arrangedSubviews: [nameLabel, descriptionLabel])
-    leftStackView.axis = .vertical
-    leftStackView.spacing = stackViewSpacing
-    leftStackView.alignment = .leading
-    
-    let rightStackView = UIStackView(arrangedSubviews: [distanceLabel, postalCodeLabel, UIView()])
-    rightStackView.axis = .vertical
-    rightStackView.spacing = stackViewSpacing
-    rightStackView.alignment = .trailing
-    
-    addSubview(divider)
-    addSubview(leftStackView)
-    addSubview(rightStackView)
-    addSubview(badgeLabel)
-    
     divider.autoPinEdgesToSuperviewEdges(with: .init(top: 0, left: 15, bottom: 0, right: 15), excludingEdge: .bottom)
     divider.heightAnchor.constraint(equalToConstant: NYPLLibraryFinderConfiguration.borderWidth).isActive = true
     
@@ -153,7 +138,26 @@ class NYPLLibraryFinderLibraryCell: UICollectionViewCell {
   private lazy var divider: UIView = {
     let view = UIView()
     view.backgroundColor = NYPLLibraryFinderConfiguration.borderColor
+    addSubview(view)
     return view
+  }()
+  
+  private lazy var leftStackView: UIStackView = {
+    let stackView = UIStackView(arrangedSubviews: [nameLabel, descriptionLabel])
+    stackView.axis = .vertical
+    stackView.spacing = stackViewSpacing
+    stackView.alignment = .leading
+    addSubview(stackView)
+    return stackView
+  }()
+  
+  private lazy var rightStackView: UIStackView = {
+    let stackView = UIStackView(arrangedSubviews: [distanceLabel, postalCodeLabel, UIView()])
+    stackView.axis = .vertical
+    stackView.spacing = stackViewSpacing
+    stackView.alignment = .trailing
+    addSubview(stackView)
+    return stackView
   }()
   
   private lazy var badgeLabel: UILabel = {
@@ -163,6 +167,7 @@ class NYPLLibraryFinderLibraryCell: UICollectionViewCell {
     label.textColor = .white
     label.backgroundColor = .purple
     label.clipsToBounds = true
+    addSubview(label)
     return label
   }()
   

@@ -142,7 +142,6 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   }
   
   override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    super.scrollViewWillBeginDragging(scrollView)
     searchBar.resignFirstResponder()
   }
   
