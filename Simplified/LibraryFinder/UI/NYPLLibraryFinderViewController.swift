@@ -209,7 +209,7 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   
   lazy var searchBar : UISearchBar = {
     let searchBar = UISearchBar()
-    searchBar.placeholder = NSLocalizedString("Location, library name or zip code", comment: "Placeholder text for search bar")
+    searchBar.placeholder = NSLocalizedString("Enter library, city, county, or ZIP code", comment: "Placeholder text for search bar")
     searchBar.searchBarStyle = .minimal
     searchBar.delegate = self
     return searchBar
@@ -218,7 +218,7 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   lazy var backgroundLabel: UILabel = {
     let label = UILabel()
     label.numberOfLines = 0
-    label.text = NSLocalizedString("You can search for your library by name, branch location, or your own location", comment: "Tips for searching in background")
+    label.text = NSLocalizedString("You can search for libraries by library name or location or by your preferred location.", comment: "Tips for searching in background")
     label.textAlignment = .center
     label.textColor = .lightGray
     return label

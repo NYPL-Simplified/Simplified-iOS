@@ -262,5 +262,7 @@
 //Library Finder
 "Find a Library" = "Trova una biblioteca";
 "Failed to update library list" = "Si è verificato durante l'aggiornamento della lista delle biblioteche";
-"Location, library name or zip code" = "Luogo, nome della biblioteca o CAP";
-"You can search for your library by name, branch location, or your own location" = "Puoi cercare la tua biblioteca per nome o luogo";
+"Enter library, city, county, or ZIP code" = "Inserisci biblioteca, città, e CAP";
+"You can search for libraries by library name or location or by your preferred location." = "Puoi cercare la biblioteca per nome o luogo.";
+"My Libraries" = "Le mie biblioteche";
+"Add New Library" = "Aggiungi nuova biblioteca";
