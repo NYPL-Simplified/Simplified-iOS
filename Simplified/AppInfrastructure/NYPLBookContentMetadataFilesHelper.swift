@@ -24,7 +24,7 @@ import Foundation
     let bundleID = Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String
     var dirURL = URL(fileURLWithPath: paths[0]).appendingPathComponent(bundleID)
     
-    if (account != AccountsManager.NYPLAccountUUIDs[0]) {
+    if (account != AccountsManager.shared.NYPLAccountUUID) {
       dirURL = dirURL.appendingPathComponent(String(account))
     }
     

@@ -48,6 +48,7 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   }
 
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    super.collectionView(collectionView, didSelectItemAt: indexPath)
     collectionView.deselectItem(at: indexPath, animated: true)
     
     if indexPath.section == NYPLLibraryFinderSection.newLibrary.rawValue {
@@ -71,8 +72,11 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   }
   
   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NYPLLibraryFinderLibraryCell.reuseId, for: indexPath) as? NYPLLibraryFinderLibraryCell,
-      let sectionType = NYPLLibraryFinderSection.init(rawValue: indexPath.section) else {
+    guard let cell = collectionView.dequeueReusableCell(
+      withReuseIdentifier: NYPLLibraryFinderLibraryCell.reuseId,
+      for: indexPath) as? NYPLLibraryFinderLibraryCell,
+      let sectionType = NYPLLibraryFinderSection.init(rawValue: indexPath.section) else
+    {
       return UICollectionViewCell()
     }
     switch sectionType {
@@ -102,39 +106,43 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   }
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-    var height: CGFloat = 0.0
-    if section == NYPLLibraryFinderSection.myLibrary.rawValue {
-      height = 10.0
-    }
-    return CGSize(width: collectionView.bounds.width - NYPLLibraryFinderConfiguration.collectionViewContentInset * 2, height: height)
+    let height: CGFloat = section == NYPLLibraryFinderSection.myLibrary.rawValue ? 10 : 0
+    return CGSize(width: collectionView.bounds.width - (NYPLLibraryFinderConfiguration.collectionViewContentInset * 2), height: height)
   }
   
   override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
     if indexPath.section == NYPLLibraryFinderSection.searchBar.rawValue {
-      let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: searchBar.reuseId, for: indexPath)
+      let view = collectionView.dequeueReusableSupplementaryView(
+        ofKind: kind,
+        withReuseIdentifier: searchBar.reuseId,
+        for: indexPath)
       view.addSubview(searchBar)
       searchBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0))
       return view
     }
     
     if kind == UICollectionView.elementKindSectionHeader,
-      let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                   withReuseIdentifier: NYPLLibraryFinderSectionHeaderView.reuseId,
-                                                                   for: indexPath) as? NYPLLibraryFinderSectionHeaderView {
+      let header = collectionView.dequeueReusableSupplementaryView(
+        ofKind: kind,
+        withReuseIdentifier: NYPLLibraryFinderSectionHeaderView.reuseId,
+        for: indexPath) as? NYPLLibraryFinderSectionHeaderView
+    {
       let type: NYPLLibraryFinderLibraryCellType = indexPath.section == NYPLLibraryFinderSection.myLibrary.rawValue ? .myLibrary : .newLibrary
       return header.configured(for: type, displayer: self)
     }
     
     if kind == UICollectionView.elementKindSectionFooter {
-      return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                             withReuseIdentifier: NYPLLibraryFinderSectionFooterView.reuseId,
-                                                             for: indexPath)
+      return collectionView.dequeueReusableSupplementaryView(
+        ofKind: kind,
+        withReuseIdentifier: NYPLLibraryFinderSectionFooterView.reuseId,
+        for: indexPath)
     }
     
     return UICollectionReusableView()
   }
   
   override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    super.scrollViewWillBeginDragging(scrollView)
     searchBar.resignFirstResponder()
   }
   
@@ -145,7 +153,7 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
     activityIndicator.isHidden = true
     collectionView.isUserInteractionEnabled = true
     if let error = error {
-      let alert = NYPLAlertUtils.alert(title: "LibraryListUpdateFailed", error: error as NSError)
+      let alert = NYPLAlertUtils.alert(title: "Failed to update library list", error: error as NSError)
       present(alert, animated: true, completion: nil)
       return
     }
@@ -223,10 +231,10 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
 extension NYPLLibraryFinderViewController: NYPLLibraryFinderDisplaying {
   func toggleLibrarySection(shouldShow: Bool) {
     isMyLibraryHidden = !isMyLibraryHidden
-    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseIn, animations: {
+    UIView.animate(withDuration: NYPLLibraryFinderConfiguration.animationDuration, delay: 0, options: .curveEaseIn, animations: {
       self.collectionView.reloadSections([NYPLLibraryFinderSection.myLibrary.rawValue])
     }) { (_) in
-      // Since the library cells are dynamic height due to it's content,
+      // Since the library cells are dynamic height due to their content,
       // The starting position of "Add New Library" section could be off after the first section expanded.
       // That's why we need to invalidate the layout after expanding the first section
       self.collectionView.collectionViewLayout.invalidateLayout()

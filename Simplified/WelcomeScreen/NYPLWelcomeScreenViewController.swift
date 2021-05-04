@@ -186,7 +186,7 @@ import PureLayout
     
     let presentLibraryFinder = {
       var userAccounts = [Account]()
-      if let simplyEAccount = AccountsManager.shared.account(AccountsManager.NYPLAccountUUIDs[2]) {
+      if let simplyEAccount = AccountsManager.shared.account(AccountsManager.shared.SimplyEAccountUUID) {
         userAccounts.append(simplyEAccount)
       }
       let finderBusinessLogic = NYPLLibraryFinderBusinessLogic(userAccounts: userAccounts)
@@ -206,10 +206,10 @@ import PureLayout
                 self.showLoadingFailureAlert()
                 return
               }
-              if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
-                NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
+              if account.uuid != AccountsManager.shared.SimplyEAccountUUID {
+                NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.shared.SimplyEAccountUUID]
               } else {
-                NYPLSettings.shared.settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
+                NYPLSettings.shared.settingsAccountsList = [AccountsManager.shared.SimplyEAccountUUID]
               }
               self.completion?(account)
             }
@@ -238,7 +238,7 @@ import PureLayout
   }
 
   func instantClassicsTapped() {
-    let classicsId = AccountsManager.NYPLAccountUUIDs[2]
+    let classicsId = AccountsManager.shared.SimplyEAccountUUID
     var loadingOverlay: UIView? = nil
     
     let selectInstantClassics = {

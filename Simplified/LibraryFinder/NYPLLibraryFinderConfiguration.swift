@@ -9,6 +9,8 @@
 import Foundation
 
 class NYPLLibraryFinderConfiguration {
+  static let animationDuration: Double = 0.3
+  
   static let collectionViewContentInset: CGFloat = 12.0
   
   static let borderWidth: CGFloat = 1.0

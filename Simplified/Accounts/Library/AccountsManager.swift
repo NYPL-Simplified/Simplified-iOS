@@ -23,6 +23,8 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   ]
 
   let NYPLAccountUUID = AccountsManager.NYPLAccountUUIDs[0]
+  
+  let SimplyEAccountUUID = AccountsManager.NYPLAccountUUIDs[2]
 
   static let shared = AccountsManager()
   

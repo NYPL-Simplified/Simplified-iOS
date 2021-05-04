@@ -258,3 +258,9 @@
 "Open eBooks provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works." =
 "Open eBooks fornisce libri gratuitamente ai bambini che ne hanno più bisogno.\n\nLa collezione include migliaia di titoli popolari e rinomati, e centinaia di lavori nel dominio pubblico.\n\nBambini provenienti da aree disagiate possono accedere in vari modi.";
 "You need to login to access the collection." = "Scegli la modalità di accesso.";
+
+//Library Finder
+"Find a Library" = "Trova una biblioteca";
+"Failed to update library list" = "Si è verificato durante l'aggiornamento della lista delle biblioteche";
+"Location, library name or zip code" = "Luogo, nome della biblioteca o CAP";
+"You can search for your library by name, branch location, or your own location" = "Puoi cercare la tua biblioteca per nome o luogo";
