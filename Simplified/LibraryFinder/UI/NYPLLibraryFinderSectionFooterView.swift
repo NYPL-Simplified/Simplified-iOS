@@ -9,8 +9,6 @@
 import UIKit
 
 class NYPLLibraryFinderSectionFooterView: UICollectionReusableView {
-  static let reuseIdentifier = "NYPLLibraryFinderSectionFooterViewReuseIdentifier"
-  
   override init(frame: CGRect) {
     super.init(frame: frame)
     

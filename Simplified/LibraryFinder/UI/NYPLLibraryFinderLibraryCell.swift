@@ -14,8 +14,6 @@ enum NYPLLibraryFinderLibraryCellType {
 }
 
 class NYPLLibraryFinderLibraryCell: UICollectionViewCell {
-  static let reuseIdentifier = "NYPLLibraryFinderLibraryCellReuseIdentifier"
-  
   private let stackViewSpacing: CGFloat = 4.0
   
   private var badgeLabelWidthConstraint: NSLayoutConstraint?
@@ -117,19 +115,12 @@ class NYPLLibraryFinderLibraryCell: UICollectionViewCell {
   }
   
   private func configureBadgeLabel(text: String?) {
-    if let text = text {
-      badgeLabel.text = text
-      let paddedWidth = badgeLabel.intrinsicContentSize.width + 2 * 10
-      badgeLabelWidthConstraint?.constant = paddedWidth
-      badgeLabelHeightConstraint?.constant = 20
-      distanceLabel.isHidden = true
-      postalCodeLabel.isHidden = true
-    } else {
-      badgeLabelWidthConstraint?.constant = 0
-      badgeLabelHeightConstraint?.constant = 0
-      distanceLabel.isHidden = false
-      postalCodeLabel.isHidden = false
-    }
+    let isTextNil = text == nil
+    badgeLabel.text = isTextNil ? nil : text
+    badgeLabelWidthConstraint?.constant = isTextNil ? 0 : badgeLabel.intrinsicContentSize.width + (2 * 10)
+    badgeLabelHeightConstraint?.constant = isTextNil ? 0 : 20
+    distanceLabel.isHidden = !isTextNil
+    postalCodeLabel.isHidden = !isTextNil
   }
   
   private func configureBorder(for type: NYPLLibraryFinderLibraryCellType) {

@@ -15,8 +15,6 @@ protocol NYPLLibraryFinderDisplaying: class {
 }
 
 class NYPLLibraryFinderSectionHeaderView: UICollectionReusableView {
-  static let reuseIdentifier = "NYPLLibraryFinderSectionHeaderViewReuseIdentifier"
-  
   private weak var displayer: NYPLLibraryFinderDisplaying?
   private var titleLabelLeadingConstraint: NSLayoutConstraint?
   private var type: NYPLLibraryFinderLibraryCellType = .myLibrary
@@ -39,24 +37,26 @@ class NYPLLibraryFinderSectionHeaderView: UICollectionReusableView {
   
   // MARK: - Configuration
   
-  func configureView(type: NYPLLibraryFinderLibraryCellType, displayer: NYPLLibraryFinderDisplaying) {
-    if type == .myLibrary {
+  @discardableResult func configured(for type: NYPLLibraryFinderLibraryCellType, displayer: NYPLLibraryFinderDisplaying) -> UICollectionReusableView {
+    switch type {
+    case .myLibrary:
       titleLabelLeadingConstraint?.constant = 15.0
       expandButton.isHidden = false
       expandButton.isEnabled = true
       backgroundColor = NYPLLibraryFinderConfiguration.cellBackgroundColor
-      titleLabel.text = "My Libraries"
-    } else {
+      titleLabel.text = NSLocalizedString("My Libraries", comment: "Title for my libraries section header")
+    case .newLibrary:
       titleLabelLeadingConstraint?.constant = 5.0
       expandButton.isHidden = true
       expandButton.isEnabled = false
       backgroundColor = .clear
-      titleLabel.text = "Add New Library"
+      titleLabel.text = NSLocalizedString("Add New Library", comment: "Title for my libraries section header")
     }
     self.displayer = displayer
     self.type = type
     rotateExpandButton()
     updateCustomBorder()
+    return self
   }
   
   @objc private func didTapExpandButton() {
@@ -85,13 +85,14 @@ class NYPLLibraryFinderSectionHeaderView: UICollectionReusableView {
   
   private func updateCustomBorder() {
     layer.removeCustomBorders()
-    if type == .myLibrary {
-      layer.cornerRadius = 6.0
-      layer.addBorder(side: .notBottom,
-                      thickness: NYPLLibraryFinderConfiguration.borderWidth,
-                      color: NYPLLibraryFinderConfiguration.borderColor.cgColor,
-                      maskedCorners: [.layerMinXMinYCorner, .layerMaxXMinYCorner])
+    guard type == .myLibrary else {
+      return
     }
+    layer.cornerRadius = 6.0
+    layer.addBorder(side: .notBottom,
+                    thickness: NYPLLibraryFinderConfiguration.borderWidth,
+                    color: NYPLLibraryFinderConfiguration.borderColor.cgColor,
+                    maskedCorners: [.layerMinXMinYCorner, .layerMaxXMinYCorner])
   }
   
   private func setupUI() {

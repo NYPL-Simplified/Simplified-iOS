@@ -163,7 +163,8 @@ extension CALayer {
   
   private func addCorner(_ corner: Corner, thickness: CGFloat, color: CGColor) {
     // Set default to top left
-    let width = frame.size.width; let height = frame.size.height
+    let width = frame.size.width
+    let height = frame.size.height
     var x = cornerRadius
     var y = cornerRadius
     var startAngle: CGFloat = .pi; var endAngle: CGFloat = .pi*3/2

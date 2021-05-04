@@ -71,15 +71,19 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   }
   
   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NYPLLibraryFinderLibraryCell.reuseIdentifier, for: indexPath) as? NYPLLibraryFinderLibraryCell else {
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NYPLLibraryFinderLibraryCell.reuseId, for: indexPath) as? NYPLLibraryFinderLibraryCell,
+      let sectionType = NYPLLibraryFinderSection.init(rawValue: indexPath.section) else {
       return UICollectionViewCell()
     }
-    if indexPath.section == NYPLLibraryFinderSection.myLibrary.rawValue {
+    switch sectionType {
+    case .myLibrary:
       let account = dataProvider.userAccounts[indexPath.item]
       cell.configureCell(type: .myLibrary, account: account)
-    } else if indexPath.section == NYPLLibraryFinderSection.newLibrary.rawValue {
+    case .newLibrary:
       let account = dataProvider.newLibraryAccounts[indexPath.item]
       cell.configureCell(type: .newLibrary, account: account)
+    default:
+      break
     }
     return cell
   }
@@ -94,7 +98,7 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
     if section == NYPLLibraryFinderSection.newLibrary.rawValue && dataProvider.newLibraryAccounts.count == 0 {
       return CGSize.zero
     }
-    return CGSize(width: collectionView.bounds.width - NYPLLibraryFinderConfiguration.collectionViewContentInset * 2, height: 50)
+    return CGSize(width: collectionView.bounds.width - (NYPLLibraryFinderConfiguration.collectionViewContentInset * 2), height: 50)
   }
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
@@ -107,7 +111,7 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   
   override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
     if indexPath.section == NYPLLibraryFinderSection.searchBar.rawValue {
-      let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: searchBarReuseIdentifier, for: indexPath)
+      let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: searchBar.reuseId, for: indexPath)
       view.addSubview(searchBar)
       searchBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0))
       return view
@@ -115,18 +119,16 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
     
     if kind == UICollectionView.elementKindSectionHeader,
       let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                   withReuseIdentifier: NYPLLibraryFinderSectionHeaderView.reuseIdentifier,
+                                                                   withReuseIdentifier: NYPLLibraryFinderSectionHeaderView.reuseId,
                                                                    for: indexPath) as? NYPLLibraryFinderSectionHeaderView {
       let type: NYPLLibraryFinderLibraryCellType = indexPath.section == NYPLLibraryFinderSection.myLibrary.rawValue ? .myLibrary : .newLibrary
-      header.configureView(type: type, displayer: self)
-      return header
+      return header.configured(for: type, displayer: self)
     }
     
-    if kind == UICollectionView.elementKindSectionFooter,
-      let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                   withReuseIdentifier: NYPLLibraryFinderSectionFooterView.reuseIdentifier,
-                                                                   for: indexPath) as? NYPLLibraryFinderSectionFooterView {
-      return footer
+    if kind == UICollectionView.elementKindSectionFooter {
+      return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                             withReuseIdentifier: NYPLLibraryFinderSectionFooterView.reuseId,
+                                                             for: indexPath)
     }
     
     return UICollectionReusableView()
@@ -155,16 +157,16 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   
   private func registerCollectionViewCell() {
     collectionView.register(NYPLLibraryFinderLibraryCell.self,
-                            forCellWithReuseIdentifier: NYPLLibraryFinderLibraryCell.reuseIdentifier)
+                            forCellWithReuseIdentifier: NYPLLibraryFinderLibraryCell.reuseId)
     collectionView.register(NYPLLibraryFinderSectionHeaderView.self,
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                            withReuseIdentifier: NYPLLibraryFinderSectionHeaderView.reuseIdentifier)
+                            withReuseIdentifier: NYPLLibraryFinderSectionHeaderView.reuseId)
     collectionView.register(NYPLLibraryFinderSectionFooterView.self,
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-                            withReuseIdentifier: NYPLLibraryFinderSectionFooterView.reuseIdentifier)
+                            withReuseIdentifier: NYPLLibraryFinderSectionFooterView.reuseId)
     collectionView.register(UICollectionReusableView.self,
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                            withReuseIdentifier: searchBarReuseIdentifier)
+                            withReuseIdentifier: searchBar.reuseId)
   }
   
   private func setupCollectionViewUI() {
@@ -197,8 +199,6 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   }
   
   let activityIndicator = UIActivityIndicatorView()
-  
-  let searchBarReuseIdentifier = "NYPLLibraryFinderSearchBarReuseIdentifier"
   
   lazy var searchBar : UISearchBar = {
     let searchBar = UISearchBar()

@@ -276,3 +276,5 @@
 "LibraryListUpdateFailed" = "Failed to update library list";
 "Location, library name or zip code" = "Location, library name or zip code";
 "You can search for your library by name, branch location, or your own location" = "You can search for your library by name, branch location, or your own location";
+"My Libraries" = "My Libraries";
+"Add New Library" = "Add New Library";
