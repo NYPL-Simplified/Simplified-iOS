@@ -221,9 +221,8 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
 // MARK: - NYPLLibraryFinderDisplaying
 
 extension NYPLLibraryFinderViewController: NYPLLibraryFinderDisplaying {
-  
-  func showMyLibrarySection() {
-    isMyLibraryHidden = false
+  func toggleLibrarySection(shouldShow: Bool) {
+    isMyLibraryHidden = !isMyLibraryHidden
     UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseIn, animations: {
       self.collectionView.reloadSections([NYPLLibraryFinderSection.myLibrary.rawValue])
     }) { (_) in
@@ -232,13 +231,6 @@ extension NYPLLibraryFinderViewController: NYPLLibraryFinderDisplaying {
       // That's why we need to invalidate the layout after expanding the first section
       self.collectionView.collectionViewLayout.invalidateLayout()
     }
-  }
-  
-  func hideMyLibrarySection() {
-    isMyLibraryHidden = true
-    UIView.animate(withDuration: 0.3, animations: {
-      self.collectionView.reloadSections([NYPLLibraryFinderSection.myLibrary.rawValue])
-    })
   }
 }
 

@@ -9,8 +9,7 @@
 import UIKit
 
 protocol NYPLLibraryFinderDisplaying: class {
-  func showMyLibrarySection()
-  func hideMyLibrarySection()
+  func toggleLibrarySection(shouldShow: Bool)
   var isMyLibraryHidden: Bool { get }
 }
 
@@ -63,11 +62,7 @@ class NYPLLibraryFinderSectionHeaderView: UICollectionReusableView {
     guard let displayer = displayer else {
       return
     }
-    if displayer.isMyLibraryHidden {
-      displayer.showMyLibrarySection()
-    } else {
-      displayer.hideMyLibrarySection()
-    }
+    displayer.toggleLibrarySection(shouldShow: displayer.isMyLibraryHidden)
   }
   
   // MARK: - UI
