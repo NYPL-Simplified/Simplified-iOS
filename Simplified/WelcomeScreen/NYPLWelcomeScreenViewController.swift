@@ -184,8 +184,16 @@ import PureLayout
       return
     }
     
-    let pickLibrary = {
-      let listVC = NYPLWelcomeScreenAccountList { account in
+    let presentLibraryFinder = {
+      var userAccounts = [Account]()
+      if let simplyEAccount = AccountsManager.shared.account(AccountsManager.shared.SimplyEAccountUUID) {
+        userAccounts.append(simplyEAccount)
+      }
+      let finderBusinessLogic = NYPLLibraryFinderBusinessLogic(userAccounts: userAccounts)
+      let finderVC = NYPLLibraryFinderViewController(dataProvider: finderBusinessLogic) { [weak self] account in
+        guard let self = self else {
+          return
+        }
         if account.details != nil {
           self.completion?(account)
         } else {
@@ -198,21 +206,21 @@ import PureLayout
                 self.showLoadingFailureAlert()
                 return
               }
-              if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
-                NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
+              if account.uuid != AccountsManager.shared.SimplyEAccountUUID {
+                NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.shared.SimplyEAccountUUID]
               } else {
-                NYPLSettings.shared.settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
+                NYPLSettings.shared.settingsAccountsList = [AccountsManager.shared.SimplyEAccountUUID]
               }
               self.completion?(account)
             }
           }
         }
       }
-      self.navigationController?.pushViewController(listVC, animated: true)
+      self.navigationController?.pushViewController(finderVC, animated: true)
     }
 
     if AccountsManager.shared.accountsHaveLoaded {
-      pickLibrary()
+      presentLibraryFinder()
     } else {
       // Show loading overlay while loading library list, which is required for pickLibrary
       let loadingOverlay = addLoadingOverlayView()
@@ -223,14 +231,14 @@ import PureLayout
             self.showLoadingFailureAlert()
             return
           }
-          pickLibrary()
+          presentLibraryFinder()
         }
       }
     }
   }
 
   func instantClassicsTapped() {
-    let classicsId = AccountsManager.NYPLAccountUUIDs[2]
+    let classicsId = AccountsManager.shared.SimplyEAccountUUID
     var loadingOverlay: UIView? = nil
     
     let selectInstantClassics = {

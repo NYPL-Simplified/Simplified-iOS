@@ -270,3 +270,11 @@
 
 // Announcement
 "Announcement" = "Announcement";
+
+// Library Finder
+"Find a Library" = "Find a Library";
+"Failed to update library list" = "Failed to update library list";
+"Enter library, city, county, or ZIP code" = "Enter library, city, county, or ZIP code";
+"You can search for libraries by library name or location or by your preferred location." = "You can search for libraries by library name or location or by your preferred location.";
+"My Libraries" = "My Libraries";
+"Add New Library" = "Add New Library";

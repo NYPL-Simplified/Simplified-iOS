@@ -27,7 +27,7 @@ extension NYPLSettings {
       if let currentLibrary = AccountsManager.shared.currentAccount?.uuid {
         accountsList.append(currentLibrary)
       }
-      accountsList.append(AccountsManager.NYPLAccountUUIDs[2])
+      accountsList.append(AccountsManager.shared.SimplyEAccountUUID)
       self.settingsAccountsList = accountsList
       return accountsList
     }
