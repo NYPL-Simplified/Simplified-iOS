@@ -167,7 +167,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
    ready:nil];
 
   if (holdPosition > 0 && copiesTotal > 0) {
-    NSString *positionString = [NSString stringWithFormat:NSLocalizedString(@"\n#%d in line for %d copies.", @"Describe the line that a person is waiting in for a total number of books that are available for everyone to check out, to help tell them how long they will be waiting."), holdPosition, copiesTotal];
+    NSString *positionString = [NSString stringWithFormat:NSLocalizedString(@"\n#%lu in line for %lu copies.", @"Describe the line that a person is waiting in for a total number of books that are available for everyone to check out, to help tell them how long they will be waiting."), (unsigned long)holdPosition, (unsigned long)copiesTotal];
     return [newMessageString stringByAppendingString:positionString];
   } else {
     return newMessageString;

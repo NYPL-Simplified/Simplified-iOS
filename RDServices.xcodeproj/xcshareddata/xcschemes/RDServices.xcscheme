@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "73EB0A6325821DF4006BC997"
-               BuildableName = "SimplyE-noDRM.app"
-               BlueprintName = "SimplyE-noDRM"
-               ReferencedContainer = "container:Simplified.xcodeproj">
+               BlueprintIdentifier = "118A0E271992B3FD00792DDE"
+               BuildableName = "libRDServices.a"
+               BlueprintName = "RDServices"
+               ReferencedContainer = "container:RDServices.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -40,16 +40,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "73EB0A6325821DF4006BC997"
-            BuildableName = "SimplyE-noDRM.app"
-            BlueprintName = "SimplyE-noDRM"
-            ReferencedContainer = "container:Simplified.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -57,16 +47,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "73EB0A6325821DF4006BC997"
-            BuildableName = "SimplyE-noDRM.app"
-            BlueprintName = "SimplyE-noDRM"
-            ReferencedContainer = "container:Simplified.xcodeproj">
+            BlueprintIdentifier = "118A0E271992B3FD00792DDE"
+            BuildableName = "libRDServices.a"
+            BlueprintName = "RDServices"
+            ReferencedContainer = "container:RDServices.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

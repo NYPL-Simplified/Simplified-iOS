@@ -6,8 +6,8 @@ jobs:
     runs-on: macOS-latest
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
-      - name: Force Xcode 11.5
-        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Force Xcode 12.4
+        run: sudo xcode-select -switch /Applications/Xcode_12.4.app
       - name: Checkout main repo and submodules
         uses: actions/checkout@v2.3.4
         with:
@@ -25,14 +25,6 @@ jobs:
           repository: NYPL-Simplified/Certificates
           token: ${{ secrets.IOS_DEV_CI_PAT }}
           path: ./Certificates
-      - name: Checkout NYPLAEToolkit
-        uses: actions/checkout@v2.3.4
-        with:
-          repository: NYPL-Simplified/NYPLAEToolkit
-          token: ${{ secrets.IOS_DEV_CI_PAT }}
-          path: ./NYPLAEToolkit
-      - name: Fetch AudioEngine
-        run: ./NYPLAEToolkit/scripts/fetch-audioengine.sh
       - name: Set up repo for DRM build
         run: exec ./scripts/setup-repo-drm.sh
         env:
@@ -41,13 +33,13 @@ jobs:
         run: ./scripts/build-3rd-party-dependencies.sh
         env:
           BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Carthage Bootstrap
-        uses: devbotsxyz/carthage-bootstrap@v1
+        uses: NYPL-Simplified/carthage-bootstrap@main
         with:
           github-token: ${{ secrets.IOS_DEV_CI_PAT }}
           platform: iOS
-          cache: false
-          verbose: true
+          use-xcframeworks: true
       - name: Run SimplyE tests
         run: ./scripts/xcode-test.sh simplye
         env:

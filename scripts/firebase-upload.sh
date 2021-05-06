@@ -45,3 +45,5 @@ firebase appdistribution:distribute \
 
 # upload symbols
 ./scripts/firebase-upload-symbols.sh "$APPNAME_PARAM" "$DSYMS_PATH"
+
+echo "firebase-upload.sh: Completed with return code $?"

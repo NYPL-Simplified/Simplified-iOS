@@ -267,3 +267,6 @@
 "week_suffix_short" = "%d w";
 "day_suffix_short" = "%d d";
 "hour_suffix_short" = "%d h";
+
+// Announcement
+"Announcement" = "Announcement";

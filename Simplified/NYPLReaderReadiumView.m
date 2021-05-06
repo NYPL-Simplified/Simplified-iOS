@@ -736,6 +736,15 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   }
 }
 
+- (float)progressWithinChapter
+{
+  float progress = 0.0;
+  if (self.spineItemPageIndex > 0 && self.spineItemPageCount > 0) {
+    progress = (float) self.spineItemPageIndex / (float) self.spineItemPageCount;
+  }
+  return progress;
+}
+
 - (void)addBookmark
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
@@ -748,10 +757,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSString *idref = NYPLNullToNil(locationDictionary[NYPLBookmarkDictionaryRepresentation.idrefKey]);
   NSString *chapter = self.bookMapDictionary[idref][@"tocElementTitle"];
 
-  float progressWithinChapter = 0.0;
-  if (self.spineItemPageIndex > 0 && self.spineItemPageCount > 0) {
-    progressWithinChapter = (float) self.spineItemPageIndex / (float) self.spineItemPageCount;
-  }
+  float progressWithinChapter = [self progressWithinChapter];
 
   NYPLReadiumBookmark *bookmark = [[NYPLReadiumBookmark alloc]
                                   initWithAnnotationId:nil
@@ -853,9 +859,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
        
        NSError *jsonError;
        NSData *objectData = [locationJSON dataUsingEncoding:NSUTF8StringEncoding];
-       NSDictionary *json = [NSJSONSerialization JSONObjectWithData:objectData
-                                                            options:NSJSONReadingMutableContainers
-                                                              error:&jsonError];
+       NSMutableDictionary *json = [NSJSONSerialization
+                                    JSONObjectWithData:objectData
+                                    options:NSJSONReadingMutableContainers
+                                    error:&jsonError];
 
        [weakSelf checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(BOOL success, NYPLReadiumBookmark *bookmark) {
          [weakSelf.delegate updateBookmarkIcon:success];
@@ -871,8 +878,30 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           spineItemTitle:weakSelf.spineItemDetails[@"tocElementTitle"]];
        }];
 
-       NYPLBookLocation *const location = [[NYPLBookLocation alloc] initWithLocationString:locationJSON renderer:renderer];
-       NSString *const bookID = weakSelf.book.identifier;
+      float chapterProgress = [self progressWithinChapter];
+      json[@"progressWithinChapter"] = @(chapterProgress);
+      NSError *serializationError = nil;
+      NSData *jsonData = [NSJSONSerialization dataWithJSONObject:json
+                                                         options:0
+                                                           error:&serializationError];
+      NSString *updatedJSON;
+      if (serializationError != nil || jsonData == nil) {
+        [NYPLErrorLogger logError:serializationError
+                          summary:@"Failed to add chapter % to reading progress update"
+                         metadata:@{
+                           @"chapterProgress": @(chapterProgress),
+                           @"JSON from R1": locationJSON,
+                         }];
+        updatedJSON = locationJSON;
+      } else {
+        updatedJSON = [[NSString alloc] initWithData:jsonData
+                                            encoding:NSUTF8StringEncoding];
+      }
+
+      NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                          initWithLocationString:updatedJSON
+                                          renderer:renderer];
+      NSString *const bookID = weakSelf.book.identifier;
 
        if (![location.locationString containsString:@"null"] && bookID) {
          [[NYPLBookRegistry sharedRegistry] setLocation:location forIdentifier:bookID];
