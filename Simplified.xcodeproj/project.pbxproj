@@ -145,7 +145,7 @@
 		17DFC5F1251E802A003A19CC /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		17DFC5F2251E80D6003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
 		17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		17DFC5F8251E8644003A19CC /* AudioEngine.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		17DFC5F8251E8644003A19CC /* AudioEngine.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		17E81F08261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
 		17E81F09261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
 		17E81F0A261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
@@ -1039,6 +1039,23 @@
 		739E6149244A0D8600D00301 /* readium-shared-js_all.js.bundles.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */; };
 		739E614A244A0D8600D00301 /* OpenDyslexic3-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */; };
 		739E614B244A0D8600D00301 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738EF2CB2405E38800F388FB /* GoogleService-Info.plist */; };
+		739EC88C2643D522001FE730 /* NYPLAEToolkit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F03C3263350DB0018A82E /* NYPLAEToolkit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8902643D588001FE730 /* CryptoSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04A7263739A40018A82E /* CryptoSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8912643D588001FE730 /* Fuzi.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0438263375520018A82E /* Fuzi.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8922643D588001FE730 /* GCDWebServer.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04472633768D0018A82E /* GCDWebServer.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8932643D588001FE730 /* Minizip.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F044D263376BB0018A82E /* Minizip.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8942643D588001FE730 /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8952643D588001FE730 /* NYPLCardCreator.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04672633778A0018A82E /* NYPLCardCreator.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8962643D588001FE730 /* OverdriveProcessor.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0453263376FA0018A82E /* OverdriveProcessor.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8972643D588001FE730 /* PDFRendererProvider.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8982643D588001FE730 /* PureLayout.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC8992643D588001FE730 /* ReadiumLCP.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F042E263374860018A82E /* ReadiumLCP.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC89A2643D588001FE730 /* R2Navigator.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0485263379680018A82E /* R2Navigator.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC89B2643D588001FE730 /* R2Streamer.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F048A2633799D0018A82E /* R2Streamer.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC89C2643D588001FE730 /* R2Shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F048F263379BA0018A82E /* R2Shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC89D2643D588001FE730 /* SQLite.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04722633784F0018A82E /* SQLite.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC89E2643D588001FE730 /* SwiftSoup.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0441263376530018A82E /* SwiftSoup.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		739EC89F2643D588001FE730 /* ZIPFoundation.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0433263374FC0018A82E /* ZIPFoundation.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		739ECB2425101CCE00691A70 /* NSNotification+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */; };
 		739ECB2525101CCE00691A70 /* NSNotification+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */; };
 		739ECB2625101CCE00691A70 /* NSNotification+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */; };
@@ -1788,14 +1805,32 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		17DFC5F7251E863A003A19CC /* CopyFiles */ = {
+		17DFC5F7251E863A003A19CC /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				17DFC5F8251E8644003A19CC /* AudioEngine.xcframework in CopyFiles */,
+				17DFC5F8251E8644003A19CC /* AudioEngine.xcframework in Embed Frameworks */,
+				739EC8902643D588001FE730 /* CryptoSwift.xcframework in Embed Frameworks */,
+				739EC8912643D588001FE730 /* Fuzi.xcframework in Embed Frameworks */,
+				739EC8922643D588001FE730 /* GCDWebServer.xcframework in Embed Frameworks */,
+				739EC8932643D588001FE730 /* Minizip.xcframework in Embed Frameworks */,
+				739EC88C2643D522001FE730 /* NYPLAEToolkit.framework in Embed Frameworks */,
+				739EC8942643D588001FE730 /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */,
+				739EC8952643D588001FE730 /* NYPLCardCreator.xcframework in Embed Frameworks */,
+				739EC8962643D588001FE730 /* OverdriveProcessor.xcframework in Embed Frameworks */,
+				739EC8972643D588001FE730 /* PDFRendererProvider.xcframework in Embed Frameworks */,
+				739EC8982643D588001FE730 /* PureLayout.xcframework in Embed Frameworks */,
+				739EC8992643D588001FE730 /* ReadiumLCP.xcframework in Embed Frameworks */,
+				739EC89A2643D588001FE730 /* R2Navigator.xcframework in Embed Frameworks */,
+				739EC89B2643D588001FE730 /* R2Streamer.xcframework in Embed Frameworks */,
+				739EC89C2643D588001FE730 /* R2Shared.xcframework in Embed Frameworks */,
+				739EC89D2643D588001FE730 /* SQLite.xcframework in Embed Frameworks */,
+				739EC89E2643D588001FE730 /* SwiftSoup.xcframework in Embed Frameworks */,
+				739EC89F2643D588001FE730 /* ZIPFoundation.xcframework in Embed Frameworks */,
 			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		731B2B24244A2B6C00A7A649 /* Embed Frameworks */ = {
@@ -3966,7 +4001,7 @@
 				73FCA38925005BA4001B0C5D /* Resources */,
 				732940C7251E75EA0065E362 /* Fix software licenses file */,
 				73FCA39F25005BA4001B0C5D /* Copy Frameworks (Carthage) */,
-				17DFC5F7251E863A003A19CC /* CopyFiles */,
+				17DFC5F7251E863A003A19CC /* Embed Frameworks */,
 				73FCA3A025005BA4001B0C5D /* Crashlytics */,
 			);
 			buildRules = (
