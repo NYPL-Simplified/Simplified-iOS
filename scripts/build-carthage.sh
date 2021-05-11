@@ -39,14 +39,16 @@ if [ "$1" != "--no-private" ]; then
     CERTIFICATES_PATH_PREFIX="."
   else
     CERTIFICATES_PATH_PREFIX=".."
-
-    # checkout NYPLAEToolkit to use the private script to fetch AudioEngine.
-    # We can only do it from outside of a GitHub Actions CI context, because
-    # git authentication is not passed correctly to Carthage there.
-    echo "Checking out NYPLAEToolkit to fetch AudioEngine binary before carthage bootstrap..."
-    carthage checkout NYPLAEToolkit
-    ./Carthage/Checkouts/NYPLAEToolkit/scripts/fetch-audioengine.sh
   fi
+
+  ./NYPLAEToolkit/scripts/fetch-audioengine.sh
+
+  # configure NYPLAEToolkit carthage folder
+  cd NYPLAEToolkit
+  ln -s ../Carthage ./Carthage
+  echo "NYPLAEToolkit contents:"
+  ls -l . Carthage/
+  cd ..
 
   # r2-lcp requires a private client library, available via Certificates repo
   echo "Fixing up the Cartfile for LCP..."
@@ -55,5 +57,5 @@ fi
 
 if [ "$BUILD_CONTEXT" != "ci" ] || [ "$1" == "--no-private" ]; then
   echo "Carthage build..."
-  carthage bootstrap --platform ios
+  carthage bootstrap --use-xcframeworks --platform ios
 fi

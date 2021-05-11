@@ -22,7 +22,7 @@ import ReadiumLCP
   @objc public let licenseExtension = "lcpl"
   
   /// Readium LCPService
-  private var lcpService = LCPService()
+  private var lcpService = LCPService(client: NYPLLCPClient())
   
   /// ContentProtection unlocks protected publication, providing a custom `Fetcher`
   lazy var contentProtection: ContentProtection? = lcpService.contentProtection(with: LCPPassphraseAuthenticationService())

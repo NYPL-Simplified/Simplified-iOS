@@ -39,3 +39,5 @@ esac
 echo "Using Google plist: $GOOGLE_PLIST_PATH"
 
 ./scripts/firebase/upload-symbols -gsp "$GOOGLE_PLIST_PATH" -p ios "$2"
+
+echo "firebase-upload-symbols.sh: Completed with return code $?"

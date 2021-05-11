@@ -10,7 +10,7 @@ Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/relea
 
 # System Requirements
 
-- Install Xcode 11.5 in `/Applications`, open it and make sure to install additional components if it asks you. (We have not upgraded to Xcode 12 yet because of issues related to Carthage.)
+- Install Xcode 12.4 in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
 
 # Building without Adobe DRM nor Private Repos
