@@ -475,7 +475,6 @@
 		7369A3912649C0AF0029D8AB /* NYPLAEToolkit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F03C3263350DB0018A82E /* NYPLAEToolkit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7369A39C264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
 		7369A39D264AF9710029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
-		7369A39E264AF9710029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
 		7369A39F264AF9710029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
 		7369A3A0264AF9710029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
 		736A54B8254B3C680031C3AA /* NYPLSAMLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 730263AB2540DE4200A53891 /* NYPLSAMLHelper.m */; };
@@ -5571,7 +5570,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 4;
 				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -5627,7 +5625,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 4;
 				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -5682,7 +5679,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -5741,7 +5738,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -5920,7 +5917,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 4;
 				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -5978,7 +5974,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 4;
 				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
