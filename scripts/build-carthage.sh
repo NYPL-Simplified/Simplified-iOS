@@ -30,9 +30,6 @@ else
   echo "Building Carthage for [$BUILD_CONTEXT]..."
 fi
 
-# deep clean to avoid any caching issues
-rm -rf ~/Library/Caches/org.carthage.CarthageKit
-
 if [ "$1" != "--no-private" ]; then
   if [ "$BUILD_CONTEXT" == "ci" ]; then
     # in a CI context we cannot have siblings repos, so we check them out nested
@@ -43,9 +40,12 @@ if [ "$1" != "--no-private" ]; then
 
   ./NYPLAEToolkit/scripts/fetch-audioengine.sh
 
-  # configure NYPLAEToolkit carthage folder
+  # make NYPLAEToolkit use the same carthage folder as SimplyE by adding a
+  # symlink if that's missing
   cd NYPLAEToolkit
-  ln -s ../Carthage ./Carthage
+  if [[ ! -L ./Carthage ]]; then
+    ln -s ../Carthage ./Carthage
+  fi
   echo "NYPLAEToolkit contents:"
   ls -l . Carthage/
   cd ..
