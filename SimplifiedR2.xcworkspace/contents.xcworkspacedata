@@ -5,15 +5,15 @@
       location = "group:Simplified.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:../r2-lcp-swift/r2-lcp-swift.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:../r2-navigator-swift/r2-navigator-swift.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:../r2-shared-swift/r2-shared-swift.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:../r2-lcp-swift/r2-lcp-swift.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:../r2-streamer-swift/r2-streamer-swift.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:../r2-navigator-swift/r2-navigator-swift.xcodeproj">
    </FileRef>
 </Workspace>

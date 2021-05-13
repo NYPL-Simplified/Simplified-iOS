@@ -32,14 +32,14 @@ final class LibraryService: Loggable {
   init(publicationServer: PublicationServer) {
     self.publicationServer = publicationServer
     
-    #if LCP
-    drmLibraryServices.append(LCPLibraryService())
-    #endif
-    
     #if FEATURE_DRM_CONNECTOR
     drmLibraryServices.append(AdobeDRMLibraryService())
     #endif
     
+    #if LCP
+    drmLibraryServices.append(LCPLibraryService())
+    #endif
+
     streamer = Streamer(
       contentProtections: drmLibraryServices.compactMap { $0.contentProtection }
     )
