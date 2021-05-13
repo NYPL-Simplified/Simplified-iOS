@@ -57,9 +57,10 @@ class NYPLAxisContentDownloader: NYPLAxisContentDownloading {
       guard let self = self else { return }
       switch result {
       case .success(let data):
-        self.handlers[url]?(.success(data))
+        let handler = self.handlers[url]
         self.tasks[url] = nil
         self.handlers[url] = nil
+        handler?(.success(data))
       case .failure(let error):
         // In poor network conditions, the download might fail on first or
         // second attempt. We retry 2 more times to make sure we don't
@@ -75,16 +76,18 @@ class NYPLAxisContentDownloader: NYPLAxisContentDownloading {
           return
         }
         
-        // Here we perform short-circuiting so that we don't download anything
-        // else after receiving a failure since a book with a missing file is
-        // unusable.
-        self.handlers[url]?(.failure(error))
+        self.errored.value = true
+        self.tasks[url] = nil
+        let hanler = self.handlers[url]
         self.tasks.forEach {
           $1.cancel()
         }
         self.tasks.removeAll()
         self.handlers.removeAll()
-        self.errored.value = true
+        // Here we perform short-circuiting so that we don't download anything
+        // else after receiving a failure since a book with a missing file is
+        // unusable.
+        hanler?(.failure(error))
       }
     }
     

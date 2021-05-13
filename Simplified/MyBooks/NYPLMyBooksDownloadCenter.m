@@ -1309,12 +1309,7 @@ didCompleteWithError:(NSError *)error
     forDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 {
   
-#if defined(AXIS)
-  NSURL *destURL = [[self fileURLForBookIndentifier:book.identifier]
-                    URLByDeletingPathExtension];
-#else
   NSURL *destURL = [self fileURLForBookIndentifier:book.identifier];
-#endif
   
   NSError *replaceError = nil;
   BOOL success = [[NSFileManager defaultManager] replaceItemAtURL:destURL
