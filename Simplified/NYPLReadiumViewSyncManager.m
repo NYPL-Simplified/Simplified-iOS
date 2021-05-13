@@ -121,7 +121,7 @@ const double RequestTimeInterval = 120;
     }
 
     if (!bookmark) {
-      NYPLLOG_F(@"No reading position annotation exists on the server for bookID: %@.",
+      NYPLLOG_F(@"No usable reading position annotation exists on the server for bookID: %@.",
                 bookID);
       weakSelf.shouldPostLastRead = YES;
       return;

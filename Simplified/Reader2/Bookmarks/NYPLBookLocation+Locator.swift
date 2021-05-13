@@ -22,7 +22,7 @@ extension NYPLBookLocation {
   }
 
   func convertToLocator(for publication: Publication) -> Locator? {
-    guard self.renderer == NYPLBookLocation.r2Renderer,
+    guard
       let data = self.locationString.data(using: .utf8),
       let dict = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
       else {
