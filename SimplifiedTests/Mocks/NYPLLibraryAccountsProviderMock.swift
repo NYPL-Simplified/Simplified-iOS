@@ -62,24 +62,24 @@ class NYPLLibraryAccountMock: NSObject, NYPLLibraryAccountsProvider {
 
   func createOPDS2LibraryCatalog() -> OPDS2LibraryCatalog {
     let link = OPDS2Link(href: "href\(arc4random())",
-      type: "type\(arc4random())",
-      rel: "rel\(arc4random())",
-      templated: false,
-      displayNames: nil,
-      descriptions: nil)
+                         type: "type\(arc4random())",
+                         rel: "rel\(arc4random())",
+                         templated: false,
+                         displayNames: nil,
+                         descriptions: nil)
     let subject = OPDS2LibraryCatalog.Metadata.Subject(name: "subjectName",
-                                                    code: "subjectCode",
-                                                    scheme: "subjectScheme")
+                                                       code: "subjectCode",
+                                                       scheme: "subjectScheme")
     let metadata = OPDS2LibraryCatalog.Metadata(title: "metadataTitle",
-                                             description: "OPDS2 metadata",
-                                             identifier: "metadataIdentifier",
-                                             modified: Date(),
-                                             distance: "metadataDistance",
-                                             area: "metadataArea",
-                                             subject: [subject])
+                                                description: "OPDS2 metadata",
+                                                identifier: "metadataIdentifier",
+                                                modified: Date(),
+                                                distance: "metadataDistance",
+                                                area: "metadataArea",
+                                                subject: [subject])
     let catalog = OPDS2LibraryCatalog(links: [link],
-                                  metadata: metadata,
-                                  images: nil)
+                                      metadata: metadata,
+                                      images: nil)
     return catalog
   }
 
