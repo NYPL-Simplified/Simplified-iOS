@@ -358,6 +358,9 @@ class OPDS2SamlIDP: NSObject, Codable {
   let uuid:String
   let name:String
   let subtitle:String?
+  let distance: String?
+  let area: String?
+  let areaType: String?
   let supportEmail:String?
   let catalogUrl:String?
   var details:AccountDetails?
@@ -377,18 +380,21 @@ class OPDS2SamlIDP: NSObject, Codable {
     return details?.loansUrl
   }
   
-  init(publication: OPDS2Publication) {
+  init(libraryCatalog: OPDS2LibraryCatalog) {
     
-    name = publication.metadata.title
-    subtitle = publication.metadata.description
-    uuid = publication.metadata.id
+    name = libraryCatalog.metadata.title
+    subtitle = libraryCatalog.metadata.description
+    uuid = libraryCatalog.metadata.identifier
+    distance = libraryCatalog.metadata.distance
+    area = libraryCatalog.metadata.area
+    areaType = libraryCatalog.metadata.subject.first(where: { $0.scheme == "http://librarysimplified.org/terms/library-types" })?.code
     
-    catalogUrl = publication.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href
-    supportEmail = publication.links.first(where: { $0.rel == "help" })?.href.replacingOccurrences(of: "mailto:", with: "")
+    catalogUrl = libraryCatalog.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href
+    supportEmail = libraryCatalog.links.first(where: { $0.rel == "help" })?.href.replacingOccurrences(of: "mailto:", with: "")
     
-    authenticationDocumentUrl = publication.links.first(where: { $0.type == "application/vnd.opds.authentication.v1.0+json" })?.href
+    authenticationDocumentUrl = libraryCatalog.links.first(where: { $0.type == "application/vnd.opds.authentication.v1.0+json" })?.href
     
-    let logoString = publication.images?.first(where: { $0.rel == "http://opds-spec.org/image/thumbnail" })?.href
+    let logoString = libraryCatalog.images?.first(where: { $0.rel == "http://opds-spec.org/image/thumbnail" })?.href
     if let modString = logoString?.replacingOccurrences(of: "data:image/png;base64,", with: ""),
       let logoData = Data.init(base64Encoded: modString),
       let logoImage = UIImage(data: logoData) {

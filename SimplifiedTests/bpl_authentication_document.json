@@ -1,0 +1,96 @@
+{
+  "public_key": {
+    "type": "RSA",
+    "value": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnpUePOBYjVqLHFiyL9Sf\nCeHEXG7xGMM8QHN6CjOyTxnLLQtJdYLUeR23z+jPM0yTQaLWjYX6yxGwSSrHzZ/E\nP/3mK0L8zAz7NaZI2Y960nEw8FoA1ILQnMR7jwE30h+tjlr21RcSTQBJcETLm7WK\n8hQ63LByT/9MiqawZSOeIxzbTvcshvadu0h5b5spfAtfIXCerEE9S8pQE+UbAJwa\nwJMlNYE1gCuMCuvsIgPg/CT8KjhXnu3LiPIfvhvL8MrTh+MxyV40cbiQPxdbp04m\n8G//Zgd8eW+jFS6l4ZIYVHgG5bbINEAcgVDIHWYytEX10wbCIkud9h4AMs5IX4Sb\nxQIDAQAB\n-----END PUBLIC KEY-----"
+  },
+  "web_color_scheme": {
+    "foreground": "#ffffff",
+    "background": "#000000"
+  },
+  "focus_area": {
+    "CA": [],
+    "US": [
+      "New York, NY"
+    ]
+  },
+  "links": [
+    {
+      "href": "https://www.bplibrary.org/use-the-library/policy/privacy-statement",
+      "type": "text/html",
+      "rel": "privacy-policy"
+    },
+    {
+      "href": "https://disc.bplibrary.org/ecard/",
+      "type": "text/html",
+      "rel": "register"
+    },
+    {
+      "href": "https://bplsimplye.bplibrary.org/NYBKLYN/",
+      "type": "application/atom+xml;profile=opds-catalog;kind=acquisition",
+      "rel": "start"
+    },
+    {
+      "href": "https://bplsimplye.bplibrary.org/NYBKLYN/loans/",
+      "type": "application/atom+xml;profile=opds-catalog;kind=acquisition",
+      "rel": "http://opds-spec.org/shelf"
+    },
+    {
+      "href": "https://bplsimplye.bplibrary.org/NYBKLYN/patrons/me/",
+      "type": "vnd.librarysimplified/user-profile+json",
+      "rel": "http://librarysimplified.org/terms/rel/user-profile"
+    },
+    {
+      "href": "mailto:askus@bplibrary.org",
+      "rel": "http://librarysimplified.org/rel/designated-agent/copyright"
+    },
+    {
+      "href": "mailto:askus@bplibrary.org",
+      "type": null,
+      "rel": "help"
+    },
+    {
+      "href": "https://www.bplibrary.org/",
+      "type": "text/html",
+      "rel": "alternate"
+    }
+  ],
+  "title": "Boston Public Library",
+  "service_area": {
+    "CA": [
+      
+    ],
+    "US": [
+      
+    ]
+  },
+  "authentication": [
+    {
+      "inputs": {
+        "login": {
+          "barcode_format": "Codabar",
+          "keyboard": "Default"
+        },
+        "password": {
+          "maximum_length": 4,
+          "keyboard": "Number pad"
+        }
+      },
+      "labels": {
+        "login": "Barcode",
+        "password": "PIN"
+      },
+      "type": "http://opds-spec.org/auth/basic",
+      "description": "Library Barcode"
+    }
+  ],
+  "color_scheme": "blue",
+  "id": "https://bplsimplye.bplibrary.org/NYBKLYN/authentication_document",
+  "features": {
+    "disabled": [
+      
+    ],
+    "enabled": [
+      "https://librarysimplified.org/rel/policy/reservations"
+    ]
+  }
+}
