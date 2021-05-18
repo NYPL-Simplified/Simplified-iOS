@@ -1,5 +1,5 @@
 //
-//  OPDS2CatalogsFeed.swift
+//  OPDS2LibraryRegistryFeed.swift
 //  SimplyE
 //
 //  Created by Benjamin Anderman on 5/10/19.
@@ -8,17 +8,16 @@
 
 import Foundation
 
-struct OPDS2CatalogsFeed: Codable {
+struct OPDS2LibraryRegistryFeed: Codable {
   struct Metadata: Codable {
-    let adobe_vendor_id: String?
     let title: String
   }
   
-  let catalogs: [OPDS2Publication]
+  let catalogs: [OPDS2LibraryCatalog]
   let links: [OPDS2Link]
   let metadata: Metadata
   
-  static func fromData(_ data: Data) throws -> OPDS2CatalogsFeed {
+  static func fromData(_ data: Data) throws -> OPDS2LibraryRegistryFeed {
     enum DateError: String, Error {
       case invalidDate
     }
@@ -45,6 +44,6 @@ struct OPDS2CatalogsFeed: Codable {
       throw DateError.invalidDate
     })
     
-    return try jsonDecoder.decode(OPDS2CatalogsFeed.self, from: data)
+    return try jsonDecoder.decode(OPDS2LibraryRegistryFeed.self, from: data)
   }
 }

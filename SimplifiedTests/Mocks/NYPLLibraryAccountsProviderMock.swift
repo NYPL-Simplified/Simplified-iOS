@@ -12,20 +12,20 @@ import Foundation
 class NYPLLibraryAccountMock: NSObject, NYPLLibraryAccountsProvider {
   let feedURL: URL
   let nyplAuthDocURL: URL
-  let feed: OPDS2CatalogsFeed
+  let feed: OPDS2LibraryRegistryFeed
   let nyplAccount: Account
 
   override init() {
     feedURL = Bundle(for: NYPLLibraryAccountMock.self)
-      .url(forResource: "OPDS2CatalogsFeed", withExtension: "json")!
+      .url(forResource: "OPDS2LibraryRegistryFeed", withExtension: "json")!
 
     nyplAuthDocURL = Bundle(for: NYPLLibraryAccountMock.self)
       .url(forResource: "nypl_authentication_document", withExtension: "json")!
 
     let feedData = try! Data(contentsOf: feedURL)
-    feed = try! OPDS2CatalogsFeed.fromData(feedData)
+    feed = try! OPDS2LibraryRegistryFeed.fromData(feedData)
 
-    nyplAccount = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "The New York Public Library" })!)
+    nyplAccount = Account(libraryCatalog: feed.catalogs.first(where: { $0.metadata.title == "The New York Public Library" })!)
 
     super.init()
 
@@ -60,21 +60,27 @@ class NYPLLibraryAccountMock: NSObject, NYPLLibraryAccountsProvider {
     return nyplAccount
   }
 
-  func createOPDS2Publication() -> OPDS2Publication {
+  func createOPDS2LibraryCatalog() -> OPDS2LibraryCatalog {
     let link = OPDS2Link(href: "href\(arc4random())",
       type: "type\(arc4random())",
       rel: "rel\(arc4random())",
       templated: false,
       displayNames: nil,
       descriptions: nil)
-    let metadata = OPDS2Publication.Metadata(updated: Date(),
+    let subject = OPDS2LibraryCatalog.Metadata.Subject(name: "subjectName",
+                                                    code: "subjectCode",
+                                                    scheme: "subjectScheme")
+    let metadata = OPDS2LibraryCatalog.Metadata(title: "metadataTitle",
                                              description: "OPDS2 metadata",
-                                             id: "metadataID",
-                                             title: "metadataTitle")
-    let pub = OPDS2Publication(links: [link],
-                               metadata: metadata,
-                               images: nil)
-    return pub
+                                             identifier: "metadataIdentifier",
+                                             modified: Date(),
+                                             distance: "metadataDistance",
+                                             area: "metadataArea",
+                                             subject: [subject])
+    let catalog = OPDS2LibraryCatalog(links: [link],
+                                  metadata: metadata,
+                                  images: nil)
+    return catalog
   }
 
   /// Pass in the empty string to get a nil account.
@@ -84,8 +90,8 @@ class NYPLLibraryAccountMock: NSObject, NYPLLibraryAccountsProvider {
     } else if uuid == NYPLAccountUUID {
       return nyplAccount
     } else {
-      let pub = createOPDS2Publication()
-      return Account(publication: pub)
+      let catalog = createOPDS2LibraryCatalog()
+      return Account(libraryCatalog: catalog)
     }
   }
 }

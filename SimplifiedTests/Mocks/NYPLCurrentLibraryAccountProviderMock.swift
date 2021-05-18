@@ -14,15 +14,15 @@ class NYPLCurrentLibraryAccountProviderMock: NSObject, NYPLCurrentLibraryAccount
   
   override init() {
     let feedURL = Bundle(for: NYPLLibraryAccountMock.self)
-      .url(forResource: "OPDS2CatalogsFeed", withExtension: "json")!
+      .url(forResource: "OPDS2LibraryRegistryFeed", withExtension: "json")!
 
     let simplyeAuthDocURL = Bundle(for: NYPLLibraryAccountMock.self)
     .url(forResource: "simplye_authentication_document", withExtension: "json")!
     
     let feedData = try! Data(contentsOf: feedURL)
-    let feed = try! OPDS2CatalogsFeed.fromData(feedData)
+    let feed = try! OPDS2LibraryRegistryFeed.fromData(feedData)
 
-    currentAccount = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "The SimplyE Collection" })!)
+    currentAccount = Account(libraryCatalog: feed.catalogs.first(where: { $0.metadata.title == "The SimplyE Collection" })!)
     
     super.init()
     

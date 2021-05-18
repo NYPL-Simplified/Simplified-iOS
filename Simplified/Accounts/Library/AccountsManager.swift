@@ -191,11 +191,11 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
                                          key: String,
                                          completion: @escaping (Bool) -> ()) {
     do {
-      let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
+      let libraryRegistryFeed = try OPDS2LibraryRegistryFeed.fromData(data)
       let hadAccount = self.currentAccount != nil
 
       accountSetsWorkQueue.sync(flags: .barrier) {
-        accountSets[key] = catalogsFeed.catalogs.map { Account(publication: $0) }
+        accountSets[key] = libraryRegistryFeed.catalogs.map { Account(libraryCatalog: $0) }
       }
 
       // note: `currentAccount` computed property feeds off of `accountSets`, so

@@ -12,11 +12,11 @@ extension NYPLConfiguration {
   // MARK:- Prod library catalog
 
   /// The only "library" ID that Open eBooks will ever handle (beside beta).
-  /// This value is taken from `OpenEBooks_OPDS2_Catalog_Feed.json`.
+  /// This value is taken from `OpenEBooks_OPDS2_Library_Registry_Feed.json`.
   static let OpenEBooksUUIDProd = "urn:uuid:e1a01c16-04e7-4781-89fd-b442dd1be001"
 
   private static let feedFileUrl = URL(fileURLWithPath:
-    Bundle.main.path(forResource: "OpenEBooks_OPDS2_Catalog_Feed",
+    Bundle.main.path(forResource: "OpenEBooks_OPDS2_Library_Registry_Feed",
                      ofType: "json")!)
   private static let feedFileUrlHash = feedFileUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
   static var prodUrl = feedFileUrl
@@ -24,10 +24,10 @@ extension NYPLConfiguration {
 
   // MARK:- Beta library catalog
 
-  /// This value is taken from `OpenEBooks_OPDS2_Catalog_Feed-QA.json`.
+  /// This value is taken from `OpenEBooks_OPDS2_Library_Registry_Feed-QA.json`.
   static let OpenEBooksUUIDBeta = "urn:uuid:e1a01c16-04e7-4781-89fd-b442dd1be666"
   private static let betaFeedFileUrl = URL(fileURLWithPath:
-    Bundle.main.path(forResource: "OpenEBooks_OPDS2_Catalog_Feed-QA",
+    Bundle.main.path(forResource: "OpenEBooks_OPDS2_Library_Registry_Feed-QA",
                      ofType: "json")!)
   private static let betaFeedFileUrlHash = feedFileUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 
