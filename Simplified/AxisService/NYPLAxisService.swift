@@ -25,45 +25,29 @@ import Foundation
  2. If the book's management rights are the ones with axis, we initiate NYPLAxisService and call the
  `NYPLAxisService::fulfillAxisLicense:downloadTask` method.
  3. Using `isbn` & `book_vault_uuid` from the file, we create a url to download a license file for the axis
- book using the `NYPLAxisService::downloadLicense` method
- 4. If the license download is successful, we download two files, `Container.xml` & `Encryption.xml`,
- from Axis using the isbn key. (`NYPLAxisService::downloadContainer` & `NYPLAxisService::downloadEncryption`)
- 5. From the `container.xml file`, we extract the url for a `package.opf` file and download the
- package.opf file (`NYPLAxisService::downloadPackage`).
- 6. From the `package.opf` file (which is more of an xml really), we extract urls for all the required files for
- the book (e.g. chapter1.xtml, cover.html, fonts, images, styles etc.). We pass those urls in a for loop and tell
- the downloader to download all the files. (`NYPLAxisService::downloadAssetsFromPackage`)
- 7. When all the files are downloaded, we consider this as book download success and call the method associated
- with success on our NYPLBookDownloadBroadcasting delegate. (`replaceBook:withFileAtURL:forDownloadTask`)
- 8. If we experience a failure at any point during the download process, we stop the process, delete the
+ book.
+ 4. If the license download is successful, and the license is valid, we download two files, `Container.xml`
+ & `Encryption.xml` from Axis using the isbn key.
+ 5. From the `container.xml file`, we extract the url for a pacakge file and download the package and
+ download all the required book content mentioned in the package file.
+ 6. When all the files are downloaded, we consider this as book download success and call the method
+ associated with success  (`replaceBook:withFileAtURL:forDownloadTask`) on our
+ NYPLBookDownloadBroadcasting delegate.
+ 7. If we experience a failure at any point during the download process, we stop the process, delete the
  downloaded files, and call our delegate's `failDownloadWithAlert:` method.
  */
 @objc class NYPLAxisService: NSObject {
-  private weak var delegate: NYPLBookDownloadBroadcasting?
-  private let isbn: String
-  private let bookVaultId: String
-  private let dedicatedWriteURL: URL
-  private let fileURL: URL
-  private let baseURL: URL
+  private let axisItemDownloader: NYPLAxisItemDownloading
   private let book: NYPLBook
-  private let deviceInfoProviding: NYPLDeviceInfoProviding
-  private var packageEndpointproviding: NYPLAxisPackageEndpointProviding
-  private let packagePathProviding: NYPLAxisPackagePathPrefixProviding
-  private let axisKeysProviding: NYPLAxisKeysProviding
-  private let dispatchGroup: DispatchGroup
-  private let assetWriter: NYPLAssetWriting
-  private var downloader: NYPLAxisContentDownloading?
-  private var cypher: NYPLRSACryptographing?
-  private let globalBackgroundSyncronizeDataQueue = DispatchQueue(label: "NYPLAxis")
+  private let dedicatedWriteURL: URL
+  private let licenseService: NYPLAxisLicenseHandling
+  private let metadataDownloader: NYPLAxisMetadataContentHandling
+  private let packageDownloader: NYPLAxisPackageHandling
+  private weak var delegate: NYPLBookDownloadBroadcasting?
   
-  private var shouldContinue: Bool {
-    return globalBackgroundSyncronizeDataQueue.sync { [weak self] in
-      self?.downloader != nil
-    }
-  }
   
   // MARK: - Static Constants
-  static let reason = "reason"
+  static let reason = "AxisDRMReason"
   
   // Initialization constants
   static private let initializationFailureSummary = "AXIS: Failed instantiating AxisService"
@@ -72,253 +56,70 @@ import Foundation
   static private let requiredKeysFailure = "Failed to get required keys from downloaded file"
   static private let jsonContent = "jsonContent"
   
-  // Content Downloading constants
-  static private let writeFailureSummary = "AXIS: Failed writing item to specified write URL"
-  static private let failedDownloadingItemSummary = "AXIS: Failed downloading item"
-  static private let failedDownloadingAssetsFromPackageSummary = "AXIS: Failed downloading content from pacakge.opf"
-  
   // MARK: - Initialization
-  init(delegate: NYPLBookDownloadBroadcasting?,
-       isbn: String,
-       bookVaultId: String,
-       fileURL: URL,
+  init(axisItemDownloader: NYPLAxisItemDownloading,
        book: NYPLBook,
-       deviceInfoProviding: NYPLDeviceInfoProviding,
-       packageEndpointproviding: NYPLAxisPackageEndpointProviding,
-       packagePathProviding: NYPLAxisPackagePathPrefixProviding,
-       axisKeysProviding: NYPLAxisKeysProviding,
-       assetWriter: NYPLAssetWriting,
-       cypher: NYPLRSACryptographing?,
        dedicatedWriteURL: URL,
-       downloader: NYPLAxisContentDownloading?) {
+       delegate: NYPLBookDownloadBroadcasting?,
+       licenseService: NYPLAxisLicenseHandling,
+       metadataDownloader: NYPLAxisMetadataContentHandling,
+       packageDownloader: NYPLAxisPackageHandling) {
     
-    self.axisKeysProviding = axisKeysProviding
-    self.isbn = isbn
-    self.fileURL = fileURL
-    self.delegate = delegate
-    self.bookVaultId = bookVaultId
-    self.baseURL = axisKeysProviding.baseURL.appendingPathComponent(isbn)
+    self.axisItemDownloader = axisItemDownloader
     self.book = book
-    self.deviceInfoProviding = deviceInfoProviding
-    self.packagePathProviding = NYPLAxisPackagePathPrefixProvider()
-    self.dispatchGroup = DispatchGroup()
-    self.assetWriter = assetWriter
-    self.packageEndpointproviding = packageEndpointproviding
-    self.cypher = cypher
     self.dedicatedWriteURL = dedicatedWriteURL
-    self.downloader = downloader
+    self.delegate = delegate
+    self.licenseService = licenseService
+    self.metadataDownloader = metadataDownloader
+    self.packageDownloader = packageDownloader
+    super.init()
+    self.axisItemDownloader.delegate = self
   }
   
   /// Fulfill AxisNow license. Notifies NYPLBookDownloadBroadcasting upon completion or failure.
-  
   /// - Parameters:
   ///   - downloadTask: downloadTask download task
   @objc func fulfillAxisLicense(downloadTask: URLSessionDownloadTask) {
     DispatchQueue.global(qos: .utility).async {
-      self.downloadLicense(forBook: self.book)
-      self.downloadEncryption(forBook: self.book)
-      self.downloadContainer(forBook: self.book)
-      self.downloadPackage(forBook: self.book)
-      self.downloadAssetsFromPackage(forBook: self.book)
-      
-      self.dispatchGroup.notify(queue: .global(qos: .utility)) {
-        _ = self.delegate?.replaceBook(self.book,
-                                       withFileAtURL: self.dedicatedWriteURL,
-                                       forDownloadTask: downloadTask)
+      self.downloadAndValidateLicense()
+      self.downloadMetadataContent()
+      self.downloadPackage()
+      self.axisItemDownloader.dispatchGroup.notify(queue: .global(qos: .utility)) {
+        // TODO:- OE-128: Fix reversed hierarchy
+        // weak self will result in deallocation before book completion
+        guard self.axisItemDownloader.shouldContinue else { return }
+        _ = self.delegate?.replaceBook(
+          self.book, withFileAtURL: self.dedicatedWriteURL,
+          forDownloadTask: downloadTask)
       }
     }
   }
   
-  // MARK: - Download License
-  private func downloadLicense(forBook book: NYPLBook) {
-    dispatchGroup.enter()
-    let writeURL = dedicatedWriteURL
-      .appendingPathComponent(axisKeysProviding.desiredNameForLicenseFile)
-    
-    guard let cypher = self.cypher else {
-      // No need to log error here since NYPLRSACypher takes care of that.
-      leaveGroupAndStopDownload()
-      return
-    }
-    
-    let licenseURL = NYPLAxisLicenseURLGenerator(
-      baseURL: axisKeysProviding.licenseBaseURL,
-      bookVaultId: bookVaultId,
-      clientIP: deviceInfoProviding.clientIP,
-      cypher: cypher,
-      deviceID: deviceInfoProviding.deviceID,
-      isbn: isbn
-    ).generateLicenseURL()
-    
-    downloadItem(from: licenseURL, at: writeURL)
+  // MARK: - Download & Validate License
+  private func downloadAndValidateLicense() {
+    licenseService.downloadLicense()
+    licenseService.saveBookInfoFromLicense()
+    licenseService.validateLicense()
+    licenseService.deleteLicenseFile()
   }
   
-  // MARK: - Download Encryption
-  private func downloadEncryption(forBook book: NYPLBook) {
-    dispatchGroup.wait()
-    
-    guard shouldContinue else {
-      return
-    }
-    
-    dispatchGroup.enter()
-    
-    let encryptionURL = baseURL
-      .appendingPathComponent(axisKeysProviding.encryptionDownloadEndpoint)
-    
-    let writeURL = self.dedicatedWriteURL
-      .appendingPathComponent(encryptionURL.lastPathComponent)
-    
-    downloadItem(from: encryptionURL, at: writeURL)
+  // MARK: - Download Encryption & Container
+  private func downloadMetadataContent() {
+    metadataDownloader.downloadContent()
   }
   
-  // MARK: - Download Container
-  private func downloadContainer(forBook book: NYPLBook) {
-    dispatchGroup.wait()
-    
-    guard shouldContinue else {
-      return
-    }
-    
-    dispatchGroup.enter()
-    
-    let containerURL = baseURL
-      .appendingPathComponent(axisKeysProviding.containerDownloadEndpoint)
-    
-    let writeURL = self.dedicatedWriteURL
-      .appendingPathComponent(containerURL.lastPathComponent)
-    
-    downloadItem(from: containerURL, at: writeURL)
+  // MARK: - Download Package file & content mentioned inside
+  private func downloadPackage() {
+    packageDownloader.downloadPackageContent()
   }
   
-  // MARK: - Download Package
-  private func downloadPackage(forBook book: NYPLBook) {
-    dispatchGroup.wait()
-    
-    guard shouldContinue else {
-      return
-    }
-    
-    dispatchGroup.enter()
-    guard let endpoint = packageEndpoint else {
-      leaveGroupAndStopDownload()
-      return
-    }
-    
-    let packageURL = baseURL.appendingPathComponent(endpoint)
-    let writeURL = self.dedicatedWriteURL.appendingPathComponent(endpoint)
-    downloadItem(from: packageURL, at: writeURL)
-  }
+}
+
+extension NYPLAxisService: NYPLAxisItemDownloadTerminationListening {
   
-  // MARK: - Download assets listed in package
-  private func downloadAssetsFromPackage(forBook book: NYPLBook) {
-    dispatchGroup.wait()
-    
-    guard shouldContinue else {
-      return
-    }
-    
-    guard let packageEndpoint = packageEndpoint else {
-      // No need to log error here since an error is already logged when
-      // pacakgeEndpoint generation returns nil
-      leaveGroupAndStopDownload()
-      return
-    }
-    
-    let packageURL = dedicatedWriteURL.appendingPathComponent(packageEndpoint)
-    let data = try? Data(contentsOf: packageURL)
-    guard let axisXML = NYPLAxisXML(data: data) else {
-      NYPLErrorLogger.logError(
-        withCode: .axisDRMFulfillmentFail,
-        summary: NYPLAxisService.failedDownloadingAssetsFromPackageSummary,
-        metadata: [
-          NYPLAxisService.reason: NYPLAxisXML.NYPLXMLGenerationFailure
-      ])
-      
-      leaveGroupAndStopDownload()
-      return
-    }
-    
-    let hrefs = Set(axisXML.findRecursivelyInAttributes(axisKeysProviding.hrefKey))
-    
-    for href in hrefs {
-      let endpath: String
-      if let pathPrefix = packagePathPrefix {
-        endpath = "\(pathPrefix)\(href)"
-      } else {
-        endpath = href
-      }
-      
-      let linkURL = baseURL
-        .appendingPathComponent(endpath)
-      
-      let writeURL = self.dedicatedWriteURL
-        .appendingPathComponent(endpath)
-      
-      dispatchGroup.enter()
-      downloadItem(from: linkURL, at: writeURL)
-    }
-  }
-  
-  // MARK: - Helper Methods
-  private func downloadItem(from url: URL, at writeURL: URL) {
-    
-    guard shouldContinue else {
-      return
-    }
-    
-    downloader?.downloadItem(from: url) { [weak self] (result) in
-      guard let self = self else { return }
-      switch result {
-      case .success(let data):
-        do {
-          try self.assetWriter.writeAsset(data, atURL: writeURL)
-          self.dispatchGroup.leave()
-        } catch {
-          NYPLErrorLogger.logError(
-            error,
-            summary: NYPLAxisService.writeFailureSummary,
-            metadata: ["writeURL": writeURL.path,
-                       "itemURL": url.absoluteString])
-          
-          self.leaveGroupAndStopDownload()
-        }
-      case .failure(let error):
-        NYPLErrorLogger.logError(
-          error,
-          summary: NYPLAxisService.failedDownloadingItemSummary,
-          metadata: ["itemURL": url.absoluteString])
-        
-        self.leaveGroupAndStopDownload()
-      }
-    }
-    
-  }
-  
-  private var packageEndpoint: String? {
-    return self.packageEndpointproviding.getPackageEndpoint()
-  }
-  
-  private var packagePathPrefix: String? {
-    return packagePathProviding
-      .getPackagePathPrefix(packageEndpoint: packageEndpoint)
-  }
-  
-  /// Stops the download process, leaves the dispatch group, deletes downloaded files, and notifies the
-  /// delegate of download failure.
-  private func leaveGroupAndStopDownload() {
-    // Already processed failure. No need to do it again.
-    if !shouldContinue {
-      return
-    }
-    
-    globalBackgroundSyncronizeDataQueue.sync { [weak self] in
-      guard let self = self else { return }
-      self.downloader = nil
-      try? FileManager.default.removeItem(at: self.dedicatedWriteURL)
-      self.delegate?.failDownloadWithAlert(forBook: self.book)
-      self.dispatchGroup.leave()
-    }
+  func downloaderDidTerminate() {
+    try? FileManager.default.removeItem(at: self.dedicatedWriteURL)
+    self.delegate?.failDownloadWithAlert(forBook: self.book)
   }
   
 }
@@ -364,11 +165,12 @@ extension NYPLAxisService {
      package.opf.
      */
     
-    let axisKeysProviding = NYPLAxisKeysProvider()
+    let axisKeysProvider = NYPLAxisKeysProvider()
     
     guard
-      let isbn = json[axisKeysProviding.isbnKey] as? String,
-      let bookVaultId = json[axisKeysProviding.bookVaultKey] as? String
+      let isbn = json[axisKeysProvider.isbnKey] as? String,
+      let bookVaultId = json[axisKeysProvider.bookVaultKey] as? String,
+      let cypher = NYPLRSACypher()
       else {
         NYPLAxisService
           .logInitializationFailure(NYPLAxisService.requiredKeysFailure,
@@ -378,34 +180,69 @@ extension NYPLAxisService {
         return nil
     }
     
+    self.init(axisKeysProvider: axisKeysProvider,
+              book: book,
+              bookVaultId: bookVaultId,
+              cypher: cypher,
+              delegate: delegate,
+              deviceInfoProviding: deviceInfoProviding,
+              fileURL: fileURL,
+              isbn: isbn)
+  }
+  
+  /// Convenience initialzer to be used for testing
+  /// - Parameters:
+  ///   - axisKeysProvider: NYPLAxisKeysProviding object
+  ///   - book: NYPLBook that is to be downloaded
+  ///   - bookVaultId: BookVaultID for the given book extracted from the downloaded file from the
+  ///   server when book download begins.
+  ///   - cypher: NYPLRSACryptographing object to be used for downloading license
+  ///   - delegate: An object confirming to NYPLBookDownloadBroadcasting protocol to be notified
+  ///   when download fails or succeeds.
+  ///   - deviceInfoProviding: An NYPLDeviceInfoProviding object to get deviceID and clientIP
+  ///   required for license URL generation
+  ///   - fileURL: Local url of the downloaded file.
+  ///   - isbn: ISBN for the book to be downloaded
+  convenience init(axisKeysProvider: NYPLAxisKeysProviding,
+                   book: NYPLBook,
+                   bookVaultId: String,
+                   cypher: NYPLRSACryptographing,
+                   delegate: NYPLBookDownloadBroadcasting,
+                   deviceInfoProviding: NYPLDeviceInfoProviding,
+                   fileURL: URL,
+                   isbn: String) {
+    
+    
+    let baseURL = axisKeysProvider.baseURL.appendingPathComponent(isbn)
+    let dispatchGroup = DispatchGroup()
+    
     let dedicatedWriteURL = fileURL
       .deletingLastPathComponent()
       .appendingPathComponent(book.identifier.sha256())
     
-    let containerURL = dedicatedWriteURL
-      .appendingPathComponent(axisKeysProviding.containerFileName)
-    let endpointProviding = NYPLAxisPackageEndpointProvider(
-      containerURL: containerURL,
-      fullPathKey: axisKeysProviding.fullPathKey)
+    let axisItemDownloader = NYPLAxisItemDownloader(dispatchGroup: dispatchGroup)
     
-    let packagePathProviding = NYPLAxisPackagePathPrefixProvider()
-    let assetWriting = NYPLAssetWriter()
-    let cypher = NYPLRSACypher()
-    let downloader = NYPLAxisContentDownloader(networkExecuting: NYPLAxisNetworkExecutor())
+    let licenseService = NYPLAxisLicenseService(
+      axisItemDownloader: axisItemDownloader, axisKeysProvider: axisKeysProvider,
+      bookVaultId: bookVaultId, cypher: cypher,
+      deviceInfoProvider: deviceInfoProviding, isbn: isbn,
+      parentDirectory: dedicatedWriteURL)
     
-    self.init(delegate: delegate,
-              isbn: isbn,
-              bookVaultId: bookVaultId,
-              fileURL: fileURL,
+    let metadataService = NYPLAxisMetadataService(
+      axisItemDownloader: axisItemDownloader, axisKeysProvider: axisKeysProvider,
+      baseURL: baseURL, parentDirectory: dedicatedWriteURL)
+    
+    let packageDownloader = NYPLAxisPackageService(
+      axisItemDownloader: axisItemDownloader, axisKeysProvider: axisKeysProvider,
+      baseURL: baseURL, parentDirectory: dedicatedWriteURL)
+    
+    self.init(axisItemDownloader: axisItemDownloader,
               book: book,
-              deviceInfoProviding: deviceInfoProviding,
-              packageEndpointproviding: endpointProviding,
-              packagePathProviding: packagePathProviding,
-              axisKeysProviding: axisKeysProviding,
-              assetWriter: assetWriting,
-              cypher: cypher,
               dedicatedWriteURL: dedicatedWriteURL,
-              downloader: downloader)
+              delegate: delegate,
+              licenseService: licenseService,
+              metadataDownloader: metadataService,
+              packageDownloader: packageDownloader)
   }
   
   private static func logInitializationFailure(_ reason: String,

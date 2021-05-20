@@ -11,16 +11,8 @@ import XCTest
 
 class NYPLContentDownloaderTests: XCTestCase {
   
-  private var contentDownloader: NYPLAxisContentDownloader!
-  private var customContentDownloader: CustomNYPLContentDownloader?
   private let allSucceedingURLs = Array(5...15).compactMap { URL(string: "https://nypl.org/\($0)")}
   private let urlsWithOneFailure = Array(1...10).compactMap { URL(string: "https://nypl.org/\($0)")}
-  
-  override func setUp() {
-    super.setUp()
-    contentDownloader = NYPLAxisContentDownloader(networkExecuting: MockAxisNetworkExecutor())
-    customContentDownloader = CustomNYPLContentDownloader(networkExecuting: MockAxisNetworkExecutor())
-  }
   
   /// When an item fails to download the first time, it must be attempted to download again twice
   func testFailedItemDownloadShouldBeReAttemptedToDownload() {
@@ -35,7 +27,7 @@ class NYPLContentDownloaderTests: XCTestCase {
       }
     }
     
-    contentDownloader = NYPLAxisContentDownloader(networkExecuting: executor)
+    let contentDownloader = NYPLAxisContentDownloader(networkExecuting: executor)
     contentDownloader.downloadItem(from: itemURL) { _ in }
     wait(for: [expectation], timeout: 4)
   }
@@ -50,11 +42,11 @@ class NYPLContentDownloaderTests: XCTestCase {
     let executor = MockAxisNetworkExecutor()
     let failingDownloadURL = URL(string: "https://nypl.org/4")!
     
-    contentDownloader = NYPLAxisContentDownloader(networkExecuting: executor)
+    let contentDownloader = NYPLAxisContentDownloader(networkExecuting: executor)
     
     let itemDownloadFailed = {
       for url in self.allSucceedingURLs {
-        self.contentDownloader.downloadItem(from: url) { (_) in
+        contentDownloader.downloadItem(from: url) { (result) in
           expectation.fulfill()
         }
       }
@@ -63,8 +55,10 @@ class NYPLContentDownloaderTests: XCTestCase {
     contentDownloader.downloadItem(from: failingDownloadURL) { (result) in
       switch result {
       case .success:
+        print("download succeeded from \(failingDownloadURL.absoluteString)")
         XCTFail()
       case .failure:
+        print("download failed from \(failingDownloadURL.absoluteString)")
         itemDownloadFailed()
       }
     }
@@ -78,6 +72,8 @@ class NYPLContentDownloaderTests: XCTestCase {
     let expectation = XCTestExpectation(
       description: "If no failure occurs, all requests should be executed!")
     expectation.expectedFulfillmentCount = allSucceedingURLs.count
+    
+    let contentDownloader = NYPLAxisContentDownloader(networkExecuting: MockAxisNetworkExecutor())
     
     for url in allSucceedingURLs {
       contentDownloader.downloadItem(from: url) { (result) in
@@ -98,6 +94,8 @@ class NYPLContentDownloaderTests: XCTestCase {
     let expectation = XCTestExpectation(
       description: "NYPLAxisContentDownloader and NYPLAxisNetworkExecutor should deinitialize upon completion")
     expectation.expectedFulfillmentCount = 2
+    
+    var customContentDownloader: CustomNYPLContentDownloader? = CustomNYPLContentDownloader(networkExecuting: MockAxisNetworkExecutor())
     
     customContentDownloader?.deinitialzed = {
       expectation.fulfill()
@@ -123,6 +121,9 @@ class NYPLContentDownloaderTests: XCTestCase {
     let expectation = XCTestExpectation(
       description: "NYPLAxisContentDownloader and NYPLAxisNetworkExecutor should deinitialize upon failure")
     expectation.expectedFulfillmentCount = 2
+    
+    
+    var customContentDownloader: CustomNYPLContentDownloader? = CustomNYPLContentDownloader(networkExecuting: MockAxisNetworkExecutor())
     
     customContentDownloader?.deinitialzed = {
       expectation.fulfill()
