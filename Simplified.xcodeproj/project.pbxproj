@@ -229,6 +229,11 @@
 		5916E7E32627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		593F30D9265721A2005E82BA /* NYPLAssetWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F30D3265721A2005E82BA /* NYPLAssetWriterTests.swift */; };
 		593F30E126572B1B005E82BA /* NYPLContentDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F30E026572B1B005E82BA /* NYPLContentDownloaderTests.swift */; };
+		593F306F26570F03005E82BA /* NYPLContentDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F306926570EFE005E82BA /* NYPLContentDownloaderTests.swift */; };
+		593F307026570F03005E82BA /* NYPLAxisItemDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F306826570EFD005E82BA /* NYPLAxisItemDownloaderTests.swift */; };
+		593F307726570F17005E82BA /* AssetWriterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F307426570F16005E82BA /* AssetWriterMock.swift */; };
+		593F307826570F17005E82BA /* NYPLAxisContentDownloaderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F307526570F16005E82BA /* NYPLAxisContentDownloaderMock.swift */; };
+		593F307926570F17005E82BA /* TerminationListenerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F307626570F16005E82BA /* TerminationListenerMock.swift */; };
 		59453E9D263210E400B63E73 /* NYPLAxisNetworkExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59453E98263210E400B63E73 /* NYPLAxisNetworkExecutor.swift */; };
 		596D954326308ADA002F7572 /* NYPLAxisPackageEndpointProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596D953E26308ADA002F7572 /* NYPLAxisPackageEndpointProvider.swift */; };
 		5982E11326309778002B379B /* NYPLAxisPackagePathPrefixProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5982E10E26309778002B379B /* NYPLAxisPackagePathPrefixProvider.swift */; };
@@ -244,9 +249,8 @@
 		59C46FB0264B388200BBCC96 /* NYPLAxisMetadataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C46FAF264B388200BBCC96 /* NYPLAxisMetadataService.swift */; };
 		59C46FB5264B852600BBCC96 /* NYPLAxisPackageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C46FB4264B852600BBCC96 /* NYPLAxisPackageService.swift */; };
 		59DE644C26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DE644B26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift */; };
-		59DE644D26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DE644B26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift */; };
-		59DE645326372E4E00CFCF14 /* NYPLAxisContentDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599CB7A7263200040024B5F1 /* NYPLAxisContentDownloader.swift */; };
 		59EEAFF7262624BD00944CE0 /* NYPLAxisDRMAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EEAFF2262624BD00944CE0 /* NYPLAxisDRMAuthorizer.swift */; };
+		59F8BEFF2652FA61000FA42B /* NYPLAxisPackageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F8BEFE2652FA61000FA42B /* NYPLAxisPackageService.swift */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		5A6929101B95ACD100FB4C10 /* sdk.css in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290F1B95ACD100FB4C10 /* sdk.css */; };
@@ -1843,6 +1847,11 @@
 		5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+Axis.swift"; sourceTree = "<group>"; };
 		593F30D3265721A2005E82BA /* NYPLAssetWriterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NYPLAssetWriterTests.swift; path = NYPLAxisTests/NYPLAssetWriterTests.swift; sourceTree = "<group>"; };
 		593F30E026572B1B005E82BA /* NYPLContentDownloaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NYPLContentDownloaderTests.swift; path = NYPLAxisTests/NYPLContentDownloaderTests.swift; sourceTree = "<group>"; };
+		593F306826570EFD005E82BA /* NYPLAxisItemDownloaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NYPLAxisItemDownloaderTests.swift; path = NYPLAxisTests/NYPLAxisItemDownloaderTests.swift; sourceTree = "<group>"; };
+		593F306926570EFE005E82BA /* NYPLContentDownloaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NYPLContentDownloaderTests.swift; path = NYPLAxisTests/NYPLContentDownloaderTests.swift; sourceTree = "<group>"; };
+		593F307426570F16005E82BA /* AssetWriterMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AssetWriterMock.swift; path = NYPLAxisTests/AssetWriterMock.swift; sourceTree = "<group>"; };
+		593F307526570F16005E82BA /* NYPLAxisContentDownloaderMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NYPLAxisContentDownloaderMock.swift; path = NYPLAxisTests/NYPLAxisContentDownloaderMock.swift; sourceTree = "<group>"; };
+		593F307626570F16005E82BA /* TerminationListenerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TerminationListenerMock.swift; path = NYPLAxisTests/TerminationListenerMock.swift; sourceTree = "<group>"; };
 		59453E98263210E400B63E73 /* NYPLAxisNetworkExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisNetworkExecutor.swift; sourceTree = "<group>"; };
 		596D953E26308ADA002F7572 /* NYPLAxisPackageEndpointProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisPackageEndpointProvider.swift; sourceTree = "<group>"; };
 		5982E10E26309778002B379B /* NYPLAxisPackagePathPrefixProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisPackagePathPrefixProvider.swift; sourceTree = "<group>"; };
@@ -1859,6 +1868,7 @@
 		59C46FB4264B852600BBCC96 /* NYPLAxisPackageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisPackageService.swift; sourceTree = "<group>"; };
 		59DE644B26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisNetworkExecuting.swift; sourceTree = "<group>"; };
 		59EEAFF2262624BD00944CE0 /* NYPLAxisDRMAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisDRMAuthorizer.swift; sourceTree = "<group>"; };
+		59F8BEFE2652FA61000FA42B /* NYPLAxisPackageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisPackageService.swift; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		5A5B90191B946FAD002C53E9 /* NYPLReaderContainerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderContainerDelegate.h; sourceTree = "<group>"; };
 		5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NYPLReaderContainerDelegate.mm; sourceTree = "<group>"; };
@@ -2567,24 +2577,34 @@
 		59A78B832616569D0038BCDC /* AxisService */ = {
 			isa = PBXGroup;
 			children = (
-				59A78B89261656C20038BCDC /* NYPLAxisService.swift */,
+				598CDC43261D6F62006A5AB3 /* NYPLAssetWriter.swift */,
+				599CB7A7263200040024B5F1 /* NYPLAxisContentDownloader.swift */,
+				59EEAFF2262624BD00944CE0 /* NYPLAxisDRMAuthorizer.swift */,
 				59A80DC3264C9CF400458C84 /* NYPLAxisItemDownloader.swift */,
+				599CB7972631EC140024B5F1 /* NYPLAxisKeysProvider.swift */,
 				59C46FAA264B21F800BBCC96 /* NYPLAxisLicenseService.swift */,
+				598CDC54261D729C006A5AB3 /* NYPLAxisLicenseURLGenerator.swift */,
 				59C46FAF264B388200BBCC96 /* NYPLAxisMetadataService.swift */,
-				59C46FB4264B852600BBCC96 /* NYPLAxisPackageService.swift */,
+				59DE644B26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift */,
+				59453E98263210E400B63E73 /* NYPLAxisNetworkExecutor.swift */,
 				596D953E26308ADA002F7572 /* NYPLAxisPackageEndpointProvider.swift */,
 				5982E10E26309778002B379B /* NYPLAxisPackagePathPrefixProvider.swift */,
-				599CB7A7263200040024B5F1 /* NYPLAxisContentDownloader.swift */,
-				59453E98263210E400B63E73 /* NYPLAxisNetworkExecutor.swift */,
-				59DE644B26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift */,
-				599CB7972631EC140024B5F1 /* NYPLAxisKeysProvider.swift */,
-				59EEAFF2262624BD00944CE0 /* NYPLAxisDRMAuthorizer.swift */,
-				598CDC43261D6F62006A5AB3 /* NYPLAssetWriter.swift */,
-				598CDC54261D729C006A5AB3 /* NYPLAxisLicenseURLGenerator.swift */,
-				598CDC5A261D72DC006A5AB3 /* NYPLRSACypher.swift */,
+				59F8BEFE2652FA61000FA42B /* NYPLAxisPackageService.swift */,
+				59A78B89261656C20038BCDC /* NYPLAxisService.swift */,
 				598CDC60261D7FE4006A5AB3 /* NYPLAxisXML.swift */,
+				598CDC5A261D72DC006A5AB3 /* NYPLRSACypher.swift */,
 			);
 			path = AxisService;
+			sourceTree = "<group>";
+		};
+		59AF4B97264E44F800F3B015 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				593F307426570F16005E82BA /* AssetWriterMock.swift */,
+				593F307526570F16005E82BA /* NYPLAxisContentDownloaderMock.swift */,
+				593F307626570F16005E82BA /* TerminationListenerMock.swift */,
+			);
+			name = Mock;
 			sourceTree = "<group>";
 		};
 		59DE642C26372AEE00CFCF14 /* AxisTests */ = {
@@ -2592,6 +2612,9 @@
 			children = (
 				593F30E026572B1B005E82BA /* NYPLContentDownloaderTests.swift */,
 				593F30D3265721A2005E82BA /* NYPLAssetWriterTests.swift */,
+				593F306826570EFD005E82BA /* NYPLAxisItemDownloaderTests.swift */,
+				593F306926570EFE005E82BA /* NYPLContentDownloaderTests.swift */,
+				59AF4B97264E44F800F3B015 /* Mock */,
 			);
 			name = AxisTests;
 			sourceTree = "<group>";
@@ -4243,6 +4266,7 @@
 			files = (
 				735DD0CA2522A0610096D1F9 /* NYPLOpenSearchDescriptionTests.swift in Sources */,
 				735DD0D02522A0730096D1F9 /* UserProfileDocumentTests.swift in Sources */,
+				593F307726570F17005E82BA /* AssetWriterMock.swift in Sources */,
 				735DD0AD252293580096D1F9 /* NYPLBookStateTests.swift in Sources */,
 				735DD0C92522A0590096D1F9 /* NYPLCatalogFacetTests.m in Sources */,
 				735771A9253763E800067CEA /* NYPLBookRegistryMock.swift in Sources */,
@@ -4258,6 +4282,7 @@
 				735771B22537691800067CEA /* NYPLDRMAuthorizingMock.swift in Sources */,
 				73A794BE2548E36100C59CC1 /* NYPLBookCreationTests.swift in Sources */,
 				735DD0CD2522A0730096D1F9 /* String+NYPLAdditionsTests.swift in Sources */,
+				593F307926570F17005E82BA /* TerminationListenerMock.swift in Sources */,
 				730D17C12552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift in Sources */,
 				735DD0AF252293700096D1F9 /* NYPLMyBooksDownloadCenterTests.swift in Sources */,
 				7311FD2C25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */,
@@ -4265,9 +4290,12 @@
 				735DD0D12522A0730096D1F9 /* URLRequest+NYPLTests.swift in Sources */,
 				593F30E126572B1B005E82BA /* NYPLContentDownloaderTests.swift in Sources */,
 				735771AC2537650E00067CEA /* NYPLLibraryAccountsProviderMock.swift in Sources */,
+				593F307026570F03005E82BA /* NYPLAxisItemDownloaderTests.swift in Sources */,
+				593F306F26570F03005E82BA /* NYPLContentDownloaderTests.swift in Sources */,
 				17ADCF54254BBA4E00D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */,
 				735DD0AE2522935B0096D1F9 /* NYPLCachingTests.swift in Sources */,
 				59DE644D26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift in Sources */,
+				593F307826570F17005E82BA /* NYPLAxisContentDownloaderMock.swift in Sources */,
 				7320AB30251EBC9900E3F04D /* NYPLJWKConversionTest.swift in Sources */,
 				735DD0CC2522A06C0096D1F9 /* OPDS2CatalogsFeedTests.swift in Sources */,
 				73A794CB25492C9800C59CC1 /* NYPLFake.swift in Sources */,
@@ -4790,7 +4818,6 @@
 				734731262514236A00BE3D2C /* NYPLAppDelegate+OE.swift in Sources */,
 				73FCA2BA25005BA4001B0C5D /* NYPLAlertUtils.swift in Sources */,
 				59453E9D263210E400B63E73 /* NYPLAxisNetworkExecutor.swift in Sources */,
-				59C46FB5264B852600BBCC96 /* NYPLAxisPackageService.swift in Sources */,
 				599CB7AC263200040024B5F1 /* NYPLAxisContentDownloader.swift in Sources */,
 				73FCA2BB25005BA4001B0C5D /* OPDS2Publication.swift in Sources */,
 				73FCA2BC25005BA4001B0C5D /* String+MD5.swift in Sources */,
@@ -4970,6 +4997,7 @@
 				17A5AB5225D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */,
 				73FCA33325005BA4001B0C5D /* UIColor+LabelColor.swift in Sources */,
 				73CC48AE260C07C400F1E2C3 /* NYPLReadiumBookmark+R2.swift in Sources */,
+				59F8BEFF2652FA61000FA42B /* NYPLAxisPackageService.swift in Sources */,
 				73FCA33425005BA4001B0C5D /* NYPLNetworkResponder.swift in Sources */,
 				73FCA33525005BA4001B0C5D /* NYPLReaderSettings.m in Sources */,
 				73FCA33625005BA4001B0C5D /* NYPLKeychain.m in Sources */,

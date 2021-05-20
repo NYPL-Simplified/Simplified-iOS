@@ -146,7 +146,7 @@ class NYPLContentDownloaderTests: XCTestCase {
 
 }
 
-private class MockAxisNetworkExecutor: NYPLAxisNetworkExecutor, NYPLAxisNetworkExecuting {
+private class MockAxisNetworkExecutor: NYPLAxisNetworkExecutor {
   
   var deinitialzed: (() -> Void)?
   var didReceiveDownloadRequest: ((URLRequest) -> Void)?
