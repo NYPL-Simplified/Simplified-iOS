@@ -102,7 +102,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   #endif
 
   private override init() {
-    self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
+    self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaFeedKeyHash : NYPLConfiguration.prodFeedKeyHash
     self.ageCheck = NYPLAgeCheck(ageCheckChoiceStorage: NYPLSettings.shared)
     
     super.init()
@@ -254,8 +254,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   func loadCatalogs(completion: ((Bool) -> ())?) {
     Log.debug(#file, "Entering loadCatalog...")
     let targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
-    let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
-      .trimmingCharacters(in: ["="])
+    let hash = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaFeedKeyHash : NYPLConfiguration.prodFeedKeyHash
 
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     guard !wasAlreadyLoading else { return }
@@ -322,7 +321,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
   func updateAccountSet(completion: ((Bool) -> ())?) {
     accountSetsWorkQueue.sync(flags: .barrier) {
-      self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
+      self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaFeedKeyHash : NYPLConfiguration.prodFeedKeyHash
     }
 
     if self.accounts().isEmpty {

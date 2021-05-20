@@ -18,9 +18,10 @@ extension NYPLConfiguration {
   private static let feedFileUrl = URL(fileURLWithPath:
     Bundle.main.path(forResource: "OpenEBooks_OPDS2_Library_Registry_Feed",
                      ofType: "json")!)
-  private static let feedFileUrlHash = feedFileUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  private static let prodFeedKey = "OpenEBooksLibraryRegistryProdFeedKey"
+  
   static var prodUrl = feedFileUrl
-  static var prodUrlHash = feedFileUrlHash
+  static let prodFeedKeyHash = prodFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 
   // MARK:- Beta library catalog
 
@@ -29,10 +30,10 @@ extension NYPLConfiguration {
   private static let betaFeedFileUrl = URL(fileURLWithPath:
     Bundle.main.path(forResource: "OpenEBooks_OPDS2_Library_Registry_Feed-QA",
                      ofType: "json")!)
-  private static let betaFeedFileUrlHash = feedFileUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  private static let betaFeedKey = "OpenEBooksLibraryRegistryBetaFeedKey"
 
   static var betaUrl = betaFeedFileUrl
-  static var betaUrlHash = feedFileUrlHash
+  static let betaFeedKeyHash = betaFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 
   // MARK:-
 
