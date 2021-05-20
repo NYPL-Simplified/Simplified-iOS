@@ -227,6 +227,8 @@
 		5916E7E02627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5916E7E22627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5916E7E32627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
+		593F30D9265721A2005E82BA /* NYPLAssetWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F30D3265721A2005E82BA /* NYPLAssetWriterTests.swift */; };
+		593F30E126572B1B005E82BA /* NYPLContentDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593F30E026572B1B005E82BA /* NYPLContentDownloaderTests.swift */; };
 		59453E9D263210E400B63E73 /* NYPLAxisNetworkExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59453E98263210E400B63E73 /* NYPLAxisNetworkExecutor.swift */; };
 		596D954326308ADA002F7572 /* NYPLAxisPackageEndpointProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596D953E26308ADA002F7572 /* NYPLAxisPackageEndpointProvider.swift */; };
 		5982E11326309778002B379B /* NYPLAxisPackagePathPrefixProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5982E10E26309778002B379B /* NYPLAxisPackagePathPrefixProvider.swift */; };
@@ -241,7 +243,6 @@
 		59C46FAB264B21F800BBCC96 /* NYPLAxisLicenseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C46FAA264B21F800BBCC96 /* NYPLAxisLicenseService.swift */; };
 		59C46FB0264B388200BBCC96 /* NYPLAxisMetadataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C46FAF264B388200BBCC96 /* NYPLAxisMetadataService.swift */; };
 		59C46FB5264B852600BBCC96 /* NYPLAxisPackageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C46FB4264B852600BBCC96 /* NYPLAxisPackageService.swift */; };
-		59DE643326372B0800CFCF14 /* NYPLContentDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DE643226372B0800CFCF14 /* NYPLContentDownloaderTests.swift */; };
 		59DE644C26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DE644B26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift */; };
 		59DE644D26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DE644B26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift */; };
 		59DE645326372E4E00CFCF14 /* NYPLAxisContentDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599CB7A7263200040024B5F1 /* NYPLAxisContentDownloader.swift */; };
@@ -1840,6 +1841,8 @@
 		52592BBB21220A4F00587288 /* NYPLLocalization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLLocalization.h; sourceTree = "<group>"; };
 		5916E7D3262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+Adept.swift"; sourceTree = "<group>"; };
 		5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+Axis.swift"; sourceTree = "<group>"; };
+		593F30D3265721A2005E82BA /* NYPLAssetWriterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NYPLAssetWriterTests.swift; path = NYPLAxisTests/NYPLAssetWriterTests.swift; sourceTree = "<group>"; };
+		593F30E026572B1B005E82BA /* NYPLContentDownloaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NYPLContentDownloaderTests.swift; path = NYPLAxisTests/NYPLContentDownloaderTests.swift; sourceTree = "<group>"; };
 		59453E98263210E400B63E73 /* NYPLAxisNetworkExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisNetworkExecutor.swift; sourceTree = "<group>"; };
 		596D953E26308ADA002F7572 /* NYPLAxisPackageEndpointProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisPackageEndpointProvider.swift; sourceTree = "<group>"; };
 		5982E10E26309778002B379B /* NYPLAxisPackagePathPrefixProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisPackagePathPrefixProvider.swift; sourceTree = "<group>"; };
@@ -1854,7 +1857,6 @@
 		59C46FAA264B21F800BBCC96 /* NYPLAxisLicenseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisLicenseService.swift; sourceTree = "<group>"; };
 		59C46FAF264B388200BBCC96 /* NYPLAxisMetadataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisMetadataService.swift; sourceTree = "<group>"; };
 		59C46FB4264B852600BBCC96 /* NYPLAxisPackageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisPackageService.swift; sourceTree = "<group>"; };
-		59DE643226372B0800CFCF14 /* NYPLContentDownloaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLContentDownloaderTests.swift; sourceTree = "<group>"; };
 		59DE644B26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisNetworkExecuting.swift; sourceTree = "<group>"; };
 		59EEAFF2262624BD00944CE0 /* NYPLAxisDRMAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAxisDRMAuthorizer.swift; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
@@ -2588,7 +2590,8 @@
 		59DE642C26372AEE00CFCF14 /* AxisTests */ = {
 			isa = PBXGroup;
 			children = (
-				59DE643226372B0800CFCF14 /* NYPLContentDownloaderTests.swift */,
+				593F30E026572B1B005E82BA /* NYPLContentDownloaderTests.swift */,
+				593F30D3265721A2005E82BA /* NYPLAssetWriterTests.swift */,
 			);
 			name = AxisTests;
 			sourceTree = "<group>";
@@ -4246,6 +4249,7 @@
 				737F4A542549D78100A3C34B /* NYPLBookCreationTestsObjc.m in Sources */,
 				735771A52537635D00067CEA /* NYPLSignInBusinessLogicTests.swift in Sources */,
 				59DE645326372E4E00CFCF14 /* NYPLAxisContentDownloader.swift in Sources */,
+				593F30D9265721A2005E82BA /* NYPLAssetWriterTests.swift in Sources */,
 				735DD0C82522A0540096D1F9 /* NYPLAnnouncementManagerTests.swift in Sources */,
 				73C3CF5B25CB8D6100CA8166 /* NYPLNetworkExecutorMock.swift in Sources */,
 				730EF264260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift in Sources */,
@@ -4259,11 +4263,11 @@
 				7311FD2C25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */,
 				7320AB51251EC07300E3F04D /* NYPLOPDSAcquisitionPathTests.swift in Sources */,
 				735DD0D12522A0730096D1F9 /* URLRequest+NYPLTests.swift in Sources */,
+				593F30E126572B1B005E82BA /* NYPLContentDownloaderTests.swift in Sources */,
 				735771AC2537650E00067CEA /* NYPLLibraryAccountsProviderMock.swift in Sources */,
 				17ADCF54254BBA4E00D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */,
 				735DD0AE2522935B0096D1F9 /* NYPLCachingTests.swift in Sources */,
 				59DE644D26372E1300CFCF14 /* NYPLAxisNetworkExecuting.swift in Sources */,
-				59DE643326372B0800CFCF14 /* NYPLContentDownloaderTests.swift in Sources */,
 				7320AB30251EBC9900E3F04D /* NYPLJWKConversionTest.swift in Sources */,
 				735DD0CC2522A06C0096D1F9 /* OPDS2CatalogsFeedTests.swift in Sources */,
 				73A794CB25492C9800C59CC1 /* NYPLFake.swift in Sources */,
