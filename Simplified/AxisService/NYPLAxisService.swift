@@ -98,7 +98,7 @@ import Foundation
   // MARK: - Download & Validate License
   private func downloadAndValidateLicense() {
     licenseService.downloadLicense()
-    licenseService.saveBookInfoFromLicense()
+    licenseService.saveBookInfoForFetchingLicense()
     licenseService.validateLicense()
     licenseService.deleteLicenseFile()
   }

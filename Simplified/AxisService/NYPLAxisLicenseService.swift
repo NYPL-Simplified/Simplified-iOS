@@ -11,7 +11,7 @@ import Foundation
 protocol NYPLAxisLicenseHandling {
   func deleteLicenseFile()
   func downloadLicense()
-  func saveBookInfoFromLicense()
+  func saveBookInfoForFetchingLicense()
   func validateLicense()
   func encryptedContentKeyData() -> Data?
 }
@@ -138,7 +138,7 @@ struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
   }
   
   /// Writes book isbn and book_vault_id to be used for fetching license before opening book for reading
-  func saveBookInfoFromLicense() {
+  func saveBookInfoForFetchingLicense() {
     axisItemDownloader.dispatchGroup.wait()
     axisItemDownloader.dispatchGroup.enter()
     let designatedBookInfoURL = parentDirectory
