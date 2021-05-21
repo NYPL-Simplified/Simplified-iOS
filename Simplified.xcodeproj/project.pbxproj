@@ -2762,7 +2762,6 @@
 				E671FF7C1E3A7068002AB13F /* NYPLNetworkQueue.swift */,
 				A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */,
 				A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */,
-				7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */,
 				2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */,
 				E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */,
 			);
@@ -3268,6 +3267,7 @@
 				73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */,
 				5D1B141422CBE3570006C964 /* NYPLProblemDocument.swift */,
 				8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */,
+				7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */,
 				145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */,
 			);
 			path = ErrorHandling;
