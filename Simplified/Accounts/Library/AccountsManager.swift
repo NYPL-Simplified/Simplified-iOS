@@ -251,10 +251,14 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
   /// thread or not.
-  func loadCatalogs(completion: ((Bool) -> ())?) {
+  func loadCatalogs(url: URL? = nil, completion: ((Bool) -> ())?) {
     Log.debug(#file, "Entering loadCatalog...")
-    let targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
+    var targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
     let hash = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaFeedKeyHash : NYPLConfiguration.prodFeedKeyHash
+    
+    if let url = url {
+      targetUrl = url
+    }
 
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     guard !wasAlreadyLoading else { return }

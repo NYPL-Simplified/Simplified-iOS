@@ -152,22 +152,24 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
     activityIndicator.isHidden = false
     activityIndicator.startAnimating()
     collectionView.isUserInteractionEnabled = false
-    dataProvider.requestLibraryList(searchKeyword: searchBar.text) { [weak self] error in
-      self?.didUpdateLibraryList(error: error)
+    dataProvider.requestLibraryList(searchKeyword: searchBar.text) { [weak self] success in
+      self?.didUpdateLibraryList(success: success)
     }
   }
   
-  private func didUpdateLibraryList(error: Error?) {
-    activityIndicator.stopAnimating()
-    activityIndicator.isHidden = true
-    collectionView.isUserInteractionEnabled = true
-    if let error = error {
-      let alert = NYPLAlertUtils.alert(title: "Failed to update library list", error: error as NSError)
-      present(alert, animated: true, completion: nil)
-      return
+  private func didUpdateLibraryList(success: Bool) {
+    NYPLMainThreadRun.asyncIfNeeded {
+      self.activityIndicator.stopAnimating()
+      self.activityIndicator.isHidden = true
+      self.collectionView.isUserInteractionEnabled = true
+      if !success {
+        let alert = NYPLAlertUtils.alert(title: "Failed to update library list", message: "UnknownRequestError")
+        self.present(alert, animated: true, completion: nil)
+        return
+      }
+      
+      self.collectionView.reloadSections([NYPLLibraryFinderSection.newLibrary.rawValue])
     }
-    
-    collectionView.reloadSections([NYPLLibraryFinderSection.newLibrary.rawValue])
   }
   
   // MARK: - UI Setup

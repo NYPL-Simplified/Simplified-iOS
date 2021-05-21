@@ -14,7 +14,7 @@ protocol NYPLLibraryFinderDataProviding {
   var newLibraryAccounts: [Account] { get }
   
   // Might need to add pagination to the request
-  func requestLibraryList(searchKeyword: String?, completion: @escaping (Error?) -> ())
+  func requestLibraryList(searchKeyword: String?, completion: @escaping (Bool) -> ())
 }
 
 enum LibraryFinderQueryItemKey: String {
@@ -39,7 +39,23 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
     self.newLibraryAccounts = newLibraryAccounts
   }
   
-  func requestLibraryList(searchKeyword: String?, completion: @escaping (Error?) -> ()) {
+  func requestLibraryList(searchKeyword: String?, completion: @escaping (Bool) -> ()) {
+    guard let targetUrl = getRequestUrl(searchKeyword: searchKeyword) else {
+      completion(false)
+      return
+    }
+    
+    Log.debug(#function, targetUrl.absoluteString)
+    
+    AccountsManager.shared.loadCatalogs(url: targetUrl) { [weak self] success in
+      if success {
+        self?.newLibraryAccounts = AccountsManager.shared.accounts()
+      }
+      completion(success)
+    }
+  }
+  
+  private func getRequestUrl(searchKeyword: String?) -> URL? {
     var queryItems = [URLQueryItem]()
     var targetUrlString = userLocation != nil ? nearbyUrlString : searchUrlString
     
@@ -75,17 +91,6 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
     var urlComponents = URLComponents(string: targetUrlString)
     urlComponents?.queryItems = queryItems
     
-    guard let targetUrl = urlComponents?.url else {
-      // Handle completion with error
-      return
-    }
-    
-    Log.debug(#function, targetUrl.absoluteString)
-    
-    // For testing
-    Log.debug(#file, "API Request - request library list with keyword - \(searchKeyword)")
-    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-      completion(nil)
-    }
+    return urlComponents?.url
   }
 }
