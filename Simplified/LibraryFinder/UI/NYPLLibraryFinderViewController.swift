@@ -39,6 +39,7 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
     registerCollectionViewCell()
     setupCollectionViewUI()
     setupActivityIndicator()
+    updateLibraryList()
   }
   
   // MARK: - CollectionView DataSource
@@ -147,7 +148,16 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   
   // MARK: - UI Update
   
-  func didUpdateLibraryList(error: Error?) {
+  private func updateLibraryList() {
+    activityIndicator.isHidden = false
+    activityIndicator.startAnimating()
+    collectionView.isUserInteractionEnabled = false
+    dataProvider.requestLibraryList(searchKeyword: searchBar.text) { [weak self] error in
+      self?.didUpdateLibraryList(error: error)
+    }
+  }
+  
+  private func didUpdateLibraryList(error: Error?) {
     activityIndicator.stopAnimating()
     activityIndicator.isHidden = true
     collectionView.isUserInteractionEnabled = true
@@ -245,12 +255,7 @@ extension NYPLLibraryFinderViewController: NYPLLibraryFinderDisplaying {
 
 extension NYPLLibraryFinderViewController: UISearchBarDelegate {
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-    activityIndicator.isHidden = false
-    activityIndicator.startAnimating()
-    collectionView.isUserInteractionEnabled = false
     searchBar.resignFirstResponder()
-    dataProvider.requestLibraryList(searchKeyword: searchBar.text) { [weak self] error in
-      self?.didUpdateLibraryList(error: error)
-    }
+    updateLibraryList()
   }
 }
