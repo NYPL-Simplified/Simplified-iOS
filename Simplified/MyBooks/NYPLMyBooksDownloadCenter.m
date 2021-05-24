@@ -667,12 +667,8 @@ didCompleteWithError:(NSError *)error
         [self deleteLocalContentForBookIdentifier:identifier];
       }
       NYPLBook *returnedBook = [NYPLBook bookWithEntry:entry];
-      if(returnedBook) {
-        [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
-        [[NYPLBookRegistry sharedRegistry] save];
-      } else {
-        NYPLLOG(@"Failed to create book from entry after revoke loan call: Book not removed from registry.");
-      }
+      [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
+      [[NYPLBookRegistry sharedRegistry] save];
       return;
     }
 
