@@ -12,9 +12,14 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   func account(_ uuid: String) -> Account?
 }
 
+protocol NYPLLibraryRegistryFeedRequestHandling {
+  func accounts(_ key: String?) -> [Account]
+  func loadCatalogs(url: URL?, completion: ((Bool) -> ())?)
+}
+
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
-@objcMembers final class AccountsManager: NSObject, NYPLLibraryAccountsProvider
+@objcMembers final class AccountsManager: NSObject, NYPLLibraryAccountsProvider, NYPLLibraryRegistryFeedRequestHandling
 {
   static let NYPLAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949", //NYPL proper

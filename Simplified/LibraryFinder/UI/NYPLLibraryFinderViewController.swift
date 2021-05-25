@@ -49,7 +49,6 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   }
 
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    super.collectionView(collectionView, didSelectItemAt: indexPath)
     collectionView.deselectItem(at: indexPath, animated: true)
     
     if indexPath.section == NYPLLibraryFinderSection.newLibrary.rawValue {
@@ -162,6 +161,7 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
       self.activityIndicator.stopAnimating()
       self.activityIndicator.isHidden = true
       self.collectionView.isUserInteractionEnabled = true
+      self.backgroundLabel.isHidden = (self.dataProvider.newLibraryAccounts.count > 0)
       if !success {
         let alert = NYPLAlertUtils.alert(title: "Failed to update library list", message: "UnknownRequestError")
         self.present(alert, animated: true, completion: nil)
@@ -200,7 +200,6 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
       layout.estimatedItemSize = CGSize(width: collectionView.bounds.width - insets, height: 100)
     }
     
-    // TODO: iOS-34 Only show background label when location service not allowed
     collectionView.backgroundView = backgroundLabel
   }
   

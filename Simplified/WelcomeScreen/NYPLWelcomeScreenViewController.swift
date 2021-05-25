@@ -185,11 +185,7 @@ import PureLayout
     }
     
     let presentLibraryFinder = {
-      var userAccounts = [Account]()
-      if let simplyEAccount = AccountsManager.shared.account(AccountsManager.shared.SimplyEAccountUUID) {
-        userAccounts.append(simplyEAccount)
-      }
-      let finderBusinessLogic = NYPLLibraryFinderBusinessLogic(userAccounts: userAccounts)
+      let finderBusinessLogic = NYPLLibraryFinderBusinessLogic(requestHandler: AccountsManager.shared)
       let finderVC = NYPLLibraryFinderViewController(dataProvider: finderBusinessLogic) { [weak self] account in
         guard let self = self else {
           return

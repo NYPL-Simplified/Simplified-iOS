@@ -65,10 +65,10 @@ class NYPLLibraryFinderLibraryCell: UICollectionViewCell {
     nameLabel.text = account.name
     // TODO: iOS-36 Assign data value to UI componenets after parser and data model are updated
     descriptionLabel.text = account.subtitle
-    distanceLabel.text = "20 Mi"
-    postalCodeLabel.text = "12345"
+    distanceLabel.text = account.distance
+    postalCodeLabel.text = account.area
     
-    configureBadgeLabel(text: "BADGE")
+    configureBadgeLabel(text: account.areaType)
   }
   
   private func setupUI() {

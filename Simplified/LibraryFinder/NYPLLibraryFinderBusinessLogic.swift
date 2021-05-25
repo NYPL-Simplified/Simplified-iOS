@@ -27,16 +27,16 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
   private let searchUrlString = "http://librarysimplified.org/terms/rel/search"
   private let nearbyUrlString = "http://librarysimplified.org/terms/rel/nearby"
   
-  // TODO: Use `let` instead of `var` if userAccounts is not intended to change
-  var userAccounts: [Account]
+  let userAccounts: [Account]
   var newLibraryAccounts: [Account]
+  let requestHandler: NYPLLibraryRegistryFeedRequestHandling
   
   var userLocation: CLLocationCoordinate2D? = nil
   
-  init(userAccounts: [Account] = [Account](), newLibraryAccounts: [Account] = [Account]()) {
-    // TODO: iOS-35 Fetch library list from new API endpoints
+  init(userAccounts: [Account] = [Account](), requestHandler: NYPLLibraryRegistryFeedRequestHandling) {
     self.userAccounts = userAccounts
-    self.newLibraryAccounts = newLibraryAccounts
+    self.newLibraryAccounts = [Account]()
+    self.requestHandler = requestHandler
   }
   
   func requestLibraryList(searchKeyword: String?, completion: @escaping (Bool) -> ()) {
@@ -47,9 +47,17 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
     
     Log.debug(#function, targetUrl.absoluteString)
     
-    AccountsManager.shared.loadCatalogs(url: targetUrl) { [weak self] success in
+    requestHandler.loadCatalogs(url: targetUrl) { [weak self] success in
+      guard let self = self else {
+        return
+      }
+      
       if success {
-        self?.newLibraryAccounts = AccountsManager.shared.accounts()
+        let userAccountUUIDs: [String] = self.userAccounts.compactMap { $0.uuid }
+        let filteredAccounts = self.requestHandler.accounts(nil).filter {
+          !userAccountUUIDs.contains($0.uuid)
+        }
+        self.newLibraryAccounts = filteredAccounts
       }
       completion(success)
     }
