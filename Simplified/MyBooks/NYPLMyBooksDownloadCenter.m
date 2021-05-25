@@ -267,7 +267,16 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
            fulfillWithACSMData:ACSMData
            tag:book.identifier
            userID:[[NYPLUserAccount sharedAccount] userID]
-           deviceID:[[NYPLUserAccount sharedAccount] deviceID]];
+           deviceID:[[NYPLUserAccount sharedAccount] deviceID]
+           completion:^(NSError *fulfillError) {
+            if (fulfillError) {
+              [self logBookDownloadFailure:book
+                                    reason:@"Unable to fulfill loan with Adobe"
+                              downloadTask:downloadTask
+                                  metadata:nil];
+              [self failDownloadWithAlertForBook:book];
+            }
+          }];
         }
 #endif
         break;
