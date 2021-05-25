@@ -5,7 +5,6 @@
 //  Created by Raman Singh on 2021-04-26.
 //  Copyright © 2021 NYPL Labs. All rights reserved.
 //
-
 import XCTest
 @testable import SimplyE
 
@@ -19,7 +18,9 @@ class NYPLContentDownloaderTests: XCTestCase {
     let expectation = XCTestExpectation(
       description: "Failed download request should be reattempted twice")
     expectation.expectedFulfillmentCount = 3
-    let executor = MockAxisNetworkExecutor()
+    
+    let executor = NYPLAxisNetworkExecutorMock().withDefaultSucceedingUrls()
+    
     let itemURL = URL(string: "https://nypl.org/4")!
     executor.didReceiveDownloadRequest = {
       if itemURL == $0.url {
@@ -39,9 +40,8 @@ class NYPLContentDownloaderTests: XCTestCase {
       description: "Failed download request should prevent further downloads")
     expectation.isInverted = true
     
-    let executor = MockAxisNetworkExecutor()
+    let executor = NYPLAxisNetworkExecutorMock().withDefaultSucceedingUrls()
     let failingDownloadURL = URL(string: "https://nypl.org/4")!
-    
     let contentDownloader = NYPLAxisContentDownloader(networkExecuting: executor)
     
     let itemDownloadFailed = {
@@ -73,7 +73,8 @@ class NYPLContentDownloaderTests: XCTestCase {
       description: "If no failure occurs, all requests should be executed!")
     expectation.expectedFulfillmentCount = allSucceedingURLs.count
     
-    let contentDownloader = NYPLAxisContentDownloader(networkExecuting: MockAxisNetworkExecutor())
+    let contentDownloader = NYPLAxisContentDownloader(
+      networkExecuting: NYPLAxisNetworkExecutorMock().withDefaultSucceedingUrls())
     
     for url in allSucceedingURLs {
       contentDownloader.downloadItem(from: url) { (result) in
@@ -95,13 +96,14 @@ class NYPLContentDownloaderTests: XCTestCase {
       description: "NYPLAxisContentDownloader and NYPLAxisNetworkExecutor should deinitialize upon completion")
     expectation.expectedFulfillmentCount = 2
     
-    var customContentDownloader: CustomNYPLContentDownloader? = CustomNYPLContentDownloader(networkExecuting: MockAxisNetworkExecutor())
+    var customContentDownloader: CustomNYPLContentDownloader? = CustomNYPLContentDownloader(
+      networkExecuting: NYPLAxisNetworkExecutorMock().withDefaultSucceedingUrls())
     
     customContentDownloader?.deinitialzed = {
       expectation.fulfill()
     }
     
-    if let executor = customContentDownloader?.networkExecutor as? MockAxisNetworkExecutor {
+    if let executor = customContentDownloader?.networkExecutor as? NYPLAxisNetworkExecutorMock {
       executor.deinitialzed = {
         expectation.fulfill()
       }
@@ -122,14 +124,14 @@ class NYPLContentDownloaderTests: XCTestCase {
       description: "NYPLAxisContentDownloader and NYPLAxisNetworkExecutor should deinitialize upon failure")
     expectation.expectedFulfillmentCount = 2
     
-    
-    var customContentDownloader: CustomNYPLContentDownloader? = CustomNYPLContentDownloader(networkExecuting: MockAxisNetworkExecutor())
+    var customContentDownloader: CustomNYPLContentDownloader? = CustomNYPLContentDownloader(
+      networkExecuting: NYPLAxisNetworkExecutorMock().withDefaultSucceedingUrls())
     
     customContentDownloader?.deinitialzed = {
       expectation.fulfill()
     }
     
-    if let executor = customContentDownloader?.networkExecutor as? MockAxisNetworkExecutor {
+    if let executor = customContentDownloader?.networkExecutor as? NYPLAxisNetworkExecutorMock {
       executor.deinitialzed = {
         expectation.fulfill()
       }
@@ -144,32 +146,6 @@ class NYPLContentDownloaderTests: XCTestCase {
     wait(for: [expectation], timeout: 10)
   }
 
-}
-
-private class MockAxisNetworkExecutor: NYPLAxisNetworkExecutor {
-  
-  var deinitialzed: (() -> Void)?
-  var didReceiveDownloadRequest: ((URLRequest) -> Void)?
-  
-  init() {
-    let executor = NYPLRequestExecutorMock()
-    let succeeding = Array(1...3) + Array(5...15)
-    executor.responseBodies = succeeding.reduce(into: [:], {
-      $0[URL(string: "https://nypl.org/\($1)")!] = "Some data"
-    })
-    super.init(networkExecutor: executor)
-  }
-  
-  override func GET(_ request: URLRequest,
-                    completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask {
-    didReceiveDownloadRequest?(request)
-    return super.GET(request, completion: completion)
-  }
-  
-  deinit {
-    deinitialzed?()
-  }
-  
 }
 
 private class CustomNYPLContentDownloader: NYPLAxisContentDownloader {
