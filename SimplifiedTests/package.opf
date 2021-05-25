@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="p9781619634015">
+<manifest>
+	<item id="ch01" href="xhtml/ch01.html" media-type="application/xhtml+xml"/>
+	<item id="ch02" href="xhtml/ch02.html" media-type="application/xhtml+xml"/>
+	<item id="ch03" href="xhtml/ch03.html" media-type="application/xhtml+xml"/>
+</manifest>
+</package>
