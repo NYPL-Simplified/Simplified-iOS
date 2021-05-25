@@ -25,8 +25,8 @@ protocol NYPLAxisLicenseHandling {
 /// and `modulus and exponent from the public key`. The license file we get is supposed to
 /// contain the `book_vault_id` encrypted using the public key we provided. If it does, it means the
 /// license is valid.
-/// 
-struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
+///
+class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
   
   static private let licenseValidationFailureSummary = "AxisLicenseService failed to validate license"
   static private let saveBookInfoFailureSummary = "AxisLicenseService failed to write book info"
@@ -101,10 +101,9 @@ struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       let userKey = encryptionNode[axisKeysProvider.userKey] as? [String: Any],
       let encryptedBookVaultId = userKey[axisKeysProvider.keyCheck] as? String
     else {
-      logLicenseError(
+      logLicenseErrorAndLeave(
         summary: NYPLAxisLicenseService.licenseValidationFailureSummary,
         reason: NYPLAxisLicenseService.missingKeys)
-      axisItemDownloader.leaveGroupAndStopDownload()
       return
     }
     
@@ -113,24 +112,20 @@ struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       let decryptedBookVaultData = cypher.decryptWithPKCS1_OAEP(base64Data),
       let decryptedBookVaultId = String(data: decryptedBookVaultData, encoding: .utf8)
     else {
-      logLicenseError(
+      logLicenseErrorAndLeave(
         summary: NYPLAxisLicenseService.licenseValidationFailureSummary,
         reason: NYPLAxisLicenseService.invalidKeyCheck)
-      axisItemDownloader.leaveGroupAndStopDownload()
       return
     }
       
-    
     let isValid = decryptedBookVaultId == bookVaultId
     guard isValid else {
-      
-      logLicenseError(
+      logLicenseErrorAndLeave(
         summary: NYPLAxisLicenseService.licenseValidationFailureSummary,
         reason: NYPLAxisLicenseService.invalidVaultId,
         additionalInfo: ["expected": bookVaultId,
                          "received": decryptedBookVaultId])
       
-      axisItemDownloader.leaveGroupAndStopDownload()
       return
     }
     
@@ -147,17 +142,15 @@ struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
     let bookInfo: NSDictionary = [axisKeysProvider.isbnKey: isbn,
                                   axisKeysProvider.bookVaultKey: bookVaultId]
     
-    
     do {
       let data = try JSONSerialization.data(withJSONObject: bookInfo,
                                             options: .prettyPrinted)
       
       try assetWriter.writeAsset(data, atURL: designatedBookInfoURL)
     } catch {
-      logLicenseError(
+      logLicenseErrorAndLeave(
         summary: NYPLAxisLicenseService.saveBookInfoFailureSummary,
         reason: error.localizedDescription)
-      axisItemDownloader.leaveGroupAndStopDownload()
       return
     }
     
@@ -172,10 +165,9 @@ struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
     do {
       try FileManager.default.removeItem(at: localLicenseURL)
     } catch {
-      logLicenseError(
+      logLicenseErrorAndLeave(
         summary: NYPLAxisLicenseService.deleteLicenseFileFailureSummmay,
         reason: error.localizedDescription)
-      axisItemDownloader.leaveGroupAndStopDownload()
       return
     }
     
@@ -198,10 +190,9 @@ struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       let encryptedContent = encryptionNode[axisKeysProvider.contentKey] as? [String: Any],
       let encryptedContentValue = encryptedContent[axisKeysProvider.encryptedValue] as? String
     else {
-      logLicenseError(
+      logLicenseErrorAndLeave(
         summary: NYPLAxisLicenseService.extractAESKeyFailureSummary,
         reason: NYPLAxisLicenseService.misssingAESKey)
-      axisItemDownloader.leaveGroupAndStopDownload()
       return nil
     }
     
@@ -212,7 +203,7 @@ struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
     return Data(base64Encoded: encryptedContentValue)
   }
   
-  private func logLicenseError(summary: String,
+  func logLicenseErrorAndLeave(summary: String,
                                reason: String,
                                additionalInfo: [String: String] = [:]) {
     
@@ -223,6 +214,8 @@ struct NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       withCode: .axisDRMFulfillmentFail,
       summary: summary,
       metadata: metadata)
+    
+    axisItemDownloader.leaveGroupAndStopDownload()
   }
   
 }
