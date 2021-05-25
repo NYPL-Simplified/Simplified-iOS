@@ -54,6 +54,7 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
   ///   - writeURL: Desired local url for the item.
   func downloadItem(from url: URL, at writeURL: URL) {
     guard shouldContinue else {
+      dispatchGroup.leave()
       return
     }
     
