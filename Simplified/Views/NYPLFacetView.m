@@ -1,6 +1,5 @@
 #import "NYPLLinearView.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 #import <PureLayout/PureLayout.h>
 #import "SimplyE-Swift.h"
@@ -93,7 +92,7 @@ CGFloat const toolbarHeight = 40;
                        stringByAppendingString:@":"];
     [self.linearView addSubview:groupLabel];
 
-    NYPLRoundedButton *const button = [NYPLRoundedButton button];
+    NYPLRoundedButton *const button = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
     button.tag = groupIndex;
     button.titleLabel.font = [UIFont systemFontOfSize:12];
     if([self.dataSource facetView:self isActiveFacetForFacetGroupAtIndex:groupIndex]) {

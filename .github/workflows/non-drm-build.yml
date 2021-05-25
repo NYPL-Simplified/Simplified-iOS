@@ -5,8 +5,8 @@ jobs:
   build:
     runs-on: macOS-latest
     steps:
-      - name: Force Xcode 11.5
-        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Force Xcode 12.4
+        run: sudo xcode-select -switch /Applications/Xcode_12.4.app
       - name: Checkout main repo
         uses: actions/checkout@v2
       - name: Set up repo for nonDRM build

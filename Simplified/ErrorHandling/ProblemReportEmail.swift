@@ -57,6 +57,8 @@ import UIKit
       idiom = "phone"
     case .tv:
       idiom = "tv"
+    case .mac:
+      idiom = "mac"
     case .unspecified:
       idiom = "unspecified"
     }

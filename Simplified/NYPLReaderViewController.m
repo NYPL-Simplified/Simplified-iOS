@@ -6,7 +6,6 @@
 #import "NYPLReaderReadiumView.h"
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
-#import "NYPLRoundedButton.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReaderSettings.h"
@@ -165,7 +164,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
 
   // Bookmark button
-  NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
+  NYPLRoundedButton *const bookmarkButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   bookmarkButton.bounds = CGRectMake(0, 0, 44.0f, 44.0f);
   bookmarkButton.layer.borderWidth = 0.0f;
   bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
@@ -483,9 +482,9 @@ spineItemTitle:(NSString *const)title
 {
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification,
-                                    [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil),
-                                     pageIndex + 1,
-                                     pageCount]);
+                                    [NSString stringWithFormat:NSLocalizedString(@"Page %lu of %lu", nil),
+                                     (unsigned long)pageIndex + 1,
+                                     (unsigned long)pageCount]);
   }
   
   [self.bottomViewProgressView setProgress:progressWithinBook animated:NO];

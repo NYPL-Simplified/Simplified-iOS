@@ -6,10 +6,10 @@
 //  Copyright © 2021 NYPL Labs. All rights reserved.
 //
 
+#if FEATURE_DRM_CONNECTOR
+
 import Foundation
 import R2Shared
-
-#if FEATURE_DRM_CONNECTOR
 
 /// Adobe DRM fetcher
 /// Decrypts .epub contents data
@@ -46,7 +46,7 @@ class AdobeDRMFetcher: Fetcher {
     do {
       let resource = fetcher.get(link)
       let encryptedData = try resource.read().get()
-      let href = link.href.starts(with: "/") ? String(link.href.dropFirst()) : link.href // remove leading /
+      let href = link.href.starts(with: "/") ? String(link.href.dropFirst()) : link.href
       let data = container.decode(encryptedData, at: href)
       return DataResource(link: link, data: data)
     } catch {
@@ -55,7 +55,7 @@ class AdobeDRMFetcher: Fetcher {
   }
   
   func close() {
-    // No need to close anything.
+    fetcher.close()
   }
 }
 
