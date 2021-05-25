@@ -606,7 +606,6 @@ didCompleteWithError:(NSError *)error
 {
   NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
-  BOOL downloaded = state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed;
 
   // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -616,66 +615,117 @@ didCompleteWithError:(NSError *)error
     [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
                                     userID:[[NYPLUserAccount sharedAccount] userID]
                                   deviceID:[[NYPLUserAccount sharedAccount] deviceID]
-                                completion:^(BOOL success, __unused NSError *error) {
-                                  if(!success) {
+                                completion:^(BOOL success, NSError *error) {
+                                  if(success) {
+                                    [self revokeLoanAndRemoveBook:book state:state];
+                                  } else {
                                     NYPLLOG(@"Failed to return loan via NYPLAdept.");
+                                    [self presentAlertForError:error
+                                                   orErrorDict:nil
+                                                 returningBook:book];
                                   }
                                 }];
+  } else {
+    // if we have no fulfillment ID or we don't require authentication, we just
+    // need to let the Circulation Manager server know and remove the book
+    [self revokeLoanAndRemoveBook:book state:state];
   }
+#else
+  [self revokeLoanAndRemoveBook:book state:state];
 #endif
+}
 
+- (void)revokeLoanAndRemoveBook:(NYPLBook *)book state:(NYPLBookState)state
+{
+  BOOL didDownloadBook = (state == NYPLBookStateDownloadSuccessful
+                          || state == NYPLBookStateUsed);
+  NSString *const identifier = book.identifier;
+
+  // The main case for not having a revoke link is when the library doesn't
+  // authenticate its users. In the case there's no server-side loan to revoke.
   if (!book.revokeURL) {
-    if (downloaded) {
+    if (didDownloadBook) {
       [self deleteLocalContentForBookIdentifier:identifier];
     }
     [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
     [[NYPLBookRegistry sharedRegistry] save];
-  } else {
-    [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-    [NYPLOPDSFeed withURL:book.revokeURL shouldResetCache:NO completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
-
-      [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
-      
-      if(feed && feed.entries.count == 1)  {
-        NYPLOPDSEntry *const entry = feed.entries[0];
-        if(downloaded) {
-          [self deleteLocalContentForBookIdentifier:identifier];
-        }
-        NYPLBook *returnedBook = [NYPLBook bookWithEntry:entry];
-        if(returnedBook) {
-          [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
-        } else {
-          NYPLLOG(@"Failed to create book from entry. Book not removed from registry.");
-        }
-      } else {
-        if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
-          if(downloaded) {
-            [self deleteLocalContentForBookIdentifier:identifier];
-          }
-          [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
-        } else if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
-          NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
-          __weak __auto_type wSelf = self;
-          [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
-                            usingExistingCredentials:NO
-                            authenticationCompletion:^{
-            [wSelf returnBookWithIdentifier:identifier];
-          }];
-        } else {
-          [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"ReturnCouldNotBeCompletedFormat", nil), book.title];
-            UIAlertController *alert = [NYPLAlertUtils
-                                        alertWithTitle:@"ReturnFailed"
-                                        message:formattedMessage];
-            if (error) {
-              [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:YES];
-            }
-            [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
-          }];
-        }
-      }
-    }];
+    return;
   }
+
+  [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
+
+  // revoke loan with the CM
+  [NYPLOPDSFeed withURL:book.revokeURL
+       shouldResetCache:NO
+      completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *errorDict) {
+
+    [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
+
+    if (feed && feed.entries.count == 1)  {
+      NYPLOPDSEntry *const entry = feed.entries[0];
+      if(didDownloadBook) {
+        [self deleteLocalContentForBookIdentifier:identifier];
+      }
+      NYPLBook *returnedBook = [NYPLBook bookWithEntry:entry];
+      [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
+      [[NYPLBookRegistry sharedRegistry] save];
+      return;
+    }
+
+    // handle errors
+    if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
+      if (didDownloadBook) {
+        [self deleteLocalContentForBookIdentifier:identifier];
+      }
+      [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+      [[NYPLBookRegistry sharedRegistry] save];
+    } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+      NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
+      __weak __auto_type wSelf = self;
+      [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
+                        usingExistingCredentials:NO
+                        authenticationCompletion:^{
+        [wSelf returnBookWithIdentifier:identifier];
+      }];
+    } else {
+      [self presentAlertForError:nil orErrorDict:errorDict returningBook:book];
+    }
+  }];
+}
+
+- (void)presentAlertForError:(NSError *)error
+                 orErrorDict:(NSDictionary *)errorDict
+               returningBook:(NYPLBook *)book
+{
+  [NYPLErrorLogger logError:error
+                    summary:@"Failed returning book"
+                   metadata:@{
+                     @"errorDict": errorDict ?: @"",
+                     @"returningBook": book.loggableDictionary ?: @""
+                   }];
+
+  NSString *msg = NSLocalizedString(@"ReturnCouldNotBeCompletedFormat", nil);
+  msg = [NSString stringWithFormat:msg, book.title];
+  if (error) {
+    msg = [NSString stringWithFormat:@"%@\n%@",
+           msg, error.localizedDescriptionWithRecovery];
+  }
+
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    UIAlertController *alert = [NYPLAlertUtils
+                                alertWithTitle:@"ReturnFailed"
+                                message:msg];
+    if (errorDict) {
+      NYPLProblemDocument *problemDoc = [NYPLProblemDocument fromDictionary:errorDict];
+      [NYPLAlertUtils setProblemDocumentWithController:alert
+                                              document:problemDoc
+                                                append:YES];
+    }
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert
+                                                       viewController:nil
+                                                             animated:YES
+                                                           completion:nil];
+  }];
 }
 
 - (NYPLMyBooksDownloadInfo *)downloadInfoForBookIdentifier:(NSString *const)bookIdentifier
@@ -828,7 +878,7 @@ didCompleteWithError:(NSError *)error
       }];
       return;
     }
-
+    // after borrowing this book now has [book defaultAcquisitionIfBorrow] == nil
     NYPLBook *book = [NYPLBook bookWithEntry:feed.entries[0]];
 
     if(!book) {
