@@ -23,4 +23,14 @@ class NYPLAxisContentDownloaderMock: NYPLAxisContentDownloading {
     completion(desiredResult)
   }
   
+  func mockDownloadFailure() {
+    desiredResult = .failure(
+      NYPLAxisContentDownloaderMock.MockDownloaderError.someError)
+  }
+  
+  func mockDownloadSuccess() {
+    let data = "Some data".data(using: .utf8)!
+    desiredResult = .success(data)
+  }
+  
 }

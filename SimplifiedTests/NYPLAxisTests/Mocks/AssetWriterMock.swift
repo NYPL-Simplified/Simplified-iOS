@@ -18,7 +18,7 @@ class AssetWriterMock: NYPLAssetWriting {
   var errorToReturn: AssetWriterError?
   var willWriteAsset: (() -> Void)?
   
-  init(errorToReturn: AssetWriterError?) {
+  init(errorToReturn: AssetWriterError? = nil) {
     self.errorToReturn = errorToReturn
   }
   
@@ -27,6 +27,18 @@ class AssetWriterMock: NYPLAssetWriting {
     if let error = errorToReturn {
       throw error
     } 
+  }
+  
+  @discardableResult
+  func mockingSuccess() -> AssetWriterMock {
+    errorToReturn = nil
+    return self
+  }
+  
+  @discardableResult
+  func mockingFailure() -> AssetWriterMock {
+    errorToReturn = AssetWriterError.someError
+    return self
   }
   
 }
