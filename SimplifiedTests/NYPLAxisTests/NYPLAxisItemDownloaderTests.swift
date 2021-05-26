@@ -5,7 +5,6 @@
 //  Created by Raman Singh on 2021-05-18.
 //  Copyright © 2021 NYPL Labs. All rights reserved.
 //
-
 import XCTest
 @testable import SimplyE
 
@@ -32,7 +31,7 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     let dispatchGroup = DispatchGroup()
     let itemDownloader = NYPLAxisItemDownloader(
       dispatchGroup: dispatchGroup, downloader: contentDownloader)
-    mockDownloadFailure()
+    contentDownloader.mockDownloadFailure()
     
     contentDownloader.didReceiveRequestForUrl = {
       if $0 == self.someOtherURL {
@@ -72,7 +71,7 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     let itemDownloader = NYPLAxisItemDownloader(downloader: contentDownloader)
     
     itemDownloader.delegate = terminationListener
-    mockDownloadFailure()
+    contentDownloader.mockDownloadFailure()
     
     itemDownloader.dispatchGroup.enter()
     itemDownloader.downloadItem(from: someURL, at: downloadsDirectory)
@@ -88,7 +87,7 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     
     let dispatchGroup = DispatchGroup()
     
-    let assetWriter = AssetWriterMock(errorToReturn: nil)
+    let assetWriter = AssetWriterMock().mockingSuccess()
     assetWriter.willWriteAsset = {
       writeExpectation.fulfill()
     }
@@ -96,7 +95,7 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     let itemDownloader = NYPLAxisItemDownloader(
       assetWriter: assetWriter, dispatchGroup: dispatchGroup,
       downloader: contentDownloader)
-    mockDownloadSuccess()
+    contentDownloader.mockDownloadSuccess()
     
     dispatchGroup.enter()
     itemDownloader.downloadItem(from: someURL, at: downloadsDirectory)
@@ -117,13 +116,12 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     leaveExpecation.expectedFulfillmentCount = 2
     
     let dispatchGroup = DispatchGroup()
-    let assetWriter = AssetWriterMock(
-      errorToReturn: AssetWriterMock.AssetWriterError.someError)
+    let assetWriter = AssetWriterMock().mockingFailure()
     
     let itemDownloader = NYPLAxisItemDownloader(
       assetWriter: assetWriter, dispatchGroup: dispatchGroup,
       downloader: contentDownloader)
-    mockDownloadSuccess()
+    contentDownloader.mockDownloadSuccess()
     
     contentDownloader.didReceiveRequestForUrl = {
       if $0 == self.someOtherURL {
@@ -163,11 +161,11 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     }
     
     let dispatchGroup = DispatchGroup()
-    let assetWriter = AssetWriterMock(errorToReturn: nil)
+    let assetWriter = AssetWriterMock().mockingSuccess()
     let itemDownloader = NYPLAxisItemDownloader(
       assetWriter: assetWriter, dispatchGroup: dispatchGroup,
       downloader: contentDownloader)
-    mockDownloadSuccess()
+    contentDownloader.mockDownloadSuccess()
     
     contentDownloader.didReceiveRequestForUrl = {
       if $0 == self.someURL {
@@ -198,16 +196,6 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     }
     
     waitForExpectations(timeout: 4, handler: nil)
-  }
-  
-  private func mockDownloadFailure() {
-    contentDownloader.desiredResult = .failure(
-      NYPLAxisContentDownloaderMock.MockDownloaderError.someError)
-  }
-  
-  private func mockDownloadSuccess() {
-    let data = "Some data".data(using: .utf8)!
-    contentDownloader.desiredResult = .success(data)
   }
   
 }
