@@ -116,7 +116,11 @@ import Foundation
 
   var useR2: Bool {
     get {
+      #if AXIS
+      return true
+      #else
       return UserDefaults.standard.bool(forKey: NYPLSettings.useR2Key)
+      #endif
     }
     set(b) {
       UserDefaults.standard.set(b, forKey: NYPLSettings.useR2Key)
