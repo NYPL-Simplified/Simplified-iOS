@@ -17,6 +17,7 @@ class NYPLFinderBusinessLogicTests: XCTestCase {
   var libraryRegistryMock: NYPLLibraryRegistryFeedRequestHandlerMock!
   var libraryAccounts: [Account]!
   var stageValue: String!
+  var expectation: XCTestExpectation!
   
   override func setUpWithError() throws {
     libraryAccounts = [Account]()
@@ -35,6 +36,8 @@ class NYPLFinderBusinessLogicTests: XCTestCase {
     businessLogic = NYPLLibraryFinderBusinessLogic(userAccounts: userAccounts, libraryRegistry: libraryRegistryMock)
     
     stageValue = NYPLSettings.shared.useBetaLibraries ? LibraryFinderQueryStage.beta.rawValue : LibraryFinderQueryStage.production.rawValue
+    
+    expectation = self.expectation(description: "NYPLFinderBusinessLogicTests")
   }
 
   override func tearDownWithError() throws {
@@ -47,26 +50,38 @@ class NYPLFinderBusinessLogicTests: XCTestCase {
 
   func testLibraryRegistryRequestUrlWithSearchKeyword() throws {
     businessLogic.requestLibraryList(searchKeyword: "test") { (success) in
-      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/search?query=test&stage=" + self.stageValue)
+      self.expectation.fulfill()
     }
+    waitForExpectations(timeout: 1, handler: nil)
+    XCTAssertEqual(libraryRegistryMock.requestUrl?.absoluteString,
+                   "http://librarysimplified.org/terms/rel/search?query=test&stage=" + stageValue)
   }
 
   func testLibraryRegistryRequestUrlWithSearchKeywordAndLocation() throws {
     businessLogic.userLocation = CLLocationCoordinate2DMake(41, -87)
     businessLogic.requestLibraryList(searchKeyword: "test") { (success) in
-      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/search?query=test&location=41.0,-87.0&stage=" + self.stageValue)
+      self.expectation.fulfill()
     }
+    waitForExpectations(timeout: 1, handler: nil)
+    XCTAssertEqual(libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/search?query=test&location=41.0,-87.0&stage=" + stageValue)
   }
   
   func testLibraryRegistryRequestUrlWithLocation() throws {
     businessLogic.userLocation = CLLocationCoordinate2DMake(41, -87)
     businessLogic.requestLibraryList(searchKeyword: nil) { (success) in
-      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/nearby?location=41.0,-87.0&stage=" + self.stageValue)
+      self.expectation.fulfill()
     }
+    waitForExpectations(timeout: 1, handler: nil)
+    XCTAssertEqual(libraryRegistryMock.requestUrl?.absoluteString,
+                   "http://librarysimplified.org/terms/rel/nearby?location=41.0,-87.0&stage=" + stageValue)
     
+    let emptyStringUrlExpectation = expectation(description: "UrlWithEmptyString")
     businessLogic.requestLibraryList(searchKeyword: "") { (success) in
-      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/nearby?location=41.0,-87.0&stage=" + self.stageValue)
+      emptyStringUrlExpectation.fulfill()
     }
+    waitForExpectations(timeout: 1, handler: nil)
+    XCTAssertEqual(libraryRegistryMock.requestUrl?.absoluteString,
+                   "http://librarysimplified.org/terms/rel/nearby?location=41.0,-87.0&stage=" + stageValue)
   }
   
   func testUpdateBusinessLogicLibraryAccounts() throws {
@@ -74,12 +89,17 @@ class NYPLFinderBusinessLogicTests: XCTestCase {
     libraryRegistryMock.libraryAccounts = libraryAccounts
     
     businessLogic.requestLibraryList(searchKeyword: "") { (success) in
-      XCTAssertEqual(self.businessLogic.newLibraryAccounts.count, self.libraryAccounts.count - self.businessLogic.userAccounts.count)
+      self.expectation.fulfill()
     }
+    waitForExpectations(timeout: 1, handler: nil)
+    XCTAssertEqual(businessLogic.newLibraryAccounts.count, libraryAccounts.count - businessLogic.userAccounts.count)
     
+    let resetLibraryAccountsExpectation = expectation(description: "ResetLibraryAccounts")
     libraryRegistryMock.libraryAccounts = [Account]()
     businessLogic.requestLibraryList(searchKeyword: "") { (success) in
-      XCTAssertEqual(self.businessLogic.newLibraryAccounts.count, 0)
+      resetLibraryAccountsExpectation.fulfill()
     }
+    waitForExpectations(timeout: 1, handler: nil)
+    XCTAssertEqual(businessLogic.newLibraryAccounts.count, 0)
   }
 }
