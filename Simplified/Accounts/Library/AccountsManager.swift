@@ -107,7 +107,7 @@ protocol NYPLLibraryRegistryFeedRequestHandling {
   #endif
 
   private override init() {
-    self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaFeedKeyHash : NYPLConfiguration.prodFeedKeyHash
+    self.accountSet = NYPLConfiguration.feedKeyHash
     self.ageCheck = NYPLAgeCheck(ageCheckChoiceStorage: NYPLSettings.shared)
     
     super.init()
@@ -253,13 +253,14 @@ protocol NYPLLibraryRegistryFeedRequestHandling {
   /// After loading the library accounts, the authentication document
   /// for the current library will be loaded in sequence.
   ///
+  /// - Parameter url: Url for library registry feed if specified.
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
   /// thread or not.
   func loadCatalogs(url: URL? = nil, completion: ((Bool) -> ())?) {
     Log.debug(#file, "Entering loadCatalog...")
     var targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
-    let hash = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaFeedKeyHash : NYPLConfiguration.prodFeedKeyHash
+    let hash = NYPLConfiguration.feedKeyHash
     
     if let url = url {
       targetUrl = url
@@ -330,7 +331,7 @@ protocol NYPLLibraryRegistryFeedRequestHandling {
 
   func updateAccountSet(completion: ((Bool) -> ())?) {
     accountSetsWorkQueue.sync(flags: .barrier) {
-      self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaFeedKeyHash : NYPLConfiguration.prodFeedKeyHash
+      self.accountSet = NYPLConfiguration.feedKeyHash
     }
 
     if self.accounts().isEmpty {

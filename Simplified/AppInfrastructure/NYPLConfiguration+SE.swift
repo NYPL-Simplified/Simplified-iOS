@@ -10,24 +10,18 @@ import Foundation
 
 extension NYPLConfiguration {
 
-//  static let betaUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries/qa")!
-//  static let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries")!
-  
-  // TODO: Using sample feed data for testing,
-  //        remove URLs below when ready for production,
-  //        remove SimplyE from json file's targets
-  static let betaUrl = URL(fileURLWithPath:
-    Bundle.main.path(forResource: "OPDS2LibraryRegistryFeed",
-                     ofType: "json")!)
-  static let prodUrl = URL(fileURLWithPath:
-    Bundle.main.path(forResource: "OPDS2LibraryRegistryFeed",
-                     ofType: "json")!)
+  static let betaUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries/qa")!
+  static let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries")!
 
   private static let betaFeedKey = "SimplyELibraryRegistryBetaFeedKey"
   private static let prodFeedKey = "SimplyELibraryRegistryProdFeedKey"
   
-  static let betaFeedKeyHash = betaFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
-  static let prodFeedKeyHash = prodFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  private static let betaFeedKeyHash = betaFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  private static let prodFeedKeyHash = prodFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  
+  static let feedKeyHash = {
+    return NYPLSettings.shared.useBetaLibraries ? betaFeedKeyHash : prodFeedKeyHash
+  }()
 
   @objc static func mainColor() -> UIColor {
     let libAccount = AccountsManager.sharedInstance().currentAccount

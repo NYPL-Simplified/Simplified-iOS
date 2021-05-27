@@ -15,7 +15,7 @@ private enum NYPLLibraryFinderSection: Int, CaseIterable {
 }
 
 class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
-  var isMyLibraryHidden = false
+  var isMyLibraryHidden = true
   
   private let dataProvider: NYPLLibraryFinderDataProviding
   private var completion: (Account) -> ()

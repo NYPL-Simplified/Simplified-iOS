@@ -17,10 +17,22 @@ protocol NYPLLibraryFinderDataProviding {
   func requestLibraryList(searchKeyword: String?, completion: @escaping (Bool) -> ())
 }
 
+/// Keys for query items when requesting library registry feed for Finder
+/// - Parameter location: latitude and longitude of user's location
+/// - Parameter stage: request production or beta library registry feed
+/// - Parameter search: search keyword entered by user
+/// eg: http://librarysimplified.org/terms/rel/search?location=41,-87&query=springfield&stage=all
+/// ref: https://github.com/NYPL-Simplified/Simplified/wiki/LibraryRegistryPublicAPI#template-variables-1
+
 enum LibraryFinderQueryItemKey: String {
   case location
   case stage
-  case query
+  case search = "query"
+}
+
+enum LibraryFinderQueryStage: String {
+  case production
+  case beta = "all"
 }
 
 class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
@@ -29,14 +41,14 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
   
   let userAccounts: [Account]
   var newLibraryAccounts: [Account]
-  let requestHandler: NYPLLibraryRegistryFeedRequestHandling
+  let libraryRegistry: NYPLLibraryRegistryFeedRequestHandling
   
   var userLocation: CLLocationCoordinate2D? = nil
   
   init(userAccounts: [Account] = [Account](), requestHandler: NYPLLibraryRegistryFeedRequestHandling) {
     self.userAccounts = userAccounts
     self.newLibraryAccounts = [Account]()
-    self.requestHandler = requestHandler
+    self.libraryRegistry = requestHandler
   }
   
   func requestLibraryList(searchKeyword: String?, completion: @escaping (Bool) -> ()) {
@@ -47,14 +59,14 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
     
     Log.debug(#function, targetUrl.absoluteString)
     
-    requestHandler.loadCatalogs(url: targetUrl) { [weak self] success in
+    libraryRegistry.loadCatalogs(url: targetUrl) { [weak self] success in
       guard let self = self else {
         return
       }
       
       if success {
         let userAccountUUIDs: [String] = self.userAccounts.compactMap { $0.uuid }
-        let filteredAccounts = self.requestHandler.accounts(nil).filter {
+        let filteredAccounts = self.libraryRegistry.accounts(nil).filter {
           !userAccountUUIDs.contains($0.uuid)
         }
         self.newLibraryAccounts = filteredAccounts
@@ -73,7 +85,7 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
       targetUrlString = searchUrlString
       queryItems.append(
         URLQueryItem(
-          name: LibraryFinderQueryItemKey.query.rawValue,
+          name: LibraryFinderQueryItemKey.search.rawValue,
           value: searchKeyword
         )
       )
@@ -92,7 +104,7 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
     queryItems.append(
       URLQueryItem(
         name: LibraryFinderQueryItemKey.stage.rawValue,
-        value: NYPLSettings.shared.useBetaLibraries ? "all" : "production"
+        value: NYPLSettings.shared.useBetaLibraries ? LibraryFinderQueryStage.beta.rawValue : LibraryFinderQueryStage.production.rawValue
       )
     )
     

@@ -32,8 +32,12 @@ extension NYPLConfiguration {
                      ofType: "json")!)
   private static let betaFeedKey = "OpenEBooksLibraryRegistryBetaFeedKey"
 
-  static var betaUrl = betaFeedFileUrl
-  static let betaFeedKeyHash = betaFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  private static var betaUrl = betaFeedFileUrl
+  private static let betaFeedKeyHash = betaFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  
+  static let feedKeyHash = {
+    return NYPLSettings.shared.useBetaLibraries ? betaFeedKeyHash : prodFeedKeyHash
+  }()
 
   // MARK:-
 

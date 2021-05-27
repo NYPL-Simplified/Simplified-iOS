@@ -18,13 +18,14 @@
     }
   }
   fileprivate var libraryAccounts: [Account]
-  fileprivate var userAddedSecondaryAccounts: [String]!
+  fileprivate var userAddedSecondaryAccounts: [String]
   fileprivate let manager: AccountsManager
   
   required init(accounts: [String]) {
     self.accounts = accounts
     self.manager = AccountsManager.shared
     self.libraryAccounts = manager.accounts()
+    self.userAddedSecondaryAccounts = [String]()
 
     super.init(nibName:nil, bundle:nil)
   }
@@ -199,7 +200,7 @@
       return
     }
     showLoadingUI(loadState: .success)
-    var array = userAddedSecondaryAccounts!
+    var array = userAddedSecondaryAccounts
     array.append(uuid)
     NYPLSettings.shared.settingsAccountsList = array
     accounts = array
