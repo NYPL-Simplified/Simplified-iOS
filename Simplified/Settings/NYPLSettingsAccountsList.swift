@@ -183,7 +183,7 @@
       AccountsManager.shared.account($0)
     }
     
-    let finderBusinessLogic = NYPLLibraryFinderBusinessLogic(userAccounts: userLibraryAccounts, requestHandler: AccountsManager.shared)
+    let finderBusinessLogic = NYPLLibraryFinderBusinessLogic(userAccounts: userLibraryAccounts, libraryRegistry: AccountsManager.shared)
     let finderVC = NYPLLibraryFinderViewController(dataProvider: finderBusinessLogic) { [weak self] account in
       self?.userAddedSecondaryAccounts.append(account.uuid)
       self?.updateSettingsAccountList()

@@ -45,10 +45,10 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
   
   var userLocation: CLLocationCoordinate2D? = nil
   
-  init(userAccounts: [Account] = [Account](), requestHandler: NYPLLibraryRegistryFeedRequestHandling) {
+  init(userAccounts: [Account] = [Account](), libraryRegistry: NYPLLibraryRegistryFeedRequestHandling) {
     self.userAccounts = userAccounts
     self.newLibraryAccounts = [Account]()
-    self.libraryRegistry = requestHandler
+    self.libraryRegistry = libraryRegistry
   }
   
   func requestLibraryList(searchKeyword: String?, completion: @escaping (Bool) -> ()) {
