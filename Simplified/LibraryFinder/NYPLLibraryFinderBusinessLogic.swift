@@ -41,7 +41,7 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
   
   let userAccounts: [Account]
   var newLibraryAccounts: [Account]
-  let libraryRegistry: NYPLLibraryRegistryFeedRequestHandling
+  private let libraryRegistry: NYPLLibraryRegistryFeedRequestHandling
   
   var userLocation: CLLocationCoordinate2D? = nil
   
@@ -65,11 +65,7 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
       }
       
       if success {
-        let userAccountUUIDs: [String] = self.userAccounts.compactMap { $0.uuid }
-        let filteredAccounts = self.libraryRegistry.accounts(nil).filter {
-          !userAccountUUIDs.contains($0.uuid)
-        }
-        self.newLibraryAccounts = filteredAccounts
+        self.updateNewLibraryAccounts()
       }
       completion(success)
     }
@@ -112,5 +108,13 @@ class NYPLLibraryFinderBusinessLogic: NSObject, NYPLLibraryFinderDataProviding {
     urlComponents?.queryItems = queryItems
     
     return urlComponents?.url
+  }
+  
+  private func updateNewLibraryAccounts() {
+    let userAccountUUIDs: [String] = userAccounts.compactMap { $0.uuid }
+    let filteredAccounts = libraryRegistry.accounts(nil).filter {
+      !userAccountUUIDs.contains($0.uuid)
+    }
+    newLibraryAccounts = filteredAccounts
   }
 }
