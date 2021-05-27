@@ -16,6 +16,7 @@ class NYPLFinderBusinessLogicTests: XCTestCase {
   var businessLogic: NYPLLibraryFinderBusinessLogic!
   var libraryRegistryMock: NYPLLibraryRegistryFeedRequestHandlerMock!
   var libraryAccounts: [Account]!
+  var stageValue: String!
   
   override func setUpWithError() throws {
     libraryAccounts = [Account]()
@@ -32,6 +33,8 @@ class NYPLFinderBusinessLogicTests: XCTestCase {
     libraryRegistryMock = NYPLLibraryRegistryFeedRequestHandlerMock()
     
     businessLogic = NYPLLibraryFinderBusinessLogic(userAccounts: userAccounts, libraryRegistry: libraryRegistryMock)
+    
+    stageValue = NYPLSettings.shared.useBetaLibraries ? LibraryFinderQueryStage.beta.rawValue : LibraryFinderQueryStage.production.rawValue
   }
 
   override func tearDownWithError() throws {
@@ -44,25 +47,25 @@ class NYPLFinderBusinessLogicTests: XCTestCase {
 
   func testLibraryRegistryRequestUrlWithSearchKeyword() throws {
     businessLogic.requestLibraryList(searchKeyword: "test") { (success) in
-      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/search?query=test&stage=all")
+      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/search?query=test&stage=" + self.stageValue)
     }
   }
 
   func testLibraryRegistryRequestUrlWithSearchKeywordAndLocation() throws {
     businessLogic.userLocation = CLLocationCoordinate2DMake(41, -87)
     businessLogic.requestLibraryList(searchKeyword: "test") { (success) in
-      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/search?query=test&location=41.0,-87.0&stage=all")
+      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/search?query=test&location=41.0,-87.0&stage=" + self.stageValue)
     }
   }
   
   func testLibraryRegistryRequestUrlWithLocation() throws {
     businessLogic.userLocation = CLLocationCoordinate2DMake(41, -87)
     businessLogic.requestLibraryList(searchKeyword: nil) { (success) in
-      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/nearby?location=41.0,-87.0&stage=all")
+      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/nearby?location=41.0,-87.0&stage=" + self.stageValue)
     }
     
     businessLogic.requestLibraryList(searchKeyword: "") { (success) in
-      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/nearby?location=41.0,-87.0&stage=all")
+      XCTAssertEqual(self.libraryRegistryMock.requestUrl?.absoluteString, "http://librarysimplified.org/terms/rel/nearby?location=41.0,-87.0&stage=" + self.stageValue)
     }
   }
   
