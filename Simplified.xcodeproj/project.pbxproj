@@ -141,7 +141,6 @@
 		1744DF4E2640B31B00CBAAA8 /* Stringable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1744DF492640B31A00CBAAA8 /* Stringable.swift */; };
 		175D76D6264DAE8500BD11BA /* bpl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = 175D76D5264DAE8500BD11BA /* bpl_authentication_document.json */; };
 		175D76D7264DAE8500BD11BA /* bpl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = 175D76D5264DAE8500BD11BA /* bpl_authentication_document.json */; };
-		175D77752655F55A00BD11BA /* OPDS2LibraryRegistryFeed.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1DFB22860513003B49A5 /* OPDS2LibraryRegistryFeed.json */; };
 		175E480824EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */; };
 		17631AED25E488CD006079C4 /* NYPLAgeCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */; };
 		17631AEE25E488CD006079C4 /* NYPLAgeCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */; };
@@ -4448,7 +4447,6 @@
 				2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */,
 				17E81F2C261FF758001003C2 /* Localizable.stringsdict in Resources */,
 				2D6256911D41582A0080A81F /* software-licenses.html in Resources */,
-				175D77752655F55A00BD11BA /* OPDS2LibraryRegistryFeed.json in Resources */,
 				E65977C51F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard in Resources */,
 				03F94CCF1DD627AA00CE8F4F /* Accounts.json in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
