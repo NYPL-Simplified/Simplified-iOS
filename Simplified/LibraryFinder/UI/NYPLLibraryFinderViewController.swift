@@ -49,6 +49,10 @@ class NYPLLibraryFinderViewController: UICollectionViewController, UICollectionV
   }
 
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    if UICollectionViewController.instancesRespond(to: #selector(collectionView(_:didSelectItemAt:))) {
+      super.collectionView(collectionView, didSelectItemAt: indexPath)
+    }
+    
     collectionView.deselectItem(at: indexPath, animated: true)
     
     if indexPath.section == NYPLLibraryFinderSection.newLibrary.rawValue {
