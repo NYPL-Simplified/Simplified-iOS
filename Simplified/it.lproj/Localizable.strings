@@ -136,17 +136,9 @@
 "MyBooksViewControllerGroupShow" = "Mostra";
 "MyBooksViewControllerGroupSortBy" = "Ordina per";
 
-// NYPLReaderViewController (R1)
+// ereader
 "ReaderViewControllerCorruptTitle" = "Prenota Impossibile visualizzare";
 "ReaderViewControllerCorruptMessage" = "Questo libro è danneggiato e non può essere letto.";
-"ReaderViewControllerCurrentChapter" = "Capitolo corrente";
-"Book" = "Libro";
-"TOC" = "Sommario";
-
-// NYPLReaderReadiumView (R1)
-"chapter" = "capitolo";
-
-// ReaderViewController (R2)
 "Previous Chapter" = "Capitolo precedente";
 "Next Chapter" = "Capitolo successivo";
 
