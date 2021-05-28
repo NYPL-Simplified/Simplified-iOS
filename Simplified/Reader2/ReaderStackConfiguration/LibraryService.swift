@@ -40,6 +40,13 @@ final class LibraryService: Loggable {
     drmLibraryServices.append(AdobeDRMLibraryService())
     #endif
     
+    #if AXIS
+    if let protectedAssetHandler = NYPLAxisProtectedAssetHandler() {
+      drmLibraryServices.append(
+        NYPLAxisLibraryService(protectedAssetHandler: protectedAssetHandler))
+    }
+    #endif
+    
     streamer = Streamer(
       contentProtections: drmLibraryServices.compactMap { $0.contentProtection }
     )
