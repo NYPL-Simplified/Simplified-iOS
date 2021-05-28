@@ -20,19 +20,29 @@ struct NYPLZlibDecompressor: NYPLZlibDecompressing {
   /// - Returns: Decompressed data
   func decompress(sourceData: Data) -> Data? {
     var dataToReturn: Data?
-    // Taken from https://www.hackingwithswift.com/example-code/system/how-to-compress-and-decompress-data
     if #available(iOS 13.0, *) {
-      let result = try? (sourceData as NSData).decompressed(using: .zlib)
-      if let result = result {
-        dataToReturn = result as Data
-      }
+      dataToReturn = decompressWithNewAlgorithm(sourceData)
     }
     
     return dataToReturn ?? decompressInChunks(sourceData)
   }
   
+  // Taken from https://www.hackingwithswift.com/example-code/system/how-to-compress-and-decompress-data
+  @available(iOS 13.0, *)
+  func decompressWithNewAlgorithm(_ sourceData: Data) -> Data? {
+    do {
+      let decompressed = try (sourceData as NSData).decompressed(using: .zlib)
+      return decompressed as Data
+    } catch {
+      NYPLErrorLogger.logError(
+        withCode: .axisCriptographyFail,
+        summary: "Axis failed to decompress zlib with latest algorithm")
+      return nil
+    }
+  }
+  
   // Taken from https://developer.apple.com/documentation/compression/compression_zlib
-  private func decompressInChunks(_ sourceData: Data) -> Data? {
+  func decompressInChunks(_ sourceData: Data) -> Data? {
     let bufferSize = 256
     let destinationBufferPointer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
     defer {
