@@ -12,9 +12,14 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   func account(_ uuid: String) -> Account?
 }
 
+protocol NYPLLibraryRegistryFeedRequestHandling {
+  func accounts(_ key: String?) -> [Account]
+  func loadCatalogs(url: URL?, completion: ((Bool) -> ())?)
+}
+
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
-@objcMembers final class AccountsManager: NSObject, NYPLLibraryAccountsProvider
+@objcMembers final class AccountsManager: NSObject, NYPLLibraryAccountsProvider, NYPLLibraryRegistryFeedRequestHandling
 {
   static let NYPLAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949", //NYPL proper
@@ -102,7 +107,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   #endif
 
   private override init() {
-    self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
+    self.accountSet = NYPLConfiguration.feedKeyHash
     self.ageCheck = NYPLAgeCheck(ageCheckChoiceStorage: NYPLSettings.shared)
     
     super.init()
@@ -248,14 +253,18 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   /// After loading the library accounts, the authentication document
   /// for the current library will be loaded in sequence.
   ///
+  /// - Parameter url: Url for library registry feed if specified.
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
   /// thread or not.
-  func loadCatalogs(completion: ((Bool) -> ())?) {
+  func loadCatalogs(url: URL? = nil, completion: ((Bool) -> ())?) {
     Log.debug(#file, "Entering loadCatalog...")
-    let targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
-    let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
-      .trimmingCharacters(in: ["="])
+    var targetUrl = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrl : NYPLConfiguration.prodUrl
+    let hash = NYPLConfiguration.feedKeyHash
+    
+    if let url = url {
+      targetUrl = url
+    }
 
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     guard !wasAlreadyLoading else { return }
@@ -322,7 +331,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 
   func updateAccountSet(completion: ((Bool) -> ())?) {
     accountSetsWorkQueue.sync(flags: .barrier) {
-      self.accountSet = NYPLSettings.shared.useBetaLibraries ? NYPLConfiguration.betaUrlHash : NYPLConfiguration.prodUrlHash
+      self.accountSet = NYPLConfiguration.feedKeyHash
     }
 
     if self.accounts().isEmpty {

@@ -13,8 +13,15 @@ extension NYPLConfiguration {
   static let betaUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries/qa")!
   static let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries")!
 
-  static let betaUrlHash = betaUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
-  static let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  private static let betaFeedKey = "SimplyELibraryRegistryBetaFeedKey"
+  private static let prodFeedKey = "SimplyELibraryRegistryProdFeedKey"
+  
+  private static let betaFeedKeyHash = betaFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  private static let prodFeedKeyHash = prodFeedKey.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+  
+  static let feedKeyHash = {
+    return NYPLSettings.shared.useBetaLibraries ? betaFeedKeyHash : prodFeedKeyHash
+  }()
 
   @objc static func mainColor() -> UIColor {
     let libAccount = AccountsManager.sharedInstance().currentAccount
