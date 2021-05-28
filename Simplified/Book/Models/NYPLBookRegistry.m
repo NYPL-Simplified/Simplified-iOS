@@ -461,7 +461,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 - (void)updateAndRemoveBook:(NYPLBook *)book
 {
   if(!book) {
-    @throw NSInvalidArgumentException;
+    return;
   }
   
   @synchronized(self) {
