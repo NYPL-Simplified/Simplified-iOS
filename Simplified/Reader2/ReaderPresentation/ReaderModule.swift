@@ -17,7 +17,7 @@ import R2Shared
 
 /// Base module delegate, that sub-modules' delegate can extend.
 /// Provides basic shared functionalities.
-protocol ModuleDelegate: AnyObject {
+protocol R2ModuleDelegate: AnyObject {
   func presentAlert(_ title: String, message: String, from viewController: UIViewController)
   func presentError(_ error: Error?, from viewController: UIViewController)
 }
@@ -28,7 +28,7 @@ protocol ModuleDelegate: AnyObject {
 /// of a publication.
 protocol ReaderModuleAPI {
   
-  var delegate: ModuleDelegate? { get }
+  var delegate: R2ModuleDelegate? { get }
   
   /// Presents the given publication to the user, inside the given navigation controller.
   /// - Parameter publication: The R2 publication to display.
@@ -51,14 +51,14 @@ protocol ReaderModuleAPI {
 /// publication format (e.g. EPUB, PDF, etc).
 final class ReaderModule: ReaderModuleAPI {
   
-  weak var delegate: ModuleDelegate?
+  weak var delegate: R2ModuleDelegate?
   private let resourcesServer: ResourcesServer
   private let progressSynchronizer: NYPLLastReadPositionSynchronizer
 
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
 
-  init(delegate: ModuleDelegate?,
+  init(delegate: R2ModuleDelegate?,
        resourcesServer: ResourcesServer,
        bookRegistry: NYPLBookRegistryProvider) {
     self.delegate = delegate

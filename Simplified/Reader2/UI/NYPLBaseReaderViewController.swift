@@ -20,8 +20,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   private static let bookmarkOnImageName = "BookmarkOn"
   private static let bookmarkOffImageName = "BookmarkOff"
 
-  // TODO: SIMPLY-2656 See if we still need this.
-  weak var moduleDelegate: ModuleDelegate?
+  weak var moduleDelegate: R2ModuleDelegate?
 
   // Models and business logic references
   let publication: Publication

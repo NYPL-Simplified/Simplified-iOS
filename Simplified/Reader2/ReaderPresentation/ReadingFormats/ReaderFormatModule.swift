@@ -19,7 +19,7 @@ import R2Shared
 /// given format (eg. EPUB, CBZ).
 protocol ReaderFormatModule {
   
-  var delegate: ModuleDelegate? { get }
+  var delegate: R2ModuleDelegate? { get }
   
   /// Publication types handled by this sub-module.
   var publicationFormats: [Publication.Format] { get }

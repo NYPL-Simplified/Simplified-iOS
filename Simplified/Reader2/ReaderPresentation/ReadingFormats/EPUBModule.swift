@@ -17,10 +17,10 @@ import R2Shared
 
 final class EPUBModule: ReaderFormatModule {
   
-  weak var delegate: ModuleDelegate?
+  weak var delegate: R2ModuleDelegate?
   let resourcesServer: ResourcesServer
   
-  init(delegate: ModuleDelegate?, resourcesServer: ResourcesServer) {
+  init(delegate: R2ModuleDelegate?, resourcesServer: ResourcesServer) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
   }
