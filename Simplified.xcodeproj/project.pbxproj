@@ -40,7 +40,6 @@
 		08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352251BDE8E700040BF1D /* SystemConfiguration.framework */; };
 		08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11068C55196DD37900E8A94B /* NYPLNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 11068C54196DD37900E8A94B /* NYPLNull.m */; };
 		11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
@@ -744,7 +743,6 @@
 		739E6106244A0D8600D00301 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		739E6107244A0D8600D00301 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092231E78839D00AD338D /* QuartzCore.framework */; };
 		739E6108244A0D8600D00301 /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		739E6109244A0D8600D00301 /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		739E610A244A0D8600D00301 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		739E610B244A0D8600D00301 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352211BDE8E560040BF1D /* libicucore.tbd */; };
 		739E610C244A0D8600D00301 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
@@ -1291,7 +1289,6 @@
 		73FCA36325005BA4001B0C5D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		73FCA36425005BA4001B0C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092231E78839D00AD338D /* QuartzCore.framework */; };
 		73FCA36525005BA4001B0C5D /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		73FCA36625005BA4001B0C5D /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		73FCA36725005BA4001B0C5D /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352211BDE8E560040BF1D /* libicucore.tbd */; };
 		73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
@@ -1404,13 +1401,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = A4FD2F3A1B601DDA0013DF4F;
 			remoteInfo = ADEPT;
-		};
-		5A7048951B94A6710046FFF0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5A5B8F981B9455A5002C53E9;
-			remoteInfo = "Adobe Content Filter";
 		};
 		7320AB4E251EBCB200E3F04D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1770,7 +1760,6 @@
 		52592BB721220A1100587288 /* NYPLLocalization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLLocalization.m; sourceTree = "<group>"; };
 		52592BBB21220A4F00587288 /* NYPLLocalization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLLocalization.h; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
-		5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Adobe Content Filter.xcodeproj"; path = "adobe-content-filter/build/iOS/Adobe Content Filter.xcodeproj"; sourceTree = "<group>"; };
 		5D1B141422CBE3570006C964 /* NYPLProblemDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLProblemDocument.swift; sourceTree = "<group>"; };
 		5D1B142922CC179F0006C964 /* NYPLAlertUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAlertUtils.swift; sourceTree = "<group>"; };
 		5D3A28CB22D3DA850042B3BD /* NYPLUserProfileDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserProfileDocument.swift; sourceTree = "<group>"; };
@@ -2133,7 +2122,6 @@
 				7347B4CB265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */,
 				7347B4CF265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */,
 				739E6108244A0D8600D00301 /* libADEPT.a in Frameworks */,
-				739E6109244A0D8600D00301 /* libAdobe Content Filter.a in Frameworks */,
 				739E610C244A0D8600D00301 /* libc++.dylib in Frameworks */,
 				739E6105244A0D8600D00301 /* libiconv.tbd in Frameworks */,
 				739E610B244A0D8600D00301 /* libicucore.tbd in Frameworks */,
@@ -2243,7 +2231,6 @@
 				7347B4CD265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */,
 				7347B4D1265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */,
 				73FCA36525005BA4001B0C5D /* libADEPT.a in Frameworks */,
-				73FCA36625005BA4001B0C5D /* libAdobe Content Filter.a in Frameworks */,
 				73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */,
 				73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */,
 				73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */,
@@ -2300,7 +2287,6 @@
 				7347B4D2265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */,
 				7347B4CE265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */,
 				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
-				08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
 				03B092261E7883C400AD338D /* libiconv.tbd in Frameworks */,
 				7347B4CA265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */,
@@ -2433,14 +2419,6 @@
 			isa = PBXGroup;
 			children = (
 				5A569A2C1B8351C6003B5B61 /* libADEPT.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		5A7048921B94A6700046FFF0 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3251,7 +3229,6 @@
 			isa = PBXGroup;
 			children = (
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
-				5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */,
 				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
 				732F03BC263350DB0018A82E /* NYPLAEToolkit.xcodeproj */,
 				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
@@ -3628,10 +3605,6 @@
 					ProjectRef = 5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */;
 				},
 				{
-					ProductGroup = 5A7048921B94A6700046FFF0 /* Products */;
-					ProjectRef = 5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */;
-				},
-				{
 					ProductGroup = 732F03BD263350DB0018A82E /* Products */;
 					ProjectRef = 732F03BC263350DB0018A82E /* NYPLAEToolkit.xcodeproj */;
 				},
@@ -3676,13 +3649,6 @@
 			fileType = archive.ar;
 			path = libADEPT.a;
 			remoteRef = 5A569A2B1B8351C6003B5B61 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libAdobe Content Filter.a";
-			remoteRef = 5A7048951B94A6710046FFF0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		732F03C3263350DB0018A82E /* NYPLAEToolkit.framework */ = {
