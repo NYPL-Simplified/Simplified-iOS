@@ -57,10 +57,11 @@ final class LibraryService: Loggable {
   ///   - completion: When this is called, the book is ready for
   ///   presentation if there are no errors.
   func openBook(_ book: NYPLBook,
+                fromFileURL bookFileURL: URL?,
                 sender: UIViewController,
                 completion: @escaping (CancellableResult<Publication, LibraryServiceError>) -> Void) {
 
-    guard let bookUrl =  book.url else {
+    guard let bookUrl = bookFileURL else {
       completion(.failure(.invalidBook))
       return
     }

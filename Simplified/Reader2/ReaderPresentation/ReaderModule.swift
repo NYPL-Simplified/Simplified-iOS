@@ -33,10 +33,12 @@ protocol ReaderModuleAPI {
   /// Presents the given publication to the user, inside the given navigation controller.
   /// - Parameter publication: The R2 publication to display.
   /// - Parameter book: Our internal book model related to the `publication`.
+  /// - Parameter deviceID: This is used to understand if we're resuming
+  /// reading on the same device as the previous time.
   /// - Parameter navigationController: The navigation stack the book will be presented in.
-  /// - Parameter completion: Called once the publication is presented, or if an error occured.
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
+                          deviceID: String?,
                           in navigationController: UINavigationController)
   
 }
@@ -70,6 +72,7 @@ final class ReaderModule: ReaderModuleAPI {
   
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
+                          deviceID: String?,
                           in navigationController: UINavigationController) {
     if delegate == nil {
       NYPLErrorLogger.logError(nil, summary: "ReaderModule delegate is not set")
@@ -80,11 +83,9 @@ final class ReaderModule: ReaderModuleAPI {
       return
     }
 
-    // TODO: SIMPLY-2656 remove implicit dependency (NYPLUserAccount.shared)
-    let drmDeviceID = NYPLUserAccount.sharedAccount().deviceID
     progressSynchronizer.sync(for: publication,
                               book: book,
-                              drmDeviceID: drmDeviceID) { [weak self] initialLocator in
+                              drmDeviceID: deviceID) { [weak self] initialLocator in
                                 self?.finalizePresentation(for: publication,
                                                            book: book,
                                                            formatModule: formatModule,

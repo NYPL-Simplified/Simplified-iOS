@@ -129,7 +129,8 @@
 
 - (void)openEPUB:(NYPLBook *)book
 {
-  [[NYPLRootTabBarController sharedController] presentBook:book];
+  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+  [[NYPLRootTabBarController sharedController] presentBook:book fromFileURL:url];
 
   [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {
