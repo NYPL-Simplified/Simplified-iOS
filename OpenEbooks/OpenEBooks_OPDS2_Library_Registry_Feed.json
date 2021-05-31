@@ -22,10 +22,11 @@
         }
       ],
       "metadata": {
-        "updated": "2020-10-02T17:51:51Z",
+        "modified": "2020-10-02T17:51:51Z",
         "description": "Open eBooks",
-        "id": "urn:uuid:e1a01c16-04e7-4781-89fd-b442dd1be001",
-        "title": "Open eBooks"
+        "identifier": "urn:uuid:e1a01c16-04e7-4781-89fd-b442dd1be001",
+        "title": "Open eBooks",
+        "subject": []
       }
     }
   ],
