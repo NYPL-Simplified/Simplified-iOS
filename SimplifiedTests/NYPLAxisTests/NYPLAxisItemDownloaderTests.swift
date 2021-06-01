@@ -63,14 +63,14 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     let notifyExpectation = self.expectation(
       description: "Downloader should notify listener about failure")
     
-    let terminationListener = TerminationListenerMock()
-    terminationListener.didTerminate = {
+    let progressListener = NYPLAxisProgressListenerMock()
+    progressListener.didTerminate = {
       notifyExpectation.fulfill()
     }
     
     let itemDownloader = NYPLAxisItemDownloader(downloader: contentDownloader)
     
-    itemDownloader.delegate = terminationListener
+    itemDownloader.delegate = progressListener
     contentDownloader.mockDownloadFailure()
     
     itemDownloader.dispatchGroup.enter()
