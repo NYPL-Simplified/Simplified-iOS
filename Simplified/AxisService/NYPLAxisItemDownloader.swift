@@ -8,12 +8,13 @@
 
 import Foundation
 
-protocol NYPLAxisItemDownloadTerminationListening: class {
+protocol NYPLAxisDownloadProgressListening: class {
   func downloaderDidTerminate()
+  func downloadProgressDidUpdate(_ progress: Double)
 }
 
 protocol NYPLAxisItemDownloading: class {
-  var delegate: NYPLAxisItemDownloadTerminationListening? { get set }
+  var delegate: NYPLAxisDownloadProgressListening? { get set }
   var dispatchGroup: DispatchGroup { get }
   var shouldContinue: Bool { get }
   func downloadItem(from url: URL, at writeURL: URL)
@@ -30,15 +31,23 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
   private let assetWriter: NYPLAssetWriting
   private let globalBackgroundSyncronizeDataQueue = DispatchQueue(label: "NYPLAxis")
   private var downloader: NYPLAxisContentDownloading?
-  weak var delegate: NYPLAxisItemDownloadTerminationListening?
+  private let downloadProgressHandler: NYPLAxisDownloadProgressHandling
+  private let downloadTaskWeightProvider: NYPLAxisWeightProviding
+  weak var delegate: NYPLAxisDownloadProgressListening?
   
-  init(assetWriter: NYPLAssetWriting = NYPLAssetWriter(),
-       dispatchGroup: DispatchGroup = DispatchGroup(),
-       downloader: NYPLAxisContentDownloading? = NYPLAxisContentDownloader(
-        networkExecuting: NYPLAxisNetworkExecutor())) {
+  init(
+    assetWriter: NYPLAssetWriting = NYPLAssetWriter(),
+    dispatchGroup: DispatchGroup = DispatchGroup(),
+    downloader: NYPLAxisContentDownloading? = NYPLAxisContentDownloader(
+      networkExecuting: NYPLAxisNetworkExecutor()),
+    progressHandler: NYPLAxisDownloadProgressHandling = NYPLAxisDownloadProgress(),
+    weightProvider: NYPLAxisWeightProviding = NYPLAxisDownloadTaskWeightProvider()
+  ) {
     self.assetWriter = assetWriter
     self.dispatchGroup = dispatchGroup
     self.downloader = downloader
+    self.downloadProgressHandler = progressHandler
+    self.downloadTaskWeightProvider = weightProvider
   }
   
   var shouldContinue: Bool {
@@ -58,12 +67,14 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
       return
     }
     
+    addTaskToDownloadProgress(with: url)
     downloader?.downloadItem(from: url) { [weak self] (result) in
       guard let self = self else { return }
       switch result {
       case .success(let data):
         do {
           try self.assetWriter.writeAsset(data, atURL: writeURL)
+          self.downloadProgressHandler.didFinishTask(with: url)
           self.dispatchGroup.leave()
         } catch {
           NYPLErrorLogger.logError(
@@ -98,6 +109,18 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
       self.downloader = nil
       delegate?.downloaderDidTerminate()
       self.dispatchGroup.leave()
+    }
+  }
+  
+  private func addTaskToDownloadProgress(with url: URL) {
+    if downloadProgressHandler.progressListener == nil {
+      downloadProgressHandler.progressListener = self.delegate
+    }
+    
+    if let weight = downloadTaskWeightProvider.fixedWeightForTaskWithURL(url) {
+      downloadProgressHandler.addFixedWeightTask(with: url, weight: weight)
+    } else {
+      downloadProgressHandler.addFlexibleWeightTask(with: url)
     }
   }
   

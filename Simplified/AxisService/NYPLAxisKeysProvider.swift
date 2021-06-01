@@ -27,6 +27,7 @@ protocol NYPLAxisKeysProviding {
   var isbnKey: String { get }
   var keyCheck: String { get }
   var licenseBaseURL: URL { get }
+  var packageExtension: String { get }
   var userKey: String { get }
 }
 
@@ -49,6 +50,7 @@ struct NYPLAxisKeysProvider: NYPLAxisKeysProviding {
   let keyCheck = "key_check"
   /// Default base URL for downloading license for a book from Axis
   let licenseBaseURL = URL(string: "https://node.axisnow.com/license")!
+  let packageExtension = "opf"
   let userKey = "user_key"
   
 }

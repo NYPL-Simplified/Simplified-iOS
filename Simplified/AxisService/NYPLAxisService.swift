@@ -13,6 +13,7 @@ import Foundation
 /// Responsible for moving book content to designated loation upon successful download and showing
 /// alert upon failure.
 @objc protocol NYPLBookDownloadBroadcasting {
+  func downloadProgressDidUpdate(to progress: Double, forBook book: NYPLBook)
   func failDownloadWithAlert(forBook book: NYPLBook)
   func replaceBook(_ book: NYPLBook,
                    withFileAtURL sourceLocation: URL,
@@ -115,11 +116,15 @@ import Foundation
   
 }
 
-extension NYPLAxisService: NYPLAxisItemDownloadTerminationListening {
+extension NYPLAxisService: NYPLAxisDownloadProgressListening {
   
   func downloaderDidTerminate() {
     try? FileManager.default.removeItem(at: self.dedicatedWriteURL)
     self.delegate?.failDownloadWithAlert(forBook: self.book)
+  }
+  
+  func downloadProgressDidUpdate(_ progress: Double) {
+    self.delegate?.downloadProgressDidUpdate(to: progress, forBook: self.book)
   }
   
 }

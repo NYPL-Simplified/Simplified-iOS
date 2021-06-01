@@ -25,4 +25,6 @@ class NYPLAxisBookDownloadBroadcasterMock: NYPLBookDownloadBroadcasting {
     return true
   }
   
+  func downloadProgressDidUpdate(to progress: Double, forBook book: NYPLBook) {}
+  
 }
