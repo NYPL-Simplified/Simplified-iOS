@@ -9,18 +9,20 @@
 import Foundation
 
 @objc extension NYPLRootTabBarController {
-  func presentBook(_ book: NYPLBook) {
+  func presentBook(_ book: NYPLBook, fromFileURL fileURL: URL?) {
     guard let libraryService = r2Owner?.libraryService, let readerModule = r2Owner?.readerModule else {
       return
     }
 
-    libraryService.openBook(book, sender: self) { [weak self] result in
+    libraryService.openBook(book, fromFileURL: fileURL, sender: self) { [weak self] result in
       guard let navVC = self?.selectedViewController as? UINavigationController else {
         preconditionFailure("No navigation controller, unable to present reader")
       }
+
+      let drmDeviceID = NYPLUserAccount.sharedAccount().deviceID
       switch result {
       case .success(let publication):
-        readerModule.presentPublication(publication, book: book, in: navVC)
+        readerModule.presentPublication(publication, book: book, deviceID: drmDeviceID, in: navVC)
       case .cancelled:
         // .cancelled is returned when publication has restricted access to its resources and can't be rendered
         NYPLErrorLogger.logError(nil, summary: "Error accessing book resources", metadata: [

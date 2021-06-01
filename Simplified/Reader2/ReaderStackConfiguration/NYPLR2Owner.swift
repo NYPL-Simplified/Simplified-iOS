@@ -45,7 +45,7 @@ import R2Streamer
   }
 }
 
-extension NYPLR2Owner: ModuleDelegate {
+extension NYPLR2Owner: R2ModuleDelegate {
   func presentAlert(_ title: String,
                     message: String,
                     from viewController: UIViewController) {

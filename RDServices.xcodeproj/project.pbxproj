@@ -14,24 +14,13 @@
 		110C82A11992C6E300B1E278 /* HTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E761992B46200792DDE /* HTTPConnection.m */; };
 		110C82A21992C6E300B1E278 /* HTTPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E791992B46200792DDE /* HTTPMessage.m */; };
 		110C82A31992C6E300B1E278 /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E7C1992B46200792DDE /* HTTPServer.m */; };
-		110C82A41992C6E300B1E278 /* MultipartFormDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E7F1992B46200792DDE /* MultipartFormDataParser.m */; };
-		110C82A51992C6E300B1E278 /* MultipartMessageHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E811992B46200792DDE /* MultipartMessageHeader.m */; };
-		110C82A61992C6E300B1E278 /* MultipartMessageHeaderField.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E831992B46200792DDE /* MultipartMessageHeaderField.m */; };
 		110C82A71992C6E300B1E278 /* HTTPAsyncFileResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E861992B46200792DDE /* HTTPAsyncFileResponse.m */; };
 		110C82A81992C6E300B1E278 /* HTTPDataResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E881992B46200792DDE /* HTTPDataResponse.m */; };
 		110C82A91992C6E300B1E278 /* HTTPDynamicFileResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E8A1992B46200792DDE /* HTTPDynamicFileResponse.m */; };
-		110C82AA1992C6E300B1E278 /* HTTPErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E8C1992B46200792DDE /* HTTPErrorResponse.m */; };
 		110C82AB1992C6E300B1E278 /* HTTPFileResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E8E1992B46200792DDE /* HTTPFileResponse.m */; };
-		110C82AC1992C6E300B1E278 /* HTTPRedirectResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E901992B46200792DDE /* HTTPRedirectResponse.m */; };
 		110C82AD1992C6E300B1E278 /* WebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E921992B46200792DDE /* WebSocket.m */; };
 		110C82AE1992C6E300B1E278 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E971992B46200792DDE /* GCDAsyncSocket.m */; };
-		110C82AF1992C6E300B1E278 /* DDAbstractDatabaseLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E9B1992B46200792DDE /* DDAbstractDatabaseLogger.m */; };
-		110C82B01992C6E300B1E278 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E9D1992B46200792DDE /* DDASLLogger.m */; };
-		110C82B11992C6E300B1E278 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E9F1992B46200792DDE /* DDFileLogger.m */; };
 		110C82B21992C6E300B1E278 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0EA11992B46200792DDE /* DDLog.m */; };
-		110C82B31992C6E300B1E278 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0EA31992B46200792DDE /* DDTTYLogger.m */; };
-		110C82B41992C6E300B1E278 /* ContextFilterLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0EA61992B46200792DDE /* ContextFilterLogFormatter.m */; };
-		110C82B51992C6E300B1E278 /* DispatchQueueLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0EA81992B46200792DDE /* DispatchQueueLogFormatter.m */; };
 		118A0E2C1992B3FD00792DDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 118A0E2B1992B3FD00792DDE /* Foundation.framework */; };
 		118A0ED11992B4D900792DDE /* RDContainer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E531992B46200792DDE /* RDContainer.mm */; };
 		118A0ED21992B4D900792DDE /* RDMediaOverlaysSmilModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E551992B46200792DDE /* RDMediaOverlaysSmilModel.mm */; };
@@ -155,11 +144,6 @@
 		118A0EA11992B46200792DDE /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
 		118A0EA21992B46200792DDE /* DDTTYLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDTTYLogger.h; sourceTree = "<group>"; };
 		118A0EA31992B46200792DDE /* DDTTYLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDTTYLogger.m; sourceTree = "<group>"; };
-		118A0EA51992B46200792DDE /* ContextFilterLogFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextFilterLogFormatter.h; sourceTree = "<group>"; };
-		118A0EA61992B46200792DDE /* ContextFilterLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContextFilterLogFormatter.m; sourceTree = "<group>"; };
-		118A0EA71992B46200792DDE /* DispatchQueueLogFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DispatchQueueLogFormatter.h; sourceTree = "<group>"; };
-		118A0EA81992B46200792DDE /* DispatchQueueLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DispatchQueueLogFormatter.m; sourceTree = "<group>"; };
-		118A0EA91992B46200792DDE /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		118A0EEE1992BA5800792DDE /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		118A0EF01992BA6000792DDE /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		2D5FE4101CD808DC009E1911 /* NSDate+RDDateAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RDDateAsString.h"; sourceTree = "<group>"; };
@@ -365,21 +349,8 @@
 				118A0EA11992B46200792DDE /* DDLog.m */,
 				118A0EA21992B46200792DDE /* DDTTYLogger.h */,
 				118A0EA31992B46200792DDE /* DDTTYLogger.m */,
-				118A0EA41992B46200792DDE /* Extensions */,
 			);
 			path = CocoaLumberjack;
-			sourceTree = "<group>";
-		};
-		118A0EA41992B46200792DDE /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				118A0EA51992B46200792DDE /* ContextFilterLogFormatter.h */,
-				118A0EA61992B46200792DDE /* ContextFilterLogFormatter.m */,
-				118A0EA71992B46200792DDE /* DispatchQueueLogFormatter.h */,
-				118A0EA81992B46200792DDE /* DispatchQueueLogFormatter.m */,
-				118A0EA91992B46200792DDE /* README.txt */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		A49C25471AE05B7700D63B89 /* Products */ = {
@@ -482,24 +453,13 @@
 				110C82A21992C6E300B1E278 /* HTTPMessage.m in Sources */,
 				110C82A31992C6E300B1E278 /* HTTPServer.m in Sources */,
 				2D5FE4121CD808DC009E1911 /* NSDate+RDDateAsString.m in Sources */,
-				110C82A41992C6E300B1E278 /* MultipartFormDataParser.m in Sources */,
-				110C82A51992C6E300B1E278 /* MultipartMessageHeader.m in Sources */,
-				110C82A61992C6E300B1E278 /* MultipartMessageHeaderField.m in Sources */,
 				110C82A71992C6E300B1E278 /* HTTPAsyncFileResponse.m in Sources */,
 				110C82A81992C6E300B1E278 /* HTTPDataResponse.m in Sources */,
 				110C82A91992C6E300B1E278 /* HTTPDynamicFileResponse.m in Sources */,
-				110C82AA1992C6E300B1E278 /* HTTPErrorResponse.m in Sources */,
 				110C82AB1992C6E300B1E278 /* HTTPFileResponse.m in Sources */,
-				110C82AC1992C6E300B1E278 /* HTTPRedirectResponse.m in Sources */,
 				110C82AD1992C6E300B1E278 /* WebSocket.m in Sources */,
 				110C82AE1992C6E300B1E278 /* GCDAsyncSocket.m in Sources */,
-				110C82AF1992C6E300B1E278 /* DDAbstractDatabaseLogger.m in Sources */,
-				110C82B01992C6E300B1E278 /* DDASLLogger.m in Sources */,
-				110C82B11992C6E300B1E278 /* DDFileLogger.m in Sources */,
 				110C82B21992C6E300B1E278 /* DDLog.m in Sources */,
-				110C82B31992C6E300B1E278 /* DDTTYLogger.m in Sources */,
-				110C82B41992C6E300B1E278 /* ContextFilterLogFormatter.m in Sources */,
-				110C82B51992C6E300B1E278 /* DispatchQueueLogFormatter.m in Sources */,
 				118A0ED11992B4D900792DDE /* RDContainer.mm in Sources */,
 				118A0ED21992B4D900792DDE /* RDMediaOverlaysSmilModel.mm in Sources */,
 				118A0ED31992B4D900792DDE /* RDNavigationElement.mm in Sources */,
