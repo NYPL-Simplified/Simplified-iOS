@@ -15,6 +15,7 @@ class NYPLAxisPackageServiveTests: XCTestCase {
   private let keysProvider = NYPLAxisKeysProvider()
   private let baseURL = URL(string: "www.mock.com")!
   private let assetWriter = AssetWriterMock()
+  private let progressListener = NYPLAxisProgressListenerMock()
   
   lazy private var itemDownloader: NYPLAxisItemDownloader = {
     return NYPLAxisItemDownloader(
@@ -57,11 +58,10 @@ class NYPLAxisPackageServiveTests: XCTestCase {
       axisItemDownloader: itemDownloader, axisKeysProvider: keysProvider,
       baseURL: baseURL, parentDirectory: downloadsDirectory)
     
-    let terminationListener = TerminationListenerMock()
-    terminationListener.didTerminate = {
+    progressListener.didTerminate = {
       terminationExpectation.fulfill()
     }
-    itemDownloader.delegate = terminationListener
+    itemDownloader.delegate = progressListener
     
     packageService.downloadPackageContent()
     
@@ -79,11 +79,10 @@ class NYPLAxisPackageServiveTests: XCTestCase {
     writeAssetForContainer()
     contentDownloader.mockDownloadFailure()
     
-    let terminationListener = TerminationListenerMock()
-    terminationListener.didTerminate = {
+    progressListener.didTerminate = {
       terminationExpectation.fulfill()
     }
-    itemDownloader.delegate = terminationListener
+    itemDownloader.delegate = progressListener
     packageService.downloadPackageContent()
     
     waitForExpectations(timeout: 3, handler: nil)
@@ -103,8 +102,7 @@ class NYPLAxisPackageServiveTests: XCTestCase {
     contentDownloader.desiredResult = .success(packageData)
     assetWriter.mockingFailure()
     
-    let terminationListener = TerminationListenerMock()
-    terminationListener.didTerminate = {
+    progressListener.didTerminate = {
       terminationExpectation.fulfill()
     }
     
@@ -112,7 +110,7 @@ class NYPLAxisPackageServiveTests: XCTestCase {
       writeExpectation.fulfill()
     }
     
-    itemDownloader.delegate = terminationListener
+    itemDownloader.delegate = progressListener
     packageService.downloadPackageContent()
     
     waitForExpectations(timeout: 3, handler: nil)
@@ -133,12 +131,11 @@ class NYPLAxisPackageServiveTests: XCTestCase {
     writeAssetForContainer()
     contentDownloader.desiredResult = .success(packageData)
     
-    let terminationListener = TerminationListenerMock()
-    terminationListener.didTerminate = {
+    progressListener.didTerminate = {
       XCTFail()
     }
     
-    itemDownloader.delegate = terminationListener
+    itemDownloader.delegate = progressListener
     packageService.downloadPackageContent()
     let packageURL = downloadsDirectory.appendingPathComponent("ops/package.opf")
     let chapter1URL = downloadsDirectory.appendingPathComponent("ops/xhtml/ch01.html")

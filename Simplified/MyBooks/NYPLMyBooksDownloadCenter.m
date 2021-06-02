@@ -1524,4 +1524,15 @@ didFinishDownload:(BOOL)didFinishDownload
   #endif
 }
 
+#if defined(AXIS)
+- (void)downloadProgressDidUpdateTo:(double)progress forBook:(NYPLBook * _Nonnull)book {
+  self.bookIdentifierToDownloadInfo[book.identifier] =
+  [[self downloadInfoForBookIdentifier:book.identifier]
+   withDownloadProgress:progress];
+
+  [self broadcastUpdate];
+}
+#endif
+
+
 @end
