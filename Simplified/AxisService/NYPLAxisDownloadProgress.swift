@@ -115,13 +115,18 @@ class NYPLAxisDownloadProgress: NYPLAxisDownloadProgressHandling {
     }
     
     let unfinishedFlexibleWeightTasks = getUnfinishedFlexibleWeightTasks()
-    
     guard !unfinishedFlexibleWeightTasks.isEmpty else {
       return
     }
     
+    let finishedFlexibleWeightTasksWeight = combinedWeightOfAllFinishedFlexibleWeightTasks()
+    let weightToDistribute = 1.0 - currentFixedWeight - finishedFlexibleWeightTasksWeight
+    guard weightToDistribute > 0.0 && weightToDistribute <= 1.0 else {
+      return
+    }
+    
     let unfinishedFlexibleWeightTasksCount = unfinishedFlexibleWeightTasks.count
-    let newFlexibleWeightPerTask = (1.0 - currentFixedWeight)/Double(unfinishedFlexibleWeightTasksCount)
+    let newFlexibleWeightPerTask = weightToDistribute/Double(unfinishedFlexibleWeightTasksCount)
     
     unfinishedFlexibleWeightTasks.forEach {
       $0.weight = newFlexibleWeightPerTask
@@ -158,6 +163,13 @@ class NYPLAxisDownloadProgress: NYPLAxisDownloadProgressHandling {
   
   private func combinedWeightOfAllFixedWeightTasks() -> Double {
     return getAllFixedWeightTasks()
+      .reduce(0.0) { $0 + $1.weight }
+  }
+  
+  private func combinedWeightOfAllFinishedFlexibleWeightTasks() -> Double {
+    return getAllDownloadTasks()
+      .filter { !$0.isFixedWeight }
+      .filter { $0.isCompleted }
       .reduce(0.0) { $0 + $1.weight }
   }
   

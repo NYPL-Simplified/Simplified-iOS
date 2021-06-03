@@ -58,6 +58,12 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
   
   /// Downloads the item from given url. Exits dispatchGroup on success. Terminates all subsequent
   /// downloads upon failure.
+  ///
+  /// - Note: A call to this function must balance a call to `dispatchGroup.enter()`. Leaving a
+  /// dispatch group more times than it is entered results in a negative count which causes a crash.
+  ///
+  /// - TODO: OE-136: Fix direct reliance on DispatchGroup
+  ///
   /// - Parameters:
   ///   - url: URL of the item to be downloaded.
   ///   - writeURL: Desired local url for the item.
