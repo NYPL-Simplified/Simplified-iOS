@@ -20,6 +20,11 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     return documentsDirectory.appendingPathComponent("NYPLAxisLicenseServiceTests")
   }()
   
+  lazy private var weightProvider: NYPLAxisWeightProviding = {
+    return NYPLAxisDownloadTaskWeightProviderMock(
+      weights: [someURL: 0.4, someOtherURL: 0.2])
+  }()
+  
   func testDownloaderShouldNotContinueOnFailedDownload() {
     let stopExpectation = self.expectation(
       description: "Downloader should not continue after download failure")
@@ -196,6 +201,73 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     }
     
     waitForExpectations(timeout: 4, handler: nil)
+  }
+  
+  func testDownloaderShouldNotUpdateProgressUponFailureDownloadingAsset() {
+    let dispatchGroup = DispatchGroup()
+    let assetWriter = AssetWriterMock().mockingSuccess()
+    
+    let itemDownloader = NYPLAxisItemDownloader(
+      assetWriter: assetWriter, dispatchGroup: dispatchGroup,
+      downloader: contentDownloader, weightProvider: weightProvider)
+    
+    let progressListener = NYPLAxisProgressListenerMock()
+    itemDownloader.delegate = progressListener
+    XCTAssertEqual(progressListener.currentProgress, 0)
+    
+    dispatchGroup.enter()
+    contentDownloader.mockDownloadSuccess()
+    itemDownloader.downloadItem(from: someURL, at: downloadsDirectory)
+    XCTAssertEqual(progressListener.currentProgress, 0.4)
+    
+    dispatchGroup.wait()
+    dispatchGroup.enter()
+    contentDownloader.mockDownloadFailure()
+    itemDownloader.downloadItem(from: someOtherURL, at: downloadsDirectory)
+    XCTAssertEqual(progressListener.currentProgress, 0.4)
+  }
+  
+  func testDownloaderShouldNotUpdateProgressUponFailureWritingAsset() {
+    let dispatchGroup = DispatchGroup()
+    let assetWriter = AssetWriterMock().mockingFailure()
+    
+    let itemDownloader = NYPLAxisItemDownloader(
+      assetWriter: assetWriter, dispatchGroup: dispatchGroup,
+      downloader: contentDownloader, weightProvider: weightProvider)
+    
+    contentDownloader.mockDownloadSuccess()
+    
+    let progressListener = NYPLAxisProgressListenerMock()
+    itemDownloader.delegate = progressListener
+    XCTAssertEqual(progressListener.currentProgress, 0)
+    
+    dispatchGroup.enter()
+    itemDownloader.downloadItem(from: someURL, at: downloadsDirectory)
+    XCTAssertEqual(progressListener.currentProgress, 0.0)
+  }
+  
+  func testDownloaderShouldUpdateDownloadProgressUponsWritingAsset() {
+    let dispatchGroup = DispatchGroup()
+    let assetWriter = AssetWriterMock().mockingSuccess()
+    
+    let itemDownloader = NYPLAxisItemDownloader(
+      assetWriter: assetWriter, dispatchGroup: dispatchGroup,
+      downloader: contentDownloader, weightProvider: weightProvider)
+    
+    contentDownloader.mockDownloadSuccess()
+    
+    let progressListener = NYPLAxisProgressListenerMock()
+    itemDownloader.delegate = progressListener
+    XCTAssertEqual(progressListener.currentProgress, 0)
+    
+    dispatchGroup.enter()
+    itemDownloader.downloadItem(from: someURL, at: downloadsDirectory)
+    XCTAssertEqual(progressListener.currentProgress, 0.4)
+    
+    dispatchGroup.wait()
+    dispatchGroup.enter()
+    itemDownloader.downloadItem(from: someOtherURL, at: downloadsDirectory)
+    XCTAssertEqual(progressListener.currentProgress, 0.6)
   }
   
 }
