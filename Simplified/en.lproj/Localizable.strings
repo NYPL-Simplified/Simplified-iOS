@@ -141,17 +141,9 @@
 "MyBooksViewControllerGroupShow" = "Show";
 "MyBooksViewControllerGroupSortBy" = "Sort By";
 
-// NYPLReaderViewController (R1)
+// ereader
 "ReaderViewControllerCorruptTitle" = "Could Not Display Book";
 "ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
-"ReaderViewControllerCurrentChapter" = "Current Chapter";
-"Book" = "Book";
-"TOC" = "Table of contents";
-
-// NYPLReaderReadiumView (R1)
-"chapter" = "chapter";
-
-// ReaderViewController (R2)
 "Previous Chapter" = "Previous Chapter";
 "Next Chapter" = "Next Chapter";
 

@@ -33,8 +33,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
     self.bookRegistry = bookRegistryProvider
     bookmarks = bookRegistryProvider.readiumBookmarks(forIdentifier: book.identifier)
     self.currentLibraryAccountProvider = currentLibraryAccountProvider
-    self.bookmarksFactory = NYPLBookmarkFactory(book: book,
-                                                publication: publication,
+    self.bookmarksFactory = NYPLBookmarkFactory(publication: publication,
                                                 drmDeviceID: drmDeviceID)
 
     super.init()
@@ -68,14 +67,13 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   /// - Parameter location: The Readium 2 location to be checked.
   /// - Returns: The bookmark at the given `location` if it exists,
   /// otherwise nil.
-  func isBookmarkExisting(at location: NYPLBookmarkR2Location?) -> NYPLReadiumBookmark? {
+  func bookmarkExisting(at location: NYPLBookmarkR2Location?) -> NYPLReadiumBookmark? {
     guard let currentLocator = location?.locator else {
       return nil
     }
 
-    let idref = publication.idref(forHref: currentLocator.href)
-    return bookmarks.first(where: { $0.locationMatches(currentLocator,
-                                                       withIDref: idref )})
+    return bookmarks.first { $0.locationMatches(currentLocator,
+                                                inPublication: publication)}
   }
 
   /// Creates a new bookmark at the given location for the publication.
@@ -88,15 +86,13 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   /// - Returns: A newly created bookmark object, unless the input location
   /// lacked progress information.
   func addBookmark(_ bookmarkLoc: NYPLBookmarkR2Location) -> NYPLReadiumBookmark? {
-    guard let bookmark =
-      bookmarksFactory.make(fromR2Location: bookmarkLoc,
-                            usingBookRegistry: bookRegistry) else {
-                              //TODO: log error
-                              return nil
+    guard let bookmark = bookmarksFactory.make(fromR2Location: bookmarkLoc) else {
+      Log.error(#function, "Unable to add bookmark from R2 location: \(bookmarkLoc)")
+      return nil
     }
 
     bookmarks.append(bookmark)
-    bookmarks.sort { $0.progressWithinBook < $1.progressWithinBook }
+    bookmarks.sort { $0.lessThan($1) }
 
     postBookmark(bookmark)
 
@@ -201,7 +197,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
           }
         }
         
-        NYPLAnnotations.getServerBookmarks(forBook: self.book.identifier, atURL: self.book.annotationsURL) { serverBookmarks in
+        NYPLAnnotations.getServerBookmarks(forBook: self.book.identifier, publication: self.publication, atURL: self.book.annotationsURL) { serverBookmarks in
 
           guard let serverBookmarks = serverBookmarks else {
             self.handleBookmarksSyncFail(message: "Ending sync without running completion. Returning original list of bookmarks.",

@@ -183,7 +183,8 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
                    with:(nonnull NYPLReadiumBookmark *)newBookmark
           forIdentifier:(nonnull NSString *)identifier;
 
-// Returns the generic bookmarks for a any renderer's bookmarks given its identifier
+/// Returns the generic bookmarks for a any renderer's bookmarks given its identifier
+/// @note Generic bookmarks are used for PDF documents.
 - (nullable NSArray<NYPLBookLocation *> *)genericBookmarksForIdentifier:(nonnull NSString *)identifier;
 
 // Add a generic bookmark (book location) for a book given its identifier

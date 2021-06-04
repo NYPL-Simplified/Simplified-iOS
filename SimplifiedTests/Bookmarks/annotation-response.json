@@ -1,0 +1,43 @@
+{
+  "@context": ["http://www.w3.org/ns/anno.jsonld", "http://www.w3.org/ns/ldp.jsonld"],
+  "total": 2,
+  "type": ["BasicContainer", "AnnotationCollection"],
+  "id": "https://circulation.librarysimplified.org/NYNYPL/annotations/book1",
+  "first": {
+    "items": [{
+      "body": {
+        "http://librarysimplified.org/terms/time": "2021-04-14T22:50:04Z",
+        "http://librarysimplified.org/terms/progressWithinBook": "0.13910505",
+        "http://librarysimplified.org/terms/device": "urn:uuid:789166c5-ed87-413a-8d9f-f306f6f02362"
+      },
+      "motivation": "http://www.w3.org/ns/oa#bookmarking",
+      "type": "Annotation",
+      "id": "https://circulation.librarysimplified.org/NYNYPL/annotations/3217569",
+      "target": {
+        "selector": {
+          "type": "FragmentSelector",
+          "value": "{\n  \"@type\": \"LocatorHrefProgression\",\n  \"href\": \"/xyz.html\",\n  \"progressWithinChapter\": 0.09090909\n}"
+        },
+        "source": "urn:librarysimplified.org/terms/id/book1"
+      }
+    }, {
+      "body": {
+        "http://librarysimplified.org/terms/time": "2021-04-14T22:49:41Z",
+        "http://librarysimplified.org/terms/device": "urn:uuid:789166c5-ed87-413a-8d9f-f306f6f02362"
+      },
+      "motivation": "http://librarysimplified.org/terms/annotation/idling",
+      "type": "Annotation",
+      "id": "https://circulation.librarysimplified.org/NYNYPL/annotations/3217539",
+      "target": {
+        "selector": {
+          "type": "FragmentSelector",
+          "value": "{\"@type\":\"LocatorHrefProgression\",\"href\":\"/xyz.html\",\"progressWithinChapter\":0.666}"
+        },
+        "source": "urn:librarysimplified.org/terms/id/book1"
+      }
+    }],
+    "type": "AnnotationPage",
+    "id": "https://circulation.librarysimplified.org/NYNYPL/annotations/book1"
+  }
+}
+

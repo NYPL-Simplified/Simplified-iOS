@@ -61,7 +61,7 @@ For working on integrating R2 into SimplyE, first clone the following frameworks
 cd Simplified-iOS/..
 git clone https://github.com/readium/r2-shared-swift
 git clone https://github.com/readium/r2-streamer-swift
-git clone https://github.com/NYPL-Simplified/r2-navigator-swift
+git clone https://github.com/readium/r2-navigator-swift
 git clone https://github.com/readium/r2-lcp-swift
 ```
 Then rebuild the dependencies:
@@ -71,12 +71,9 @@ cd Simplified-iOS
 ```
 Finally, open `SimplifiedR2.workspace` and use the `SimplyE-R2dev` target to build the app.
 
-# Building Secondary Targets
+# Building Open eBooks
 
-The Xcode project contains 2 additional targets beside the ones referenced earlier:
-
-- **SimplyECardCreator**: This is a convenience target to use when making changes to the [CardCreator-iOS](https://github.com/NYPL-Simplified/CardCreator-iOS) framework. It takes the framework out of the normal Carthage build to instead build it directly via Xcode. Use this in conjunction with the `SimplifiedCardCreator` workspace. It requires DRM.
-- **Open eBooks**: This is an app primarily targeted toward the education space. It requires DRM.
+Open eBooks is an app primarily targeted toward the education space. It requires DRM.
 
 # Contributing
 
@@ -97,7 +94,7 @@ Release branch names follow the convention: `release/simplye/<version>` or `rele
 
 Feature branch names (for features whose development is a month or more): `feature/<feature-name>`, e.g. `feature/my-new-screen`.
 
-Continuous integration is enabled on push events on `develop`, release and feature branches. SimplyE device builds are uploaded to [iOS-binaries](https://github.com/NYPL-Simplified/iOS-binaries). Commits on release branches also send the same build to TestFlight.
+[Continuous integration](https://github.com/NYPL-Simplified/Simplified/wiki/iOS-CI-CD) is enabled on push events on `develop`, release and feature branches. SimplyE device builds are uploaded to [iOS-binaries](https://github.com/NYPL-Simplified/iOS-binaries) and Firebase. Commits on release branches also send the same build to TestFlight.
 
 # License
 

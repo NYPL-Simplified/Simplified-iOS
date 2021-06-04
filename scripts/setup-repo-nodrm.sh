@@ -21,8 +21,6 @@ echo "Setting up repo for non-DRM build"
 
 git submodule foreach --quiet 'git submodule deinit adept-ios'
 git rm -rf adept-ios
-git submodule foreach --quiet 'git submodule deinit adobe-content-filter'
-git rm -rf adobe-content-filter
 git submodule foreach --quiet 'git submodule deinit NYPLAEToolkit'
 git rm -rf NYPLAEToolkit
 
