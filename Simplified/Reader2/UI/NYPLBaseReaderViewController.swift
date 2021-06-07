@@ -20,6 +20,9 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   private static let bookmarkOnImageName = "BookmarkOn"
   private static let bookmarkOffImageName = "BookmarkOff"
 
+  /// Padding with the view containing the reader
+  private static let padding: CGFloat = 20
+
   weak var moduleDelegate: R2ModuleDelegate?
 
   // Models and business logic references
@@ -110,10 +113,16 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
     positionLabel.translatesAutoresizingMaskIntoConstraints = false
     positionLabel.font = .systemFont(ofSize: 12)
     positionLabel.textColor = .darkGray
+    positionLabel.textAlignment = .center
+    positionLabel.lineBreakMode = .byTruncatingTail
     view.addSubview(positionLabel)
     NSLayoutConstraint.activate([
-      positionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      positionLabel.bottomAnchor.constraint(equalTo: navigator.view.bottomAnchor, constant: -20)
+      positionLabel.bottomAnchor.constraint(equalTo: navigator.view.bottomAnchor,
+                                            constant: -NYPLBaseReaderViewController.padding),
+      positionLabel.leftAnchor.constraint(equalTo: view.leftAnchor,
+                                          constant: NYPLBaseReaderViewController.padding),
+      positionLabel.rightAnchor.constraint(equalTo: view.rightAnchor,
+                                           constant: -NYPLBaseReaderViewController.padding)
     ])
   }
 
