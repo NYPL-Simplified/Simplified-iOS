@@ -38,6 +38,15 @@ import Foundation
         let alertController = NYPLAlertUtils.alert(title: "Content Protection Error", message: error.localizedDescription)
         NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: self, animated: true, completion: nil)
       }
+      
+      // We want to remove the activity handler after the book has succeeded or
+      // failed loading. Removing too early might allow the user to tap on the
+      // read button again before the book opens.
+      NotificationCenter.default.post(
+        name: NSNotification.NYPLBookProcessingDidChange,
+        object: nil,
+        userInfo: [
+          NYPLNotificationKeys.bookProcessingBookIDKey: book.identifier, NYPLNotificationKeys.bookProcessingValueKey: false])
     }
   }
 }
