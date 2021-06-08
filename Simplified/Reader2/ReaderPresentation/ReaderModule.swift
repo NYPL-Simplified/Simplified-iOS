@@ -112,6 +112,13 @@ final class ReaderModule: ReaderModuleAPI {
       backItem.title = NSLocalizedString("Back", comment: "Text for Back button")
       readerVC.navigationItem.backBarButtonItem = backItem
       readerVC.hidesBottomBarWhenPushed = true
+      
+      // If the navigation controller is already presenting a view controller,
+      // we dismiss it so that it does not float on top the book being loaded.
+      if let presented = navigationController.presentedViewController {
+        presented.dismiss(animated: true, completion: nil)
+      }
+
       navigationController.pushViewController(readerVC, animated: true)
 
     } catch {
