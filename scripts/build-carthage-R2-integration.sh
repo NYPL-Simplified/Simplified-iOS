@@ -26,28 +26,28 @@ CURRENT_DIR=`pwd`
 
 echo "Building r2-shared-swift Carthage dependencies..."
 cd ../r2-shared-swift
-git checkout 2.0.0-beta.2
+git checkout 2.0.1
 rm -rf Carthage
 carthage checkout
 carthage build --use-xcframeworks --platform iOS
 
 echo "Building r2-lcp-swift Carthage dependencies..."
 cd ../r2-lcp-swift
-git checkout 2.0.0-beta.2
+git checkout 2.0.0
 rm -rf Carthage
 carthage checkout
 carthage build --use-xcframeworks --platform iOS
 
 echo "Building r2-streamer-swift Carthage dependencies..."
 cd ../r2-streamer-swift
-git checkout 2.0.0-beta.2
+git checkout 2.0.0
 rm -rf Carthage
 carthage checkout
 carthage build --use-xcframeworks --platform iOS
 
 echo "Building r2-navigator-swift Carthage dependencies..."
 cd ../r2-navigator-swift
-git checkout 2.0.0-beta.2
+git checkout 2.0.0
 rm -rf Carthage
 carthage checkout
 carthage build --use-xcframeworks --platform iOS
