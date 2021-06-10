@@ -14,10 +14,13 @@ class NYPLAxisMetadataServiceTests: XCTestCase {
   private let keysProvider = NYPLAxisKeysProvider()
   private let baseURL = URL(string: "www.mock.com")!
   private let assetWriter = AssetWriterMock()
+  private let progressListener = NYPLAxisProgressListenerMock()
   
   lazy private var itemDownloader: NYPLAxisItemDownloader = {
-    return NYPLAxisItemDownloader(
+    let downloader = NYPLAxisItemDownloader(
       assetWriter: assetWriter, downloader: contentDownloader)
+    downloader.delegate = progressListener
+    return downloader
   }()
   
   lazy private var downloadsDirectory: URL = {
@@ -42,11 +45,16 @@ class NYPLAxisMetadataServiceTests: XCTestCase {
       baseURL: baseURL, parentDirectory: downloadsDirectory)
   }()
   
+  override func setUp() {
+    super.setUp()
+    itemDownloader.delegate = progressListener
+  }
+  
   func testMetadataServiceShouldNotContinueUponDownloadFailure() {
-    let leaveExpecation = self.expectation(
-      description: "Metadata service should leave dispatch group upon failure")
-    let encryptonDownloadExpectation = self.expectation(
-      description: "Metadata service should attempt to download encryption.xml")
+    let notifyExpecation = self.expectation(
+      description: "Metadata service should notify listener upon failure")
+    let encryptonFetchExpectation = self.expectation(
+      description: "Metadata service should attempt to download encryption")
     
     contentDownloader.mockDownloadFailure()
     contentDownloader.didReceiveRequestForUrl = {
@@ -54,23 +62,27 @@ class NYPLAxisMetadataServiceTests: XCTestCase {
         XCTFail()
       }
       if $0 == self.encryptionURL {
-        encryptonDownloadExpectation.fulfill()
+        encryptonFetchExpectation.fulfill()
       }
     }
     
-    metadataService.downloadContent()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
-      leaveExpecation.fulfill()
+    progressListener.didTerminate = {
+      notifyExpecation.fulfill()
     }
+    
+    metadataService.downloadContent()
+    itemDownloader.notifyUponCompletion(on: .global(qos: .utility))
     
     waitForExpectations(timeout: 4, handler: nil)
   }
   
   func testMetadataServiceShouldNotContinueUponWriteFailure() {
     let leaveExpecation = self.expectation(
-      description: "Metadata service should leave dispatch group upon failure")
-    let encryptonDownloadExpectation = self.expectation(
-      description: "Metadata service should attempt to download encryption.xml")
+      description: "Metadata service should notify listener upon failure")
+    let encryptonFetchExpectation = self.expectation(
+      description: "Metadata service should attempt to download encryption")
+    let writeAttemptExpecation = self.expectation(
+      description: "Metadata service should attempt to write asset upon successful download")
     
     contentDownloader.mockDownloadSuccess()
     assetWriter.mockingFailure()
@@ -79,41 +91,49 @@ class NYPLAxisMetadataServiceTests: XCTestCase {
         XCTFail()
       }
       if $0 == self.encryptionURL {
-        encryptonDownloadExpectation.fulfill()
+        encryptonFetchExpectation.fulfill()
       }
     }
     
-    metadataService.downloadContent()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
+    progressListener.didTerminate = {
       leaveExpecation.fulfill()
     }
+    
+    assetWriter.willWriteAsset = {
+      writeAttemptExpecation.fulfill()
+    }
+    
+    metadataService.downloadContent()
+    itemDownloader.notifyUponCompletion(on: .global(qos: .utility))
     
     waitForExpectations(timeout: 4, handler: nil)
   }
   
   func testMetadataServiceShouldDownloadContainerUponEncryptionDownloadSuccess() {
-    let requestExpecatation = self.expectation(
+    let encryptonFetchExpectation = self.expectation(
+      description: "Metadata service should attempt to download encryption")
+    let containerFetchExpecatation = self.expectation(
       description: "Metadata service should download container upon encryption download success")
-    let leaveExpecation = self.expectation(
-      description: "Metadata service should leave dispatch group upon success")
-    let encryptonDownloadExpectation = self.expectation(
-      description: "Metadata service should attempt to download encryption.xml")
+    let notifyExpecation = self.expectation(
+      description: "Metadata service should notify listener upon success")
     
     contentDownloader.mockDownloadSuccess()
     assetWriter.mockingSuccess()
     contentDownloader.didReceiveRequestForUrl = {
       if $0 == self.containerURL {
-        requestExpecatation.fulfill()
+        containerFetchExpecatation.fulfill()
       }
       if $0 == self.encryptionURL {
-        encryptonDownloadExpectation.fulfill()
+        encryptonFetchExpectation.fulfill()
       }
     }
     
     metadataService.downloadContent()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
-      leaveExpecation.fulfill()
+    progressListener.allDownloadsFinished = {
+      notifyExpecation.fulfill()
     }
+    
+    itemDownloader.notifyUponCompletion(on: .global(qos: .utility))
     
     waitForExpectations(timeout: 4, handler: nil)
   }

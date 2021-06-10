@@ -44,6 +44,7 @@ import Foundation
   private let licenseService: NYPLAxisLicenseHandling
   private let metadataDownloader: NYPLAxisMetadataContentHandling
   private let packageDownloader: NYPLAxisPackageHandling
+  private var downloadTask: URLSessionDownloadTask?
   private weak var delegate: NYPLBookDownloadBroadcasting?
   
   
@@ -81,18 +82,12 @@ import Foundation
   /// - Parameters:
   ///   - downloadTask: downloadTask download task
   @objc func fulfillAxisLicense(downloadTask: URLSessionDownloadTask) {
+    self.downloadTask = downloadTask
     DispatchQueue.global(qos: .utility).async {
       self.downloadAndValidateLicense()
       self.downloadMetadataContent()
       self.downloadPackage()
-      self.axisItemDownloader.dispatchGroup.notify(queue: .global(qos: .utility)) {
-        // TODO:- OE-128: Fix reversed hierarchy
-        // weak self will result in deallocation before book completion
-        guard self.axisItemDownloader.shouldContinue else { return }
-        _ = self.delegate?.replaceBook(
-          self.book, withFileAtURL: self.dedicatedWriteURL,
-          forDownloadTask: downloadTask)
-      }
+      self.axisItemDownloader.notifyUponCompletion(on: .global(qos: .utility))
     }
   }
   
@@ -125,6 +120,19 @@ extension NYPLAxisService: NYPLAxisDownloadProgressListening {
   
   func downloadProgressDidUpdate(_ progress: Double) {
     self.delegate?.downloadProgressDidUpdate(to: progress, forBook: self.book)
+  }
+  
+  func didFinishAllDownloads() {
+    guard
+      let downloadTask = self.downloadTask,
+      self.axisItemDownloader.shouldContinue
+    else {
+      return
+    }
+    
+    _ = self.delegate?.replaceBook(
+      self.book, withFileAtURL: self.dedicatedWriteURL,
+      forDownloadTask: downloadTask)
   }
   
 }
@@ -219,13 +227,12 @@ extension NYPLAxisService {
     
     
     let baseURL = axisKeysProvider.baseURL.appendingPathComponent(isbn)
-    let dispatchGroup = DispatchGroup()
     
     let dedicatedWriteURL = fileURL
       .deletingLastPathComponent()
       .appendingPathComponent(book.identifier.sha256())
     
-    let axisItemDownloader = NYPLAxisItemDownloader(dispatchGroup: dispatchGroup)
+    let axisItemDownloader = NYPLAxisItemDownloader()
     
     let licenseService = NYPLAxisLicenseService(
       axisItemDownloader: axisItemDownloader, axisKeysProvider: axisKeysProvider,

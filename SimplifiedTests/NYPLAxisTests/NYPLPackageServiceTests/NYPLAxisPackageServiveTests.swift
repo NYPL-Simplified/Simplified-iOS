@@ -18,8 +18,10 @@ class NYPLAxisPackageServiveTests: XCTestCase {
   private let progressListener = NYPLAxisProgressListenerMock()
   
   lazy private var itemDownloader: NYPLAxisItemDownloader = {
-    return NYPLAxisItemDownloader(
+    let downloader = NYPLAxisItemDownloader(
       assetWriter: assetWriter, downloader: contentDownloader)
+    downloader.delegate = progressListener
+    return downloader
   }()
   
   lazy private var downloadsDirectory: URL = {
@@ -61,8 +63,7 @@ class NYPLAxisPackageServiveTests: XCTestCase {
     progressListener.didTerminate = {
       terminationExpectation.fulfill()
     }
-    itemDownloader.delegate = progressListener
-    
+
     packageService.downloadPackageContent()
     
     waitForExpectations(timeout: 3, handler: nil)
@@ -82,7 +83,7 @@ class NYPLAxisPackageServiveTests: XCTestCase {
     progressListener.didTerminate = {
       terminationExpectation.fulfill()
     }
-    itemDownloader.delegate = progressListener
+
     packageService.downloadPackageContent()
     
     waitForExpectations(timeout: 3, handler: nil)
@@ -110,7 +111,6 @@ class NYPLAxisPackageServiveTests: XCTestCase {
       writeExpectation.fulfill()
     }
     
-    itemDownloader.delegate = progressListener
     packageService.downloadPackageContent()
     
     waitForExpectations(timeout: 3, handler: nil)
@@ -141,7 +141,8 @@ class NYPLAxisPackageServiveTests: XCTestCase {
     let chapter1URL = downloadsDirectory.appendingPathComponent("ops/xhtml/ch01.html")
     let chapter2URL = downloadsDirectory.appendingPathComponent("ops/xhtml/ch02.html")
     let chapter3URL = downloadsDirectory.appendingPathComponent("ops/xhtml/ch03.html")
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
+
+    progressListener.allDownloadsFinished = {
       if self.fileExists(at: packageURL) {
         writeExpectation.fulfill()
       }
@@ -156,7 +157,43 @@ class NYPLAxisPackageServiveTests: XCTestCase {
       }
     }
     
+    itemDownloader.notifyUponCompletion(on: .global(qos: .utility))
     waitForExpectations(timeout: 3, handler: nil)
+  }
+  
+  func testPackageServiceShouldNotifyProgressListenerUponFailureDownlaodingFiles() {
+    let notifyExpecation = self.expectation(
+      description: "Package service should notify listener upon failure")
+    
+    let itemDownloader = NYPLAxisItemDownloader(
+      assetWriter: NYPLAssetWriter(), downloader: contentDownloader)
+    let packageService = NYPLAxisPackageService(
+      axisItemDownloader: itemDownloader, axisKeysProvider: keysProvider,
+      baseURL: baseURL, parentDirectory: downloadsDirectory)
+    
+    writeAssetForContainer()
+    
+    let packageURL = baseURL.appendingPathComponent("ops/package.opf")
+    let chapter2URL = baseURL.appendingPathComponent("ops/xhtml/ch02.html")
+    
+    contentDownloader.didReceiveRequestForUrl = { url in
+      if url == packageURL {
+        self.contentDownloader.desiredResult = .success(self.packageData)
+      } else if url == chapter2URL {
+        self.contentDownloader.mockDownloadFailure()
+      } else {
+        self.contentDownloader.mockDownloadSuccess()
+      }
+    }
+    
+    progressListener.didTerminate = {
+      notifyExpecation.fulfill()
+    }
+    
+    itemDownloader.delegate = progressListener
+    packageService.downloadPackageContent()
+    
+    waitForExpectations(timeout: 10, handler: nil)
   }
 
   private func writeAssetForContainer() {

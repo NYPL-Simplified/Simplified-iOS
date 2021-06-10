@@ -24,6 +24,7 @@ struct NYPLAxisPackageService: NYPLAxisPackageHandling {
   private let packageEndpointProvider: NYPLAxisPackageEndpointProviding
   private let packagePathProvider: NYPLAxisPackagePathPrefixProviding
   private let parentDirectory: URL
+  private let taskSynchnorizer: NYPLAxisTasksSynchorizing
   
   init(axisItemDownloader: NYPLAxisItemDownloading,
        axisKeysProvider: NYPLAxisKeysProviding,
@@ -42,32 +43,33 @@ struct NYPLAxisPackageService: NYPLAxisPackageHandling {
     self.packageEndpointProvider = NYPLAxisPackageEndpointProvider(
       containerURL: containerURL,
       fullPathKey: axisKeysProvider.fullPathKey)
+    
+    self.taskSynchnorizer = axisItemDownloader.tasksSynchnorizer
   }
   
   /// Downloads the package file and other required files mentioned in the package file (e.g. `Fonts`,
   /// `Images`, `xHTMLs` etc.) requiredfor the book.
   func downloadPackageContent() {
-    axisItemDownloader.dispatchGroup.wait()
     self.downloadPackageFile()
     self.downloadContentFromPackageFile()
   }
   
   /// Downloads the package file.
   private func downloadPackageFile() {
-    axisItemDownloader.dispatchGroup.wait()
-    
     // No need to log error here since axisItemDownloader already logs one.
     guard axisItemDownloader.shouldContinue else {
       return
     }
     
-    axisItemDownloader.dispatchGroup.enter()
+    taskSynchnorizer.startSynchronizedTaskWhenIdle()
     
     guard let endpoint = packageEndpointProvider.getPackageEndpoint()
     else {
-      axisItemDownloader.leaveGroupAndStopDownload()
+      axisItemDownloader.terminateDownloadProcess()
       return
     }
+    
+    taskSynchnorizer.endSynchronizedTask()
     
     let packageURL = baseURL.appendingPathComponent(endpoint)
     let writeURL = parentDirectory.appendingPathComponent(endpoint)
@@ -77,14 +79,14 @@ struct NYPLAxisPackageService: NYPLAxisPackageHandling {
   /// Finds links to all the requried items from the package file and downloads them.
   private func downloadContentFromPackageFile() {
     
-    axisItemDownloader.dispatchGroup.wait()
     guard
       axisItemDownloader.shouldContinue,
       let endpoint = packageEndpointProvider.getPackageEndpoint()
     else {
       return
     }
-    axisItemDownloader.dispatchGroup.enter()
+
+    taskSynchnorizer.startSynchronizedTaskWhenIdle()
     let packageLocation = parentDirectory.appendingPathComponent(endpoint)
     guard
       let data = try? Data(contentsOf: packageLocation),
@@ -93,32 +95,23 @@ struct NYPLAxisPackageService: NYPLAxisPackageHandling {
       NYPLErrorLogger.logError(
         withCode: .axisDRMFulfillmentFail,
         summary: NYPLAxisPackageService.axisXMLGenerationFailureSummary)
-      axisItemDownloader.leaveGroupAndStopDownload()
+      axisItemDownloader.terminateDownloadProcess()
       return
     }
-    axisItemDownloader.dispatchGroup.leave()
+
+    taskSynchnorizer.endSynchronizedTask()
     let hrefs = Set(axisXML.findRecursivelyInAttributes(axisKeysProvider.hrefKey))
     let packagePathPrefix = packagePathProvider
       .getPackagePathPrefix(packageEndpoint: endpoint)
     
-    for href in hrefs {
-      let endpath: String
-      if let pathPrefix = packagePathPrefix {
-        endpath = "\(pathPrefix)\(href)"
-      } else {
-        endpath = href
-      }
-
-      let linkURL = baseURL
-        .appendingPathComponent(endpath)
-
-      let writeURL = self.parentDirectory
-        .appendingPathComponent(endpath)
-
-      axisItemDownloader.dispatchGroup.enter()
-      axisItemDownloader.downloadItem(from: linkURL, at: writeURL)
+    let dict: [URL: URL] = hrefs.reduce(into: [:]) {
+      let endpath = "\(packagePathPrefix ?? "")\($1)"
+      let linkURL = baseURL.appendingPathComponent(endpath)
+      let writeURL = parentDirectory.appendingPathComponent(endpath)
+      $0[linkURL] = writeURL
     }
     
+    axisItemDownloader.downloadItems(with: dict)
   }
   
 }

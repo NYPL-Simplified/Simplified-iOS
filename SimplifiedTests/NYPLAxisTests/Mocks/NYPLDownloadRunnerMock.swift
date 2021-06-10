@@ -20,11 +20,11 @@ class NYPLDownloadRunnerMock {
   }
   
   func run() {
-    itemDownloader.dispatchGroup.enter()
+    itemDownloader.tasksSynchnorizer.startSynchronizedTask()
     if shouldSucceed {
-      itemDownloader.dispatchGroup.leave()
+      itemDownloader.tasksSynchnorizer.endSynchronizedTask()
     } else {
-      itemDownloader.leaveGroupAndStopDownload()
+      itemDownloader.terminateDownloadProcess()
     }
   }
   

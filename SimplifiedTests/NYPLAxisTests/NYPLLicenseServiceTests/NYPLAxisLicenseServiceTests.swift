@@ -12,6 +12,7 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
 
   private let axisKeysProvider = NYPLAxisKeysProvider()
   private let itemDownloader = CustomNYPLAxisItemDownloader()
+  private let progressListener = NYPLAxisProgressListenerMock()
 
   lazy var licenseHomeDirectory: URL = {
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
@@ -73,11 +74,14 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
     XCTAssertTrue(FileManager.default.fileExists(atPath: downloadedLicenseURL.path))
 
     service.validateLicense()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
+    itemDownloader.delegate = progressListener
+    progressListener.allDownloadsFinished = {
       if self.itemDownloader.shouldContinue {
         validationExpectation.fulfill()
       }
     }
+    
+    itemDownloader.notifyUponCompletion(on: .global(qos: .utility))
     wait(for: [validationExpectation], timeout: 4)
   }
 
@@ -93,7 +97,8 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
       .appendingPathComponent(axisKeysProvider.bookFilePathKey)
 
     service.saveBookInfoForFetchingLicense()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
+    itemDownloader.delegate = progressListener
+    progressListener.allDownloadsFinished = {
       if
         let data = try? Data(contentsOf: designatedBookInfoURL),
         let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed),
@@ -108,7 +113,9 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
         XCTFail()
       }
     }
-
+    
+    
+    itemDownloader.notifyUponCompletion(on: .global(qos: .utility))
     wait(for: [savedInfoExpectation], timeout: 4)
   }
 
@@ -124,12 +131,15 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
     XCTAssertTrue(FileManager.default.fileExists(atPath: downloadedLicenseURL.path))
 
     service.deleteLicenseFile()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
+    itemDownloader.delegate = progressListener
+    progressListener.allDownloadsFinished = {
       if !FileManager.default.fileExists(atPath: self.downloadedLicenseURL.path) {
         deletionExpectation.fulfill()
       }
     }
-
+    
+    itemDownloader.notifyUponCompletion(on: .global(qos: .utility))
+    
     wait(for: [deletionExpectation], timeout: 4)
   }
 
@@ -164,9 +174,9 @@ private class CustomNYPLAxisItemDownloader: NYPLAxisItemDownloader {
 
   var downloadsTerminated: (() -> Void)?
 
-  override func leaveGroupAndStopDownload() {
+  override func terminateDownloadProcess() {
     downloadsTerminated?()
-    super.leaveGroupAndStopDownload()
+    super.terminateDownloadProcess()
   }
 }
 
@@ -174,11 +184,11 @@ private class CustomNYPLAxisLicenseService: NYPLAxisLicenseService {
 
   var didLogLicenseError: ((String) -> ())?
 
-  override func logLicenseErrorAndLeave(summary: String,
+  override func logLicenseErrorAndTerminateDownload(summary: String,
                                         reason: String,
                                         additionalInfo: [String: String] = [:]) {
     didLogLicenseError?(reason)
-    super.logLicenseErrorAndLeave(
+    super.logLicenseErrorAndTerminateDownload(
       summary: summary, reason: reason, additionalInfo: additionalInfo)
   }
 

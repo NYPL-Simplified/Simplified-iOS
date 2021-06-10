@@ -25,14 +25,11 @@ struct NYPLAxisMetadataService: NYPLAxisMetadataContentHandling {
   }
   
   private func downloadItem(endpoint: String) {
-    axisItemDownloader.dispatchGroup.wait()
-    
     // No need to log error here since itemDownloader already logs one
     guard axisItemDownloader.shouldContinue else {
       return
     }
     
-    axisItemDownloader.dispatchGroup.enter()
     let itemURL = baseURL.appendingPathComponent(endpoint)
     let writeURL = parentDirectory.appendingPathComponent(endpoint)
     axisItemDownloader.downloadItem(from: itemURL, at: writeURL)

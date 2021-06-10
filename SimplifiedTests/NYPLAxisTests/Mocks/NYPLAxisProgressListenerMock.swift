@@ -13,6 +13,7 @@ class NYPLAxisProgressListenerMock: NYPLAxisDownloadProgressListening {
 
   var currentProgress: Double = 0.0
   var didTerminate: (() -> Void)?
+  var allDownloadsFinished: (() -> Void)?
 
   func downloadProgressDidUpdate(_ progress: Double) {
     self.currentProgress = progress.roundedToTwoDecimalPlaces
@@ -20,6 +21,10 @@ class NYPLAxisProgressListenerMock: NYPLAxisDownloadProgressListening {
 
   func downloaderDidTerminate() {
     didTerminate?()
+  }
+  
+  func didFinishAllDownloads() {
+    allDownloadsFinished?()
   }
 
 }

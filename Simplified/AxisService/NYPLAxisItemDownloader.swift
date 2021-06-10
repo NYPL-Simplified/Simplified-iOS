@@ -11,14 +11,17 @@ import Foundation
 protocol NYPLAxisDownloadProgressListening: class {
   func downloaderDidTerminate()
   func downloadProgressDidUpdate(_ progress: Double)
+  func didFinishAllDownloads()
 }
 
 protocol NYPLAxisItemDownloading: class {
   var delegate: NYPLAxisDownloadProgressListening? { get set }
-  var dispatchGroup: DispatchGroup { get }
+  var tasksSynchnorizer: NYPLAxisTasksSynchorizing { get }
   var shouldContinue: Bool { get }
   func downloadItem(from url: URL, at writeURL: URL)
-  func leaveGroupAndStopDownload()
+  func downloadItems(with dictionary: [URL: URL])
+  func terminateDownloadProcess()
+  func notifyUponCompletion(on queue: DispatchQueue)
 }
 
 class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
@@ -27,27 +30,27 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
   static private let failedWritingItemSummary = "AXIS: Failed writing item to specified write URL"
   static private let failedDownloadingItemSummary = "AXIS: Failed downloading item"
   
-  let dispatchGroup: DispatchGroup
+  let tasksSynchnorizer: NYPLAxisTasksSynchorizing
   private let assetWriter: NYPLAssetWriting
   private let globalBackgroundSyncronizeDataQueue = DispatchQueue(label: "NYPLAxis")
   private var downloader: NYPLAxisContentDownloading?
   private let downloadProgressHandler: NYPLAxisDownloadProgressHandling
   private let downloadTaskWeightProvider: NYPLAxisWeightProviding
-  weak var delegate: NYPLAxisDownloadProgressListening?
+  var delegate: NYPLAxisDownloadProgressListening?
   
   init(
     assetWriter: NYPLAssetWriting = NYPLAssetWriter(),
-    dispatchGroup: DispatchGroup = DispatchGroup(),
     downloader: NYPLAxisContentDownloading? = NYPLAxisContentDownloader(
       networkExecuting: NYPLAxisNetworkExecutor()),
     progressHandler: NYPLAxisDownloadProgressHandling = NYPLAxisDownloadProgress(),
+    tasksSynchnorizer: NYPLAxisTasksSynchorizing = NYPLAxisTasksSynchnorizer(),
     weightProvider: NYPLAxisWeightProviding = NYPLAxisDownloadTaskWeightProvider()
   ) {
     self.assetWriter = assetWriter
-    self.dispatchGroup = dispatchGroup
     self.downloader = downloader
     self.downloadProgressHandler = progressHandler
     self.downloadTaskWeightProvider = weightProvider
+    self.tasksSynchnorizer = tasksSynchnorizer
   }
   
   var shouldContinue: Bool {
@@ -56,24 +59,40 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
     }
   }
   
-  /// Downloads the item from given url. Exits dispatchGroup on success. Terminates all subsequent
-  /// downloads upon failure.
-  ///
-  /// - Note: A call to this function must balance a call to `dispatchGroup.enter()`. Leaving a
-  /// dispatch group more times than it is entered results in a negative count which causes a crash.
-  ///
-  /// - TODO: OE-136: Fix direct reliance on DispatchGroup
+  /// Downloads the item from given url. Terminates all subsequent downloads upon failure and notifies
+  /// progressListener.
   ///
   /// - Parameters:
   ///   - url: URL of the item to be downloaded.
   ///   - writeURL: Desired local url for the item.
   func downloadItem(from url: URL, at writeURL: URL) {
     guard shouldContinue else {
-      dispatchGroup.leave()
       return
     }
     
     addTaskToDownloadProgress(with: url)
+    tasksSynchnorizer.startSynchronizedTaskWhenIdle()
+    downloadItem(from: url, writeTo: writeURL)
+    tasksSynchnorizer.waitForSynchronizedTaskToFinish()
+  }
+  
+  /// Downloads the items from the given dictionary using the keys as downlaod URL and values as write
+  /// URLS. Terminates all subsequent downloads upon failure and notifies progressListener.
+  ///
+  /// - Parameter dictionary: A dictionary object with download URL as key and write URL as value.
+  func downloadItems(with dictionary: [URL: URL]) {
+    guard shouldContinue else {
+      return
+    }
+    
+    dictionary.forEach {
+      addTaskToDownloadProgress(with: $0.key)
+      tasksSynchnorizer.startSynchronizedTask()
+      downloadItem(from: $0.key, writeTo: $0.value)
+    }
+  }
+  
+  private func downloadItem(from url: URL, writeTo writeURL: URL) {
     downloader?.downloadItem(from: url) { [weak self] (result) in
       guard let self = self else { return }
       switch result {
@@ -81,7 +100,7 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
         do {
           try self.assetWriter.writeAsset(data, atURL: writeURL)
           self.downloadProgressHandler.didFinishTask(with: url)
-          self.dispatchGroup.leave()
+          self.tasksSynchnorizer.endSynchronizedTask()
         } catch {
           NYPLErrorLogger.logError(
             error,
@@ -89,7 +108,7 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
             metadata: ["writeURL": writeURL.path,
                        "itemURL": url.absoluteString])
           
-          self.leaveGroupAndStopDownload()
+          self.terminateDownloadProcess()
         }
       case .failure(let error):
         NYPLErrorLogger.logError(
@@ -97,14 +116,14 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
           summary: NYPLAxisItemDownloader.failedDownloadingItemSummary,
           metadata: ["itemURL": url.absoluteString])
         
-        self.leaveGroupAndStopDownload()
+        self.terminateDownloadProcess()
       }
     }
   }
   
-  /// Stops the download process, leaves the dispatch group, deletes downloaded files, and notifies the
-  /// delegate of download failure.
-  func leaveGroupAndStopDownload() {
+  /// Stops the download process, deletes downloaded files, notifies the delegate of download failure, and
+  /// nils the delegate to prevent further messages from being sent to the delegate.
+  func terminateDownloadProcess() {
     // Already processed failure. No need to do it again.
     if !shouldContinue {
       return
@@ -113,8 +132,24 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
     globalBackgroundSyncronizeDataQueue.sync { [weak self] in
       guard let self = self else { return }
       self.downloader = nil
-      delegate?.downloaderDidTerminate()
-      self.dispatchGroup.leave()
+      self.delegate?.downloaderDidTerminate()
+      self.tasksSynchnorizer.endSynchronizedTask()
+      self.delegate = nil
+      self.downloadProgressHandler.progressListener = nil
+    }
+  }
+  
+  /// Explicitly indicates that all the synchronized tasks you want to be executed are added to the
+  /// taskSynchronizer. Notifies the NYPLAxisDownloadProgressListening object when all the tasks have
+  /// finished executing.
+  ///
+  /// - Parameter queue: The queue on which this method is executed when all the submitted tasks
+  /// complete.
+  func notifyUponCompletion(on queue: DispatchQueue) {
+    tasksSynchnorizer.runOnCompletingAllSynchronizedTasks(on: queue) { [weak self] in
+      self?.delegate?.didFinishAllDownloads()
+      self?.delegate = nil
+      self?.downloadProgressHandler.progressListener = nil
     }
   }
   

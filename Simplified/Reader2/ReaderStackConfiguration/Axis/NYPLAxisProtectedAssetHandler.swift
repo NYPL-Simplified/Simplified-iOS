@@ -27,8 +27,7 @@ struct NYPLAxisProtectedAssetHandler: NYPLAxisProtectedAssetHandling {
   init(
     axisKeysProvider: NYPLAxisKeysProviding = NYPLAxisKeysProvider(),
     decryptor: NYPLAxisContentDecrypting,
-    licenseDownloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader(
-      dispatchGroup: DispatchGroup())) {
+    licenseDownloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader()) {
     
     self.axisKeysProvider = axisKeysProvider
     self.decryptor = decryptor
@@ -37,8 +36,7 @@ struct NYPLAxisProtectedAssetHandler: NYPLAxisProtectedAssetHandling {
   
   init?(axisKeysProvider: NYPLAxisKeysProviding = NYPLAxisKeysProvider(),
         decryptor: NYPLAxisContentDecrypting? = NYPLAxisContentDecryptor(),
-        licenseDownloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader(
-          dispatchGroup: DispatchGroup())) {
+        licenseDownloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader()) {
     
     guard let decryptor = decryptor else {
       return nil

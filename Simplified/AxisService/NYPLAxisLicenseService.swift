@@ -38,15 +38,16 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
   static private let invalidVaultId = "AxisLicenseService validation failed due to invalid vault ID in license"
   static private let misssingAESKey = "Axis failed to get encrypted aes key"
   
-  let assetWriter: NYPLAssetWriting
-  let axisItemDownloader: NYPLAxisItemDownloading
-  let axisKeysProvider: NYPLAxisKeysProviding
-  let bookVaultId: String
-  let cypher: NYPLRSACryptographing
-  let deviceInfoProvider: NYPLDeviceInfoProviding
-  let isbn: String
-  let parentDirectory: URL
-  let localLicenseURL: URL
+  private let assetWriter: NYPLAssetWriting
+  private let axisItemDownloader: NYPLAxisItemDownloading
+  private let axisKeysProvider: NYPLAxisKeysProviding
+  private let bookVaultId: String
+  private let cypher: NYPLRSACryptographing
+  private let deviceInfoProvider: NYPLDeviceInfoProviding
+  private let isbn: String
+  private let parentDirectory: URL
+  private let localLicenseURL: URL
+  private let taskSynchnorizer: NYPLAxisTasksSynchorizing
   
   init(assetWriter: NYPLAssetWriting = NYPLAssetWriter(),
        axisItemDownloader: NYPLAxisItemDownloading,
@@ -67,11 +68,11 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
     self.parentDirectory = parentDirectory
     self.localLicenseURL = parentDirectory
       .appendingPathComponent(axisKeysProvider.desiredNameForLicenseFile)
+    
+    self.taskSynchnorizer = axisItemDownloader.tasksSynchnorizer
   }
   
   func downloadLicense() {
-    axisItemDownloader.dispatchGroup.enter()
-    
     let licenseURL = NYPLAxisLicenseURLGenerator(
       baseURL: axisKeysProvider.licenseBaseURL,
       bookVaultId: bookVaultId,
@@ -91,8 +92,8 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
   /// however store the book_vault_id and isbn for downloading license again when the user wants to open
   /// the book for reading.
   func validateLicense() {
-    axisItemDownloader.dispatchGroup.wait()
-    axisItemDownloader.dispatchGroup.enter()
+    taskSynchnorizer.startSynchronizedTaskWhenIdle()
+    
     guard
       let data = try? Data(contentsOf: localLicenseURL),
       let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed),
@@ -101,7 +102,7 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       let userKey = encryptionNode[axisKeysProvider.userKey] as? [String: Any],
       let encryptedBookVaultId = userKey[axisKeysProvider.keyCheck] as? String
     else {
-      logLicenseErrorAndLeave(
+      logLicenseErrorAndTerminateDownload(
         summary: NYPLAxisLicenseService.licenseValidationFailureSummary,
         reason: NYPLAxisLicenseService.missingKeys)
       return
@@ -112,7 +113,7 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       let decryptedBookVaultData = cypher.decryptWithPKCS1_OAEP(base64Data),
       let decryptedBookVaultId = String(data: decryptedBookVaultData, encoding: .utf8)
     else {
-      logLicenseErrorAndLeave(
+      logLicenseErrorAndTerminateDownload(
         summary: NYPLAxisLicenseService.licenseValidationFailureSummary,
         reason: NYPLAxisLicenseService.invalidKeyCheck)
       return
@@ -120,7 +121,7 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       
     let isValid = decryptedBookVaultId == bookVaultId
     guard isValid else {
-      logLicenseErrorAndLeave(
+      logLicenseErrorAndTerminateDownload(
         summary: NYPLAxisLicenseService.licenseValidationFailureSummary,
         reason: NYPLAxisLicenseService.invalidVaultId,
         additionalInfo: ["expected": bookVaultId,
@@ -129,13 +130,13 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       return
     }
     
-    axisItemDownloader.dispatchGroup.leave()
+    taskSynchnorizer.endSynchronizedTask()
   }
   
   /// Writes book isbn and book_vault_id to be used for fetching license before opening book for reading
   func saveBookInfoForFetchingLicense() {
-    axisItemDownloader.dispatchGroup.wait()
-    axisItemDownloader.dispatchGroup.enter()
+    taskSynchnorizer.startSynchronizedTaskWhenIdle()
+    
     let designatedBookInfoURL = parentDirectory
       .appendingPathComponent(axisKeysProvider.bookFilePathKey)
     
@@ -148,30 +149,29 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       
       try assetWriter.writeAsset(data, atURL: designatedBookInfoURL)
     } catch {
-      logLicenseErrorAndLeave(
+      logLicenseErrorAndTerminateDownload(
         summary: NYPLAxisLicenseService.saveBookInfoFailureSummary,
         reason: error.localizedDescription)
       return
     }
     
-    axisItemDownloader.dispatchGroup.leave()
+    taskSynchnorizer.endSynchronizedTask()
   }
   
   /// Delete license file to adhere with Axis DRM guidelines
   func deleteLicenseFile() {
-    axisItemDownloader.dispatchGroup.wait()
-    axisItemDownloader.dispatchGroup.enter()
+    taskSynchnorizer.startSynchronizedTaskWhenIdle()
     
     do {
       try FileManager.default.removeItem(at: localLicenseURL)
     } catch {
-      logLicenseErrorAndLeave(
+      logLicenseErrorAndTerminateDownload(
         summary: NYPLAxisLicenseService.deleteLicenseFileFailureSummmay,
         reason: error.localizedDescription)
       return
     }
     
-    axisItemDownloader.dispatchGroup.leave()
+    taskSynchnorizer.endSynchronizedTask()
   }
   
   /// Returns encrypted AES key data from extracted base64 string from the license to be used for
@@ -179,8 +179,7 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
   /// - Returns: Encrypted AES key data. Returns nil if base64 string containing the key not found or
   /// upon failure converting base64 string to data
   func encryptedContentKeyData() -> Data? {
-    axisItemDownloader.dispatchGroup.wait()
-    axisItemDownloader.dispatchGroup.enter()
+    taskSynchnorizer.startSynchronizedTaskWhenIdle()
     
     guard
       let data = try? Data(contentsOf: localLicenseURL),
@@ -190,22 +189,21 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       let encryptedContent = encryptionNode[axisKeysProvider.contentKey] as? [String: Any],
       let encryptedContentValue = encryptedContent[axisKeysProvider.encryptedValue] as? String
     else {
-      logLicenseErrorAndLeave(
+      logLicenseErrorAndTerminateDownload(
         summary: NYPLAxisLicenseService.extractAESKeyFailureSummary,
         reason: NYPLAxisLicenseService.misssingAESKey)
       return nil
     }
     
     defer {
-      axisItemDownloader.dispatchGroup.leave()
+      taskSynchnorizer.endSynchronizedTask()
     }
     
     return Data(base64Encoded: encryptedContentValue)
   }
   
-  func logLicenseErrorAndLeave(summary: String,
-                               reason: String,
-                               additionalInfo: [String: String] = [:]) {
+  func logLicenseErrorAndTerminateDownload(
+    summary: String, reason: String, additionalInfo: [String: String] = [:]) {
     
     var metadata = additionalInfo
     metadata[NYPLAxisService.reason] = reason
@@ -215,7 +213,7 @@ class NYPLAxisLicenseService: NYPLAxisLicenseHandling {
       summary: summary,
       metadata: metadata)
     
-    axisItemDownloader.leaveGroupAndStopDownload()
+    axisItemDownloader.terminateDownloadProcess()
   }
   
 }
