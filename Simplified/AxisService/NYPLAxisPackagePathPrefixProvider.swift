@@ -14,28 +14,30 @@ protocol NYPLAxisPackagePathPrefixProviding {
   func getPackagePathPrefix(packageEndpoint: String?) -> String?
 }
 
-class NYPLAxisPackagePathPrefixProvider: NYPLAxisPackagePathPrefixProviding {
+struct NYPLAxisPackagePathPrefixProvider: NYPLAxisPackagePathPrefixProviding {
   
-  private var packagePathPrefix: String?
-  
-  /// Generates, stores, and returns path prefix for downloadable content from the package endpoint
-  /// extracted from the package.opf file. Returns stored value on subsequent calls.
+  /// Generates and returns path prefix for downloadable content from the package endpoint extracted from
+  /// the package.opf file.
+  ///
   /// - Parameter packageEndpoint: Package endpoint
   /// - Returns: Generated or stored (if already generated in a previous call) path prefix (optional)
   func getPackagePathPrefix(packageEndpoint: String?) -> String? {
-    if let pathPrefix = packagePathPrefix {
-      return pathPrefix
-    }
-    
     guard let packageEndpoint = packageEndpoint else {
       // No need to log error here since an error is already logged when
       // pacakgeEndpoint generation returns nil
       return nil
     }
     
-    packagePathPrefix = URL(string: packageEndpoint)?
+    let packagePathPrefix = URL(string: packageEndpoint)?
       .deletingLastPathComponent()
       .absoluteString
+    
+    /// For most books, package content lives inside a directory e.g. abc/def/package.opf and we use the
+    /// parent directory of the opf file as package endpoint. However, for some books, the package content
+    /// is in root directory. In that case, we do not need to provide a package prefix.
+    if packagePathPrefix == "./" {
+      return nil
+    }
     
     return packagePathPrefix
   }
