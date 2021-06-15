@@ -177,8 +177,23 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 -(NSString *)messageStringForNYPLBookButtonStateSuccessful
 {
   NSString *message = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
-  if (self.book.defaultAcquisition.availability.until) {
-    NSString *timeUntilString = [self.book.defaultAcquisition.availability.until longTimeUntilString];
+  NSDate *untilDate = self.book.defaultAcquisition.availability.until;
+  if (untilDate) {
+    
+#if defined(AXIS)
+    /// On rare occasions, when we download a book, we get the until date an hour ahead of since date.
+    /// When that happens, we just show the original message.
+    NSDate *sinceDate = self.book.defaultAcquisition.availability.since;
+    if (sinceDate) {
+      BOOL incorrectDates = (untilDate.timeIntervalSinceReferenceDate - sinceDate.timeIntervalSinceReferenceDate == 3600);
+      
+      if (incorrectDates) {
+        return message;
+      }
+    }
+#endif
+    
+    NSString *timeUntilString = [untilDate longTimeUntilString];
     NSString *timeEstimateMessage = [NSString stringWithFormat:NSLocalizedString(@"It will expire in %@.", @"Tell the user how much time they have left for the book they have borrowed."),timeUntilString];
     return [NSString stringWithFormat:@"%@\n%@",message,timeEstimateMessage];
   } else {

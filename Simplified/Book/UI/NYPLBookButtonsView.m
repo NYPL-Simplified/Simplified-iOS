@@ -303,9 +303,21 @@
       [self.book.defaultAcquisition.availability
        matchUnavailable:nil
        limited:^(NYPLOPDSAcquisitionAvailabilityLimited *const _Nonnull limited) {
+        
+        NSDate *untilDate = self.book.defaultAcquisition.availability.until;
+        NSDate *sinceDate = self.book.defaultAcquisition.availability.since;
+        
+        BOOL hasIncorrectDates = NO;
+        
+        if (untilDate && sinceDate) {
+          hasIncorrectDates = (untilDate.timeIntervalSinceReferenceDate - sinceDate.timeIntervalSinceReferenceDate == 3600);
+        }
+        
         if ([limited.until timeIntervalSinceNow] > 0) {
           [button setType:NYPLRoundedButtonTypeClock];
-          [button setEndDate:limited.until];
+          if (!hasIncorrectDates) {
+            [button setEndDate:limited.until];
+          }
         }
       }
        unlimited:nil
