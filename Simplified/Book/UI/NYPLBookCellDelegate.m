@@ -78,8 +78,8 @@
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
 }
 
-- (void)didSelectReadForBook:(NYPLBook *)book
-{ 
+- (void)didSelectReadForBook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
+{
 #if defined(FEATURE_DRM_CONNECTOR)
   // Try to prevent blank books bug
 
@@ -96,24 +96,24 @@
                  usingExistingCredentials:YES
                  authenticationCompletion:^{
       dispatch_async(dispatch_get_main_queue(), ^{
-        [self openBook:book];   // with successful DRM activation
+        [self openBook:book successCompletion:successCompletion]; // with successful DRM activation
       });
     }];
   } else {
-    [self openBook:book];
+    [self openBook:book successCompletion:successCompletion];
   }
 #else
-  [self openBook:book];
+  [self openBook:book successCompletion:successCompletion];
 #endif
 }
 
-- (void)openBook:(NYPLBook *)book
+- (void)openBook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
 
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB:
-      [self openEPUB:book];
+      [self openEPUB:book successCompletion:successCompletion];
       break;
     case NYPLBookContentTypePDF:
       [self openPDF:book];
@@ -127,10 +127,13 @@
   }
 }
 
-- (void)openEPUB:(NYPLBook *)book
+- (void)openEPUB:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
 {
-  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-  [[NYPLRootTabBarController sharedController] presentBook:book fromFileURL:url];
+  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                      fileURLForBookIndentifier:book.identifier];
+  [[NYPLRootTabBarController sharedController] presentBook:book
+                                               fromFileURL:url
+                                         successCompletion:successCompletion];
 
   [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {

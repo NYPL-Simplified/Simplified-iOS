@@ -39,7 +39,8 @@ protocol ReaderModuleAPI {
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
                           deviceID: String?,
-                          in navigationController: UINavigationController)
+                          in navigationController: UINavigationController,
+                          successCompletion: (() -> Void)?)
   
 }
 
@@ -73,7 +74,8 @@ final class ReaderModule: ReaderModuleAPI {
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
                           deviceID: String?,
-                          in navigationController: UINavigationController) {
+                          in navigationController: UINavigationController,
+                          successCompletion: (() -> Void)?) {
     if delegate == nil {
       NYPLErrorLogger.logError(nil, summary: "ReaderModule delegate is not set")
     }
@@ -90,7 +92,8 @@ final class ReaderModule: ReaderModuleAPI {
                                                            book: book,
                                                            formatModule: formatModule,
                                                            positioningAt: initialLocator,
-                                                           in: navigationController)
+                                                           in: navigationController,
+                                                           successCompletion: successCompletion)
     }
   }
 
@@ -98,7 +101,8 @@ final class ReaderModule: ReaderModuleAPI {
                                     book: NYPLBook,
                                     formatModule: ReaderFormatModule,
                                     positioningAt initialLocator: Locator?,
-                                    in navigationController: UINavigationController) {
+                                    in navigationController: UINavigationController,
+                                    successCompletion: (() -> Void)?) {
     do {
       let readerVC = try formatModule.makeReaderViewController(
         for: publication,
@@ -111,6 +115,7 @@ final class ReaderModule: ReaderModuleAPI {
       readerVC.hidesBottomBarWhenPushed = true
       navigationController.pushViewController(readerVC, animated: true)
 
+      successCompletion?()
     } catch {
       delegate?.presentError(error, from: navigationController)
     }

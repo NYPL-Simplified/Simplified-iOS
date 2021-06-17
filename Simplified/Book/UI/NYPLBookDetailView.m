@@ -78,7 +78,7 @@ static NSString *DetailHTMLTemplate = nil;
 
 // designated initializer
 - (instancetype)initWithBook:(NYPLBook *const)book
-                    delegate:(id)delegate
+                    delegate:(id<NYPLBookDetailViewDelegate, NYPLCatalogLaneCellDelegate>)delegate
 {
   self = [super init];
   if(!self) return nil;
@@ -165,7 +165,7 @@ static NSString *DetailHTMLTemplate = nil;
   [self.buttonsView configureForBookDetailsContext];
   self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
   self.buttonsView.showReturnButtonIfApplicable = YES;
-  self.buttonsView.delegate = [NYPLBookCellDelegate sharedDelegate];
+  self.buttonsView.delegate = self.detailViewDelegate;
   self.buttonsView.downloadingDelegate = self;
   self.buttonsView.book = self.book;
 }

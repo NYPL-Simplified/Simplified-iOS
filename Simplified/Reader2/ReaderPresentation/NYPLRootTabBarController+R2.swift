@@ -9,7 +9,7 @@
 import Foundation
 
 @objc extension NYPLRootTabBarController {
-  func presentBook(_ book: NYPLBook, fromFileURL fileURL: URL?) {
+  func presentBook(_ book: NYPLBook, fromFileURL fileURL: URL?, successCompletion: (() -> Void)?) {
     guard let libraryService = r2Owner?.libraryService, let readerModule = r2Owner?.readerModule else {
       return
     }
@@ -22,7 +22,11 @@ import Foundation
       let drmDeviceID = NYPLUserAccount.sharedAccount().deviceID
       switch result {
       case .success(let publication):
-        readerModule.presentPublication(publication, book: book, deviceID: drmDeviceID, in: navVC)
+        readerModule.presentPublication(publication,
+                                        book: book,
+                                        deviceID: drmDeviceID,
+                                        in: navVC,
+                                        successCompletion: successCompletion)
       case .cancelled:
         // .cancelled is returned when publication has restricted access to its resources and can't be rendered
         NYPLErrorLogger.logError(nil, summary: "Error accessing book resources", metadata: [
