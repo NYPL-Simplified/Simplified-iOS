@@ -19,7 +19,11 @@ class NYPLAxisDownloadProgress: NYPLAxisDownloadProgressHandling {
   
   private let allTasks: ThreadSafeValueContainer<[DownloadTask]>
   private let currentDownloadProgress: ThreadSafeValueContainer<Double>
-  weak var progressListener: NYPLAxisDownloadProgressListening?
+  weak var progressListener: NYPLAxisDownloadProgressListening? {
+    didSet {
+      progressListener?.downloadProgressDidUpdate(currentProgress)
+    }
+  }
   
   var currentProgress: Double {
     return currentDownloadProgress.value ?? 0.0
