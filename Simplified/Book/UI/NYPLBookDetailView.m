@@ -1,6 +1,5 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
-#import "NYPLBookCellDelegate.h"
 #import "NYPLBookButtonsView.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
