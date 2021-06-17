@@ -1,4 +1,7 @@
+@import PureLayout;
+
 #import "NYPLBook.h"
+#import "NYPLBookCellDelegate.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogFeedViewController.h"
@@ -11,7 +14,6 @@
 #import "NYPLProblemReportViewController.h"
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
 #import "SimplyE-Swift.h"
-#import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailViewController.h"
 
@@ -79,7 +81,7 @@
   return self;
 }
 
-#pragma mark UIViewController
+#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
@@ -115,14 +117,38 @@
   }
 }
 
-#pragma mark NSObject
+#pragma mark - NSObject
 
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark NYPLBookDetailViewDelegate
+#pragma mark - NYPLBookButtonsDelegate
+
+- (void)didSelectReturnForBook:(NYPLBook *)book
+{
+  [[NYPLBookCellDelegate sharedDelegate] didSelectReturnForBook:book];
+}
+
+- (void)didSelectDownloadForBook:(NYPLBook *)book
+{
+  [[NYPLBookCellDelegate sharedDelegate] didSelectDownloadForBook:book];
+}
+
+- (void)didSelectReadForBook:(NYPLBook *)book
+           successCompletion:(__unused void(^)(void))successCompletion
+{
+  [[NYPLBookCellDelegate sharedDelegate] didSelectReadForBook:book
+                                            successCompletion:^{
+    // dismiss ourselves if we were presented, since we want to show the ereader
+    if (self.modalPresentationStyle == UIModalPresentationFormSheet) {
+      [self dismissViewControllerAnimated:true completion:nil];
+    }
+  }];
+}
+
+#pragma mark - NYPLBookDetailViewDelegate
 
 - (void)didSelectCloseButton:(__attribute__((unused)) NYPLBookDetailView *)detailView
 {
@@ -146,20 +172,6 @@
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:self.book.identifier];
 }
-
-#pragma mark - NYPLCatalogLaneCellDelegate
-
-- (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell
-     didSelectBookIndex:(NSUInteger)bookIndex
-{
-  NYPLCatalogLane *const lane = self.bookDetailView.tableViewDelegate.catalogLanes[cell.laneIndex];
-  NYPLBook *const feedBook = lane.books[bookIndex];
-  NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
-  NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
-  [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
-}
-
-#pragma mark - ProblemReportViewControllerDelegate
 
 -(void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender
 {
@@ -194,6 +206,32 @@
   viewController.title = lane.title;
   [self.navigationController pushViewController:viewController animated:YES];
 }
+
+- (void)didSelectViewIssuesForBook:(NYPLBook *)book sender:(id)__unused sender
+{
+  NYPLProblemDocument* pDoc = [[NYPLProblemDocumentCacheManager sharedInstance] getLastCachedDoc:book.identifier];
+  if (pDoc) {
+    NYPLBookDetailsProblemDocumentViewController* vc = [[NYPLBookDetailsProblemDocumentViewController alloc] initWithProblemDocument:pDoc book:book];
+    UINavigationController* navVC = [self navigationController];
+    if (navVC) {
+      [navVC pushViewController:vc animated:YES];
+    }
+  }
+}
+
+#pragma mark - NYPLCatalogLaneCellDelegate
+
+- (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell
+     didSelectBookIndex:(NSUInteger)bookIndex
+{
+  NYPLCatalogLane *const lane = self.bookDetailView.tableViewDelegate.catalogLanes[cell.laneIndex];
+  NYPLBook *const feedBook = lane.books[bookIndex];
+  NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
+  NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
+  [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
+}
+
+#pragma mark - ProblemReportViewControllerDelegate
 
 - (void)problemReportViewController:(NYPLProblemReportViewController *)problemReportViewController didSelectProblemWithType:(NSString *)type
 {
@@ -274,17 +312,6 @@
     [self.bookDetailView.tableViewDelegate configureViewIssuesCell];
     [self.bookDetailView.footerTableView reloadData];
     [self.bookDetailView.footerTableView invalidateIntrinsicContentSize];
-  }
-}
-
-- (void)didSelectViewIssuesForBook:(NYPLBook *)book sender:(id)__unused sender {
-  NYPLProblemDocument* pDoc = [[NYPLProblemDocumentCacheManager sharedInstance] getLastCachedDoc:book.identifier];
-  if (pDoc) {
-    NYPLBookDetailsProblemDocumentViewController* vc = [[NYPLBookDetailsProblemDocumentViewController alloc] initWithProblemDocument:pDoc book:book];
-    UINavigationController* navVC = [self navigationController];
-    if (navVC) {
-      [navVC pushViewController:vc animated:YES];
-    }
   }
 }
 

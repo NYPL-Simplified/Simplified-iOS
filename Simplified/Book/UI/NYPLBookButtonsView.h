@@ -8,7 +8,7 @@
 
 - (void)didSelectReturnForBook:(NYPLBook *)book;
 - (void)didSelectDownloadForBook:(NYPLBook *)book;
-- (void)didSelectReadForBook:(NYPLBook *)book;
+- (void)didSelectReadForBook:(NYPLBook *)book successCompletion:(void(^)(void))completion;
 
 @end
 
