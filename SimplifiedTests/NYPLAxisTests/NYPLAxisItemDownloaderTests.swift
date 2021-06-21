@@ -25,24 +25,21 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
       weights: [someURL: 0.4, someOtherURL: 0.2])
   }()
   
-  func testDownloaderShouldNotContinueOnFailedDownload() {
-    let stopExpectation = self.expectation(
-      description: "Downloader should not continue after download failure")
+  func testDownloaderShouldNotSucceedAfterOneFailedDownload() {
+    let failExpectation = self.expectation(
+      description: "Downloader should not succeed after one failed download")
     let leaveExpecation = self.expectation(
       description: "Downloader should leave dispatch group on failed download")
     
     leaveExpecation.expectedFulfillmentCount = 2
     
+    let assetWriter = AssetWriterMock()
+    
     let dispatchGroup = DispatchGroup()
     let itemDownloader = NYPLAxisItemDownloader(
-      dispatchGroup: dispatchGroup, downloader: contentDownloader)
+      assetWriter: assetWriter, dispatchGroup: dispatchGroup,
+      downloader: contentDownloader)
     contentDownloader.mockDownloadFailure()
-    
-    contentDownloader.didReceiveRequestForUrl = {
-      if $0 == self.someOtherURL {
-        XCTFail()
-      }
-    }
     
     dispatchGroup.enter()
     itemDownloader.downloadItem(from: someURL, at: downloadsDirectory)
@@ -52,7 +49,11 @@ class NYPLAxisItemDownloaderTests: XCTestCase {
     }
     
     if !itemDownloader.shouldContinue {
-      stopExpectation.fulfill()
+      failExpectation.fulfill()
+    }
+    
+    assetWriter.willWriteAsset = {
+      XCTFail()
     }
     
     dispatchGroup.enter()

@@ -11,7 +11,10 @@ import Foundation
 
 class NYPLAxisMetadataServiceMock: NYPLDownloadRunnerMock, NYPLAxisMetadataContentHandling {
   
+  var willDownloadContent: (() -> Void)?
+  
   func downloadContent() {
+    willDownloadContent?()
     run()
   }
 

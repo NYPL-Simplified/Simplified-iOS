@@ -19,6 +19,7 @@ protocol NYPLAxisItemDownloading: class {
   var shouldContinue: Bool { get }
   func downloadItem(from url: URL, at writeURL: URL)
   func leaveGroupAndStopDownload()
+  func cancelDownload()
 }
 
 class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
@@ -28,6 +29,8 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
   static private let failedDownloadingItemSummary = "AXIS: Failed downloading item"
   
   let dispatchGroup: DispatchGroup
+  /// set to true when download gets terminated (either by user or due to error)
+  private let isTerminated: ThreadSafeValueContainer<Bool>
   private let assetWriter: NYPLAssetWriting
   private let globalBackgroundSyncronizeDataQueue = DispatchQueue(label: "NYPLAxis")
   private var downloader: NYPLAxisContentDownloading?
@@ -48,12 +51,12 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
     self.downloader = downloader
     self.downloadProgressHandler = progressHandler
     self.downloadTaskWeightProvider = weightProvider
+    self.isTerminated = ThreadSafeValueContainer(
+      value: false, queue: DispatchQueue(label: "NYPLAxisItemDownloader_isTerminated"))
   }
   
   var shouldContinue: Bool {
-    return globalBackgroundSyncronizeDataQueue.sync { [weak self] in
-      self?.downloader != nil
-    }
+    return !(self.isTerminated.value ?? true)
   }
   
   /// Downloads the item from given url. Exits dispatchGroup on success. Terminates all subsequent
@@ -92,6 +95,18 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
           self.leaveGroupAndStopDownload()
         }
       case .failure(let error):
+        if (error as NSError).code == NSURLErrorCancelled {
+          self.dispatchGroup.leave()
+          self.delegate = nil
+          self.downloadProgressHandler.progressListener = nil
+          return
+        }
+        
+        if !self.shouldContinue {
+          self.dispatchGroup.leave()
+          return
+        }
+        
         NYPLErrorLogger.logError(
           error,
           summary: NYPLAxisItemDownloader.failedDownloadingItemSummary,
@@ -112,10 +127,20 @@ class NYPLAxisItemDownloader: NYPLAxisItemDownloading {
     
     globalBackgroundSyncronizeDataQueue.sync { [weak self] in
       guard let self = self else { return }
-      self.downloader = nil
       delegate?.downloaderDidTerminate()
+      self.isTerminated.value = true
+      self.delegate = nil
+      self.downloadProgressHandler.progressListener = nil
       self.dispatchGroup.leave()
     }
+  }
+  
+  func cancelDownload() {
+    let error = NSError(
+      domain: "User cancelled download", code: NSURLErrorCancelled,
+      userInfo: nil)
+    
+    self.downloader?.cancelAllDownloads(withError: error)
   }
   
   private func addTaskToDownloadProgress(with url: URL) {

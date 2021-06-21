@@ -11,7 +11,10 @@ import Foundation
 
 class NYPLAxisPackageServiceMock: NYPLDownloadRunnerMock, NYPLAxisPackageHandling {
   
+  var willDownloadContent: (() -> Void)?
+  
   func downloadPackageContent() {
+    willDownloadContent?()
     run()
   }
   

@@ -81,7 +81,8 @@ import Foundation
   /// - Parameters:
   ///   - downloadTask: downloadTask download task
   @objc func fulfillAxisLicense(downloadTask: URLSessionDownloadTask) {
-    DispatchQueue.global(qos: .utility).async {
+    DispatchQueue.global(qos: .utility).async { [weak self] in
+      guard let self = self else { return }
       self.downloadAndValidateLicense()
       self.downloadMetadataContent()
       self.downloadPackage()
@@ -114,6 +115,14 @@ import Foundation
     packageDownloader.downloadPackageContent()
   }
   
+  
+  /// Called when book download is terminated by the user. All downloaded files related to the book are
+  /// deleted and no more files are downloaded.
+  @objc func downloadCancelledByUser() {
+    axisItemDownloader.cancelDownload()
+    try? FileManager.default.removeItem(at: self.dedicatedWriteURL)
+  }
+ 
 }
 
 extension NYPLAxisService: NYPLAxisDownloadProgressListening {

@@ -123,6 +123,93 @@ class NYPLAxisServiceTests: XCTestCase {
     waitForExpectations(timeout: 4, handler: nil)
   }
   
+  func testAxisServiceShouldDeallocateUponCancellingBookDownloadWhileDownloadingLicense() {
+    let deallocExpectation = self.expectation(
+      description: "Axis Service should deallocate when cancelled while downloading license")
+    
+    let licenseService = succeedingLicenseService
+    var axisService: CustomNYPLAxisService? = createCustomAxisService(
+      licenseService: licenseService,
+      metadataService: succeedingMetadataService,
+      packageService: succeedingPackageService)
+    
+    axisService?.willDeinit = {
+      deallocExpectation.fulfill()
+    }
+    
+    licenseService.willDownloadLicenseFile = {
+      axisService?.downloadCancelledByUser()
+      axisService = nil
+    }
+    
+    let task = URLSessionDownloadTask()
+    axisService?.fulfillAxisLicense(downloadTask: task)
+    
+    waitForExpectations(timeout: 4, handler: nil)
+  }
+  
+  func testAxisServiceShouldDeallocateUponCancellingBookDownloadWhileDownloadingMetadata() {
+    let deallocExpectation = self.expectation(
+      description: "Axis Service should deallocate when cancelled while downloading metadata")
+    
+    let metadataService = succeedingMetadataService
+    var axisService: CustomNYPLAxisService? = createCustomAxisService(
+      licenseService: succeedingLicenseService,
+      metadataService: metadataService,
+      packageService: succeedingPackageService)
+    
+    axisService?.willDeinit = {
+      deallocExpectation.fulfill()
+    }
+    
+    metadataService.willDownloadContent = {
+      axisService?.downloadCancelledByUser()
+      axisService = nil
+    }
+    
+    let task = URLSessionDownloadTask()
+    axisService?.fulfillAxisLicense(downloadTask: task)
+    
+    waitForExpectations(timeout: 4, handler: nil)
+  }
+  
+  func testAxisServiceShouldDeallocateUponCancellingBookDownloadWhileDownloadingPackage() {
+    let deallocExpectation = self.expectation(
+      description: "Axis Service should deallocate when cancelled while downloading package")
+    
+    let packageService = succeedingPackageService
+    var axisService: CustomNYPLAxisService? = createCustomAxisService(
+      licenseService: succeedingLicenseService,
+      metadataService: succeedingMetadataService,
+      packageService: packageService)
+    
+    axisService?.willDeinit = {
+      deallocExpectation.fulfill()
+    }
+    
+    packageService.willDownloadContent = {
+      axisService?.downloadCancelledByUser()
+      axisService = nil
+    }
+    
+    let task = URLSessionDownloadTask()
+    axisService?.fulfillAxisLicense(downloadTask: task)
+    
+    waitForExpectations(timeout: 4, handler: nil)
+  }
+  
+  private func createCustomAxisService(
+    licenseService: NYPLAxisLicenseServiceMock,
+    metadataService: NYPLAxisMetadataServiceMock,
+    packageService: NYPLAxisPackageServiceMock) -> CustomNYPLAxisService {
+    
+    return CustomNYPLAxisService(
+      axisItemDownloader: itemDownloader, book: book,
+      dedicatedWriteURL: downloadsDirectory, delegate: downloadBroadcaster,
+      licenseService: licenseService, metadataDownloader: metadataService,
+      packageDownloader: packageService)
+  }
+  
   private func createAxisService(
     licenseService: NYPLAxisLicenseServiceMock,
     metadataService: NYPLAxisMetadataServiceMock,
@@ -163,6 +250,16 @@ class NYPLAxisServiceTests: XCTestCase {
   private var failingPackageService: NYPLAxisPackageServiceMock {
     return NYPLAxisPackageServiceMock(
       itemDownloader: itemDownloader, shouldSucceed: false)
+  }
+  
+}
+
+private class CustomNYPLAxisService: NYPLAxisService {
+  
+  var willDeinit: (() -> Void)?
+  
+  deinit {
+    willDeinit?()
   }
   
 }

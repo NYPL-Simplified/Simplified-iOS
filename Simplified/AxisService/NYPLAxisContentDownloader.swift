@@ -11,6 +11,7 @@ import Foundation
 protocol NYPLAxisContentDownloading {
   func downloadItem(from url: URL,
                     _ completion: @escaping (Result<Data, Error>) -> Void)
+  func cancelAllDownloads(withError error: Error)
 }
 
 
@@ -47,6 +48,18 @@ class NYPLAxisContentDownloader: NYPLAxisContentDownloading {
     tasks[url] = self.getTask(for: url)
   }
   
+  func cancelAllDownloads(withError error: Error) {
+    errored.value = true
+    tasks.forEach {
+      $1.cancel()
+    }
+    tasks.removeAll()
+    handlers.forEach {
+      $1(.failure(error))
+    }
+    handlers.removeAll()
+  }
+  
   private func getTask(for url: URL) -> URLSessionDataTask {
     
     let request = URLRequest(url: url,
@@ -76,18 +89,11 @@ class NYPLAxisContentDownloader: NYPLAxisContentDownloading {
           return
         }
         
-        self.errored.value = true
         self.tasks[url] = nil
-        let hanler = self.handlers[url]
-        self.tasks.forEach {
-          $1.cancel()
-        }
-        self.tasks.removeAll()
-        self.handlers.removeAll()
-        // Here we perform short-circuiting so that we don't download anything
-        // else after receiving a failure since a book with a missing file is
-        // unusable.
-        hanler?(.failure(error))
+        let handler = self.handlers[url]
+        self.handlers[url] = nil
+        self.cancelAllDownloads(withError: error)
+        handler?(.failure(error))
       }
     }
     

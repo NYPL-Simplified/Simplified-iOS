@@ -33,4 +33,8 @@ class NYPLAxisContentDownloaderMock: NYPLAxisContentDownloading {
     desiredResult = .success(data)
   }
   
+  func cancelAllDownloads(withError error: Error) {
+    desiredResult = .failure(error)
+  }
+  
 }
