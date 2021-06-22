@@ -97,6 +97,6 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
       XCTAssert(book.canCompleteDownload(withContentType: contentType))
     }
 
-    XCTAssert(book.canCompleteDownload(withContentType: "application/json"))
+    XCTAssert(book.canCompleteDownload(withContentType: ContentTypeOverdriveAudiobookActual))
   }
 }

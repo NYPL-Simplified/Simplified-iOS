@@ -140,24 +140,19 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
-    } else if ([downloadTask.response.MIMEType
-                isEqualToString:ContentTypeBearerToken]) {
+    } else if ([downloadTask.response.MIMEType isEqualToString:ContentTypeBearerToken]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
          withRightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
 #if FEATURE_OVERDRIVE
-    } else if ([downloadTask.response.MIMEType
-                   isEqualToString:@"application/json"]) {
-         self.bookIdentifierToDownloadInfo[book.identifier] =
-           [[self downloadInfoForBookIdentifier:book.identifier]
-            withRightsManagement:NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON];
+    } else if ([downloadTask.response.MIMEType isEqualToString:ContentTypeOverdriveAudiobookActual]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON];
 #endif
     } else if ([NYPLOPDSAcquisitionPath.supportedTypes containsObject:downloadTask.response.MIMEType]) {
-      // if response type represents supported type of book, proceed
-      NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".", downloadTask.response.MIMEType);
-      NYPLMyBooksDownloadInfo *info =
-      [[self downloadInfoForBookIdentifier:book.identifier]
-       withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
+      NYPLMyBooksDownloadInfo *info = [[self downloadInfoForBookIdentifier:book.identifier]
+                                       withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
       if (info) {
         self.bookIdentifierToDownloadInfo[book.identifier] = info;
       }
