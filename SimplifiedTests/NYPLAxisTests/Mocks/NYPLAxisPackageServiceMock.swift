@@ -9,10 +9,26 @@
 import Foundation
 @testable import SimplyE
 
-class NYPLAxisPackageServiceMock: NYPLDownloadRunnerMock, NYPLAxisPackageHandling {
+struct NYPLAxisPackageServiceMock: NYPLAxisPackageHandling {
   
-  func downloadPackageContent() {
-    run()
+  enum NYPLAxisPackageServiceMockError: Error {
+    case dummyError
   }
+  
+  let shouldSucceed: Bool
+  
+  func makeDownloadPackageContentTasks() -> [NYPLAxisTask] {
+    let t = NYPLAxisTask() { task in
+      if self.shouldSucceed {
+        task.succeeded()
+      } else {
+        task.failed(with: NYPLAxisPackageServiceMockError.dummyError)
+      }
+    }
+    
+    return [t]
+  }
+  
+  func cancelPackageDownload(with error: NYPLAxisError) {}
   
 }

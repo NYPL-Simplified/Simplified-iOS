@@ -20,7 +20,7 @@ struct NYPLAxisPackagePathPrefixProvider: NYPLAxisPackagePathPrefixProviding {
   /// the package.opf file.
   ///
   /// - Parameter packageEndpoint: Package endpoint
-  /// - Returns: Generated or stored (if already generated in a previous call) path prefix (optional)
+  /// - Returns: Generated path prefix (optional)
   func getPackagePathPrefix(packageEndpoint: String?) -> String? {
     guard let packageEndpoint = packageEndpoint else {
       // No need to log error here since an error is already logged when

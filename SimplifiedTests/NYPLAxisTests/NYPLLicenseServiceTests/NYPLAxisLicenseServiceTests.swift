@@ -11,8 +11,7 @@ import XCTest
 class NYPLAxisLicenseServiceTests: XCTestCase {
 
   private let axisKeysProvider = NYPLAxisKeysProvider()
-  private let itemDownloader = CustomNYPLAxisItemDownloader()
-
+  
   lazy var licenseHomeDirectory: URL = {
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     let documentsDirectory = paths[0]
@@ -38,7 +37,6 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
   func testLicenseWithInvalidKeycheckShouldNotBeValidated() {
     let failedValidationExpectation = XCTestExpectation(
       description: "Invalid license should not be validated")
-    failedValidationExpectation.expectedFulfillmentCount = 2
 
     let service = createLicenseService(bookVaultId: TestBook.book1.bookVaultId,
                                        cypher: cypherReturningBook2VaultId,
@@ -46,18 +44,19 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
 
     mockDownloadedLicense()
     XCTAssertTrue(FileManager.default.fileExists(atPath: downloadedLicenseURL.path))
-
-    itemDownloader.downloadsTerminated = {
-      failedValidationExpectation.fulfill()
-    }
-
-    service.didLogLicenseError = {
-      if $0 == "AxisLicenseService validation failed due to invalid vault ID in license" {
-        failedValidationExpectation.fulfill()
+    
+    NYPLAxisTaskAggregator()
+      .addTask(service.makeValidateLicenseTask())
+      .run()
+      .onCompletion { (result) in
+        switch result {
+        case .success:
+          XCTFail()
+        case .failure:
+          failedValidationExpectation.fulfill()
+        }
       }
-    }
-    service.validateLicense()
-
+    
     wait(for: [failedValidationExpectation], timeout: 4)
   }
 
@@ -72,12 +71,18 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
     mockDownloadedLicense()
     XCTAssertTrue(FileManager.default.fileExists(atPath: downloadedLicenseURL.path))
 
-    service.validateLicense()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
-      if self.itemDownloader.shouldContinue {
-        validationExpectation.fulfill()
+    NYPLAxisTaskAggregator()
+      .addTask(service.makeValidateLicenseTask())
+      .run()
+      .onCompletion { (result) in
+        switch result {
+        case .success:
+          validationExpectation.fulfill()
+        case .failure:
+          XCTFail()
+        }
       }
-    }
+    
     wait(for: [validationExpectation], timeout: 4)
   }
 
@@ -92,23 +97,25 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
     let designatedBookInfoURL = licenseHomeDirectory
       .appendingPathComponent(axisKeysProvider.bookFilePathKey)
 
-    service.saveBookInfoForFetchingLicense()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
-      if
-        let data = try? Data(contentsOf: designatedBookInfoURL),
-        let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed),
-        let json = jsonObject as? [String: String],
-        let bookVaultId = json[self.axisKeysProvider.bookVaultKey],
-        bookVaultId == TestBook.book1.bookVaultId,
-        let isbn = json[self.axisKeysProvider.isbnKey],
-        isbn == TestBook.book1.isbn
-      {
-        savedInfoExpectation.fulfill()
-      } else {
-        XCTFail()
+    NYPLAxisTaskAggregator()
+      .addTask(service.makeSaveBookInfoTask())
+      .run()
+      .onCompletion { _ in
+        if
+          let data = try? Data(contentsOf: designatedBookInfoURL),
+          let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed),
+          let json = jsonObject as? [String: String],
+          let bookVaultId = json[self.axisKeysProvider.bookVaultKey],
+          bookVaultId == TestBook.book1.bookVaultId,
+          let isbn = json[self.axisKeysProvider.isbnKey],
+          isbn == TestBook.book1.isbn
+        {
+          savedInfoExpectation.fulfill()
+        } else {
+          XCTFail()
+        }
       }
-    }
-
+    
     wait(for: [savedInfoExpectation], timeout: 4)
   }
 
@@ -123,22 +130,24 @@ class NYPLAxisLicenseServiceTests: XCTestCase {
     mockDownloadedLicense()
     XCTAssertTrue(FileManager.default.fileExists(atPath: downloadedLicenseURL.path))
 
-    service.deleteLicenseFile()
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
-      if !FileManager.default.fileExists(atPath: self.downloadedLicenseURL.path) {
-        deletionExpectation.fulfill()
+    NYPLAxisTaskAggregator()
+      .addTask(service.makeDeleteLicenseTask())
+      .run()
+      .onCompletion { (_) in
+        if !FileManager.default.fileExists(atPath: self.downloadedLicenseURL.path) {
+          deletionExpectation.fulfill()
+        }
       }
-    }
 
     wait(for: [deletionExpectation], timeout: 4)
   }
 
   private func createLicenseService(bookVaultId: String,
                                     cypher: NYPLRSACryptographing,
-                                    isbn: String) -> CustomNYPLAxisLicenseService {
+                                    isbn: String) -> NYPLAxisLicenseService {
 
-    return CustomNYPLAxisLicenseService(
-      axisItemDownloader: itemDownloader, bookVaultId: bookVaultId,
+    return NYPLAxisLicenseService(
+      axisItemDownloader: NYPLAxisItemDownloader(), bookVaultId: bookVaultId,
       cypher: cypher, isbn: isbn, parentDirectory: self.licenseHomeDirectory)
   }
 
@@ -160,26 +169,3 @@ private struct TestBook {
 }
 
 
-private class CustomNYPLAxisItemDownloader: NYPLAxisItemDownloader {
-
-  var downloadsTerminated: (() -> Void)?
-
-  override func leaveGroupAndStopDownload() {
-    downloadsTerminated?()
-    super.leaveGroupAndStopDownload()
-  }
-}
-
-private class CustomNYPLAxisLicenseService: NYPLAxisLicenseService {
-
-  var didLogLicenseError: ((String) -> ())?
-
-  override func logLicenseErrorAndLeave(summary: String,
-                                        reason: String,
-                                        additionalInfo: [String: String] = [:]) {
-    didLogLicenseError?(reason)
-    super.logLicenseErrorAndLeave(
-      summary: summary, reason: reason, additionalInfo: additionalInfo)
-  }
-
-}

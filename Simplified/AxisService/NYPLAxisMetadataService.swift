@@ -9,7 +9,7 @@
 import Foundation
 
 protocol NYPLAxisMetadataContentHandling {
-  func downloadContent()
+  func downloadMetadataTasks() -> [NYPLAxisTask]
 }
 
 struct NYPLAxisMetadataService: NYPLAxisMetadataContentHandling {
@@ -19,23 +19,23 @@ struct NYPLAxisMetadataService: NYPLAxisMetadataContentHandling {
   let parentDirectory: URL
   
   /// Downloads metadata items (`container.xml` & `encryption.xml`) required for the book.
-  func downloadContent() {
-    downloadItem(endpoint: axisKeysProvider.encryptionDownloadEndpoint)
-    downloadItem(endpoint: axisKeysProvider.containerDownloadEndpoint)
+  func downloadMetadataTasks() -> [NYPLAxisTask] {
+    let encryptionDownloadTask = itemDownloadTask(
+      endpoint: axisKeysProvider.encryptionDownloadEndpoint)
+    let containerDownloadTask = itemDownloadTask(
+      endpoint: axisKeysProvider.containerDownloadEndpoint)
+    
+    return [encryptionDownloadTask, containerDownloadTask]
   }
   
-  private func downloadItem(endpoint: String) {
-    axisItemDownloader.dispatchGroup.wait()
-    
-    // No need to log error here since itemDownloader already logs one
-    guard axisItemDownloader.shouldContinue else {
-      return
+  private func itemDownloadTask(endpoint: String) -> NYPLAxisTask {
+    return NYPLAxisTask() { task in
+      let itemURL = self.baseURL.appendingPathComponent(endpoint)
+      let writeURL = self.parentDirectory.appendingPathComponent(endpoint)
+      self.axisItemDownloader.downloadItem(from: itemURL, at: writeURL) {
+        task.processResult($0)
+      }
     }
-    
-    axisItemDownloader.dispatchGroup.enter()
-    let itemURL = baseURL.appendingPathComponent(endpoint)
-    let writeURL = parentDirectory.appendingPathComponent(endpoint)
-    axisItemDownloader.downloadItem(from: itemURL, at: writeURL)
   }
   
 }

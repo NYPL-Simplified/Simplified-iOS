@@ -136,33 +136,27 @@ class NYPLAxisServiceTests: XCTestCase {
   }
   
   private var succeedingLicenseService: NYPLAxisLicenseServiceMock {
-    return NYPLAxisLicenseServiceMock(
-      itemDownloader: itemDownloader, shouldSucceed: true, aesKeyData: nil)
+    return NYPLAxisLicenseServiceMock(shouldSucceed: true, aesKeyData: nil)
   }
   
   private var failingLicenseService: NYPLAxisLicenseServiceMock {
-    return NYPLAxisLicenseServiceMock(
-      itemDownloader: itemDownloader, shouldSucceed: false, aesKeyData: nil)
+    return NYPLAxisLicenseServiceMock(shouldSucceed: false, aesKeyData: nil)
   }
   
   private var succeedingMetadataService: NYPLAxisMetadataServiceMock {
-    return NYPLAxisMetadataServiceMock(
-      itemDownloader: itemDownloader, shouldSucceed: true)
+    return NYPLAxisMetadataServiceMock(shouldSucceed: true)
   }
   
   private var failingMetadataService: NYPLAxisMetadataServiceMock {
-    return NYPLAxisMetadataServiceMock(
-      itemDownloader: itemDownloader, shouldSucceed: false)
+    return NYPLAxisMetadataServiceMock(shouldSucceed: false)
   }
   
   private var succeedingPackageService: NYPLAxisPackageServiceMock {
-    return NYPLAxisPackageServiceMock(
-      itemDownloader: itemDownloader, shouldSucceed: true)
+    return NYPLAxisPackageServiceMock(shouldSucceed: true)
   }
   
   private var failingPackageService: NYPLAxisPackageServiceMock {
-    return NYPLAxisPackageServiceMock(
-      itemDownloader: itemDownloader, shouldSucceed: false)
+    return NYPLAxisPackageServiceMock(shouldSucceed: false)
   }
   
 }

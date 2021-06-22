@@ -44,6 +44,7 @@ import Foundation
   private let licenseService: NYPLAxisLicenseHandling
   private let metadataDownloader: NYPLAxisMetadataContentHandling
   private let packageDownloader: NYPLAxisPackageHandling
+  private let aggregator: NYPLAxisTaskAggregator
   private weak var delegate: NYPLBookDownloadBroadcasting?
   
   
@@ -58,7 +59,8 @@ import Foundation
   static private let jsonContent = "jsonContent"
   
   // MARK: - Initialization
-  init(axisItemDownloader: NYPLAxisItemDownloading,
+  init(aggregator: NYPLAxisTaskAggregator = NYPLAxisTaskAggregator(),
+       axisItemDownloader: NYPLAxisItemDownloading,
        book: NYPLBook,
        dedicatedWriteURL: URL,
        delegate: NYPLBookDownloadBroadcasting?,
@@ -66,6 +68,7 @@ import Foundation
        metadataDownloader: NYPLAxisMetadataContentHandling,
        packageDownloader: NYPLAxisPackageHandling) {
     
+    self.aggregator = aggregator
     self.axisItemDownloader = axisItemDownloader
     self.book = book
     self.dedicatedWriteURL = dedicatedWriteURL
@@ -81,47 +84,58 @@ import Foundation
   /// - Parameters:
   ///   - downloadTask: downloadTask download task
   @objc func fulfillAxisLicense(downloadTask: URLSessionDownloadTask) {
-    DispatchQueue.global(qos: .utility).async {
-      self.downloadAndValidateLicense()
-      self.downloadMetadataContent()
-      self.downloadPackage()
-      self.axisItemDownloader.dispatchGroup.notify(queue: .global(qos: .utility)) {
-        // TODO:- OE-128: Fix reversed hierarchy
-        // weak self will result in deallocation before book completion
-        guard self.axisItemDownloader.shouldContinue else { return }
-        _ = self.delegate?.replaceBook(
-          self.book, withFileAtURL: self.dedicatedWriteURL,
-          forDownloadTask: downloadTask)
+    /// We first download the license, validate it, store book information for downloading license again before
+    /// reading book, and delete the license file.
+    let licenseTasks = [licenseService.makeDownloadLicenseTask(),
+                        licenseService.makeValidateLicenseTask(),
+                        licenseService.makeSaveBookInfoTask(),
+                        licenseService.makeDeleteLicenseTask()]
+    
+    /// Then we download the metadata files (container.xml and encryption.xml)
+    let metadataTasks = metadataDownloader.downloadMetadataTasks()
+    
+    /// Finally we download the package file, and extract endpoints for book content (chapters, images etc.)
+    /// and download required files using extracted endpoints.
+    let packageTasks = packageDownloader.makeDownloadPackageContentTasks()
+    
+    aggregator
+      .addTasks(licenseTasks + metadataTasks + packageTasks)
+      .run()
+      .onCompletion { (result) in
+        switch result {
+        case .success:
+          /// Book download succeeded. We notify the delegate about completion and provide the url of
+          /// the directory in which book content is downloaded.
+          _ = self.delegate?.replaceBook(
+            self.book, withFileAtURL: self.dedicatedWriteURL,
+            forDownloadTask: downloadTask)
+        case .failure(let error):
+          /// Book download failed. We delete all the files downloaded for the book.
+          try? FileManager.default.removeItem(at: self.dedicatedWriteURL)
+          
+          switch error {
+          case .userCancelledDownload:
+            /// We don't do anything if the book download was failed due to the user cancelling the book
+            /// download by pressing the cancel button.
+            break
+          default:
+            /// We notify the delegate about the failure.
+            self.delegate?.failDownloadWithAlert(forBook: self.book)
+          }
+        }
       }
-    }
   }
   
-  // MARK: - Download & Validate License
-  private func downloadAndValidateLicense() {
-    licenseService.downloadLicense()
-    licenseService.saveBookInfoForFetchingLicense()
-    licenseService.validateLicense()
-    licenseService.deleteLicenseFile()
-  }
-  
-  // MARK: - Download Encryption & Container
-  private func downloadMetadataContent() {
-    metadataDownloader.downloadContent()
-  }
-  
-  // MARK: - Download Package file & content mentioned inside
-  private func downloadPackage() {
-    packageDownloader.downloadPackageContent()
+  /// Called when book download is terminated by the user. All downloaded files related to the book are
+  /// deleted and no more files are downloaded.
+  @objc func downloadCancelledByUser() {
+    aggregator.cancelAllTasks(with: NYPLAxisError.userCancelledDownload)
+    packageDownloader.cancelPackageDownload(with: NYPLAxisError.userCancelledDownload)
   }
   
 }
 
 extension NYPLAxisService: NYPLAxisDownloadProgressListening {
-  
-  func downloaderDidTerminate() {
-    try? FileManager.default.removeItem(at: self.dedicatedWriteURL)
-    self.delegate?.failDownloadWithAlert(forBook: self.book)
-  }
   
   func downloadProgressDidUpdate(_ progress: Double) {
     self.delegate?.downloadProgressDidUpdate(to: progress, forBook: self.book)
@@ -219,13 +233,12 @@ extension NYPLAxisService {
     
     
     let baseURL = axisKeysProvider.baseURL.appendingPathComponent(isbn)
-    let dispatchGroup = DispatchGroup()
     
     let dedicatedWriteURL = fileURL
       .deletingLastPathComponent()
       .appendingPathComponent(book.identifier.sha256())
     
-    let axisItemDownloader = NYPLAxisItemDownloader(dispatchGroup: dispatchGroup)
+    let axisItemDownloader = NYPLAxisItemDownloader()
     
     let licenseService = NYPLAxisLicenseService(
       axisItemDownloader: axisItemDownloader, axisKeysProvider: axisKeysProvider,

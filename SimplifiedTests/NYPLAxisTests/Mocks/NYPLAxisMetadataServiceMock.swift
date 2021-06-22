@@ -9,10 +9,27 @@
 import Foundation
 @testable import SimplyE
 
-class NYPLAxisMetadataServiceMock: NYPLDownloadRunnerMock, NYPLAxisMetadataContentHandling {
+struct NYPLAxisMetadataServiceMock: NYPLAxisMetadataContentHandling {
   
-  func downloadContent() {
-    run()
+  enum NYPLAxisMetadataServiceMockError: Error {
+    case dummyError
   }
+  
+  let shouldSucceed: Bool
+  
+  func downloadMetadataTasks() -> [NYPLAxisTask] {
+    let t = NYPLAxisTask() { task in
+      if self.shouldSucceed {
+        task.succeeded()
+      } else {
+        task.failed(with: NYPLAxisMetadataServiceMockError.dummyError)
+      }
+    }
+    
+    return [t]
+  }
+  
+  
+  
 
 }

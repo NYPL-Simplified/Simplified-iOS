@@ -27,8 +27,7 @@ struct NYPLAxisProtectedAssetHandler: NYPLAxisProtectedAssetHandling {
   init(
     axisKeysProvider: NYPLAxisKeysProviding = NYPLAxisKeysProvider(),
     decryptor: NYPLAxisContentDecrypting,
-    licenseDownloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader(
-      dispatchGroup: DispatchGroup())) {
+    licenseDownloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader()) {
     
     self.axisKeysProvider = axisKeysProvider
     self.decryptor = decryptor
@@ -37,8 +36,7 @@ struct NYPLAxisProtectedAssetHandler: NYPLAxisProtectedAssetHandling {
   
   init?(axisKeysProvider: NYPLAxisKeysProviding = NYPLAxisKeysProvider(),
         decryptor: NYPLAxisContentDecrypting? = NYPLAxisContentDecryptor(),
-        licenseDownloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader(
-          dispatchGroup: DispatchGroup())) {
+        licenseDownloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader()) {
     
     guard let decryptor = decryptor else {
       return nil
@@ -96,22 +94,28 @@ struct NYPLAxisProtectedAssetHandler: NYPLAxisProtectedAssetHandling {
                                          isbn: isbn,
                                          parentDirectory: asset.url)
     
-    license.downloadLicense()
-    license.validateLicense()
-    
-    guard
-      let encryptedAESKey = license.encryptedContentKeyData(),
-      let decryptedAESKey = decryptor.decryptAESKey(from: encryptedAESKey)
-    else {
-      completion(.failure(.forbidden(nil)))
-      license.deleteLicenseFile()
-      return
-    }
-    
-    // We delete the license file as soon as we're done using it in order to
-    // adhere to Axis DRM guidelines
-    license.deleteLicenseFile()
-    completion(.success(decryptedAESKey))
+    let aggregator = NYPLAxisTaskAggregator()
+    let tasks = [license.makeDownloadLicenseTask(), license.makeValidateLicenseTask()]
+    aggregator
+      .addTasks(tasks)
+      .run()
+      .onCompletion { (result) in
+        switch result {
+        case .success:
+          guard
+            let encryptedAESKey = license.encryptedContentKeyData(),
+            let decryptedAESKey = decryptor.decryptAESKey(from: encryptedAESKey)
+          else {
+            license.makeDeleteLicenseTask().execute { _ in }
+            completion(.failure(.forbidden(nil)))
+            return
+          }
+          
+          completion(.success(decryptedAESKey))
+        case .failure:
+          completion(.failure(.forbidden(nil)))
+        }
+      }
   }
   
   

@@ -9,7 +9,8 @@
 import Foundation
 
 protocol NYPLAxisPackageHandling {
-  func downloadPackageContent()
+  func makeDownloadPackageContentTasks() -> [NYPLAxisTask]
+  func cancelPackageDownload(with error: NYPLAxisError)
 }
 
 /// Downloads the package file and other required files mentioned in the package file (e.g. `Fonts`,
@@ -24,6 +25,7 @@ struct NYPLAxisPackageService: NYPLAxisPackageHandling {
   private let packageEndpointProvider: NYPLAxisPackageEndpointProviding
   private let packagePathProvider: NYPLAxisPackagePathPrefixProviding
   private let parentDirectory: URL
+  private let aggregator = NYPLAxisTaskAggregator()
   
   init(axisItemDownloader: NYPLAxisItemDownloading,
        axisKeysProvider: NYPLAxisKeysProviding,
@@ -44,81 +46,87 @@ struct NYPLAxisPackageService: NYPLAxisPackageHandling {
       fullPathKey: axisKeysProvider.fullPathKey)
   }
   
-  /// Downloads the package file and other required files mentioned in the package file (e.g. `Fonts`,
-  /// `Images`, `xHTMLs` etc.) requiredfor the book.
-  func downloadPackageContent() {
-    axisItemDownloader.dispatchGroup.wait()
-    self.downloadPackageFile()
-    self.downloadContentFromPackageFile()
+  /// Creates a task for downloading the package file  and other required files mentioned in the package
+  /// file (e.g. `Fonts`, `Images`, `xHTMLs` etc.) requiredfor the book.
+  func makeDownloadPackageContentTasks() -> [NYPLAxisTask] {
+    let packageFileTask = makeDownloadPackageFileTask()
+    let packageContentTask = makeDownloadContentFromPackageFileTask()
+    return [packageFileTask, packageContentTask]
   }
   
-  /// Downloads the package file.
-  private func downloadPackageFile() {
-    axisItemDownloader.dispatchGroup.wait()
-    
-    // No need to log error here since axisItemDownloader already logs one.
-    guard axisItemDownloader.shouldContinue else {
-      return
-    }
-    
-    axisItemDownloader.dispatchGroup.enter()
-    
-    guard let endpoint = packageEndpointProvider.getPackageEndpoint()
-    else {
-      axisItemDownloader.leaveGroupAndStopDownload()
-      return
-    }
-    
-    let packageURL = baseURL.appendingPathComponent(endpoint)
-    let writeURL = parentDirectory.appendingPathComponent(endpoint)
-    axisItemDownloader.downloadItem(from: packageURL, at: writeURL)
-  }
-  
-  /// Finds links to all the requried items from the package file and downloads them.
-  private func downloadContentFromPackageFile() {
-    
-    axisItemDownloader.dispatchGroup.wait()
-    guard
-      axisItemDownloader.shouldContinue,
-      let endpoint = packageEndpointProvider.getPackageEndpoint()
-    else {
-      return
-    }
-    axisItemDownloader.dispatchGroup.enter()
-    let packageLocation = parentDirectory.appendingPathComponent(endpoint)
-    guard
-      let data = try? Data(contentsOf: packageLocation),
-      let axisXML = NYPLAxisXML(data: data)
-    else {
-      NYPLErrorLogger.logError(
-        withCode: .axisDRMFulfillmentFail,
-        summary: NYPLAxisPackageService.axisXMLGenerationFailureSummary)
-      axisItemDownloader.leaveGroupAndStopDownload()
-      return
-    }
-    axisItemDownloader.dispatchGroup.leave()
-    let hrefs = Set(axisXML.findRecursivelyInAttributes(axisKeysProvider.hrefKey))
-    let packagePathPrefix = packagePathProvider
-      .getPackagePathPrefix(packageEndpoint: endpoint)
-    
-    for href in hrefs {
-      let endpath: String
-      if let pathPrefix = packagePathPrefix {
-        endpath = "\(pathPrefix)\(href)"
-      } else {
-        endpath = href
+  /// Creates a task for downloading the package file.
+  private func makeDownloadPackageFileTask() -> NYPLAxisTask {
+    return NYPLAxisTask() { task in
+      
+      guard let endpoint = packageEndpointProvider.getPackageEndpoint()
+      else {
+        task.failed(with: .invalidContainerFile)
+        return
       }
-
-      let linkURL = baseURL
-        .appendingPathComponent(endpath)
-
-      let writeURL = self.parentDirectory
-        .appendingPathComponent(endpath)
-
-      axisItemDownloader.dispatchGroup.enter()
-      axisItemDownloader.downloadItem(from: linkURL, at: writeURL)
+      
+      let packageURL = baseURL.appendingPathComponent(endpoint)
+      let writeURL = parentDirectory.appendingPathComponent(endpoint)
+      axisItemDownloader.downloadItem(from: packageURL, at: writeURL) {
+        task.processResult($0)
+      }
     }
-    
+  }
+  
+  /// Creates a task for finding links to all the requried items from the package file and downloading them.
+  private func makeDownloadContentFromPackageFileTask() -> NYPLAxisTask {
+    return NYPLAxisTask() { task in
+      
+      guard let endpoint = packageEndpointProvider.getPackageEndpoint()
+      else {
+        task.failed(with: .invalidPackageFile)
+        return
+      }
+      
+      let packageLocation = parentDirectory.appendingPathComponent(endpoint)
+      guard
+        let data = try? Data(contentsOf: packageLocation),
+        let axisXML = NYPLAxisXML(data: data)
+      else {
+        NYPLErrorLogger.logError(
+          withCode: .axisDRMFulfillmentFail,
+          summary: NYPLAxisPackageService.axisXMLGenerationFailureSummary)
+        task.failed(with: .invalidPackageFile)
+        return
+      }
+      
+      let hrefs = Set(axisXML.findRecursivelyInAttributes(axisKeysProvider.hrefKey))
+      let packagePathPrefix = packagePathProvider
+        .getPackagePathPrefix(packageEndpoint: endpoint)
+      
+      let urls = hrefs.map { href -> URL in
+        let endpath = "\(packagePathPrefix ?? "")\(href)"
+        return baseURL.appendingPathComponent(endpath)
+      }
+      
+      axisItemDownloader.addURLsToDownloadProgress(urls)
+      
+      let subtasks = hrefs.map { href -> NYPLAxisTask in
+        let endpath = "\(packagePathPrefix ?? "")\(href)"
+        let linkURL = baseURL.appendingPathComponent(endpath)
+        let writeURL = self.parentDirectory.appendingPathComponent(endpath)
+        return NYPLAxisTask() { task in
+          axisItemDownloader.downloadItem(from: linkURL, at: writeURL) {
+            task.processResult($0)
+          }
+        }
+      }
+      
+      aggregator
+        .addTasks(subtasks)
+        .run()
+        .onCompletion { (result) in
+          task.processResult(result)
+        }
+    }
+  }
+  
+  func cancelPackageDownload(with error: NYPLAxisError) {
+    aggregator.cancelAllTasks(with: error)
   }
   
 }

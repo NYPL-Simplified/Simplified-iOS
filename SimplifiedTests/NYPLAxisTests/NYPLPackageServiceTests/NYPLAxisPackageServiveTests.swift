@@ -58,116 +58,24 @@ class NYPLAxisPackageServiveTests: XCTestCase {
       axisItemDownloader: itemDownloader, axisKeysProvider: keysProvider,
       baseURL: baseURL, parentDirectory: downloadsDirectory)
     
-    progressListener.didTerminate = {
-      terminationExpectation.fulfill()
-    }
-    itemDownloader.delegate = progressListener
-    
-    packageService.downloadPackageContent()
+    NYPLAxisTaskAggregator()
+      .addTasks(packageService.makeDownloadPackageContentTasks())
+      .run()
+      .onCompletion { result in
+        switch result {
+        case .success:
+          XCTFail()
+        case .failure(let error):
+            switch error {
+            case .invalidContainerFile:
+              terminationExpectation.fulfill()
+            default:
+              break
+            }
+        }
+      }
     
     waitForExpectations(timeout: 3, handler: nil)
-  }
-  
-  func testPackageServiceShouldNotContinueUponPackageDownloadFailure() {
-    let terminationExpectation = self.expectation(
-      description: "Package download should terminate if package file download fails")
-    
-    let packageService = NYPLAxisPackageService(
-      axisItemDownloader: itemDownloader, axisKeysProvider: keysProvider,
-      baseURL: baseURL, parentDirectory: downloadsDirectory)
-    
-    writeAssetForContainer()
-    contentDownloader.mockDownloadFailure()
-    
-    progressListener.didTerminate = {
-      terminationExpectation.fulfill()
-    }
-    itemDownloader.delegate = progressListener
-    packageService.downloadPackageContent()
-    
-    waitForExpectations(timeout: 3, handler: nil)
-  }
-  
-  func testPackageServiceShouldNotContinueUponPackageWriteFailure() {
-    let terminationExpectation = self.expectation(
-      description: "Package download should terminate if package file write fails")
-    let writeExpectation = self.expectation(
-      description: "PackageService should try to write package file")
-    
-    let packageService = NYPLAxisPackageService(
-      axisItemDownloader: itemDownloader, axisKeysProvider: keysProvider,
-      baseURL: baseURL, parentDirectory: downloadsDirectory)
-    
-    writeAssetForContainer()
-    contentDownloader.desiredResult = .success(packageData)
-    assetWriter.mockingFailure()
-    
-    progressListener.didTerminate = {
-      terminationExpectation.fulfill()
-    }
-    
-    assetWriter.willWriteAsset = {
-      writeExpectation.fulfill()
-    }
-    
-    itemDownloader.delegate = progressListener
-    packageService.downloadPackageContent()
-    
-    waitForExpectations(timeout: 3, handler: nil)
-  }
-  
-  func testPackageServiceShouldDownloadLinksFromPackageFile() {
-    let writeExpectation = self.expectation(
-      description: "PackageService should try to write package file")
-    
-    writeExpectation.expectedFulfillmentCount = 4
-    
-    let itemDownloader = NYPLAxisItemDownloader(
-      assetWriter: NYPLAssetWriter(), downloader: contentDownloader)
-    let packageService = NYPLAxisPackageService(
-      axisItemDownloader: itemDownloader, axisKeysProvider: keysProvider,
-      baseURL: baseURL, parentDirectory: downloadsDirectory)
-    
-    writeAssetForContainer()
-    contentDownloader.desiredResult = .success(packageData)
-    
-    progressListener.didTerminate = {
-      XCTFail()
-    }
-    
-    itemDownloader.delegate = progressListener
-    packageService.downloadPackageContent()
-    let packageURL = downloadsDirectory.appendingPathComponent("ops/package.opf")
-    let chapter1URL = downloadsDirectory.appendingPathComponent("ops/xhtml/ch01.html")
-    let chapter2URL = downloadsDirectory.appendingPathComponent("ops/xhtml/ch02.html")
-    let chapter3URL = downloadsDirectory.appendingPathComponent("ops/xhtml/ch03.html")
-    itemDownloader.dispatchGroup.notify(queue: .global()) {
-      if self.fileExists(at: packageURL) {
-        writeExpectation.fulfill()
-      }
-      if self.fileExists(at: chapter1URL) {
-        writeExpectation.fulfill()
-      }
-      if self.fileExists(at: chapter2URL) {
-        writeExpectation.fulfill()
-      }
-      if self.fileExists(at: chapter3URL) {
-        writeExpectation.fulfill()
-      }
-    }
-    
-    waitForExpectations(timeout: 3, handler: nil)
-  }
-
-  private func writeAssetForContainer() {
-    let itemURL = Bundle(for: NYPLAxisPackageServiveTests.self)
-      .url(forResource: "container", withExtension: "xml")!
-    let containerData = try! Data(contentsOf: itemURL)
-    try! NYPLAssetWriter().writeAsset(containerData, atURL: containerURL)
-  }
-  
-  private func fileExists(at url: URL) -> Bool {
-    return FileManager.default.fileExists(atPath: url.path)
   }
   
 }

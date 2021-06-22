@@ -9,9 +9,16 @@
 import Foundation
 @testable import SimplyE
 
-class NYPLAxisLicenseServiceMock: NYPLDownloadRunnerMock, NYPLAxisLicenseHandling {
+class NYPLAxisLicenseServiceMock: NYPLAxisLicenseHandling {
+  
+  enum NYPLAxisLicenseServiceMockError: Error {
+    case dummyError
+  }
+  
   
   let aesKeyData: Data?
+  let shouldSucceed: Bool
+  let licenseDownloadTask: NYPLAxisTask?
   
   var willDeleteLicenseFile: (() -> Void)?
   var willDownloadLicenseFile: (() -> Void)?
@@ -19,36 +26,45 @@ class NYPLAxisLicenseServiceMock: NYPLDownloadRunnerMock, NYPLAxisLicenseHandlin
   var willValidateLicense: (() -> Void)?
   var willReturnAESkeyData: (() -> Void)?
   
-  init(itemDownloader: NYPLAxisItemDownloader, shouldSucceed: Bool, aesKeyData: Data?) {
+  init(shouldSucceed: Bool, aesKeyData: Data?, downloadLicenseTask: NYPLAxisTask? = nil) {
     self.aesKeyData = aesKeyData
-    super.init(itemDownloader: itemDownloader, shouldSucceed: shouldSucceed)
+    self.shouldSucceed = shouldSucceed
+    self.licenseDownloadTask = downloadLicenseTask
   }
   
-  func deleteLicenseFile() {
-    willDeleteLicenseFile?()
-    run()
-  }
-  
-  func downloadLicense() {
+  func makeDownloadLicenseTask() -> NYPLAxisTask {
     willDownloadLicenseFile?()
-    run()
+    return licenseDownloadTask ?? dummyTask()
   }
   
-  func saveBookInfoForFetchingLicense() {
-    willSaveBookInfo?()
-    run()
-  }
-  
-  func validateLicense() {
+  func makeValidateLicenseTask() -> NYPLAxisTask {
     willValidateLicense?()
-    run()
+    return dummyTask()
+  }
+  
+  func makeSaveBookInfoTask() -> NYPLAxisTask {
+    willSaveBookInfo?()
+    return dummyTask()
+  }
+  
+  func makeDeleteLicenseTask() -> NYPLAxisTask {
+    willDeleteLicenseFile?()
+    return dummyTask()
+  }
+  
+  private func dummyTask() -> NYPLAxisTask {
+    return NYPLAxisTask() { task in
+      if self.shouldSucceed {
+        task.succeeded()
+      } else {
+        task.failed(with: NYPLAxisLicenseServiceMockError.dummyError)
+      }
+    }
   }
   
   func encryptedContentKeyData() -> Data? {
     willReturnAESkeyData?()
-    run()
     return nil
   }
-  
   
 }

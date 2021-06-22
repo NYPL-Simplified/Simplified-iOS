@@ -28,6 +28,7 @@
 
 #if defined(AXIS)
 @interface NYPLMyBooksDownloadCenter () <NYPLBookDownloadBroadcasting>
+@property (nonatomic) NSMutableDictionary<NSString *, NYPLAxisService *> *bookIdentifierToAxisService;
 @end
 #endif
 
@@ -85,6 +86,10 @@
   
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
+  
+#if defined(AXIS)
+  self.bookIdentifierToAxisService = [NSMutableDictionary dictionary];
+#endif
   
   self.bookIdentifierToDownloadInfo = [NSMutableDictionary dictionary];
   self.bookIdentifierToDownloadProgress = [NSMutableDictionary dictionary];
@@ -364,6 +369,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                                         deviceInfoProviding:deviceInfoProvider
                                         forBook:book];
         
+        [self.bookIdentifierToAxisService setValue:axisService forKey:book.identifier];
         [axisService fulfillAxisLicenseWithDownloadTask:downloadTask];
 #endif
         break;
@@ -861,6 +867,10 @@ didCompleteWithError:(NSError *)error
    readiumBookmarks:nil
    genericBookmarks:nil];
   
+#if defined(AXIS)
+  [self.bookIdentifierToAxisService removeObjectForKey:book.identifier];
+#endif
+  
   dispatch_async(dispatch_get_main_queue(), ^{
     NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
     UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed" message:formattedMessage];
@@ -1225,6 +1235,13 @@ didCompleteWithError:(NSError *)error
       }
     #endif
     
+#if defined(AXIS)
+    NYPLAxisService *axisService = [self.bookIdentifierToAxisService
+                                    objectForKey:identifier];
+    [axisService downloadCancelledByUser];
+    [self.bookIdentifierToAxisService removeObjectForKey:identifier];
+#endif
+    
     [info.downloadTask
      cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
        [[NYPLBookRegistry sharedRegistry]
@@ -1391,6 +1408,9 @@ didCompleteWithError:(NSError *)error
                           @"sourceFileURL": sourceLocation ?: @"N/A",
                         }];
   }
+#if defined(AXIS)
+  [self.bookIdentifierToAxisService removeObjectForKey:book.identifier];
+#endif
   
   return success;
 }
