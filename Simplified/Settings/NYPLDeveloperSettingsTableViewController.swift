@@ -4,7 +4,7 @@ import Foundation
 /// can then log in and adjust settings after selecting Accounts.
 @objcMembers class NYPLDeveloperSettingsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   weak var tableView: UITableView!
-  
+
   required init() {
     super.init(nibName: nil, bundle: nil)
   }
@@ -30,10 +30,6 @@ import Foundation
     NYPLSettings.shared.useBetaLibraries = sender.isOn
   }
 
-  func r2SwitchDidChange(sender: UISwitch!) {
-    NYPLSettings.shared.useR2 = sender.isOn
-  }
-
   // MARK:- UIViewController
   
   override func loadView() {
@@ -53,13 +49,12 @@ import Foundation
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
-    return 3
+    return 2
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch indexPath.section {
     case 0: return cellForBetaLibraries()
-    case 1: return cellForR2Toggle()
     default: return cellForClearCache()
     }
   }
@@ -68,8 +63,6 @@ import Foundation
     switch section {
     case 0:
       return "Library Settings"
-    case 1:
-      return "eReader Settings"
     default:
       return "Data Management"
     }
@@ -86,19 +79,6 @@ import Foundation
     return cell
   }
 
-  private func cellForR2Toggle() -> UITableViewCell {
-    let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "R2ToggleCell")
-    cell.selectionStyle = .none
-    cell.textLabel?.text = "Enable Readium 2"
-    let r2Switch = UISwitch()
-    r2Switch.setOn(NYPLSettings.shared.useR2, animated: false)
-    r2Switch.addTarget(self,
-                       action:#selector(r2SwitchDidChange),
-                       for:.valueChanged)
-    cell.accessoryView = r2Switch
-    return cell
-  }
-  
   private func cellForClearCache() -> UITableViewCell {
     let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "clearCacheCell")
     cell.selectionStyle = .none
@@ -111,7 +91,7 @@ import Foundation
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     self.tableView.deselectRow(at: indexPath, animated: true)
     
-    if indexPath.section == 2 {
+    if indexPath.section == numberOfSections(in: tableView) - 1 {
       AccountsManager.shared.clearCache()
       let alert = NYPLAlertUtils.alert(title: "Data Management", message: "Cache Cleared")
       self.present(alert, animated: true, completion: nil)

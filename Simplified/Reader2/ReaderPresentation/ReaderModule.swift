@@ -17,7 +17,7 @@ import R2Shared
 
 /// Base module delegate, that sub-modules' delegate can extend.
 /// Provides basic shared functionalities.
-protocol ModuleDelegate: AnyObject {
+protocol R2ModuleDelegate: AnyObject {
   func presentAlert(_ title: String, message: String, from viewController: UIViewController)
   func presentError(_ error: Error?, from viewController: UIViewController)
 }
@@ -28,16 +28,19 @@ protocol ModuleDelegate: AnyObject {
 /// of a publication.
 protocol ReaderModuleAPI {
   
-  var delegate: ModuleDelegate? { get }
+  var delegate: R2ModuleDelegate? { get }
   
   /// Presents the given publication to the user, inside the given navigation controller.
   /// - Parameter publication: The R2 publication to display.
   /// - Parameter book: Our internal book model related to the `publication`.
+  /// - Parameter deviceID: This is used to understand if we're resuming
+  /// reading on the same device as the previous time.
   /// - Parameter navigationController: The navigation stack the book will be presented in.
-  /// - Parameter completion: Called once the publication is presented, or if an error occured.
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
-                          in navigationController: UINavigationController)
+                          deviceID: String?,
+                          in navigationController: UINavigationController,
+                          successCompletion: (() -> Void)?)
   
 }
 
@@ -49,20 +52,18 @@ protocol ReaderModuleAPI {
 /// publication format (e.g. EPUB, PDF, etc).
 final class ReaderModule: ReaderModuleAPI {
   
-  weak var delegate: ModuleDelegate?
+  weak var delegate: R2ModuleDelegate?
   private let resourcesServer: ResourcesServer
-  private let bookRegistry: NYPLBookRegistryProvider
   private let progressSynchronizer: NYPLLastReadPositionSynchronizer
 
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
 
-  init(delegate: ModuleDelegate?,
+  init(delegate: R2ModuleDelegate?,
        resourcesServer: ResourcesServer,
        bookRegistry: NYPLBookRegistryProvider) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
-    self.bookRegistry = bookRegistry
     self.progressSynchronizer = NYPLLastReadPositionSynchronizer(bookRegistry: bookRegistry)
 
     formatModules = [
@@ -72,7 +73,9 @@ final class ReaderModule: ReaderModuleAPI {
   
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
-                          in navigationController: UINavigationController) {
+                          deviceID: String?,
+                          in navigationController: UINavigationController,
+                          successCompletion: (() -> Void)?) {
     if delegate == nil {
       NYPLErrorLogger.logError(nil, summary: "ReaderModule delegate is not set")
     }
@@ -82,27 +85,25 @@ final class ReaderModule: ReaderModuleAPI {
       return
     }
 
-    // TODO: SIMPLY-2656 remove implicit dependency (NYPLUserAccount.shared)
-    let drmDeviceID = NYPLUserAccount.sharedAccount().deviceID
     progressSynchronizer.sync(for: publication,
                               book: book,
-                              drmDeviceID: drmDeviceID) { [weak self] in
-
+                              drmDeviceID: deviceID) { [weak self] initialLocator in
                                 self?.finalizePresentation(for: publication,
                                                            book: book,
                                                            formatModule: formatModule,
-                                                           in: navigationController)
+                                                           positioningAt: initialLocator,
+                                                           in: navigationController,
+                                                           successCompletion: successCompletion)
     }
   }
 
-  func finalizePresentation(for publication: Publication,
-                            book: NYPLBook,
-                            formatModule: ReaderFormatModule,
-                            in navigationController: UINavigationController) {
+  private func finalizePresentation(for publication: Publication,
+                                    book: NYPLBook,
+                                    formatModule: ReaderFormatModule,
+                                    positioningAt initialLocator: Locator?,
+                                    in navigationController: UINavigationController,
+                                    successCompletion: (() -> Void)?) {
     do {
-      let lastSavedLocation = bookRegistry.location(forIdentifier: book.identifier)
-      let initialLocator = lastSavedLocation?.convertToLocator()
-
       let readerVC = try formatModule.makeReaderViewController(
         for: publication,
         book: book,
@@ -114,6 +115,7 @@ final class ReaderModule: ReaderModuleAPI {
       readerVC.hidesBottomBarWhenPushed = true
       navigationController.pushViewController(readerVC, animated: true)
 
+      successCompletion?()
     } catch {
       delegate?.presentError(error, from: navigationController)
     }

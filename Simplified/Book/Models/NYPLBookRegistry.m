@@ -461,7 +461,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 - (void)updateAndRemoveBook:(NYPLBook *)book
 {
   if(!book) {
-    @throw NSInvalidArgumentException;
+    return;
   }
   
   @synchronized(self) {
@@ -584,11 +584,11 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     
     NSArray<NYPLReadiumBookmark *> *sortedArray = [record.readiumBookmarks sortedArrayUsingComparator:^NSComparisonResult(NYPLReadiumBookmark *obj1, NYPLReadiumBookmark *obj2) {
-      if (obj1.progressWithinBook > obj2.progressWithinBook)
-        return NSOrderedDescending;
-      else if (obj1.progressWithinBook < obj2.progressWithinBook)
+      if ([obj1 lessThan:obj2]) {
         return NSOrderedAscending;
-      return NSOrderedSame;
+      } else {
+        return NSOrderedDescending;
+      }
     }];
       
     return sortedArray ?: [NSArray array];

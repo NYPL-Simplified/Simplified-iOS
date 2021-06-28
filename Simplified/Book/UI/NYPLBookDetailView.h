@@ -1,3 +1,4 @@
+#import "NYPLBookButtonsView.h"
 
 @class NYPLBook;
 @class NYPLBookDetailView;
@@ -7,7 +8,7 @@
 typedef NS_ENUM(NSInteger, NYPLBookState);
 @protocol NYPLCatalogLaneCellDelegate;
 
-@protocol NYPLBookDetailViewDelegate
+@protocol NYPLBookDetailViewDelegate <NYPLBookButtonsDelegate>
 
 - (void)didSelectCancelDownloadFailedForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCancelDownloadingForBookDetailView:(NYPLBookDetailView *)detailView;
@@ -40,7 +41,7 @@ static CGFloat const SummaryTextAbbreviatedHeight = 150.0;
 // designated initializer
 // |book| must not be nil.
 - (instancetype)initWithBook:(NYPLBook *const)book
-                    delegate:(id)delegate;
+                    delegate:(id<NYPLBookDetailViewDelegate, NYPLCatalogLaneCellDelegate>)delegate;
 - (void)updateFonts;
 
 @end

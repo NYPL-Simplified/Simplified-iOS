@@ -13,10 +13,9 @@ import R2Shared
 /// a given book.
 class NYPLLastReadPositionPoster {
   /// Interval used to throttle request submission.
-  static let throttlingInterval = 30.0
+  static let throttlingInterval = 5.0
 
   // models
-  private let publication: Publication
   private let book: NYPLBook
 
   // external dependencies
@@ -28,10 +27,8 @@ class NYPLLastReadPositionPoster {
   private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).lastReadPositionPoster", target: .global(qos: .utility))
 
   init(book: NYPLBook,
-       r2Publication: Publication,
        bookRegistryProvider: NYPLBookRegistryProvider) {
     self.book = book
-    self.publication = r2Publication
     self.bookRegistryProvider = bookRegistryProvider
     self.lastReadPositionUploadDate = Date()
       .addingTimeInterval(-NYPLLastReadPositionPoster.throttlingInterval)
@@ -52,12 +49,19 @@ class NYPLLastReadPositionPoster {
       return
     }
 
-    // TODO: SIMPLY-3645 don't use old school location
-    guard let location = NYPLBookLocation(locator: locator, publication: publication) else {
+    guard let chapterProgress = locator.locations.progression else {
+      return
+    }
+
+    guard let location = NYPLBookLocation(locator: locator) else {
       return
     }
     bookRegistryProvider.setLocation(location, forIdentifier: book.identifier)
-    postReadPosition(selectorValue: location.locationString)
+
+    let selectorValue = NYPLBookmarkFactory
+      .makeLocatorString(chapterHref: locator.href,
+                         chapterProgression: Float(chapterProgress))
+    postReadPosition(selectorValue: selectorValue)
   }
 
   /// Deprecated

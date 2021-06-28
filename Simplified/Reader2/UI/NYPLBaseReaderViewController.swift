@@ -20,8 +20,10 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   private static let bookmarkOnImageName = "BookmarkOn"
   private static let bookmarkOffImageName = "BookmarkOff"
 
-  // TODO: SIMPLY-2656 See if we still need this.
-  weak var moduleDelegate: ModuleDelegate?
+  /// Padding with the view containing the reader
+  private static let padding: CGFloat = 20
+
+  weak var moduleDelegate: R2ModuleDelegate?
 
   // Models and business logic references
   let publication: Publication
@@ -52,7 +54,6 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 
     lastReadPositionPoster = NYPLLastReadPositionPoster(
       book: book,
-      r2Publication: publication,
       bookRegistryProvider: NYPLBookRegistry.shared())
 
     bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(
@@ -112,10 +113,16 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
     positionLabel.translatesAutoresizingMaskIntoConstraints = false
     positionLabel.font = .systemFont(ofSize: 12)
     positionLabel.textColor = .darkGray
+    positionLabel.textAlignment = .center
+    positionLabel.lineBreakMode = .byTruncatingTail
     view.addSubview(positionLabel)
     NSLayoutConstraint.activate([
-      positionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      positionLabel.bottomAnchor.constraint(equalTo: navigator.view.bottomAnchor, constant: -20)
+      positionLabel.bottomAnchor.constraint(equalTo: navigator.view.bottomAnchor,
+                                            constant: -NYPLBaseReaderViewController.padding),
+      positionLabel.leftAnchor.constraint(equalTo: view.leftAnchor,
+                                          constant: NYPLBaseReaderViewController.padding),
+      positionLabel.rightAnchor.constraint(equalTo: view.rightAnchor,
+                                           constant: -NYPLBaseReaderViewController.padding)
     ])
   }
 
@@ -227,7 +234,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       return
     }
 
-    if let bookmark = bookmarksBusinessLogic.isBookmarkExisting(at: loc) {
+    if let bookmark = bookmarksBusinessLogic.bookmarkExisting(at: loc) {
       deleteBookmark(bookmark)
     } else {
       addBookmark(at: loc)
@@ -261,7 +268,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
     // in which case the bookmark icon will be lit up and should stay lit up.
     if
       let loc = bookmarksBusinessLogic.currentLocation(in: navigator),
-      bookmarksBusinessLogic.isBookmarkExisting(at: loc) == nil {
+      bookmarksBusinessLogic.bookmarkExisting(at: loc) == nil {
 
       updateBookmarkButton(withState: false)
     }
@@ -352,7 +359,7 @@ extension NYPLBaseReaderViewController: NavigatorDelegate {
     }()
     
     if let resourceIndex = publication.resourceIndex(forLocator: locator),
-      let _ = bookmarksBusinessLogic.isBookmarkExisting(at: NYPLBookmarkR2Location(resourceIndex: resourceIndex, locator: locator)) {
+      let _ = bookmarksBusinessLogic.bookmarkExisting(at: NYPLBookmarkR2Location(resourceIndex: resourceIndex, locator: locator)) {
       updateBookmarkButton(withState: true)
     } else {
       updateBookmarkButton(withState: false)
@@ -421,8 +428,7 @@ extension NYPLBaseReaderViewController: NYPLReaderPositionsDelegate {
       navigationController?.popViewController(animated: true)
     }
 
-    let r2bookmark = bookmark.convertToR2(from: publication)
-    if let locator = r2bookmark?.locator {
+    if let locator = bookmark.locator(forPublication: publication) {
       navigator.go(to: locator)
     }
   }

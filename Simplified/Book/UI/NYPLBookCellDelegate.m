@@ -12,7 +12,6 @@
 #import "NYPLBookLocation.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
 
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
@@ -30,7 +29,7 @@
 
 @property (nonatomic) NSTimer *timer;
 @property (nonatomic) NYPLBook *book;
-@property (nonatomic) id<AudiobookManager> manager;
+@property DefaultAudiobookManager *manager;
 @property (nonatomic, weak) AudiobookPlayerViewController *audiobookViewController;
 @property (strong) NSLock *refreshAudiobookLock;
 
@@ -79,8 +78,8 @@
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
 }
 
-- (void)didSelectReadForBook:(NYPLBook *)book
-{ 
+- (void)didSelectReadForBook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
+{
 #if defined(FEATURE_DRM_CONNECTOR)
   // Try to prevent blank books bug
 
@@ -97,24 +96,24 @@
                  usingExistingCredentials:YES
                  authenticationCompletion:^{
       dispatch_async(dispatch_get_main_queue(), ^{
-        [self openBook:book];   // with successful DRM activation
+        [self openBook:book successCompletion:successCompletion]; // with successful DRM activation
       });
     }];
   } else {
-    [self openBook:book];
+    [self openBook:book successCompletion:successCompletion];
   }
 #else
-  [self openBook:book];
+  [self openBook:book successCompletion:successCompletion];
 #endif
 }
 
-- (void)openBook:(NYPLBook *)book
+- (void)openBook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
 
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB:
-      [self openEPUB:book];
+      [self openEPUB:book successCompletion:successCompletion];
       break;
     case NYPLBookContentTypePDF:
       [self openPDF:book];
@@ -128,23 +127,20 @@
   }
 }
 
-- (void)openEPUB:(NYPLBook *)book
+- (void)openEPUB:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
 {
-  if (NYPLSettings.shared.useR2) {
-    // R2
-    [[NYPLRootTabBarController sharedController] presentBook:book];
+  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                      fileURLForBookIndentifier:book.identifier];
+  [[NYPLRootTabBarController sharedController] presentBook:book
+                                               fromFileURL:url
+                                         successCompletion:successCompletion];
 
-    [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
-      if (enableSync == YES) {
-        Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-        currentAccount.details.syncPermissionGranted = enableSync;
-      }
-    }];
-  } else {
-    // R1
-    NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
-    [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
-  }
+  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
+    if (enableSync == YES) {
+      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+      currentAccount.details.syncPermissionGranted = enableSync;
+    }
+  }];
 }
 
 - (void)openPDF:(NYPLBook *)book {
@@ -238,9 +234,9 @@
       AudiobookMetadata *const metadata = [[AudiobookMetadata alloc]
                                            initWithTitle:book.title
                                            authors:@[book.authors]];
-      id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
-                                            initWithMetadata:metadata
-                                            audiobook:audiobook];
+      DefaultAudiobookManager *const manager = [[DefaultAudiobookManager alloc]
+                                                initWithMetadata:metadata
+                                                audiobook:audiobook];
       manager.refreshDelegate = self;
 
       AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
@@ -320,8 +316,9 @@
   }];
 }
 
+// non-thread safe: must be called on the same thread each time.
 - (void)scheduleTimerForAudiobook:(NYPLBook *)book
-                          manager:(id<AudiobookManager>)manager
+                          manager:(DefaultAudiobookManager *)manager
                    viewController:(AudiobookPlayerViewController *)viewController
 {
   self.audiobookViewController = viewController;
@@ -330,12 +327,14 @@
   // Target-Selector method required for iOS <10.0
   self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                                 target:self
-                                              selector:@selector(pollAudiobookReadingLocation)
+                                              selector:@selector(pollAudiobookReadingLocation:)
                                               userInfo:nil
                                                repeats:YES];
 }
 
-- (void)pollAudiobookReadingLocation
+// non-thread safe: must be called on the same thread as
+// scheduleTimerForAudiobook:manager:viewController: each time.
+- (void)pollAudiobookReadingLocation:(NSTimer *)timer
 {
   if (!self.audiobookViewController) {
     [self.timer invalidate];
@@ -439,11 +438,9 @@
 
     [odAudiobook updateManifestWithJSON:dict];
 
-    DefaultAudiobookManager *audiobookManager = (DefaultAudiobookManager *)_manager;
-    [audiobookManager updateAudiobookWith:odAudiobook.spine];
+    [self.manager updateAudiobookWith:odAudiobook.spine];
       
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-      
     [self.refreshAudiobookLock unlock];
   }
 }

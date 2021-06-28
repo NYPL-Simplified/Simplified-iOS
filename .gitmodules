@@ -1,18 +1,12 @@
 [submodule "readium-sdk"]
 	path = readium-sdk
 	url = https://github.com/NYPL-Simplified/readium-sdk.git
-[submodule "readium-shared-js"]
-	path = readium-shared-js
-	url = https://github.com/readium/readium-shared-js.git
 [submodule "tenprintcover-ios"]
 	path = tenprintcover-ios
 	url = https://github.com/NYPL/tenprintcover-ios.git
 [submodule "adept-ios"]
 	path = adept-ios
 	url = git@github.com:NYPL/DRM-iOS-Adobe.git
-[submodule "adobe-content-filter"]
-	path = adobe-content-filter
-	url = git@github.com:NYPL/Adobe-Content-Filter.git
 [submodule "Simplified-Bookmarks-Spec"]
 	path = Simplified-Bookmarks-Spec
 	url = https://github.com/NYPL-Simplified/Simplified-Bookmarks-Spec.git

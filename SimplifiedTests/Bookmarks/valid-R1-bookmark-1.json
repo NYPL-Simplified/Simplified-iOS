@@ -1,0 +1,19 @@
+{
+  "body": {
+    "http://librarysimplified.org/terms/progressWithinBook": 0.6000000238418579,
+    "http://librarysimplified.org/terms/progressWithinChapter": 0.7471264600753784,
+    "http://librarysimplified.org/terms/device": "urn:uuid:680f188b-b7bd-4b19-8379-f1dfeb491da8",
+    "http://librarysimplified.org/terms/time": "2021-03-31T23:59:20Z",
+    "http://librarysimplified.org/terms/chapter": "Current Chapter"
+  },
+  "motivation": "http://www.w3.org/ns/oa#bookmarking",
+  "type": "Annotation",
+  "id": "https://circulation.librarysimplified.org/NYNYPL/annotations/3173101",
+  "target": {
+    "selector": {
+      "type": "FragmentSelector",
+      "value": "{\"idref\":\"c001\",\"contentCFI\":\"/4/4/526/1:276\"}"
+    },
+    "source": "urn:librarysimplified.org/terms/id/Overdrive%20ID/365e31df-d292-44d6-98b6-20acd2542a28"
+  }
+}
