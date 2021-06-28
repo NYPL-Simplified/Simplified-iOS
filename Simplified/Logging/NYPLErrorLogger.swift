@@ -106,6 +106,8 @@ fileprivate let nullString = "null"
   case adobeDRMFulfillmentFail = 1001
   case lcpDRMFulfillmentFail = 1002
   case lcpPassphraseAuthorizationFail = 1003
+  case axisDRMFulfillmentFail = 1004
+  case axisCryptographyFail = 1005
 
   // wrong content
   case unknownRightsManagement = 1100

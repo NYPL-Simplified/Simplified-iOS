@@ -15,7 +15,7 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.over
 NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/json";
 NSString * const _Nonnull ContentTypeReadiumLCP = @"application/vnd.readium.lcp.license.v1.0+json";
 NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip";
-
+NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplified.axisnow+json";
 @interface NYPLOPDSAcquisitionPath ()
 
 @property (nonatomic) NYPLOPDSAcquisitionRelation relation;
@@ -56,7 +56,8 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
       ContentTypeOverdriveAudiobook,
       ContentTypeOctetStream,
       ContentTypeReadiumLCP,
-      ContentTypeAudiobookZip
+      ContentTypeAudiobookZip,
+      ContentTypeAxis360
     ]];
   }
 
@@ -87,7 +88,8 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
         ContentTypeOverdriveAudiobook,
         ContentTypeOctetStream,
         ContentTypeReadiumLCP,
-        ContentTypeAudiobookZip
+        ContentTypeAudiobookZip,
+        ContentTypeAxis360
       ]],
       ContentTypeReadiumLCP: [NSSet setWithArray:@[
         ContentTypeEpubZip,

@@ -132,6 +132,10 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
+    } else if ([downloadTask.response.MIMEType isEqualToString:ContentTypeAxis360]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementAxis];
     } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeReadiumLCP]) {
         self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
@@ -339,6 +343,10 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                                      forDownloadTask:downloadTask];
         break;
       }
+      case NYPLMyBooksDownloadRightsManagementAxis: {
+        break;
+      }
+        
     }
   }
   
@@ -534,6 +542,17 @@ didCompleteWithError:(NSError *)error
     case NYPLBookContentTypePDF: {
       NSError *error = nil;
       if (![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]) {
+        NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
+      }
+      break;
+    }
+    case NYPLBookContentTypeAxis: {
+      NSError *error = nil;
+      /// We're deleting path extension because with AXIS books, we don't get an epub file. Instead, we
+      /// get a file with book_vault_id and isbn key. From that file, we download all the files associated
+      /// with the book (xhtml, jpg, xml etc).
+      bookURL = bookURL.URLByDeletingPathExtension;
+      if(![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]) {
         NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
       }
       break;
