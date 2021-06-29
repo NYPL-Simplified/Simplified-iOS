@@ -9,6 +9,8 @@ NYPLBookContentType NYPLBookContentTypeFromMIMEType(NSString *const string)
     return NYPLBookContentTypeEPUB;
   } else if ([string isEqualToString:ContentTypeOpenAccessPDF]) {
     return NYPLBookContentTypePDF;
+  } else if ([string isEqualToString:ContentTypeAxis360]) {
+    return NYPLBookContentTypeAxis;
   }
   return NYPLBookContentTypeUnsupported;
 }
