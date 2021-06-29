@@ -7,24 +7,20 @@
 //
 
 import Foundation
+import NYPLAxis
 
 #if AXIS
 @objcMembers
 class NYPLAxisDRMAuthorizer: NSObject, NYPLDRMAuthorizing {
   
-  static let deviceIDKey = "NYPLAxisDRMAuthorizerKey"
+  private let deviceInfoProvider: NYPLDeviceInfoProviding
   
-  static let sharedInstance = NYPLAxisDRMAuthorizer()
+  @objc static let sharedInstance = NYPLAxisDRMAuthorizer(
+    deviceInfoProvider: NYPLDeviceInfoProvider())
   
-  static var deviceID: String {
-    if
-      let id = UserDefaults.standard.string(forKey: NYPLAxisDRMAuthorizer.deviceIDKey) {
-      return id
-    }
-    
-    let id = UUID().uuidString
-    UserDefaults.standard.set(id, forKey: NYPLAxisDRMAuthorizer.deviceIDKey)
-    return id
+  @objc
+  init(deviceInfoProvider: NYPLDeviceInfoProviding) {
+    self.deviceInfoProvider = deviceInfoProvider
   }
   
   /// Not applicable for Axis
@@ -44,7 +40,7 @@ class NYPLAxisDRMAuthorizer: NSObject, NYPLDRMAuthorizing {
                  password: String!,
                  completion: ((Bool, Error?, String?, String?) -> Void)!) {
     
-    completion(true, nil, NYPLAxisDRMAuthorizer.deviceID, username)
+    completion(true, nil, deviceInfoProvider.deviceID, username)
   }
   
   /// There is no mechanism for deauthorizing the user in Axis. Returning succeeding completion.
@@ -56,6 +52,6 @@ class NYPLAxisDRMAuthorizer: NSObject, NYPLDRMAuthorizing {
     
     completion(true, nil)
   }
-
+  
 }
 #endif

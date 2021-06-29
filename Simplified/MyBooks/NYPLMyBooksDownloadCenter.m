@@ -26,6 +26,12 @@
 #import <ReadiumLCP/ReadiumLCP-Swift.h>
 #endif
 
+#if defined(AXIS)
+@interface NYPLMyBooksDownloadCenter () <NYPLBookDownloadBroadcasting>
+@property (nonatomic) NSMutableDictionary<NSString *, NYPLAxisBookDownloadAdapter *> *bookIdentifierToAxisAdapter;
+@end
+#endif
+
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
@@ -80,6 +86,10 @@
   
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
+  
+#if defined(AXIS)
+  self.bookIdentifierToAxisAdapter = [NSMutableDictionary dictionary];
+#endif
   
   self.bookIdentifierToDownloadInfo = [NSMutableDictionary dictionary];
   self.bookIdentifierToDownloadProgress = [NSMutableDictionary dictionary];
@@ -344,6 +354,17 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
         break;
       }
       case NYPLMyBooksDownloadRightsManagementAxis: {
+#if defined(AXIS)
+        
+        NYPLAxisBookDownloadAdapter *adapter = [[NYPLAxisBookDownloadAdapter alloc]
+                                                initWithDownloadTask:downloadTask
+                                                book:book
+                                                downloadBroadcaster:self
+                                                fileURL:tmpSavedFileURL];
+        
+        [self.bookIdentifierToAxisAdapter setValue:adapter forKey:book.identifier];
+        [adapter downloadBook];
+#endif
         break;
       }
         
@@ -839,6 +860,10 @@ didCompleteWithError:(NSError *)error
    readiumBookmarks:nil
    genericBookmarks:nil];
   
+#if defined(AXIS)
+  [self.bookIdentifierToAxisAdapter removeObjectForKey:book.identifier];
+#endif
+  
   dispatch_async(dispatch_get_main_queue(), ^{
     NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
     UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed" message:formattedMessage];
@@ -1203,6 +1228,13 @@ didCompleteWithError:(NSError *)error
       }
     #endif
     
+#if defined(AXIS)
+    NYPLAxisBookDownloadAdapter *adapter = [self.bookIdentifierToAxisAdapter
+                                    objectForKey:identifier];
+    [adapter downloadCancelledByUser];
+    [self.bookIdentifierToAxisAdapter removeObjectForKey:identifier];
+#endif
+    
     [info.downloadTask
      cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
        [[NYPLBookRegistry sharedRegistry]
@@ -1367,7 +1399,10 @@ didCompleteWithError:(NSError *)error
                           @"sourceFileURL": sourceLocation ?: @"N/A",
                         }];
   }
-
+#if defined(AXIS)
+  [self.bookIdentifierToAxisAdapter removeObjectForKey:book.identifier];
+#endif
+  
   return success;
 }
 
@@ -1558,5 +1593,16 @@ didFinishDownload:(BOOL)didFinishDownload
   }];
   #endif
 }
+
+#if defined(AXIS)
+- (void)downloadProgressDidUpdateTo:(double)progress forBook:(NYPLBook * _Nonnull)book {
+  self.bookIdentifierToDownloadInfo[book.identifier] =
+  [[self downloadInfoForBookIdentifier:book.identifier]
+   withDownloadProgress:progress];
+
+  [self broadcastUpdate];
+}
+#endif
+
 
 @end
