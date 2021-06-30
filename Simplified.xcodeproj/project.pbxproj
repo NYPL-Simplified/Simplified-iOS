@@ -226,6 +226,8 @@
 		5941F660268CCC1600F69F0B /* NYPLFullAxisNowResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5941F65A268CCC1600F69F0B /* NYPLFullAxisNowResource.swift */; };
 		5941F661268CCC1600F69F0B /* NYPLAxisLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5941F65B268CCC1600F69F0B /* NYPLAxisLibraryService.swift */; };
 		5941F662268CCC1600F69F0B /* NYPLAxisContentDecryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5941F65C268CCC1600F69F0B /* NYPLAxisContentDecryptor.swift */; };
+		5941F690268D1B2000F69F0B /* NYPLAxisXMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5941F687268D1B2000F69F0B /* NYPLAxisXMLTests.swift */; };
+		5941F691268D1B2000F69F0B /* DummyCatalog.xml in Resources */ = {isa = PBXBuildFile; fileRef = 5941F688268D1B2000F69F0B /* DummyCatalog.xml */; };
 		597E2723268B537E00A3CD23 /* NYPLAxisXMLRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597E270F268B537D00A3CD23 /* NYPLAxisXMLRepresentation.swift */; };
 		597E2724268B537E00A3CD23 /* NYPLAxisXMLCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597E2710268B537D00A3CD23 /* NYPLAxisXMLCreator.swift */; };
 		597E2725268B537E00A3CD23 /* NYPLAxisErrorLogsAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597E2711268B537D00A3CD23 /* NYPLAxisErrorLogsAdapter.swift */; };
@@ -1806,6 +1808,8 @@
 		5941F65A268CCC1600F69F0B /* NYPLFullAxisNowResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLFullAxisNowResource.swift; sourceTree = "<group>"; };
 		5941F65B268CCC1600F69F0B /* NYPLAxisLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisLibraryService.swift; sourceTree = "<group>"; };
 		5941F65C268CCC1600F69F0B /* NYPLAxisContentDecryptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisContentDecryptor.swift; sourceTree = "<group>"; };
+		5941F687268D1B2000F69F0B /* NYPLAxisXMLTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisXMLTests.swift; sourceTree = "<group>"; };
+		5941F688268D1B2000F69F0B /* DummyCatalog.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = DummyCatalog.xml; sourceTree = "<group>"; };
 		597E270F268B537D00A3CD23 /* NYPLAxisXMLRepresentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisXMLRepresentation.swift; sourceTree = "<group>"; };
 		597E2710268B537D00A3CD23 /* NYPLAxisXMLCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisXMLCreator.swift; sourceTree = "<group>"; };
 		597E2711268B537D00A3CD23 /* NYPLAxisErrorLogsAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisErrorLogsAdapter.swift; sourceTree = "<group>"; };
@@ -2505,6 +2509,23 @@
 				5941F65C268CCC1600F69F0B /* NYPLAxisContentDecryptor.swift */,
 			);
 			path = Axis;
+			sourceTree = "<group>";
+		};
+		5941F685268D1B2000F69F0B /* NYPLAxisTests */ = {
+			isa = PBXGroup;
+			children = (
+				5941F686268D1B2000F69F0B /* NYPLAxisXMLTests */,
+			);
+			path = NYPLAxisTests;
+			sourceTree = "<group>";
+		};
+		5941F686268D1B2000F69F0B /* NYPLAxisXMLTests */ = {
+			isa = PBXGroup;
+			children = (
+				5941F687268D1B2000F69F0B /* NYPLAxisXMLTests.swift */,
+				5941F688268D1B2000F69F0B /* DummyCatalog.xml */,
+			);
+			path = NYPLAxisXMLTests;
 			sourceTree = "<group>";
 		};
 		597E270E268B537D00A3CD23 /* Utilities */ = {
@@ -3540,6 +3561,7 @@
 				735350B624918432006021BD /* URLRequest+NYPLTests.swift */,
 				17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */,
 				17BE24D625F85D2300AE707F /* NYPLAgeCheckTests.swift */,
+				5941F685268D1B2000F69F0B /* NYPLAxisTests */,
 			);
 			path = SimplifiedTests;
 			sourceTree = "<group>";
@@ -3888,6 +3910,7 @@
 				7320AB3E251EBC9900E3F04D /* acl_authentication_document.json in Resources */,
 				7320AB3F251EBC9900E3F04D /* jwk_public in Resources */,
 				730EF24826093E40008E1DC3 /* invalid-bookmark-2.json in Resources */,
+				5941F691268D1B2000F69F0B /* DummyCatalog.xml in Resources */,
 				7320AB40251EBC9900E3F04D /* dpl_authentication_document.json in Resources */,
 				73418F2C2616AAF000583569 /* valid-bookmark-3.json in Resources */,
 				7320AB41251EBC9900E3F04D /* UpdateCheckUnknown.json in Resources */,
@@ -4237,6 +4260,7 @@
 				7320AB51251EC07300E3F04D /* NYPLOPDSAcquisitionPathTests.swift in Sources */,
 				735DD0D12522A0730096D1F9 /* URLRequest+NYPLTests.swift in Sources */,
 				735771AC2537650E00067CEA /* NYPLLibraryAccountsProviderMock.swift in Sources */,
+				5941F690268D1B2000F69F0B /* NYPLAxisXMLTests.swift in Sources */,
 				17ADCF54254BBA4E00D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */,
 				735DD0AE2522935B0096D1F9 /* NYPLCachingTests.swift in Sources */,
 				7320AB30251EBC9900E3F04D /* NYPLJWKConversionTest.swift in Sources */,
