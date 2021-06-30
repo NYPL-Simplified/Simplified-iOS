@@ -85,6 +85,16 @@
                ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5938EE7C268390F100434468"
+               BuildableName = "NYPLAxisTests.xctest"
+               BlueprintName = "NYPLAxisTests"
+               ReferencedContainer = "container:Axis-iOS/NYPLAxis.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

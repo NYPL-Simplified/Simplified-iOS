@@ -31,6 +31,13 @@ else
 fi
 
 if [ "$1" != "--no-private" ]; then
+  echo NYPLAxis here we come
+  ./scripts/buildNYPLAxis.sh
+else
+  echo no NYPLAxis here
+fi
+
+if [ "$1" != "--no-private" ]; then
   if [ "$BUILD_CONTEXT" == "ci" ]; then
     # in a CI context we cannot have siblings repos, so we check them out nested
     CERTIFICATES_PATH_PREFIX="."
