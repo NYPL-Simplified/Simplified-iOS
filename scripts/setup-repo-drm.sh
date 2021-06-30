@@ -31,3 +31,7 @@ ln -s $ADOBE_SDK_PATH adobe-rmsdk
 
 cd $ADOBE_SDK_PATH
 ./uncompress.sh
+
+if [ "$BUILD_CONTEXT" != "ci" ]; then
+  git clone git@github.com:NYPL-Simplified/Axis-iOS.git
+fi
