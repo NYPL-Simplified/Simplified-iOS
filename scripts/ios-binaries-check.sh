@@ -31,3 +31,4 @@ elif [ "$CURL_RESULT" != 404 ]; then
 fi
 
 echo "iOS-binaries check completed successfully"
+
