@@ -216,7 +216,6 @@
 		5916E7D8262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7D3262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift */; };
 		5916E7DF2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5916E7E02627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
-		5916E7E22627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5916E7E32627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5941F5EC268C5E8500F69F0B /* NYPLAxis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F7F771268B513800CCA592 /* NYPLAxis.framework */; };
 		5941F5ED268C5E8500F69F0B /* NYPLAxis.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 59F7F771268B513800CCA592 /* NYPLAxis.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1508,13 +1507,13 @@
 				739EC8932643D588001FE730 /* Minizip.xcframework in Embed Frameworks */,
 				739EC88C2643D522001FE730 /* NYPLAEToolkit.framework in Embed Frameworks */,
 				739EC8942643D588001FE730 /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */,
+				5941F5ED268C5E8500F69F0B /* NYPLAxis.framework in Embed Frameworks */,
 				739EC8952643D588001FE730 /* NYPLCardCreator.xcframework in Embed Frameworks */,
 				739EC8962643D588001FE730 /* OverdriveProcessor.xcframework in Embed Frameworks */,
 				739EC8972643D588001FE730 /* PDFRendererProvider.xcframework in Embed Frameworks */,
 				739EC8982643D588001FE730 /* PureLayout.xcframework in Embed Frameworks */,
 				739EC8992643D588001FE730 /* ReadiumLCP.xcframework in Embed Frameworks */,
 				739EC89A2643D588001FE730 /* R2Navigator.xcframework in Embed Frameworks */,
-				5941F5ED268C5E8500F69F0B /* NYPLAxis.framework in Embed Frameworks */,
 				739EC89B2643D588001FE730 /* R2Streamer.xcframework in Embed Frameworks */,
 				739EC89C2643D588001FE730 /* R2Shared.xcframework in Embed Frameworks */,
 				739EC89D2643D588001FE730 /* SQLite.xcframework in Embed Frameworks */,
@@ -2307,6 +2306,7 @@
 				732F0452263376BB0018A82E /* Minizip.xcframework in Frameworks */,
 				7347B4E0265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
 				732F04662633776A0018A82E /* NYPLAudiobookToolkit.xcframework in Frameworks */,
+				5941F5EC268C5E8500F69F0B /* NYPLAxis.framework in Frameworks */,
 				732F046B2633778A0018A82E /* NYPLCardCreator.xcframework in Frameworks */,
 				732F0457263376FA0018A82E /* OverdriveProcessor.xcframework in Frameworks */,
 				732F04712633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
@@ -2316,7 +2316,6 @@
 				73DED81625A6304E00A4D63B /* R2LCPClient.framework in Frameworks */,
 				732F0489263379690018A82E /* R2Navigator.xcframework in Frameworks */,
 				732F0493263379BA0018A82E /* R2Shared.xcframework in Frameworks */,
-				5941F5EC268C5E8500F69F0B /* NYPLAxis.framework in Frameworks */,
 				732F048E2633799E0018A82E /* R2Streamer.xcframework in Frameworks */,
 				732F0432263374860018A82E /* ReadiumLCP.xcframework in Frameworks */,
 				73FCA36C25005BA4001B0C5D /* Security.framework in Frameworks */,
@@ -4714,7 +4713,6 @@
 				73EB0B1625821DF4006BC997 /* AudioBookVendors+Extensions.swift in Sources */,
 				73EB0B1725821DF4006BC997 /* NYPLLibraryNavigationController.m in Sources */,
 				73D8D27725A68D3B00DF5F69 /* UIViewController+NYPL.swift in Sources */,
-				5916E7E22627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */,
 				73EB0B1825821DF4006BC997 /* RemoteHTMLViewController.swift in Sources */,
 				73EB0B1925821DF4006BC997 /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,
 				73EB0B1A25821DF4006BC997 /* NYPLCatalogGroupedFeed.m in Sources */,

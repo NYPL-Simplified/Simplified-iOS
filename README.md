@@ -4,16 +4,16 @@
 
 This repo contains the client-side code for the New York Public Library's [SimplyE](https://www.nypl.org/books-music-movies/ebookcentral/simplye) and [Open eBooks](https://openebooks.net) apps.
 
-The 2 apps share most of the code base. App-specific source files will have a `SE` / `OE` prefix or suffix, while configuration files reside under the `SimplyE` and `OpenEbooks` directories at the root of the repo. 
+The 2 apps share most of the code base. App-specific source files will have a `SE` / `OE` prefix or suffix, while configuration files reside in the `SimplyE` and `OpenEbooks` directories at the root of the repo. 
 
-Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/releases) in this repo track both apps. However, you won't see any Open eBooks versions before 1.9.0 because historically Open eBooks lived in a separate repo. Releases that lack an app specifier, i.e. any version before v3.6.2, are SimplyE releases.
+Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/releases) in this repo track both apps. However, you won't see any Open eBooks versions before 1.9.0 because historically Open eBooks lived in a separate repo. Releases that lack an app specifier, i.e. any version such as v3.6.1 and earlier, are SimplyE releases.
 
 # System Requirements
 
 - Install Xcode 12.4 in `/Applications`, open it and make sure to install additional components if it asks you.
-- Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
+- Install [Carthage](https://github.com/Carthage/Carthage) 0.38 or newer if you haven't already. Using `brew` is recommended.
 
-# Building without Adobe DRM nor Private Repos
+# Building without DRM support
 
 ```bash
 git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
@@ -28,12 +28,12 @@ git checkout develop
 ```
 Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
 
-# Building With Adobe DRM
+# Building with DRM Support
 
 ## Building the Application from Scratch
 
 01. Contact project lead and ensure you have access to all the required private repos.
-02. Then simply run:
+02. Build the dependencies (typically you'll need to run this only once):
 ```bash
 git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
 cd Simplified-iOS
