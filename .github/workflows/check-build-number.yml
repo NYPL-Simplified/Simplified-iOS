@@ -1,25 +1,44 @@
 name: Check Build Number
 on:
-  push:
-    branches:
-      - develop
-      - release/**
-      - feature/**
+  pull_request:
+#    branches:
+#      - support/OE-161/openebooks-ci
+#  push:
+#    branches:
+#      - support/OE-161/openebooks-ci
+#      - develop
+#      - release/**
+#      - feature/**
 jobs:
   check-binaries:
     runs-on: macOS-latest
     steps:
-      - name: Checkout main repo
-        uses: actions/checkout@v2.3.4
-        with:
-          token: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Check Build Number
-        run: ./scripts/ios-binaries-check.sh simplye
+#      - name: Checkout main repo
+#        uses: actions/checkout@v2.3.4
+#        with:
+#          token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Dump GitHub context
         env:
-          BUILD_CONTEXT: ci
-          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Trigger Archive+Upload
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: SimplyE Build
-          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          PR_EVENT: ${{ toJson(github.event.pull_request) }}
+        run: echo "$PR_EVENT"
+#      - name: Detect which app to build
+#        run: ./scripts/detect-app-to-build.sh
+#        env:
+#          BUILD_CONTEXT: ci
+#          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+#          TARGET_BRANCH: ${{ github.event.pull_request.base.ref }}
+#      - name: Check Build Number
+#        run: echo "OPENEBOOKS_CHANGED=" ${{ env.OPENEBOOKS_CHANGED }}
+#        env:
+#          OPENEBOOKS_CHANGED: env.OPENEBOOKS_CHANGED
+#          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+#      - name: Check Build Number
+#        run: ./scripts/ios-binaries-check.sh simplye
+#        env:
+#          BUILD_CONTEXT: ci
+#          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+#      - name: Trigger Archive+Upload
+#        uses: benc-uk/workflow-dispatch@v1
+#        with:
+#          workflow: SimplyE and Open eBooks Build
+#          token: ${{ secrets.IOS_DEV_CI_PAT }}

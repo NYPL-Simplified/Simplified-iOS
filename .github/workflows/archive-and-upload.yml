@@ -1,9 +1,18 @@
-name: SimplyE Build
+name: SimplyE and Open eBooks Build
 on: workflow_dispatch
 jobs:
   upload-arc:
     runs-on: macOS-latest
     if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/feature/')
+    inputs:
+      build_simplye:
+        description: "Whether the workflow should build SimplyE"
+        required: false
+        default: false
+      build_openebooks:
+        description: "Whether the workflow should build Open eBooks"
+        required: false
+        default: false
     steps:
       - name: Force Xcode 12.4
         run: sudo xcode-select -switch /Applications/Xcode_12.4.app
@@ -52,30 +61,34 @@ jobs:
           platform: iOS
           use-xcframeworks: true
       - name: Archive SimplyE
+        if: inputs.build_simplye
         run: ./scripts/xcode-archive.sh simplye
         env:
           BUILD_CONTEXT: ci
       - name: Export for Ad Hoc
+        if: inputs.build_simplye
         run: ./scripts/xcode-export-adhoc.sh simplye
         env:
           BUILD_CONTEXT: ci
       - name: Upload to Firebase
+        if: inputs.build_simplye
         run: ./scripts/firebase-upload.sh simplye
         env:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Upload to iOS-binaries
+        if: inputs.build_simplye
         run: ./scripts/ios-binaries-upload.sh simplye
         env:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Export for App Store
-        if: startsWith(github.ref, 'refs/heads/release/')
+        if: inputs.build_simplye && startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/xcode-export-appstore.sh simplye
         env:
           BUILD_CONTEXT: ci
       - name: Upload to TestFlight
-        if: startsWith(github.ref, 'refs/heads/release/')
+        if: inputs.build_simplye && startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/testflight-upload.sh simplye
         env:
           BUILD_CONTEXT: ci
