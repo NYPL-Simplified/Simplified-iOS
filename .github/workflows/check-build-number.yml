@@ -2,6 +2,7 @@ name: Check Build Number
 on:
   push:
     branches:
+      - support/OE-161/openebooks-ci
       - develop
       - release/**
       - feature/**
@@ -9,17 +10,53 @@ jobs:
   check-binaries:
     runs-on: macOS-latest
     steps:
+      - name: Dump GitHub context
+        env:
+          FULL_EVENT: ${{ toJson(github.event) }}
+        run: echo "FULL_EVENT=$FULL_EVENT"
       - name: Checkout main repo
         uses: actions/checkout@v2.3.4
         with:
           token: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Check Build Number
-        run: ./scripts/ios-binaries-check.sh simplye
+      - name: Detect which app to build
+        run: ./scripts/detect-app-to-build.sh
         env:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Trigger Archive+Upload
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          token: ${{ secrets.IOS_DEV_CI_PAT }}
-          workflow: SimplyE and Open eBooks Build
+          COMMIT_BEFORE_MERGE: ${{ github.event.before }}
+        outputs:
+          simplye_changed:
+            description: "Whether the build number for SimplyE changed"
+            value: ${{ env.SIMPLYE_CHANGED }}
+          openebooks_changed:
+            description: "Whether the build number for OE changed"
+            value: ${{ env.OPENEBOOKS_CHANGED }}
+#      - name: Check Build Number
+#        run: ./scripts/ios-binaries-check.sh simplye
+#        env:
+#          BUILD_CONTEXT: ci
+#          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+#      - name: Trigger Archive+Upload
+#        uses: benc-uk/workflow-dispatch@v1
+#        with:
+#          workflow: SimplyE and Open eBooks Build
+#          token: ${{ secrets.IOS_DEV_CI_PAT }}
+  upload-arc:
+    inputs:
+      build_simplye:
+        description: "Whether the workflow should build SimplyE"
+        required: false
+        default: 0
+      build_openebooks:
+        description: "Whether the workflow should build Open eBooks"
+        required: false
+        default: 0
+    steps:
+      - name: TESTING INPUTS AS BOOL
+        if: inputs.build_simplye
+#        run: echo "SIMPLYE {{ inputs.build_simplye }}"
+        run: echo "SIMPLYE true"
+      - name: TESTING INPUTS
+        if: inputs.build_simplye == 1
+#        run: echo "SIMPLYE {{ inputs.build_simplye }}"
+        run: echo "SIMPLYE 1"
