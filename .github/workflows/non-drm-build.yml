@@ -1,6 +1,8 @@
 name: NonDRM Build
 on:
   pull_request:
+    branches:
+      - ciccio
 jobs:
   build:
     runs-on: macOS-latest

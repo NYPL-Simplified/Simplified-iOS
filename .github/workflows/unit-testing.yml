@@ -1,6 +1,8 @@
 name: Unit Tests
 on:
   pull_request:
+    branches:
+      - ciccio
 jobs:
   build-and-test:
     runs-on: macOS-latest

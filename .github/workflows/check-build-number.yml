@@ -2,24 +2,60 @@ name: Check Build Number
 on:
   push:
     branches:
+      - support/OE-161/openebooks-ci
       - develop
       - release/**
       - feature/**
 jobs:
-  check-binaries:
+  checkbinaries:
     runs-on: macOS-latest
     steps:
+      - name: Dump GitHub context
+        env:
+          FULL_EVENT: ${{ toJson(github.event) }}
+        run: echo "FULL_EVENT=$FULL_EVENT"
       - name: Checkout main repo
         uses: actions/checkout@v2.3.4
         with:
           token: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Check Build Number
-        run: ./scripts/ios-binaries-check.sh simplye
+      - id: detectapp
+        name: Detect which app to build
+        run: ./scripts/detect-app-to-build.sh
         env:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Trigger Archive+Upload
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          token: ${{ secrets.IOS_DEV_CI_PAT }}
-          workflow: SimplyE and Open eBooks Build
+          COMMIT_BEFORE_MERGE: ${{ github.event.before }}
+    outputs:
+      simplye_changed: ${{ steps.detectapp.outputs.simplye_changed }}
+      openebooks_changed: ${{ steps.detectapp.outputs.openebooks_changed }}
+#      - name: Check Build Number
+#        run: ./scripts/ios-binaries-check.sh simplye
+#        env:
+#          BUILD_CONTEXT: ci
+#          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+#      - name: Trigger Archive+Upload
+#        uses: benc-uk/workflow-dispatch@v1
+#        with:
+#          workflow: SimplyE and Open eBooks Build
+#          token: ${{ secrets.IOS_DEV_CI_PAT }}
+  upload-arc:
+    runs-on: macOS-latest
+    needs: checkbinaries
+#    inputs:
+#      build_simplye:
+#        description: "Whether the workflow should build SimplyE"
+#        required: false
+#        default: '0'
+#      build_openebooks:
+#        description: "Whether the workflow should build Open eBooks"
+#        required: false
+#        default: '0'
+    steps:
+      - name: TESTING SYNTAX
+        run: echo ${{needs.checkbinaries.outputs.simplye_changed}} ${{needs.checkbinaries.outputs.openebooks_changed}}
+#      - name: TESTING INPUTS AS BOOL
+#        if: inputs.simplye_changed
+#        run: echo "SIMPLYE true"
+#      - name: TESTING INPUTS
+#        if: inputs.simplye_changed == 1
+#        run: echo "SIMPLYE 1"
