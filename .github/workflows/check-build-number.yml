@@ -21,5 +21,5 @@ jobs:
       - name: Trigger Archive+Upload
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: SimplyE Build
           token: ${{ secrets.IOS_DEV_CI_PAT }}
+          workflow: SimplyE and Open eBooks Build

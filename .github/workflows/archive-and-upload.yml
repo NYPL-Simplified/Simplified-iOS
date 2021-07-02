@@ -1,4 +1,4 @@
-name: SimplyE Build
+name: SimplyE and Open eBooks Build
 on: workflow_dispatch
 jobs:
   upload-arc:
