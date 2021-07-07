@@ -82,10 +82,14 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   return URL;
 }
 
-- (NSURL *)URLForPinnedThumbnailImageOfBookIdentifier:(NSString *const)bookIdentifier
+- (nullable NSURL *)URLForPinnedThumbnailImageOfBookIdentifier:(NSString *const)bookIdentifier
 {
-  return [[self pinnedThumbnailImageDirectoryURL]
-          URLByAppendingPathComponent:[bookIdentifier SHA256]];
+  NSString *encryptedBookID = [bookIdentifier SHA256];
+  if (encryptedBookID) {
+    return [[self pinnedThumbnailImageDirectoryURL]
+            URLByAppendingPathComponent:encryptedBookID];
+  }
+  return nil;
 }
 
 - (void)coverImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
@@ -118,22 +122,22 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   }
   
   BOOL const isPinned = !![[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
+  NSString *filePath =  [[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path];
   
   if(isPinned) {
-    UIImage *const image = [UIImage imageWithContentsOfFile:
-                            [[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier]
-                             path]];
-    if(image) {
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        handler(image);
-      }];
-      return;
+    if (filePath) {
+      UIImage *const image = [UIImage imageWithContentsOfFile:filePath];
+      if(image) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+          handler(image);
+        }];
+        return;
+      }
     }
     
     // If the image didn't load, that means we still need to download the pinned image.
-    NSString *desiredFilepath =  [[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path];
     [self getBookCoverImageWithURL:book.imageThumbnailURL
-                  createFileAtPath:desiredFilepath
+                  createFileAtPath:filePath
                            handler:handler
                            forBook:book];
   } else {
@@ -268,11 +272,16 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (void)pinThumbnailImageForBook:(NYPLBook *const)book
 {
+  NSString *path = [[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path];
+  if (!path) {
+    return;
+  }
+  
   @synchronized(self) {
     // We create an empty file to mark that the thumbnail is pinned even if we do not manage to
     // finish fetching the image this application run.
     [[NSFileManager defaultManager]
-     createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
+     createFileAtPath:path
      contents:[NSData data]
      attributes:nil];
   }
@@ -286,11 +295,13 @@ static NSUInteger const memoryCacheInMegabytes = 2;
         return;
       }
       
-      @synchronized(self) {
-        [[NSFileManager defaultManager]
-         createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
-         contents:data
-         attributes:nil];
+      if (path) {
+        @synchronized(self) {
+          [[NSFileManager defaultManager]
+           createFileAtPath:path
+           contents:data
+           attributes:nil];
+        }
       }
     }]
    resume];
@@ -298,10 +309,13 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (void)removePinnedThumbnailImageForBookIdentifier:(NSString *const)bookIdentifier
 {
-  @synchronized(self) {
-    [[NSFileManager defaultManager]
-     removeItemAtURL:[self URLForPinnedThumbnailImageOfBookIdentifier:bookIdentifier]
-     error:NULL];
+  NSURL *url = [self URLForPinnedThumbnailImageOfBookIdentifier:bookIdentifier];
+  if (url) {
+    @synchronized(self) {
+      [[NSFileManager defaultManager]
+       removeItemAtURL:url
+       error:NULL];
+    }
   }
 }
 
