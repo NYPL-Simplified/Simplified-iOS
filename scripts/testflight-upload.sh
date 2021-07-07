@@ -24,7 +24,7 @@ if [ "$BUILD_CONTEXT" == "ci" ]; then
   security unlock-keychain -p "$IOS_DISTR_IDENTITY_PASSPHRASE" "$KEYCHAIN_PATH"
 fi
 
-fastlane deliver --ipa "$IPA_PATH" \
-  --skip_screenshots --skip_metadata --skip_app_version_update \
-  --precheck_include_in_app_purchases false \
-  --force
+#fastlane deliver --ipa "$IPA_PATH" \
+#  --skip_screenshots --skip_metadata --skip_app_version_update \
+#  --precheck_include_in_app_purchases false \
+#  --force
