@@ -1,9 +1,37 @@
 name: SimplyE and Open eBooks Build
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - support/OE-161/openebooks-ci
+      - develop
+      - release/**
+      - feature/**
 jobs:
+  checkbinaries:
+    runs-on: macOS-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          FULL_EVENT: ${{ toJson(github.event) }}
+        run: echo "FULL_EVENT=$FULL_EVENT"
+      - name: Checkout main repo
+        uses: actions/checkout@v2.3.4
+        with:
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - id: detectapp
+        name: Detect which app to build
+        run: ./scripts/detect-app-to-build.sh
+        env:
+          BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+          COMMIT_BEFORE_MERGE: ${{ github.event.before }}
+    outputs:
+      simplye_changed: ${{ steps.detectapp.outputs.simplye_changed }}
+      openebooks_changed: ${{ steps.detectapp.outputs.openebooks_changed }}
   upload-arc:
     runs-on: macOS-latest
-    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/feature/')
+    needs: checkbinaries
+#    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/feature/')
     steps:
       - name: Force Xcode 12.4
         run: sudo xcode-select -switch /Applications/Xcode_12.4.app
@@ -52,35 +80,73 @@ jobs:
           platform: iOS
           use-xcframeworks: true
       - name: Archive SimplyE
-        if: inputs.build_simplye
+        if: needs.checkbinaries.outputs.simplye_changed == '1'
         run: ./scripts/xcode-archive.sh simplye
         env:
           BUILD_CONTEXT: ci
-      - name: Export for Ad Hoc
-        if: inputs.build_simplye
+      - name: Export SimplyE for Ad Hoc
+        if: needs.checkbinaries.outputs.simplye_changed == '1'
         run: ./scripts/xcode-export-adhoc.sh simplye
         env:
           BUILD_CONTEXT: ci
-      - name: Upload to Firebase
-        if: inputs.build_simplye
+      - name: Upload SimplyE to Firebase
+        if: needs.checkbinaries.outputs.simplye_changed == '1'
         run: ./scripts/firebase-upload.sh simplye
         env:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Upload to iOS-binaries
-        if: inputs.build_simplye
+      - name: Upload SimplyE to iOS-binaries
+        if: needs.checkbinaries.outputs.simplye_changed == '1'
         run: ./scripts/ios-binaries-upload.sh simplye
         env:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Export for App Store
-        if: inputs.build_simplye && startsWith(github.ref, 'refs/heads/release/')
+      - name: Export SimplyE for App Store
+        if: needs.checkbinaries.outputs.simplye_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/xcode-export-appstore.sh simplye
         env:
           BUILD_CONTEXT: ci
-      - name: Upload to TestFlight
-        if: inputs.build_simplye && startsWith(github.ref, 'refs/heads/release/')
+      - name: Upload SimplyE to TestFlight
+        if: needs.checkbinaries.outputs.simplye_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/testflight-upload.sh simplye
+        env:
+          BUILD_CONTEXT: ci
+          IOS_DISTR_IDENTITY_PASSPHRASE: ${{ secrets.IOS_DISTR_IDENTITY_PASSPHRASE }}
+          FASTLANE_USER: ${{ secrets.APPLEID_USERNAME }}
+          FASTLANE_PASSWORD: ${{ secrets.APPLEID_PASSWORD }}
+          FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLEID_APP_SPECIFIC_PASSWORD }}
+
+      - name: Archive Open eBooks
+        if: needs.checkbinaries.outputs.openebooks_changed == '1'
+        run: ./scripts/xcode-archive.sh openebooks
+        env:
+          BUILD_CONTEXT: ci
+      - name: Export Open eBooks for Ad Hoc
+        if: needs.checkbinaries.outputs.openebooks_changed == '1'
+        run: ./scripts/xcode-export-adhoc.sh openebooks
+        env:
+          BUILD_CONTEXT: ci
+      - name: Upload Open eBooks to Firebase
+        if: needs.checkbinaries.outputs.openebooks_changed == '1'
+        run: ./scripts/firebase-upload.sh openebooks
+        env:
+          BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Upload Open eBooks to iOS-binaries
+        if: needs.checkbinaries.outputs.openebooks_changed == '1'
+        run: ./scripts/ios-binaries-upload.sh openebooks
+        env:
+          BUILD_CONTEXT: ci
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Export Open eBooks for App Store
+        if: needs.checkbinaries.outputs.openebooks_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
+        run: ./scripts/xcode-export-appstore.sh openebooks
+        env:
+          BUILD_CONTEXT: ci
+      - name: Upload Open eBooks to TestFlight
+        if: needs.checkbinaries.outputs.openebooks_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
+        run: ./scripts/testflight-upload.sh openebooks
         env:
           BUILD_CONTEXT: ci
           IOS_DISTR_IDENTITY_PASSPHRASE: ${{ secrets.IOS_DISTR_IDENTITY_PASSPHRASE }}

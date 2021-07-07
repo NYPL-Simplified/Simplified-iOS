@@ -2,7 +2,7 @@ name: Check Build Number
 on:
   push:
     branches:
-      - support/OE-161/openebooks-ci
+#      - support/OE-161/openebooks-ci
       - develop
       - release/**
       - feature/**
@@ -41,21 +41,14 @@ jobs:
   upload-arc:
     runs-on: macOS-latest
     needs: checkbinaries
-#    inputs:
-#      build_simplye:
-#        description: "Whether the workflow should build SimplyE"
-#        required: false
-#        default: '0'
-#      build_openebooks:
-#        description: "Whether the workflow should build Open eBooks"
-#        required: false
-#        default: '0'
     steps:
       - name: TESTING SYNTAX
         run: echo ${{needs.checkbinaries.outputs.simplye_changed}} ${{needs.checkbinaries.outputs.openebooks_changed}}
-#      - name: TESTING INPUTS AS BOOL
-#        if: inputs.simplye_changed
-#        run: echo "SIMPLYE true"
-#      - name: TESTING INPUTS
-#        if: inputs.simplye_changed == 1
-#        run: echo "SIMPLYE 1"
+      - name: Archive SimplyE
+        if: needs.checkbinaries.outputs.simplye_changed == '1'
+        run: echo "ARCHIVE SIMPLYE"
+      - name: Archive OE
+        if: needs.checkbinaries.outputs.openebooks_changed == '1'
+        run: echo "ARCHIVE OE"
+
+
