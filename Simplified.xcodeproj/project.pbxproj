@@ -1770,6 +1770,8 @@
 		7300D469258829E1002256A3 /* unit-testing.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "unit-testing.yml"; sourceTree = "<group>"; };
 		730263AA2540DE4200A53891 /* NYPLSAMLHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLSAMLHelper.h; sourceTree = "<group>"; };
 		730263AB2540DE4200A53891 /* NYPLSAMLHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLSAMLHelper.m; sourceTree = "<group>"; };
+		730608A6268D3A0100C21547 /* build-number-check.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-number-check.sh"; sourceTree = "<group>"; };
+		73060917268E6FEF00C21547 /* detect-app-to-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "detect-app-to-build.sh"; sourceTree = "<group>"; };
 		7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOpenSearchDescriptionTests.swift; sourceTree = "<group>"; };
 		73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialChoiceViewController.swift; sourceTree = "<group>"; };
 		73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLPresentationUtils.swift; sourceTree = "<group>"; };
@@ -1805,7 +1807,6 @@
 		730FC05525128D64004D7C2D /* OETutorialEligibilityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialEligibilityViewController.swift; sourceTree = "<group>"; };
 		730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialWelcomeViewController.swift; sourceTree = "<group>"; };
 		7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInOutBusinessLogicUIDelegateMock.swift; sourceTree = "<group>"; };
-		73127257259A99F50032D7B4 /* check-build-number.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "check-build-number.yml"; sourceTree = "<group>"; };
 		7312725C259A9AB00032D7B4 /* ios-binaries-check.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "ios-binaries-check.sh"; sourceTree = "<group>"; };
 		731272AC259CF6F90032D7B4 /* xcode-export-appstore.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-export-appstore.sh"; sourceTree = "<group>"; };
 		731272B1259CFB180032D7B4 /* testflight-upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "testflight-upload.sh"; sourceTree = "<group>"; };
@@ -1906,7 +1907,6 @@
 		7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAdobeContentProtectionService.swift; sourceTree = "<group>"; };
 		73735306256828EA00FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "OpenEBooks_OPDS2_Catalog_Feed-QA.json"; sourceTree = "<group>"; };
 		7375AE5925382AC900C85211 /* NYPLUserAccountMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountMock.swift; sourceTree = "<group>"; };
-		737B9F83244FC648002B4464 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		737DCB8B245CCF2300A8F297 /* NYPLReaderBookmarksBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarksBusinessLogic.swift; sourceTree = "<group>"; };
 		737F4A522549D78100A3C34B /* NYPLBookCreationTestsObjc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLBookCreationTestsObjc.m; sourceTree = "<group>"; };
 		737F4A6A254A137900A3C34B /* NYPLSignInBusinessLogic+DRM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+DRM.swift"; sourceTree = "<group>"; };
@@ -2431,7 +2431,6 @@
 			children = (
 				7300D469258829E1002256A3 /* unit-testing.yml */,
 				73EC88FF258D88E100978955 /* non-drm-build.yml */,
-				73127257259A99F50032D7B4 /* check-build-number.yml */,
 				73EC8927258D905E00978955 /* archive-and-upload.yml */,
 			);
 			path = workflows;
@@ -3044,6 +3043,8 @@
 				733E3E05257ED49C00BEBA32 /* xcode-settings.sh */,
 				733E3E06257ED49C00BEBA32 /* ios-binaries-upload.sh */,
 				7312725C259A9AB00032D7B4 /* ios-binaries-check.sh */,
+				73060917268E6FEF00C21547 /* detect-app-to-build.sh */,
+				730608A6268D3A0100C21547 /* build-number-check.sh */,
 				7364FC6025B7C5AB00B0A9FD /* firebase-upload.sh */,
 				7358A94B25898F4200E66D34 /* firebase-upload-symbols.sh */,
 				731272B1259CFB180032D7B4 /* testflight-upload.sh */,
@@ -3340,7 +3341,6 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				737B9F83244FC648002B4464 /* README.md */,
 				73CEF839252706E3006B2820 /* SimplyE */,
 				73CEF83B25270929006B2820 /* OpenEbooks */,
 				7300D467258829E1002256A3 /* .github */,
