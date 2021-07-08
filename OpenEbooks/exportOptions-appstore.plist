@@ -16,7 +16,7 @@
 	<string>manual</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>org.nypl.labs.SimplyE</key>
+		<key>org.nypl.labs.OpenEbooks</key>
 		<string>Open eBooks Distribution</string>
 	</dict>
 </dict>
