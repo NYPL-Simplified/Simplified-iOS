@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # SUMMARY
-#   This scripts wipes your Carthage folder, checks out and rebuilds
+#   This scripts wipes your Carthage folders and rebuilds
 #   all Carthage dependencies for working on R2 integration.
 #
 # SYNOPSIS
@@ -9,7 +9,12 @@
 #
 # USAGE
 #   Run this script from the root of Simplified-iOS repo.
-#   Use this script in conjuction with the SimplifiedR2.workspace. This
+#
+#   You can use the `checkout-r2-branch.sh` script to easily toggle
+#   all R2 repos between the stable release we use in production builds,
+#   and the most recent code on `develop`.
+#
+#   Use this script in conjunction with the SimplifiedR2.workspace. This
 #   assumes that you have the R2 repos checked out as siblings of
 #   Simplified-iOS.
 #
@@ -26,7 +31,6 @@ CURRENT_DIR=`pwd`
 
 echo "Building r2-shared-swift Carthage dependencies..."
 cd ../r2-shared-swift
-git checkout 2.0.1
 rm -rf Carthage
 carthage checkout
 mkdir -p Carthage/Build/iOS
@@ -34,7 +38,6 @@ carthage build --use-xcframeworks --platform iOS
 
 echo "Building r2-lcp-swift Carthage dependencies..."
 cd ../r2-lcp-swift
-git checkout 2.0.0
 rm -rf Carthage
 carthage checkout
 mkdir -p Carthage/Build/iOS
@@ -42,7 +45,6 @@ carthage build --use-xcframeworks --platform iOS
 
 echo "Building r2-streamer-swift Carthage dependencies..."
 cd ../r2-streamer-swift
-git checkout 2.0.0
 rm -rf Carthage
 carthage checkout
 mkdir -p Carthage/Build/iOS
@@ -50,7 +52,6 @@ carthage build --use-xcframeworks --platform iOS
 
 echo "Building r2-navigator-swift Carthage dependencies..."
 cd ../r2-navigator-swift
-git checkout 2.0.0
 rm -rf Carthage
 carthage checkout
 mkdir -p Carthage/Build/iOS
