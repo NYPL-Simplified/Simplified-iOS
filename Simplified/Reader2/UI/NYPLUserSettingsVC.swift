@@ -58,6 +58,8 @@ import R2Navigator
     view.fontSize = userSettings.fontSize
     view.fontFace = userSettings.fontFace
     view.backgroundColor = userSettings.backgroundColor
+    view.publisherDefault = userSettings.publisherDefault
+    
     self.view = view;
   }
 
@@ -99,4 +101,12 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
     userSettings.save()
     delegate?.applyCurrentSettings()
   }
+
+  func readerSettingsView(_  readerSettingsView: NYPLReaderSettingsView,
+                          didChangePublisherDefaults isEnabled: Bool) {
+    userSettings.publisherDefault = isEnabled
+    userSettings.save()
+    delegate?.applyCurrentSettings()
+  }
+
 }

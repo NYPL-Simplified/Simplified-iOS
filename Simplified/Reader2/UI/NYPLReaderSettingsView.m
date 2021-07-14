@@ -19,6 +19,9 @@
 @property (nonatomic) UIButton *serifButton;
 @property (nonatomic) UIButton *openDyslexicButton;
 @property (nonatomic) UIButton *whiteOnBlackButton;
+@property (nonatomic) UIStackView *publisherDefaultContainer;
+@property (nonatomic) UILabel *publisherDefaultLabel;
+@property (nonatomic) UISwitch *publisherDefaultSwitch;
 
 @end
 
@@ -192,6 +195,29 @@
   [self addSubview:self.increaseButton];
 
 
+  // publisher's default -------------------------------------------------------
+  self.publisherDefaultLabel = [[UILabel alloc] init];
+  self.publisherDefaultLabel.text = NSLocalizedString(@"Publisher's Defaults", nil);
+  self.publisherDefaultLabel.font = [UIFont systemFontOfSize:fontSize];
+  self.publisherDefaultLabel.allowsDefaultTighteningForTruncation = YES;
+  self.publisherDefaultLabel.numberOfLines = 1;
+
+  self.publisherDefaultSwitch = [[UISwitch alloc] init];
+  self.publisherDefaultSwitch.onTintColor = NYPLConfiguration.mainColor;
+  [self.publisherDefaultSwitch addTarget:self
+                                  action:@selector(didTogglePublisherDefault)
+                        forControlEvents:UIControlEventTouchUpInside];
+
+  self.publisherDefaultContainer = [[UIStackView alloc]
+                                    initWithArrangedSubviews:@[self.publisherDefaultLabel,
+                                                               self.publisherDefaultSwitch]];
+  self.publisherDefaultContainer.axis = UILayoutConstraintAxisHorizontal;
+  self.publisherDefaultContainer.distribution = UIStackViewDistributionFill;
+  self.publisherDefaultContainer.spacing = 10;
+  self.publisherDefaultContainer.alignment = UIStackViewAlignmentCenter;
+  [self addSubview:self.publisherDefaultContainer];
+
+
   // brightness slider ---------------------------------------------------------
   self.brightnessView = [[UIView alloc] init];
   [self addSubview:self.brightnessView];
@@ -245,7 +271,8 @@
   CGFloat const padding = 10;
   CGFloat const topPadding = 16;
   CGFloat const innerWidth = CGRectGetWidth(self.frame) - padding * 2;
-  CGFloat const rowHeight = round((CGRectGetHeight(self.frame) - topPadding) / 4.0);
+  CGFloat const numRows = 5.0;
+  CGFloat const rowHeight = round((CGRectGetHeight(self.frame) - topPadding) / numRows);
   
   self.sansButton.frame = CGRectMake(padding,
                                      topPadding,
@@ -287,9 +314,14 @@
                                          CGRectGetMaxY(self.whiteOnBlackButton.frame),
                                          innerWidth / 2.0,
                                          rowHeight);
-  
+
+  self.publisherDefaultContainer.frame = CGRectMake(padding,
+                                                    CGRectGetMaxY(self.increaseButton.frame),
+                                                    innerWidth,
+                                                    rowHeight);
+
   self.brightnessView.frame = CGRectMake(padding,
-                                         CGRectGetMaxY(self.decreaseButton.frame),
+                                         CGRectGetMaxY(self.publisherDefaultContainer.frame),
                                          innerWidth,
                                          rowHeight);
   
@@ -327,7 +359,7 @@
 - (CGSize)sizeThatFits:(CGSize)size
 {
   CGFloat const defaultWidth = 320;
-  CGFloat const defaultHeight = 240;
+  CGFloat const defaultHeight = 295;
 
   if(CGSizeEqualToSize(size, CGSizeZero)) {
     return CGSizeMake(defaultWidth, defaultHeight);
@@ -489,6 +521,15 @@
   
   [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:blackColourWithUnderline] forState:UIControlStateDisabled];
+
+  self.publisherDefaultLabel.textColor = foregroundColor;
+  self.publisherDefaultLabel.backgroundColor = backgroundColor;
+}
+
+- (void)setPublisherDefault:(BOOL)publisherDefault
+{
+  _publisherDefault = publisherDefault;
+  self.publisherDefaultSwitch.on = publisherDefault;
 }
 
 - (void)didSelectSans
@@ -562,6 +603,14 @@
                    didChangeFontSize:NYPLReaderFontSizeChangeIncrease];
 }
 
+- (void)didTogglePublisherDefault
+{
+  self.publisherDefault = !self.publisherDefault;
+  
+  [self.delegate readerSettingsView:self
+         didChangePublisherDefaults:self.publisherDefault];
+}
+
 - (void)updateLineViews
 {
   for(UIView *const lineView in self.lineViews) {
@@ -615,7 +664,17 @@
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
-  
+
+  {
+    UIView *const line = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetMinX(self.brightnessView.frame),
+                                     CGRectGetMinY(self.publisherDefaultContainer.frame),
+                                     CGRectGetWidth(self.brightnessView.frame),
+                                     thin)];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+
   // vertical lines
 
   {
