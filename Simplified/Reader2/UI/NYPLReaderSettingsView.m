@@ -31,15 +31,13 @@
   self = [super init];
   if (!self) return nil;
   
+  self.observers = [NSMutableArray array];
   CGSize const size = [self sizeThatFits:CGSizeMake(width, CGFLOAT_MAX)];
   self.frame = CGRectMake(0, 0, size.width, size.height);
-
-  self.observers = [NSMutableArray array];
-  
   self.backgroundColor = [NYPLConfiguration backgroundColor];
-
   [self sizeToFit];
 
+   // font family --------------------------------------------------------------
   NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
   NSDictionary *noUnderlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)};
   
@@ -64,7 +62,6 @@
             forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.sansButton];
 
-  
   self.serifButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.serifButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"SerifFont", nil)];
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
@@ -85,8 +82,7 @@
                        action:@selector(didSelectSerif)
              forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.serifButton];
-  
-  
+
   self.openDyslexicButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.openDyslexicButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"OpenDyslexicFont", nil)];
   self.openDyslexicButton.backgroundColor = [NYPLConfiguration backgroundColor];
@@ -108,6 +104,9 @@
              forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.openDyslexicButton];
 
+
+  // background color ----------------------------------------------------------
+  const CGFloat fontSize = 18;
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.whiteOnBlackButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"WhiteOnBlackText", nil)];
   self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
@@ -125,7 +124,7 @@
                        initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                        attributes:whiteColourWithUnderline]
    forState:UIControlStateDisabled];
-  self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:18];
+  self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:fontSize];
   [self.whiteOnBlackButton addTarget:self
                               action:@selector(didSelectWhiteOnBlack)
                     forControlEvents:UIControlEventTouchUpInside];
@@ -143,7 +142,7 @@
   
   [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:underlineAttribute] forState:UIControlStateDisabled];
-  self.blackOnSepiaButton.titleLabel.font = [UIFont systemFontOfSize:18];
+  self.blackOnSepiaButton.titleLabel.font = [UIFont systemFontOfSize:fontSize];
   [self.blackOnSepiaButton addTarget:self
                               action:@selector(didSelectBlackOnSepia)
                     forControlEvents:UIControlEventTouchUpInside];
@@ -161,12 +160,14 @@
   
   [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:underlineAttribute] forState:UIControlStateDisabled];
-  self.blackOnWhiteButton.titleLabel.font = [UIFont systemFontOfSize:18];
+  self.blackOnWhiteButton.titleLabel.font = [UIFont systemFontOfSize:fontSize];
   [self.blackOnWhiteButton addTarget:self
                               action:@selector(didSelectBlackOnWhite)
                     forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.blackOnWhiteButton];
 
+
+  // font size -----------------------------------------------------------------
   self.decreaseButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.decreaseButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"DecreaseFontSize", nil)];
   self.decreaseButton.backgroundColor = [NYPLConfiguration backgroundColor];
@@ -190,6 +191,8 @@
                 forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.increaseButton];
 
+
+  // brightness slider ---------------------------------------------------------
   self.brightnessView = [[UIView alloc] init];
   [self addSubview:self.brightnessView];
   
@@ -569,6 +572,8 @@
   
   CGFloat const thin = 1.0 / [UIScreen mainScreen].scale;
 
+  // horizontal lines
+
   {
     UIView *const line = [[UIView alloc] initWithFrame:
                           CGRectMake(CGRectGetMinX(self.openDyslexicButton.frame),
@@ -611,6 +616,8 @@
     [self addSubview:line];
   }
   
+  // vertical lines
+
   {
     UIView *const line = [[UIView alloc] initWithFrame:
                           CGRectMake(CGRectGetMinX(self.serifButton.frame),

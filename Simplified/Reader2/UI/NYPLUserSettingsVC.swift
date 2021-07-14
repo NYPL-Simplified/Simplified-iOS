@@ -53,10 +53,11 @@ import R2Navigator
   override func loadView() {
     let view = NYPLReaderSettingsView(width: 300)
     view.delegate = self
-    view.colorScheme = NYPLReaderSettings.shared().colorScheme
-    view.fontSize = NYPLReaderSettings.shared().fontSize
-    view.fontFace = NYPLReaderSettings.shared().fontFace
-    view.backgroundColor = NYPLReaderSettings.shared().backgroundColor
+
+    view.colorScheme = userSettings.colorScheme
+    view.fontSize = userSettings.fontSize
+    view.fontFace = userSettings.fontFace
+    view.backgroundColor = userSettings.backgroundColor
     self.view = view;
   }
 
@@ -76,7 +77,7 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
 
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect colorScheme: NYPLReaderSettingsColorScheme) {
-    userSettings.setColorScheme(colorScheme)
+    userSettings.colorScheme = colorScheme
     userSettings.save()
     delegate?.applyCurrentSettings()
   }
@@ -94,7 +95,7 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
 
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect fontFace: NYPLReaderSettingsFontFace) {
-    userSettings.setFontFace(fontFace)
+    userSettings.fontFace = fontFace
     userSettings.save()
     delegate?.applyCurrentSettings()
   }
