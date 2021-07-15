@@ -28,6 +28,10 @@ class NYPLR1R2UserSettings: NSObject {
     self.r2UserSettings = r2UserSettings
     super.init()
     configR2Fonts()
+
+    // this helps with layout on small screens especially when publisher's
+    // defaults are off.
+    setHyphenation(true)
   }
 
   /// Get associated colors for a specific appearance setting.
@@ -57,36 +61,74 @@ class NYPLR1R2UserSettings: NSObject {
     r2UserSettings?.save()
   }
 
-  /// Sets the color scheme in both R1 and R2 user reader settings.
-  /// - Parameter colorScheme: The chosen color scheme to set.
-  /// - Note: This does not persist the change. Call `save()` for that.
-  func setColorScheme(_ colorScheme: NYPLReaderSettingsColorScheme) {
-    r1UserSettings.colorScheme = colorScheme
+  var backgroundColor: UIColor {
+    return r1UserSettings.backgroundColor
+  }
 
-    if let appearance = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
-      appearance.index = colorScheme.rawValue
+  /// The setter sets the color scheme in both R1 and R2 user reader settings.
+  /// - Note: This does not persist the change. Call `save()` for that.
+  var colorScheme: NYPLReaderSettingsColorScheme {
+    get {
+      // on app versions w/ R2 (SE 3.7.0+, OE 2.0+), R1 and R2 settings match.
+      // on older app versions, the R1 setting will be the only available one.
+      return r1UserSettings.colorScheme
+    }
+
+    set {
+      r1UserSettings.colorScheme = newValue
+
+      if let appearance = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
+        appearance.index = newValue.rawValue
+      }
     }
   }
 
-  /// Sets the font family to be used in both R1 and R2 user settings.
-  /// - Parameter fontFace: The font chosen by the user.
+  /// The setter sets the font family to be used in both R1 and R2 user settings.
   /// - Note: This does not persist the change. Call `save()` for that.
-  func setFontFace(_ fontFace: NYPLReaderSettingsFontFace) {
-    r1UserSettings.fontFace = fontFace
+  var fontFace: NYPLReaderSettingsFontFace {
+    get {
+      // on app versions w/ R2 (SE 3.7.0+, OE 2.0+), R1 and R2 settings match.
+      // on older app versions, the R1 setting will be the only available one.
+      return r1UserSettings.fontFace
+    }
 
-    let fontFamily = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontFamily.rawValue) as? Enumerable
-    let fontOverride = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontOverride.rawValue) as? Switchable
+    set {
+      // ensure we keep R1 in sync with R2
+      r1UserSettings.fontFace = newValue
 
-    if let fontFamily = fontFamily {
-      // we don't use the "Original" font, so we add 1 to the chosen index
-      fontFamily.index = fontFace.rawValue + 1
-      if let fontOverride = fontOverride {
-        // if we had to use the Original font, we would need to set the
-        // `fontOverride.on` setting to false. Since in our use case this is
-        // never true, we can just set it to true.
-        fontOverride.on = true
+      let fontFamily = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontFamily.rawValue) as? Enumerable
+      let fontOverride = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontOverride.rawValue) as? Switchable
+
+      if let fontFamily = fontFamily {
+        // we don't use the "Original" font, so we add 1 to the chosen index
+        fontFamily.index = newValue.rawValue + 1
+        if let fontOverride = fontOverride {
+          // if we had to use the Original font, we would need to set the
+          // `fontOverride.on` setting to false. Since in our use case this is
+          // never true, we can just set it to true.
+          fontOverride.on = true
+        }
       }
     }
+  }
+
+  var publisherDefault: Bool {
+    get {
+      let publisherDefault = r2UserSettings?.userProperties
+        .getProperty(reference: ReadiumCSSReference.publisherDefault.rawValue) as? Switchable
+      return publisherDefault?.on ?? false
+    }
+
+    set {
+      let publisherDefault = r2UserSettings?.userProperties
+        .getProperty(reference: ReadiumCSSReference.publisherDefault.rawValue) as? Switchable
+      publisherDefault?.on = newValue
+    }
+  }
+
+  var fontSize: NYPLReaderSettingsFontSize {
+    // R1 and R2 settings are always kept in sync
+    return r1UserSettings.fontSize
   }
 
   /// Modifies the value of the font size according to the specified `change`.
@@ -163,6 +205,12 @@ class NYPLR1R2UserSettings: NSObject {
                      values: ["Original", "Helvetica", "Georgia", "OpenDyslexic"],
                      reference: ReadiumCSSReference.fontFamily.rawValue,
                      name: ReadiumCSSName.fontFamily.rawValue)
+  }
+
+  private func setHyphenation(_ value: Bool) {
+    let hyphens = r2UserSettings?.userProperties
+      .getProperty(reference: ReadiumCSSReference.hyphens.rawValue) as? Switchable
+    hyphens?.on = value
   }
 }
 
