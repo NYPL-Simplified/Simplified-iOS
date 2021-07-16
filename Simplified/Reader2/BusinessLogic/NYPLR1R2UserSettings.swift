@@ -28,10 +28,6 @@ class NYPLR1R2UserSettings: NSObject {
     self.r2UserSettings = r2UserSettings
     super.init()
     configR2Fonts()
-
-    // this helps with layout on small screens especially when publisher's
-    // defaults are off.
-    setHyphenation(true)
   }
 
   /// Get associated colors for a specific appearance setting.
@@ -205,23 +201,5 @@ class NYPLR1R2UserSettings: NSObject {
                      values: ["Original", "Helvetica", "Georgia", "OpenDyslexic"],
                      reference: ReadiumCSSReference.fontFamily.rawValue,
                      name: ReadiumCSSName.fontFamily.rawValue)
-  }
-
-  private func setHyphenation(_ value: Bool) {
-    let hyphens = r2UserSettings?.userProperties
-      .getProperty(reference: ReadiumCSSReference.hyphens.rawValue) as? Switchable
-    hyphens?.on = value
-  }
-}
-
-// MARK: -
-
-public extension UserProperties {
-  /// Removes a property matching a CSS reference.
-  /// - Parameter ref: The CSS reference of the property to be removed.
-  func removeProperty(forReference ref: ReadiumCSSReference) {
-    properties.removeAll {
-      $0.reference == ref.rawValue
-    }
   }
 }
