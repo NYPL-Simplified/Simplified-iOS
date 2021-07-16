@@ -13,7 +13,7 @@
 @interface NYPLCatalogUngroupedFeed ()
 
 @property (nonatomic) BOOL currentlyFetchingNextURL;
-@property (nonatomic) BOOL booksFromLastFetchNotSupported;
+@property (nonatomic) BOOL noSupportedBooksInLastFetch;
 @property (nonatomic) NSMutableArray *books;
 @property (nonatomic) NSArray *facetGroups;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
@@ -54,7 +54,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
      
     NYPLCatalogUngroupedFeed *feed = [[self alloc] initWithOPDSFeed:ungroupedFeed];
     
-    if (feed.booksFromLastFetchNotSupported) {
+    if (feed.noSupportedBooksInLastFetch) {
       [feed fetchNextPageWithCompletionHandler:handler];
     } else {
       handler(feed);
@@ -91,7 +91,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     }
     [self.books addObject:book];
   }
-  self.booksFromLastFetchNotSupported = (self.books.count == 0) && (feed.entries.count > 0);
+  self.noSupportedBooksInLastFetch = (self.books.count == 0) && (feed.entries.count > 0);
 
   NSMutableArray *const entryPointFacets = [NSMutableArray array];
   NSMutableArray *const facetGroupNames = [NSMutableArray array];
@@ -191,16 +191,11 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   [self fetchNextPageWithCompletionHandler:nil];
 }
 
-// This method might trigger a recursive loop, if and only if
-// the fetched feed contains more than one entry AND none of the entries are supported AND nextURL is not nil
-// [NYPLCatalogUngroupedFeed withURL:handler] <-> [NYPLCatalogUngroupedFeed fetchNextPageWithCompletionHandler:]
-// The handler should always be called if it is not nil, in order to exit the recursive loop
+// Continues to recursively fetch results from `nextURL` if all the books from last fetch are not supported.
+// @param completion handler, executed when booksFromLastFetchNotSupported, no next url or fetch failed
 - (void)fetchNextPageWithCompletionHandler:(nullable void (^)(NYPLCatalogUngroupedFeed *category))handler
 {
   if(self.currentlyFetchingNextURL) {
-    if (handler) {
-      handler(self);
-    }
     return;
   }
   
@@ -232,12 +227,13 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
        self.nextURL = ungroupedFeed.nextURL;
        self.currentlyFetchingNextURL = NO;
        
-       if(handler) {
-         handler(self);
-       }
-       
-       if (!self.booksFromLastFetchNotSupported) {
+       if (!self.noSupportedBooksInLastFetch) {
+         // Continues the recursive loop originated from prepareForBookIndex
          [self prepareForBookIndex:self.greatestPreparationIndex];
+       } else if (handler) {
+         // Exit the recursive loop when booksFromLastFetchNotSupported
+         handler(self);
+         return;
        }
        
        NSRange const range = {.location = location, .length = ungroupedFeed.books.count};
