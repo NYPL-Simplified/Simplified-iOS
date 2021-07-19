@@ -24,14 +24,21 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
        initialLocation: Locator?,
        resourcesServer: ResourcesServer) {
 
-    // this config was suggested by R2 engineers as a way to limit the possible
-    // race conditions between restoring the initial location without
-    // interfering with the web view layout timing
+    // - hyphens = true helps with layout on small screens especially when
+    // publisher's defaults are off.
+    // - publisher's defaults = false ensures that font size is changeable
+    // even for EPUBs that specify a `fontSize: small` value in their CSS.
+    let settings = UserSettings(hyphens: true, publisherDefaults: false)
+
+    // the "preload" settings were suggested by R2 engineers as a way to limit
+    // the possible race conditions between restoring the initial location
+    // without interfering with the web view layout timing
     // See: https://github.com/readium/r2-navigator-swift/issues/153
-    var config = EPUBNavigatorViewController.Configuration()
-    config.preloadPreviousPositionCount = 0
-    config.preloadNextPositionCount = 0
-    config.debugState = true
+    let config = EPUBNavigatorViewController.Configuration(
+        userSettings: settings,
+        preloadPreviousPositionCount: 0,
+        preloadNextPositionCount: 0,
+        debugState: true)
 
     let navigator = EPUBNavigatorViewController(publication: publication,
                                                 initialLocation: initialLocation,
