@@ -10,8 +10,8 @@
 **Dependencies for merging? Releasing to production?**
 [Description of any watchouts, dependencies, or issues we should be aware of goes here]
 
-**Does this include changes that require a new SimplyE build for QA?**
-[Bump the SimplyE build number to generate a new build on NYPL-Simplified/iOS-binaries]
+**Does this include changes that require a new SimplyE/Open eBooks build for QA?**
+[Bump the version or build number to push a new build to Firebase]
 
 **Has the application documentation been updated for these changes?**
 

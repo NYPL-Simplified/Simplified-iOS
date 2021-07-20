@@ -48,22 +48,6 @@ if [ "$BUILD_CONTEXT" != "ci" ]; then
   exit 1
 fi
 
-# lower case
-APPNAME_PARAM=`echo "$1" | tr '[:upper:]' '[:lower:]'`
-
-case "$APPNAME_PARAM" in
-  simplye)
-    export APP_BUNDLE_ID="org.nypl.labs.SimplyE"
-    ;;
-  openebooks | open_ebooks)
-    export APP_BUNDLE_ID="org.nypl.labs.OpenEbooks"
-    ;;
-  *)
-    echo "$0: please specify a valid app. Possible values: simplye | openebooks"
-    exit 1
-    ;;
-esac
-
 echo "Default keychain:"
 security default-keychain
 
