@@ -21,6 +21,7 @@
 
 source "$(dirname $0)/xcode-settings.sh"
 
+echo ""
 echo "Checking if $UPLOAD_FILENAME already exists on 'iOS-binaries' repo..."
 echo "UPLOAD_FILENAME_URLENCODED=$UPLOAD_FILENAME_URLENCODED"
 

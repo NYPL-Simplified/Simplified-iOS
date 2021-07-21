@@ -213,7 +213,6 @@
 		5916E7D4262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7D3262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift */; };
 		5916E7D5262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7D3262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift */; };
 		5916E7D7262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7D3262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift */; };
-		5916E7D8262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7D3262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift */; };
 		5916E7DF2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5916E7E02627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5916E7E32627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
@@ -1319,7 +1318,6 @@
 		73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092251E7883C400AD338D /* libiconv.tbd */; };
 		73FCA36325005BA4001B0C5D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		73FCA36425005BA4001B0C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092231E78839D00AD338D /* QuartzCore.framework */; };
-		73FCA36525005BA4001B0C5D /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		73FCA36725005BA4001B0C5D /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352211BDE8E560040BF1D /* libicucore.tbd */; };
 		73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
@@ -2302,7 +2300,6 @@
 				7347B4D5265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */,
 				7347B4CD265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */,
 				7347B4D1265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */,
-				73FCA36525005BA4001B0C5D /* libADEPT.a in Frameworks */,
 				73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */,
 				73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */,
 				73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */,
@@ -4942,7 +4939,6 @@
 				73FCA32925005BA4001B0C5D /* Data+Base64.swift in Sources */,
 				73FCA32A25005BA4001B0C5D /* NYPLAppDelegate.m in Sources */,
 				730FC05825128D64004D7C2D /* OETutorialEligibilityViewController.swift in Sources */,
-				5916E7D8262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */,
 				73FCA32B25005BA4001B0C5D /* NYPLCatalogFacetGroup.m in Sources */,
 				73FCA32C25005BA4001B0C5D /* NYPLOPDSAcquisition.m in Sources */,
 				73FCA32D25005BA4001B0C5D /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
