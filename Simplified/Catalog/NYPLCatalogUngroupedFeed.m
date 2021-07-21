@@ -13,6 +13,7 @@
 @interface NYPLCatalogUngroupedFeed ()
 
 @property (nonatomic) BOOL currentlyFetchingNextURL;
+@property (nonatomic) BOOL noSupportedBooksInLastFetch;
 @property (nonatomic) NSMutableArray *books;
 @property (nonatomic) NSArray *facetGroups;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
@@ -51,7 +52,13 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
        return;
      }
      
-     handler([[self alloc] initWithOPDSFeed:ungroupedFeed]);
+    NYPLCatalogUngroupedFeed *feed = [[self alloc] initWithOPDSFeed:ungroupedFeed];
+    
+    if (feed.noSupportedBooksInLastFetch) {
+      [feed fetchNextPageWithCompletionHandler:handler];
+    } else {
+      handler(feed);
+    }
    }];
 }
 
@@ -84,6 +91,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     }
     [self.books addObject:book];
   }
+  self.noSupportedBooksInLastFetch = (self.books.count == 0) && (feed.entries.count > 0);
 
   NSMutableArray *const entryPointFacets = [NSMutableArray array];
   NSMutableArray *const facetGroupNames = [NSMutableArray array];
@@ -176,11 +184,25 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   
   self.greatestPreparationIndex = bookIndex;
   
-  if(self.currentlyFetchingNextURL) return;
-  
-  if(!self.nextURL) return;
-  
   if(self.books.count - bookIndex > preloadThreshold) {
+    return;
+  }
+  
+  [self fetchNextPageWithCompletionHandler:nil];
+}
+
+// Continues to recursively fetch results from `nextURL` if all the books from last fetch are not supported.
+// @param completion handler, executed when booksFromLastFetchNotSupported, no next url or fetch failed
+- (void)fetchNextPageWithCompletionHandler:(nullable void (^)(NYPLCatalogUngroupedFeed *category))handler
+{
+  if(self.currentlyFetchingNextURL) {
+    return;
+  }
+  
+  if(!self.nextURL) {
+    if (handler) {
+      handler(self);
+    }
     return;
   }
   
@@ -195,6 +217,9 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
        if(!ungroupedFeed) {
          NYPLLOG(@"Failed to fetch next page.");
          self.currentlyFetchingNextURL = NO;
+         if(handler) {
+           handler(self);
+         }
          return;
        }
        
@@ -202,7 +227,14 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
        self.nextURL = ungroupedFeed.nextURL;
        self.currentlyFetchingNextURL = NO;
        
-       [self prepareForBookIndex:self.greatestPreparationIndex];
+       if (!self.noSupportedBooksInLastFetch) {
+         // Continues the recursive loop originated from prepareForBookIndex
+         [self prepareForBookIndex:self.greatestPreparationIndex];
+       } else if (handler) {
+         // Exit the recursive loop when booksFromLastFetchNotSupported
+         handler(self);
+         return;
+       }
        
        NSRange const range = {.location = location, .length = ungroupedFeed.books.count};
        
