@@ -139,8 +139,14 @@ private let NYPLRoundedButtonPadding: CGFloat = 6.0
     updateColors()
   }
   
+  private var customAccessibilityLabel: String?
+  
   override var accessibilityLabel: String? {
     get {
+      if let label = customAccessibilityLabel {
+        self.customAccessibilityLabel = nil
+        return label
+      }
       guard !self.iconView.isHidden,
         let title = self.titleLabel?.text,
         let timeUntilString = self.endDate?.timeUntilString(suffixType: .long) else {
@@ -148,7 +154,9 @@ private let NYPLRoundedButtonPadding: CGFloat = 6.0
       }
       return "\(title).\(timeUntilString) remaining."
     }
-    set {}
+    set {
+      self.customAccessibilityLabel = newValue
+    }
   }
 }
 

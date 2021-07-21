@@ -353,6 +353,10 @@
   [self updateButtons];
 }
 
+- (void)setReadButtonAccessibiltyLabelWithMessage:(NSString *) message {
+  self.readButton.accessibilityLabel = [NSString stringWithFormat:@"%@\n%@", message, NSLocalizedString(@"Read", nil)];
+}
+
 #pragma mark - Button actions
 
 - (void)didSelectReturn

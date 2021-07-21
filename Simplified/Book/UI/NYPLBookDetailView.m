@@ -142,7 +142,7 @@ static NSString *DetailHTMLTemplate = nil;
     [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
     [self.contentView addSubview:self.closeButton];
   }
-
+  
   return self;
 }
 
@@ -593,6 +593,11 @@ static NSString *DetailHTMLTemplate = nil;
       self.buttonsView.hidden = NO;
       self.normalView.state = NYPLBookButtonsStateDownloadSuccessful;
       self.buttonsView.state = NYPLBookButtonsStateDownloadSuccessful;
+      if (self.downloadStarted && [self.window isKeyWindow]) {
+        // The "isKeyWindow" check avoids focusing on book detail view if it is not visible
+        [self.buttonsView setReadButtonAccessibiltyLabelWithMessage:self.normalView.messageStringForNYPLBookButtonStateSuccessful];
+        [self setUIAccessibilityFocusToView:self.buttonsView];
+      }
       break;
     case NYPLBookStateHolding:
       self.normalView.hidden = NO;
