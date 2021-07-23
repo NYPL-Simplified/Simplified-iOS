@@ -9,4 +9,6 @@
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
+- (NSString *)messageStringForNYPLBookButtonStateSuccessful;
+
 @end
