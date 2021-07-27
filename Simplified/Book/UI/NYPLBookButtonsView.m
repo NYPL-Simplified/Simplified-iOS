@@ -84,6 +84,15 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self.observer];
 }
 
+- (BOOL)showReturnButtonIfApplicable
+{
+#if AXIS
+  return NO;
+#else
+  return YES;
+#endif
+}
+
 - (void)configureForBookDetailsContext
 {
   [self.deleteButton setFromDetailView:YES];

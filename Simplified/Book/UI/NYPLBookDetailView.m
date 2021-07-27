@@ -163,7 +163,6 @@ static NSString *DetailHTMLTemplate = nil;
   self.buttonsView = [[NYPLBookButtonsView alloc] init];
   [self.buttonsView configureForBookDetailsContext];
   self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
-  self.buttonsView.showReturnButtonIfApplicable = YES;
   self.buttonsView.delegate = self.detailViewDelegate;
   self.buttonsView.downloadingDelegate = self;
   self.buttonsView.book = self.book;
