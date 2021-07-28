@@ -215,8 +215,10 @@
   self.publisherDefaultContainer.distribution = UIStackViewDistributionFill;
   self.publisherDefaultContainer.spacing = 10;
   self.publisherDefaultContainer.alignment = UIStackViewAlignmentCenter;
+#if OPENEBOOKS
+  self.publisherDefaultContainer.hidden = YES;
+#endif
   [self addSubview:self.publisherDefaultContainer];
-
 
   // brightness slider ---------------------------------------------------------
   self.brightnessView = [[UIView alloc] init];
@@ -271,9 +273,20 @@
   CGFloat const padding = 10;
   CGFloat const topPadding = 16;
   CGFloat const innerWidth = CGRectGetWidth(self.frame) - padding * 2;
+#if OPENEBOOKS
+  CGFloat const numRows = 4.0;
+#else
   CGFloat const numRows = 5.0;
+#endif
+
   CGFloat const rowHeight = round((CGRectGetHeight(self.frame) - topPadding) / numRows);
-  
+
+#if OPENEBOOKS
+  CGFloat const publisherDefaultsRowHeight = 0;
+#else
+  CGFloat const publisherDefaultsRowHeight = rowHeight;
+#endif
+
   self.sansButton.frame = CGRectMake(padding,
                                      topPadding,
                                      round(innerWidth / 3.0),
@@ -318,13 +331,13 @@
   self.publisherDefaultContainer.frame = CGRectMake(padding,
                                                     CGRectGetMaxY(self.increaseButton.frame),
                                                     innerWidth,
-                                                    rowHeight);
+                                                    publisherDefaultsRowHeight);
 
   self.brightnessView.frame = CGRectMake(padding,
                                          CGRectGetMaxY(self.publisherDefaultContainer.frame),
                                          innerWidth,
                                          rowHeight);
-  
+
   self.brightnessLowImageView.frame =
     CGRectMake(0,
                (CGRectGetHeight(self.brightnessView.frame) / 2 -
