@@ -46,7 +46,12 @@ NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplifi
   if (!types) {
     types = [NSSet setWithArray:@[
       ContentTypeOPDSCatalog,
+#if FEATURE_DRM_CONNECTOR
       ContentTypeAdobeAdept,
+#endif
+#if AXIS
+      ContentTypeAxis360,
+#endif
       ContentTypeBearerToken,
       ContentTypeEpubZip,
       ContentTypeFindaway,
@@ -56,8 +61,7 @@ NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplifi
       ContentTypeOverdriveAudiobook,
       ContentTypeOctetStream,
       ContentTypeReadiumLCP,
-      ContentTypeAudiobookZip,
-      ContentTypeAxis360
+      ContentTypeAudiobookZip
     ]];
   }
 
@@ -78,7 +82,12 @@ NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplifi
   if (!subtypesForTypes) {
     subtypesForTypes = @{
       ContentTypeOPDSCatalog: [NSSet setWithArray:@[
+#if FEATURE_DRM_CONNECTOR
         ContentTypeAdobeAdept,
+#endif
+#if AXIS
+        ContentTypeAxis360,
+#endif
         ContentTypeBearerToken,
         ContentTypeFindaway,
         ContentTypeEpubZip,
@@ -88,14 +97,15 @@ NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplifi
         ContentTypeOverdriveAudiobook,
         ContentTypeOctetStream,
         ContentTypeReadiumLCP,
-        ContentTypeAudiobookZip,
-        ContentTypeAxis360
+        ContentTypeAudiobookZip
       ]],
       ContentTypeReadiumLCP: [NSSet setWithArray:@[
         ContentTypeEpubZip,
         ContentTypeAudiobookZip
       ]],
+#if FEATURE_DRM_CONNECTOR
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
+#endif
       ContentTypeBearerToken: [NSSet setWithArray:@[
         ContentTypeEpubZip,
         ContentTypeOpenAccessPDF,

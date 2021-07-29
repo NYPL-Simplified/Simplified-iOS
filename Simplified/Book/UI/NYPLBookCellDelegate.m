@@ -121,9 +121,6 @@
     case NYPLBookContentTypeAudiobook:
       [self openAudiobook:book];
       break;
-    case NYPLBookContentTypeAxis:
-      [self openEPUB:book successCompletion:successCompletion];
-      break;
     default:
       [self presentUnsupportedItemError];
       break;
