@@ -56,6 +56,10 @@
       return @"SimplifiedBearerTokenJSON";
     case NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON:
       return @"OverdriveManifestJSON";
+    case NYPLMyBooksDownloadRightsManagementLCP:
+      return @"LCP";
+    case NYPLMyBooksDownloadRightsManagementAxis:
+      return @"Axis";
     default:
       return [NSString stringWithFormat:@"Unexpected value: %ld",
               (long)self.rightsManagement];

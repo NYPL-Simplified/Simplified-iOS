@@ -121,6 +121,7 @@ expectedTotalBytes:(__attribute__((unused)) int64_t)expectedTotalBytes
   NYPLLOG(@"Ignoring unexpected resumption.");
 }
 
+// this appears to be called only once per book download for both Adobe and Axis
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
       downloadTask:(NSURLSessionDownloadTask *const)downloadTask
       didWriteData:(int64_t const)bytesWritten
@@ -550,6 +551,15 @@ didCompleteWithError:(NSError *)error
   
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB: {
+      NYPLMyBooksDownloadInfo *info = [self downloadInfoForBookIdentifier:book.identifier];
+      if (info.rightsManagement == NYPLMyBooksDownloadRightsManagementAxis) {
+        // We're deleting path extension because with AXIS books, we don't
+        // get an epub file (?? -ep). Instead, we get a file with book_vault_id
+        // and isbn key. From that file, we download all the files associated
+        // with the book (xhtml, jpg, xml etc).
+        bookURL = bookURL.URLByDeletingPathExtension;
+      }
+
       NSError *error = nil;
       if(![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]){
         NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
@@ -563,17 +573,6 @@ didCompleteWithError:(NSError *)error
     case NYPLBookContentTypePDF: {
       NSError *error = nil;
       if (![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]) {
-        NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
-      }
-      break;
-    }
-    case NYPLBookContentTypeAxis: {
-      NSError *error = nil;
-      /// We're deleting path extension because with AXIS books, we don't get an epub file. Instead, we
-      /// get a file with book_vault_id and isbn key. From that file, we download all the files associated
-      /// with the book (xhtml, jpg, xml etc).
-      bookURL = bookURL.URLByDeletingPathExtension;
-      if(![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]) {
         NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
       }
       break;
