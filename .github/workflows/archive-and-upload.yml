@@ -36,14 +36,22 @@ jobs:
         run: sudo xcode-select -switch /Applications/Xcode_12.4.app
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
-      - name: Check Firebase Tools
-        run: command -v firebase && firebase --version
+      - name: Check Firebase Tools and Carthage version
+        run: command -v firebase && firebase --version && carthage version
       - name: Checkout main repo and submodules
         uses: actions/checkout@v2.3.4
         with:
           submodules: true
           token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Checkout Axis DRM
+        if: needs.version-check.outputs.openebooks_changed == '1'
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: NYPL-Simplified/Axis-iOS
+          token: ${{ secrets.IOS_DEV_CI_PAT }}
+          path: ./Axis-iOS
       - name: Checkout Adobe RMSDK
+        if: needs.version-check.outputs.simplye_changed == '1'
         uses: actions/checkout@v2.3.4
         with:
           repository: NYPL-Simplified/DRM-iOS-AdeptConnector
@@ -64,7 +72,8 @@ jobs:
           FASTLANE_USER: ${{ secrets.APPLEID_USERNAME }}
           FASTLANE_PASSWORD: ${{ secrets.APPLEID_PASSWORD }}
           FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
-      - name: Set up repo for DRM build
+      - name: Set up repo for Adobe DRM build
+        if: needs.version-check.outputs.simplye_changed == '1'
         run: exec ./scripts/setup-repo-drm.sh
         env:
           BUILD_CONTEXT: ci

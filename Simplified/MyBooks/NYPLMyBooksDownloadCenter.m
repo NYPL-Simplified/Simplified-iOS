@@ -26,6 +26,12 @@
 #import <ReadiumLCP/ReadiumLCP-Swift.h>
 #endif
 
+#if defined(AXIS)
+@interface NYPLMyBooksDownloadCenter () <NYPLBookDownloadBroadcasting>
+@property (nonatomic) NSMutableDictionary<NSString *, NYPLAxisBookDownloadAdapter *> *bookIdentifierToAxisAdapter;
+@end
+#endif
+
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
@@ -81,6 +87,10 @@
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
+#if defined(AXIS)
+  self.bookIdentifierToAxisAdapter = [NSMutableDictionary dictionary];
+#endif
+  
   self.bookIdentifierToDownloadInfo = [NSMutableDictionary dictionary];
   self.bookIdentifierToDownloadProgress = [NSMutableDictionary dictionary];
   self.bookIdentifierToDownloadTask = [NSMutableDictionary dictionary];
@@ -111,6 +121,7 @@ expectedTotalBytes:(__attribute__((unused)) int64_t)expectedTotalBytes
   NYPLLOG(@"Ignoring unexpected resumption.");
 }
 
+// this appears to be called only once per book download for both Adobe and Axis
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
       downloadTask:(NSURLSessionDownloadTask *const)downloadTask
       didWriteData:(int64_t const)bytesWritten
@@ -132,6 +143,10 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
+    } else if ([downloadTask.response.MIMEType isEqualToString:ContentTypeAxis360]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementAxis];
     } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeReadiumLCP]) {
         self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
@@ -339,6 +354,21 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                                      forDownloadTask:downloadTask];
         break;
       }
+      case NYPLMyBooksDownloadRightsManagementAxis: {
+#if defined(AXIS)
+        
+        NYPLAxisBookDownloadAdapter *adapter = [[NYPLAxisBookDownloadAdapter alloc]
+                                                initWithDownloadTask:downloadTask
+                                                book:book
+                                                downloadBroadcaster:self
+                                                fileURL:tmpSavedFileURL];
+        
+        [self.bookIdentifierToAxisAdapter setValue:adapter forKey:book.identifier];
+        [adapter downloadBook];
+#endif
+        break;
+      }
+        
     }
   }
   
@@ -521,6 +551,15 @@ didCompleteWithError:(NSError *)error
   
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB: {
+      NYPLMyBooksDownloadInfo *info = [self downloadInfoForBookIdentifier:book.identifier];
+      if (info.rightsManagement == NYPLMyBooksDownloadRightsManagementAxis) {
+        // We're deleting path extension because with AXIS books, we don't
+        // get an epub file (?? -ep). Instead, we get a file with book_vault_id
+        // and isbn key. From that file, we download all the files associated
+        // with the book (xhtml, jpg, xml etc).
+        bookURL = bookURL.URLByDeletingPathExtension;
+      }
+
       NSError *error = nil;
       if(![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]){
         NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
@@ -819,6 +858,10 @@ didCompleteWithError:(NSError *)error
    fulfillmentId:nil
    readiumBookmarks:nil
    genericBookmarks:nil];
+  
+#if defined(AXIS)
+  [self.bookIdentifierToAxisAdapter removeObjectForKey:book.identifier];
+#endif
   
   dispatch_async(dispatch_get_main_queue(), ^{
     NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
@@ -1184,6 +1227,13 @@ didCompleteWithError:(NSError *)error
       }
     #endif
     
+#if defined(AXIS)
+    NYPLAxisBookDownloadAdapter *adapter = [self.bookIdentifierToAxisAdapter
+                                    objectForKey:identifier];
+    [adapter downloadCancelledByUser];
+    [self.bookIdentifierToAxisAdapter removeObjectForKey:identifier];
+#endif
+    
     [info.downloadTask
      cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
        [[NYPLBookRegistry sharedRegistry]
@@ -1348,7 +1398,10 @@ didCompleteWithError:(NSError *)error
                           @"sourceFileURL": sourceLocation ?: @"N/A",
                         }];
   }
-
+#if defined(AXIS)
+  [self.bookIdentifierToAxisAdapter removeObjectForKey:book.identifier];
+#endif
+  
   return success;
 }
 
@@ -1539,5 +1592,16 @@ didFinishDownload:(BOOL)didFinishDownload
   }];
   #endif
 }
+
+#if defined(AXIS)
+- (void)downloadProgressDidUpdateTo:(double)progress forBook:(NYPLBook * _Nonnull)book {
+  self.bookIdentifierToDownloadInfo[book.identifier] =
+  [[self downloadInfoForBookIdentifier:book.identifier]
+   withDownloadProgress:progress];
+
+  [self broadcastUpdate];
+}
+#endif
+
 
 @end

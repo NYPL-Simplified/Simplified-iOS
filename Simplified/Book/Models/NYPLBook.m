@@ -534,19 +534,33 @@ static NSString *const UpdatedKey = @"updated";
     NYPLLOG(@"ERROR: No acquisitions found when computing a default. This is an OPDS violation.");
     return nil;
   }
-
+  
+  NYPLOPDSAcquisition *fallbackAcquisition;
+  
   for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
     NSArray *const paths = [NYPLOPDSAcquisitionPath
                             supportedAcquisitionPathsForAllowedTypes:[NYPLOPDSAcquisitionPath supportedTypes]
                             allowedRelations:NYPLOPDSAcquisitionRelationSetAll
                             acquisitions:@[acquisition]];
-
+    
     if (paths.count >= 1) {
+#if defined(AXIS)
+      for (NYPLOPDSAcquisitionPath *path in paths) {
+        if ([path.types containsObject:ContentTypeAxis360]) {
+          return acquisition;
+        }
+      }
+      
+      if (!fallbackAcquisition) {
+        fallbackAcquisition = acquisition;
+      }
+#else
       return acquisition;
+#endif
     }
   }
-
-  return nil;
+  
+  return fallbackAcquisition;
 }
 
 - (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow
