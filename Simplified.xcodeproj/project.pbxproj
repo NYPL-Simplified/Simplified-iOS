@@ -3488,6 +3488,7 @@
 				7394FBD8252F936E00037515 /* Announcements */,
 				73225DE5250B46CE00EF1877 /* AppInfrastructure */,
 				21E7E07424FEA7C100189224 /* Audiobooks */,
+				59054578268A12A100D0E4C5 /* AxisService */,
 				73B5DFD72605296300225C12 /* Book */,
 				739ECB2725101F1600691A70 /* Catalog */,
 				73DE53322525A588003E2C56 /* ErrorHandling */,
@@ -3505,7 +3506,6 @@
 				7327A88D23EE00FE00954748 /* Utilities */,
 				73DE53332525A83F003E2C56 /* Views */,
 				738CB2092509AD3B00891F31 /* WelcomeScreen */,
-				59054578268A12A100D0E4C5 /* AxisService */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
 			);
 			path = Simplified;
@@ -4067,7 +4067,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/\"\nsed -i '' \"s/SimplyE/Open eBooks/\" software-licenses.html\n";
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/\"\nsed -i '' \"s/SimplyE/Open eBooks/\" software-licenses.html\nsed -i '' \"s/.*ADOBEADEPT.*//\" software-licenses.html \n";
 		};
 		739E614C244A0D8600D00301 /* Copy Frameworks (Carthage) */ = {
 			isa = PBXShellScriptBuildPhase;
