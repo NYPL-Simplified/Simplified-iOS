@@ -595,7 +595,7 @@ static NSString *DetailHTMLTemplate = nil;
       self.buttonsView.state = NYPLBookButtonsStateDownloadSuccessful;
       if (self.downloadStarted && [self.window isKeyWindow]) {
         // The "isKeyWindow" check avoids focusing on book detail view if it is not visible
-        [self.buttonsView setReadButtonAccessibiltyLabelWithMessage:self.normalView.messageStringForNYPLBookButtonStateSuccessful];
+        [self.buttonsView setReadButtonAccessibilityLabelWithMessage:self.normalView.messageStringForNYPLBookButtonStateSuccessful];
         [self setUIAccessibilityFocusToView:self.buttonsView];
       }
       break;

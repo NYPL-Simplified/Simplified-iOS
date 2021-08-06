@@ -141,22 +141,26 @@ private let NYPLRoundedButtonPadding: CGFloat = 6.0
   
   private var customAccessibilityLabel: String?
   
+  // The button label will be the customAccessibilityLabel for one time if it is not nil.
+  // After that, the button label will be the regular accessibility label.
   override var accessibilityLabel: String? {
     get {
       if let label = customAccessibilityLabel {
         self.customAccessibilityLabel = nil
         return label
       }
-      guard !self.iconView.isHidden,
-        let title = self.titleLabel?.text,
-        let timeUntilString = self.endDate?.timeUntilString(suffixType: .long) else {
-          return self.titleLabel?.text
-      }
-      return "\(title).\(timeUntilString) remaining."
+      return self.titleLabel?.text
     }
     set {
       self.customAccessibilityLabel = newValue
     }
+  }
+  
+  @objc var timeRemainingString: String? {
+    guard let timeUntilString = self.endDate?.timeUntilString(suffixType: .long) else {
+      return nil
+    }
+    return "\(timeUntilString) remaining."
   }
 }
 

@@ -207,14 +207,14 @@
         case NYPLBookContentTypeAudiobook:
           buttonInfo = @{ButtonKey: self.readButton,
                          TitleKey: NSLocalizedString(@"Listen", nil),
-                         HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens audiobook %@ for listening", nil), self.book.title],
+                         HintKey: self.readButton.timeRemainingString ?: @"",
                          AddIndicatorKey: @(YES)};
           break;
         case NYPLBookContentTypePDF:
         case NYPLBookContentTypeEPUB:
           buttonInfo = @{ButtonKey: self.readButton,
                          TitleKey: NSLocalizedString(@"Read", nil),
-                         HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
+                         HintKey: self.readButton.timeRemainingString ?: @"",
                          AddIndicatorKey: @(YES)};
           break;
         case NYPLBookContentTypeUnsupported:
@@ -353,7 +353,7 @@
   [self updateButtons];
 }
 
-- (void)setReadButtonAccessibiltyLabelWithMessage:(NSString *) message {
+- (void)setReadButtonAccessibilityLabelWithMessage:(NSString *) message {
   self.readButton.accessibilityLabel = [NSString stringWithFormat:@"%@\n%@", message, NSLocalizedString(@"Read", nil)];
 }
 
