@@ -43,18 +43,18 @@ else
 
   echo "Checking out latest stable tag on r2-shared-swift..."
   cd ../r2-shared-swift
-  git checkout 2.0.1
+  git checkout 2.1.0
 
   echo "Checking out latest stable tag on r2-lcp-swift..."
   cd ../r2-lcp-swift
-  git checkout 2.0.0
+  git checkout 2.1.0
 
   echo "Checking out latest stable tag on r2-streamer-swift..."
   cd ../r2-streamer-swift
-  git checkout 2.0.0
+  git checkout 2.1.0
 
   echo "Checking out latest stable tag on r2-navigator-swift..."
   cd ../r2-navigator-swift
-  git checkout 2.0.0
+  git checkout 2.1.0
 
 fi
