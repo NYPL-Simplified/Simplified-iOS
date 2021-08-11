@@ -11,10 +11,10 @@ import R2Shared
 
 struct NYPLAxisLibraryService: DRMLibraryService {
   
-  let protectedAssetHandler: NYPLAxisProtectedAssetHandling
+  let protectedAssetOpener: NYPLAxisProtectedAssetOpening
   
   var contentProtection: ContentProtection? {
-    return NYPLAxisContentProtection(protectedAssetHandler: protectedAssetHandler)
+    return NYPLAxisContentProtection(protectedAssetOpener: protectedAssetOpener)
   }
   
   /// I did not see this getting called anywhere in the code so left it to return true assuming this is the safest option.
