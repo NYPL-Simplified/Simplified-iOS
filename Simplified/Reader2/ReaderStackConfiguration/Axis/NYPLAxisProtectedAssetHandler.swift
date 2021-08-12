@@ -1,5 +1,5 @@
 //
-//  NYPLAxisProtectedAssetHandler.swift
+//  NYPLAxisProtectedAssetOpener.swift
 //  Open eBooks
 //
 //  Created by Raman Singh on 2021-05-18.
@@ -12,12 +12,13 @@ import R2Streamer
 
 typealias ProtectedAssetCompletion = (Result<ProtectedAsset, Publication.OpeningError>) -> Void
 
-protocol NYPLAxisProtectedAssetHandling {
-  func handleAsset(asset: FileAsset, fetcher: Fetcher,
-                   completion: @escaping ProtectedAssetCompletion)
+protocol NYPLAxisProtectedAssetOpening {
+  func openAsset(_ asset: FileAsset,
+                 fetcher: Fetcher,
+                 completion: @escaping ProtectedAssetCompletion)
 }
 
-struct NYPLAxisProtectedAssetHandler: NYPLAxisProtectedAssetHandling {
+struct NYPLAxisProtectedAssetOpener: NYPLAxisProtectedAssetOpening {
   
   private let bookReadingAdapter: NYPLAxisBookReadingAdapter
   
@@ -28,14 +29,14 @@ struct NYPLAxisProtectedAssetHandler: NYPLAxisProtectedAssetHandling {
     self.bookReadingAdapter = adapter
   }
   
-  /// Opens asset using `NYPLAxisBookReadingAdapter` which first downloads license, validates it,
-  /// extracts encrypted `AES` key from license, decrypts it, and uses the decrypted key to provide data to
-  /// the reader.
-  func handleAsset(asset: FileAsset, fetcher: Fetcher,
-                   completion: @escaping ProtectedAssetCompletion) {
+  /// Opens asset using the `bookReadingAdapter` instance property which first
+  /// decrypts the encrypted key from disk, and uses the decrypted key to unlock
+  ///  and provide data to the ereader.
+  func openAsset(_ asset: FileAsset,
+                 fetcher: Fetcher,
+                 completion: @escaping ProtectedAssetCompletion) {
     
-    bookReadingAdapter
-      .handleAsset(asset: asset, fetcher: fetcher, completion: completion)
+    bookReadingAdapter.openAsset(asset, fetcher: fetcher, completion: completion)
   }
   
 }

@@ -12,7 +12,7 @@ import R2Streamer
 
 struct NYPLAxisContentProtection: ContentProtection {
   
-  let protectedAssetHandler: NYPLAxisProtectedAssetHandling
+  let protectedAssetOpener: NYPLAxisProtectedAssetOpening
   
   func open(asset: PublicationAsset, fetcher: Fetcher, credentials: String?,
             allowUserInteraction: Bool, sender: Any?,
@@ -24,7 +24,7 @@ struct NYPLAxisContentProtection: ContentProtection {
       return
     }
     
-    protectedAssetHandler.handleAsset(asset: asset, fetcher: fetcher) { (result) in
+    protectedAssetOpener.openAsset(asset, fetcher: fetcher) { result in
       switch result {
       case .success(let protectedAsset):
         completion(.success(protectedAsset))
