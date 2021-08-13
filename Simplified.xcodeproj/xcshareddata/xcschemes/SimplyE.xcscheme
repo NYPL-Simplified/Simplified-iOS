@@ -82,6 +82,16 @@
                ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "73EEE7DE247F274E00A06D14"
+               BuildableName = "NYPLCardCreatorTests.xctest"
+               BlueprintName = "NYPLCardCreatorTests"
+               ReferencedContainer = "container:CardCreator-iOS/NYPLCardCreator.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
