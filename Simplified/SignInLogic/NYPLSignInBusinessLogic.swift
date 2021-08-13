@@ -636,6 +636,7 @@ extension NYPLSignInBusinessLogic {
 
   @objc func checkCardCreationEligibility(completion: @escaping () -> Void) {
     guard let parentBarcode = self.resolveUserBarcode() else {
+      Log.info(#function, "Ineligible for card creation: no barcode.")
       allowJuvenileCardCreation = false
       completion()
       return
@@ -645,6 +646,7 @@ extension NYPLSignInBusinessLogic {
     juvenileCardCreationCoordinator = coordinator
 
     coordinator.checkJuvenileCreationEligibility(parentBarcode: parentBarcode) { [weak self] error in
+      Log.info(#function, "Juvenile eligibility: \(error == nil). Error: \(String(describing: error))")
       self?.allowJuvenileCardCreation = (error == nil)
       completion()
     }

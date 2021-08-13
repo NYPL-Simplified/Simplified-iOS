@@ -55,7 +55,7 @@ extension NYPLSignInBusinessLogic {
       }
     }
 
-    return CardCreator.initialNavigationControllerWithConfiguration(config)
+    return CardCreator.initialNavigationController(configuration: config)
   }
 
   private func cardCreatorCredentials() -> (username: String, password: String) {
