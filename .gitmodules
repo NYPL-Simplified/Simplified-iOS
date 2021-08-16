@@ -13,3 +13,6 @@
 [submodule "NYPLAEToolkit"]
 	path = NYPLAEToolkit
 	url = git@github.com:NYPL-Simplified/NYPLAEToolkit.git
+[submodule "CardCreator-iOS"]
+	path = CardCreator-iOS
+	url = https://github.com/NYPL-Simplified/CardCreator-iOS.git
