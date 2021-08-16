@@ -109,7 +109,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
     }
     
     NYPLAnnotations.postBookmark(bookmark, forBookID: book.identifier) { serverAnnotationID in
-      Log.debug(#function, serverAnnotationID != nil ? "Bookmark upload succeed" : "Bookmark failed to upload")
+      Log.info(#function, serverAnnotationID != nil ? "Bookmark upload succeed" : "Bookmark failed to upload")
       bookmark.annotationId = serverAnnotationID
       self.bookRegistry.add(bookmark, forIdentifier: self.book.identifier)
     }
@@ -147,13 +147,13 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
     guard let currentAccount = currentLibraryAccountProvider.currentAccount,
         let details = currentAccount.details,
         let annotationId = bookmark.annotationId else {
-      Log.debug(#file, "Delete on Server skipped: Annotation ID did not exist for bookmark.")
+      Log.info(#file, "Delete on Server skipped: Annotation ID did not exist for bookmark.")
       return
     }
     
     if details.syncPermissionGranted && annotationId.count > 0 {
       NYPLAnnotations.deleteBookmark(annotationId: annotationId) { (success) in
-        Log.debug(#file, success ?
+        Log.info(#file, success ?
           "Bookmark successfully deleted" :
           "Failed to delete bookmark from server. Will attempt again on next Sync")
       }

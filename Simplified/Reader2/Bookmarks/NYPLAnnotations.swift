@@ -220,7 +220,7 @@ import R2Shared
                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       completion(nil)
       return
     }
@@ -257,6 +257,11 @@ import R2Shared
                                     selectorValue: selectorValue)
     let parameters = bookmark.dictionaryForJSONSerialization()
 
+    guard syncIsPossibleAndPermitted() else {
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
+      return
+    }
+
     postAnnotation(forBook: bookID,
                    withParameters: parameters,
                    queueOffline: true) { success, id in
@@ -282,7 +287,7 @@ import R2Shared
                                 completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       completion(nil)
       return
     }
@@ -312,7 +317,7 @@ import R2Shared
   class func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark]) {
 
     if !syncIsPossibleAndPermitted() {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       return
     }
 
@@ -320,7 +325,7 @@ import R2Shared
       if let annotationID = localBookmark.annotationId {
         deleteBookmark(annotationId: annotationID) { success in
           if success {
-            Log.debug(#file, "Server bookmark deleted: \(annotationID)")
+            Log.info(#file, "Server bookmark deleted: \(annotationID)")
           } else {
             Log.error(#file, "Bookmark not deleted from server. Moving on: \(annotationID)")
           }
@@ -333,7 +338,7 @@ import R2Shared
                             completionHandler: @escaping (_ success: Bool) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       completionHandler(false)
       return
     }
@@ -374,7 +379,7 @@ import R2Shared
                                   completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->()) {
 
     if !syncIsPossibleAndPermitted() {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       return
     }
 
@@ -420,6 +425,12 @@ import R2Shared
 
     let serializableBookmark = bookmark
       .serializableRepresentation(forMotivation: .bookmark, bookID: bookID)
+
+    guard syncIsPossibleAndPermitted() else {
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
+      completion(nil)
+      return
+    }
 
     postAnnotation(forBook: bookID,
                    withParameters: serializableBookmark,
@@ -478,12 +489,6 @@ import R2Shared
     timeout: TimeInterval = NYPLDefaultRequestTimeout,
     queueOffline: Bool,
     _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
-
-    guard syncIsPossibleAndPermitted() else {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
-      completionHandler(false, nil)
-      return
-    }
 
     guard let annotationsURL = NYPLAnnotations.annotationsURL else {
       Log.error(#file, "Annotations URL was nil while attempting to post")
