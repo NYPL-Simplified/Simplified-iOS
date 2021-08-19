@@ -151,6 +151,7 @@ static NSString *const RecordsKey = @"records";
 
 - (void)justLoad
 {
+  NYPLLOG_F(@"Current Library Acct UUID: %@", [AccountsManager sharedInstance].currentAccount.uuid);
   [self loadWithoutBroadcastingForAccount:[AccountsManager sharedInstance].currentAccount.uuid];
   [self broadcastChange];
 }
