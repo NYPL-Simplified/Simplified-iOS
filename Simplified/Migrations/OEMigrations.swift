@@ -176,6 +176,8 @@ extension NYPLMigrationManager {
       // Wipe out all downloaded books from disk.
       NYPLMyBooksDownloadCenter.shared()?.reset()
 
+      let registry = NYPLBookRegistry.shared()
+
       // Change the book state for our books so that they are downloadable
       // again. Note that there may be other sync operations in progress
       // already (syncResettingCache:completionHandler:backgroundFetchHandler:)
@@ -186,11 +188,10 @@ extension NYPLMigrationManager {
       // format anymore.
       if let allBooks = NYPLBookRegistry.shared().allBooks as? [NYPLBook] {
         for book in allBooks {
-          NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadNeeded.rawValue,
-                                                     forIdentifier: book.identifier)
+          registry.resetStateToDownloadNeeded(forIdentifier: book.identifier)
         }
       }
-      NYPLBookRegistry.shared().save()
+      registry.save()
     }
   }
 }
