@@ -27,7 +27,8 @@ import Foundation
     if (account != AccountsManager.NYPLAccountUUIDs[0]) {
       dirURL = dirURL.appendingPathComponent(String(account))
     }
-    
+
+    Log.info(#function, "Book content directory URL: \(dirURL)")
     return dirURL
   }
 }

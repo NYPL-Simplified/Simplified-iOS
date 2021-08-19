@@ -142,6 +142,10 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 // TODO: Remove when migrate to Swift, use setState:forIdentifier: instead
 - (void)setStateWithCode:(NSInteger)stateCode forIdentifier:(nonnull NSString *)identifier;
 
+// Reset the book state for the given book identifier to NYPLBookStateDownloadNeeded
+// for books that were in a downloaded/downloading states.
+- (void)resetStateToDownloadNeededForIdentifier:(nonnull NSString *)identifier;
+
 // Returns the state of a book given its identifier.
 - (NYPLBookState)stateForIdentifier:(nonnull NSString *)identifier;
 
