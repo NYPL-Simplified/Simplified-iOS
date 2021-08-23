@@ -15,10 +15,12 @@ extension NYPLMigrationManager {
     Log.info(#function, "AppVersion in UserDefaults: \(appVersionInUserDefaults) - Tokenized: \(versionComponents)")
 
     // Run through migration stages
+    #if FEATURE_DRM_CONNECTOR
     migrate_1_8_1(ifNeededFrom: versionComponents)
+    #endif
     migrate_1_9_0(ifNeededFrom: versionComponents)
   }
-
+  #if FEATURE_DRM_CONNECTOR
   /// v1.8.1
   /// Adept API changed to allow multiple accounts
   /// userID and deviceID will be nil
@@ -47,6 +49,7 @@ extension NYPLMigrationManager {
       }
     }
   }
+  #endif
 
   private static func migrate_1_9_0(ifNeededFrom previousVersion: [Int]) -> Void {
     // we run this even if previous version is empty because this migration

@@ -23,6 +23,9 @@ typedef NS_ENUM(NSUInteger, NYPLReaderFontSizeChange) {
 - (void)readerSettingsView:(nonnull NYPLReaderSettingsView *)readerSettingsView
          didSelectFontFace:(NYPLReaderSettingsFontFace)fontFace;
 
+- (void)readerSettingsView:(nonnull NYPLReaderSettingsView *)readerSettingsView
+didChangePublisherDefaults:(BOOL)isEnabled;
+
 @end
 
 //==============================================================================
@@ -38,6 +41,7 @@ typedef NS_ENUM(NSUInteger, NYPLReaderFontSizeChange) {
 @property (nonatomic, weak, nullable) id<NYPLReaderSettingsViewDelegate> delegate;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
+@property (nonatomic) BOOL publisherDefault;
 
 + (nonnull instancetype)new NS_UNAVAILABLE;
 - (nonnull instancetype)init NS_UNAVAILABLE;

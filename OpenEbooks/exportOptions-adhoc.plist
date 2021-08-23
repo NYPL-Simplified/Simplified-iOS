@@ -12,7 +12,7 @@
 	<string>manual</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>org.nypl.labs.SimplyE</key>
+		<key>org.nypl.labs.OpenEbooks</key>
 		<string>Open eBooks Ad Hoc</string>
 	</dict>
 </dict>

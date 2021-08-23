@@ -15,7 +15,7 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.over
 NSString * const _Nonnull ContentTypeOverdriveAudiobookActual = @"application/json";
 NSString * const _Nonnull ContentTypeReadiumLCP = @"application/vnd.readium.lcp.license.v1.0+json";
 NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip";
-
+NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplified.axisnow+json";
 @interface NYPLOPDSAcquisitionPath ()
 
 @property (nonatomic) NYPLOPDSAcquisitionRelation relation;
@@ -46,7 +46,12 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
   if (!types) {
     types = [NSSet setWithArray:@[
       ContentTypeOPDSCatalog,
+#if FEATURE_DRM_CONNECTOR
       ContentTypeAdobeAdept,
+#endif
+#if AXIS
+      ContentTypeAxis360,
+#endif
       ContentTypeBearerToken,
       ContentTypeEpubZip,
       ContentTypeFindaway,
@@ -77,7 +82,12 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
   if (!subtypesForTypes) {
     subtypesForTypes = @{
       ContentTypeOPDSCatalog: [NSSet setWithArray:@[
+#if FEATURE_DRM_CONNECTOR
         ContentTypeAdobeAdept,
+#endif
+#if AXIS
+        ContentTypeAxis360,
+#endif
         ContentTypeBearerToken,
         ContentTypeFindaway,
         ContentTypeEpubZip,
@@ -93,7 +103,9 @@ NSString * const _Nonnull ContentTypeAudiobookZip = @"application/audiobook+zip"
         ContentTypeEpubZip,
         ContentTypeAudiobookZip
       ]],
+#if FEATURE_DRM_CONNECTOR
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
+#endif
       ContentTypeBearerToken: [NSSet setWithArray:@[
         ContentTypeEpubZip,
         ContentTypeOpenAccessPDF,

@@ -27,7 +27,7 @@
 @property (nonatomic) NYPLBookButtonsState state;
 @property (nonatomic, weak) id<NYPLBookButtonsDelegate> delegate;
 @property (nonatomic, weak) id<NYPLBookDownloadCancellationDelegate> downloadingDelegate;
-@property (nonatomic) BOOL showReturnButtonIfApplicable;
+@property (nonatomic, readonly) BOOL showReturnButtonIfApplicable;
 
 - (void)configureForBookDetailsContext;
 

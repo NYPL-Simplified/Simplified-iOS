@@ -10,10 +10,17 @@ platform :ios do
 
   lane :fetch_install_provisioning do
     sigh(
-      app_identifier: ENV['APP_BUNDLE_ID']
+      app_identifier: "org.nypl.labs.SimplyE"
     )
     sigh(
-      app_identifier: ENV['APP_BUNDLE_ID'],
+      app_identifier: "org.nypl.labs.SimplyE",
+      adhoc: "true"
+    )
+    sigh(
+      app_identifier: "org.nypl.labs.OpenEbooks"
+    )
+    sigh(
+      app_identifier: "org.nypl.labs.OpenEbooks",
       adhoc: "true"
     )
   end

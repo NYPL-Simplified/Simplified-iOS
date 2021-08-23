@@ -35,7 +35,7 @@ fi
 # build
 # Note: xcodebuild creates archive `ARCHIVE_NAME.xcarchive` inside ARCHIVE_DIR
 xcodebuild -project $PROJECT_NAME \
-           -scheme $SCHEME \
+           -scheme "$SCHEME" \
            -sdk iphoneos \
            -configuration Release \
            -archivePath "$ARCHIVE_DIR/$ARCHIVE_NAME" \
@@ -48,4 +48,4 @@ mkdir -p "$DSYMS_PATH"
 find "$ARCHIVE_PATH" -name "*.dSYM"  | xargs -t -I{} cp -R {} "$DSYMS_PATH"
 
 echo "dSYMs are available at $DSYMS_PATH:"
-ls -l $DSYMS_PATH
+ls -l "$DSYMS_PATH"

@@ -90,7 +90,6 @@
   if(!self.buttonsView) {
     self.buttonsView = [[NYPLBookButtonsView alloc] init];
     self.buttonsView.delegate = self.delegate;
-    self.buttonsView.showReturnButtonIfApplicable = YES;
     [self.contentView addSubview:self.buttonsView];
     self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.buttonsView autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self.title];
