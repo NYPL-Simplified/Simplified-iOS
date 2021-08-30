@@ -19,6 +19,10 @@ extension NYPLMigrationManager {
     migrate_1_8_1(ifNeededFrom: versionComponents)
     #endif
     migrate_1_9_0(ifNeededFrom: versionComponents)
+
+    #if AXIS
+    migrate_2_1_1(ifNeededFrom: versionComponents)
+    #endif
   }
   #if FEATURE_DRM_CONNECTOR
   /// v1.8.1
@@ -148,4 +152,46 @@ extension NYPLMigrationManager {
     }
   }
 
+  /// Since v2.1.0 OE supports only Axis DRM books. Books
+  /// previously downloaded with Adobe DRM are treated as unsupported, therefore
+  /// not openable anymore in the ereader. (This was necessary because the
+  /// contract with Adobe ended at a hard date.)
+  /// To avoid confusion, and since the same books are redownloadable in Axis
+  /// format, we wipe out all downloaded content from disk, and change the state
+  /// of those books so that the user knows that they need to be downloaded
+  /// again.
+  private static func migrate_2_1_1(ifNeededFrom previousVersion: [Int]) -> Void {
+    guard !previousVersion.isEmpty, version(previousVersion, isLessThan: [2, 1, 1]) else {
+      return
+    }
+
+    let accountMgr = AccountsManager.shared
+    Log.info(#function, "accountMgr.currentAccountId=\(String(describing: accountMgr.currentAccountId))")
+
+    // we need to set up the account sets before resetting the download center,
+    // because otherwise the reset function will do nothing.
+    accountMgr.updateAccountSet { [weak accountMgr] _ in
+      Log.info(#function, "accountMgr.currentAccount.uuid=\(String(describing: accountMgr?.currentAccount?.uuid))")
+
+      // Wipe out all downloaded books from disk.
+      NYPLMyBooksDownloadCenter.shared()?.reset()
+
+      let registry = NYPLBookRegistry.shared()
+
+      // Change the book state for our books so that they are downloadable
+      // again. Note that there may be other sync operations in progress
+      // already (syncResettingCache:completionHandler:backgroundFetchHandler:)
+      // but those do not interfere with the code below because they won't
+      // change the book state. This dependency is not enforced in code and
+      // therefore it is very fragile. The need for this migration is
+      // short lived since users won't be able to check out books in Adobe
+      // format anymore.
+      if let allBooks = NYPLBookRegistry.shared().allBooks as? [NYPLBook] {
+        for book in allBooks {
+          registry.resetStateToDownloadNeeded(forIdentifier: book.identifier)
+        }
+      }
+      registry.save()
+    }
+  }
 }

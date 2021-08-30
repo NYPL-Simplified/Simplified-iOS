@@ -151,6 +151,7 @@ static NSString *const RecordsKey = @"records";
 
 - (void)justLoad
 {
+  NYPLLOG_F(@"Current Library Acct UUID: %@", [AccountsManager sharedInstance].currentAccount.uuid);
   [self loadWithoutBroadcastingForAccount:[AccountsManager sharedInstance].currentAccount.uuid];
   [self broadcastChange];
 }
@@ -506,7 +507,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     if(!record) {
-      @throw NSInvalidArgumentException;
+      return;
     }
     
     self.identifiersToRecords[identifier] = [record recordWithState:state];
@@ -519,6 +520,32 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 - (void)setStateWithCode:(NSInteger)stateCode forIdentifier:(nonnull NSString *)identifier
 {
   [self setState:stateCode forIdentifier:identifier];
+}
+
+- (void)resetStateToDownloadNeededForIdentifier:(nonnull NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    if (!record) {
+      return;
+    }
+
+    switch (record.state) {
+      case NYPLBookStateDownloading:
+      case NYPLBookStateDownloadFailed:
+      case NYPLBookStateDownloadSuccessful:
+      case NYPLBookStateUsed:
+        self.identifiersToRecords[identifier] = [record recordWithState:NYPLBookStateDownloadNeeded];
+        [self broadcastChange];
+        break;
+      case NYPLBookStateUnregistered:
+      case NYPLBookStateDownloadNeeded:
+      case NYPLBookStateHolding:
+      case NYPLBookStateUnsupported:
+      case NYPLBookStateSAMLStarted:
+        break;
+    }
+  }
 }
 
 - (NYPLBookState)stateForIdentifier:(NSString *const)identifier
