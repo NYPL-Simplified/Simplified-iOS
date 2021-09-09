@@ -35,6 +35,7 @@ import R2Navigator
 
   weak var delegate: NYPLUserSettingsReaderDelegate?
   let userSettings: NYPLR1R2UserSettings
+  private var didUpdateContentSize: Bool = false
 
   /// The designated initializer.
   /// - Parameter delegate: The object responsible to handle callbacks in
@@ -49,64 +50,73 @@ import R2Navigator
   required init?(coder: NSCoder) {
     fatalError("init(coder:) not implemented")
   }
-
+  
   override func loadView() {
-    let view = NYPLReaderSettingsView(width: 300)
+    let width: CGFloat = 300
+    let view = NYPLReaderSettingsView(width: width,
+                                      colorScheme: userSettings.colorScheme,
+                                      fontSize: userSettings.fontSize,
+                                      fontFace: userSettings.fontFace,
+                                      publisherDefault: userSettings.publisherDefault)
     view.delegate = self
-
-    view.colorScheme = userSettings.colorScheme
-    view.fontSize = userSettings.fontSize
-    view.fontFace = userSettings.fontFace
-    view.backgroundColor = userSettings.backgroundColor
-    view.publisherDefault = userSettings.publisherDefault
-    
-    self.view = view;
+    // The superview of this view controller sets a auto resizing constraint
+    // if it does not know the size of this view. At this point, the NYPLReaderSettingsView
+    // has not been lay out, so we are using an estimated size to avoid the constraint being created.
+    self.preferredContentSize = .init(width: width, height: 400)
+    self.view = view
   }
+  
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
 
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    self.preferredContentSize = self.view.bounds.size
+    if !didUpdateContentSize {
+      // We are updating the content size here because
+      // 1) NYPLReaderSettingsView is laid out and size is now known
+      // 2) User will not see the awkward changes of the view
+      let contentSize = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+      self.preferredContentSize = contentSize
+      
+      if let view = self.view as? NYPLReaderSettingsView {
+        view.updateUI()
+      }
+      
+      didUpdateContentSize = true
+    }
   }
 }
 
 // MARK: - NYPLReaderSettingsViewDelegate
 
 extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
-  func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
-                          didSelectBrightness brightness: CGFloat) {
+  func didSelectBrightness(_ brightness: CGFloat) {
     UIScreen.main.brightness = brightness
   }
-
-  func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
-                          didSelect colorScheme: NYPLReaderSettingsColorScheme) {
+  
+  func didSelectColorScheme(_ colorScheme: NYPLReaderSettingsColorScheme) {
     userSettings.colorScheme = colorScheme
     userSettings.save()
     delegate?.applyCurrentSettings()
   }
-
-  func readerSettingsView(_ settingsView: NYPLReaderSettingsView,
-                          didChangeFontSize change: NYPLReaderFontSizeChange) -> NYPLReaderSettingsFontSize {
-
-    let newSize = userSettings.modifyFontSize(fromOldValue: settingsView.fontSize,
+  
+  func settingsView(_ view: NYPLReaderSettingsView,
+                    didChangeFontSize change: NYPLReaderFontSizeChange) -> NYPLReaderSettingsFontSize {
+    let newSize = userSettings.modifyFontSize(fromOldValue: view.fontSize,
                                               effectuating: change)
     userSettings.save()
     delegate?.applyCurrentSettings()
 
     return newSize
   }
-
-  func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
-                          didSelect fontFace: NYPLReaderSettingsFontFace) {
+  
+  func didSelectFontFace(_ fontFace: NYPLReaderSettingsFontFace) {
     userSettings.fontFace = fontFace
     userSettings.save()
     delegate?.applyCurrentSettings()
   }
-
-  func readerSettingsView(_  readerSettingsView: NYPLReaderSettingsView,
-                          didChangePublisherDefaults isEnabled: Bool) {
+  
+  func didChangePublisherDefaults(_ isEnabled: Bool) {
     userSettings.publisherDefault = isEnabled
     userSettings.save()
     delegate?.applyCurrentSettings()
   }
-
 }
