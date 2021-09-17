@@ -168,7 +168,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                       1,
                                       CGRectGetHeight(self.contentView.frame));
       self.borderRight = [[UIView alloc] initWithFrame:frame];
-      self.borderRight.backgroundColor = [UIColor lightGrayColor];
+      self.borderRight.backgroundColor = [NYPLConfiguration fieldBorderColor];
       self.borderRight.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
                                            UIViewAutoresizingFlexibleHeight);
       [self.contentView addSubview:self.borderRight];
@@ -179,7 +179,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                       CGRectGetWidth(self.contentView.frame),
                                       1);
       self.borderBottom = [[UIView alloc] initWithFrame:frame];
-      self.borderBottom.backgroundColor = [UIColor lightGrayColor];
+      self.borderBottom.backgroundColor = [NYPLConfiguration fieldBorderColor];
       self.borderBottom.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin |
                                             UIViewAutoresizingFlexibleWidth);
       [self.contentView addSubview:self.borderBottom];

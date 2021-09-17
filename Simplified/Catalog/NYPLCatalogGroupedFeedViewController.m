@@ -76,7 +76,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
   
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
@@ -85,7 +85,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
   self.tableView.alpha = 0.0;
-  self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.tableView.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -245,7 +245,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
                                                          initWithFrame:progressViewFrame];
     progressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
-    progressView.color = [UIColor colorWithWhite:0.95 alpha:1.0];
+    progressView.color = [NYPLConfiguration fieldBackgroundColor];
     progressView.layer.borderWidth = 2;
     progressView.speedMultiplier = 2.0;
     [progressView startAnimating];
@@ -285,13 +285,18 @@ viewForHeaderInSection:(NSInteger const)section
   CGRect const frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), kSectionHeaderHeight);
   UIView *const view = [[UIView alloc] initWithFrame:frame];
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-  view.backgroundColor = [[NYPLConfiguration backgroundColor] colorWithAlphaComponent:0.9];
+  view.backgroundColor = [[NYPLConfiguration defaultBackgroundColor] colorWithAlphaComponent:0.9];
   
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.titleLabel.font = [UIFont systemFontOfSize:21];
     NSString *const title = ((NYPLCatalogLane *) self.feed.lanes[section]).title;
     [button setTitle:title forState:UIControlStateNormal];
+    if (@available(iOS 12.0, *)) {
+      if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+        [button setTitleColor:[NYPLConfiguration defaultTextColor] forState:UIControlStateNormal];
+      }
+    }
     [button sizeToFit];
     if (CGRectGetWidth(button.frame) > self.tableView.frame.size.width - 100) {
       button.frame = CGRectMake(7, 5, self.tableView.frame.size.width - 100, CGRectGetHeight(button.frame));

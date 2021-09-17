@@ -14,8 +14,6 @@
 
 + (UIColor *)accentColor;
 
-+ (UIColor *)backgroundColor;
-
 + (UIColor *)readerBackgroundColor;
 
 + (UIColor *)readerBackgroundDarkColor;

@@ -63,11 +63,7 @@ class NYPLAgeCheckViewController: UIViewController {
   func setupView() {
     self.title = NSLocalizedString("Age Verification", comment: "Title for Age Verification")
     
-    if #available(iOS 13.0, *) {
-      view.backgroundColor = UIColor.systemGray6
-    } else {
-      view.backgroundColor = .white
-    }
+    view.backgroundColor = NYPLConfiguration.fieldBackgroundColor
     
     navigationItem.setRightBarButton(rightBarButtonItem, animated: true)
     
@@ -130,15 +126,9 @@ class NYPLAgeCheckViewController: UIViewController {
     
     // Styling
     let placeHolderString = NSLocalizedString("Select Year", comment: "Placeholder for birth year textfield")
-    if #available(iOS 13.0, *) {
-      textfield.attributedPlaceholder = NSAttributedString(string: placeHolderString, attributes: [NSAttributedString.Key.foregroundColor: UIColor.label])
-      textfield.backgroundColor = .systemBackground
-      textfield.layer.borderColor = UIColor.separator.cgColor
-    } else {
-      textfield.backgroundColor = .white
-      textfield.attributedPlaceholder = NSAttributedString(string: placeHolderString, attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkText])
-      textfield.layer.borderColor = UIColor.darkGray.cgColor
-    }
+    textfield.attributedPlaceholder = NSAttributedString(string: placeHolderString, attributes: [NSAttributedString.Key.foregroundColor: NYPLConfiguration.defaultTextColor])
+    textfield.backgroundColor = NYPLConfiguration.defaultBackgroundColor
+    textfield.layer.borderColor = NYPLConfiguration.fieldBorderColor.cgColor
     
     textfield.layer.borderWidth = 0.5
     
@@ -152,7 +142,7 @@ class NYPLAgeCheckViewController: UIViewController {
   
   lazy var rightBarButtonItem: UIBarButtonItem = {
     let item = UIBarButtonItem(title: NSLocalizedString("Next", comment: "Button title for completing age verification"), style: .plain, target: self, action: #selector(completeAgeCheck))
-    item.tintColor = .systemBlue
+    item.tintColor = NYPLConfiguration.actionColor
     item.isEnabled = false
     return item
   }()

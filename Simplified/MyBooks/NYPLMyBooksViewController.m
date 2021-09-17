@@ -119,7 +119,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
   
   self.activeFacetShow = FacetShowAll;
   self.activeFacetSort = FacetSortAuthor;
@@ -144,7 +144,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.instructionsLabel.hidden = YES;
   self.instructionsLabel.text = NSLocalizedString(@"MyBooksGoToCatalog", nil);
   self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
-  self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
+  self.instructionsLabel.textColor = [NYPLConfiguration fieldTextColor];
   self.instructionsLabel.numberOfLines = 0;
   [self.view addSubview:self.instructionsLabel];
   [self.instructionsLabel autoCenterInSuperview];

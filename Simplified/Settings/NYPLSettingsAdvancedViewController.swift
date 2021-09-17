@@ -22,7 +22,7 @@ import UIKit
     let tableView = UITableView.init(frame: .zero, style: .grouped)
     tableView.delegate = self
     tableView.dataSource = self
-    tableView.backgroundColor = NYPLConfiguration.backgroundColor()
+    tableView.backgroundColor = NYPLConfiguration.defaultBackgroundColor
     self.view.addSubview(tableView)
     tableView.autoPinEdgesToSuperviewEdges()
   }
@@ -90,7 +90,7 @@ import UIKit
     let cell = UITableViewCell()
     cell.textLabel?.text = NSLocalizedString("Delete Server Data", comment:"")
     cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
-    cell.textLabel?.textColor = .red
+    cell.textLabel?.textColor = NYPLConfiguration.deleteActionColor
     return cell
   }
   

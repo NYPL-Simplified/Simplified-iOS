@@ -31,14 +31,6 @@
   return [UIColor colorWithRed:0.0/255.0 green:144/255.0 blue:196/255.0 alpha:1.0];
 }
 
-+ (UIColor *)backgroundColor
-{
-  if (@available(iOS 13, *)) {
-    return [UIColor colorNamed: @"ColorBackground"];
-  }
-  return [UIColor colorWithWhite:250/255.0 alpha:1.0];
-}
-
 + (UIColor *)readerBackgroundColor
 {
   return [UIColor colorWithWhite:250/255.0 alpha:1.0];

@@ -84,7 +84,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    view.backgroundColor = NYPLConfiguration.backgroundColor()
+    view.backgroundColor = NYPLConfiguration.defaultBackgroundColor
 
     navigationItem.rightBarButtonItems = makeNavigationBarButtons()
     updateNavigationBar(animated: false)
@@ -112,7 +112,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 
     positionLabel.translatesAutoresizingMaskIntoConstraints = false
     positionLabel.font = .systemFont(ofSize: 12)
-    positionLabel.textColor = .darkGray
+    positionLabel.textColor = NYPLConfiguration.fieldTextColor
     positionLabel.textAlignment = .center
     positionLabel.lineBreakMode = .byTruncatingTail
     view.addSubview(positionLabel)
@@ -305,7 +305,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       makeItem(.flexibleSpace),
     ]
     toolbar.isHidden = !UIAccessibility.isVoiceOverRunning
-    toolbar.tintColor = UIColor.black
+    toolbar.tintColor = NYPLConfiguration.defaultTextColor
     return toolbar
   }()
 

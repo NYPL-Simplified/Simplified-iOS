@@ -40,12 +40,12 @@
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
 
   self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight
                                    | UIViewAutoresizingFlexibleWidth);
-  self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.webView.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
   self.webView.navigationDelegate = self;
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL

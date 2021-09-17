@@ -41,9 +41,9 @@ import Foundation
     self.facetView.isHidden = true;
 
     let bottomBorderView = UIView()
-    bottomBorderView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.9)
+    bottomBorderView.backgroundColor = NYPLConfiguration.fieldBorderColor.withAlphaComponent(0.9)
     let topBorderView = UIView()
-    topBorderView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.9)
+    topBorderView.backgroundColor = NYPLConfiguration.fieldBorderColor.withAlphaComponent(0.9)
 
     addSubview(self.facetView)
     addSubview(self.entryPointView)

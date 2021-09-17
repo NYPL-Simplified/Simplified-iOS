@@ -30,7 +30,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-  self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.messageLabel.textColor = [NYPLConfiguration defaultBackgroundColor];
   self.messageLabel.numberOfLines = 0;
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self addSubview:self.messageLabel];

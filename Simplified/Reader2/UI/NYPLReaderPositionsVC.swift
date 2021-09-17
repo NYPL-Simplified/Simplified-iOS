@@ -87,7 +87,7 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
 
     let readerSettings = NYPLReaderSettings.shared()
 
-    tableView.separatorColor = .gray
+    tableView.separatorColor = NYPLConfiguration.fieldBorderColor
     view.backgroundColor = readerSettings.backgroundColor
     tableView.backgroundColor = view.backgroundColor
     noBookmarksLabel.textColor = readerSettings.foregroundColor

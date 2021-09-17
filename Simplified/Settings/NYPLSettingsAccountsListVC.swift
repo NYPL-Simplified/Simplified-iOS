@@ -79,7 +79,7 @@
 
     self.title = NSLocalizedString("Accounts",
                                    comment: "A title for a list of libraries the user may select or add to.")
-    self.view.backgroundColor = NYPLConfiguration.backgroundColor()
+    self.view.backgroundColor = NYPLConfiguration.defaultBackgroundColor
     self.navigationItem.rightBarButtonItem =
       UIBarButtonItem(title: NSLocalizedString("Add Library", comment: "Title of button to add a new library"),
                       style: .plain,

@@ -18,7 +18,13 @@ final class NYPLContentBadgeImageView: UIImageView {
 
   @objc required init(badgeImage: NYPLBadgeImage) {
     super.init(image: UIImage(named: badgeImage.assetName()))
-    backgroundColor = NYPLConfiguration.mainColor()
+    if #available(iOS 12.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+      backgroundColor = NYPLConfiguration.defaultBackgroundColor
+    } else {
+      backgroundColor = NYPLConfiguration.mainColor()
+    }
+    
     contentMode = .scaleAspectFit
   }
 

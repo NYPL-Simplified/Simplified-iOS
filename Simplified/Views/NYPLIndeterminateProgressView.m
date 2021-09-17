@@ -1,4 +1,5 @@
 #import "NYPLIndeterminateProgressView.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLIndeterminateProgressView ()
 
@@ -17,7 +18,7 @@
   self = [super initWithFrame:frame];
   if(!self) return nil;
   
-  self.color = [UIColor lightGrayColor];
+  self.color = [NYPLConfiguration progressBarBackgroundColor];
   self.speedMultiplier = 1.0;
   
   self.clipsToBounds = YES;

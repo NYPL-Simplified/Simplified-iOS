@@ -35,11 +35,11 @@ class NYPLWelcomeEULAViewController : UIViewController {
     }
     
     self.navigationController?.isToolbarHidden = false
-    self.view.backgroundColor = NYPLConfiguration.backgroundColor()
+    self.view.backgroundColor = NYPLConfiguration.defaultBackgroundColor
     
     self.webView.frame = self.view.frame
     self.webView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-    self.webView.backgroundColor = NYPLConfiguration.backgroundColor()
+    self.webView.backgroundColor = NYPLConfiguration.defaultBackgroundColor
     self.webView.navigationDelegate = self
     self.view.addSubview(self.webView)
 
