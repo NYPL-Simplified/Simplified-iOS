@@ -56,16 +56,22 @@ class NYPLLastReadPositionPoster {
     guard let location = NYPLBookLocation(locator: locator) else {
       return
     }
+
+    // save location locally, so that it can be later be saved on disk
     bookRegistryProvider.setLocation(location, forIdentifier: book.identifier)
 
-    let selectorValue = NYPLBookmarkFactory
-      .makeLocatorString(chapterHref: locator.href,
-                         chapterProgression: Float(chapterProgress))
-    postReadPosition(selectorValue: selectorValue)
+    // attempt to store location on server
+    if NYPLAnnotations.syncIsPossibleAndPermitted() {
+      let selectorValue = NYPLBookmarkFactory
+        .makeLocatorString(chapterHref: locator.href,
+                           chapterProgression: Float(chapterProgress))
+
+      postReadPosition(selectorValue: selectorValue)
+    }
   }
 
-  /// Deprecated
-  ///
+  // MARK:- Private helpers
+  
   /// Post the read position to server.
   ///
   /// Requests are throttled by a `throttlingInterval` to avoid an unreasonably
@@ -88,18 +94,21 @@ class NYPLLastReadPositionPoster {
     }
   }
 
+  @objc private func postQueuedReadPositionInSerialQueue() {
+    if NYPLAnnotations.syncIsPossibleAndPermitted() {
+      serialQueue.async { [weak self] in
+        self?.postQueuedReadPosition()
+      }
+    }
+  }
+
+  /// Wrapper for actual api call.
   private func postQueuedReadPosition() {
     if self.queuedReadPosition != "" {
       NYPLAnnotations.postReadingPosition(forBook: book.identifier,
                                           selectorValue: self.queuedReadPosition)
       self.queuedReadPosition = ""
       self.lastReadPositionUploadDate = Date()
-    }
-  }
-
-  @objc private func postQueuedReadPositionInSerialQueue() {
-    serialQueue.async { [weak self] in
-      self?.postQueuedReadPosition()
     }
   }
 }

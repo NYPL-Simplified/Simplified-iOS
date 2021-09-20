@@ -63,7 +63,7 @@ fileprivate let nullString = "null"
   case nilCFI = 500
   case bookmarkReadError = 501
 
-  // Parse failure
+  // Parse / serialization failures
   case parseProfileDataCorrupted = 600
   case parseProfileTypeMismatch = 601
   case parseProfileValueNotFound = 602
@@ -75,6 +75,8 @@ fileprivate let nullString = "null"
   case parseProblemDocFail = 608
   case overdriveFulfillResponseParseFail = 609
   case authDataParseFail = 610
+  case parseFail = 611
+  case serializationFail = 612
 
   // account management
   case authDocLoadFail = 700
@@ -284,7 +286,7 @@ fileprivate let nullString = "null"
       metadata[NSUnderlyingErrorKey] = error
     }
     addAccountInfoToMetadata(&metadata)
-    
+
     let userInfo = additionalInfo(severity: .info,
                                   message: "Local Login Failed With Error",
                                   metadata: metadata)
@@ -419,9 +421,7 @@ fileprivate let nullString = "null"
       }
     }
 
-    let userInfo = additionalInfo(
-      severity: .error,
-      metadata: metadata)
+    let userInfo = additionalInfo(severity: .error, metadata: metadata)
 
     let err = NSError(domain: summary,
                       code: NYPLErrorCode.parseProblemDocFail.rawValue,

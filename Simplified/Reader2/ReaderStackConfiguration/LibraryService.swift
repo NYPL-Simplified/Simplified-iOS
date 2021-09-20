@@ -37,9 +37,9 @@ final class LibraryService: Loggable {
     #endif
     
     #if AXIS
-    if let protectedAssetHandler = NYPLAxisProtectedAssetHandler() {
+    if let protectedAssetOpener = NYPLAxisProtectedAssetOpener() {
       drmLibraryServices.append(
-        NYPLAxisLibraryService(protectedAssetHandler: protectedAssetHandler))
+        NYPLAxisLibraryService(protectedAssetOpener: protectedAssetOpener))
     }
     #endif
 

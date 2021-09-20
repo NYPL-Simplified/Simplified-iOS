@@ -30,5 +30,6 @@
 @property (nonatomic, readonly) BOOL showReturnButtonIfApplicable;
 
 - (void)configureForBookDetailsContext;
+- (void)setReadButtonAccessibilityLabelWithMessage:(NSString *) message;
 
 @end

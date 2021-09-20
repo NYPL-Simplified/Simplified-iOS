@@ -28,7 +28,13 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
     // publisher's defaults are off.
     // - publisher's defaults = false ensures that font size is changeable
     // even for EPUBs that specify a `fontSize: small` value in their CSS.
-    let settings = UserSettings(hyphens: true, publisherDefaults: false)
+    // - paragraphMargins == 0.5 when VoiceOver is active ensures sufficient
+    // separation between paragraphs so that when continuous reading is enabled
+    // a swipe-right gesture does not skip to the end of the chapter instead
+    // going to the next chapter as it should.
+    let settings = UserSettings(hyphens: true,
+                                publisherDefaults: false,
+                                paragraphMargins: UIAccessibility.isVoiceOverRunning ? 0.5 : nil)
 
     // the "preload" settings were suggested by R2 engineers as a way to limit
     // the possible race conditions between restoring the initial location

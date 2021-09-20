@@ -220,7 +220,7 @@ import R2Shared
                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       completion(nil)
       return
     }
@@ -257,15 +257,18 @@ import R2Shared
                                     selectorValue: selectorValue)
     let parameters = bookmark.dictionaryForJSONSerialization()
 
+    guard syncIsPossibleAndPermitted() else {
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
+      return
+    }
+
     postAnnotation(forBook: bookID,
                    withParameters: parameters,
-                   queueOffline: true) { success, id in
-      guard success else {
-        NYPLErrorLogger.logError(withCode: .apiCall,
+                   queueOffline: true) { result in
+      if case let .failure(err) = result {
+        NYPLErrorLogger.logError(err,
                                  summary: "Error posting reading progress",
-                                 metadata: [
-                                  "bookID": bookID,
-                                  "annotationID": id ?? "N/A"])
+                                 metadata: ["bookID": bookID])
         return
       }
       Log.debug(#file, "Successfully saved Reading Position to server: \(selectorValue)")
@@ -282,7 +285,7 @@ import R2Shared
                                 completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       completion(nil)
       return
     }
@@ -312,7 +315,7 @@ import R2Shared
   class func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark]) {
 
     if !syncIsPossibleAndPermitted() {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       return
     }
 
@@ -320,7 +323,7 @@ import R2Shared
       if let annotationID = localBookmark.annotationId {
         deleteBookmark(annotationId: annotationID) { success in
           if success {
-            Log.debug(#file, "Server bookmark deleted: \(annotationID)")
+            Log.info(#file, "Server bookmark deleted: \(annotationID)")
           } else {
             Log.error(#file, "Bookmark not deleted from server. Moving on: \(annotationID)")
           }
@@ -333,7 +336,7 @@ import R2Shared
                             completionHandler: @escaping (_ success: Bool) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       completionHandler(false)
       return
     }
@@ -374,7 +377,7 @@ import R2Shared
                                   completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->()) {
 
     if !syncIsPossibleAndPermitted() {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
       return
     }
 
@@ -421,18 +424,24 @@ import R2Shared
     let serializableBookmark = bookmark
       .serializableRepresentation(forMotivation: .bookmark, bookID: bookID)
 
+    guard syncIsPossibleAndPermitted() else {
+      Log.info(#file, "Library account does not support sync or sync is disabled by user.")
+      completion(nil)
+      return
+    }
+
     postAnnotation(forBook: bookID,
                    withParameters: serializableBookmark,
-                   queueOffline: false) { success, id in
-
-                    if success == false {
-                      NYPLErrorLogger.logError(withCode: .apiCall,
-                                               summary: "Error posting bookmark",
-                                               metadata: [
-                                                "bookID": bookID,
-                                                "annotationID": id ?? "N/A"])
-                    }
-                    completion(id)
+                   queueOffline: false) { result in
+      switch result {
+      case .success(let id):
+        completion(id)
+      case .failure(let err):
+        NYPLErrorLogger.logError(err,
+                                 summary: "Error posting bookmark",
+                                 metadata: ["bookID": bookID])
+        completion(nil)
+      }
     }
   }
 
@@ -472,28 +481,30 @@ import R2Shared
   }
 
   /// Serializes the `parameters` into JSON and POSTs them to the server.
+  ///
+  /// - Note: Does not log error reports to Crashlytics. That responsibility is
+  /// left to the caller.
   private class func postAnnotation(
     forBook bookID: String,
     withParameters parameters: [String: Any],
     timeout: TimeInterval = NYPLDefaultRequestTimeout,
     queueOffline: Bool,
-    _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
-
-    guard syncIsPossibleAndPermitted() else {
-      Log.debug(#file, "Account does not support sync or sync is disabled.")
-      completionHandler(false, nil)
-      return
-    }
+    _ completionHandler: @escaping (_ result: Result<String?, Error>) -> ()) {
 
     guard let annotationsURL = NYPLAnnotations.annotationsURL else {
-      Log.error(#file, "Annotations URL was nil while attempting to post")
-      completionHandler(false, nil)
+      let err = NSError(domain: "Error posting annotation",
+                        code: NYPLErrorCode.appLogicInconsistency.rawValue,
+                        userInfo: ["Reason": "annotationsURL is nil"])
+      completionHandler(.failure(err))
       return
     }
 
     guard let jsonData = makeSubmissionData(fromRepresentation: parameters) else {
-      Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
-      completionHandler(false, nil)
+      let err = NSError(domain: "Error posting annotation",
+                        code: NYPLErrorCode.serializationFail.rawValue,
+                        userInfo: ["Reason": "Could not create JSON body from input params",
+                                   "Serializable annotation params": parameters])
+      completionHandler(.failure(err))
       return
     }
 
@@ -504,28 +515,31 @@ import R2Shared
     request.timeoutInterval = timeout
 
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      if let error = error as NSError? {
-        Log.error(#file, "Annotation POST error (nsCode: \(error.code) Description: \(error.localizedDescription))")
-        if (NetworkQueue.StatusCodes.contains(error.code)) && (queueOffline == true) {
+      if let err = error as NSError? {
+        Log.error(#file, "Annotation POST error (nsCode: \(err.code) Description: \(err.localizedDescription))")
+        if NetworkQueue.StatusCodes.contains(err.code) && queueOffline {
           self.addToOfflineQueue(bookID, annotationsURL, parameters)
         }
-        completionHandler(false, nil)
-        return
-      }
-      guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-        Log.error(#file, "Annotation POST error: No response received from server")
-        completionHandler(false, nil)
+        completionHandler(.failure(err))
         return
       }
 
-      if statusCode == 200 {
-        Log.debug(#file, "Annotation POST: Success 200.")
-        let serverAnnotationID = annotationID(fromNetworkData: data)
-        completionHandler(true, serverAnnotationID)
-      } else {
-        Log.error(#file, "Annotation POST: Response Error. Status Code: \(statusCode)")
-        completionHandler(false, nil)
+      guard let statusCode = (response as? HTTPURLResponse)?.statusCode,
+            statusCode == 200
+      else {
+        let err = NSError(domain: "Error posting annotation",
+                          code: NYPLErrorCode.responseFail.rawValue,
+                          userInfo: [
+                            "Serializable annotation params": parameters,
+                            "Response": response ?? "N/A"
+                          ])
+        completionHandler(.failure(err))
+        return
       }
+
+      Log.info(#file, "Annotation POST: Success 200.")
+      let serverAnnotationID = annotationID(fromNetworkData: data)
+      completionHandler(.success(serverAnnotationID))
     }
     task.resume()
   }
@@ -539,12 +553,12 @@ import R2Shared
       Log.error(#file, "No Annotation ID saved: JSON could not be created from data.")
       return nil
     }
-    if let annotationID = json[NYPLBookmarkSpec.Id.key] as? String {
-      return annotationID
-    } else {
+    guard let annotationID = json[NYPLBookmarkSpec.Id.key] as? String else {
       Log.error(#file, "No Annotation ID saved: Key/Value not found in JSON response.")
       return nil
     }
+
+    return annotationID
   }
 
   /// Annotation-syncing is possible only if the given `account` is signed-in
