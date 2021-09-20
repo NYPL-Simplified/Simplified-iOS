@@ -92,50 +92,7 @@ completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
       return;
     }
 
-    if (data == nil) {
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedNoData
-                                summary:@"NYPLOPDSFeed: no data from server"
-                               metadata:@{
-                                 @"Request": [request loggableString],
-                                 @"Response": response ?: @"N/A",
-                               }];
-      NYPLAsyncDispatch(^{handler(nil, nil);});
-      return;
-    }
-
-    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-      NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*)response;
-
-      if (httpResp.statusCode < 200 || httpResp.statusCode > 299) {
-        // this captures a situation where (e.g.) borrow requests to the
-        // Brooklyn lib come back with a 500 status code, no error, and non-nil
-        // data containing "An internal error occurred" plain text.
-        NSString *msg = [NSString stringWithFormat:@"Got %ld HTTP status with no error object.", (long)httpResp.statusCode];
-
-        NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-
-        NSDictionary *problemDocDict = nil;
-        if (response.isProblemDocument) {
-          problemDocDict = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
-        }
-
-        [NYPLErrorLogger logNetworkError:error
-                                    code:NYPLErrorCodeApiCall
-                                 summary:@"NYPLOPDSFeed: HTTP response error"
-                                 request:request
-                                response:response
-                                metadata:@{
-                                  @"receivedData": dataString ?: @"N/A",
-                                  @"receivedDataLength (bytes)": @(data.length),
-                                  @"problemDoc": problemDocDict ?: @"N/A",
-                                  @"context": msg ?: @"N/A"
-                                }];
-
-        NYPLAsyncDispatch(^{handler(nil, problemDocDict);});
-        return;
-      }
-    }
-    
+    // at this point NYPLNetworkExecutor contract ensures that `data` is not nil
     NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
     if(!feedXML) {
       NYPLLOG(@"Failed to parse data as XML.");

@@ -51,7 +51,7 @@
     
     self.viewControllers = @[self.primaryNavigationController,
                              [[UINavigationController alloc] initWithRootViewController:
-                              [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts]]];
+                              [[NYPLSettingsAccountsListVC alloc] initWithAccounts:accounts]]];
     
     [self highlightFirstTableViewRow:YES];
   } else {
@@ -71,7 +71,7 @@
      scrollPosition:UITableViewScrollPositionMiddle];
   } else {
     [self.primaryNavigationController.primaryTableViewController.tableView
-     deselectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(                                     NYPLSettingsPrimaryTableViewControllerItemAccount)
+     deselectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(NYPLSettingsPrimaryTableViewControllerItemAccount)
      animated:NO];
   }
 }
@@ -101,7 +101,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
   switch(item) {
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
-      viewController = [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts];
+      viewController = [[NYPLSettingsAccountsListVC alloc] initWithAccounts:accounts];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[RemoteHTMLViewController alloc]
