@@ -143,6 +143,10 @@
 "Next Chapter" = "Capitolo successivo";
 
 // NYPLReaderSettingsView
+"Special Font" = "Font speciale";
+"Sans" = "Sans";
+"Serif" = "Serif";
+"Open Dyslexic" = "Font per dislessia";
 "SansFont" = "carattere sans";
 "SerifFont" = "carattere serif";
 "OpenDyslexicFont" = "carattere aperto dislessico";
@@ -152,6 +156,9 @@
 "DecreaseFontSize" = "Diminuire la dimensione del carattere";
 "IncreaseFontSize" = "Aumenta dimensione caratteri";
 "BrightnessSlider" = "cursore Luminosità";
+"Pub" = "Edit.";
+"Publisher's Default" = "Impostazioni dell'editore";
+"Show the publisher-specified fonts and layout choices in this ebook" = "Usa le impostazioni specificate dall'editore per il testo e la formattazione di questo ebook";
 
 // NYPLReaderSettingsViewController
 "ReaderViewControllerToggleReaderSettings" = "impostazioni del lettore Toggle";
