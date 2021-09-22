@@ -54,6 +54,20 @@
             BlueprintName = "Open eBooks"
             ReferencedContainer = "container:Simplified.xcodeproj">
          </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "5938EE73268390F000434468"
+            BuildableName = "NYPLAxis.framework"
+            BlueprintName = "NYPLAxis"
+            ReferencedContainer = "container:Axis-iOS/NYPLAxis.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1112A8251A3247D2002B8CC1"
+            BuildableName = "libTenPrintCover.a"
+            BlueprintName = "TenPrintCover"
+            ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
+         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference

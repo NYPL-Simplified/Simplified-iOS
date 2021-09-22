@@ -33,3 +33,15 @@ xcodebuild -archivePath "$ARCHIVE_PATH" \
             -allowProvisioningUpdates \
             -exportArchive | \
             if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi
+
+# re-sign app because until we upgrade our build system to Big Sur/Xcode 13,
+# the signature provided by Xcode 12 is not compatible with iOS 15,
+# so ad-hoc builds won't be able to be installed on iOS 15 devices.
+# Full discussion: https://developer.apple.com/forums/thread/682775
+SIGNING_IDENTITY=`security find-identity -v -p codesigning | grep -i "The New York Library Astor, Lenox, and Tilden Foundations" | awk '{print $2}'`
+echo "SIGNING_IDENTITY=$SIGNING_IDENTITY"
+unzip "$ADHOC_EXPORT_PATH/$APP_NAME.ipa" -d "$ADHOC_EXPORT_PATH"
+codesign -s "$SIGNING_IDENTITY" -f --preserve-metadata --generate-entitlement-der "$ADHOC_EXPORT_PATH/Payload/$APP_NAME.app"
+rm "$ADHOC_EXPORT_PATH/$APP_NAME.ipa"
+cd "$ADHOC_EXPORT_PATH"
+zip -r "$APP_NAME.ipa" Payload

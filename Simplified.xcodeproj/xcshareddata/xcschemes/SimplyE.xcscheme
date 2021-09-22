@@ -58,6 +58,34 @@
             BlueprintName = "SimplyE"
             ReferencedContainer = "container:Simplified.xcodeproj">
          </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1112A8251A3247D2002B8CC1"
+            BuildableName = "libTenPrintCover.a"
+            BlueprintName = "TenPrintCover"
+            ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "14E61C5B20DD7C4800124E2B"
+            BuildableName = "NYPLCardCreator.framework"
+            BlueprintName = "NYPLCardCreator"
+            ReferencedContainer = "container:CardCreator-iOS/NYPLCardCreator.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "5A569A361B835925003B5B61"
+            BuildableName = "libADEPT.a"
+            BlueprintName = "ADEPT"
+            ReferencedContainer = "container:adept-ios/ADEPT.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "7BB4E7D020A0E1D1002E1360"
+            BuildableName = "NYPLAEToolkit.framework"
+            BlueprintName = "NYPLAEToolkit"
+            ReferencedContainer = "container:NYPLAEToolkit/NYPLAEToolkit.xcodeproj">
+         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference

@@ -171,7 +171,8 @@ extension NYPLNetworkExecutor {
   /// - Parameters:
   ///   - reqURL: URL of the resource to GET.
   ///   - completion: Always called when the resource is either fetched from
-  /// the network or from the cache.
+  ///   the network or from the cache. The `result` and `error` parameters are
+  ///   guaranteed to be mutually exclusive.
   @objc func GET(_ reqURL: URL,
                  cachePolicy: NSURLRequest.CachePolicy = .useProtocolCachePolicy,
                  completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask {
@@ -190,7 +191,8 @@ extension NYPLNetworkExecutor {
   /// - Parameters:
   ///   - reqURL: URL of the resource to PUT.
   ///   - completion: Always called when the resource is either fetched from
-  /// the network or from the cache.
+  ///   the network or from the cache. The `result` and `error` parameters are
+  ///   guaranteed to be mutually exclusive.
   @objc func PUT(_ reqURL: URL,
                  completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask {
     var req = request(for: reqURL)
@@ -207,7 +209,9 @@ extension NYPLNetworkExecutor {
   /// Performs a POST request using the specified request
   /// - Parameters:
   ///   - request: Request to be posted..
-  ///   - completion: Always called when the api call either returns or times out
+  ///   - completion: Always called when the api call either returns or times
+  ///   out. The `result` and `error` parameters are
+  ///   guaranteed to be mutually exclusive.
   @discardableResult
   @objc
   func POST(_ request: URLRequest,
