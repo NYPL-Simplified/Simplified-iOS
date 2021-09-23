@@ -149,9 +149,9 @@
 
 // NYPLReaderSettingsView
 "Special Font" = "Special Font";
-"Sans" = "Sans";
+"Sans Serif" = "Sans Serif";
 "Serif" = "Serif";
-"Open Dyslexic" = "Open dyslexic";
+"Open Dyslexic" = "Open Dyslexic";
 "SansFont" = "Sans font";
 "SerifFont" = "Serif font";
 "OpenDyslexicFont" = "Open dyslexic font";

@@ -683,7 +683,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindContentLicense: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]
-                                      title:NSLocalizedString(@"ContentLicenses", nil)
+                                      title:NSLocalizedString(@"Content Licenses", nil)
                                       failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       [self.navigationController pushViewController:vc animated:YES];
       break;
@@ -980,7 +980,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
+      cell.textLabel.text = NSLocalizedString(@"Content Licenses", nil);
       cell.hidden = ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
       return cell;
     }
