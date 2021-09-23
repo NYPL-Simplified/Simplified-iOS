@@ -143,13 +143,13 @@
 "Next Chapter" = "Capitolo successivo";
 
 // NYPLReaderSettingsView
-"Special Font" = "Font speciale";
-"Sans" = "Sans";
+"Special Font" = "Font personalizzato";
+"Sans Serif" = "Sans serif";
 "Serif" = "Serif";
 "Open Dyslexic" = "Font per dislessia";
-"SansFont" = "carattere sans";
+"SansFont" = "carattere sans serif";
 "SerifFont" = "carattere serif";
-"OpenDyslexicFont" = "carattere aperto dislessico";
+"OpenDyslexicFont" = "Font per dislessici";
 "WhiteOnBlackText" = "Bianco su testo nero";
 "BlackOnSepiaText" = "Nero su testo di seppia";
 "BlackOnWhiteText" = "Nero su testo bianco";

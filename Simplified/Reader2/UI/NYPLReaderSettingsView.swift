@@ -131,7 +131,7 @@ class NYPLReaderSettingsView: UIView {
     var description: String
     switch fontFace {
     case .sans:
-      description = NSLocalizedString("Sans", comment: "Font name")
+      description = NSLocalizedString("Sans Serif", comment: "Font name")
       break
     case .serif:
       description = NSLocalizedString("Serif", comment: "Font name")
@@ -522,6 +522,9 @@ class NYPLReaderSettingsView: UIView {
                                  disabledStateAttributes: [NSAttributedString.Key.underlineStyle: 1])
     button.accessibilityLabel = NSLocalizedString("OpenDyslexicFont", comment: "Accessible label for the font")
     button.addTarget(self, action: #selector(didSelectOpenDyslexic), for: .touchUpInside)
+    // The dyslexic font appears to be set a few pixel lower than the other, so
+    // this edge insets moves the button title up a bit
+    button.titleEdgeInsets = UIEdgeInsets(top: -5, left: 0, bottom: 0, right: 0)
     return button
   }()
   
