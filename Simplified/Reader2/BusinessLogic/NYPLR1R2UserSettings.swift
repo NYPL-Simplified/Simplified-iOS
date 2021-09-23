@@ -100,8 +100,8 @@ class NYPLR1R2UserSettings: NSObject {
         fontFamily.index = newValue.rawValue + 1
         if let fontOverride = fontOverride {
           // if we had to use the Original font, we would need to set the
-          // `fontOverride.on` setting to false. Since in our use case this is
-          // never true, we can just set it to true.
+          // `fontOverride.on` setting to false, but in this use case we are
+          // overriding that.
           fontOverride.on = true
         }
       }
@@ -119,6 +119,12 @@ class NYPLR1R2UserSettings: NSObject {
       let publisherDefault = r2UserSettings?.userProperties
         .getProperty(reference: ReadiumCSSReference.publisherDefault.rawValue) as? Switchable
       publisherDefault?.on = newValue
+
+      // make sure to restore the original fonts chosen by the publisher
+      let fontOverride = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontOverride.rawValue) as? Switchable
+      if let fontOverride = fontOverride {
+        fontOverride.on = !newValue
+      }
     }
   }
 
