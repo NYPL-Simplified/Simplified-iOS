@@ -128,21 +128,23 @@ class NYPLReaderSettingsView: UIView {
       return
     }
     
-    var description: String
     switch fontFace {
     case .sans:
-      description = NSLocalizedString("Sans Serif", comment: "Font name")
+      fontTitleLabel.text = NSLocalizedString("Sans serif font",
+                                              comment: "Title for describing the sans serif font name")
+      fontDescriptionLabel.text = NYPLR1R2UserSettings.sansSerifFontName
       break
     case .serif:
-      description = NSLocalizedString("Serif", comment: "Font name")
+      fontTitleLabel.text = NSLocalizedString("Serif font",
+                                              comment: "Title for describing the serif font name")
+      fontDescriptionLabel.text = NYPLR1R2UserSettings.serifFontName
       break
     case .openDyslexic:
-      description = NSLocalizedString("Open Dyslexic", comment: "Font name")
+      fontTitleLabel.text = NSLocalizedString("Special font",
+                                              comment: "Title for describing the font for special needs")
+      fontDescriptionLabel.text = NYPLR1R2UserSettings.dyslexicFontName
       break
     }
-    
-    fontTitleLabel.text = NSLocalizedString("Special Font", comment: "Font description title")
-    fontDescriptionLabel.text = description
   }
   
   private func updateUIColorScheme() {
@@ -492,7 +494,7 @@ class NYPLReaderSettingsView: UIView {
                                  fontSize: 22,
                                  normalStateAttributes: [NSAttributedString.Key.underlineStyle: 0],
                                  disabledStateAttributes: [NSAttributedString.Key.underlineStyle: 1])
-    button.accessibilityLabel = NSLocalizedString("SansFont", comment: "Accessible label for the font")
+    button.accessibilityLabel = NSLocalizedString("Sans serif font", comment: "Accessible label for the sans serif font")
     button.addTarget(self, action: #selector(didSelectSans), for: .touchUpInside)
     return button
   }()
@@ -506,7 +508,7 @@ class NYPLReaderSettingsView: UIView {
                                  fontSize: 22,
                                  normalStateAttributes: [NSAttributedString.Key.underlineStyle: 0],
                                  disabledStateAttributes: [NSAttributedString.Key.underlineStyle: 1])
-    button.accessibilityLabel = NSLocalizedString("SerifFont", comment: "Accessible label for the font")
+    button.accessibilityLabel = NSLocalizedString("Serif font", comment: "Accessible label for the font")
     button.addTarget(self, action: #selector(didSelectSerif), for: .touchUpInside)
     return button
   }()
@@ -552,7 +554,8 @@ class NYPLReaderSettingsView: UIView {
     let label = UILabel()
     label.textAlignment = .left
     label.font = .systemFont(ofSize: 22, weight: .medium)
-    label.text = NSLocalizedString("Special Font", comment: "Font description title")
+    label.text = NSLocalizedString("Sans serif font",
+                                   comment: "Title for describing the sans serif font name")
     label.numberOfLines = 1
     label.setContentHuggingPriority(.required, for: .vertical)
     return label
