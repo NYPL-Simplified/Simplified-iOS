@@ -143,12 +143,9 @@
 "Next Chapter" = "Capitolo successivo";
 
 // NYPLReaderSettingsView
-"Special Font" = "Font personalizzato";
-"Sans Serif" = "Sans serif";
-"Serif" = "Serif";
-"Open Dyslexic" = "Font per dislessia";
-"SansFont" = "carattere sans serif";
-"SerifFont" = "carattere serif";
+"Sans serif font" = "Font sans serif";
+"Serif font" = "Font serif";
+"Special font" = "Font speciale";
 "OpenDyslexicFont" = "Font per dislessici";
 "WhiteOnBlackText" = "Bianco su testo nero";
 "BlackOnSepiaText" = "Nero su testo di seppia";

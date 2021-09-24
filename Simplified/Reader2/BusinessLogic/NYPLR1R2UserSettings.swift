@@ -12,6 +12,10 @@ import R2Shared
 
 /// Wrapper class for Readium 1 and Readium 2 reader user settings.
 class NYPLR1R2UserSettings: NSObject {
+  static let sansSerifFontName = "Helvetica"
+  static let serifFontName = "Georgia"
+  static let dyslexicFontName = "OpenDyslexic"
+
   @objc let r1UserSettings: NYPLReaderSettings
   let r2UserSettings: UserSettings?
 
@@ -204,7 +208,10 @@ class NYPLR1R2UserSettings: NSObject {
     // use it, it _must_ be present as the first value.
     r2UserSettings?.userProperties
       .addEnumerable(index: currentFontfamily,
-                     values: ["Original", "Helvetica", "Georgia", "OpenDyslexic"],
+                     values: ["Original",
+                              NYPLR1R2UserSettings.sansSerifFontName,
+                              NYPLR1R2UserSettings.serifFontName,
+                              NYPLR1R2UserSettings.dyslexicFontName],
                      reference: ReadiumCSSReference.fontFamily.rawValue,
                      name: ReadiumCSSName.fontFamily.rawValue)
   }
