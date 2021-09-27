@@ -12,6 +12,10 @@ import R2Shared
 
 /// Wrapper class for Readium 1 and Readium 2 reader user settings.
 class NYPLR1R2UserSettings: NSObject {
+  static let sansSerifFontName = "Helvetica"
+  static let serifFontName = "Georgia"
+  static let dyslexicFontName = "OpenDyslexic"
+
   @objc let r1UserSettings: NYPLReaderSettings
   let r2UserSettings: UserSettings?
 
@@ -100,8 +104,8 @@ class NYPLR1R2UserSettings: NSObject {
         fontFamily.index = newValue.rawValue + 1
         if let fontOverride = fontOverride {
           // if we had to use the Original font, we would need to set the
-          // `fontOverride.on` setting to false. Since in our use case this is
-          // never true, we can just set it to true.
+          // `fontOverride.on` setting to false, but in this use case we are
+          // overriding that.
           fontOverride.on = true
         }
       }
@@ -119,6 +123,12 @@ class NYPLR1R2UserSettings: NSObject {
       let publisherDefault = r2UserSettings?.userProperties
         .getProperty(reference: ReadiumCSSReference.publisherDefault.rawValue) as? Switchable
       publisherDefault?.on = newValue
+
+      // make sure to restore the original fonts chosen by the publisher
+      let fontOverride = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontOverride.rawValue) as? Switchable
+      if let fontOverride = fontOverride {
+        fontOverride.on = !newValue
+      }
     }
   }
 
@@ -198,7 +208,10 @@ class NYPLR1R2UserSettings: NSObject {
     // use it, it _must_ be present as the first value.
     r2UserSettings?.userProperties
       .addEnumerable(index: currentFontfamily,
-                     values: ["Original", "Helvetica", "Georgia", "OpenDyslexic"],
+                     values: ["Original",
+                              NYPLR1R2UserSettings.sansSerifFontName,
+                              NYPLR1R2UserSettings.serifFontName,
+                              NYPLR1R2UserSettings.dyslexicFontName],
                      reference: ReadiumCSSReference.fontFamily.rawValue,
                      name: ReadiumCSSName.fontFamily.rawValue)
   }

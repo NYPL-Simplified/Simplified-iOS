@@ -35,7 +35,6 @@
 #import "NYPLOPDS.h"
 #import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"
-#import "NYPLReaderSettingsView.h"
 #import "NYPLReloadView.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSAMLHelper.h"

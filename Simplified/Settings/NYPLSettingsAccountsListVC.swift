@@ -1,6 +1,6 @@
 /// UITableView to display or add library accounts that the user
 /// can then log in and adjust settings after selecting Accounts.
-@objcMembers class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+@objcMembers class NYPLSettingsAccountsListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   enum LoadState {
     case loading
