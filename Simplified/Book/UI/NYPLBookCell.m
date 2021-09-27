@@ -95,7 +95,6 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                                downloadProgressForBookIdentifier:book.identifier];
-      cell.backgroundColor = [NYPLConfiguration mainColor];
       return cell;
     }
     case NYPLBookStateDownloadFailed:

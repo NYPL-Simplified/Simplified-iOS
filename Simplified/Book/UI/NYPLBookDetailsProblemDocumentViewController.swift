@@ -25,7 +25,7 @@
     
     let margins = self.view.layoutMarginsGuide
     
-    self.view.backgroundColor = NYPLConfiguration.defaultBackgroundColor
+    self.view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     
     // ScrollView Setup
     let scrollView = UIScrollView()

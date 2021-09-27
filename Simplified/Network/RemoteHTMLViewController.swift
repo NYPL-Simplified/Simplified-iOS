@@ -29,7 +29,7 @@ import WebKit
     super.viewDidLoad()
     webView.frame = self.view.frame
     webView.navigationDelegate = self
-    webView.backgroundColor = NYPLConfiguration.defaultBackgroundColor
+    webView.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     webView.allowsBackForwardNavigationGestures = true
 
     view.addSubview(self.webView)

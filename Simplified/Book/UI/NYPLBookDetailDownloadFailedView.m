@@ -24,11 +24,16 @@
   if(!self) return nil;
   
   self.backgroundColor = [NYPLConfiguration mainColor];
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+      self.backgroundColor = [NYPLConfiguration secondaryBackgroundColor];
+    }
+  }
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
-  self.messageLabel.textColor = [NYPLConfiguration defaultBackgroundColor];
+  self.messageLabel.textColor = [UIColor whiteColor];
   self.messageLabel.text = NSLocalizedString(@"The download could not be completed.\nScroll down to 'View Issues' to see details.", nil);
   self.messageLabel.numberOfLines = 0;
   [self addSubview:self.messageLabel];

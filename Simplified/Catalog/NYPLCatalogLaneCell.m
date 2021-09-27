@@ -24,7 +24,7 @@
   
   self.laneIndex = laneIndex;
   
-  self.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
+  self.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   
   self.contentView.autoresizingMask = (UIViewAutoresizingFlexibleWidth
                                        | UIViewAutoresizingFlexibleHeight);

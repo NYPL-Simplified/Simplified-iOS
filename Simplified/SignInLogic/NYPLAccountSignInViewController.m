@@ -153,7 +153,7 @@ CGFloat const marginPadding = 2.0;
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
@@ -461,7 +461,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
     footerLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
-    footerLabel.textColor = [NYPLConfiguration fieldTextColor];
+    footerLabel.textColor = [NYPLConfiguration disabledFieldTextColor];
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
@@ -727,19 +727,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     self.PINTextField.text = self.businessLogic.userAccount.PIN;
     self.PINTextField.enabled = forceEditability;
     if (forceEditability) {
-      self.usernameTextField.textColor = [NYPLConfiguration defaultTextColor];
-      self.PINTextField.textColor = [NYPLConfiguration defaultTextColor];
+      self.usernameTextField.textColor = [NYPLConfiguration primaryTextColor];
+      self.PINTextField.textColor = [NYPLConfiguration primaryTextColor];
     } else {
-      self.usernameTextField.textColor = [NYPLConfiguration fieldTextColor];
-      self.PINTextField.textColor = [NYPLConfiguration fieldTextColor];
+      self.usernameTextField.textColor = [NYPLConfiguration disabledFieldTextColor];
+      self.PINTextField.textColor = [NYPLConfiguration disabledFieldTextColor];
     }
   } else {
     self.usernameTextField.text = nil;
     self.usernameTextField.enabled = YES;
-    self.usernameTextField.textColor = [NYPLConfiguration defaultTextColor];
+    self.usernameTextField.textColor = [NYPLConfiguration primaryTextColor];
     self.PINTextField.text = nil;
     self.PINTextField.enabled = YES;
-    self.PINTextField.textColor = [NYPLConfiguration defaultTextColor];
+    self.PINTextField.textColor = [NYPLConfiguration primaryTextColor];
   }
 
   [self setupTableData];
@@ -769,7 +769,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     self.logInCell.textLabel.textColor = [NYPLConfiguration mainColor];
   } else {
     self.logInCell.userInteractionEnabled = NO;
-    self.logInCell.textLabel.textColor = [NYPLConfiguration fieldTextColor];
+    self.logInCell.textLabel.textColor = [NYPLConfiguration disabledFieldTextColor];
   }
 }
 

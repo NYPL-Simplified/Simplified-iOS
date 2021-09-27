@@ -63,7 +63,7 @@ class NYPLAgeCheckViewController: UIViewController {
   func setupView() {
     self.title = NSLocalizedString("Age Verification", comment: "Title for Age Verification")
     
-    view.backgroundColor = NYPLConfiguration.fieldBackgroundColor
+    view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     
     navigationItem.setRightBarButton(rightBarButtonItem, animated: true)
     
@@ -126,14 +126,16 @@ class NYPLAgeCheckViewController: UIViewController {
     
     // Styling
     let placeHolderString = NSLocalizedString("Select Year", comment: "Placeholder for birth year textfield")
-    textfield.attributedPlaceholder = NSAttributedString(string: placeHolderString, attributes: [NSAttributedString.Key.foregroundColor: NYPLConfiguration.defaultTextColor])
-    textfield.backgroundColor = NYPLConfiguration.defaultBackgroundColor
+    textfield.attributedPlaceholder = NSAttributedString(string: placeHolderString, attributes: [NSAttributedString.Key.foregroundColor: NYPLConfiguration.primaryTextColor])
     textfield.layer.borderColor = NYPLConfiguration.fieldBorderColor.cgColor
     
     textfield.layer.borderWidth = 0.5
     
     textfield.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textFieldHeight))
-    textfield.rightView = UIImageView(image: UIImage(named: "ArrowDown"))
+    let image = UIImage(named: "ArrowDown")?.withRenderingMode(.alwaysTemplate)
+    let imageView = UIImageView(image:image)
+    imageView.tintColor = NYPLConfiguration.primaryTextColor
+    textfield.rightView = imageView
     textfield.leftViewMode = .always
     textfield.rightViewMode = .always
     

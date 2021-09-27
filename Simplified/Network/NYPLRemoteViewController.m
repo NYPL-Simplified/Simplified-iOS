@@ -244,7 +244,7 @@
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

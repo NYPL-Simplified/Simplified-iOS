@@ -158,7 +158,7 @@ private let standardCellHeight: CGFloat = 44.0
     let cell = UITableViewCell()
     cell.backgroundColor = .clear
     let activityIndicator = UIActivityIndicatorView()
-    activityIndicator.color = NYPLConfiguration.defaultTextColor
+    activityIndicator.color = NYPLConfiguration.progressBarBackgroundColor
     cell.contentView.addSubview(activityIndicator)
     activityIndicator.autoCenterInSuperview()
     activityIndicator.startAnimating()
@@ -288,7 +288,7 @@ private let standardCellHeight: CGFloat = 44.0
     let moreButton = UIButton()
 
     headerButton.setTitle(catalogLanes[section].title, for: .normal)
-    headerButton.setTitleColor(NYPLConfiguration.defaultTextColor, for: .normal)
+    headerButton.setTitleColor(NYPLConfiguration.primaryTextColor, for: .normal)
     headerButton.titleLabel?.font = UIFont.customBoldFont(forTextStyle: UIFont.TextStyle.caption1)
     headerButton.titleLabel?.textAlignment = NSTextAlignment.left
     headerButton.titleLabel?.autoPinEdge(toSuperviewEdge: .left)
@@ -297,7 +297,7 @@ private let standardCellHeight: CGFloat = 44.0
     moreButton.addTarget(self, action: #selector(moreBooksTapped(sender:)), for: .touchUpInside)
     moreButton.tag = section
     moreButton.setTitle(NSLocalizedString("More...", comment: ""), for: .normal)
-    moreButton.setTitleColor(NYPLConfiguration.defaultTextColor, for: .normal)
+    moreButton.setTitleColor(NYPLConfiguration.primaryTextColor, for: .normal)
     moreButton.titleLabel?.font = UIFont.customFont(forTextStyle: UIFont.TextStyle.caption1)
     moreButton.titleLabel?.textAlignment = NSTextAlignment.right
     moreButton.titleLabel?.autoPinEdge(toSuperviewEdge: .right)

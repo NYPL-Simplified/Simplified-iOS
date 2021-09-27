@@ -212,7 +212,7 @@ Authenticating with any of those barcodes should work.
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
   UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
@@ -323,11 +323,7 @@ Authenticating with any of those barcodes should work.
   [self setupTableData];
   
   self.syncSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-  if (@available(iOS 12.0, *)) {
-    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
-      [self.syncSwitch setOnTintColor:[NYPLConfiguration mainColor]];
-    }
-  }
+  [self.syncSwitch setOnTintColor:[NYPLConfiguration actionColor]];
   [self checkSyncPermissionForCurrentPatron];
 }
 
@@ -1153,7 +1149,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                     initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
     } else { // sync section
       NSDictionary *attrs;
-      attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration defaultTextColor] };
+      attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration primaryTextColor] };
       eulaString = [[NSMutableAttributedString alloc]
                     initWithString:NSLocalizedString(@"Save your reading position and bookmarks to all your other devices.",
                                                      @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
@@ -1270,16 +1266,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self checkSyncPermissionForCurrentPatron];
       self.usernameTextField.text = self.selectedUserAccount.barcode;
       self.usernameTextField.enabled = NO;
-      self.usernameTextField.textColor = [NYPLConfiguration fieldTextColor];
+      self.usernameTextField.textColor = [NYPLConfiguration disabledFieldTextColor];
       self.PINTextField.text = self.selectedUserAccount.PIN;
-      self.PINTextField.textColor = [NYPLConfiguration fieldTextColor];
+      self.PINTextField.textColor = [NYPLConfiguration disabledFieldTextColor];
       self.barcodeScanButton.hidden = YES;
     } else {
       self.usernameTextField.text = nil;
       self.usernameTextField.enabled = YES;
-      self.usernameTextField.textColor = [NYPLConfiguration defaultTextColor];
+      self.usernameTextField.textColor = [NYPLConfiguration primaryTextColor];
       self.PINTextField.text = nil;
-      self.PINTextField.textColor = [NYPLConfiguration defaultTextColor];
+      self.PINTextField.textColor = [NYPLConfiguration primaryTextColor];
       if (self.businessLogic.selectedAuthentication.supportsBarcodeScanner) {
         self.barcodeScanButton.hidden = NO;
       }
@@ -1317,7 +1313,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {
       self.logInSignOutCell.userInteractionEnabled = NO;
-      self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration fieldTextColor];
+      self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration disabledFieldTextColor];
     }
   }
 }
@@ -1338,7 +1334,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   UIActivityIndicatorView *aiv;
   if (@available(iOS 13.0, *)) {
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
-    aiv.color = [NYPLConfiguration defaultTextColor];
+    aiv.color = [NYPLConfiguration primaryTextColor];
   } else {
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   }

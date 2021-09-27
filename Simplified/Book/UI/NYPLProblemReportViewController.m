@@ -86,7 +86,7 @@ static NSInteger EstimatedRowHeight = 44;
                                                              target:self action:@selector(submitProblem)];
   self.submitProblemButton.enabled = NO;
   self.navigationItem.rightBarButtonItem = self.submitProblemButton;
-  [self.problemDescriptionTable setBackgroundColor:[NYPLConfiguration defaultBackgroundColor]];
+  [self.problemDescriptionTable setBackgroundColor:[NYPLConfiguration primaryBackgroundColor]];
 }
 
 - (void)viewWillAppear:(BOOL)animated

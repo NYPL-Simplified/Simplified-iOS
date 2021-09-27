@@ -100,7 +100,7 @@ class NYPLSettingsPrimaryTableViewController : UITableViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.view.backgroundColor = NYPLConfiguration.defaultBackgroundColor
+    self.view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
   }
 
   override func viewWillAppear(_ animated: Bool) {

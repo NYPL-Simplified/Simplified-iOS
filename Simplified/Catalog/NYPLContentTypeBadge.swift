@@ -20,7 +20,7 @@ final class NYPLContentBadgeImageView: UIImageView {
     super.init(image: UIImage(named: badgeImage.assetName()))
     if #available(iOS 12.0, *),
        UIScreen.main.traitCollection.userInterfaceStyle == .dark {
-      backgroundColor = NYPLConfiguration.defaultBackgroundColor
+      backgroundColor = NYPLConfiguration.primaryBackgroundColor
     } else {
       backgroundColor = NYPLConfiguration.mainColor()
     }

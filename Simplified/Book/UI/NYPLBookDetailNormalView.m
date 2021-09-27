@@ -30,7 +30,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-  self.messageLabel.textColor = [NYPLConfiguration defaultBackgroundColor];
+  self.messageLabel.textColor = [UIColor whiteColor];
   self.messageLabel.numberOfLines = 0;
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self addSubview:self.messageLabel];
@@ -68,6 +68,11 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   CGPathCloseSubpath(visiblePath);
   
   UIColor *aColor = [NYPLConfiguration mainColor];
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+      aColor = [NYPLConfiguration secondaryBackgroundColor];
+    }
+  }
   [aColor setFill];
   CGContextAddPath(context, visiblePath);
   CGContextFillPath(context);

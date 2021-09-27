@@ -88,8 +88,8 @@ static NSString *DetailHTMLTemplate = nil;
   
   self.book = book;
   self.detailViewDelegate = delegate;
-  self.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
-  self.contentView.backgroundColor = [NYPLConfiguration defaultBackgroundColor];
+  self.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
+  self.contentView.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   self.alwaysBounceVertical = YES;
   self.translatesAutoresizingMaskIntoConstraints = NO;
   
@@ -212,7 +212,7 @@ static NSString *DetailHTMLTemplate = nil;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     // this needs to happen asynchronously because the HTML text may overwrite
     // our color
-    self.summaryTextView.textColor = NYPLConfiguration.defaultTextColor;
+    self.summaryTextView.textColor = NYPLConfiguration.primaryTextColor;
   }];
 
   self.readMoreLabel = [[UIButton alloc] init];

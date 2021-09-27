@@ -9,43 +9,52 @@
 import Foundation
 
 private enum ColorAsset: String {
-  case defaultBackground
-  case defaultText
-  case downloadBackground
+  case primaryBackground
+  case primaryText
+  case secondaryBackground
+  case secondaryText
   case action
   case deleteAction
-  case fieldBackground
   case fieldBorder
-  case fieldText
+  case disabledFieldText
   case progressBarBackground
 }
 
 @objc extension NYPLConfiguration {
-  static var defaultBackgroundColor: UIColor {
+  static var primaryBackgroundColor: UIColor {
     if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.defaultBackground.rawValue) {
+       let color = UIColor(named: ColorAsset.primaryBackground.rawValue) {
       return color
     }
 
     return .white
   }
   
-  static var defaultTextColor: UIColor {
+  static var primaryTextColor: UIColor {
     if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.defaultText.rawValue) {
+       let color = UIColor(named: ColorAsset.primaryText.rawValue) {
       return color
     }
 
     return .black
   }
 
-  static var downloadBackgroundColor: UIColor {
+  static var secondaryBackgroundColor: UIColor {
     if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.downloadBackground.rawValue) {
+       let color = UIColor(named: ColorAsset.secondaryBackground.rawValue) {
+      return color
+    }
+    
+    return .lightGray
+  }
+  
+  static var secondaryTextColor: UIColor {
+    if #available(iOS 11.0, *),
+       let color = UIColor(named: ColorAsset.secondaryText.rawValue) {
       return color
     }
 
-    return .lightGray
+    return .black
   }
   
   static var actionColor: UIColor {
@@ -66,15 +75,6 @@ private enum ColorAsset: String {
     return .systemRed
   }
   
-  static var fieldBackgroundColor: UIColor {
-    if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.fieldBackground.rawValue) {
-      return color
-    }
-
-    return .white
-  }
-  
   static var fieldBorderColor: UIColor {
     if #available(iOS 11.0, *),
        let color = UIColor(named: ColorAsset.fieldBorder.rawValue) {
@@ -84,9 +84,9 @@ private enum ColorAsset: String {
     return .lightGray
   }
   
-  static var fieldTextColor: UIColor {
+  static var disabledFieldTextColor: UIColor {
     if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.fieldText.rawValue) {
+       let color = UIColor(named: ColorAsset.disabledFieldText.rawValue) {
       return color
     }
 
