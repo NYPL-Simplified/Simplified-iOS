@@ -20,7 +20,7 @@ import PureLayout
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.view.backgroundColor = NYPLConfiguration.backgroundColor()
+    self.view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     setupViews()
   }
   
@@ -313,7 +313,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     self.accounts = self.accounts.filter { !AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
 
     self.title = NSLocalizedString("Pick Your Library", comment: "Title that also informs the user that they should choose a library from the list.")
-    self.view.backgroundColor = NYPLConfiguration.backgroundColor()
+    self.view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -212,7 +212,7 @@ Authenticating with any of those barcodes should work.
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
   UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
@@ -323,6 +323,7 @@ Authenticating with any of those barcodes should work.
   [self setupTableData];
   
   self.syncSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+  [self.syncSwitch setOnTintColor:[NYPLConfiguration actionColor]];
   [self checkSyncPermissionForCurrentPatron];
 }
 
@@ -1141,14 +1142,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
       NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
-                                          [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
+                                          [NYPLConfiguration actionColor],
                                         NSUnderlineStyleAttributeName :
                                           @(NSUnderlineStyleSingle) };
       eulaString = [[NSMutableAttributedString alloc]
                     initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
     } else { // sync section
       NSDictionary *attrs;
-      attrs = @{ NSForegroundColorAttributeName : [UIColor defaultLabelColor] };
+      attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration primaryTextColor] };
       eulaString = [[NSMutableAttributedString alloc]
                     initWithString:NSLocalizedString(@"Save your reading position and bookmarks to all your other devices.",
                                                      @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
@@ -1265,16 +1266,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self checkSyncPermissionForCurrentPatron];
       self.usernameTextField.text = self.selectedUserAccount.barcode;
       self.usernameTextField.enabled = NO;
-      self.usernameTextField.textColor = [UIColor grayColor];
+      self.usernameTextField.textColor = [NYPLConfiguration disabledFieldTextColor];
       self.PINTextField.text = self.selectedUserAccount.PIN;
-      self.PINTextField.textColor = [UIColor grayColor];
+      self.PINTextField.textColor = [NYPLConfiguration disabledFieldTextColor];
       self.barcodeScanButton.hidden = YES;
     } else {
       self.usernameTextField.text = nil;
       self.usernameTextField.enabled = YES;
-      self.usernameTextField.textColor = [UIColor defaultLabelColor];
+      self.usernameTextField.textColor = [NYPLConfiguration primaryTextColor];
       self.PINTextField.text = nil;
-      self.PINTextField.textColor = [UIColor defaultLabelColor];
+      self.PINTextField.textColor = [NYPLConfiguration primaryTextColor];
       if (self.businessLogic.selectedAuthentication.supportsBarcodeScanner) {
         self.barcodeScanButton.hidden = NO;
       }
@@ -1312,11 +1313,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {
       self.logInSignOutCell.userInteractionEnabled = NO;
-      if (@available(iOS 13.0, *)) {
-        self.logInSignOutCell.textLabel.textColor = [UIColor systemGray2Color];
-      } else {
-        self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
-      }
+      self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration disabledFieldTextColor];
     }
   }
 }
@@ -1337,7 +1334,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   UIActivityIndicatorView *aiv;
   if (@available(iOS 13.0, *)) {
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
-    aiv.color = [UIColor labelColor];
+    aiv.color = [NYPLConfiguration primaryTextColor];
   } else {
     aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   }

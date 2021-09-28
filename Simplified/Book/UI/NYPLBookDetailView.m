@@ -88,7 +88,8 @@ static NSString *DetailHTMLTemplate = nil;
   
   self.book = book;
   self.detailViewDelegate = delegate;
-  self.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
+  self.contentView.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   self.alwaysBounceVertical = YES;
   self.translatesAutoresizingMaskIntoConstraints = NO;
   
@@ -211,7 +212,7 @@ static NSString *DetailHTMLTemplate = nil;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     // this needs to happen asynchronously because the HTML text may overwrite
     // our color
-    self.summaryTextView.textColor = UIColor.defaultLabelColor;
+    self.summaryTextView.textColor = NYPLConfiguration.primaryTextColor;
   }];
 
   self.readMoreLabel = [[UIButton alloc] init];
@@ -226,7 +227,13 @@ static NSString *DetailHTMLTemplate = nil;
 
 - (void)createHeaderLabels
 {
-  UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+  UIBlurEffectStyle style = UIBlurEffectStyleLight;
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+      style = UIBlurEffectStyleDark;
+    }
+  }
+  UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:style];
   self.visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
 
   self.coverImageView = [[UIImageView alloc] init];
@@ -345,9 +352,9 @@ static NSString *DetailHTMLTemplate = nil;
   self.distributorLabelValue = [self createFooterLabelWithString:self.book.distributor alignment:NSTextAlignmentLeft];
   
   self.topFootnoteSeparater = [[UIView alloc] init];
-  self.topFootnoteSeparater.backgroundColor = [UIColor lightGrayColor];
+  self.topFootnoteSeparater.backgroundColor = [NYPLConfiguration fieldBorderColor];
   self.bottomFootnoteSeparator = [[UIView alloc] init];
-  self.bottomFootnoteSeparator.backgroundColor = [UIColor lightGrayColor];
+  self.bottomFootnoteSeparator.backgroundColor = [NYPLConfiguration fieldBorderColor];
   
   self.footerTableView = [[NYPLBookDetailTableView alloc] init];
   self.footerTableView.isAccessibilityElement = NO;

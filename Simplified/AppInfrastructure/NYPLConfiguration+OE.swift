@@ -39,6 +39,10 @@ extension NYPLConfiguration {
   static let openEBooksRequestCodesURL = URL(string: "http://openebooks.net/getstarted.html")!
 
   @objc static func mainColor() -> UIColor {
+    if #available(iOS 12.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == UIUserInterfaceStyle.dark {
+      return NYPLConfiguration.actionColor
+    }
     return UIColor(red: 141.0/255.0, green: 199.0/255.0, blue: 64.0/255.0, alpha: 1.0)
   }
 
@@ -59,7 +63,7 @@ extension NYPLConfiguration {
   static func welcomeScreenFont() -> UIFont? {
     if UIDevice.current.userInterfaceIdiom == .phone {
       return UIFont(name: NYPLConfiguration.systemFontFamilyName(),
-                    size: 18.0)
+                    size: 16.0)
     }
     return UIFont(name: NYPLConfiguration.systemFontFamilyName(), size: 22.0)
   }

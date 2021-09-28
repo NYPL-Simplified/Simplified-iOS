@@ -25,11 +25,7 @@
     
     let margins = self.view.layoutMarginsGuide
     
-    if #available(iOS 13, *) {
-      self.view.backgroundColor = .systemBackground
-    } else {
-      self.view.backgroundColor = .white
-    }
+    self.view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     
     // ScrollView Setup
     let scrollView = UIScrollView()

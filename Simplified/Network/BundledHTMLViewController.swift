@@ -36,7 +36,7 @@ import WebKit
   override func viewDidLoad() {
     self.webView.frame = self.view.bounds
     self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    self.webView.backgroundColor = UIColor.white
+    self.webView.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     self.webView.navigationDelegate = self.webViewDelegate
     self.view.addSubview(self.webView)
   }
