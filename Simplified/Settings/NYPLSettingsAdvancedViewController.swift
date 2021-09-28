@@ -94,8 +94,25 @@ import UIKit
     return cell
   }
   
-  func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-    return NSLocalizedString("Delete all the bookmarks you have saved in the cloud.", comment:"")
+  func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    return footerView
   }
-
+  
+  // MARK: - UI Properties
+  
+  lazy var footerView: UIView = {
+    let view = UIView()
+    view.addSubview(deleteDescriptionLabel)
+    deleteDescriptionLabel.autoPinEdgesToSuperviewEdges(with: .init(top: 10, left: 15, bottom: 10, right: 15))
+    return view
+  }()
+  
+  lazy var deleteDescriptionLabel: UILabel = {
+    let label = UILabel(frame: .zero)
+    label.text = NSLocalizedString("Delete all the bookmarks you have saved in the cloud.", comment:"")
+    label.textAlignment = .left
+    label.textColor = NYPLConfiguration.primaryTextColor
+    label.font = UIFont.systemFont(ofSize: 12)
+    return label
+  }()
 }
