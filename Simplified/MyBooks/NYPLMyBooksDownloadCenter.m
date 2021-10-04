@@ -644,6 +644,23 @@ didCompleteWithError:(NSError *)error
   // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
+
+  // -------- tmp code to diagnose IOS-270 --------
+  if (book.identifier == nil) {
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
+                              summary:@"Attempting to returning book with nil id"
+                             metadata:@{
+                               @"book identifier var": identifier ?: @"N/A",
+                               @"book.revokeURL": book.revokeURL ?: @"N/A",
+                               @"book.title": book.title ?: @"N/A",
+                               @"book.distributor": book.distributor ?: @"N/A",
+                               @"book registry state": [NYPLBookStateHelper stringValueFromBookState:state] ?: @"N/A",
+                               @"fulfillmentId": fulfillmentId ?: @"N/A",
+                               @"needsAuth": @(NYPLUserAccount.sharedAccount.authDefinition.needsAuth),
+                             }];
+  }
+  // ----------------------------------------------
+
   if (fulfillmentId && NYPLUserAccount.sharedAccount.authDefinition.needsAuth) {
     NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLUserAccount sharedAccount] userID]);
     [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
