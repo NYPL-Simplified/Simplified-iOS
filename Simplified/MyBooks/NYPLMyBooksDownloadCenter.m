@@ -1234,7 +1234,7 @@ didCompleteWithError:(NSError *)error
    postNotificationName:NSNotification.NYPLMyBooksDownloadCenterDidChange
    object:self
    userInfo:@{
-     NYPLNotificationKeys.bookProcessingBookIDKey: book.identifier ?: @""
+     NYPLNotificationKeys.bookIDKey: book.identifier ?: @""
    }];
 }
 
@@ -1356,7 +1356,7 @@ didCompleteWithError:(NSError *)error
      postNotificationName:NSNotification.NYPLMyBooksDownloadCenterDidChange
      object:self
      userInfo:@{
-       NYPLNotificationKeys.bookProcessingBookIDKey: bookID ?: @""
+       NYPLNotificationKeys.bookIDKey: bookID ?: @""
      }];
   });
 }

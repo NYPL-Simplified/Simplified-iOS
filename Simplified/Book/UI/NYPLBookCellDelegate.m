@@ -442,7 +442,7 @@
 #if FEATURE_OVERDRIVE
 - (void)updateODAudiobookManifest:(NSNotification *)notif
 {
-  NSString *bookID = notif.userInfo[NYPLNotificationKeys.bookProcessingBookIDKey];
+  NSString *bookID = notif.userInfo[NYPLNotificationKeys.bookIDKey];
 
   // if MyBooks changed for any reason but a book update (in which case we
   // would have a nonnull book ID), then it must mean it's either a reset or

@@ -144,7 +144,7 @@ static NSString *const RecordsKey = @"records";
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NSNotification.NYPLBookProcessingDidChange
      object:self
-     userInfo:@{NYPLNotificationKeys.bookProcessingBookIDKey: identifier,
+     userInfo:@{NYPLNotificationKeys.bookIDKey: identifier,
                 NYPLNotificationKeys.bookProcessingValueKey: @(value)}];
   }];
 }

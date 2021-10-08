@@ -70,7 +70,7 @@
    object:nil
    queue:[NSOperationQueue mainQueue]
    usingBlock:^(NSNotification *note) {
-     if ([note.userInfo[NYPLNotificationKeys.bookProcessingBookIDKey] isEqualToString:self.book.identifier]) {
+     if ([note.userInfo[NYPLNotificationKeys.bookIDKey] isEqualToString:self.book.identifier]) {
        BOOL isProcessing = [note.userInfo[NYPLNotificationKeys.bookProcessingValueKey] boolValue];
        [self updateProcessingState:isProcessing];
      }
