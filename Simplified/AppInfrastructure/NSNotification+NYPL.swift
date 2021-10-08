@@ -22,13 +22,17 @@ extension Notification.Name {
   static let NYPLBookRegistryDidChange = Notification.Name("NYPLBookRegistryDidChange")
 
   /// The `userInfo` dictionary contains the following key-value pairs:
-  /// - an `bookProcessingBookIDKey` key whose value is a String indicating
+  /// - a `bookProcessingBookIDKey` key whose value is a String indicating
   /// the book identifier;
   /// - a `bookProcessingValueKey` key whose value is a Bool indicating
   /// if there's some processing going on for the book.
   static let NYPLBookProcessingDidChange = Notification.Name("NYPLBookProcessingDidChange")
 
+  /// The `userInfo` dictionary contains the following key-value pairs:
+  /// - a `bookProcessingBookIDKey` key whose value is a String indicating
+  /// the book identifier;
   static let NYPLMyBooksDownloadCenterDidChange = Notification.Name("NYPLMyBooksDownloadCenterDidChange")
+
   static let NYPLBookDetailDidClose = Notification.Name("NYPLBookDetailDidClose")
 }
 

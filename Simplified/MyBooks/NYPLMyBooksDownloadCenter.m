@@ -175,7 +175,7 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       NYPLLOG(@"Authentication might be needed after all");
       [downloadTask cancel];
       [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadFailed forIdentifier:book.identifier];
-      [self broadcastUpdate];
+      [self broadcastUpdate:book.identifier];
       return;
     }
   }
@@ -192,7 +192,7 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
         [[self downloadInfoForBookIdentifier:book.identifier]
          withDownloadProgress:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
       
-      [self broadcastUpdate];
+      [self broadcastUpdate:book.identifier];
     }
   }
 }
@@ -393,7 +393,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
      forIdentifier:book.identifier];
   }
 
-  [self broadcastUpdate];
+  [self broadcastUpdate:book.identifier];
 }
 
 // this doesn't log to crashlytics because it assumes that the caller
@@ -886,7 +886,7 @@ didCompleteWithError:(NSError *)error
     [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
   });
 
-  [self broadcastUpdate];
+  [self broadcastUpdate:book.identifier];
 }
 
 - (void)startBorrowForBook:(NYPLBook *)book
@@ -1222,18 +1222,24 @@ didCompleteWithError:(NSError *)error
    fulfillmentId:nil
    readiumBookmarks:nil
    genericBookmarks:nil];
-  
+
+  // if the book ID is nil something seriously wrong is happening that should
+  // be looked at *right now*
+  assert(book.identifier != nil);
+
   // It is important to issue this immediately because a previous download may have left the
   // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
   // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NSNotification.NYPLMyBooksDownloadCenterDidChange
-   object:self];
+   object:self
+   userInfo:@{
+     NYPLNotificationKeys.bookProcessingBookIDKey: book.identifier ?: @""
+   }];
 }
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
 {
-  
   NYPLMyBooksDownloadInfo *info = [self downloadInfoForBookIdentifier:identifier];
   
   if (info) {
@@ -1256,7 +1262,7 @@ didCompleteWithError:(NSError *)error
        [[NYPLBookRegistry sharedRegistry]
         setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
        
-       [self broadcastUpdate];
+      [self broadcastUpdate:identifier];
      }];
   } else {
     // The download was not actually going, so we just need to convert a failed download state.
@@ -1321,7 +1327,7 @@ didCompleteWithError:(NSError *)error
    removeItemAtURL:[self contentDirectoryURL]
    error:NULL];
   
-  [self broadcastUpdate];
+  [self broadcastUpdate:@""];
 }
 
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
@@ -1329,7 +1335,7 @@ didCompleteWithError:(NSError *)error
   return [self downloadInfoForBookIdentifier:bookIdentifier].downloadProgress;
 }
 
-- (void)broadcastUpdate
+- (void)broadcastUpdate:(NSString *)bookID
 {
   // We avoid issuing redundant notifications to prevent overwhelming UI updates.
   if(self.broadcastScheduled) return;
@@ -1338,20 +1344,21 @@ didCompleteWithError:(NSError *)error
   
   // This needs to be queued on the main run loop. If we queue it elsewhere, it may end up never
   // firing due to a run loop becoming inactive.
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self performSelector:@selector(broadcastUpdateNow)
-               withObject:nil
-               afterDelay:0.2];
-  }];
-}
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)),
+                 dispatch_get_main_queue(), ^{
+    self.broadcastScheduled = NO;
 
-- (void)broadcastUpdateNow
-{
-  self.broadcastScheduled = NO;
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NSNotification.NYPLMyBooksDownloadCenterDidChange
-   object:self];
+    // if the book ID is nil something seriously wrong is happening that should
+    // be looked at *right now*
+    assert(bookID != nil);
+
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NSNotification.NYPLMyBooksDownloadCenterDidChange
+     object:self
+     userInfo:@{
+       NYPLNotificationKeys.bookProcessingBookIDKey: bookID ?: @""
+     }];
+  });
 }
 
 - (BOOL)moveFileAtURL:(NSURL *)sourceLocation
@@ -1431,7 +1438,7 @@ didCompleteWithError:(NSError *)error
   self.bookIdentifierToDownloadInfo[tag] =
   [[self downloadInfoForBookIdentifier:tag] withDownloadProgress:progress];
 
-  [self broadcastUpdate];
+  [self broadcastUpdate:tag];
 }
 
 - (void)    adept:(__attribute__((unused)) NYPLADEPT *)adept
@@ -1529,7 +1536,7 @@ didFinishDownload:(BOOL)didFinishDownload
   
   [[NYPLBookRegistry sharedRegistry] save];
 
-  [self broadcastUpdate];
+  [self broadcastUpdate:book.identifier];
 }
   
 - (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didCancelDownloadWithTag:(NSString *)tag
@@ -1537,7 +1544,7 @@ didFinishDownload:(BOOL)didFinishDownload
   [[NYPLBookRegistry sharedRegistry]
    setState:NYPLBookStateDownloadNeeded forIdentifier:tag];
 
-  [self broadcastUpdate];
+  [self broadcastUpdate:tag];
 }
 
 - (void)didIgnoreFulfillmentWithNoAuthorizationPresent
@@ -1616,7 +1623,7 @@ didFinishDownload:(BOOL)didFinishDownload
   [[self downloadInfoForBookIdentifier:book.identifier]
    withDownloadProgress:progress];
 
-  [self broadcastUpdate];
+  [self broadcastUpdate:book.identifier];
 }
 #endif
 
