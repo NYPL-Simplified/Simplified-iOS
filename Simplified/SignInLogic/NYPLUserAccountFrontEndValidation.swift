@@ -32,6 +32,18 @@ protocol NYPLUserAccountInputProvider {
     self.businessLogic = businessLogic
     self.userInputProvider = inputProvider
   }
+
+  @objc func canAttemptSignIn() -> Bool {
+    let username = userInputProvider?.usernameTextField?.text ?? ""
+    let usernameHasText = username.trimmingCharacters(in: .whitespacesAndNewlines).count > 0
+    let pin = userInputProvider?.PINTextField?.text ?? ""
+    let pinHasText = pin.count > 0
+    let selectedAuth = businessLogic?.selectedAuthentication
+    let pinIsNotRequired = selectedAuth?.pinKeyboard == LoginKeyboard.none
+    let isOAuthLogin = selectedAuth?.isOauth ?? false
+
+    return isOAuthLogin || usernameHasText && (pinHasText || pinIsNotRequired)
+  }
 }
 
 extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
@@ -91,6 +103,20 @@ extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
       if passcodeLength == 0 {
         return true
       } else if abovePinCharLimit {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    if textField == userInputProvider?.usernameTextField {
+      userInputProvider?.PINTextField?.becomeFirstResponder()
+    } else if textField == userInputProvider?.PINTextField {
+      if canAttemptSignIn() {
+        businessLogic?.logIn()
+      } else {
         return false
       }
     }
