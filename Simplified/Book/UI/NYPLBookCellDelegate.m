@@ -13,6 +13,7 @@
 #import "NYPLBookNormalCell.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRootTabBarController.h"
+#import "NSString+NYPLStringAdditions.h"
 
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
 #import "NYPLJSON.h"
@@ -27,10 +28,8 @@
 
 @interface NYPLBookCellDelegate () <RefreshDelegate>
 
-@property (nonatomic) NSTimer *timer;
 @property (nonatomic) NYPLBook *book;
 @property DefaultAudiobookManager *manager;
-@property (nonatomic, weak) AudiobookPlayerViewController *audiobookViewController;
 @property (strong) NSLock *refreshAudiobookLock;
 
 @end
@@ -179,7 +178,10 @@
   NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
   NSData *const data = [NSData dataWithContentsOfURL:url];
   if (data == nil) {
-    [self presentCorruptedItemErrorForBook:book fromURL:url];
+    [self presentCorruptedItemErrorWithLog:@{
+      @"book": book.loggableDictionary ?: @"N/A",
+      @"fileURL": url ?: @"N/A"
+    }];
     return;
   }
 
@@ -237,49 +239,18 @@
       DefaultAudiobookManager *const manager = [[DefaultAudiobookManager alloc]
                                                 initWithMetadata:metadata
                                                 audiobook:audiobook];
-      manager.refreshDelegate = self;
 
-      AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
-                                                          initWithAudiobookManager:manager];
+      AudiobookPlayerViewController *audiobookVC = [self createPlayerVCForAudiobook:audiobook
+                                                                           withBook:book
+                                                        configuringAudiobookManager:manager];
 
-      [self registerCallbackForLogHandler];
-
-      [[NYPLBookRegistry sharedRegistry] coverImageForBook:book handler:^(UIImage *image) {
-        if (image) {
-          [audiobookVC.coverView setImage:image];
-        }
-      }];
-
-      audiobookVC.hidesBottomBarWhenPushed = YES;
-      audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
+      // present audiobook player on screen
       [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
-
-      __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
-      [manager setPlaybackCompletionHandler:^{
-        NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, ContentTypeFeedbooksAudiobook, nil];
-        NSArray<NYPLOPDSAcquisitionPath *> *paths = [NYPLOPDSAcquisitionPath
-                                                     supportedAcquisitionPathsForAllowedTypes:types
-                                                     allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
-                                                                       NYPLOPDSAcquisitionRelationSetGeneric)
-                                                     acquisitions:book.acquisitions];
-        if (paths.count > 0) {
-          UIAlertController *alert = [NYPLReturnPromptHelper audiobookPromptWithCompletion:^(BOOL returnWasChosen) {
-            if (returnWasChosen) {
-              [weakAudiobookVC.navigationController popViewControllerAnimated:YES];
-              [self didSelectReturnForBook:book];
-            }
-            [NYPLAppStoreReviewPrompt presentIfAvailable];
-          }];
-          [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
-        } else {
-          NYPLLOG(@"Skipped Return Prompt with no valid acquisition path.");
-          [NYPLAppStoreReviewPrompt presentIfAvailable];
-        }
-      }];
 
       NYPLBookLocation *const bookLocation =
       [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
 
+      // move player to saved position
       if (bookLocation) {
         NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
         ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
@@ -287,9 +258,56 @@
         [manager.audiobook.player movePlayheadToLocation:chapterLocation];
       }
 
+      // poll audiobook player so that we can save the reading position
       [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
     }];
   }];
+}
+
+- (AudiobookPlayerViewController *)createPlayerVCForAudiobook:(id<Audiobook>)audiobook
+                                                     withBook:(NYPLBook *)book
+                                  configuringAudiobookManager:(id<AudiobookManager>)manager
+{
+  manager.refreshDelegate = self;
+
+  AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
+                                                      initWithAudiobookManager:manager];
+
+  [self registerCallbackForLogHandler];
+
+  [[NYPLBookRegistry sharedRegistry] coverImageForBook:book handler:^(UIImage *image) {
+    if (image) {
+      [audiobookVC.coverView setImage:image];
+    }
+  }];
+
+  audiobookVC.hidesBottomBarWhenPushed = YES;
+  audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
+
+  __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
+  [manager setPlaybackCompletionHandler:^{
+    NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, ContentTypeFeedbooksAudiobook, nil];
+    NSArray<NYPLOPDSAcquisitionPath *> *paths = [NYPLOPDSAcquisitionPath
+                                                 supportedAcquisitionPathsForAllowedTypes:types
+                                                 allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
+                                                                   NYPLOPDSAcquisitionRelationSetGeneric)
+                                                 acquisitions:book.acquisitions];
+    if (paths.count > 0) {
+      UIAlertController *alert = [NYPLReturnPromptHelper audiobookPromptWithCompletion:^(BOOL returnWasChosen) {
+        if (returnWasChosen) {
+          [weakAudiobookVC.navigationController popViewControllerAnimated:YES];
+          [self didSelectReturnForBook:book];
+        }
+        [NYPLAppStoreReviewPrompt presentIfAvailable];
+      }];
+      [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
+    } else {
+      NYPLLOG(@"Skipped Return Prompt with no valid acquisition path.");
+      [NYPLAppStoreReviewPrompt presentIfAvailable];
+    }
+  }];
+
+  return audiobookVC;
 }
 
 #pragma mark - Audiobook Methods
@@ -316,43 +334,38 @@
   }];
 }
 
-// non-thread safe: must be called on the same thread each time.
+// Non-thread safe: currently this is always called on the main thread.
+// Even more stricly, since NTPLBookCellDelegate is a singleton (!?), this
+// method should be called only when the previous audiobookViewController is
+// no longer used.
 - (void)scheduleTimerForAudiobook:(NYPLBook *)book
                           manager:(DefaultAudiobookManager *)manager
-                   viewController:(AudiobookPlayerViewController *)viewController
+                   viewController:(AudiobookPlayerViewController *)audiobookVC
 {
-  self.audiobookViewController = viewController;
   self.book = book;
   self.manager = manager;
-  // Target-Selector method required for iOS <10.0
-  self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0
-                                                target:self
-                                              selector:@selector(pollAudiobookReadingLocation:)
-                                              userInfo:nil
-                                               repeats:YES];
+
+  __weak UIViewController *const weakAudiobookVC = audiobookVC;
+  [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer *_Nonnull timer) {
+    if (weakAudiobookVC == nil) {
+      [timer invalidate];
+      NYPLLOG(@"Invalidating audiobook polling timer and resetting BookCellDelegate state");
+      self.book = nil;
+      self.manager = nil;
+      return;
+    }
+
+    NSString *const string = [[NSString alloc]
+                              initWithData:manager.audiobook.player.currentChapterLocation.toData
+                              encoding:NSUTF8StringEncoding];
+    [[NYPLBookRegistry sharedRegistry]
+     setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
+     forIdentifier:book.identifier];
+  }];
 }
 
-// non-thread safe: must be called on the same thread as
-// scheduleTimerForAudiobook:manager:viewController: each time.
-- (void)pollAudiobookReadingLocation:(NSTimer *)timer
+- (void)presentDRMKeyError:(NSError *) error
 {
-  if (!self.audiobookViewController) {
-    [self.timer invalidate];
-    self.timer = nil;
-    self.book = nil;
-    self.manager = nil;
-    return;
-  }
-
-  NSString *const string = [[NSString alloc]
-                            initWithData:self.manager.audiobook.player.currentChapterLocation.toData
-                            encoding:NSUTF8StringEncoding];
-  [[NYPLBookRegistry sharedRegistry]
-   setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
-   forIdentifier:self.book.identifier];
-}
-
-- (void)presentDRMKeyError:(NSError *) error {
   NSString *title = NSLocalizedString(@"DRM Error", nil);
   NSString *message = error.localizedDescription;
   UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
@@ -367,7 +380,7 @@
   [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 }
 
-- (void)presentCorruptedItemErrorForBook:(NYPLBook*)book fromURL:(NSURL*)url
+- (void)presentCorruptedItemErrorWithLog:(NSDictionary *)loggingMetadata
 {
   NSString *title = NSLocalizedString(@"Corrupted Audiobook", nil);
   NSString *message = NSLocalizedString(@"The audiobook you are trying to open appears to be corrupted. Try downloading it again.", nil);
@@ -376,10 +389,7 @@
 
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
                             summary:@"Audiobooks: corrupted audiobook"
-                           metadata:@{
-                             @"book": book.loggableDictionary ?: @"N/A",
-                             @"fileURL": url ?: @"N/A"
-                           }];
+                           metadata:loggingMetadata];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
@@ -405,41 +415,87 @@
 
 #pragma mark Audiobook Manager Refresh Delegate
 
-- (void)audiobookManagerDidRequestRefresh {
+- (void)audiobookManagerDidRequestRefresh
+{
+#if FEATURE_OVERDRIVE
+  // while `audiobookManagerDidRequestRefresh` is guaranteed to be called
+  // always on the main thread, this lock prevents us from starting the book
+  // download a second time before reaching a completion for the first.
   if (![self.refreshAudiobookLock tryLock]) {
     return;
   }
-    
-  [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:self.book.identifier];
 
-#if FEATURE_OVERDRIVE
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateODAudiobookManifest) name:NSNotification.NYPLMyBooksDownloadCenterDidChange object:nil];
+  if ([self.book.distributor isEqualToString:OverdriveDistributorKey]) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateODAudiobookManifest:)
+                                                 name:NSNotification.NYPLMyBooksDownloadCenterDidChange
+                                               object:nil];
+  } else {
+    [self.refreshAudiobookLock unlock];
+  }
 #endif
+
+  [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:self.book.identifier];
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
 }
 
 #if FEATURE_OVERDRIVE
-- (void)updateODAudiobookManifest {
-  if ([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier] == NYPLBookStateDownloadSuccessful) {
-    OverdriveAudiobook *odAudiobook = (OverdriveAudiobook *)self.manager.audiobook;
+- (void)updateODAudiobookManifest:(NSNotification *)notif
+{
+  NSString *bookID = notif.userInfo[NYPLNotificationKeys.bookIDKey];
 
-    NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:self.book.identifier];
-    NSData *const data = [NSData dataWithContentsOfURL:url];
-    if (data == nil) {
-      [self presentCorruptedItemErrorForBook:self.book fromURL:url];
+  // if MyBooks changed for any reason but a book update (in which case we
+  // would have a nonnull book ID), then it must mean it's either a reset or
+  // anyways something that does not concern us because not related to a
+  // specific book.
+  // Note that if for whatever reason AudioBookVC is deallocated before this
+  // callback is called, `self.book` will be nil or potentially *different*.
+  if (bookID == nil || bookID.isEmptyNoWhitespace) {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.refreshAudiobookLock unlock];
+    return;
+  }
+
+  NYPLBookState bookState = [[NYPLBookRegistry sharedRegistry]
+                             stateForIdentifier:bookID];
+  if (bookState == NYPLBookStateDownloadFailed) {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.refreshAudiobookLock unlock];
+    return;
+  }
+
+  if (bookState == NYPLBookStateDownloadSuccessful || bookState == NYPLBookStateUsed) {
+    // sanity check before casting. Note that self.manager could be nil.
+    if (![(NSObject*)self.manager.audiobook isKindOfClass:[OverdriveAudiobook class]]) {
+      [[NSNotificationCenter defaultCenter] removeObserver:self];
+      [self.refreshAudiobookLock unlock];
       return;
     }
 
-    id const json = NYPLJSONObjectFromData(data);
+    // odAudiobook definitely nonnull
+    OverdriveAudiobook *odAudiobook = (OverdriveAudiobook * __nonnull)self.manager.audiobook;
 
+    NSURL *const bookURL = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                            fileURLForBookIndentifier:bookID];
+    NSData *const bookData = [NSData dataWithContentsOfURL:bookURL];
+    if (bookData == nil) {
+      [[NSNotificationCenter defaultCenter] removeObserver:self];
+      [self.refreshAudiobookLock unlock];
+      [self presentCorruptedItemErrorWithLog:@{
+        @"book/bookID": self.book.loggableDictionary ?: bookID,
+        @"fileURL": bookURL ?: @"N/A"
+      }];
+      return;
+    }
+
+    // update Overdrive audiobook object with id
+    id const json = NYPLJSONObjectFromData(bookData);
     NSMutableDictionary *dict = [(NSMutableDictionary *)json mutableCopy];
-
-    dict[@"id"] = self.book.identifier;
-
+    dict[@"id"] = bookID;
     [odAudiobook updateManifestWithJSON:dict];
 
     [self.manager updateAudiobookWith:odAudiobook.spine];
-      
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.refreshAudiobookLock unlock];
   }
