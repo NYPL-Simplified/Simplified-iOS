@@ -91,6 +91,11 @@
 "BookButtonsViewRemoveHoldTitle" = "Rimuovi prenotazione";
 "BookButtonsViewRemoveHoldMessage" = "Sei sicuro di voler cancellare la prenotazione di \"%@\"? Perderai il tuo posto nella fila per accedere a questo libro.";
 "BookButtonsViewRemoveHoldConfirm" = "Rimuovere";
+"Returns %@" = "Restituisci %@";
+"Borrows %@" = "Prendi in prestito %@";
+"Holds %@" = "Prenota %@";
+"Cancels hold for %@" = "Rimuovi la prenotazione per %@";
+"Downloads %@" = "Scarica %@";
 
 // Book Details
 "BookDetailViewControllerTitle" = "Dettagli";
@@ -114,10 +119,13 @@
 
 // NYPLHoldsViewController
 "HoldsViewControllerTitle" = "Prenotazioni";
-"HoldsViewControllerSearchTitle" = "Cerca le riserve";
+"HoldsViewControllerSearchTitle" = "Cerca le prenotazioni";
 "AvailableForCheckoutHeader" = "DISPONIBILE PER PRESTITO";
 "WaitingForAvailabilityHeader" = "IN ATTESA DI DISPONIBILITÀ";
 "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download." = "I libri prenotati appariranno qui. A quel punto, controlla di tanto in tanto per vedere se sono diventati disponibili e possono essere scaricati.";
+
+// MyBooks
+"%@ was returned successfully." = "%@ è stato restituito.";
 
 // NYPLMyBooksDownloadCenter
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Cancellare";
