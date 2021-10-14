@@ -720,6 +720,7 @@ didCompleteWithError:(NSError *)error
       NYPLBook *returnedBook = [NYPLBook bookWithEntry:entry];
       [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
       [[NYPLBookRegistry sharedRegistry] save];
+      [NYPLMyBooksNotifier announceSuccessfulBookReturn:returnedBook];
       return;
     }
 
@@ -730,6 +731,7 @@ didCompleteWithError:(NSError *)error
       }
       [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
       [[NYPLBookRegistry sharedRegistry] save];
+      [NYPLMyBooksNotifier announceSuccessfulBookReturn:book];
     } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
       NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
       __weak __auto_type wSelf = self;
