@@ -1337,7 +1337,6 @@
 		73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092251E7883C400AD338D /* libiconv.tbd */; };
 		73FCA36325005BA4001B0C5D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		73FCA36425005BA4001B0C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092231E78839D00AD338D /* QuartzCore.framework */; };
-		73FCA36725005BA4001B0C5D /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352211BDE8E560040BF1D /* libicucore.tbd */; };
 		73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
 		73FCA36A25005BA4001B0C5D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
@@ -2365,7 +2364,6 @@
 				73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */,
 				73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */,
 				73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */,
-				73FCA36725005BA4001B0C5D /* libRDServices.a in Frameworks */,
 				73FCA37125005BA4001B0C5D /* libTenPrintCover.a in Frameworks */,
 				73FCA37325005BA4001B0C5D /* libxml2.dylib in Frameworks */,
 				73FCA37225005BA4001B0C5D /* libz.dylib in Frameworks */,
