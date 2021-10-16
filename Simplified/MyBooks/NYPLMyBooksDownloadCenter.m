@@ -794,7 +794,8 @@ didCompleteWithError:(NSError *)error
 - (NSURL *)contentDirectoryURL:(NSString *)account
 {
   NSURL *directoryURL = [[NYPLBookContentMetadataFilesHelper directoryFor:account] URLByAppendingPathComponent:@"content"];
-  
+  NYPLLOG_F(@"Book content directory URL: %@", directoryURL);
+
   if (directoryURL != nil) {
     NSError *error = nil;
     if(![[NSFileManager defaultManager]
