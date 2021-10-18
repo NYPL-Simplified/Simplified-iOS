@@ -22,8 +22,11 @@ private enum ColorAsset: String {
 
 @objc extension NYPLConfiguration {
   static var primaryBackgroundColor: UIColor {
-    if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.primaryBackground.rawValue) {
+    if #available(iOS 13.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .light {
+      return .systemBackground
+    } else if #available(iOS 11.0, *),
+              let color = UIColor(named: ColorAsset.primaryBackground.rawValue) {
       return color
     }
 
@@ -31,8 +34,11 @@ private enum ColorAsset: String {
   }
   
   static var primaryTextColor: UIColor {
-    if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.primaryText.rawValue) {
+    if #available(iOS 13.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .light {
+      return .label
+    } else if #available(iOS 11.0, *),
+              let color = UIColor(named: ColorAsset.primaryText.rawValue) {
       return color
     }
 
@@ -40,8 +46,11 @@ private enum ColorAsset: String {
   }
 
   static var secondaryBackgroundColor: UIColor {
-    if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.secondaryBackground.rawValue) {
+    if #available(iOS 13.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .light {
+      return .secondarySystemBackground
+    } else if #available(iOS 11.0, *),
+              let color = UIColor(named: ColorAsset.secondaryBackground.rawValue) {
       return color
     }
     
@@ -49,8 +58,11 @@ private enum ColorAsset: String {
   }
   
   static var secondaryTextColor: UIColor {
-    if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.secondaryText.rawValue) {
+    if #available(iOS 13.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .light {
+      return .secondaryLabel
+    } else if #available(iOS 11.0, *),
+              let color = UIColor(named: ColorAsset.secondaryText.rawValue) {
       return color
     }
 
@@ -58,8 +70,11 @@ private enum ColorAsset: String {
   }
   
   static var actionColor: UIColor {
-    if #available(iOS 11.0, *),
-       let color = UIColor(named: ColorAsset.action.rawValue) {
+    if #available(iOS 13.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .light {
+      return .link
+    } else if #available(iOS 11.0, *),
+              let color = UIColor(named: ColorAsset.action.rawValue) {
       return color
     }
 

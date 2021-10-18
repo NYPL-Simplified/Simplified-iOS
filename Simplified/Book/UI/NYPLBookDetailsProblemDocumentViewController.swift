@@ -125,6 +125,19 @@
     self.scrollView?.contentSize = calculateContentSize()
   }
   
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    if #available(iOS 12.0, *),
+      UIScreen.main.traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+      updateColors()
+    }
+  }
+  
+  private func updateColors() {
+    backButton?.setTitleColor(NYPLConfiguration.mainColor(), for: .normal)
+    closeButton?.setTitleColor(NYPLConfiguration.mainColor(), for: .normal)
+  }
+  
   func calculateContentSize() -> CGSize {
     var height = CGFloat.zero
     height += max(self.backButton?.bounds.height ?? 0, self.closeButton?.bounds.height ?? 0)

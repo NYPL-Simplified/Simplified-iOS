@@ -136,6 +136,20 @@
   }];
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors {
+  [self.collectionView reloadData];
+}
+
 #pragma mark UICollectionViewDelegate
 
 - (NSInteger)numberOfSectionsInCollectionView:(__attribute__((unused)) UICollectionView *)collectionView

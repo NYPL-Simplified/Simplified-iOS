@@ -246,6 +246,23 @@ CGFloat const marginPadding = 2.0;
 }
 #endif
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors {
+  if (self.businessLogic.registrationIsPossible) {
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:1];
+    [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+  }
+}
+
 #pragma mark UITableViewDelegate
 
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
