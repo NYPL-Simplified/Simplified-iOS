@@ -310,6 +310,14 @@
   return audiobookVC;
 }
 
+- (void)presentUnsupportedItemError
+{
+  NSString *title = NSLocalizedString(@"Unsupported Item", nil);
+  NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported.", nil);
+  UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
+  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+}
+
 #pragma mark - Audiobook Methods
 
 - (void)registerCallbackForLogHandler
@@ -372,14 +380,6 @@
   [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 }
 
-- (void)presentUnsupportedItemError
-{
-  NSString *title = NSLocalizedString(@"Unsupported Item", nil);
-  NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported.", nil);
-  UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
-  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
-}
-
 - (void)presentCorruptedItemErrorWithLog:(NSDictionary *)loggingMetadata
 {
   NSString *title = NSLocalizedString(@"Corrupted Audiobook", nil);
@@ -392,7 +392,7 @@
                            metadata:loggingMetadata];
 }
 
-#pragma mark NYPLBookDownloadFailedDelegate
+#pragma mark - NYPLBookDownloadFailedDelegate
 
 - (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *const)cell
 {
@@ -405,7 +405,7 @@
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
 }
 
-#pragma mark NYPLBookDownloadingCellDelegate
+#pragma mark - NYPLBookDownloadingCellDelegate
 
 - (void)didSelectCancelForBookDownloadingCell:(NYPLBookDownloadingCell *const)cell
 {
@@ -413,7 +413,7 @@
    cancelDownloadForBookIdentifier:cell.book.identifier];
 }
 
-#pragma mark Audiobook Manager Refresh Delegate
+#pragma mark - Audiobook Manager Refresh Delegate
 
 - (void)audiobookManagerDidRequestRefresh
 {
