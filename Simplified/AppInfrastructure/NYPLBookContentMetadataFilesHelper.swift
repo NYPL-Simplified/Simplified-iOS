@@ -28,7 +28,6 @@ import Foundation
       dirURL = dirURL.appendingPathComponent(String(account))
     }
 
-    Log.info(#function, "Book content directory URL: \(dirURL)")
     return dirURL
   }
 }

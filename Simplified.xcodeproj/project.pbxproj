@@ -1337,7 +1337,6 @@
 		73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092251E7883C400AD338D /* libiconv.tbd */; };
 		73FCA36325005BA4001B0C5D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		73FCA36425005BA4001B0C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092231E78839D00AD338D /* QuartzCore.framework */; };
-		73FCA36725005BA4001B0C5D /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352211BDE8E560040BF1D /* libicucore.tbd */; };
 		73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
 		73FCA36A25005BA4001B0C5D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
@@ -1943,7 +1942,6 @@
 		730FC05525128D64004D7C2D /* OETutorialEligibilityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialEligibilityViewController.swift; sourceTree = "<group>"; };
 		730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialWelcomeViewController.swift; sourceTree = "<group>"; };
 		7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInOutBusinessLogicUIDelegateMock.swift; sourceTree = "<group>"; };
-		7312725C259A9AB00032D7B4 /* ios-binaries-check.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "ios-binaries-check.sh"; sourceTree = "<group>"; };
 		731272AC259CF6F90032D7B4 /* xcode-export-appstore.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-export-appstore.sh"; sourceTree = "<group>"; };
 		731272B1259CFB180032D7B4 /* testflight-upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "testflight-upload.sh"; sourceTree = "<group>"; };
 		7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+SignOut.swift"; sourceTree = "<group>"; };
@@ -1981,9 +1979,7 @@
 		733DEC8B24108D8D008C74BC /* DRMLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DRMLibraryService.swift; sourceTree = "<group>"; };
 		733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+R2.swift"; sourceTree = "<group>"; };
 		733E3E05257ED49C00BEBA32 /* xcode-settings.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-settings.sh"; sourceTree = "<group>"; };
-		733E3E06257ED49C00BEBA32 /* ios-binaries-upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "ios-binaries-upload.sh"; sourceTree = "<group>"; };
 		733E3E07257ED49C00BEBA32 /* xcode-archive.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-archive.sh"; sourceTree = "<group>"; };
-		733E3E08257ED49D00BEBA32 /* archive-and-upload-adhoc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "archive-and-upload-adhoc.sh"; sourceTree = "<group>"; };
 		733E3E09257ED49D00BEBA32 /* xcode-export-adhoc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-export-adhoc.sh"; sourceTree = "<group>"; };
 		733E3E0A257ED52400BEBA32 /* exportOptions-adhoc.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "exportOptions-adhoc.plist"; sourceTree = "<group>"; };
 		733E3E0B257ED52500BEBA32 /* exportOptions-appstore.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "exportOptions-appstore.plist"; sourceTree = "<group>"; };
@@ -2368,7 +2364,6 @@
 				73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */,
 				73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */,
 				73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */,
-				73FCA36725005BA4001B0C5D /* libRDServices.a in Frameworks */,
 				73FCA37125005BA4001B0C5D /* libTenPrintCover.a in Frameworks */,
 				73FCA37325005BA4001B0C5D /* libxml2.dylib in Frameworks */,
 				73FCA37225005BA4001B0C5D /* libz.dylib in Frameworks */,
@@ -3263,15 +3258,12 @@
 				7383ADE4264607FA00226358 /* clean-carthage.sh */,
 				73609AD8245B53CB00F0E08B /* update-certificates.sh */,
 				7358A9532589A70B00E66D34 /* decode-install-secrets.sh */,
-				733E3E08257ED49D00BEBA32 /* archive-and-upload-adhoc.sh */,
 				733E3E07257ED49C00BEBA32 /* xcode-archive.sh */,
 				733E3E09257ED49D00BEBA32 /* xcode-export-adhoc.sh */,
 				731272AC259CF6F90032D7B4 /* xcode-export-appstore.sh */,
 				7358A951258997A900E66D34 /* xcode-test.sh */,
 				73EC8904258D8A2A00978955 /* xcode-build-nodrm.sh */,
 				733E3E05257ED49C00BEBA32 /* xcode-settings.sh */,
-				733E3E06257ED49C00BEBA32 /* ios-binaries-upload.sh */,
-				7312725C259A9AB00032D7B4 /* ios-binaries-check.sh */,
 				73060917268E6FEF00C21547 /* detect-app-to-build.sh */,
 				730608A6268D3A0100C21547 /* build-number-check.sh */,
 				7364FC6025B7C5AB00B0A9FD /* firebase-upload.sh */,
