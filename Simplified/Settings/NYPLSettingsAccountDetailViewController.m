@@ -248,6 +248,25 @@ Authenticating with any of those barcodes should work.
   }
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors {
+  [self updateLoginLogoutCellAppearance];
+  self.barcodeImageLabel.textColor = [NYPLConfiguration mainColor];
+  if (self.businessLogic.registrationIsPossible) {
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:1];
+    [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+  }
+}
+
 - (void)displayErrorMessage:(NSString *)errorMessage
 {
   UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];

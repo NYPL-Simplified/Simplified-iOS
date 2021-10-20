@@ -18,18 +18,30 @@ final class NYPLContentBadgeImageView: UIImageView {
 
   @objc required init(badgeImage: NYPLBadgeImage) {
     super.init(image: UIImage(named: badgeImage.assetName()))
-    if #available(iOS 12.0, *),
-       UIScreen.main.traitCollection.userInterfaceStyle == .dark {
-      backgroundColor = NYPLConfiguration.primaryBackgroundColor
-    } else {
-      backgroundColor = NYPLConfiguration.mainColor()
-    }
+    updateColors()
     
     contentMode = .scaleAspectFit
   }
 
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    if #available(iOS 12.0, *),
+      UIScreen.main.traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+      updateColors()
+    }
+  }
+  
+  private func updateColors() {
+    if #available(iOS 12.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+      backgroundColor = NYPLConfiguration.primaryBackgroundColor
+    } else {
+      backgroundColor = NYPLConfiguration.mainColor()
+    }
   }
 
   @objc class func pin(badge: UIImageView, toView view: UIView) {

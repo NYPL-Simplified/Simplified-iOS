@@ -23,12 +23,7 @@
   self = [super init];
   if(!self) return nil;
   
-  self.backgroundColor = [NYPLConfiguration mainColor];
-  if (@available(iOS 12.0, *)) {
-    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
-      self.backgroundColor = [NYPLConfiguration secondaryBackgroundColor];
-    }
-  }
+  [self updateColors];
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
@@ -50,6 +45,26 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors {
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+      self.backgroundColor = [NYPLConfiguration secondaryBackgroundColor];
+    }
+  } else {
+    self.backgroundColor = [NYPLConfiguration mainColor];
+  }
 }
 
 - (void)didChangePreferredContentSize

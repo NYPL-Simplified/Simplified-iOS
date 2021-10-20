@@ -147,6 +147,30 @@ static NSString *DetailHTMLTemplate = nil;
   return self;
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors
+{
+  UIBlurEffectStyle style = UIBlurEffectStyleLight;
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+      style = UIBlurEffectStyleDark;
+    }
+  }
+  UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:style];
+  [self.visualEffectView setEffect:blurEffect];
+  
+  self.summaryTextView.textColor = NYPLConfiguration.primaryTextColor;
+}
+
 - (void)updateFonts
 {
   self.titleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleHeadline];

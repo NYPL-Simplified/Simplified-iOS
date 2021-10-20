@@ -92,17 +92,29 @@
   [self.cancelButton integralizeFrame];
 }
 
-#pragma mark -
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
 
-- (void)setup
-{
+- (void)updateColors {
   self.backgroundColor = [NYPLConfiguration mainColor];
   if (@available(iOS 12.0, *)) {
     if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
       self.backgroundColor = [NYPLConfiguration secondaryBackgroundColor];
     }
   }
-  
+}
+
+#pragma mark -
+
+- (void)setup
+{
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.font = [UIFont systemFontOfSize:12];
   self.authorsLabel.textColor = [NYPLConfiguration secondaryTextColor];
@@ -141,6 +153,8 @@
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
   self.titleLabel.textColor = [NYPLConfiguration secondaryTextColor];
   [self.contentView addSubview:self.titleLabel];
+  
+  [self updateColors];
 }
 
 - (void)setBook:(NYPLBook *const)book

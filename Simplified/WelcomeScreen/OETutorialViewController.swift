@@ -26,10 +26,7 @@ class OETutorialViewController : UIPageViewController, UIPageViewControllerDataS
     
     self.view.backgroundColor = NYPLConfiguration.welcomeTutorialBackgroundColor
     
-    let pageControl = UIPageControl.appearance(whenContainedInInstancesOf: [OETutorialViewController.self])
-    pageControl.pageIndicatorTintColor = .lightGray
-    pageControl.currentPageIndicatorTintColor = NYPLConfiguration.mainColor()
-    pageControl.backgroundColor = .clear
+    updateColors()
     
     self.viewControllersList = [
       OETutorialWelcomeViewController(),
@@ -41,6 +38,21 @@ class OETutorialViewController : UIPageViewController, UIPageViewControllerDataS
                             direction: .forward,
                             animated: true,
                             completion: nil)
+  }
+  
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    if #available(iOS 12.0, *),
+      UIScreen.main.traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+      updateColors()
+    }
+  }
+  
+  private func updateColors() {
+    let pageControl = UIPageControl.appearance(whenContainedInInstancesOf: [OETutorialViewController.self])
+    pageControl.pageIndicatorTintColor = .lightGray
+    pageControl.currentPageIndicatorTintColor = NYPLConfiguration.mainColor()
+    pageControl.backgroundColor = .clear
   }
   
   // MARK: UIPageViewControllerDataSource

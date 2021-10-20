@@ -45,12 +45,7 @@
   
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
   self.progressView.backgroundColor = [NYPLConfiguration progressBarBackgroundColor];
-  self.progressView.tintColor = [NYPLConfiguration primaryBackgroundColor];
-  if (@available(iOS 12.0, *)) {
-    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
-      self.progressView.tintColor = [NYPLConfiguration actionColor];
-    }
-  }
+  [self updateColors];
   [self addSubview:self.progressView];
   [self.progressView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [self.progressView autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.progressLabel withOffset:sidePadding*2];
@@ -99,6 +94,26 @@
   CGContextEOFillPath(context);
   CGPathRelease(path);
   CGPathRelease(visiblePath);
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors {
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+      self.progressView.tintColor = [NYPLConfiguration actionColor];
+    }
+  } else {
+    self.progressView.tintColor = [NYPLConfiguration primaryBackgroundColor];
+  }
 }
 
 #pragma mark -
