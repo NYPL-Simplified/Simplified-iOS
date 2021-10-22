@@ -6,6 +6,8 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
+#if FEATURE_AUDIOBOOKS
+
 import Foundation
 
 /// DPLA Audiobooks DRM helper class
@@ -82,3 +84,5 @@ class DPLAAudiobooks {
     task.resume()
   }
 }
+
+#endif //FEATURE_AUDIOBOOKS

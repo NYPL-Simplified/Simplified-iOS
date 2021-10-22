@@ -6,6 +6,8 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
+#if FEATURE_AUDIOBOOKS
+
 import Foundation
 import NYPLAudiobookToolkit
 
@@ -26,3 +28,5 @@ struct JWK: Codable {
     self.publicKeyData = Data(base64Encoded: RSAUtils.stripPEMKeyHeader(pemString))    
   }
 }
+
+#endif

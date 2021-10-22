@@ -6,6 +6,8 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
+#if FEATURE_AUDIOBOOKS
+
 import Foundation
 import NYPLAudiobookToolkit
 
@@ -84,5 +86,6 @@ extension AudioBookVendors {
       completion?(nil)
     }
   }
-
 }
+
+#endif//FEATURE_AUDIOBOOKS

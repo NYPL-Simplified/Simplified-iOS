@@ -46,22 +46,28 @@ NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplifi
   if (!types) {
     types = [NSSet setWithArray:@[
       ContentTypeOPDSCatalog,
+      ContentTypeBearerToken,
+      ContentTypeEpubZip,
+      ContentTypeOpenAccessPDF,
+      ContentTypeOctetStream,
+#if LCP
+      ContentTypeReadiumLCP,
+#endif
 #if FEATURE_DRM_CONNECTOR
       ContentTypeAdobeAdept,
 #endif
 #if AXIS
       ContentTypeAxis360,
 #endif
-      ContentTypeBearerToken,
-      ContentTypeEpubZip,
+#if FEATURE_AUDIOBOOKS
       ContentTypeFindaway,
       ContentTypeOpenAccessAudiobook,
-      ContentTypeOpenAccessPDF,
       ContentTypeFeedbooksAudiobook,
+      ContentTypeAudiobookZip,
+#if FEATURE_OVERDRIVE_AUTH
       ContentTypeOverdriveAudiobook,
-      ContentTypeOctetStream,
-      ContentTypeReadiumLCP,
-      ContentTypeAudiobookZip
+#endif
+#endif//FEATURE_AUDIOBOOKS
     ]];
   }
 
@@ -92,24 +98,36 @@ NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplifi
         ContentTypeFindaway,
         ContentTypeEpubZip,
         ContentTypeOpenAccessPDF,
+        ContentTypeOctetStream,
+#if LCP
+        ContentTypeReadiumLCP,
+#endif
+#if FEATURE_AUDIOBOOKS
         ContentTypeOpenAccessAudiobook,
         ContentTypeFeedbooksAudiobook,
+        ContentTypeAudiobookZip,
+#if FEATURE_OVERDRIVE_AUTH
         ContentTypeOverdriveAudiobook,
-        ContentTypeOctetStream,
-        ContentTypeReadiumLCP,
-        ContentTypeAudiobookZip
+#endif
+#endif//FEATURE_AUDIOBOOKS
       ]],
+#if LCP
       ContentTypeReadiumLCP: [NSSet setWithArray:@[
         ContentTypeEpubZip,
+#if FEATURE_AUDIOBOOKS
         ContentTypeAudiobookZip
+#endif
       ]],
+#endif//LCP
 #if FEATURE_DRM_CONNECTOR
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
 #endif
       ContentTypeBearerToken: [NSSet setWithArray:@[
         ContentTypeEpubZip,
         ContentTypeOpenAccessPDF,
+#if FEATURE_AUDIOBOOKS
         ContentTypeOpenAccessAudiobook
+#endif
       ]]
     };
   }
@@ -123,7 +141,9 @@ NSString * const _Nonnull ContentTypeAxis360 = @"application/vnd.librarysimplifi
   return [NSSet setWithArray:@[ContentTypeFindaway,
                                ContentTypeOpenAccessAudiobook,
                                ContentTypeFeedbooksAudiobook,
+#if FEATURE_OVERDRIVE_AUTH
                                ContentTypeOverdriveAudiobook,
+#endif
                                ContentTypeAudiobookZip ]];
 }
 

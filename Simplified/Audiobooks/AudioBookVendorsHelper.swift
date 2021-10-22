@@ -6,8 +6,9 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-import Foundation
+#if FEATURE_AUDIOBOOKS
 
+import Foundation
 
 /// This is a helper class to use with Objective-C code
 @objc public class AudioBookVendorsHelper: NSObject {
@@ -60,3 +61,5 @@ import Foundation
     ])
   }
 }
+
+#endif//FEATURE_AUDIOBOOKS
