@@ -6,6 +6,8 @@
 //  Copyright © 2021 NYPL Labs. All rights reserved.
 //
 
+#if LCP
+
 import R2LCPClient
 import ReadiumLCP
 
@@ -31,3 +33,6 @@ class NYPLLCPClient: ReadiumLCP.LCPClient {
   }
 
 }
+
+#endif//LCP
+

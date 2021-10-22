@@ -1,6 +1,5 @@
 import XCTest
 
-import OverdriveProcessor
 @testable import SimplyE
 
 class NYPLMyBooksDownloadCenterTests: XCTestCase {
@@ -88,8 +87,7 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
       "title": "Tractatus",
       "categories": "some cat",
       "id": "123",
-      "updated": "2020-10-06T17:13:51Z",
-      "distributor": OverdriveDistributorKey])
+      "updated": "2020-10-06T17:13:51Z"])
     XCTAssertNotNil(optBook)
     let book = optBook!
 
@@ -97,6 +95,6 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
       XCTAssert(book.canCompleteDownload(withContentType: contentType))
     }
 
-    XCTAssert(book.canCompleteDownload(withContentType: ContentTypeOverdriveAudiobookActual))
+    XCTAssert(book.canCompleteDownload(withContentType: ContentTypeEpubZip))
   }
 }
