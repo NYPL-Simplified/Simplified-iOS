@@ -602,6 +602,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/RDServices.dst;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
