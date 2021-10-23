@@ -1,5 +1,4 @@
 import Foundation
-import NYPLAudiobookToolkit
 
 @objcMembers final class NYPLKeychainManager: NSObject {
 
@@ -35,8 +34,10 @@ import NYPLAudiobookToolkit
     migrateItemsFromOldSimplyEKeychain()
     #endif
     updateKeychainForBackgroundFetch()
+    #if FEATURE_AUDIOBOOKS
     manageFeedbooksData()
     manageFeedbookDrmPrivateKey()
+    #endif
   }
 
   // The app does not handle DRM Authentication logic when assuming a user
@@ -154,38 +155,7 @@ import NYPLAudiobookToolkit
       Log.debug(#file, "Keychain item \"\(key)\" updated with new accessible security level...")
     }
   }
-  
-  // Load feedbooks profile secrets
-  private class func manageFeedbooksData() {
-    // Go through each vendor and add their data to keychain so audiobook component can access securely
-    for vendor in AudioBookVendors.allCases {
-      guard let keyData = NYPLSecrets.feedbookKeys(forVendor: vendor)?.data(using: .utf8),
-        let profile = NYPLSecrets.feedbookInfo(forVendor: vendor)["profile"],
-        let tag = "feedbook_drm_profile_\(profile)".data(using: .utf8) else {
-          Log.error(#file, "Could not load secrets for Feedbook vendor: \(vendor.rawValue)")
-          continue
-      }
-        
-      let addQuery: [String: Any] = [
-        kSecClass as String: kSecClassKey,
-        kSecAttrApplicationTag as String: tag,
-        kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
-        kSecValueData as String: keyData
-      ]
-      let status = SecItemAdd(addQuery as CFDictionary, nil)
-      if status != errSecSuccess && status != errSecDuplicateItem {
-        logKeychainError(forVendor: vendor.rawValue, status: status, message: "FeedbookKeyManagement Error:")
-      }
-    }
-  }
-    
-  private class func manageFeedbookDrmPrivateKey() {
-    // Request DRM certificates for all vendors
-    for vendor in AudioBookVendors.allCases {
-      vendor.updateDrmCertificate()
-    }
-  }
-    
+
   class func logKeychainError(forVendor vendor:String, status: OSStatus, message: String) {
     // This is unexpected
     var errMsg = ""
@@ -227,3 +197,39 @@ import NYPLAudiobookToolkit
     ])
   }
 }
+
+#if FEATURE_AUDIOBOOKS
+private extension NYPLKeychainManager {
+
+  // Load feedbooks profile secrets
+  class func manageFeedbooksData() {
+    // Go through each vendor and add their data to keychain so audiobook component can access securely
+    for vendor in AudioBookVendors.allCases {
+      guard let keyData = NYPLSecrets.feedbookKeys(forVendor: vendor)?.data(using: .utf8),
+            let profile = NYPLSecrets.feedbookInfo(forVendor: vendor)["profile"],
+            let tag = "feedbook_drm_profile_\(profile)".data(using: .utf8) else {
+        Log.error(#file, "Could not load secrets for Feedbook vendor: \(vendor.rawValue)")
+        continue
+      }
+
+      let addQuery: [String: Any] = [
+        kSecClass as String: kSecClassKey,
+        kSecAttrApplicationTag as String: tag,
+        kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
+        kSecValueData as String: keyData
+      ]
+      let status = SecItemAdd(addQuery as CFDictionary, nil)
+      if status != errSecSuccess && status != errSecDuplicateItem {
+        logKeychainError(forVendor: vendor.rawValue, status: status, message: "FeedbookKeyManagement Error:")
+      }
+    }
+  }
+
+  class func manageFeedbookDrmPrivateKey() {
+    // Request DRM certificates for all vendors
+    for vendor in AudioBookVendors.allCases {
+      vendor.updateDrmCertificate()
+    }
+  }
+}
+#endif//FEATURE_AUDIOBOOKS

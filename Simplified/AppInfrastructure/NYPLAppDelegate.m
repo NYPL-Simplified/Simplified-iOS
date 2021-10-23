@@ -1,4 +1,6 @@
+#if FEATURE_AUDIOBOOKS
 @import NYPLAudiobookToolkit;
+#endif
 
 #import "SimplyE-Swift.h"
 
@@ -25,7 +27,9 @@
 
 @interface NYPLAppDelegate()
 
+#if FEATURE_AUDIOBOOKS
 @property (nonatomic) AudiobookLifecycleManager *audiobookLifecycleManager;
+#endif
 @property (nonatomic) NYPLReachability *reachabilityManager;
 @property (nonatomic) NYPLUserNotifications *notificationsManager;
 @property (nonatomic, readwrite) BOOL isSigningIn;
@@ -46,8 +50,10 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [NYPLKeychainManager validateKeychain];
   [NYPLMigrationManager migrate];
   
+#if FEATURE_AUDIOBOOKS
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
+#endif
 
   [app setMinimumBackgroundFetchInterval:MinimumBackgroundFetchInterval];
 
@@ -173,7 +179,9 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 
 - (void)applicationWillTerminate:(__unused UIApplication *)application
 {
+#if FEATURE_AUDIOBOOKS
   [self.audiobookLifecycleManager willTerminate];
+#endif
   [[NYPLBookRegistry sharedRegistry] save];
   [[NYPLReaderSettings sharedSettings] save];
   [NSNotificationCenter.defaultCenter removeObserver:self];
@@ -183,9 +191,11 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 handleEventsForBackgroundURLSession:(NSString *const)identifier
 completionHandler:(void (^const)(void))completionHandler
 {
+#if FEATURE_AUDIOBOOKS
   [self.audiobookLifecycleManager
    handleEventsForBackgroundURLSessionFor:identifier
    completionHandler:completionHandler];
+#endif
 }
 
 #pragma mark -

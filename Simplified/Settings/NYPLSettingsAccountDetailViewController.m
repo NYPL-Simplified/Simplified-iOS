@@ -298,6 +298,7 @@ Authenticating with any of those barcodes should work.
 
   self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
   self.usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+  self.usernameTextField.returnKeyType = UIReturnKeyNext;
   [self.usernameTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
@@ -325,6 +326,7 @@ Authenticating with any of those barcodes should work.
   }
 
   self.PINTextField.secureTextEntry = YES;
+  self.PINTextField.returnKeyType = UIReturnKeyDone;
   self.PINTextField.delegate = self.frontEndValidator;
   [self.PINTextField
    addTarget:self
@@ -1321,13 +1323,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   } else {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentLeft;
-    BOOL const barcodeHasText = [self.usernameTextField.text
-                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinHasText = [self.PINTextField.text
-                             stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinIsNotRequired = self.businessLogic.selectedAuthentication.pinKeyboard == LoginKeyboardNone;
-    BOOL const oauthLogin = self.businessLogic.selectedAuthentication.isOauth;
-    if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired) || oauthLogin) {
+    if ([self.frontEndValidator canAttemptSignIn]) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {

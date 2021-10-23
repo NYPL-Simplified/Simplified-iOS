@@ -175,6 +175,7 @@ CGFloat const marginPadding = 2.0;
 
   self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
   self.usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+  self.usernameTextField.returnKeyType = UIReturnKeyNext;
   [self.usernameTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
@@ -197,6 +198,7 @@ CGFloat const marginPadding = 2.0;
   }
 
   self.PINTextField.secureTextEntry = YES;
+  self.PINTextField.returnKeyType = UIReturnKeyDone;
   self.PINTextField.delegate = self.frontEndValidator;
   [self.PINTextField
    addTarget:self
@@ -774,14 +776,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 
   self.logInCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
-  BOOL const barcodeHasText = [self.usernameTextField.text
-                               stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-  BOOL const pinHasText = [self.PINTextField.text
-                           stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-  BOOL const pinIsNotRequired = self.businessLogic.selectedAuthentication.pinKeyboard == LoginKeyboardNone;
-  BOOL const oauthLogin = self.businessLogic.selectedAuthentication.isOauth;
-
-  if ((barcodeHasText && (pinHasText || pinIsNotRequired)) || oauthLogin) {
+  if ([self.frontEndValidator canAttemptSignIn]) {
     self.logInCell.userInteractionEnabled = YES;
     self.logInCell.textLabel.textColor = [NYPLConfiguration mainColor];
   } else {

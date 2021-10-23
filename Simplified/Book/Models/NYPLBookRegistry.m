@@ -144,7 +144,7 @@ static NSString *const RecordsKey = @"records";
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NSNotification.NYPLBookProcessingDidChange
      object:self
-     userInfo:@{NYPLNotificationKeys.bookProcessingBookIDKey: identifier,
+     userInfo:@{NYPLNotificationKeys.bookIDKey: identifier,
                 NYPLNotificationKeys.bookProcessingValueKey: @(value)}];
   }];
 }
@@ -273,40 +273,42 @@ static NSString *const RecordsKey = @"records";
     backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler
 {
   @synchronized(self) {
-
     [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncBegan object:nil];
 
+    const BOOL hasCredentials = NYPLUserAccount.sharedAccount.hasCredentials;
     if (self.syncing) {
       NYPLLOG(@"[syncWithCompletionHandler] Already syncing");
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
       }];
       return;
-    } else if (!NYPLUserAccount.sharedAccount.hasCredentials || !AccountsManager.shared.currentAccount.loansUrl) {
-      NYPLLOG(@"[syncWithCompletionHandler] No valid credentials");
+    } else if (!hasCredentials || !AccountsManager.shared.currentAccount.loansUrl) {
+      NYPLLOG(@"[syncWithCompletionHandler] No valid credentials OR no Loans URL");
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(completion) {
           NYPLProblemDocument *problemDoc = [NYPLProblemDocument forExpiredOrMissingCredentials:
-                                             NYPLUserAccount.sharedAccount.hasCredentials];
-          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeInvalidCredentials
-                                    summary:@"Unable to sync loans"
-                                   metadata:@{
-                                     @"shouldResetCache": @(shouldResetCache),
-                                     @"hasCredentials": @(NYPLUserAccount.sharedAccount.hasCredentials),
-                                     @"synthesize problem doc": problemDoc.dictionaryValue
-                                   }];
+                                             hasCredentials];
+          if (hasCredentials) { // with no creds, it's not really an error
+            [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeInvalidCredentials
+                                      summary:@"Unable to sync loans: nil loansURL in library account"
+                                     metadata:@{
+                                       @"shouldResetCache": @(shouldResetCache),
+                                       @"hasCredentials": @(hasCredentials),
+                                       @"Synthesized Problem Doc": problemDoc.dictionaryValue
+                                     }];
+          }
           completion(problemDoc.dictionaryValue);
         }
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
         [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
       }];
       return;
-    } else {
-      self.syncing = YES;
-      self.syncShouldCommit = YES;
-      [self broadcastChange];
     }
-  }
+
+    self.syncing = YES;
+    self.syncShouldCommit = YES;
+    [self broadcastChange];
+  } //@synchronized
   
   [NYPLOPDSFeed
    withURL:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
@@ -755,7 +757,13 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   @synchronized(self) {
     [self.coverRegistry removePinnedThumbnailImageForBookIdentifier:identifier];
-    [self.identifiersToRecords removeObjectForKey:identifier];
+    if (identifier) {
+      // introduced for IOS-270. While it seems impossible for the app to
+      // create a book instance with a nil id or set the id to nil, somehow
+      // that is happening while returning the book. See other IOS-270 tags in
+      // the code base for more context.
+      [self.identifiersToRecords removeObjectForKey:identifier];
+    }
     [self broadcastChange];
   }
 }

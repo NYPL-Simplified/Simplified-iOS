@@ -70,7 +70,7 @@
    object:nil
    queue:[NSOperationQueue mainQueue]
    usingBlock:^(NSNotification *note) {
-     if ([note.userInfo[NYPLNotificationKeys.bookProcessingBookIDKey] isEqualToString:self.book.identifier]) {
+     if ([note.userInfo[NYPLNotificationKeys.bookIDKey] isEqualToString:self.book.identifier]) {
        BOOL isProcessing = [note.userInfo[NYPLNotificationKeys.bookProcessingValueKey] boolValue];
        [self updateProcessingState:isProcessing];
      }
@@ -96,15 +96,6 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self.observer];
-}
-
-- (BOOL)showReturnButtonIfApplicable
-{
-#if AXIS
-  return NO;
-#else
-  return YES;
-#endif
 }
 
 - (void)configureForBookDetailsContext
@@ -192,24 +183,16 @@
       break;
     case NYPLBookButtonsStateDownloadNeeded:
     {
+      NSString *title = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
+      NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
                               TitleKey: NSLocalizedString(@"Download", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title],
-                              AddIndicatorKey: @(YES)}];
-        
-      if (self.showReturnButtonIfApplicable)
-      {
-        NSString *title = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-        NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
-
-        visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                                TitleKey: NSLocalizedString(@"Download", nil),
-                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title],
-                                AddIndicatorKey: @(YES)},
-                              @{ButtonKey: self.deleteButton,
-                                TitleKey: title,
-                                HintKey: hint}];
-      }
+                              AddIndicatorKey: @(YES)},
+                            @{ButtonKey: self.deleteButton,
+                              TitleKey: title,
+                              HintKey: hint}];
       break;
     }
     case NYPLBookButtonsStateDownloadSuccessful:
@@ -236,44 +219,33 @@
           break;
       }
 
-      visibleButtonInfo = @[buttonInfo];
-        
-      if (self.showReturnButtonIfApplicable)
-      {
-        NSString *title = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-        NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+      NSString *title = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
+      NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
-        visibleButtonInfo = @[buttonInfo,
-                              @{ButtonKey: self.deleteButton,
-                                TitleKey: title,
-                                HintKey: hint}];
-      }
+      visibleButtonInfo = @[buttonInfo,
+                            @{ButtonKey: self.deleteButton,
+                              TitleKey: title,
+                              HintKey: hint}];
       break;
     }
     case NYPLBookButtonsStateDownloadInProgress:
     {
-      if (self.showReturnButtonIfApplicable)
-      {
-        visibleButtonInfo = @[@{ButtonKey: self.cancelButton,
-                                TitleKey: NSLocalizedString(@"Cancel", nil),
-                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the download for the current book: %@", nil), self.book.title],
-                                AddIndicatorKey: @(NO)}];
-      }
+      visibleButtonInfo = @[@{ButtonKey: self.cancelButton,
+                              TitleKey: NSLocalizedString(@"Cancel", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the download for the current book: %@", nil), self.book.title],
+                              AddIndicatorKey: @(NO)}];
       break;
     }
     case NYPLBookButtonsStateDownloadFailed:
     {
-      if (self.showReturnButtonIfApplicable)
-      {
-        visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                                TitleKey: NSLocalizedString(@"Retry", nil),
-                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Retry the failed download for this book: %@", nil), self.book.title],
-                                AddIndicatorKey: @(NO)},
-                              @{ButtonKey: self.cancelButton,
-                                TitleKey: NSLocalizedString(@"Cancel", nil),
-                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the failed download for this book: %@", nil), self.book.title],
-                                AddIndicatorKey: @(NO)}];
-      }
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                              TitleKey: NSLocalizedString(@"Retry", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Retry the failed download for this book: %@", nil), self.book.title],
+                              AddIndicatorKey: @(NO)},
+                            @{ButtonKey: self.cancelButton,
+                              TitleKey: NSLocalizedString(@"Cancel", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the failed download for this book: %@", nil), self.book.title],
+                              AddIndicatorKey: @(NO)}];
       break;
     }
     case NYPLBookButtonsStateUnsupported:
