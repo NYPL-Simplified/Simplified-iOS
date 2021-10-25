@@ -66,5 +66,5 @@ fi
 
 if [ "$BUILD_CONTEXT" != "ci" ] || [ "$1" == "--no-private" ]; then
   echo "Carthage bootstrap..."
-  carthage bootstrap --platform ios --use-xcframeworks
+  carthage bootstrap --platform ios --use-xcframeworks --cache-builds
 fi

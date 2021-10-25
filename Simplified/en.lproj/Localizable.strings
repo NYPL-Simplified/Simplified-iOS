@@ -96,6 +96,11 @@
 "BookButtonsViewRemoveHoldTitle" = "Remove Reservation";
 "BookButtonsViewRemoveHoldMessage" = "Are you sure you want to remove \"%@\" from your reservations? You will no longer be in line for this book.";
 "BookButtonsViewRemoveHoldConfirm" = "Remove";
+"Returns %@" = "Returns %@";
+"Borrows %@" = "Borrows %@";
+"Holds %@" = "Holds %@";
+"Cancels hold for %@" = "Cancels hold for %@";
+"Downloads %@" = "Downloads %@";
 
 // Book Details
 "BookDetailViewControllerTitle" = "Details";
@@ -123,6 +128,9 @@
 "AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
 "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download." = "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.";
+
+// MyBooks
+"%@ was returned successfully." = "%@ was returned successfully.";
 
 // NYPLMyBooksDownloadCenter
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Delete";
