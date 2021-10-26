@@ -11,7 +11,7 @@ import NYPLAxis
 
 /// A wrapper class which aids debugging and allows recursive search with a given key in an NYPLXML object.
 struct NYPLAxisXMLRepresentation: CustomStringConvertible {
-  let children: [NYPLAxisXMLRepresentation]
+  let children: [NYPLAxisXML]
   let attributes: [AnyHashable: Any]
   let name: String
   let nameSpaceURI: String
@@ -65,31 +65,54 @@ struct NYPLAxisXMLRepresentation: CustomStringConvertible {
     result = result + "\nvalue: \(value)"
     return result
   }
-  
-  /// Finds and returns all values within the xml and its children matching the given key.
+}
+
+extension NYPLAxisXMLRepresentation: NYPLAxisXML {
+  /// Finds the first node whose name matches the given key.
   ///
-  /// Note: We're doing something akin to a `depth first pre-order search` of a general tree here.
-  /// The time complexity is `O(n)` where n is the number of nodes (children and their children and so forth).
-  /// The space complexity will be `O(|m|)` where `m` is the average size of each node.
+  /// Space complexity (worst case): O(n)
+  /// Time complexity (worst case): O(n)
   ///
-  /// This method can be expensive for large xmls with lots of elements and sub elements. Since we don't
-  /// exit until all the nodes have been visited, there is no `best case` and all cases are `worst case`.
+  /// - Parameter nodeName: the name of node to look for.
+  /// - Returns: an XML whose `name` matches the given `key`.
   ///
-  /// - Parameter key: Key for the item
-  /// - Returns: An array of items matching the specified key. Returns an empty array if no element with
-  /// given key is found.
-  func findRecursivelyInAttributes(_ key: String) -> [String] {
-    var initial: [String] = []
-    if let value = self.attributes[key] as? String {
-      initial.append(value)
+  func firstNodeNamed(_ nodeName: String) -> NYPLAxisXML? {
+    // Tail recursive breadth-first implementation
+    func find(in q: inout [NYPLAxisXML]) -> NYPLAxisXML? {
+      if q.isEmpty {
+        return nil
+      }
+
+      let node = q.removeFirst()
+      if node.name == nodeName {
+        return node
+      }
+
+      q.append(contentsOf: node.children)
+
+      return find(in: &q)
     }
-    
-    let childValues = children
-      .map { $0.findRecursivelyInAttributes(key)}
+
+    var q = [self as NYPLAxisXML]
+    return find(in: &q)
+  }
+  
+  /// Gathers all attributes values for the given key searching only the first
+  /// level children matching a given name.
+  ///
+  /// - Parameters:
+  ///   - key: Attribute key to look for.
+  ///   - nodeName: Name of the nodes where to look for the given attribute key.
+  ///
+  /// - Returns: An array of values for the specified key. Returns an empty
+  /// array if nothing matching was found.
+  func attributeValues(forKey key: String, onNodesNamed nodeName: String) -> [String] {
+    let values = children
+      .filter { $0.name == nodeName }
+      .compactMap { $0.attributes[key] as? String }
       .filter { !$0.isEmpty }
-      .flatMap { $0 }
     
-    return initial + childValues
+    return values
   }
   
   /// Finds and returns the value of the first element in the xml and its children whose key matches the given
@@ -120,5 +143,3 @@ struct NYPLAxisXMLRepresentation: CustomStringConvertible {
     return nil
   }
 }
-
-extension NYPLAxisXMLRepresentation: NYPLAxisXML {}
