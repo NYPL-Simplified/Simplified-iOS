@@ -49,7 +49,7 @@ import PureLayout
                                  buttonTitle: NSLocalizedString("Add a Library Later", comment: "Name of section for free books means books that are well-known popular novels for many people."),
                                  buttonTargetSelector: #selector(instantClassicsTapped))
     
-    let logoView = UIImageView(image: UIImage(named: "LaunchImageLogo"))
+    let logoView = UIImageView(image: UIImage(named: "WelcomeScreenLogo"))
     logoView.contentMode = .scaleAspectFit
     
     let containerView = UIView()
@@ -81,9 +81,9 @@ import PureLayout
     NSLayoutConstraint.autoSetPriority(UILayoutPriority.defaultHigh) {
       containerView.autoSetDimension(.width, toSize: 350)
       containerView.autoAlignAxis(toSuperviewAxis: .horizontal)
+      logoView.autoSetDimensions(to: CGSize(width: 180, height: 150))
     }
     NSLayoutConstraint.autoSetPriority(UILayoutPriority.defaultLow) {
-      logoView.autoSetDimensions(to: CGSize(width: 180, height: 150))
       view2.autoPinEdge(toSuperviewEdge: .bottom, withInset: 80)
     }
   }
