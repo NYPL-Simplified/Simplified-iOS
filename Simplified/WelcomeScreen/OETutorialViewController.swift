@@ -30,7 +30,6 @@ class OETutorialViewController : UIPageViewController, UIPageViewControllerDataS
     
     self.viewControllersList = [
       OETutorialWelcomeViewController(),
-      OETutorialEligibilityViewController(),
       OETutorialChoiceViewController()
     ]
     
