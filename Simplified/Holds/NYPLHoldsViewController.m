@@ -77,7 +77,7 @@
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
@@ -96,7 +96,7 @@
   self.instructionsLabel.hidden = YES;
   self.instructionsLabel.text = NSLocalizedString(@"When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.", nil);
   self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
-  self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
+  self.instructionsLabel.textColor = [NYPLConfiguration primaryTextColor];
   self.instructionsLabel.numberOfLines = 0;
   [self.view addSubview:self.instructionsLabel];
   [self.instructionsLabel autoCenterInSuperview];
@@ -134,6 +134,20 @@
       self.navigationItem.leftBarButtonItem.enabled = NO;
     }
   }];
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors {
+  [self.collectionView reloadData];
 }
 
 #pragma mark UICollectionViewDelegate
@@ -187,7 +201,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     UILabel *title = view.subviews.count > 0 ? view.subviews[0] : nil;
     if(!title) {
       title = [[UILabel alloc] init];
-      title.textColor = [UIColor whiteColor];
+      title.textColor = [NYPLConfiguration secondaryTextColor];
       title.font = [UIFont systemFontOfSize:12];
       [view addSubview:title];
     }
@@ -195,7 +209,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
       view.layer.backgroundColor = [NYPLConfiguration mainColor].CGColor;
       title.text = NSLocalizedString(@"AvailableForCheckoutHeader", nil);
     } else {
-      view.layer.backgroundColor = [UIColor colorWithRed:172.0/255.0 green:177.0/255.0 blue:182.0/255 alpha:1.0].CGColor;
+      view.layer.backgroundColor = [[NYPLConfiguration secondaryBackgroundColor] CGColor];
       title.text = NSLocalizedString(@"WaitingForAvailabilityHeader", nil);
     }
     [title sizeToFit];

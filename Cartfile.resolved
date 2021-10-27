@@ -1,6 +1,6 @@
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json" "8.8.0"
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseCrashlyticsBinary.json" "8.8.0"
-github "NYPL-Simplified/NYPLAudiobookToolkit" "6fb39f329e2aee84e9e10b6a9c22fc9f0a4e1b69"
+github "NYPL-Simplified/NYPLAudiobookToolkit" "4c593a738adea7ff16d3c8dfa6c9426a43c356a7"
 github "NYPL-Simplified/PDFRendererProvider-iOS" "8ef188721398304dd19b93f83194b7492a827c48"
 github "NYPL-Simplified/audiobook-ios-overdrive" "f4416dbb4f59ead32a57c9bf409f0eb76488b82a"
 github "PureLayout/PureLayout" "v3.1.9"

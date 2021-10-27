@@ -29,24 +29,23 @@
   self.progressLabel = [[UILabel alloc] init];
   self.progressLabel.font = [UIFont systemFontOfSize:14];
   self.progressLabel.text = NSLocalizedString(@"Requesting", nil);
-  self.progressLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.progressLabel.textColor = [UIColor whiteColor];
   [self addSubview:self.progressLabel];
   [self.progressLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [self.progressLabel autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:sidePadding];
   
   self.percentageLabel = [[UILabel alloc] init];
   self.percentageLabel.font = [UIFont systemFontOfSize:14];
-  self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.percentageLabel.textColor = [UIColor whiteColor];
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
   self.percentageLabel.text = NYPLLocalizationNotNeeded(@"0%");
   [self addSubview:self.percentageLabel];
   [self.percentageLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [self.percentageLabel autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:sidePadding];
   
-  
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-  self.progressView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
-  self.progressView.tintColor = [NYPLConfiguration backgroundColor];
+  self.progressView.backgroundColor = [NYPLConfiguration progressBarBackgroundColor];
+  [self updateColors];
   [self addSubview:self.progressView];
   [self.progressView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [self.progressView autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.progressLabel withOffset:sidePadding*2];
@@ -70,6 +69,11 @@
   CGPathCloseSubpath(visiblePath);
   
   UIColor *aColor = [NYPLConfiguration mainColor];
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+      aColor = [NYPLConfiguration secondaryBackgroundColor];
+    }
+  }
   [aColor setFill];
   CGContextAddPath(context, visiblePath);
   CGContextFillPath(context);
@@ -90,6 +94,26 @@
   CGContextEOFillPath(context);
   CGPathRelease(path);
   CGPathRelease(visiblePath);
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors {
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+      self.progressView.tintColor = [NYPLConfiguration actionColor];
+    }
+  } else {
+    self.progressView.tintColor = [NYPLConfiguration primaryBackgroundColor];
+  }
 }
 
 #pragma mark -
