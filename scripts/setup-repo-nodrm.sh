@@ -23,6 +23,8 @@ git submodule foreach --quiet 'git submodule deinit adept-ios'
 git rm -rf adept-ios
 git submodule foreach --quiet 'git submodule deinit NYPLAEToolkit'
 git rm -rf NYPLAEToolkit
+git submodule foreach --quiet 'git submodule deinit Axis-iOS'
+git rm -rf Axis-iOS
 
 git submodule update --init --recursive
 

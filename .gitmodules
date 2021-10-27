@@ -16,3 +16,6 @@
 [submodule "CardCreator-iOS"]
 	path = CardCreator-iOS
 	url = https://github.com/NYPL-Simplified/CardCreator-iOS.git
+[submodule "Axis-iOS"]
+	path = Axis-iOS
+	url = git@github.com:NYPL-Simplified/Axis-iOS.git
