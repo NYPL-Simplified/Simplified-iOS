@@ -211,11 +211,6 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
               completion(true)
             }
 
-            // TODO: Test if this is still necessary
-            // In past, there was a support for only 1 authenticationmethod, so there was no issue from which of them to pick needsAgeCheck value
-            // currently we do support multiple auth methods, and age check is dependant on which of them does user select
-            // there is a logic in NYPLUserAcccount authDefinition setter to perform an age check, but it wasn't tested
-            // most probably you can delete this check from here
             if self.currentAccount?.details?.needsAgeCheck ?? false {
               self.ageCheck.verifyCurrentAccountAgeRequirement(userAccountProvider: NYPLUserAccount.sharedAccount(),
                                                                currentLibraryAccountProvider: self) { meetsAgeRequirement in

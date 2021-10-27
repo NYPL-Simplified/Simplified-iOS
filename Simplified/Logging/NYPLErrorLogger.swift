@@ -120,6 +120,7 @@ fileprivate let nullString = "null"
   case fileMoveFail = 1201
   case directoryURLCreateFail = 1202
   case missingExpectedObject = 1203
+  case localeFail = 1204
 
   // keychain
   case keychainItemAddFail = 1300
