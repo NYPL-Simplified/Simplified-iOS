@@ -160,13 +160,17 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
   }
 
   func testCardCreatorSupport() {
+    #if SIMPLYE
     XCTAssertTrue(businessLogic.registrationViaCardCreatorIsPossible())
     XCTAssertTrue(businessLogic.registrationIsPossible())
-
     let cardCreatorConfig = businessLogic.makeRegularCardCreationConfiguration()
     XCTAssertEqual(cardCreatorConfig.endpointUsername, NYPLSecrets.cardCreatorUsername)
     XCTAssertEqual(cardCreatorConfig.endpointPassword, NYPLSecrets.cardCreatorPassword)
     XCTAssertGreaterThan(cardCreatorConfig.requestTimeoutInterval, 10)
+    #else
+    XCTAssertFalse(businessLogic.registrationViaCardCreatorIsPossible())
+    XCTAssertFalse(businessLogic.registrationIsPossible())
+    #endif
   }
 
   func testLogInFlow() throws {

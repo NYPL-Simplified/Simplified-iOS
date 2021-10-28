@@ -500,6 +500,7 @@
 		735694ED26C70291008768E0 /* PureLayout.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		735694F026C702A4008768E0 /* PDFRendererProvider.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		735694F526C703EA008768E0 /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7357073B272B487700B7BF16 /* NYPLSignInBusinessLogic+OE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357073A272B487700B7BF16 /* NYPLSignInBusinessLogic+OE.swift */; };
 		735771A02537635600067CEA /* NYPLSignInBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357719F2537635600067CEA /* NYPLSignInBusinessLogicTests.swift */; };
 		735771A52537635D00067CEA /* NYPLSignInBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357719F2537635600067CEA /* NYPLSignInBusinessLogicTests.swift */; };
 		735771A8253763E800067CEA /* NYPLBookRegistryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735771A7253763E800067CEA /* NYPLBookRegistryMock.swift */; };
@@ -854,7 +855,6 @@
 		73B5DFDF26052A1800225C12 /* NYPLBookButtonsState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */; };
 		73B5DFE026052A1800225C12 /* NYPLBookButtonsState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */; };
 		73B80BAB25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */; };
-		73B80BAD25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */; };
 		73BC285D269F96C00037930A /* NYPLReaderSettings+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC285C269F96C00037930A /* NYPLReaderSettings+Conversions.swift */; };
 		73BC285E269F96C00037930A /* NYPLReaderSettings+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC285C269F96C00037930A /* NYPLReaderSettings+Conversions.swift */; };
 		73BC285F269F96C00037930A /* NYPLReaderSettings+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC285C269F96C00037930A /* NYPLReaderSettings+Conversions.swift */; };
@@ -1143,8 +1143,6 @@
 		73F1149126C710DF009E3575 /* NYPLCardCreator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73F1148526C71059009E3575 /* NYPLCardCreator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73F1149226C710EE009E3575 /* NYPLCardCreator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F1148526C71059009E3575 /* NYPLCardCreator.framework */; };
 		73F1149326C710FF009E3575 /* NYPLCardCreator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73F1148526C71059009E3575 /* NYPLCardCreator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		73F1149626C71119009E3575 /* NYPLCardCreator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F1148526C71059009E3575 /* NYPLCardCreator.framework */; };
-		73F1149726C7111F009E3575 /* NYPLCardCreator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73F1148526C71059009E3575 /* NYPLCardCreator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73F11E06251941F500FCD22B /* JWKResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2199020724FD35DC001BC727 /* JWKResponse.swift */; };
 		73F11E0B251941FD00FCD22B /* DPLAAudiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E7E07A24FEA7E800189224 /* DPLAAudiobooks.swift */; };
 		73F11E0C251941FD00FCD22B /* AudioBookVendors+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EC1B8E2501538600A12384 /* AudioBookVendors+Extensions.swift */; };
@@ -1327,7 +1325,6 @@
 		73FCA36B25005BA4001B0C5D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352251BDE8E700040BF1D /* SystemConfiguration.framework */; };
 		73FCA36C25005BA4001B0C5D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352231BDE8E640040BF1D /* Security.framework */; };
 		73FCA36D25005BA4001B0C5D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A3521F1BDE8E410040BF1D /* CFNetwork.framework */; };
-		73FCA36E25005BA4001B0C5D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */; };
 		73FCA36F25005BA4001B0C5D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
 		73FCA37025005BA4001B0C5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		73FCA37125005BA4001B0C5D /* libTenPrintCover.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */; };
@@ -1532,7 +1529,6 @@
 				739EC8922643D588001FE730 /* GCDWebServer.xcframework in Embed Frameworks */,
 				739EC8932643D588001FE730 /* Minizip.xcframework in Embed Frameworks */,
 				5941F5ED268C5E8500F69F0B /* NYPLAxis.framework in Embed Frameworks */,
-				73F1149726C7111F009E3575 /* NYPLCardCreator.framework in Embed Frameworks */,
 				739EC8972643D588001FE730 /* PDFRendererProvider.xcframework in Embed Frameworks */,
 				739EC8982643D588001FE730 /* PureLayout.xcframework in Embed Frameworks */,
 				739EC89A2643D588001FE730 /* R2Navigator.xcframework in Embed Frameworks */,
@@ -1997,6 +1993,7 @@
 		7353940B250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSettingsSplitViewController+OE.swift"; sourceTree = "<group>"; };
 		73542EDD261E862B006083DC /* Bookmarks.lhs */ = {isa = PBXFileReference; lastKnownFileType = text; name = Bookmarks.lhs; path = "Simplified-Bookmarks-Spec/Bookmarks.lhs"; sourceTree = SOURCE_ROOT; };
 		7356950E26C70E12008768E0 /* .gitmodules */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitmodules; sourceTree = SOURCE_ROOT; };
+		7357073A272B487700B7BF16 /* NYPLSignInBusinessLogic+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+OE.swift"; sourceTree = "<group>"; };
 		7357719F2537635600067CEA /* NYPLSignInBusinessLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogicTests.swift; sourceTree = "<group>"; };
 		735771A7253763E800067CEA /* NYPLBookRegistryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookRegistryMock.swift; sourceTree = "<group>"; };
 		735771AA2537650E00067CEA /* NYPLLibraryAccountsProviderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibraryAccountsProviderMock.swift; sourceTree = "<group>"; };
@@ -2324,7 +2321,6 @@
 			files = (
 				73FCA36D25005BA4001B0C5D /* CFNetwork.framework in Frameworks */,
 				73FCA36325005BA4001B0C5D /* CoreGraphics.framework in Frameworks */,
-				73FCA36E25005BA4001B0C5D /* CoreLocation.framework in Frameworks */,
 				73FCA35E25005BA4001B0C5D /* CoreMedia.framework in Frameworks */,
 				73FCA35F25005BA4001B0C5D /* CoreVideo.framework in Frameworks */,
 				732F04AC263739A50018A82E /* CryptoSwift.xcframework in Frameworks */,
@@ -2350,7 +2346,6 @@
 				732F0452263376BB0018A82E /* Minizip.xcframework in Frameworks */,
 				7347B4E0265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
 				5941F5EC268C5E8500F69F0B /* NYPLAxis.framework in Frameworks */,
-				73F1149626C71119009E3575 /* NYPLCardCreator.framework in Frameworks */,
 				732F04712633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347B4E8265EFD3C00E4E386 /* PromisesObjC.xcframework in Frameworks */,
 				732F045D263377250018A82E /* PureLayout.xcframework in Frameworks */,
@@ -2806,6 +2801,7 @@
 				5916E7D3262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift */,
 				5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */,
 				733FF9BD2530F9E700CDAA13 /* NYPLSignInBusinessLogic+OAuth.swift */,
+				7357073A272B487700B7BF16 /* NYPLSignInBusinessLogic+OE.swift */,
 				7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */,
 				73A794A525477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift */,
 				739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */,
@@ -3718,7 +3714,6 @@
 				73FCA35A25005BA4001B0C5D /* Frameworks */,
 				73FCA38925005BA4001B0C5D /* Resources */,
 				732940C7251E75EA0065E362 /* Fix software licenses file */,
-				73FCA39F25005BA4001B0C5D /* Copy Frameworks (Carthage) */,
 				17DFC5F7251E863A003A19CC /* Embed Frameworks */,
 				73FCA3A025005BA4001B0C5D /* Crashlytics */,
 			);
@@ -4216,24 +4211,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PROJECT_DIR}/scripts/firebase/run\"\n";
-		};
-		73FCA39F25005BA4001B0C5D /* Copy Frameworks (Carthage) */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Frameworks (Carthage)";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 		73FCA3A025005BA4001B0C5D /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5042,9 +5019,9 @@
 				73FCA34725005BA4001B0C5D /* RemoteHTMLViewController.swift in Sources */,
 				5941F65D268CCC1600F69F0B /* NYPLAxisProtectedAssetHandler.swift in Sources */,
 				73FCA34825005BA4001B0C5D /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,
-				73B80BAD25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */,
 				73FCA34925005BA4001B0C5D /* NYPLCatalogGroupedFeed.m in Sources */,
 				73FCA34A25005BA4001B0C5D /* NYPLCatalogFacet.m in Sources */,
+				7357073B272B487700B7BF16 /* NYPLSignInBusinessLogic+OE.swift in Sources */,
 				73FCA34B25005BA4001B0C5D /* NYPLLoginCellTypes.swift in Sources */,
 				73FCA34C25005BA4001B0C5D /* NYPLAccountSignInViewController.m in Sources */,
 				597E2729268B537E00A3CD23 /* NYPLAxisBookDownloadMediator.swift in Sources */,

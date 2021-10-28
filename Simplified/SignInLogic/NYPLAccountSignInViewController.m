@@ -1,6 +1,4 @@
 @import LocalAuthentication;
-@import NYPLCardCreator;
-@import CoreLocation;
 
 #import <PureLayout/PureLayout.h>
 

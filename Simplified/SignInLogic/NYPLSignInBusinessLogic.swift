@@ -6,8 +6,6 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-import NYPLCardCreator
-
 @objc enum NYPLAuthRequestType: Int {
   case signIn = 1
   case signOut = 2
@@ -39,6 +37,11 @@ extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 #if FEATURE_DRM_CONNECTOR
 extension NYPLADEPT: NYPLDRMAuthorizing {}
 #endif
+
+protocol JuvenileFlowCoordinating {
+  func checkJuvenileCreationEligibility(parentBarcode: String,
+                                        completion: @escaping (_ error: Error?) -> Void)
+}
 
 class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentLibraryAccountProvider {
   /// Makes a business logic object with a network request executor that
@@ -150,10 +153,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
 
   // MARK:- Juvenile Card Creation Info
 
-  private let juvenileAuthLock = NSLock()
-  @objc private(set) var juvenileAuthIsOngoing = false
-  private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
-  private(set) var allowJuvenileCardCreation = false
+  let juvenileAuthLock = NSLock()
+  @objc var juvenileAuthIsOngoing = false
+  var juvenileCardCreationCoordinator: JuvenileFlowCoordinating?
+  var allowJuvenileCardCreation = false
 
   // MARK:- Library Accounts Info
 
@@ -563,92 +566,5 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
 
   @objc func shouldShowEULALink() -> Bool {
     return libraryAccount?.details?.getLicenseURL(.eula) != nil
-  }
-}
-
-// MARK:- Card creation core logic
-
-extension NYPLSignInBusinessLogic {
-  /// The entry point to the juvenile card creation flow.
-  /// - Note: This is available only for NYPL accounts.
-  /// - Parameters:
-  ///   - eligibilityCompletion: Always called at the end of an initial
-  ///   api call that determines whether the user is eligible or not to
-  ///   create juvenile accounts. If that's possible, the handler returns
-  ///   a navigation controller containing the VCs for the whole flow.
-  ///   All the client has to do is to present this navigation controller
-  ///   in whatever way it sees fit.
-  ///   - flowCompletion: Called when/if the user completes the whole juvenile
-  ///   card-creation flow.
-  @objc
-  func startJuvenileCardCreation(
-    eligibilityCompletion: @escaping (UINavigationController?, Error?) -> Void,
-    flowCompletion: @escaping () -> Void) {
-
-    guard juvenileAuthLock.try() else {
-      // not calling any completion because this means a flow is already going
-      return
-    }
-
-    juvenileAuthIsOngoing = true
-
-    guard let parentBarcode = resolveUserBarcode() else {
-      let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
-      let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
-
-      let error = NSError(domain: NYPLErrorLogger.clientDomain,
-                          code: NYPLErrorCode.missingParentBarcodeForJuvenile.rawValue,
-                          userInfo: [
-                            NSLocalizedDescriptionKey: description,
-                            NSLocalizedRecoverySuggestionErrorKey: recoveryMsg])
-      NYPLErrorLogger.logError(error,
-                               summary: "Juvenile Card Creation: Parent barcode missing");
-      eligibilityCompletion(nil, error)
-      juvenileAuthIsOngoing = false
-      juvenileAuthLock.unlock()
-      return
-    }
-
-    let coordinator = makeJuvenileCardCreationCoordinator(using: parentBarcode)
-    juvenileCardCreationCoordinator = coordinator
-
-    coordinator.configuration.completionHandler = { [weak self] _, _, userInitiated in
-      if userInitiated {
-        self?.juvenileCardCreationCoordinator = nil
-        flowCompletion()
-      }
-    }
-
-    coordinator.startJuvenileFlow { [weak self] result in
-      switch result {
-      case .success(let navVC):
-        eligibilityCompletion(navVC, nil)
-      case .fail(let error):
-        NYPLErrorLogger.logError(error,
-                                 summary: "Juvenile Card Creation error")
-        self?.juvenileCardCreationCoordinator = nil
-        eligibilityCompletion(nil, error)
-      }
-      self?.juvenileAuthIsOngoing = false
-      self?.juvenileAuthLock.unlock()
-    }
-  }
-
-  @objc func checkCardCreationEligibility(completion: @escaping () -> Void) {
-    guard let parentBarcode = self.resolveUserBarcode() else {
-      Log.info(#function, "Ineligible for card creation: no barcode.")
-      allowJuvenileCardCreation = false
-      completion()
-      return
-    }
-    
-    let coordinator = juvenileCardCreationCoordinator ?? makeJuvenileCardCreationCoordinator(using: parentBarcode)
-    juvenileCardCreationCoordinator = coordinator
-
-    coordinator.checkJuvenileCreationEligibility(parentBarcode: parentBarcode) { [weak self] error in
-      Log.info(#function, "Juvenile eligibility: \(error == nil). Error: \(String(describing: error))")
-      self?.allowJuvenileCardCreation = (error == nil)
-      completion()
-    }
   }
 }
