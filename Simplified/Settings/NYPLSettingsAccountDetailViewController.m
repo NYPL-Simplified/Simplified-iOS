@@ -1,6 +1,4 @@
 @import LocalAuthentication;
-@import NYPLCardCreator;
-@import CoreLocation;
 @import MessageUI;
 @import PureLayout;
 
@@ -756,6 +754,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didSelectJuvenileSignupOnCell:(UITableViewCell *)cell
 {
+#if SIMPLYE
   [cell setUserInteractionEnabled:NO];
   cell.textLabel.hidden = YES;
   [self.juvenileActivityView startAnimating];
@@ -789,6 +788,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   } flowCompletion:^{
     [weakSelf dismissViewControllerAnimated:YES completion:nil];
   }];
+#endif
 }
 
 - (void)didSelectCancelForSignUp
