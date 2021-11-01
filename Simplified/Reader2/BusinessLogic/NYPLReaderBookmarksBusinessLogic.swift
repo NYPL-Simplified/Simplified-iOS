@@ -252,7 +252,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
         && !matched
       {
         serverBookmarksToDelete.append(serverBookmark)
-        if let indexToRemove = serverBookmarksToKeep.index(of: serverBookmark) {
+        if let indexToRemove = serverBookmarksToKeep.firstIndex(of: serverBookmark) {
           serverBookmarksToKeep.remove(at: indexToRemove)
         }
       }

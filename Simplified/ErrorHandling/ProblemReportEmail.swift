@@ -60,6 +60,8 @@ import UIKit
     case .mac:
       idiom = "mac"
     case .unspecified:
+      fallthrough
+    @unknown default:
       idiom = "unspecified"
     }
     let bodyWithoutBook = "\n\n---\nIdiom: \(idiom)\nHeight: \(nativeHeight)\nOS: \(systemVersion)"
@@ -106,8 +108,11 @@ extension ProblemReportEmail: MFMailComposeViewControllerDelegate {
           style: .default,
           handler: nil))
       self.lastPresentingViewController?.present(alertController, animated: true, completion: nil)
-    case .cancelled: fallthrough
+    case .cancelled:
+      fallthrough
     case .saved:
+      fallthrough
+    @unknown default:
       break
     }
   }

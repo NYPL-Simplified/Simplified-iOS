@@ -27,7 +27,7 @@ class LCPPassphraseAuthenticationService: LCPAuthenticating {
       switch result {
       case .success(let data, _):
         if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Any],
-          let passphrase = json?["passphrase"] as? String {
+          let passphrase = json["passphrase"] as? String {
           completion(passphrase)
         } else {
           let responseBody = String(data: data, encoding: .utf8)

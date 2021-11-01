@@ -132,7 +132,7 @@ import R2Shared
         }
 
         if response.statusCode == 200 {
-          if let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any],
+          if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Any],
             let settings = json["settings"] as? [String:Any],
             let syncSetting = settings["simplified:synchronize_annotations"] {
             if syncSetting is NSNull {
@@ -549,7 +549,7 @@ import R2Shared
       Log.error(#file, "No Annotation ID saved: No data received from server.")
       return nil
     }
-    guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
+    guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] else {
       Log.error(#file, "No Annotation ID saved: JSON could not be created from data.")
       return nil
     }
