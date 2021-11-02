@@ -68,7 +68,7 @@
     }
 
     for remove in accountsToRemove {
-      if let index = accounts.index(of: remove) {
+      if let index = accounts.firstIndex(of: remove) {
         accounts.remove(at: index)
       }
     }
