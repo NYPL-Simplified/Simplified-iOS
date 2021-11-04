@@ -13,7 +13,7 @@ enum NYPLReaderFontSizeChange {
   case decrease
 }
 
-protocol NYPLReaderSettingsViewDelegate: class {
+protocol NYPLReaderSettingsViewDelegate: AnyObject {
   func didSelectBrightness(_ brightness: CGFloat)
   func didSelectColorScheme(_ colorScheme: NYPLReaderSettingsColorScheme)
   func settingsView(_ view: NYPLReaderSettingsView,

@@ -42,10 +42,10 @@ xcodebuild -project $PROJECT_NAME \
            clean archive | \
            if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi
 
-# gather all dSYMs
 echo "Collecting dSYMs... "
 mkdir -p "$DSYMS_PATH"
 find "$ARCHIVE_PATH" -name "*.dSYM"  | xargs -t -I{} cp -R {} "$DSYMS_PATH"
+cp -R ./NYPLAEToolkit/build/AudioEngine-iphoneos.framework.dSYM "$DSYMS_PATH"
 
 echo "dSYMs are available at $DSYMS_PATH:"
 ls -l "$DSYMS_PATH"

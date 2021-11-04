@@ -32,8 +32,8 @@ jobs:
     needs: version-check
     if: needs.version-check.outputs.simplye_changed == '1' || needs.version-check.outputs.openebooks_changed == '1'
     steps:
-      - name: Force Xcode 12.4
-        run: sudo xcode-select -switch /Applications/Xcode_12.4.app
+      - name: Force Xcode 13.1
+        run: sudo xcode-select -switch /Applications/Xcode_13.1.app
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
       - name: Check Firebase Tools and Carthage version
@@ -70,8 +70,8 @@ jobs:
         run: exec ./scripts/setup-repo-drm.sh
         env:
           BUILD_CONTEXT: ci
-      - name: Build non-Carthage 3rd party dependencies
-        run: ./scripts/build-3rd-party-dependencies.sh
+      - name: Build non-Carthage dependencies
+        run: ./scripts/build-dependencies.sh
         env:
           BUILD_CONTEXT: ci
       - name: Carthage Bootstrap

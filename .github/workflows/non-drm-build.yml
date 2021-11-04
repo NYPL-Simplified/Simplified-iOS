@@ -5,16 +5,16 @@ jobs:
   build:
     runs-on: macOS-latest
     steps:
-      - name: Force Xcode 12.4
-        run: sudo xcode-select -switch /Applications/Xcode_12.4.app
+      - name: Force Xcode 13.1
+        run: sudo xcode-select -switch /Applications/Xcode_13.1.app
       - name: Checkout main repo
         uses: actions/checkout@v2
       - name: Set up repo for nonDRM build
         run: exec ./scripts/setup-repo-nodrm.sh
         env:
           BUILD_CONTEXT: ci
-      - name: Build 3rd party dependencies
-        run: ./scripts/build-3rd-party-dependencies.sh --no-private
+      - name: Build dependencies
+        run: ./scripts/build-dependencies.sh --no-private
         env:
           BUILD_CONTEXT: ci
       - name: Build SimplyE without DRM support

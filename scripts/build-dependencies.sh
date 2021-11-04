@@ -8,7 +8,7 @@
 # USAGE
 #   Run this script from the root of Simplified-iOS repo:
 #
-#     ./scripts/build-3rd-party-dependencies.sh [--no-private]
+#     ./scripts/build-dependencies.sh [--no-private]
 #
 # PARAMETERS
 #   --no-private: skips integrating private secrets.
@@ -25,9 +25,9 @@ fatal()
 }
 
 if [ "$BUILD_CONTEXT" == "" ]; then
-  echo "Building 3rd party dependencies..."
+  echo "Building dependencies..."
 else
-  echo "Building 3rd party dependencies for [$BUILD_CONTEXT]..."
+  echo "Building dependencies for [$BUILD_CONTEXT]..."
 fi
 
 case $1 in
@@ -43,3 +43,18 @@ esac
 
 # rebuild all Carthage dependencies from scratch
 ./scripts/build-carthage.sh $1
+
+if [ "$1" != "--no-private" ]; then
+  # build NYPLAEToolkit
+  cd ./NYPLAEToolkit
+  # make NYPLAEToolkit use the same carthage folder as SimplyE (since its
+  # dependencies are a subset) by adding a symlink if that's missing.
+  if [[ ! -L ./Carthage ]]; then
+    ln -s ../Carthage ./Carthage
+  fi
+  echo "Contents of ./NYPLAEToolkit/Carthage:"
+  ls -l . Carthage/
+  ./scripts/fetch-audioengine.sh
+  ./scripts/build-xcframework.sh
+  cd ..
+fi

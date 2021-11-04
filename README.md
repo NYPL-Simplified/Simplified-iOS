@@ -10,7 +10,7 @@ Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/relea
 
 # System Requirements
 
-- Install Xcode 12.4 in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install Xcode 13.1 in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) 0.38 or newer if you haven't already. Using `brew` is recommended.
 
 # Building without DRM support
@@ -24,7 +24,7 @@ git checkout develop
 ./scripts/setup-repo-nodrm.sh
 
 # idempotent script to rebuild all dependencies
-./scripts/build-3rd-party-dependencies.sh --no-private
+./scripts/build-dependencies.sh --no-private
 ```
 Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
 
@@ -45,10 +45,10 @@ cd Simplified-iOS
 
 Unless the DRM dependencies change (which is very seldom) you shouldn't need to run the `bootstrap-drm.sh` script more than once.
 
-Other 3rd party dependencies are managed via Carthage and a few git submodules. To rebuild them you can use the following idempotent script:
+Other dependencies are managed via Carthage and a few git submodules. To rebuild them you can use the following idempotent script:
 ```bash
 cd Simplified-iOS #repo root
-./scripts/build-3rd-party-dependencies.sh
+./scripts/build-dependencies.sh
 ```
 The `scripts` directory contains a number of other scripts to build dependencies more granularly and also to build/archive/test the app from the command line. These scripts are the same used by our CI system. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
 
