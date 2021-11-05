@@ -7,7 +7,7 @@ on:
       - feature/**
 jobs:
   version-check:
-    runs-on: macOS-latest
+    runs-on: macOS-11
     steps:
       - name: Dump GitHub event context
         env:
@@ -28,7 +28,7 @@ jobs:
       simplye_changed: ${{ steps.detectapp.outputs.simplye_changed }}
       openebooks_changed: ${{ steps.detectapp.outputs.openebooks_changed }}
   upload-arc:
-    runs-on: macOS-latest
+    runs-on: macOS-11
     needs: version-check
     if: needs.version-check.outputs.simplye_changed == '1' || needs.version-check.outputs.openebooks_changed == '1'
     steps:

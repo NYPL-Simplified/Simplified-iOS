@@ -3,7 +3,7 @@ on:
   pull_request:
 jobs:
   build-and-test:
-    runs-on: macOS-latest
+    runs-on: macOS-11
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Force Xcode 13.1
