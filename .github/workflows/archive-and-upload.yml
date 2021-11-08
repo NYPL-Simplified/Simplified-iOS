@@ -70,7 +70,7 @@ jobs:
         run: exec ./scripts/setup-repo-drm.sh
         env:
           BUILD_CONTEXT: ci
-      - name: Build non-Carthage dependencies
+      - name: Prepare for Carthage build
         run: ./scripts/build-dependencies.sh
         env:
           BUILD_CONTEXT: ci
@@ -80,6 +80,10 @@ jobs:
           github-token: ${{ secrets.IOS_DEV_CI_PAT }}
           platform: iOS
           use-xcframeworks: true
+      - name: Build NYPLAEToolkit
+        run: ./scripts/build-NYPLAEToolkit.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
 
       - name: Archive SimplyE
         if: needs.version-check.outputs.simplye_changed == '1'

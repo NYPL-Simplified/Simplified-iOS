@@ -8,7 +8,7 @@
 #     ./scripts/build-carthage.sh [--no-private ]
 #
 # PARAMETERS
-#     --no-private: skips building private repos.
+#     --no-private: skips setting up LCP dependencies.
 #
 # USAGE
 #   Make sure to run this script from a clean checkout and from the root
@@ -24,27 +24,9 @@
 
 set -eo pipefail
 
-if [ "$BUILD_CONTEXT" == "" ]; then
-  echo "Building Carthage..."
-else
-  echo "Building Carthage for [$BUILD_CONTEXT]..."
-fi
-
-# additional setup for builds with DRM
-if [ "$1" != "--no-private" ]; then
-  if [ "$BUILD_CONTEXT" == "ci" ]; then
-    # in a CI context we cannot have siblings repos, so we check them out nested
-    CERTIFICATES_PATH_PREFIX="."
-  else
-    CERTIFICATES_PATH_PREFIX=".."
-  fi
-
-  # r2-lcp requires a private client library, available via Certificates repo
-  echo "Fixing up the Cartfile for LCP..."
-  swift $CERTIFICATES_PATH_PREFIX/Certificates/SimplyE/iOS/LCPLib.swift
-fi
+./scripts/prepare-carthage.sh $1
 
 if [ "$BUILD_CONTEXT" != "ci" ] || [ "$1" == "--no-private" ]; then
-  echo "Carthage bootstrap..."
+  echo "Building Carthage..."
   carthage bootstrap --platform ios --use-xcframeworks --cache-builds
 fi

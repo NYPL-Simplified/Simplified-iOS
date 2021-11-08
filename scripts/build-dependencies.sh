@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # SUMMARY
-#   This script integrates secrets, regenerates Readium headers, wipes
-#   the Carthage folder, and finally checks out and rebuilds all Carthage
-#   dependencies.
+#   This script integrates secrets, regenerates Readium headers, and prepares
+#   the set for the Carthage build. If this script is called to build the app
+#   with DRM support or from a CI context, that's it. Otherwise, it will also
+#   check out and rebuild all Carthage dependencies, and finally (for DRM
+#   builds) build the NYPLAEToolkit framework.
 #
 # USAGE
 #   Run this script from the root of Simplified-iOS repo:
@@ -41,20 +43,16 @@ esac
 
 (cd readium-sdk; sh MakeHeaders.sh Apple) || fatal "Error making Readium headers"
 
-# rebuild all Carthage dependencies from scratch
+# rebuild all Carthage dependencies from scratch. For a CI build with DRM,
+# this results in just preparing the set for the carthage build, which happens
+# later as a separate step in GitHub actions workflows.
 ./scripts/build-carthage.sh $1
 
-if [ "$1" != "--no-private" ]; then
-  # build NYPLAEToolkit
-  cd ./NYPLAEToolkit
-  # make NYPLAEToolkit use the same carthage folder as SimplyE (since its
-  # dependencies are a subset) by adding a symlink if that's missing.
-  if [[ ! -L ./Carthage ]]; then
-    ln -s ../Carthage ./Carthage
+# The NYPLAEToolkit build has to necessarily happen after the Carthage build,
+# because the Carthage dependencies NYPLAEToolkit has are a subset of what we
+# have in SimplyE/OpenE.
+if [ "$1" != "--no-private" ]; then # include private libraries (e.g. for DRM support)
+  if [ "$BUILD_CONTEXT" != "ci" ]; then # CI builds NYPLAEToolkit in a separate workflow step
+    ./script/build-NYPLAEToolkit.sh
   fi
-  echo "Contents of ./NYPLAEToolkit/Carthage:"
-  ls -l . Carthage/
-  ./scripts/fetch-audioengine.sh
-  ./scripts/build-xcframework.sh
-  cd ..
 fi
