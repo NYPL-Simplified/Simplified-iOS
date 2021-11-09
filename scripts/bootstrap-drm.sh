@@ -20,4 +20,4 @@ git checkout develop
 
 ./scripts/setup-repo-drm.sh
 
-./scripts/build-3rd-party-dependencies.sh
+./scripts/build-dependencies.sh

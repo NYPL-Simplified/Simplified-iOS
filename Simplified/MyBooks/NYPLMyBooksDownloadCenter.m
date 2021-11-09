@@ -655,7 +655,7 @@ didCompleteWithError:(NSError *)error
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
 
-  // -------- tmp code to diagnose IOS-270 --------
+  // -------- tmp code to diagnose IOS-277 --------
   if (book.identifier == nil) {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
                               summary:@"Attempting to returning book with nil id"
