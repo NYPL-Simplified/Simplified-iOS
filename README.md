@@ -30,7 +30,7 @@ Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
 
 # Building with DRM Support
 
-## Building the Application from Scratch
+## Building from Scratch
 
 01. Contact project lead and ensure you have access to all the required private repos.
 02. Build the dependencies (typically you'll need to run this only once):
@@ -52,9 +52,9 @@ cd Simplified-iOS #repo root
 ```
 The `scripts` directory contains a number of other scripts to build dependencies more granularly and also to build/archive/test the app from the command line. These scripts are the same used by our CI system. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
 
-## Building for Readium 2 Integration
+# Building for Readium 2 Integration
 
-Before working on R2 integration, make sure you can build the app without R2. Follow the steps listed above for building the app with DRM.
+Before working on R2 integration, make sure you can build the app by following the steps listed above.
 
 For working on integrating R2 into SimplyE, first clone the following frameworks as siblings of `Simplified-iOS` on the file system:
 ```bash
@@ -62,7 +62,7 @@ cd Simplified-iOS/..
 git clone https://github.com/readium/r2-shared-swift
 git clone https://github.com/readium/r2-streamer-swift
 git clone https://github.com/readium/r2-navigator-swift
-git clone https://github.com/readium/r2-lcp-swift
+git clone https://github.com/readium/r2-lcp-swift # only required for DRM support
 ```
 Then rebuild the dependencies:
 ```bash
@@ -73,7 +73,7 @@ Finally, open `SimplifiedR2.workspace` and use the `SimplyE-R2dev` target to bui
 
 # Building Open eBooks
 
-Open eBooks is an app primarily targeted toward the education space. It requires DRM.
+Open eBooks is an app primarily targeted toward the education space. It requires DRM. Follow the same steps as indicated above and use the "Open eBooks" Xcode target.
 
 # Contributing
 
