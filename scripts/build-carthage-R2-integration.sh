@@ -5,7 +5,10 @@
 #   all Carthage dependencies for working on R2 integration.
 #
 # SYNOPSIS
-#     ./scripts/build-carthage-R2-integration.sh
+#   ./scripts/build-carthage-R2-integration.sh [--no-private]
+#
+# PARAMETERS
+#   --no-private: skips integrating private repos for DRM support.
 #
 # USAGE
 #   Run this script from the root of Simplified-iOS repo.
@@ -36,12 +39,14 @@ carthage checkout
 mkdir -p Carthage/Build/iOS
 carthage build --use-xcframeworks --platform iOS
 
-echo "Building r2-lcp-swift Carthage dependencies..."
-cd ../r2-lcp-swift
-rm -rf Carthage
-carthage checkout
-mkdir -p Carthage/Build/iOS
-carthage build --use-xcframeworks --platform iOS
+if [ "$1" != "--no-private" ]; then # include private libraries (e.g. for DRM support)
+  echo "Building r2-lcp-swift Carthage dependencies..."
+  cd ../r2-lcp-swift
+  rm -rf Carthage
+  carthage checkout
+  mkdir -p Carthage/Build/iOS
+  carthage build --use-xcframeworks --platform iOS
+fi
 
 echo "Building r2-streamer-swift Carthage dependencies..."
 cd ../r2-streamer-swift
@@ -66,4 +71,4 @@ sed -i '' "s|github \"NYPL-Simplified/r2|#github \"NYPL-Simplified/r2|" Cartfile
 sed -i '' "s|github \"readium/r2.*||" Cartfile.resolved
 sed -i '' "s|github \"NYPL-Simplified/r2.*||" Cartfile.resolved
 
-./scripts/build-carthage.sh
+./scripts/build-carthage.sh $1
