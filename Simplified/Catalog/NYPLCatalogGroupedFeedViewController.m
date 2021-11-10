@@ -294,7 +294,7 @@ viewForHeaderInSection:(NSInteger const)section
     [button setTitle:title forState:UIControlStateNormal];
     if (@available(iOS 12.0, *)) {
       if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
-        [button setTitleColor:[NYPLConfiguration primaryTextColor] forState:UIControlStateNormal];
+        [button setTitleColor:[NYPLConfiguration actionColor] forState:UIControlStateNormal];
       }
     }
     [button sizeToFit];
