@@ -23,38 +23,14 @@
 
 if [ "$1" == "develop" ]; then
 
-  echo "Checking out 'develop' on r2-shared-swift..."
-  cd ../r2-shared-swift
-  git checkout develop
-
-  echo "Checking out 'develop' on r2-lcp-swift..."
-  cd ../r2-lcp-swift
-  git checkout develop
-
-  echo "Checking out 'develop' on r2-streamer-swift..."
-  cd ../r2-streamer-swift
-  git checkout develop
-
-  echo "Checking out 'develop' on r2-navigator-swift..."
-  cd ../r2-navigator-swift
+  echo "Checking out 'develop' on readium/swift-toolkit..."
+  cd ../swift-toolkit
   git checkout develop
 
 else
 
-  echo "Checking out latest stable tag on r2-shared-swift..."
-  cd ../r2-shared-swift
-  git checkout 2.1.0
-
-  echo "Checking out latest stable tag on r2-lcp-swift..."
-  cd ../r2-lcp-swift
-  git checkout 2.1.0
-
-  echo "Checking out latest stable tag on r2-streamer-swift..."
-  cd ../r2-streamer-swift
-  git checkout 2.1.0
-
-  echo "Checking out latest stable tag on r2-navigator-swift..."
-  cd ../r2-navigator-swift
-  git checkout 2.1.0
+  echo "Checking out latest stable tag on readium/swift-toolkit..."
+  cd ../swift-toolkit
+  git checkout 2.2.0
 
 fi

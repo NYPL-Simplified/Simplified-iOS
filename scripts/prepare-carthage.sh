@@ -42,7 +42,7 @@ if [ "$1" != "--no-private" ]; then
     CERTIFICATES_PATH_PREFIX=".."
   fi
 
-  # r2-lcp requires a private client library, available via Certificates repo
+  # LCP support in R2 requires a private client library, available via Certificates repo
   echo "Fixing up the Cartfile for LCP..."
   swift $CERTIFICATES_PATH_PREFIX/Certificates/SimplyE/iOS/LCPLib.swift
 fi
