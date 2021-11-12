@@ -13,6 +13,8 @@ jobs:
         env:
           FULL_EVENT: ${{ toJson(github.event) }}
         run: echo "FULL_EVENT=$FULL_EVENT"
+      - name: Check Carthage version
+        run: command -v carthage && carthage version
       - name: Checkout main repo
         uses: actions/checkout@v2.3.4
         with:
@@ -36,8 +38,8 @@ jobs:
         run: sudo xcode-select -switch /Applications/Xcode_13.1.app
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
-      - name: Check Firebase Tools and Carthage version
-        run: command -v firebase && firebase --version && carthage version
+      - name: Check Firebase Tools version
+        run: command -v firebase && firebase --version
       - name: Checkout main repo and submodules
         uses: actions/checkout@v2.3.4
         with:
