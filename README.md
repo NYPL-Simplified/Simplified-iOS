@@ -56,13 +56,10 @@ The `scripts` directory contains a number of other scripts to build dependencies
 
 Before working on R2 integration, make sure you can build the app by following the steps listed above.
 
-For working on integrating R2 into SimplyE, first clone the following frameworks as siblings of `Simplified-iOS` on the file system:
+For working on integrating R2 into SimplyE, first clone the following repo as a sibling of `Simplified-iOS` on the file system:
 ```bash
 cd Simplified-iOS/..
-git clone https://github.com/readium/r2-shared-swift
-git clone https://github.com/readium/r2-streamer-swift
-git clone https://github.com/readium/r2-navigator-swift
-git clone https://github.com/readium/r2-lcp-swift # only required for DRM support
+git clone https://github.com/readium/swift-toolkit
 ```
 Then rebuild the dependencies:
 ```bash

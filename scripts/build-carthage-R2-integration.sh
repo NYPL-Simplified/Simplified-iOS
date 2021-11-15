@@ -32,31 +32,8 @@ CURRENT_DIR=`pwd`
 # deep clean to avoid any caching issues
 ./scripts/clean-carthage.sh
 
-echo "Building r2-shared-swift Carthage dependencies..."
-cd ../r2-shared-swift
-rm -rf Carthage
-carthage checkout
-mkdir -p Carthage/Build/iOS
-carthage build --use-xcframeworks --platform iOS
-
-if [ "$1" != "--no-private" ]; then # include private libraries (e.g. for DRM support)
-  echo "Building r2-lcp-swift Carthage dependencies..."
-  cd ../r2-lcp-swift
-  rm -rf Carthage
-  carthage checkout
-  mkdir -p Carthage/Build/iOS
-  carthage build --use-xcframeworks --platform iOS
-fi
-
-echo "Building r2-streamer-swift Carthage dependencies..."
-cd ../r2-streamer-swift
-rm -rf Carthage
-carthage checkout
-mkdir -p Carthage/Build/iOS
-carthage build --use-xcframeworks --platform iOS
-
-echo "Building r2-navigator-swift Carthage dependencies..."
-cd ../r2-navigator-swift
+echo "Building Readium 2 swift-toolkit Carthage dependencies..."
+cd ../swift-toolkit
 rm -rf Carthage
 carthage checkout
 mkdir -p Carthage/Build/iOS
@@ -66,9 +43,7 @@ echo "Done with R2 Carthage dependencies."
 cd $CURRENT_DIR
 
 # remove R2 dependencies from Carthage since we'll build them in the R2 workspace
-sed -i '' "s|github \"readium/r2|#github \"readium/r2|" Cartfile
-sed -i '' "s|github \"NYPL-Simplified/r2|#github \"NYPL-Simplified/r2|" Cartfile
-sed -i '' "s|github \"readium/r2.*||" Cartfile.resolved
-sed -i '' "s|github \"NYPL-Simplified/r2.*||" Cartfile.resolved
+sed -i '' "s|github \"readium/swift-toolkit|#github \"readium/swift-toolkit|" Cartfile
+sed -i '' "s|github \"readium/swift-toolkit||" Cartfile.resolved
 
 ./scripts/build-carthage.sh $1

@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 @objcMembers class NYPLFacetBarView : UIView {
   var entryPointView: NYPLEntryPointView;

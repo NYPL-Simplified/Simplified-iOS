@@ -257,6 +257,14 @@
 		5DD567B522B97344001F0C83 /* Data+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD567B422B97344001F0C83 /* Data+Base64.swift */; };
 		730263AC2540DE4200A53891 /* NYPLSAMLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 730263AB2540DE4200A53891 /* NYPLSAMLHelper.m */; };
 		730263AE2540DE4200A53891 /* NYPLSAMLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 730263AB2540DE4200A53891 /* NYPLSAMLHelper.m */; };
+		73061A78273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */; };
+		73061A79273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */; };
+		73061A7A273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */; };
+		73061A7B273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */; };
+		73061A7C273DDB8F00B50318 /* DifferenceKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		73061A7D273DDBE200B50318 /* DifferenceKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		73061A7E273DDBF000B50318 /* DifferenceKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		73061A7F273DDBFF00B50318 /* DifferenceKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7307A5ED23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */; };
 		73085E1A2502DE88008F6244 /* OETutorialChoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */; };
 		73085E1B2502DE88008F6244 /* NYPLPresentationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */; };
@@ -1469,6 +1477,7 @@
 			files = (
 				17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in Embed Frameworks */,
 				7389858E264127C200088C07 /* CryptoSwift.xcframework in Embed Frameworks */,
+				73061A7F273DDBFF00B50318 /* DifferenceKit.xcframework in Embed Frameworks */,
 				7389858F264127C200088C07 /* Fuzi.xcframework in Embed Frameworks */,
 				73898590264127C200088C07 /* GCDWebServer.xcframework in Embed Frameworks */,
 				73898591264127C200088C07 /* Minizip.xcframework in Embed Frameworks */,
@@ -1497,6 +1506,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				739EC8902643D588001FE730 /* CryptoSwift.xcframework in Embed Frameworks */,
+				73061A7C273DDB8F00B50318 /* DifferenceKit.xcframework in Embed Frameworks */,
 				739EC8912643D588001FE730 /* Fuzi.xcframework in Embed Frameworks */,
 				739EC8922643D588001FE730 /* GCDWebServer.xcframework in Embed Frameworks */,
 				739EC8932643D588001FE730 /* Minizip.xcframework in Embed Frameworks */,
@@ -1521,6 +1531,7 @@
 			files = (
 				736CF272252278AA0081D30A /* AudioEngine.xcframework in Embed Frameworks */,
 				7369A3812649C07F0029D8AB /* CryptoSwift.xcframework in Embed Frameworks */,
+				73061A7E273DDBF000B50318 /* DifferenceKit.xcframework in Embed Frameworks */,
 				7369A3822649C07F0029D8AB /* Fuzi.xcframework in Embed Frameworks */,
 				7369A3832649C07F0029D8AB /* GCDWebServer.xcframework in Embed Frameworks */,
 				7369A3842649C07F0029D8AB /* Minizip.xcframework in Embed Frameworks */,
@@ -1549,6 +1560,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				735694CD26C7021A008768E0 /* CryptoSwift.xcframework in Embed Frameworks */,
+				73061A7D273DDBE200B50318 /* DifferenceKit.xcframework in Embed Frameworks */,
 				735694D026C70224008768E0 /* Fuzi.xcframework in Embed Frameworks */,
 				735694D326C7022C008768E0 /* GCDWebServer.xcframework in Embed Frameworks */,
 				735694D626C70231008768E0 /* Minizip.xcframework in Embed Frameworks */,
@@ -1854,6 +1866,7 @@
 		730263AB2540DE4200A53891 /* NYPLSAMLHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLSAMLHelper.m; sourceTree = "<group>"; };
 		730608A6268D3A0100C21547 /* build-number-check.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-number-check.sh"; sourceTree = "<group>"; };
 		73060917268E6FEF00C21547 /* detect-app-to-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "detect-app-to-build.sh"; sourceTree = "<group>"; };
+		73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = DifferenceKit.xcframework; path = Carthage/Build/DifferenceKit.xcframework; sourceTree = "<group>"; };
 		7307A5EC23FF1A8500DE53DE /* NYPLOpenSearchDescriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOpenSearchDescriptionTests.swift; sourceTree = "<group>"; };
 		73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialChoiceViewController.swift; sourceTree = "<group>"; };
 		73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLPresentationUtils.swift; sourceTree = "<group>"; };
@@ -2192,6 +2205,7 @@
 				739E6101244A0D8600D00301 /* CoreMedia.framework in Frameworks */,
 				739E6102244A0D8600D00301 /* CoreVideo.framework in Frameworks */,
 				732F04A9263739A50018A82E /* CryptoSwift.xcframework in Frameworks */,
+				73061A79273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
 				7347B4AA265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
 				7347B4B9265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
 				731134D02735EA2F00234F9C /* NYPLAEToolkit.xcframework in Frameworks */,
@@ -2249,6 +2263,7 @@
 				73EB0B2F25821DF4006BC997 /* CoreMedia.framework in Frameworks */,
 				73EB0B3025821DF4006BC997 /* CoreVideo.framework in Frameworks */,
 				732F04AB263739A50018A82E /* CryptoSwift.xcframework in Frameworks */,
+				73061A7A273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
 				7347B4AB265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
 				7347B4BA265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
 				7347B4BE265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
@@ -2298,6 +2313,7 @@
 				73FCA35E25005BA4001B0C5D /* CoreMedia.framework in Frameworks */,
 				73FCA35F25005BA4001B0C5D /* CoreVideo.framework in Frameworks */,
 				732F04AC263739A50018A82E /* CryptoSwift.xcframework in Frameworks */,
+				73061A7B273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
 				7347B4AC265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
 				7347B4BB265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
 				7347B4BF265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
@@ -2348,6 +2364,7 @@
 				84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */,
 				03B092281E78859E00AD338D /* CoreMedia.framework in Frameworks */,
 				03B0922E1E7886ED00AD338D /* CoreVideo.framework in Frameworks */,
+				73061A78273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
 				732F04A8263739A50018A82E /* CryptoSwift.xcframework in Frameworks */,
 				7347B4A9265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
 				7347B4BC265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
@@ -3419,6 +3436,7 @@
 				1146EE3F1A5DD071009F7576 /* CoreText.framework */,
 				03B0922D1E7886ED00AD338D /* CoreVideo.framework */,
 				732F04A7263739A40018A82E /* CryptoSwift.xcframework */,
+				73061A77273DDAFE00B50318 /* DifferenceKit.xcframework */,
 				7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */,
 				7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */,
 				7347B4B3265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework */,
@@ -4030,7 +4048,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+			shellScript = "PATH=/opt/homebrew/bin:/usr/local/bin:${PATH}\ncarthage copy-frameworks\n";
 		};
 		732940C7251E75EA0065E362 /* Fix software licenses file */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -4049,7 +4067,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/\"\nsed -i '' \"s/SimplyE/Open eBooks/\" software-licenses.html\nsed -i '' \"s/.*ADOBEADEPT.*//\" software-licenses.html \n";
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/\"\nsed -i '' \"s/SimplyE/Open eBooks/\" software-licenses.html\nsed -i '' \"s/.*EXCLUDE_FROM_OPENEBOOKS.*//\" software-licenses.html \n";
 		};
 		739E614C244A0D8600D00301 /* Copy Frameworks (Carthage) */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -4069,7 +4087,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+			shellScript = "PATH=/opt/homebrew/bin:/usr/local/bin:${PATH}\ncarthage copy-frameworks\n";
 		};
 		739E614D244A0D8600D00301 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5415,7 +5433,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5466,7 +5484,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5516,7 +5534,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5563,7 +5581,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5608,7 +5626,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5657,7 +5675,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5836,7 +5854,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5887,7 +5905,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
