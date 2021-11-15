@@ -35,11 +35,11 @@ class NYPLWelcomeEULAViewController : UIViewController {
     }
     
     self.navigationController?.isToolbarHidden = false
-    self.view.backgroundColor = NYPLConfiguration.backgroundColor()
+    self.view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     
     self.webView.frame = self.view.frame
     self.webView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-    self.webView.backgroundColor = NYPLConfiguration.backgroundColor()
+    self.webView.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     self.webView.navigationDelegate = self
     self.view.addSubview(self.webView)
 
@@ -50,10 +50,16 @@ class NYPLWelcomeEULAViewController : UIViewController {
                                      style: .plain,
                                      target: self,
                                      action: #selector(rejectedEULA))
+    
     let acceptItem = UIBarButtonItem(title: acceptTitle,
                                      style: .done,
                                      target: self,
                                      action: #selector(acceptedEULA))
+    if #available(iOS 12.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+        rejectItem.tintColor = .white
+        acceptItem.tintColor = NYPLConfiguration.actionColor
+    }
     let middleSpacer = UIBarButtonItem.init(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     self.toolbarItems = [rejectItem, middleSpacer, acceptItem]
     

@@ -1,5 +1,8 @@
+#if FEATURE_AUDIOBOOKS
 @import NYPLAudiobookToolkit;
-#if FEATURE_OVERDRIVE
+#endif
+
+#if FEATURE_OVERDRIVE_AUTH
 @import OverdriveProcessor;
 #endif
 
@@ -147,10 +150,12 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAxis];
+#if LCP
     } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeReadiumLCP]) {
         self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
          withRightsManagement:NYPLMyBooksDownloadRightsManagementLCP];
+#endif
     } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeEpubZip]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
@@ -159,7 +164,7 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
          withRightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
-#if FEATURE_OVERDRIVE
+#if FEATURE_AUDIOBOOKS && FEATURE_OVERDRIVE_AUTH
     } else if ([downloadTask.response.MIMEType isEqualToString:ContentTypeOverdriveAudiobookActual]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
@@ -566,10 +571,6 @@ didCompleteWithError:(NSError *)error
       }
       break;
     }
-    case NYPLBookContentTypeAudiobook: {
-      [self deleteLocalContentForAudiobook:book atURL:bookURL];
-      break;
-    }
     case NYPLBookContentTypePDF: {
       NSError *error = nil;
       if (![[NSFileManager defaultManager] removeItemAtURL:bookURL error:&error]) {
@@ -577,10 +578,17 @@ didCompleteWithError:(NSError *)error
       }
       break;
     }
+    case NYPLBookContentTypeAudiobook:
+#if FEATURE_AUDIOBOOKS
+      [self deleteLocalContentForAudiobook:book atURL:bookURL];
+      break;
+#endif
     case NYPLBookContentTypeUnsupported:
       break;
   }
 }
+
+#if FEATURE_AUDIOBOOKS
 
 /// Delete downloaded audiobook content
 /// @param book Audiobook
@@ -596,7 +604,7 @@ didCompleteWithError:(NSError *)error
   
   NSMutableDictionary *dict = nil;
   
-#if FEATURE_OVERDRIVE
+#if FEATURE_OVERDRIVE_AUTH
   if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
     dict = [(NSMutableDictionary *)json mutableCopy];
     dict[@"id"] = book.identifier;
@@ -633,9 +641,11 @@ didCompleteWithError:(NSError *)error
   }
 #else
   [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
-#endif
+#endif//LCP
 }
-  
+
+#endif//FEATURE_AUDIOBOOKS
+
 - (void)returnBookWithIdentifier:(NSString *)identifier
 {
   NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
@@ -683,7 +693,7 @@ didCompleteWithError:(NSError *)error
   }
 #else
   [self revokeLoanAndRemoveBook:book state:state];
-#endif
+#endif//FEATURE_DRM_CONNECTOR
 }
 
 - (void)revokeLoanAndRemoveBook:(NYPLBook *)book state:(NYPLBookState)state
@@ -794,7 +804,8 @@ didCompleteWithError:(NSError *)error
 - (NSURL *)contentDirectoryURL:(NSString *)account
 {
   NSURL *directoryURL = [[NYPLBookContentMetadataFilesHelper directoryFor:account] URLByAppendingPathComponent:@"content"];
-  
+  NYPLLOG_F(@"Book content directory URL: %@", directoryURL);
+
   if (directoryURL != nil) {
     NSError *error = nil;
     if(![[NSFileManager defaultManager]
@@ -815,7 +826,7 @@ didCompleteWithError:(NSError *)error
 /// @param book `NYPLBook` book
 - (NSString *)pathExtensionForBook:(NYPLBook *)book
 {
-#if defined(LCP)
+#if FEATURE_AUDIOBOOKS && LCP
   if ([LCPAudiobooks canOpenBook:book]) {
     return @"lcpa";
   }
@@ -1034,7 +1045,7 @@ didCompleteWithError:(NSError *)error
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
-#if FEATURE_OVERDRIVE
+#if FEATURE_OVERDRIVE_AUTH
     } else if ([book.distributor isEqualToString:OverdriveDistributorKey] && book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
       NSURL *URL = book.defaultAcquisition.hrefURL;
         
@@ -1105,7 +1116,7 @@ didCompleteWithError:(NSError *)error
           }];
         }
       }];
-#endif
+#endif//FEATURE_OVERDRIVE_AUTH
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
@@ -1289,9 +1300,8 @@ didCompleteWithError:(NSError *)error
      NSArray<NSString *> const *books = [[NYPLBookRegistry sharedRegistry] allBooks];
      for (NYPLBook *const book in books) {
        if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
-         [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-          deleteLocalContentForBookIdentifier:book.identifier
-          account:account];
+         [self deleteLocalContentForBookIdentifier:book.identifier
+                                           account:account];
        }
      }
    }];

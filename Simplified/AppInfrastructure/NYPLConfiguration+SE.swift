@@ -17,11 +17,16 @@ extension NYPLConfiguration {
   static let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 
   @objc static func mainColor() -> UIColor {
+    if #available(iOS 12.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == UIUserInterfaceStyle.dark {
+      return NYPLConfiguration.actionColor
+    }
+    
     let libAccount = AccountsManager.sharedInstance().currentAccount
     if let mainColor = libAccount?.details?.mainColor {
       return NYPLAppTheme.themeColorFromString(name: mainColor)
     }
-    return UIColor.defaultLabelColor()
+    return UIColor.black
   }
 
   @objc static func iconLogoBlueColor() -> UIColor {

@@ -32,24 +32,27 @@ class NYPLAxisXMLTests: XCTestCase {
     expected = "cardigan.jpg"
     XCTAssertEqual(actual, expected)
   }
+
+  func testFindFirstNodeNamed() {
+    let catalogItem = xml?.firstNodeNamed("catalog_item")
+    XCTAssertEqual(catalogItem?.attributes["gender"] as? String, "Men's")
+    XCTAssertNil(xml?.firstNodeNamed("not_there"))
+  }
   
   func testAxisXMLShouldFindAllItemsWithGivenKey() {
-    let allGenders = xml?.findRecursivelyInAttributes("gender") ?? []
+    let product = xml!.firstNodeNamed("product")!
+    let allGenders = product.attributeValues(forKey: "gender",
+                                                 onNodesNamed: "catalog_item")
     XCTAssertTrue(allGenders.contains("Men's"))
     XCTAssertTrue(allGenders.contains("Women's"))
     XCTAssertEqual(allGenders.count, 2)
-    
-    let allDescriptions = xml?.findRecursivelyInAttributes("description") ?? []
-    XCTAssertTrue(allDescriptions.contains("Small"))
-    XCTAssertTrue(allDescriptions.contains("Medium"))
-    XCTAssertTrue(allDescriptions.contains("Large"))
-    XCTAssertTrue(allDescriptions.contains("Extra Large"))
-    
-    let allImages = xml?.findRecursivelyInAttributes("image") ?? []
-    XCTAssertTrue(allImages.contains("red_cardigan.jpg"))
-    XCTAssertTrue(allImages.contains("burgundy_cardigan.jpg"))
-    XCTAssertTrue(allImages.contains("navy_cardigan.jpg"))
-    XCTAssertTrue(allImages.contains("black_cardigan.jpg"))
+
+    let catalogItem = product.firstNodeNamed("catalog_item")!
+    let allSizes = catalogItem.attributeValues(forKey: "description",
+                                                   onNodesNamed: "size")
+    XCTAssert(allSizes.contains("Small"))
+    XCTAssert(allSizes.contains("Medium"))
+    XCTAssert(allSizes.contains("Large"))
+    XCTAssertEqual(allSizes.count, 3)
   }
-  
 }

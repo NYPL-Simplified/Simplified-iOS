@@ -153,7 +153,7 @@ CGFloat const marginPadding = 2.0;
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
@@ -247,6 +247,23 @@ CGFloat const marginPadding = 2.0;
   [self.businessLogic logInIfUserAuthorized];
 }
 #endif
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      [self updateColors];
+    }
+  }
+}
+
+- (void)updateColors {
+  if (self.businessLogic.registrationIsPossible) {
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:1];
+    [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+  }
+}
 
 #pragma mark UITableViewDelegate
 
@@ -463,12 +480,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
     footerLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
-    footerLabel.textColor = [UIColor lightGrayColor];
+    footerLabel.textColor = [NYPLConfiguration disabledFieldTextColor];
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
     NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
-                                        [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
+                                        [NYPLConfiguration actionColor],
                                       NSUnderlineStyleAttributeName :
                                         @(NSUnderlineStyleSingle) };
     NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
@@ -729,19 +746,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     self.PINTextField.text = self.businessLogic.userAccount.PIN;
     self.PINTextField.enabled = forceEditability;
     if (forceEditability) {
-      self.usernameTextField.textColor = [UIColor blackColor];
-      self.PINTextField.textColor = [UIColor blackColor];
+      self.usernameTextField.textColor = [NYPLConfiguration primaryTextColor];
+      self.PINTextField.textColor = [NYPLConfiguration primaryTextColor];
     } else {
-      self.usernameTextField.textColor = [UIColor grayColor];
-      self.PINTextField.textColor = [UIColor grayColor];
+      self.usernameTextField.textColor = [NYPLConfiguration disabledFieldTextColor];
+      self.PINTextField.textColor = [NYPLConfiguration disabledFieldTextColor];
     }
   } else {
     self.usernameTextField.text = nil;
     self.usernameTextField.enabled = YES;
-    self.usernameTextField.textColor = [UIColor defaultLabelColor];
+    self.usernameTextField.textColor = [NYPLConfiguration primaryTextColor];
     self.PINTextField.text = nil;
     self.PINTextField.enabled = YES;
-    self.PINTextField.textColor = [UIColor defaultLabelColor];
+    self.PINTextField.textColor = [NYPLConfiguration primaryTextColor];
   }
 
   [self setupTableData];
@@ -764,11 +781,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     self.logInCell.textLabel.textColor = [NYPLConfiguration mainColor];
   } else {
     self.logInCell.userInteractionEnabled = NO;
-    if (@available(iOS 13.0, *)) {
-      self.logInCell.textLabel.textColor = [UIColor systemGray2Color];
-    } else {
-      self.logInCell.textLabel.textColor = [UIColor lightGrayColor];
-    }
+    self.logInCell.textLabel.textColor = [NYPLConfiguration disabledFieldTextColor];
   }
 }
 

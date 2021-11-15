@@ -6,7 +6,7 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
-#if LCP
+#if LCP && FEATURE_AUDIOBOOKS
 
 import Foundation
 import R2Shared

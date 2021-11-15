@@ -87,7 +87,7 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
 
     let readerSettings = NYPLReaderSettings.shared()
 
-    tableView.separatorColor = .gray
+    tableView.separatorColor = NYPLConfiguration.fieldBorderColor
     view.backgroundColor = readerSettings.backgroundColor
     tableView.backgroundColor = view.backgroundColor
     noBookmarksLabel.textColor = readerSettings.foregroundColor
@@ -108,7 +108,10 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
 
     navigationController?.navigationBar.barStyle = .default
     navigationController?.navigationBar.isTranslucent = true
-    navigationController?.navigationBar.barTintColor = nil
+    navigationController?.navigationBar.barTintColor = readerSettings.backgroundColor
+    navigationController?.navigationBar.titleTextAttributes = [
+      NSAttributedString.Key.foregroundColor: readerSettings.foregroundColor
+    ]
   }
 
   override func viewWillAppear(_ animated: Bool) {

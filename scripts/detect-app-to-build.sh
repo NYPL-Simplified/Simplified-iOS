@@ -37,24 +37,6 @@ SIMPLYE_CHANGED=$?
 ./scripts/build-number-check.sh openebooks
 OPENEBOOKS_CHANGED=$?
 
-if [ "$SIMPLYE_CHANGED" == 1 ]; then
-  ./scripts/ios-binaries-check.sh simplye
-  # if the binary for this version was already uploaded, reset the flag to skip
-  if [ $? != 0 ]; then
-    echo "$UPLOAD_FILENAME exists on iOS-binaries repo: will skip SimplyE build."
-    SIMPLYE_CHANGED=0
-  fi
-fi
-
-if [ "$OPENEBOOKS_CHANGED" == 1 ]; then
-  ./scripts/ios-binaries-check.sh openebooks
-  # if the binary for this version was already uploaded, reset the flag to skip
-  if [ $? != 0 ]; then
-    echo "$UPLOAD_FILENAME exists on iOS-binaries repo: will skip Open eBooks build."
-    OPENEBOOKS_CHANGED=0
-  fi
-fi
-
 echo ""
 echo "** Version / build number changes **"
 echo "SimplyE: ($SIMPLYE_CHANGED)"

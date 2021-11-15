@@ -64,6 +64,18 @@
   return self;
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+  [super traitCollectionDidChange:previousTraitCollection];
+  
+  if (@available(iOS 12.0, *)) {
+    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+      // NYPLConfiguration.mainColor has multiple possible outcomes based on the light/dark mode, current library and iOS version,
+      // which is not adaptive when user switch between light/dark mode. Any existing UI component using this color needs to be manually updated.
+      [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
+    }
+  }
+}
+
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];

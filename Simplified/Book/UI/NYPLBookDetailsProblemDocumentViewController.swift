@@ -25,11 +25,7 @@
     
     let margins = self.view.layoutMarginsGuide
     
-    if #available(iOS 13, *) {
-      self.view.backgroundColor = .systemBackground
-    } else {
-      self.view.backgroundColor = .white
-    }
+    self.view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     
     // ScrollView Setup
     let scrollView = UIScrollView()
@@ -127,6 +123,19 @@
     super.viewDidLayoutSubviews()
     
     self.scrollView?.contentSize = calculateContentSize()
+  }
+  
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    if #available(iOS 12.0, *),
+      UIScreen.main.traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+      updateColors()
+    }
+  }
+  
+  private func updateColors() {
+    backButton?.setTitleColor(NYPLConfiguration.mainColor(), for: .normal)
+    closeButton?.setTitleColor(NYPLConfiguration.mainColor(), for: .normal)
   }
   
   func calculateContentSize() -> CGSize {

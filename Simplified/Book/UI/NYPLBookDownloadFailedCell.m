@@ -68,19 +68,19 @@
 
 - (void)setup
 {
-  self.backgroundColor = [UIColor grayColor];
+  self.backgroundColor = [NYPLConfiguration secondaryBackgroundColor];
   
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.font = [UIFont systemFontOfSize:12];
-  self.authorsLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.authorsLabel.textColor = [NYPLConfiguration secondaryTextColor];
   [self.contentView addSubview:self.authorsLabel];
   
   self.buttonContainerView = [[UIView alloc] init];
   [self.contentView addSubview:self.buttonContainerView];
   
   self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
-  self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
-  self.cancelButton.tintColor = [UIColor grayColor];
+  self.cancelButton.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
+  self.cancelButton.tintColor = [NYPLConfiguration primaryTextColor];
   self.cancelButton.layer.borderWidth = 0;
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
@@ -91,19 +91,19 @@
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
-  self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.messageLabel.textColor = [NYPLConfiguration secondaryTextColor];
   self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self.contentView addSubview:self.messageLabel];
   
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
-  self.titleLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.titleLabel.textColor = [NYPLConfiguration secondaryTextColor];
   [self.contentView addSubview:self.titleLabel];
   
   self.tryAgainButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
-  self.tryAgainButton.backgroundColor = [NYPLConfiguration backgroundColor];
-  self.tryAgainButton.tintColor = [UIColor grayColor];
+  self.tryAgainButton.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
+  self.tryAgainButton.tintColor = [NYPLConfiguration primaryTextColor];
   self.tryAgainButton.layer.borderWidth = 0;
   [self.tryAgainButton setTitle:NSLocalizedString(@"TryAgain", nil)
                        forState:UIControlStateNormal];

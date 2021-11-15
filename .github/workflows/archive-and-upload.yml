@@ -43,13 +43,6 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Checkout Axis DRM
-        if: needs.version-check.outputs.openebooks_changed == '1'
-        uses: actions/checkout@v2.3.4
-        with:
-          repository: NYPL-Simplified/Axis-iOS
-          token: ${{ secrets.IOS_DEV_CI_PAT }}
-          path: ./Axis-iOS
       - name: Checkout Adobe RMSDK
         if: needs.version-check.outputs.simplye_changed == '1'
         uses: actions/checkout@v2.3.4
@@ -104,12 +97,6 @@ jobs:
         env:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Upload SimplyE to iOS-binaries
-        if: needs.version-check.outputs.simplye_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
-        run: ./scripts/ios-binaries-upload.sh simplye
-        env:
-          BUILD_CONTEXT: ci
-          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Export SimplyE for App Store
         if: needs.version-check.outputs.simplye_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/xcode-export-appstore.sh simplye
@@ -139,12 +126,6 @@ jobs:
       - name: Upload Open eBooks to Firebase
         if: needs.version-check.outputs.openebooks_changed == '1'
         run: ./scripts/firebase-upload.sh openebooks
-        env:
-          BUILD_CONTEXT: ci
-          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
-      - name: Upload Open eBooks to iOS-binaries
-        if: needs.version-check.outputs.openebooks_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
-        run: ./scripts/ios-binaries-upload.sh openebooks
         env:
           BUILD_CONTEXT: ci
           GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}

@@ -22,7 +22,7 @@ import UIKit
     let tableView = UITableView.init(frame: .zero, style: .grouped)
     tableView.delegate = self
     tableView.dataSource = self
-    tableView.backgroundColor = NYPLConfiguration.backgroundColor()
+    tableView.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     self.view.addSubview(tableView)
     tableView.autoPinEdgesToSuperviewEdges()
   }
@@ -90,12 +90,29 @@ import UIKit
     let cell = UITableViewCell()
     cell.textLabel?.text = NSLocalizedString("Delete Server Data", comment:"")
     cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
-    cell.textLabel?.textColor = .red
+    cell.textLabel?.textColor = NYPLConfiguration.deleteActionColor
     return cell
   }
   
-  func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-    return NSLocalizedString("Delete all the bookmarks you have saved in the cloud.", comment:"")
+  func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    return footerView
   }
-
+  
+  // MARK: - UI Properties
+  
+  lazy var footerView: UIView = {
+    let view = UIView()
+    view.addSubview(deleteDescriptionLabel)
+    deleteDescriptionLabel.autoPinEdgesToSuperviewEdges(with: .init(top: 10, left: 15, bottom: 10, right: 15))
+    return view
+  }()
+  
+  lazy var deleteDescriptionLabel: UILabel = {
+    let label = UILabel(frame: .zero)
+    label.text = NSLocalizedString("Delete all the bookmarks you have saved in the cloud.", comment:"")
+    label.textAlignment = .left
+    label.textColor = NYPLConfiguration.primaryTextColor
+    label.font = UIFont.systemFont(ofSize: 12)
+    return label
+  }()
 }

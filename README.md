@@ -94,7 +94,7 @@ Release branch names follow the convention: `release/simplye/<version>` or `rele
 
 Feature branch names (for features whose development is a month or more): `feature/<feature-name>`, e.g. `feature/my-new-screen`.
 
-[Continuous integration](https://github.com/NYPL-Simplified/Simplified/wiki/iOS-CI-CD) is enabled on push events on `develop`, release and feature branches. SimplyE device builds are uploaded to [iOS-binaries](https://github.com/NYPL-Simplified/iOS-binaries) and Firebase. Commits on release branches also send the same build to TestFlight.
+[Continuous integration](https://github.com/NYPL-Simplified/Simplified/wiki/iOS-CI-CD) is enabled on push events on `develop`, release and feature branches. SimplyE device builds are uploaded to Firebase and, for release builds, also to TestFlight.
 
 # License
 

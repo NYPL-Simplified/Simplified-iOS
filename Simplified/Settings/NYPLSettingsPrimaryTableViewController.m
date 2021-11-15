@@ -84,7 +84,7 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated

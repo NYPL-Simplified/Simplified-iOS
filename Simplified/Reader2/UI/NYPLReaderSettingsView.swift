@@ -87,7 +87,7 @@ class NYPLReaderSettingsView: UIView {
     let topPadding: CGFloat = 16
     let padding: CGFloat = 10
     
-    backgroundColor = NYPLConfiguration.backgroundColor()
+    backgroundColor = NYPLConfiguration.primaryBackgroundColor
     
     let partialHorizontalLine = newHorizontalLine()
     partialHorizontalLine.addSubview(selectedFontBottomBorder)
@@ -546,7 +546,7 @@ class NYPLReaderSettingsView: UIView {
   // This view hides the border between the selected font button and font description
   private lazy var selectedFontBottomBorder: UIView = {
     let view = UIView()
-    view.backgroundColor = NYPLConfiguration.backgroundColor()
+    view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     return view
   }()
   
@@ -687,7 +687,7 @@ class NYPLReaderSettingsView: UIView {
                                normalStateAttributes: [NSAttributedString.Key: Any]? = nil,
                                disabledStateAttributes: [NSAttributedString.Key: Any]? = nil) -> UIButton {
     let button = UIButton(type: .custom)
-    button.backgroundColor = NYPLConfiguration.backgroundColor()
+    button.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     
     if let fontName = fontName,
        let font = UIFont(name: fontName, size: fontSize) {
