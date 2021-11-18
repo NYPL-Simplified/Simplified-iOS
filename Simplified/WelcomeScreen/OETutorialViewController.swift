@@ -57,7 +57,7 @@ class OETutorialViewController : UIPageViewController, UIPageViewControllerDataS
   // MARK: UIPageViewControllerDataSource
   
   func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-    let idx = self.viewControllersList.index(of: viewController) ?? 0
+    let idx = self.viewControllersList.firstIndex(of: viewController) ?? 0
     if idx < 1 {
       return nil
     } else {
@@ -66,7 +66,7 @@ class OETutorialViewController : UIPageViewController, UIPageViewControllerDataS
   }
   
   func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-    let idx = self.viewControllersList.index(of: viewController) ?? Int.max
+    let idx = self.viewControllersList.firstIndex(of: viewController) ?? Int.max
     if idx >= self.viewControllersList.count - 1 {
       return nil
     } else {
@@ -83,7 +83,7 @@ class OETutorialViewController : UIPageViewController, UIPageViewControllerDataS
       Log.error("UIPageViewController", "Cannot find presented view controller")
       return 0
     }
-    let idx = self.viewControllersList.index(of: presentedVC)
+    let idx = self.viewControllersList.firstIndex(of: presentedVC)
     if idx == nil {
       Log.error("UIPageViewController", "Cannot find index for view controller")
     }

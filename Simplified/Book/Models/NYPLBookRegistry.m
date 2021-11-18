@@ -758,9 +758,9 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   @synchronized(self) {
     [self.coverRegistry removePinnedThumbnailImageForBookIdentifier:identifier];
     if (identifier) {
-      // introduced for IOS-270. While it seems impossible for the app to
+      // introduced for IOS-277. While it seems impossible for the app to
       // create a book instance with a nil id or set the id to nil, somehow
-      // that is happening while returning the book. See other IOS-270 tags in
+      // that is happening while returning the book. See other IOS-277 tags in
       // the code base for more context.
       [self.identifiersToRecords removeObjectForKey:identifier];
     }

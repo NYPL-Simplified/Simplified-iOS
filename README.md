@@ -10,7 +10,7 @@ Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/relea
 
 # System Requirements
 
-- Install Xcode 12.4 in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install Xcode 13.1 in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) 0.38 or newer if you haven't already. Using `brew` is recommended.
 
 # Building without DRM support
@@ -24,13 +24,13 @@ git checkout develop
 ./scripts/setup-repo-nodrm.sh
 
 # idempotent script to rebuild all dependencies
-./scripts/build-3rd-party-dependencies.sh --no-private
+./scripts/build-dependencies.sh --no-private
 ```
 Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
 
 # Building with DRM Support
 
-## Building the Application from Scratch
+## Building from Scratch
 
 01. Contact project lead and ensure you have access to all the required private repos.
 02. Build the dependencies (typically you'll need to run this only once):
@@ -45,24 +45,21 @@ cd Simplified-iOS
 
 Unless the DRM dependencies change (which is very seldom) you shouldn't need to run the `bootstrap-drm.sh` script more than once.
 
-Other 3rd party dependencies are managed via Carthage and a few git submodules. To rebuild them you can use the following idempotent script:
+Other dependencies are managed via Carthage and a few git submodules. To rebuild them you can use the following idempotent script:
 ```bash
 cd Simplified-iOS #repo root
-./scripts/build-3rd-party-dependencies.sh
+./scripts/build-dependencies.sh
 ```
 The `scripts` directory contains a number of other scripts to build dependencies more granularly and also to build/archive/test the app from the command line. These scripts are the same used by our CI system. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
 
-## Building for Readium 2 Integration
+# Building for Readium 2 Integration
 
-Before working on R2 integration, make sure you can build the app without R2. Follow the steps listed above for building the app with DRM.
+Before working on R2 integration, make sure you can build the app by following the steps listed above.
 
-For working on integrating R2 into SimplyE, first clone the following frameworks as siblings of `Simplified-iOS` on the file system:
+For working on integrating R2 into SimplyE, first clone the following repo as a sibling of `Simplified-iOS` on the file system:
 ```bash
 cd Simplified-iOS/..
-git clone https://github.com/readium/r2-shared-swift
-git clone https://github.com/readium/r2-streamer-swift
-git clone https://github.com/readium/r2-navigator-swift
-git clone https://github.com/readium/r2-lcp-swift
+git clone https://github.com/readium/swift-toolkit
 ```
 Then rebuild the dependencies:
 ```bash
@@ -73,7 +70,7 @@ Finally, open `SimplifiedR2.workspace` and use the `SimplyE-R2dev` target to bui
 
 # Building Open eBooks
 
-Open eBooks is an app primarily targeted toward the education space. It requires DRM.
+Open eBooks is an app primarily targeted toward the education space. It requires DRM. Follow the same steps as indicated above and use the "Open eBooks" Xcode target.
 
 # Contributing
 

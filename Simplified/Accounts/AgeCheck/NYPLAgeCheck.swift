@@ -1,6 +1,6 @@
 import Foundation
 
-protocol NYPLAgeCheckValidationDelegate: class {
+protocol NYPLAgeCheckValidationDelegate: AnyObject {
   var minYear : Int { get }
   var currentYear : Int { get }
   var birthYearList : [Int] { get }

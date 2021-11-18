@@ -39,6 +39,24 @@
 
 const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 
+- (void)setUpAppearance
+{
+  self.window.tintColor = [NYPLConfiguration mainColor];
+  self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+
+  if (@available(iOS 15.0, *)) {
+    UINavigationBarAppearance *navBarAppearance = [[UINavigationBarAppearance alloc] init];
+    [navBarAppearance configureWithDefaultBackground];
+    [UINavigationBar appearance].standardAppearance = navBarAppearance;
+    [UINavigationBar appearance].scrollEdgeAppearance = navBarAppearance;
+
+    UITabBarAppearance *tabBarAppearance = [[UITabBarAppearance alloc] init];
+    [tabBarAppearance configureWithDefaultBackground];
+    [UITabBar appearance].standardAppearance = tabBarAppearance;
+    [UITabBar appearance].scrollEdgeAppearance = tabBarAppearance;
+  }
+}
+
 #pragma mark UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)app
@@ -68,10 +86,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.reachabilityManager = [NYPLReachability sharedReachability];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  self.window.tintColor = [NYPLConfiguration mainColor];
-  self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+  [self setUpAppearance];
   [self.window makeKeyAndVisible];
-
   [self setUpRootVC];
 
   [NYPLErrorLogger logNewAppLaunch];

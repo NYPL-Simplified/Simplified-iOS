@@ -77,7 +77,7 @@ final class Log: NSObject {
     var components = tag.components(separatedBy: "/")
 
     // remove any local path components before the source root in repo
-    let sourcesRootIndex = (components.index(of: "Simplified") ?? 0) + 1
+    let sourcesRootIndex = (components.firstIndex(of: "Simplified") ?? 0) + 1
 
     if sourcesRootIndex < components.count {
       components.removeFirst(sourcesRootIndex)

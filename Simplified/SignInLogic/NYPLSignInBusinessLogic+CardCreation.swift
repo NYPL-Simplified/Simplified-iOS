@@ -9,7 +9,93 @@
 import Foundation
 import NYPLCardCreator
 
+extension JuvenileFlowCoordinator: JuvenileFlowCoordinating {}
+
 extension NYPLSignInBusinessLogic {
+
+  /// The entry point to the juvenile card creation flow.
+  /// - Note: This is available only for NYPL accounts.
+  /// - Parameters:
+  ///   - eligibilityCompletion: Always called at the end of an initial
+  ///   api call that determines whether the user is eligible or not to
+  ///   create juvenile accounts. If that's possible, the handler returns
+  ///   a navigation controller containing the VCs for the whole flow.
+  ///   All the client has to do is to present this navigation controller
+  ///   in whatever way it sees fit.
+  ///   - flowCompletion: Called when/if the user completes the whole juvenile
+  ///   card-creation flow.
+  @objc
+  func startJuvenileCardCreation(
+    eligibilityCompletion: @escaping (UINavigationController?, Error?) -> Void,
+    flowCompletion: @escaping () -> Void) {
+
+    guard juvenileAuthLock.try() else {
+      // not calling any completion because this means a flow is already going
+      return
+    }
+
+    juvenileAuthIsOngoing = true
+
+    guard let parentBarcode = resolveUserBarcode() else {
+      let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
+      let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
+
+      let error = NSError(domain: NYPLErrorLogger.clientDomain,
+                          code: NYPLErrorCode.missingParentBarcodeForJuvenile.rawValue,
+                          userInfo: [
+                            NSLocalizedDescriptionKey: description,
+                            NSLocalizedRecoverySuggestionErrorKey: recoveryMsg])
+      NYPLErrorLogger.logError(error,
+                               summary: "Juvenile Card Creation: Parent barcode missing");
+      eligibilityCompletion(nil, error)
+      juvenileAuthIsOngoing = false
+      juvenileAuthLock.unlock()
+      return
+    }
+
+    let coordinator = makeJuvenileCardCreationCoordinator(using: parentBarcode)
+    juvenileCardCreationCoordinator = coordinator
+
+    coordinator.configuration.completionHandler = { [weak self] _, _, userInitiated in
+      if userInitiated {
+        self?.juvenileCardCreationCoordinator = nil
+        flowCompletion()
+      }
+    }
+
+    coordinator.startJuvenileFlow { [weak self] result in
+      switch result {
+      case .success(let navVC):
+        eligibilityCompletion(navVC, nil)
+      case .fail(let error):
+        NYPLErrorLogger.logError(error,
+                                 summary: "Juvenile Card Creation error")
+        self?.juvenileCardCreationCoordinator = nil
+        eligibilityCompletion(nil, error)
+      }
+      self?.juvenileAuthIsOngoing = false
+      self?.juvenileAuthLock.unlock()
+    }
+  }
+
+  @objc func checkCardCreationEligibility(completion: @escaping () -> Void) {
+    guard let parentBarcode = self.resolveUserBarcode() else {
+      Log.info(#function, "Ineligible for card creation: no barcode.")
+      allowJuvenileCardCreation = false
+      completion()
+      return
+    }
+
+    let coordinator = juvenileCardCreationCoordinator ?? makeJuvenileCardCreationCoordinator(using: parentBarcode)
+    juvenileCardCreationCoordinator = coordinator
+
+    coordinator.checkJuvenileCreationEligibility(parentBarcode: parentBarcode) { [weak self] error in
+      Log.info(#function, "Juvenile eligibility: \(error == nil). Error: \(String(describing: error))")
+      self?.allowJuvenileCardCreation = (error == nil)
+      completion()
+    }
+  }
+
   @objc func makeCardCreatorIfPossible() -> UINavigationController? {
 
     // if the library does not have a sign-up url, there's nothing we can do

@@ -1,19 +1,19 @@
 // FIXME: These values should be persisted as strings, not numbers derived
 // from an enum.
 
-typedef NS_ENUM(NSInteger, NYPLReaderSettingsColorScheme) {
+typedef NS_CLOSED_ENUM(NSInteger, NYPLReaderSettingsColorScheme) {
   NYPLReaderSettingsColorSchemeBlackOnWhite = 0,
   NYPLReaderSettingsColorSchemeBlackOnSepia = 1,
   NYPLReaderSettingsColorSchemeWhiteOnBlack = 2
 };
 
-typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontFace) {
+typedef NS_CLOSED_ENUM(NSInteger, NYPLReaderSettingsFontFace) {
   NYPLReaderSettingsFontFaceSans = 0,
   NYPLReaderSettingsFontFaceSerif = 1,
   NYPLReaderSettingsFontFaceOpenDyslexic = 2
 };
 
-typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
+typedef NS_CLOSED_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
   NYPLReaderSettingsFontSizeSmallest = 0,
   NYPLReaderSettingsFontSizeSmaller = 1,
   NYPLReaderSettingsFontSizeSmall = 2,
@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
   NYPLReaderSettingsFontSizeLargest = 7
 };
 
-typedef NS_ENUM(NSInteger, NYPLReaderSettingsMediaOverlaysEnableClick) {
+typedef NS_CLOSED_ENUM(NSInteger, NYPLReaderSettingsMediaOverlaysEnableClick) {
   NYPLReaderSettingsMediaOverlaysEnableClickTrue = 0,
   NYPLReaderSettingsMediaOverlaysEnableClickFalse = 1
 };
