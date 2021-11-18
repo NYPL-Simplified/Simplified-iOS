@@ -16,3 +16,6 @@
 [submodule "Axis-iOS"]
 	path = Axis-iOS
 	url = git@github.com:NYPL-Simplified/Axis-iOS.git
+[submodule "audiobook-ios-overdrive"]
+	path = audiobook-ios-overdrive
+	url = git@github.com:NYPL-Simplified/audiobook-ios-overdrive.git

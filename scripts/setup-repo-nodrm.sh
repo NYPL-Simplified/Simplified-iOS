@@ -25,12 +25,12 @@ git submodule foreach --quiet 'git submodule deinit NYPLAEToolkit'
 git rm -rf NYPLAEToolkit
 git submodule foreach --quiet 'git submodule deinit Axis-iOS'
 git rm -rf Axis-iOS
+git submodule foreach --quiet 'git submodule deinit audiobook-ios-overdrive'
+git rm -rf audiobook-ios-overdrive
 
 git submodule update --init --recursive
 
 # Remove private repos from Cartfile and Cartfile.resolved.
-sed -i '' "s#.*NYPL-Simplified/audiobook-ios-overdrive.*##" Cartfile
-sed -i '' "s#.*NYPL-Simplified/audiobook-ios-overdrive.*##" Cartfile.resolved
 sed -i '' "s#.*lcp.*##" Cartfile
 sed -i '' "s#.*lcp.*##" Cartfile.resolved
 
