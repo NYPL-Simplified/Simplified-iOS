@@ -1109,10 +1109,11 @@ didCompleteWithError:(NSError *)error
               return;
             }
               
-            NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:requestURLString
-                                                                                          username:[[NYPLUserAccount sharedAccount] barcode]
-                                                                                             scope:scope];
-            [self addDownloadTaskWithRequest:request book:book];
+            NSURLRequest *req = [[OverdriveAPIExecutor shared]
+                                 getManifestRequestWithUrlString:requestURLString
+                                 username:[[NYPLUserAccount sharedAccount] barcode]
+                                 scope:scope];
+            [self addDownloadTaskWithRequest:req book:book];
           }];
         }
       }];
