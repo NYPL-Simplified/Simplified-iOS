@@ -665,6 +665,7 @@ didCompleteWithError:(NSError *)error
                                @"book.title": book.title ?: @"N/A",
                                @"book.distributor": book.distributor ?: @"N/A",
                                @"book registry state": [NYPLBookStateHelper stringValueFromBookState:state] ?: @"N/A",
+                               @"book instance nil?": @(book == nil),
                                @"fulfillmentId": fulfillmentId ?: @"N/A",
                                @"needsAuth": @(NYPLUserAccount.sharedAccount.authDefinition.needsAuth),
                              }];
