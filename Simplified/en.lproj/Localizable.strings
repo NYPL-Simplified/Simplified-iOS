@@ -223,6 +223,8 @@
 "SigningInAgree" = "By signing in, you agree to the End User License Agreement.";
 "Want a card for your child?" = "Want a card for your child?";
 "Cannot confirm library card eligibility." = "Cannot confirm library card eligibility.";
+"New patron sign up is not supported by this library." = "New patron sign up is not supported by this library.";
+"Sign up process fails to initiate." = "Sign up process fails to initiate.";
 "Please log out and try your card information again." = "Please log out and try your card information again.";
 "Sign-in Error" = "Sign-in Error";
 "We could not find a match for the credentials provided." = "We could not find a match for the credentials provided.";
