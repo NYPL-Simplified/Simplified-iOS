@@ -163,7 +163,10 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
     #if SIMPLYE
     XCTAssertTrue(businessLogic.registrationViaCardCreatorIsPossible())
     XCTAssertTrue(businessLogic.registrationIsPossible())
-    let cardCreatorConfig = businessLogic.makeRegularCardCreationConfiguration()
+    guard let cardCreatorConfig = businessLogic.makeCardCreationConfiguration() else {
+      XCTFail("Unable to create card creator config")
+      return
+    }
     XCTAssertEqual(cardCreatorConfig.endpointUsername, NYPLSecrets.cardCreatorUsername)
     XCTAssertEqual(cardCreatorConfig.endpointPassword, NYPLSecrets.cardCreatorPassword)
     XCTAssertGreaterThan(cardCreatorConfig.requestTimeoutInterval, 10)

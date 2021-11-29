@@ -500,6 +500,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didSelectRegularSignupOnCell:(UITableViewCell *)cell
 {
+#if SIMPLYE
   [cell setUserInteractionEnabled:NO];
   __weak __auto_type weakSelf = self;
   [self.businessLogic startRegularCardCreationWithCompletion:^(UINavigationController * _Nullable navVC, NSError * _Nullable error) {
@@ -522,8 +523,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       navVC.modalPresentationStyle = UIModalPresentationFormSheet;
       [weakSelf presentViewController:navVC animated:YES completion:nil];
     }];
-    
   }];
+#endif
 }
 
 #pragma mark - Modal presentation

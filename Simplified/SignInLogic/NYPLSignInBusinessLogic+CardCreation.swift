@@ -235,21 +235,17 @@ extension NYPLSignInBusinessLogic {
   /// the username will not work.
   /// - Returns: A configuration to be used in the regular or juvenile card creation flow.
   @objc func makeCardCreationConfiguration(using parentBarcode: String = "") -> CardCreatorConfiguration? {
-    let simplifiedBaseURL = APIKeys.cardCreatorEndpointURL
-
     let credentials = cardCreatorCredentials()
     guard let platformAPI = NYPLPlatformAPIInfo(
-      oauthTokenURL: APIKeys.PlatformAPI.oauthTokenURL,
+      oauthTokenURL: NYPLPlatformAPI.oauthTokenURL,
       clientID: NYPLSecrets.platformClientID,
       clientSecret: NYPLSecrets.platformClientSecret,
-      baseURL: APIKeys.PlatformAPI.baseURL
+      baseURL: NYPLPlatformAPI.baseURL
     ) else {
       return nil
     }
     
     let cardCreatorConfiguration = CardCreatorConfiguration(
-      endpointURL: simplifiedBaseURL,
-      endpointVersion: APIKeys.cardCreatorVersion,
       endpointUsername: credentials.username,
       endpointPassword: credentials.password,
       platformAPIInfo: platformAPI,
