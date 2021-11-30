@@ -479,7 +479,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       NSUnderlineStyleAttributeName :
                                         @(NSUnderlineStyleSingle) };
     NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
-                                             initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
+                                             initWithString:NSLocalizedString(@"By signing in, you agree to the End User License Agreement.", nil) attributes:linkAttributes];
     footerLabel.attributedText = eulaString;
     [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 

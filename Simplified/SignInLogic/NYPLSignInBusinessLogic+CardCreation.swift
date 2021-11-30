@@ -39,7 +39,7 @@ extension NYPLSignInBusinessLogic {
     
     // If the library does not have a sign-up url, there's nothing we can do
     guard let signUpURL = libraryAccount?.details?.signUpUrl else {
-      let description = NSLocalizedString("New patron sign up is not supported by this library.", comment: "Message describing the fact that new patron sign up is not supported by the current selected library")
+      let description = NSLocalizedString("We're sorry. Currently we do not support signups for new patrons via the app.", comment: "Message describing the fact that new patron sign up is not supported by the current selected library")
       let error = NSError(domain: NYPLErrorLogger.clientDomain,
                           code: NYPLErrorCode.nilSignUpURL.rawValue,
                           userInfo: [
@@ -60,8 +60,8 @@ extension NYPLSignInBusinessLogic {
     guard libraryAccount?.details?.supportsCardCreator ?? false else {
       let title = NSLocalizedString("eCard",
                                     comment: "Title for web-based card creator page")
-      let msg = NSLocalizedString("The page could not load due to a connection error.",
-                                  comment: "Message for errors loading a HTML page")
+      let msg = NSLocalizedString("We're sorry. Our sign up system is currently down. Please try again later.",
+                                  comment: "Message for error loading the web-based card creator")
       let webVC = RemoteHTMLViewController(URL: signUpURL,
                                            title: title,
                                            failureMessage: msg)
@@ -73,7 +73,7 @@ extension NYPLSignInBusinessLogic {
     guard let coordinator = makeCardCreationCoordinator() else {
       // This should only happen when CardCreator credentials decode failed (which is very unlikely to happen)
       // and the errors are already logged when we retrieve the credentials
-      let description = NSLocalizedString("Sign up process fails to initiate.", comment: "Message describing the CardCreator flow failed to be initiated")
+      let description = NSLocalizedString("We're sorry. Our sign up system is currently down. Please try again later.", comment: "Message describing the CardCreator flow failed to be initiated")
       let error = NSError(domain: NYPLErrorLogger.clientDomain,
                           code: NYPLErrorCode.cardCreatorCredentialsDecodeFail.rawValue,
                           userInfo: [
@@ -142,7 +142,7 @@ extension NYPLSignInBusinessLogic {
     cardCreationIsOngoing = true
 
     guard let parentBarcode = resolveUserBarcode() else {
-      let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
+      let description = NSLocalizedString("Your eligibility for this card can't be confirmed. Please contact your library if this is in error.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
       let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
 
       let error = NSError(domain: NYPLErrorLogger.clientDomain,

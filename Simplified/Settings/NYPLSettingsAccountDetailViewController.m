@@ -709,7 +709,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
   cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-  cell.textLabel.text = NSLocalizedString(@"Want a card for your child?", nil);
+  cell.textLabel.text = NSLocalizedString(@"Need a library card for your child?", nil);
   [self addActivityIndicatorToJuvenileCell:cell];
   return cell;
 }
@@ -1189,7 +1189,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                         NSUnderlineStyleAttributeName :
                                           @(NSUnderlineStyleSingle) };
       eulaString = [[NSMutableAttributedString alloc]
-                    initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
+                    initWithString:NSLocalizedString(@"By signing in, you agree to the End User License Agreement.", nil) attributes:linkAttributes];
     } else { // sync section
       NSDictionary *attrs;
       attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration primaryTextColor] };

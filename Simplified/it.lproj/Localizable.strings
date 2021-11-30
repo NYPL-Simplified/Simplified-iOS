@@ -80,6 +80,8 @@
 "UnknownRequestError" = "Si è verificato un errore. Controlla la tua connessione a internet o riprova più tardi.";
 "Verifying" = "verifica";
 "Back" = "Indietro";
+"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "Non è stato possibile caricare questa pagina. Prova a chiudere l'app del tutto e a riaprirla, e se il problema persiste, contatta l'help desk della tua biblioteca.";
+"The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";
 
 // NYPLAppDelegate
 "AppDelegateUpdateRequiredTitle" = "Aggiornamento Necessario";
@@ -180,9 +182,6 @@
 "The book you were trying to read is in an unsupported format." = "Il libro che stavi cercando di aprire è in un formato non supportato.";
 "The book you were trying to read is corrupted. Please try downloading it again." = "Il libro che stavi cercando di leggere è danneggiato. Prova a scaricarlo di nuovo.";
 
-// NYPLSettings
-"The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";
-
 // Authentication generic
 "Authentication Expired" = "Credenziali di accesso scadute";
 "Your authentication details have expired. Please sign in again." = "Le tue credenziali di identificazione non sono più valide. Riaccedi per continuare.";
@@ -218,14 +217,16 @@
 "Location" = "Condivisione della posizione";
 "Error parsing user profile document." = "Si è verificato un errore nella decodifica del documento relativo al profilo utente.";
 "Trouble locating DRM in profile document." = "Si è verificato un errore relativo al DRM del documento.";
-"SigningInAgree" = "Accedendo acconsenti al contratto con gli utenti.";
-"Want a card for your child?" = "Vuoi una tessera per i tuoi figli?";
-"Cannot confirm library card eligibility." = "Si è verificato un errore per il quale è impossibile verificare se la tua tessera è idonea.";
-"New patron sign up is not supported by this library." = "La creazione di nuovi utenti non è supportata da questa biblioteca";
-"Sign up process fails to initiate." = "Il process di registrazione non è potuto iniziare.";
+"By signing in, you agree to the End User License Agreement." = "Accedendo acconsenti al contratto con gli utenti.";
 "Please log out and try your card information again." = "Prova a disconnetterti e a riaccedere per cercare di risolvere questo problema.";
 "Sign-in Error" = "Errore di autenticazione";
 "We could not find a match for the credentials provided." = "Non è stato possibile trovare il tuo utente con le informazioni ricevute.";
+
+// sign up / card creation
+"Need a library card for your child?" = "Vuoi una tessera per i tuoi figli?";
+"Your eligibility for this card can't be confirmed. Please contact your library if this is in error." = "Si è verificato un errore per il quale è impossibile verificare se la tua tessera è idonea.";
+"We're sorry. Currently we do not support signups for new patrons via the app." = "La creazione di nuovi utenti non è supportata da questa biblioteca";
+"We're sorry. Our sign up system is currently down. Please try again later." = "Siamo spiacenti, il nostro sistema di registrazione non è attivo al momento. Riprova più tardi.";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accetta";
