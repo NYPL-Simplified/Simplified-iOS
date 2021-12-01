@@ -21,8 +21,7 @@ extension NYPLSignInBusinessLogic {
   ///   All the client has to do is to present this navigation controller
   ///   in whatever way it sees fit.
   @objc
-  func startRegularCardCreation(
-    completion: @escaping (UINavigationController?, Error?) -> Void) {
+  func startRegularCardCreation(completion: @escaping (UINavigationController?, Error?) -> Void) {
     // We don't necessary need the lock for regular card creation flow
     // since there is no API call on eligibility check. Since the mechanism is already
     // implemented, there is no harm to future proof this part of code.
@@ -30,16 +29,12 @@ extension NYPLSignInBusinessLogic {
       // not calling any completion because this means a flow is already going
       return
     }
-    
+
     cardCreationIsOngoing = true
-    
-    defer {
-      cardCreationIsOngoing = false
-    }
-    
+
     // If the library does not have a sign-up url, there's nothing we can do
     guard let signUpURL = libraryAccount?.details?.signUpUrl else {
-      let description = NSLocalizedString("New patron sign up is not supported by this library.", comment: "Message describing the fact that new patron sign up is not supported by the current selected library")
+      let description = NSLocalizedString("We're sorry. Currently we do not support signups for new patrons via the app.", comment: "Message describing the fact that new patron sign up is not supported by the current selected library")
       let error = NSError(domain: NYPLErrorLogger.clientDomain,
                           code: NYPLErrorCode.nilSignUpURL.rawValue,
                           userInfo: [
@@ -51,7 +46,8 @@ extension NYPLSignInBusinessLogic {
                                 "libraryAccountName": libraryAccount?.name ?? "N/A",
       ])
       completion(nil, error)
-      self.cardCreationLock.unlock()
+      cardCreationIsOngoing = false
+      cardCreationLock.unlock()
       return
     }
 
@@ -60,49 +56,52 @@ extension NYPLSignInBusinessLogic {
     guard libraryAccount?.details?.supportsCardCreator ?? false else {
       let title = NSLocalizedString("eCard",
                                     comment: "Title for web-based card creator page")
-      let msg = NSLocalizedString("The page could not load due to a connection error.",
-                                  comment: "Message for errors loading a HTML page")
+      let msg = NSLocalizedString("We're sorry. Our sign up system is currently down. Please try again later.",
+                                  comment: "Message for error loading the web-based card creator")
       let webVC = RemoteHTMLViewController(URL: signUpURL,
                                            title: title,
                                            failureMessage: msg)
       completion(UINavigationController(rootViewController: webVC), nil)
-      self.cardCreationLock.unlock()
+      cardCreationIsOngoing = false
+      cardCreationLock.unlock()
       return
     }
-    
+
+    startRegularFlow(completion: completion)
+  }
+
+  private func startRegularFlow(completion: @escaping (UINavigationController?, Error?) -> Void) {
+
     guard let coordinator = makeCardCreationCoordinator() else {
       // This should only happen when CardCreator credentials decode failed (which is very unlikely to happen)
       // and the errors are already logged when we retrieve the credentials
-      let description = NSLocalizedString("Sign up process fails to initiate.", comment: "Message describing the CardCreator flow failed to be initiated")
+      let description = NSLocalizedString("We're sorry. Our sign up system is currently down. Please try again later.", comment: "Message describing the CardCreator flow failed to be initiated")
       let error = NSError(domain: NYPLErrorLogger.clientDomain,
                           code: NYPLErrorCode.cardCreatorCredentialsDecodeFail.rawValue,
                           userInfo: [
                             NSLocalizedDescriptionKey: description
                           ])
       completion(nil, error)
-      self.cardCreationLock.unlock()
+      cardCreationIsOngoing = false
+      cardCreationLock.unlock()
       return
     }
-    
-    cardCreationCoordinator = coordinator
-    
-    coordinator.configuration.completionHandler = { [weak self] username, pin, isUserInitiated in
-      guard let self = self else {
-        return
-      }
 
+    cardCreationCoordinator = coordinator
+
+    coordinator.configuration.completionHandler = { [weak self] username, pin, isUserInitiated in
       if isUserInitiated {
         // Dismiss CardCreator when user finishes Credential Review
-        self.uiDelegate?.dismiss(animated: true, completion: nil)
+        self?.uiDelegate?.dismiss(animated: true, completion: nil)
       } else {
-        if let usernameTextField = self.uiDelegate?.usernameTextField, let PINTextField = self.uiDelegate?.PINTextField {
+        if let usernameTextField = self?.uiDelegate?.usernameTextField, let PINTextField = self?.uiDelegate?.PINTextField {
           usernameTextField.text = username
           PINTextField.text = pin
         }
-        self.isLoggingInAfterSignUp = true
-        self.logIn()
+        self?.isLoggingInAfterSignUp = true
+        self?.logIn()
       }
-      self.cardCreationCoordinator = nil
+      self?.cardCreationCoordinator = nil
     }
     
     coordinator.startRegularFlow { [weak self] result in
@@ -112,6 +111,7 @@ extension NYPLSignInBusinessLogic {
       case .fail(let error):
         NYPLErrorLogger.logError(error, summary: "Regular Card Creation error")
         completion(nil, error)
+        self?.cardCreationIsOngoing = false
         self?.cardCreationCoordinator = nil
       }
       self?.cardCreationLock.unlock()
@@ -142,7 +142,7 @@ extension NYPLSignInBusinessLogic {
     cardCreationIsOngoing = true
 
     guard let parentBarcode = resolveUserBarcode() else {
-      let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
+      let description = NSLocalizedString("Your eligibility for this card can't be confirmed. Please contact your library if this is in error.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
       let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
 
       let error = NSError(domain: NYPLErrorLogger.clientDomain,
@@ -233,23 +233,20 @@ extension NYPLSignInBusinessLogic {
   /// - Parameter parentBarcode: Optional. Only pass in barcode for creating juvenile
   /// account. Differently from the sign-in process, this MUST be a barcode --
   /// the username will not work.
-  /// - Returns: A configuration to be used in the regular or juvenile card creation flow.
+  /// - Returns: A configuration to be used in the regular or juvenile card
+  /// creation flow, unless the API client ID and secret are missing.
   @objc func makeCardCreationConfiguration(using parentBarcode: String = "") -> CardCreatorConfiguration? {
-    let simplifiedBaseURL = APIKeys.cardCreatorEndpointURL
-
     let credentials = cardCreatorCredentials()
     guard let platformAPI = NYPLPlatformAPIInfo(
-      oauthTokenURL: APIKeys.PlatformAPI.oauthTokenURL,
+      oauthTokenURL: NYPLPlatformAPI.oauthTokenURL,
       clientID: NYPLSecrets.platformClientID,
       clientSecret: NYPLSecrets.platformClientSecret,
-      baseURL: APIKeys.PlatformAPI.baseURL
+      baseURL: NYPLPlatformAPI.baseURL
     ) else {
       return nil
     }
     
     let cardCreatorConfiguration = CardCreatorConfiguration(
-      endpointURL: simplifiedBaseURL,
-      endpointVersion: APIKeys.cardCreatorVersion,
       endpointUsername: credentials.username,
       endpointPassword: credentials.password,
       platformAPIInfo: platformAPI,

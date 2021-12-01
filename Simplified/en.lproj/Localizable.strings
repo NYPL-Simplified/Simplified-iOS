@@ -85,6 +85,7 @@
 "Verifying" = "Verifying";
 "Back" = "Back";
 "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.";
+"The page could not load due to a connection error." = "The page could not load due to a connection error.";
 
 // NYPLAppDelegate
 "AppDelegateUpdateRequiredTitle" = "Update Required";
@@ -185,9 +186,6 @@
 "The book you were trying to read is in an unsupported format." = "The book you were trying to read is in an unsupported format.";
 "The book you were trying to read is corrupted. Please try downloading it again." = "The book you were trying to read is corrupted. Please try downloading it again.";
 
-// NYPLSettings
-"The page could not load due to a connection error." = "The page could not load due to a connection error.";
-
 // Authentication generic
 "Authentication Expired" = "Authentication Expired";
 "Your authentication details have expired. Please sign in again." = "Your authentication details have expired. Please sign in again.";
@@ -220,14 +218,16 @@
 "Location" = "Location";
 "Error parsing user profile document." = "Error parsing user profile document. Please try again.";
 "Trouble locating DRM in profile document." = "Trouble locating DRM in profile document. Please try again.";
-"SigningInAgree" = "By signing in, you agree to the End User License Agreement.";
-"Want a card for your child?" = "Want a card for your child?";
-"Cannot confirm library card eligibility." = "Cannot confirm library card eligibility.";
-"New patron sign up is not supported by this library." = "New patron sign up is not supported by this library.";
-"Sign up process fails to initiate." = "Sign up process fails to initiate.";
+"By signing in, you agree to the End User License Agreement." = "By signing in, you agree to the End User License Agreement.";
 "Please log out and try your card information again." = "Please log out and try your card information again.";
 "Sign-in Error" = "Sign-in Error";
 "We could not find a match for the credentials provided." = "We could not find a match for the credentials provided.";
+
+// sign up / card creation
+"Need a library card for your child?" = "Need a library card for your child?";
+"Your eligibility for this card can't be confirmed. Please contact your library if this is in error." = "Your eligibility for this card can't be confirmed. Please contact your library if this is in error.";
+"We're sorry. Currently we do not support signups for new patrons via the app." = "We're sorry. Currently we do not support signups for new patrons via the app.";
+"We're sorry. Our sign up system is currently down. Please try again later." = "We're sorry. Our sign up system is currently down. Please try again later.";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accept";

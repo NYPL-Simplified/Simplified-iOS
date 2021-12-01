@@ -34,10 +34,6 @@ git submodule update --init --recursive
 sed -i '' "s#.*lcp.*##" Cartfile
 sed -i '' "s#.*lcp.*##" Cartfile.resolved
 
-if [ ! -f "APIKeys.swift" ]; then
-  cp Simplified/AppInfrastructure/APIKeys.swift.example Simplified/AppInfrastructure/APIKeys.swift
-fi
-
 # These will need to be filled in with real values
 if [ ! -f "SimplyE/GoogleService-Info.plist" ]; then
   cp SimplyE/GoogleService-Info.plist.example SimplyE/GoogleService-Info.plist
