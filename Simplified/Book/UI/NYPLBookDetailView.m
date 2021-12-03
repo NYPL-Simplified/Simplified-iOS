@@ -151,7 +151,7 @@ static NSString *DetailHTMLTemplate = nil;
   [super traitCollectionDidChange:previousTraitCollection];
   
   if (@available(iOS 12.0, *)) {
-    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+    if (previousTraitCollection && UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
       [self updateColors];
     }
   }
