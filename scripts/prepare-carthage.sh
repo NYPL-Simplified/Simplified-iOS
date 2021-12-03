@@ -35,14 +35,7 @@ fi
 
 # additional setup for builds with DRM
 if [ "$1" != "--no-private" ]; then
-  if [ "$BUILD_CONTEXT" == "ci" ]; then
-    # in a CI context we cannot have siblings repos, so we check them out nested
-    CERTIFICATES_PATH_PREFIX="."
-  else
-    CERTIFICATES_PATH_PREFIX=".."
-  fi
-
   # LCP support in R2 requires a private client library, available via Certificates repo
   echo "Fixing up the Cartfile for LCP..."
-  swift $CERTIFICATES_PATH_PREFIX/Certificates/SimplyE/iOS/LCPLib.swift
+  swift ./Certificates/SimplyE/iOS/LCPLib.swift
 fi

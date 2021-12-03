@@ -18,11 +18,7 @@ source "$(dirname $0)/xcode-settings.sh"
 
 echo "Uploading $ARCHIVE_NAME binary to Firebase..."
 
-if [ "$BUILD_CONTEXT" == "ci" ]; then
-  CERTIFICATES_PATH="./Certificates"
-else
-  CERTIFICATES_PATH="../Certificates"
-fi
+CERTIFICATES_PATH="./Certificates"
 
 FIREBASE_TOKEN=$(head -n 1 "$CERTIFICATES_PATH/Firebase/token.txt") ||
   fatal "could not read firebase token from Certificates repo"
