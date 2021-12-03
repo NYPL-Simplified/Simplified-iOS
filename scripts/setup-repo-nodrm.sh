@@ -27,6 +27,8 @@ git submodule foreach --quiet 'git submodule deinit Axis-iOS'
 git rm -rf Axis-iOS
 git submodule foreach --quiet 'git submodule deinit audiobook-ios-overdrive'
 git rm -rf audiobook-ios-overdrive
+git submodule foreach --quiet 'git submodule deinit Certificates'
+git rm -rf Certificates
 
 git submodule update --init --recursive
 
