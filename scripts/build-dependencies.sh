@@ -53,6 +53,6 @@ esac
 # have in SimplyE/OpenE.
 if [ "$1" != "--no-private" ]; then # include private libraries (e.g. for DRM support)
   if [ "$BUILD_CONTEXT" != "ci" ]; then # CI builds NYPLAEToolkit in a separate workflow step
-    ./script/build-NYPLAEToolkit.sh
+    ./scripts/build-NYPLAEToolkit.sh
   fi
 fi

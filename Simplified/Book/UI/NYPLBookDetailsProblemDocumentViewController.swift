@@ -128,7 +128,9 @@
   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
     super.traitCollectionDidChange(previousTraitCollection)
     if #available(iOS 12.0, *),
-      UIScreen.main.traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+       let previousTraitCollection = previousTraitCollection,
+       UIScreen.main.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle
+    {
       updateColors()
     }
   }
