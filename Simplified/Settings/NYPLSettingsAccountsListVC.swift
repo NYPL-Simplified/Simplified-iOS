@@ -1,5 +1,8 @@
-/// UITableView to display or add library accounts that the user
-/// can then log in and adjust settings after selecting Accounts.
+/// View Controller that lists the libraries the user has added under the
+/// Accounts section.
+///
+/// Usually these are libraries the user is a patron of but the user may not
+/// be necessarily signed in into each library account.
 @objcMembers class NYPLSettingsAccountsListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   enum LoadState {
@@ -12,20 +15,28 @@
   var reloadView: NYPLReloadView!
   var spinner: UIActivityIndicatorView!
 
-  fileprivate var accounts: [String] {
+  /// The UUIDs of the library accounts the user has added.
+  private var accountUUIDs: [String] {
     didSet {
       //update NYPLSettings
     }
   }
-  fileprivate var libraryAccounts: [Account]
-  fileprivate var userAddedSecondaryAccounts: [String]!
-  fileprivate let manager: AccountsManager
-  
-  required init(accounts: [String]) {
-    self.accounts = accounts
+
+  /// ALL library accounts from the library registry.
+  private var libraryAccounts: [Account]
+
+  /// Library accounts the user has added minus the current one.
+  private var userAddedSecondaryAccounts: [String]!
+  private let manager: AccountsManager
+
+
+  /// Designated initializer.
+  ///
+  /// - Parameter accountUUIDs: The library accounts the user has added.
+  required init(accountUUIDs: [String]) {
+    self.accountUUIDs = accountUUIDs
     self.manager = AccountsManager.shared
     self.libraryAccounts = manager.accounts()
-
     super.init(nibName:nil, bundle:nil)
   }
   
@@ -61,19 +72,19 @@
     // cleanup accounts, remove demo account or accounts not supported through accounts.json // will be refactored when implementing librsry registry
     var accountsToRemove = [String]()
     
-    for account in accounts {
+    for account in accountUUIDs {
       if (AccountsManager.shared.account(account) == nil) {
         accountsToRemove.append(account)
       }
     }
 
     for remove in accountsToRemove {
-      if let index = accounts.firstIndex(of: remove) {
-        accounts.remove(at: index)
+      if let index = accountUUIDs.firstIndex(of: remove) {
+        accountUUIDs.remove(at: index)
       }
     }
     
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount?.uuid }
+    self.userAddedSecondaryAccounts = accountUUIDs.filter { $0 != AccountsManager.shared.currentAccount?.uuid }
     
     updateSettingsAccountList()
 
@@ -84,7 +95,7 @@
       UIBarButtonItem(title: NSLocalizedString("Add Library", comment: "Title of button to add a new library"),
                       style: .plain,
                       target: self,
-                      action: #selector(addAccount))
+                      action: #selector(addLibraryAccount))
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(reloadAfterAccountChange),
@@ -144,8 +155,8 @@
   }
 
   func reloadAfterAccountChange() {
-    accounts = NYPLSettings.shared.settingsAccountsList
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.uuid }
+    accountUUIDs = NYPLSettings.shared.settingsAccountsList
+    self.userAddedSecondaryAccounts = accountUUIDs.filter { $0 != manager.currentAccount?.uuid }
     DispatchQueue.main.async {
       self.tableView.reloadData()
     }
@@ -163,7 +174,7 @@
     self.navigationItem.rightBarButtonItem?.isEnabled = enable
   }
 
-  @objc private func addAccount() {
+  @objc private func addLibraryAccount() {
     AccountsManager.shared.loadCatalogs() { success in
       DispatchQueue.main.async {
         guard success else {
@@ -178,44 +189,15 @@
   }
   
   private func showAddAccountList() {
-    let alert = UIAlertController(title: NSLocalizedString(
-      "Add Your Library",
-      comment: "Title to tell a user that they can add another account to the list"),
-                                  message: nil,
-                                  preferredStyle: .actionSheet)
-    alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
-    alert.popoverPresentationController?.permittedArrowDirections = .up
-
-    let sortedLibraryAccounts = self.libraryAccounts.sorted { (a, b) in
-      // Check if we're one of the three "special" libraries that always come first.
-      // This is a complete hack.
-      let idA = AccountsManager.NYPLAccountUUIDs.firstIndex(of: a.uuid) ?? Int.max
-      let idB = AccountsManager.NYPLAccountUUIDs.firstIndex(of: b.uuid) ?? Int.max
-      if idA <= 2 || idB <= 2 {
-        // One of the libraries is special, so sort it first. Lower ids are "more
-        // special" than higher ids and thus show up earlier.
-        return idA < idB
-      }
-      // Neither library is special so we just go alphabetically.
-      return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
+    let addLibVC = NYPLLibrariesListVC { libAcct in
+      self.navigationController?.popViewController(animated: true)
+      self.accountUUIDs.append(libAcct.uuid)
+      self.userAddedSecondaryAccounts.append(libAcct.uuid)
+      NYPLSettings.shared.settingsAccountsList = self.userAddedSecondaryAccounts
+      self.tableView.reloadData()
     }
 
-    for userAccount in sortedLibraryAccounts {
-      if (!userAddedSecondaryAccounts.contains(userAccount.uuid) && userAccount.uuid != manager.currentAccount?.uuid) {
-        alert.addAction(UIAlertAction(title: userAccount.name,
-          style: .default,
-          handler: { action in
-            self.userAddedSecondaryAccounts.append(userAccount.uuid)
-            self.updateSettingsAccountList()
-            self.updateNavBar()
-            self.tableView.reloadData()
-        }))
-      }
-    }
-
-    alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel button title"), style: .cancel, handler:nil))
-    
-    self.present(alert, animated: true, completion: nil)
+    self.navigationController?.pushViewController(addLibVC, animated: true)
   }
   
   private func updateSettingsAccountList() {

@@ -51,7 +51,7 @@
     
     self.viewControllers = @[self.primaryNavigationController,
                              [[UINavigationController alloc] initWithRootViewController:
-                              [[NYPLSettingsAccountsListVC alloc] initWithAccounts:accounts]]];
+                              [[NYPLSettingsAccountsListVC alloc] initWithAccountUUIDs:accounts]]];
     
     [self highlightFirstTableViewRow:YES];
   } else {
@@ -101,7 +101,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
   switch(item) {
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
-      viewController = [[NYPLSettingsAccountsListVC alloc] initWithAccounts:accounts];
+      viewController = [[NYPLSettingsAccountsListVC alloc] initWithAccountUUIDs:accounts];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[RemoteHTMLViewController alloc]
