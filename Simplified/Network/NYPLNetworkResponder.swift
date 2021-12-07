@@ -72,9 +72,6 @@ extension NYPLNetworkResponder: URLSessionDelegate {
   func urlSession(_ session: URLSession, didBecomeInvalidWithError err: Error?) {
     if let err = err {
       NYPLErrorLogger.logError(err, summary: "URLSession became invalid")
-    } else {
-      NYPLErrorLogger.logError(withCode: .invalidURLSession,
-                               summary: "URLSessionDelegate: session became invalid")
     }
 
     taskInfoLock.lock()
