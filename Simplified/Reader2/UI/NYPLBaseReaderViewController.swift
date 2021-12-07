@@ -54,14 +54,17 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 
     lastReadPositionPoster = NYPLLastReadPositionPoster(
       book: book,
-      bookRegistryProvider: NYPLBookRegistry.shared())
+      bookRegistryProvider: NYPLBookRegistry.shared(),
+      annotationsSynchronizer: NYPLAnnotations.self
+    )
 
     bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(
       book: book,
       r2Publication: publication,
       drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
       bookRegistryProvider: NYPLBookRegistry.shared(),
-      currentLibraryAccountProvider: AccountsManager.shared)
+      currentLibraryAccountProvider: AccountsManager.shared,
+      annotationsSynchronizer: NYPLAnnotations.self)
 
     bookmarksBusinessLogic.syncBookmarks { (_, _) in }
 
