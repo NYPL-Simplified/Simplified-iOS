@@ -169,15 +169,19 @@
     NSString *logLevel = (level == LogLevelInfo ? @"info" :
                           (level == LogLevelWarn ? @"warning" : @"error"));
     NSString *summary = [NSString stringWithFormat:@"NYPLAudiobookToolkit %@", logLevel];
+    NSDictionary *metadata = @{
+      @"context": msg,
+      @"book": [self.book loggableDictionary] ?: @"N/A",
+    };
 
     if (error) {
       [NYPLErrorLogger logError:error
                         summary:summary
-                       metadata:@{ @"context": msg }];
+                       metadata:metadata];
     } else if (level > LogLevelDebug) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookExternalError
                                 summary:summary
-                               metadata:@{ @"context": msg }];
+                               metadata:metadata];
     }
   }];
 }
