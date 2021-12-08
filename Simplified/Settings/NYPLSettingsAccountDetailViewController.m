@@ -341,7 +341,7 @@ Authenticating with any of those barcodes should work.
   [self setupTableData];
   
   self.syncSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-  [self.syncSwitch setOnTintColor:[NYPLConfiguration actionColor]];
+  [self.syncSwitch setOnTintColor:[NYPLConfiguration mainColor]];
   [self checkSyncPermissionForCurrentPatron];
 }
 
