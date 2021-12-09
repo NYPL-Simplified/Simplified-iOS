@@ -250,7 +250,7 @@ CGFloat const marginPadding = 2.0;
   [super traitCollectionDidChange:previousTraitCollection];
   
   if (@available(iOS 12.0, *)) {
-    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+    if (previousTraitCollection && UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
       [self updateColors];
     }
   }
@@ -258,8 +258,7 @@ CGFloat const marginPadding = 2.0;
 
 - (void)updateColors {
   if (self.businessLogic.registrationIsPossible) {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:1];
-    [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadData];
   }
 }
 

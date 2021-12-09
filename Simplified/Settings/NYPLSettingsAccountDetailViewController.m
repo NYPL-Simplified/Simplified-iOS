@@ -250,7 +250,7 @@ Authenticating with any of those barcodes should work.
   [super traitCollectionDidChange:previousTraitCollection];
   
   if (@available(iOS 12.0, *)) {
-    if (UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
+    if (previousTraitCollection && UIScreen.mainScreen.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
       [self updateColors];
     }
   }
@@ -260,8 +260,7 @@ Authenticating with any of those barcodes should work.
   [self updateLoginLogoutCellAppearance];
   self.barcodeImageLabel.textColor = [NYPLConfiguration mainColor];
   if (self.businessLogic.registrationIsPossible) {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:1];
-    [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadData];
   }
 }
 
@@ -342,7 +341,7 @@ Authenticating with any of those barcodes should work.
   [self setupTableData];
   
   self.syncSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-  [self.syncSwitch setOnTintColor:[NYPLConfiguration actionColor]];
+  [self.syncSwitch setOnTintColor:[NYPLConfiguration mainColor]];
   [self checkSyncPermissionForCurrentPatron];
 }
 

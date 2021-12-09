@@ -858,6 +858,9 @@
 		73B5510C251174F900D05B86 /* NSString+JSONParse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0824D44D24B8DFE400C85A7E /* NSString+JSONParse.swift */; };
 		73B5510D2511750A00D05B86 /* NYPLSamlIDPCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0826CD2824AA21B2000F4030 /* NYPLSamlIDPCell.swift */; };
 		73B5510F2511751300D05B86 /* NYPLLibraryDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0826CD2E24AA2801000F4030 /* NYPLLibraryDescriptionCell.swift */; };
+		73B59DBE274C76C9002B0EF7 /* NYPLLibrariesListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B59DBD274C76C9002B0EF7 /* NYPLLibrariesListVC.swift */; };
+		73B59DBF274C76C9002B0EF7 /* NYPLLibrariesListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B59DBD274C76C9002B0EF7 /* NYPLLibrariesListVC.swift */; };
+		73B59DC0274C76C9002B0EF7 /* NYPLLibrariesListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B59DBD274C76C9002B0EF7 /* NYPLLibrariesListVC.swift */; };
 		73B5DFDC26052A1800225C12 /* NYPLBookButtonsState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */; };
 		73B5DFDD26052A1800225C12 /* NYPLBookButtonsState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */; };
 		73B5DFDF26052A1800225C12 /* NYPLBookButtonsState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */; };
@@ -2058,6 +2061,7 @@
 		73A794C925492C9800C59CC1 /* NYPLFake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLFake.swift; sourceTree = "<group>"; };
 		73A7BA4D25A62FE900C2906C /* R2LCPClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2LCPClient.framework; path = Carthage/Build/iOS/R2LCPClient.framework; sourceTree = "<group>"; };
 		73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountFrontEndValidation.swift; sourceTree = "<group>"; };
+		73B59DBD274C76C9002B0EF7 /* NYPLLibrariesListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibrariesListVC.swift; sourceTree = "<group>"; };
 		73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsState.m; sourceTree = "<group>"; };
 		73B5DFDB26052A1800225C12 /* NYPLBookButtonsState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsState.h; sourceTree = "<group>"; };
 		73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+CardCreation.swift"; sourceTree = "<group>"; };
@@ -3332,6 +3336,7 @@
 				03F94CCE1DD627AA00CE8F4F /* Accounts.json */,
 				03F94CD01DD6288C00CE8F4F /* AccountsManager.swift */,
 				73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */,
+				73B59DBD274C76C9002B0EF7 /* NYPLLibrariesListVC.swift */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -4416,6 +4421,7 @@
 				739E6090244A0D8600D00301 /* UIColor+NYPLColorAdditions.m in Sources */,
 				739E6091244A0D8600D00301 /* URLRequest+Logging.swift in Sources */,
 				739E6092244A0D8600D00301 /* NYPLCatalogFeedViewController.m in Sources */,
+				73B59DBF274C76C9002B0EF7 /* NYPLLibrariesListVC.swift in Sources */,
 				739E6093244A0D8600D00301 /* NYPLBookDownloadingCell.m in Sources */,
 				730B7869249AB9D7008F28B3 /* Float+NYPLAdditions.swift in Sources */,
 				2171ADA3251E38150003CABA /* LCPLibraryService.swift in Sources */,
@@ -4610,6 +4616,7 @@
 				5916E7D7262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */,
 				73EB0A9125821DF4006BC997 /* BundledHTMLViewController.swift in Sources */,
 				73EB0A9225821DF4006BC997 /* NYPLBookDetailView.m in Sources */,
+				73B59DC0274C76C9002B0EF7 /* NYPLLibrariesListVC.swift in Sources */,
 				73DB56C925F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */,
 				73EB0A9325821DF4006BC997 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */,
 				73D8D27925A68D3B00DF5F69 /* NYPLReaderPositionsVC.swift in Sources */,
@@ -5138,6 +5145,7 @@
 				73CDA121243EDAD8009CC6A6 /* URLRequest+Logging.swift in Sources */,
 				0857A0F72478337D00C7984E /* NYPLCredentials.swift in Sources */,
 				A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */,
+				73B59DBE274C76C9002B0EF7 /* NYPLLibrariesListVC.swift in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
 				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m in Sources */,
 				7364D69C2492A38C0087B056 /* Publication+NYPLAdditions.swift in Sources */,
@@ -5491,6 +5499,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 6;
 				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5543,6 +5552,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 6;
 				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5594,6 +5604,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 6;
 				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5642,6 +5653,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 6;
 				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5914,6 +5926,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 6;
 				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5966,6 +5979,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 6;
 				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
