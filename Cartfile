@@ -2,7 +2,7 @@ binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseCrashlyticsBinary
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"
 github "NYPL-Simplified/NYPLAudiobookToolkit" "master"
 github "NYPL-Simplified/PDFRendererProvider-iOS" "master"
-github "NYPL-Simplified/CardCreator-iOS" "feature/password"
+github "NYPL-Simplified/CardCreator-iOS" "main"
 github "PureLayout/PureLayout" ~> 3.1.2
 github "stephencelis/SQLite.swift" ~> 0.12.2
 github "zxingify/zxingify-objc" ~> 3.6
