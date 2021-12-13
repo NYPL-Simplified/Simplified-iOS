@@ -15,8 +15,6 @@ fi
 
 CERTIFICATES_PATH="./Certificates"
 
-cp $CERTIFICATES_PATH/SimplyE/iOS/APIKeys.swift Simplified/AppInfrastructure/
-
 # SimplyE-specific stuff
 cp $CERTIFICATES_PATH/SimplyE/iOS/GoogleService-Info.plist SimplyE/
 cp $CERTIFICATES_PATH/SimplyE/iOS/ReaderClientCertProduction.sig SimplyE/ReaderClientCert.sig

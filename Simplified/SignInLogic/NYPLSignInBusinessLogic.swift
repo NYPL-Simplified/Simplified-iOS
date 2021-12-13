@@ -38,7 +38,7 @@ extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 extension NYPLADEPT: NYPLDRMAuthorizing {}
 #endif
 
-protocol JuvenileFlowCoordinating {
+protocol FlowCoordinating {
   func checkJuvenileCreationEligibility(parentBarcode: String,
                                         completion: @escaping (_ error: Error?) -> Void)
 }
@@ -151,11 +151,11 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   /// `drmAuthorizeUserData`).
   @objc var isValidatingCredentials = false
 
-  // MARK:- Juvenile Card Creation Info
+  // MARK:- Card Creation Info
 
-  let juvenileAuthLock = NSLock()
-  @objc var juvenileAuthIsOngoing = false
-  var juvenileCardCreationCoordinator: JuvenileFlowCoordinating?
+  let cardCreationLock = NSLock()
+  @objc var cardCreationIsOngoing = false
+  var cardCreationCoordinator: FlowCoordinating?
   var allowJuvenileCardCreation = false
 
   // MARK:- Library Accounts Info

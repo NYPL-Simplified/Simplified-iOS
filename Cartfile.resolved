@@ -1,6 +1,6 @@
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json" "8.9.1"
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseCrashlyticsBinary.json" "8.9.1"
-github "NYPL-Simplified/CardCreator-iOS" "d6745eed41e6e6439024a23a74236f9f03a01d59"
+github "NYPL-Simplified/CardCreator-iOS" "eddec099630ac3723f057159235381b580db0cd0"
 github "NYPL-Simplified/NYPLAudiobookToolkit" "baa60890f8d8af11638c52467a8117261b3c06e6"
 github "NYPL-Simplified/PDFRendererProvider-iOS" "d63e6ba168cb91617a4aca5e306a92af1dd4497c"
 github "PureLayout/PureLayout" "v3.1.9"

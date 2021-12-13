@@ -304,16 +304,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      UINavigationController *navController = [self.businessLogic makeCardCreatorIfPossible];
-      if (navController != nil) {
-        navController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
-                                         style:UIBarButtonItemStylePlain
-                                        target:self
-                                        action:@selector(didSelectCancelForSignUp)];
-        navController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navController animated:YES completion:nil];
-      }
+      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+      [self didSelectRegularSignupOnCell:cell];
       break;
     }
   }
@@ -486,7 +478,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       NSUnderlineStyleAttributeName :
                                         @(NSUnderlineStyleSingle) };
     NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
-                                             initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
+                                             initWithString:NSLocalizedString(@"By signing in, you agree to the End User License Agreement.", nil) attributes:linkAttributes];
     footerLabel.attributedText = eulaString;
     [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
@@ -501,6 +493,37 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   } else {
     return nil;
   }
+}
+
+#pragma mark - Card Creation Flow
+
+- (void)didSelectRegularSignupOnCell:(UITableViewCell *)cell
+{
+#if SIMPLYE
+  [cell setUserInteractionEnabled:NO];
+  __weak __auto_type weakSelf = self;
+  [self.businessLogic startRegularCardCreationWithCompletion:^(UINavigationController * _Nullable navVC, NSError * _Nullable error) {
+    [cell setUserInteractionEnabled:YES];
+    if (error) {
+      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:NSLocalizedString(@"Error", "Alert title") error:error];
+      [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert
+                                                         viewController:nil
+                                                               animated:YES
+                                                             completion:nil];
+      return;
+    }
+    
+    [NYPLMainThreadRun asyncIfNeeded:^{
+      navVC.navigationBar.topItem.leftBarButtonItem =
+      [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                       style:UIBarButtonItemStylePlain
+                                      target:weakSelf
+                                      action:@selector(didSelectCancelForSignUp)];
+      navVC.modalPresentationStyle = UIModalPresentationFormSheet;
+      [weakSelf presentViewController:navVC animated:YES completion:nil];
+    }];
+  }];
+#endif
 }
 
 #pragma mark - Modal presentation
