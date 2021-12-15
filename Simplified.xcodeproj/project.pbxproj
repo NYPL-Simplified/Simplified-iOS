@@ -125,6 +125,8 @@
 		17631AEE25E488CD006079C4 /* NYPLAgeCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */; };
 		17631AF025E488CD006079C4 /* NYPLAgeCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */; };
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
+		178AD3E8276053BE003A6C12 /* NYPLAnnotationsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AD3E7276053BE003A6C12 /* NYPLAnnotationsMock.swift */; };
+		178AD3F8276C7638003A6C12 /* NYPLAnnotationsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AD3E7276053BE003A6C12 /* NYPLAnnotationsMock.swift */; };
 		1798538B255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
 		1798538C255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
 		1798538E255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
@@ -1788,6 +1790,7 @@
 		17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckViewController.swift; sourceTree = "<group>"; };
 		1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementManagerTests.swift; sourceTree = "<group>"; };
 		176F8A802519684D00CE5BFB /* AudioEngine.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AudioEngine.xcframework; path = NYPLAEToolkit/build/AudioEngine.xcframework; sourceTree = "<group>"; };
+		178AD3E7276053BE003A6C12 /* NYPLAnnotationsMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnotationsMock.swift; sourceTree = "<group>"; };
 		1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookLocation+Locator.swift"; sourceTree = "<group>"; };
 		17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCPPassphraseAuthenticationService.swift; sourceTree = "<group>"; };
 		17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarksBusinessLogicTests.swift; sourceTree = "<group>"; };
@@ -2855,6 +2858,7 @@
 				17BE24DF25FABA0900AE707F /* NYPLAgeCheckChoiceStorageMock.swift */,
 				17BE24E625FABCDE00AE707F /* NYPLUserAccountProviderMock.swift */,
 				17BE24EC25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift */,
+				178AD3E7276053BE003A6C12 /* NYPLAnnotationsMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -4266,6 +4270,7 @@
 				73F6BFA3261E515E00A71AB8 /* NYPLR1BookmarkDeserializationTests.swift in Sources */,
 				17BE24E725FABCDE00AE707F /* NYPLUserAccountProviderMock.swift in Sources */,
 				7311FD2B25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */,
+				178AD3E8276053BE003A6C12 /* NYPLAnnotationsMock.swift in Sources */,
 				173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */,
 				2199020624FD3334001BC727 /* NYPLJWKConversionTest.swift in Sources */,
 				17BE24ED25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift in Sources */,
@@ -4318,6 +4323,7 @@
 				73A794CB25492C9800C59CC1 /* NYPLFake.swift in Sources */,
 				735DD0CE2522A0730096D1F9 /* UIColor+NYPLAdditionsTests.swift in Sources */,
 				7320AB36251EBC9900E3F04D /* Date+NYPLAdditionsTests.swift in Sources */,
+				178AD3F8276C7638003A6C12 /* NYPLAnnotationsMock.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
