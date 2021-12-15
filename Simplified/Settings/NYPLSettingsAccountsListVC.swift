@@ -1,3 +1,5 @@
+import UIKit
+
 /// View Controller that lists the libraries the user has added under the
 /// Accounts section.
 ///
@@ -193,7 +195,7 @@
       self.navigationController?.popViewController(animated: true)
       self.accountUUIDs.append(libAcct.uuid)
       self.userAddedSecondaryAccounts.append(libAcct.uuid)
-      NYPLSettings.shared.settingsAccountsList = self.userAddedSecondaryAccounts
+      NYPLSettings.shared.settingsAccountsList = self.accountUUIDs
       self.tableView.reloadData()
     }
 
@@ -206,6 +208,9 @@
       return
     }
     showLoadingUI(loadState: .success)
+
+    // since userAddedSecondaryAccounts doesn't contain the current lib, we're
+    // adding it here to the list before updating the shared accounts list
     var array = userAddedSecondaryAccounts!
     array.append(uuid)
     NYPLSettings.shared.settingsAccountsList = array
