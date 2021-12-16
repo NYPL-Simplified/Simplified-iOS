@@ -17,7 +17,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
     var annotationsMock: NYPLAnnotationsMock.Type!
     var bookmarkCounter: Int = 0
     let bookIdentifier = "fakeEpub"
-    
+
     override func setUpWithError() throws {
       try super.setUpWithError()
       
@@ -55,6 +55,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       bookRegistryMock = NYPLBookRegistryMock()
       bookRegistryMock.addBook(book: fakeBook, state: .DownloadSuccessful)
       libraryAccountMock = NYPLLibraryAccountMock()
+      libraryAccountMock.currentAccount?.details?.syncPermissionGranted = true
       annotationsMock = NYPLAnnotationsMock.self
       let manifest = Manifest(metadata: Metadata(title: "fakeMetadata"))
       let pub = Publication(manifest: manifest)
@@ -75,10 +76,13 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       bookRegistryMock.identifiersToRecords.removeAll()
       bookRegistryMock = nil
       bookmarkCounter = 0
+      annotationsMock.serverBookmarks.removeAll()
+      annotationsMock.readingPositions.removeAll()
+      annotationsMock = nil
     }
 
     // MARK: - Test updateLocalBookmarks
-    
+
     func testUpdateLocalBookmarksWithNoLocalBookmarks() throws {
       var serverBookmarks = [NYPLReadiumBookmark]()
         
@@ -100,7 +104,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
         XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
       }
     }
-    
+
     func testUpdateLocalBookmarksWithDuplicatedLocalBookmarks() throws {
       var serverBookmarks = [NYPLReadiumBookmark]()
 
@@ -131,7 +135,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
         XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
       }
     }
-    
+
     func testUpdateLocalBookmarksWithExtraLocalBookmarks() throws {
       var serverBookmarks = [NYPLReadiumBookmark]()
 
@@ -163,7 +167,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
         XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
       }
     }
-    
+
     func testUpdateLocalBookmarksWithFailedUploadBookmarks() throws {
       var serverBookmarks = [NYPLReadiumBookmark]()
 
@@ -194,8 +198,206 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       }
     }
 
-    // MARK: Helper
+  // MARK: - Test addBookmark/postBookmark
+
+  func testAddBookmarkWithSucceededUpload() throws {
+    // Make sure server contains no bookmark
+    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+                                       publication: nil,
+                                       atURL: nil) { bookmarks in
+      XCTAssertEqual(bookmarks, nil)
+    }
     
+    let bookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let _ = bookmarkBusinessLogic.addBookmark(bookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    // There should be one bookmark uploaded
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
+    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+                                       publication: nil,
+                                       atURL: nil) { bookmarks in
+      guard let bookmarks = bookmarks else {
+        XCTFail("Failed to get bookmark from server")
+        return
+      }
+      XCTAssertEqual(bookmarks.count, 1)
+    }
+  }
+
+  func testAddBookmarkWithFailedUpload() throws {
+    // Make sure server contains no bookmark
+    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+                                       publication: nil,
+                                       atURL: nil) { bookmarks in
+      XCTAssertEqual(bookmarks, nil)
+    }
+    
+    let bookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    annotationsMock.failRequest = true
+    guard let _ = bookmarkBusinessLogic.addBookmark(bookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    // BookRegistry should have one bookmark even upload failed
+    // While server should not have any bookmarks
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
+    
+    annotationsMock.failRequest = false
+    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+                                       publication: nil,
+                                       atURL: nil) { bookmarks in
+      XCTAssertEqual(bookmarks, nil)
+    }
+  }
+
+  // MARK: - Test deleteBookmark/didDeleteBookmark
+  
+  func testDeleteBookmarkWithMatchingBookmark() throws {
+    let firstBookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let firstBookmark = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let _ = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    // Make sure we have the right amount of bookmarks in BookRegistry
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
+    
+    // Deleting one matching bookmark
+    bookmarkBusinessLogic.deleteBookmark(firstBookmark)
+    
+    // BookRegistry should have one bookmark after deletion
+    // Server should not contain the deleted bookmark
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
+    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+                                       publication: nil,
+                                       atURL: nil) { bookmarks in
+      guard let bookmarks = bookmarks else {
+        XCTFail("Failed to get bookmark from server")
+        return
+      }
+      XCTAssertFalse(bookmarks.contains(firstBookmark))
+    }
+  }
+  
+  func testDeleteBookmarkWithMultipleMatchingBookmarks() throws {
+    let firstBookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let firstBookmark = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc),
+          let _ = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc),
+          let _ = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let _ = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    // Make sure we have the right amount of bookmarks in BookRegistry
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 4)
+    
+    // Deleting three matching bookmarks
+    bookmarkBusinessLogic.deleteBookmark(firstBookmark)
+    
+    // BookRegistry should have one bookmark after deletion
+    // Server should not contain the deleted bookmark
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
+    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+                                       publication: nil,
+                                       atURL: nil) { bookmarks in
+      guard let bookmarks = bookmarks else {
+        XCTFail("Failed to get bookmark from server")
+        return
+      }
+      XCTAssertFalse(bookmarks.contains(firstBookmark))
+    }
+  }
+  
+  func testDeleteBookmarkWithValidIndex() throws {
+    let firstBookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let _ = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let secondBookmark = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    // Make sure we have the right amount of bookmarks in BookRegistry
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
+    
+    // Deleting bookmark at index
+    guard let deletedBookmark = bookmarkBusinessLogic.deleteBookmark(at: 1) else {
+      XCTFail("Failed to delete bookmark")
+      return
+    }
+    
+    // The deleted bookmark should match the second bookmark
+    XCTAssertEqual(secondBookmark, deletedBookmark)
+    
+    // BookRegistry should have one bookmark after deletion
+    // Server should not contain the deleted bookmark
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
+    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+                                       publication: nil,
+                                       atURL: nil) { bookmarks in
+      guard let bookmarks = bookmarks else {
+        XCTFail("Failed to get bookmark from server")
+        return
+      }
+      XCTAssertFalse(bookmarks.contains(deletedBookmark))
+    }
+  }
+  
+  func testDeleteBookmarkWithInvalidIndex() throws {
+    let firstBookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let _ = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let _ = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    // Make sure we have the right amount of bookmarks in BookRegistry
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
+    
+    // Deleting bookmark at invalid index
+    if let _ = bookmarkBusinessLogic.deleteBookmark(at: -1) {
+      XCTFail("Deleted bookmark at invalid index")
+    }
+    
+    // Bookmarks in BookRegistry should remain unchanged
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
+    
+    // Deleting bookmark at invalid index
+    if let _ = bookmarkBusinessLogic.deleteBookmark(at: 3) {
+      XCTFail("Deleted bookmark at invalid index")
+    }
+    
+    // Bookmarks in BookRegistry should remain unchanged
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
+  }
+  
+    // MARK: Helper
+
     private func newBookmark(href: String,
                              chapter: String,
                              progressWithinChapter: Float,
@@ -215,4 +417,15 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
                                  creationTime: Date(),
                                  device:device)
     }
+    
+  private func newBookmarkR2Location(href: String,
+                                     chapter: String,
+                                     progressWithinChapter: Double,
+                                     progressWithinBook: Double) -> NYPLBookmarkR2Location {
+    let locations = Locator.Locations(progression: progressWithinChapter, totalProgression: progressWithinBook)
+    let locator = Locator(href: href,
+                          type: "text/html",
+                          locations: locations)
+    return NYPLBookmarkR2Location(resourceIndex: 0, locator: locator)
+  }
 }

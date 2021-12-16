@@ -11,6 +11,7 @@ import R2Shared
 @testable import SimplyE
 
 class NYPLAnnotationsMock: NYPLAnnotationSyncing {
+  static var failRequest: Bool = false
   static var serverBookmarks: [String: [NYPLReadiumBookmark]] = [String: [NYPLReadiumBookmark]]()
   static var readingPositions: [String: NYPLBookmarkSpec] = [String: NYPLBookmarkSpec]()
   
@@ -34,7 +35,9 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
                                   publication: Publication?,
                                   toURL url:URL?,
                                   completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
-    guard let id = bookID, let bookmarkSpec = readingPositions[id] else {
+    guard !failRequest,
+          let id = bookID,
+          let bookmarkSpec = readingPositions[id] else {
       completion(nil)
       return
     }
@@ -47,6 +50,10 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   }
   
   static func postReadingPosition(forBook bookID: String, selectorValue: String) {
+    guard !failRequest else {
+      return
+    }
+    
     let bookmarkSpec = NYPLBookmarkSpec(time: Date(),
                                         device: "",
                                         motivation: .readingProgress,
@@ -61,7 +68,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
                                  publication: Publication?,
                                  atURL annotationURL:URL?,
                                  completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
-    guard let id = bookID else {
+    guard !failRequest, let id = bookID else {
       completion(nil)
       return
     }
@@ -69,6 +76,9 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   }
   
   static func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark]) {
+    guard !failRequest else {
+      return
+    }
     for bookmark in bookmarks {
       if let annotationID = bookmark.annotationId {
         deleteBookmark(annotationId: annotationID, completionHandler: {_ in })
@@ -79,8 +89,9 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   static func deleteBookmark(annotationId: String,
                              completionHandler: @escaping (_ success: Bool) -> ()) {
     let stringComponents = annotationId.components(separatedBy: "_")
-    guard let bookID = stringComponents.first,
-      let bookmarks = serverBookmarks[bookID] else {
+    guard !failRequest,
+          let bookID = stringComponents.first,
+          let bookmarks = serverBookmarks[bookID] else {
       completionHandler(false)
       return
     }
@@ -91,6 +102,10 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   static func uploadLocalBookmarks(_ bookmarks: [NYPLReadiumBookmark],
                                    forBook bookID: String,
                                    completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->()) {
+    guard !failRequest else {
+      completion([], bookmarks)
+      return
+    }
     var bookmarksUpdated = [NYPLReadiumBookmark]()
     var bookmarksFailedToUpdate = [NYPLReadiumBookmark]()
     for bookmark in bookmarks {
@@ -109,6 +124,11 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   static func postBookmark(_ bookmark: NYPLReadiumBookmark,
                            forBookID bookID: String,
                            completion: @escaping (_ serverID: String?) -> ()) {
+    guard !failRequest else {
+      completion(nil)
+      return
+    }
+    
     if let bookmarks = serverBookmarks[bookID],
        bookmarks.contains(bookmark)
     {
