@@ -11,192 +11,192 @@ import R2Shared
 @testable import SimplyE
 
 class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
-    var bookmarkBusinessLogic: NYPLReaderBookmarksBusinessLogic!
-    var bookRegistryMock: NYPLBookRegistryMock!
-    var libraryAccountMock: NYPLLibraryAccountMock!
-    var annotationsMock: NYPLAnnotationsMock.Type!
-    var bookmarkCounter: Int = 0
-    let bookIdentifier = "fakeEpub"
+  var bookmarkBusinessLogic: NYPLReaderBookmarksBusinessLogic!
+  var bookRegistryMock: NYPLBookRegistryMock!
+  var libraryAccountMock: NYPLLibraryAccountMock!
+  var annotationsMock: NYPLAnnotationsMock.Type!
+  var bookmarkCounter: Int = 0
+  let bookIdentifier = "fakeEpub"
 
-    override func setUpWithError() throws {
-      try super.setUpWithError()
+  override func setUpWithError() throws {
+    try super.setUpWithError()
+    
+    let emptyUrl = URL.init(fileURLWithPath: "")
+    let fakeAcquisition = NYPLOPDSAcquisition.init(
+      relation: .generic,
+      type: "application/epub+zip",
+      hrefURL: emptyUrl,
+      indirectAcquisitions: [NYPLOPDSIndirectAcquisition](),
+      availability: NYPLOPDSAcquisitionAvailabilityUnlimited.init()
+    )
+    let fakeBook = NYPLBook.init(
+      acquisitions: [fakeAcquisition],
+      bookAuthors: [NYPLBookAuthor](),
+      categoryStrings: [String](),
+      distributor: "",
+      identifier: bookIdentifier,
+      imageURL: emptyUrl,
+      imageThumbnailURL: emptyUrl,
+      published: Date.init(),
+      publisher: "",
+      subtitle: "",
+      summary: "",
+      title: "",
+      updated: Date.init(),
+      annotationsURL: emptyUrl,
+      analyticsURL: emptyUrl,
+      alternateURL: emptyUrl,
+      relatedWorksURL: emptyUrl,
+      seriesURL: emptyUrl,
+      revokeURL: emptyUrl,
+      report: emptyUrl
+    )
+    
+    bookRegistryMock = NYPLBookRegistryMock()
+    bookRegistryMock.addBook(book: fakeBook, state: .DownloadSuccessful)
+    libraryAccountMock = NYPLLibraryAccountMock()
+    libraryAccountMock.currentAccount?.details?.syncPermissionGranted = true
+    annotationsMock = NYPLAnnotationsMock.self
+    let manifest = Manifest(metadata: Metadata(title: "fakeMetadata"))
+    let pub = Publication(manifest: manifest)
+    bookmarkBusinessLogic = NYPLReaderBookmarksBusinessLogic(
+      book: fakeBook,
+      r2Publication: pub,
+      drmDeviceID: "fakeDeviceID",
+      bookRegistryProvider: bookRegistryMock,
+      currentLibraryAccountProvider: libraryAccountMock,
+      annotationsSynchronizer: annotationsMock)
+    bookmarkCounter = 0
+  }
+
+  override func tearDownWithError() throws {
+    try super.tearDownWithError()
+    bookmarkBusinessLogic = nil
+    libraryAccountMock = nil
+    bookRegistryMock.identifiersToRecords.removeAll()
+    bookRegistryMock = nil
+    bookmarkCounter = 0
+    annotationsMock.serverBookmarks.removeAll()
+    annotationsMock.readingPositions.removeAll()
+    annotationsMock = nil
+  }
+
+  // MARK: - Test updateLocalBookmarks
+
+  func testUpdateLocalBookmarksWithNoLocalBookmarks() throws {
+    var serverBookmarks = [NYPLReadiumBookmark]()
       
-      let emptyUrl = URL.init(fileURLWithPath: "")
-      let fakeAcquisition = NYPLOPDSAcquisition.init(
-        relation: .generic,
-        type: "application/epub+zip",
-        hrefURL: emptyUrl,
-        indirectAcquisitions: [NYPLOPDSIndirectAcquisition](),
-        availability: NYPLOPDSAcquisitionAvailabilityUnlimited.init()
-      )
-      let fakeBook = NYPLBook.init(
-        acquisitions: [fakeAcquisition],
-        bookAuthors: [NYPLBookAuthor](),
-        categoryStrings: [String](),
-        distributor: "",
-        identifier: bookIdentifier,
-        imageURL: emptyUrl,
-        imageThumbnailURL: emptyUrl,
-        published: Date.init(),
-        publisher: "",
-        subtitle: "",
-        summary: "",
-        title: "",
-        updated: Date.init(),
-        annotationsURL: emptyUrl,
-        analyticsURL: emptyUrl,
-        alternateURL: emptyUrl,
-        relatedWorksURL: emptyUrl,
-        seriesURL: emptyUrl,
-        revokeURL: emptyUrl,
-        report: emptyUrl
-      )
-      
-      bookRegistryMock = NYPLBookRegistryMock()
-      bookRegistryMock.addBook(book: fakeBook, state: .DownloadSuccessful)
-      libraryAccountMock = NYPLLibraryAccountMock()
-      libraryAccountMock.currentAccount?.details?.syncPermissionGranted = true
-      annotationsMock = NYPLAnnotationsMock.self
-      let manifest = Manifest(metadata: Metadata(title: "fakeMetadata"))
-      let pub = Publication(manifest: manifest)
-      bookmarkBusinessLogic = NYPLReaderBookmarksBusinessLogic(
-        book: fakeBook,
-        r2Publication: pub,
-        drmDeviceID: "fakeDeviceID",
-        bookRegistryProvider: bookRegistryMock,
-        currentLibraryAccountProvider: libraryAccountMock,
-        annotationsSynchronizer: annotationsMock)
-      bookmarkCounter = 0
+    // Make sure BookRegistry contains no bookmark
+    XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
+    
+    guard let firstBookmark = newBookmark(href: "Intro",
+                                          chapter: "1",
+                                          progressWithinChapter: 0.1,
+                                          progressWithinBook: 0.1) else {
+      XCTFail("Failed to create new bookmark")
+      return
     }
+    serverBookmarks.append(firstBookmark)
 
-    override func tearDownWithError() throws {
-      try super.tearDownWithError()
-      bookmarkBusinessLogic = nil
-      libraryAccountMock = nil
-      bookRegistryMock.identifiersToRecords.removeAll()
-      bookRegistryMock = nil
-      bookmarkCounter = 0
-      annotationsMock.serverBookmarks.removeAll()
-      annotationsMock.readingPositions.removeAll()
-      annotationsMock = nil
-    }
-
-    // MARK: - Test updateLocalBookmarks
-
-    func testUpdateLocalBookmarksWithNoLocalBookmarks() throws {
-      var serverBookmarks = [NYPLReadiumBookmark]()
-        
-      // Make sure BookRegistry contains no bookmark
-      XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
-      
-      guard let firstBookmark = newBookmark(href: "Intro",
-                                            chapter: "1",
-                                            progressWithinChapter: 0.1,
-                                            progressWithinBook: 0.1) else {
-        XCTFail("Failed to create new bookmark")
-        return
-      }
-      serverBookmarks.append(firstBookmark)
-
-      bookmarkBusinessLogic.updateLocalBookmarks(serverBookmarks: serverBookmarks,
-                                                 localBookmarks: bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier),
-                                                 bookmarksFailedToUpload: [NYPLReadiumBookmark]()) {
-        XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
-      }
-    }
-
-    func testUpdateLocalBookmarksWithDuplicatedLocalBookmarks() throws {
-      var serverBookmarks = [NYPLReadiumBookmark]()
-
-      // Make sure BookRegistry contains no bookmark
-      XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
-      
-      guard let firstBookmark = newBookmark(href: "Intro",
-                                            chapter: "1",
-                                            progressWithinChapter: 0.1,
-                                            progressWithinBook: 0.1),
-        let secondBookmark = newBookmark(href: "Intro",
-                                         chapter: "1",
-                                         progressWithinChapter: 0.2,
-                                         progressWithinBook: 0.1) else {
-        XCTFail("Failed to create new bookmark")
-        return
-      }
-        
-      serverBookmarks.append(firstBookmark)
-      serverBookmarks.append(secondBookmark)
-      bookRegistryMock.add(firstBookmark, forIdentifier: bookIdentifier)
+    bookmarkBusinessLogic.updateLocalBookmarks(serverBookmarks: serverBookmarks,
+                                               localBookmarks: bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier),
+                                               bookmarksFailedToUpload: [NYPLReadiumBookmark]()) {
       XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
-
-      // There are one duplicated bookmark and one non-synced (server) bookmark
-      bookmarkBusinessLogic.updateLocalBookmarks(serverBookmarks: serverBookmarks,
-                                                 localBookmarks: bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier),
-                                                 bookmarksFailedToUpload: [NYPLReadiumBookmark]()) {
-        XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
-      }
     }
+  }
 
-    func testUpdateLocalBookmarksWithExtraLocalBookmarks() throws {
-      var serverBookmarks = [NYPLReadiumBookmark]()
+  func testUpdateLocalBookmarksWithDuplicatedLocalBookmarks() throws {
+    var serverBookmarks = [NYPLReadiumBookmark]()
 
-      // Make sure BookRegistry contains no bookmark
-      XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
+    // Make sure BookRegistry contains no bookmark
+    XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
+    
+    guard let firstBookmark = newBookmark(href: "Intro",
+                                          chapter: "1",
+                                          progressWithinChapter: 0.1,
+                                          progressWithinBook: 0.1),
+      let secondBookmark = newBookmark(href: "Intro",
+                                       chapter: "1",
+                                       progressWithinChapter: 0.2,
+                                       progressWithinBook: 0.1) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
       
-      guard let firstBookmark = newBookmark(href: "Intro",
-                                            chapter: "1",
-                                            progressWithinChapter: 0.1,
-                                            progressWithinBook: 0.1),
-        let secondBookmark = newBookmark(href: "Intro",
-                                         chapter: "1",
-                                         progressWithinChapter: 0.2,
-                                         progressWithinBook: 0.1) else {
-        XCTFail("Failed to create new bookmark")
-        return
-      }
-        
-      serverBookmarks.append(firstBookmark)
-      bookRegistryMock.add(firstBookmark, forIdentifier: bookIdentifier)
-      bookRegistryMock.add(secondBookmark, forIdentifier: bookIdentifier)
+    serverBookmarks.append(firstBookmark)
+    serverBookmarks.append(secondBookmark)
+    bookRegistryMock.add(firstBookmark, forIdentifier: bookIdentifier)
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
+
+    // There are one duplicated bookmark and one non-synced (server) bookmark
+    bookmarkBusinessLogic.updateLocalBookmarks(serverBookmarks: serverBookmarks,
+                                               localBookmarks: bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier),
+                                               bookmarksFailedToUpload: [NYPLReadiumBookmark]()) {
       XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
-
-      // There are one duplicated bookmark and one extra (local) bookmark,
-      // which means it has been delete from another device and should be removed locally
-      bookmarkBusinessLogic.updateLocalBookmarks(serverBookmarks: serverBookmarks,
-                                                 localBookmarks: bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier),
-                                                 bookmarksFailedToUpload: [NYPLReadiumBookmark]()) {
-        XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
-      }
     }
+  }
 
-    func testUpdateLocalBookmarksWithFailedUploadBookmarks() throws {
-      var serverBookmarks = [NYPLReadiumBookmark]()
+  func testUpdateLocalBookmarksWithExtraLocalBookmarks() throws {
+    var serverBookmarks = [NYPLReadiumBookmark]()
 
-      // Make sure BookRegistry contains no bookmark
-      XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
+    // Make sure BookRegistry contains no bookmark
+    XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
+    
+    guard let firstBookmark = newBookmark(href: "Intro",
+                                          chapter: "1",
+                                          progressWithinChapter: 0.1,
+                                          progressWithinBook: 0.1),
+      let secondBookmark = newBookmark(href: "Intro",
+                                       chapter: "1",
+                                       progressWithinChapter: 0.2,
+                                       progressWithinBook: 0.1) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
       
-      guard let firstBookmark = newBookmark(href: "Intro",
-                                            chapter: "1",
-                                            progressWithinChapter: 0.1,
-                                            progressWithinBook: 0.1),
-        let secondBookmark = newBookmark(href: "Intro",
-                                         chapter: "1",
-                                         progressWithinChapter: 0.2,
-                                         progressWithinBook: 0.1) else {
-        XCTFail("Failed to create new bookmark")
-        return
-      }
-        
-      serverBookmarks.append(firstBookmark)
-      bookRegistryMock.add(firstBookmark, forIdentifier: bookIdentifier)
+    serverBookmarks.append(firstBookmark)
+    bookRegistryMock.add(firstBookmark, forIdentifier: bookIdentifier)
+    bookRegistryMock.add(secondBookmark, forIdentifier: bookIdentifier)
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
+
+    // There are one duplicated bookmark and one extra (local) bookmark,
+    // which means it has been delete from another device and should be removed locally
+    bookmarkBusinessLogic.updateLocalBookmarks(serverBookmarks: serverBookmarks,
+                                               localBookmarks: bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier),
+                                               bookmarksFailedToUpload: [NYPLReadiumBookmark]()) {
       XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
-        
-      // There are one duplicated bookmark and one failed-to-upload bookmark
-      bookmarkBusinessLogic.updateLocalBookmarks(serverBookmarks: serverBookmarks,
-                                                 localBookmarks: bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier),
-                                                 bookmarksFailedToUpload: [secondBookmark]) {
-        XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
-      }
     }
+  }
+
+  func testUpdateLocalBookmarksWithFailedUploadBookmarks() throws {
+    var serverBookmarks = [NYPLReadiumBookmark]()
+
+    // Make sure BookRegistry contains no bookmark
+    XCTAssertEqual(bookRegistryMock.readiumBookmarks(forIdentifier: bookIdentifier).count, 0)
+    
+    guard let firstBookmark = newBookmark(href: "Intro",
+                                          chapter: "1",
+                                          progressWithinChapter: 0.1,
+                                          progressWithinBook: 0.1),
+      let secondBookmark = newBookmark(href: "Intro",
+                                       chapter: "1",
+                                       progressWithinChapter: 0.2,
+                                       progressWithinBook: 0.1) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+      
+    serverBookmarks.append(firstBookmark)
+    bookRegistryMock.add(firstBookmark, forIdentifier: bookIdentifier)
+    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
+      
+    // There are one duplicated bookmark and one failed-to-upload bookmark
+    bookmarkBusinessLogic.updateLocalBookmarks(serverBookmarks: serverBookmarks,
+                                               localBookmarks: bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier),
+                                               bookmarksFailedToUpload: [secondBookmark]) {
+      XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
+    }
+  }
 
   // MARK: - Test addBookmark/postBookmark
 
@@ -396,27 +396,27 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
     XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 2)
   }
   
-    // MARK: Helper
+  // MARK: Helper
 
-    private func newBookmark(href: String,
-                             chapter: String,
-                             progressWithinChapter: Float,
-                             progressWithinBook: Float,
-                             device: String? = nil) -> NYPLReadiumBookmark? {
-      // Annotation id needs to be unique
-      // contentCFI should be empty string for R2 bookmark
-      bookmarkCounter += 1
-      return NYPLReadiumBookmark(annotationId: "fakeAnnotationID\(bookmarkCounter)",
-                                 contentCFI: "",
-                                 href: href,
-                                 idref: nil,
-                                 chapter: chapter,
-                                 location: nil,
-                                 progressWithinChapter: progressWithinChapter,
-                                 progressWithinBook: NSNumber(value: progressWithinBook),
-                                 creationTime: Date(),
-                                 device:device)
-    }
+  private func newBookmark(href: String,
+                           chapter: String,
+                           progressWithinChapter: Float,
+                           progressWithinBook: Float,
+                           device: String? = nil) -> NYPLReadiumBookmark? {
+    // Annotation id needs to be unique
+    // contentCFI should be empty string for R2 bookmark
+    bookmarkCounter += 1
+    return NYPLReadiumBookmark(annotationId: "fakeAnnotationID\(bookmarkCounter)",
+                               contentCFI: "",
+                               href: href,
+                               idref: nil,
+                               chapter: chapter,
+                               location: nil,
+                               progressWithinChapter: progressWithinChapter,
+                               progressWithinBook: NSNumber(value: progressWithinBook),
+                               creationTime: Date(),
+                               device:device)
+  }
     
   private func newBookmarkR2Location(href: String,
                                      chapter: String,
