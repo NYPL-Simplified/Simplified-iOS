@@ -253,6 +253,28 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       XCTAssertEqual(bookmarks, nil)
     }
   }
+  
+  func testAddBookmarkWithDuplicatedBookmarks() throws {
+    let firstBookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    guard let _ = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    // Adding bookmark with duplicated location
+    let firstDuplicatedBookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    XCTAssertNil(bookmarkBusinessLogic.addBookmark(firstDuplicatedBookmarkLoc))
+    
+    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.2)
+    guard let _ = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
+      XCTFail("Failed to create new bookmark")
+      return
+    }
+    
+    // Adding bookmark with matching href and progressWithinChatper
+    let secondDuplicatedBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.2)
+    XCTAssertNil(bookmarkBusinessLogic.addBookmark(secondDuplicatedBookmarkLoc))
+  }
 
   // MARK: - Test deleteBookmark/didDeleteBookmark
   
@@ -263,7 +285,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       return
     }
     
-    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.2)
     guard let _ = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
       XCTFail("Failed to create new bookmark")
       return
@@ -289,41 +311,6 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
     }
   }
   
-  func testDeleteBookmarkWithMultipleMatchingBookmarks() throws {
-    let firstBookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
-    guard let firstBookmark = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc),
-          let _ = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc),
-          let _ = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc) else {
-      XCTFail("Failed to create new bookmark")
-      return
-    }
-    
-    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.1)
-    guard let _ = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
-      XCTFail("Failed to create new bookmark")
-      return
-    }
-    
-    // Make sure we have the right amount of bookmarks in BookRegistry
-    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 4)
-    
-    // Deleting three matching bookmarks
-    bookmarkBusinessLogic.deleteBookmark(firstBookmark)
-    
-    // BookRegistry should have one bookmark after deletion
-    // Server should not contain the deleted bookmark
-    XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
-    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
-                                       publication: nil,
-                                       atURL: nil) { bookmarks in
-      guard let bookmarks = bookmarks else {
-        XCTFail("Failed to get bookmark from server")
-        return
-      }
-      XCTAssertFalse(bookmarks.contains(firstBookmark))
-    }
-  }
-  
   func testDeleteBookmarkWithValidIndex() throws {
     let firstBookmarkLoc = newBookmarkR2Location(href: "Intro", chapter: "1", progressWithinChapter: 0.1, progressWithinBook: 0.1)
     guard let _ = bookmarkBusinessLogic.addBookmark(firstBookmarkLoc) else {
@@ -331,7 +318,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       return
     }
     
-    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.2)
     guard let secondBookmark = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
       XCTFail("Failed to create new bookmark")
       return
@@ -370,7 +357,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       return
     }
     
-    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.1)
+    let secondBookmarkLoc = newBookmarkR2Location(href: "Chapter 1", chapter: "2", progressWithinChapter: 0.1, progressWithinBook: 0.2)
     guard let _ = bookmarkBusinessLogic.addBookmark(secondBookmarkLoc) else {
       XCTFail("Failed to create new bookmark")
       return

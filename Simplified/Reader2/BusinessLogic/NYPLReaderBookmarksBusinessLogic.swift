@@ -91,6 +91,11 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   /// - Returns: A newly created bookmark object, unless the input location
   /// lacked progress information.
   func addBookmark(_ bookmarkLoc: NYPLBookmarkR2Location) -> NYPLReadiumBookmark? {
+    guard bookmarkExisting(at: bookmarkLoc) == nil else {
+      Log.error(#function, "Bookmark already exists at R2 location: \(bookmarkLoc)")
+      return nil
+    }
+    
     guard let bookmark = bookmarksFactory.make(fromR2Location: bookmarkLoc) else {
       Log.error(#function, "Unable to add bookmark from R2 location: \(bookmarkLoc)")
       return nil
