@@ -20,6 +20,7 @@ class NYPLLastReadPositionPoster {
 
   // external dependencies
   private let bookRegistryProvider: NYPLBookRegistryProvider
+  private let annotationsSynchronizer: NYPLAnnotationSyncing.Type
 
   // internal state management
   private var lastReadPositionUploadDate: Date
@@ -27,11 +28,13 @@ class NYPLLastReadPositionPoster {
   private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).lastReadPositionPoster", target: .global(qos: .utility))
 
   init(book: NYPLBook,
-       bookRegistryProvider: NYPLBookRegistryProvider) {
+       bookRegistryProvider: NYPLBookRegistryProvider,
+       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
     self.book = book
     self.bookRegistryProvider = bookRegistryProvider
     self.lastReadPositionUploadDate = Date()
       .addingTimeInterval(-NYPLLastReadPositionPoster.throttlingInterval)
+    self.annotationsSynchronizer = annotationsSynchronizer
 
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(postQueuedReadPositionInSerialQueue),
@@ -61,7 +64,7 @@ class NYPLLastReadPositionPoster {
     bookRegistryProvider.setLocation(location, forIdentifier: book.identifier)
 
     // attempt to store location on server
-    if NYPLAnnotations.syncIsPossibleAndPermitted() {
+    if annotationsSynchronizer.syncIsPossibleAndPermitted() {
       let selectorValue = NYPLBookmarkFactory
         .makeLocatorString(chapterHref: locator.href,
                            chapterProgression: Float(chapterProgress))
@@ -95,7 +98,7 @@ class NYPLLastReadPositionPoster {
   }
 
   @objc private func postQueuedReadPositionInSerialQueue() {
-    if NYPLAnnotations.syncIsPossibleAndPermitted() {
+    if annotationsSynchronizer.syncIsPossibleAndPermitted() {
       serialQueue.async { [weak self] in
         self?.postQueuedReadPosition()
       }
@@ -105,7 +108,7 @@ class NYPLLastReadPositionPoster {
   /// Wrapper for actual api call.
   private func postQueuedReadPosition() {
     if self.queuedReadPosition != "" {
-      NYPLAnnotations.postReadingPosition(forBook: book.identifier,
+      annotationsSynchronizer.postReadingPosition(forBook: book.identifier,
                                           selectorValue: self.queuedReadPosition)
       self.queuedReadPosition = ""
       self.lastReadPositionUploadDate = Date()
