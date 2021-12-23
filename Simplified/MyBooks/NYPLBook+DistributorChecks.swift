@@ -31,7 +31,7 @@ extension NYPLBook {
     #if FEATURE_AUDIOBOOKS && FEATURE_OVERDRIVE_AUTH
     // Overdrive may return a response whose Content-Type doesn't match the
     // one that was promised in this book's OPDS document
-    if distributor?.lowercased() == OverdriveDistributorKey.lowercased() {
+    if distributor?.lowercased() == OverdriveAPI.distributorKey.lowercased() {
       // if we original acquisition for this book matches, that's good enough
       if defaultAcquisition()?.type.lowercased() == ContentTypeOverdriveAudiobook {
         return true

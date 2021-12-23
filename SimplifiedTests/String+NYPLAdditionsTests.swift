@@ -30,11 +30,6 @@ class String_NYPLAdditionsTests: XCTestCase {
     XCTAssertEqual(otherEscapes, "~%60!%23%25%5E*()%5B%5D%7C%5C")
   }
 
-  func testMD5() {
-    XCTAssertEqual("password".md5hex(), "5f4dcc3b5aa765d61d8327deb882cf99")
-    XCTAssertEqual("password".md5String(), "5f4dcc3b5aa765d61d8327deb882cf99")
-  }
-
   func testBase64Encode() {
     let s = ("ynJZEsWMnTudEGg646Tmua" as NSString).fileSystemSafeBase64EncodedString(usingEncoding: String.Encoding.utf8.rawValue)
     XCTAssertEqual(s, "eW5KWkVzV01uVHVkRUdnNjQ2VG11YQ")

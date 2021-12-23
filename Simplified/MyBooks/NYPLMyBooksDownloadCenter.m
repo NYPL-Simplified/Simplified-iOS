@@ -605,7 +605,7 @@ didCompleteWithError:(NSError *)error
   NSMutableDictionary *dict = nil;
   
 #if FEATURE_OVERDRIVE_AUTH
-  if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
+  if ([book.distributor isEqualToString:OverdriveAPI.distributorKey]) {
     dict = [(NSMutableDictionary *)json mutableCopy];
     dict[@"id"] = book.identifier;
   }
@@ -1047,7 +1047,7 @@ didCompleteWithError:(NSError *)error
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
 #if FEATURE_OVERDRIVE_AUTH
-    } else if ([book.distributor isEqualToString:OverdriveDistributorKey] && book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
+    } else if ([book.distributor isEqualToString:OverdriveAPI.distributorKey] && book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
       NSURL *URL = book.defaultAcquisition.hrefURL;
         
       [[OverdriveAPIExecutor shared] fulfillBookWithUrlString:URL.absoluteString

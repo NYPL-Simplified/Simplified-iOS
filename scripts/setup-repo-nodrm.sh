@@ -19,6 +19,7 @@ set -eo pipefail
 
 echo "Setting up repo for non-DRM build"
 
+# Remove private submodules
 git submodule foreach --quiet 'git submodule deinit adept-ios'
 git rm -rf adept-ios
 git submodule foreach --quiet 'git submodule deinit NYPLAEToolkit'
@@ -32,9 +33,10 @@ git rm -rf Certificates
 
 git submodule update --init --recursive
 
-# Remove private repos from Cartfile and Cartfile.resolved.
+# Remove private dependencies
 sed -i '' "s#.*lcp.*##" Cartfile
 sed -i '' "s#.*lcp.*##" Cartfile.resolved
+sed -i '' "s#.*/\* XCRemoteSwiftPackageReference \"audiobook-ios-overdrive\" \*/,.*##" Simplified.xcodeproj/project.pbxproj
 
 # These will need to be filled in with real values
 if [ ! -f "SimplyE/GoogleService-Info.plist" ]; then
