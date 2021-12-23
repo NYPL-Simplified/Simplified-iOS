@@ -162,22 +162,26 @@
 
 - (void)registerCallbackForLogHandler
 {
-  [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
-    NSString *msg = [NSString stringWithFormat:@"Level: %ld. Message: %@",
-                     (long)level, message];
+  [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull msg, NSError * _Nullable error) {
+    // unfortunately since any kind of error (possibly including low level
+    // errors) can end up here, we have no way of providing a more relevant
+    // summary (e.g. extracting it from the `error`)
+    NSString *logLevel = (level == LogLevelInfo ? @"info" :
+                          (level == LogLevelWarn ? @"warning" : @"error"));
+    NSString *summary = [NSString stringWithFormat:@"NYPLAudiobookToolkit %@", logLevel];
+    NSDictionary *metadata = @{
+      @"context": msg,
+      @"book": [self.book loggableDictionary] ?: @"N/A",
+    };
 
     if (error) {
       [NYPLErrorLogger logError:error
-                        summary:@"Error registering audiobook callback for logging"
-                       metadata:@{ @"context": msg ?: @"N/A" }];
+                        summary:summary
+                       metadata:metadata];
     } else if (level > LogLevelDebug) {
-      NSString *logLevel = (level == LogLevelInfo ?
-                            @"info" :
-                            (level == LogLevelWarn ? @"warning" : @"error"));
-      NSString *summary = [NSString stringWithFormat:@"NYPLAudiobookToolkit::AudiobookManager %@", logLevel];
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookExternalError
                                 summary:summary
-                               metadata:@{ @"context": msg ?: @"N/A" }];
+                               metadata:metadata];
     }
   }];
 }

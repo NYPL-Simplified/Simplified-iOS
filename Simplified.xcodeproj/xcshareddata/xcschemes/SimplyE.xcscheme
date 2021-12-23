@@ -67,13 +67,6 @@
          </BuildableReference>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "14E61C5B20DD7C4800124E2B"
-            BuildableName = "NYPLCardCreator.framework"
-            BlueprintName = "NYPLCardCreator"
-            ReferencedContainer = "container:CardCreator-iOS/NYPLCardCreator.xcodeproj">
-         </BuildableReference>
-         <BuildableReference
-            BuildableIdentifier = "primary"
             BlueprintIdentifier = "5A569A361B835925003B5B61"
             BuildableName = "libADEPT.a"
             BlueprintName = "ADEPT"
@@ -81,10 +74,10 @@
          </BuildableReference>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7BB4E7D020A0E1D1002E1360"
-            BuildableName = "NYPLAEToolkit.framework"
-            BlueprintName = "NYPLAEToolkit"
-            ReferencedContainer = "container:NYPLAEToolkit/NYPLAEToolkit.xcodeproj">
+            BlueprintIdentifier = "17EB3D17246B81D800183316"
+            BuildableName = "OverdriveProcessor.framework"
+            BlueprintName = "OverdriveProcessor"
+            ReferencedContainer = "container:audiobook-ios-overdrive/OverdriveProcessor/OverdriveProcessor.xcodeproj">
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
@@ -100,16 +93,6 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "73EEE7DE247F274E00A06D14"
-               BuildableName = "NYPLCardCreatorTests.xctest"
-               BlueprintName = "NYPLCardCreatorTests"
-               ReferencedContainer = "container:CardCreator-iOS/NYPLCardCreator.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
             skipped = "NO"
             testExecutionOrdering = "random">
             <BuildableReference
@@ -118,6 +101,17 @@
                BuildableName = "TenPrintCoverTests.xctest"
                BlueprintName = "TenPrintCoverTests"
                ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "17EB3D20246B81D800183316"
+               BuildableName = "OverdriveProcessorTests.xctest"
+               BlueprintName = "OverdriveProcessorTests"
+               ReferencedContainer = "container:audiobook-ios-overdrive/OverdriveProcessor/OverdriveProcessor.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

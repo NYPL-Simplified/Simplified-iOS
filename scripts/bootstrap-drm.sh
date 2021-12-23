@@ -12,7 +12,6 @@
 #
 
 cd ..
-git clone git@github.com:NYPL-Simplified/Certificates.git
 git clone git@github.com:NYPL-Simplified/DRM-iOS-AdeptConnector.git
 
 cd Simplified-iOS

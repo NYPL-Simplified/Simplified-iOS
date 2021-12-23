@@ -4,7 +4,6 @@
 #
 #     ./scripts/update-certificates.sh
 #
-# Note: this script assumes you have the Certificates repo cloned as a sibling of Simplified-iOS.
 
 set -eo pipefail
 
@@ -14,13 +13,7 @@ else
   echo "Updating repo with info from Certificates repo for [$BUILD_CONTEXT]..."
 fi
 
-if [ "$BUILD_CONTEXT" == "ci" ]; then
-  CERTIFICATES_PATH="./Certificates"
-else
-  CERTIFICATES_PATH="../Certificates"
-fi
-
-cp $CERTIFICATES_PATH/SimplyE/iOS/APIKeys.swift Simplified/AppInfrastructure/
+CERTIFICATES_PATH="./Certificates"
 
 # SimplyE-specific stuff
 cp $CERTIFICATES_PATH/SimplyE/iOS/GoogleService-Info.plist SimplyE/
