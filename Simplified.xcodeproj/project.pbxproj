@@ -526,7 +526,6 @@
 		735771B12537691800067CEA /* NYPLDRMAuthorizingMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735771B02537691800067CEA /* NYPLDRMAuthorizingMock.swift */; };
 		735771B22537691800067CEA /* NYPLDRMAuthorizingMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735771B02537691800067CEA /* NYPLDRMAuthorizingMock.swift */; };
 		73579046276BE7F2009F1ADF /* NYPLUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 73579045276BE7F2009F1ADF /* NYPLUtilities */; };
-		73579070276C008A009F1ADF /* OverdriveProcessor in Frameworks */ = {isa = PBXBuildFile; productRef = 7357906F276C008A009F1ADF /* OverdriveProcessor */; };
 		7358EE7C250062BD00DDA0CC /* OEImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7358EE7B250062BD00DDA0CC /* OEImages.xcassets */; };
 		7358EE912500642900DDA0CC /* OELaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7358EE902500642900DDA0CC /* OELaunchScreen.xib */; };
 		735DD0AD252293580096D1F9 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
@@ -927,6 +926,7 @@
 		73DE897E260BEA13003D9135 /* NYPLRequestExecuting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DE8979260BEA13003D9135 /* NYPLRequestExecuting.swift */; };
 		73DEB54E2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
 		73DEB54F2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
+		73E1FB77277537B50078E61B /* OverdriveProcessor in Frameworks */ = {isa = PBXBuildFile; productRef = 73E1FB76277537B50078E61B /* OverdriveProcessor */; };
 		73E370D02746F75000BF052A /* NYPLAudiobookToolkit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; };
 		73E370D12746F7A600BF052A /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73E64E6A252BB82600276953 /* NYPLWelcomeEULAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */; };
@@ -1161,7 +1161,6 @@
 		73F36BD825CC76C60057954C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F36BD325CC76C60057954C /* XCTest.framework */; };
 		73F5DE882774EE3200597F1E /* NYPLUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 73F5DE872774EE3200597F1E /* NYPLUtilities */; };
 		73F5DE892774EE3200597F1E /* NYPLUtilities in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 73F5DE872774EE3200597F1E /* NYPLUtilities */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		73F5DE912774EEDB00597F1E /* OverdriveProcessor in Frameworks */ = {isa = PBXBuildFile; productRef = 73F5DE902774EEDB00597F1E /* OverdriveProcessor */; };
 		73F5DE932774EEE100597F1E /* NYPLUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 73F5DE922774EEE100597F1E /* NYPLUtilities */; };
 		73F5DE942774EEE100597F1E /* NYPLUtilities in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 73F5DE922774EEE100597F1E /* NYPLUtilities */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		73F6BF9E261E511200A71AB8 /* valid-R1-readingprogress-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 73F6BF97261E511100A71AB8 /* valid-R1-readingprogress-1.json */; };
@@ -2218,7 +2217,6 @@
 				7347B4BD265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
 				7347B4C1265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */,
 				7347B4B5265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */,
-				73F5DE912774EEDB00597F1E /* OverdriveProcessor in Frameworks */,
 				739E6113244A0D8600D00301 /* Foundation.framework in Frameworks */,
 				732F043A263375520018A82E /* Fuzi.xcframework in Frameworks */,
 				732F04492633768D0018A82E /* GCDWebServer.xcframework in Frameworks */,
@@ -2394,6 +2392,7 @@
 				08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */,
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
+				73E1FB77277537B50078E61B /* OverdriveProcessor in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */,
 				03B092301E78871A00AD338D /* MediaPlayer.framework in Frameworks */,
@@ -2401,7 +2400,6 @@
 				7347B4DD265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
 				731B9FD727335C37002F0092 /* NYPLAEToolkit.xcframework in Frameworks */,
 				73E370D02746F75000BF052A /* NYPLAudiobookToolkit.xcframework in Frameworks */,
-				73579070276C008A009F1ADF /* OverdriveProcessor in Frameworks */,
 				73579046276BE7F2009F1ADF /* NYPLUtilities in Frameworks */,
 				732F046D2633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347B4E5265EFD3C00E4E386 /* PromisesObjC.xcframework in Frameworks */,
@@ -3669,7 +3667,6 @@
 			);
 			name = "SimplyE-R2dev";
 			packageProductDependencies = (
-				73F5DE902774EEDB00597F1E /* OverdriveProcessor */,
 				73F5DE922774EEE100597F1E /* NYPLUtilities */,
 			);
 			productName = Simplified;
@@ -3740,7 +3737,7 @@
 			name = SimplyE;
 			packageProductDependencies = (
 				73579045276BE7F2009F1ADF /* NYPLUtilities */,
-				7357906F276C008A009F1ADF /* OverdriveProcessor */,
+				73E1FB76277537B50078E61B /* OverdriveProcessor */,
 			);
 			productName = Simplified;
 			productReference = A823D80D192BABA400B55DE2 /* SimplyE.app */;
@@ -3799,7 +3796,7 @@
 			mainGroup = A823D804192BABA400B55DE2;
 			packageReferences = (
 				73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */,
-				7357906E276C008A009F1ADF /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */,
+				73E1FB75277537B50078E61B /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */,
 			);
 			productRefGroup = A823D80E192BABA400B55DE2 /* Products */;
 			projectDirPath = "";
@@ -6050,13 +6047,13 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/NYPL-Simplified/iOS-Utilities";
 			requirement = {
-				branch = "task/IOS-294/utilities";
+				branch = main;
 				kind = branch;
 			};
 		};
-		7357906E276C008A009F1ADF /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */ = {
+		73E1FB75277537B50078E61B /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:NYPL-Simplified/audiobook-ios-overdrive.git";
+			repositoryURL = "https://github.com/NYPL-Simplified/audiobook-ios-overdrive.git";
 			requirement = {
 				branch = master;
 				kind = branch;
@@ -6070,11 +6067,6 @@
 			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
 			productName = NYPLUtilities;
 		};
-		7357906F276C008A009F1ADF /* OverdriveProcessor */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7357906E276C008A009F1ADF /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */;
-			productName = OverdriveProcessor;
-		};
 		73579071276C0153009F1ADF /* NYPLUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
@@ -6085,15 +6077,15 @@
 			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
 			productName = NYPLUtilities;
 		};
+		73E1FB76277537B50078E61B /* OverdriveProcessor */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 73E1FB75277537B50078E61B /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */;
+			productName = OverdriveProcessor;
+		};
 		73F5DE872774EE3200597F1E /* NYPLUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
 			productName = NYPLUtilities;
-		};
-		73F5DE902774EEDB00597F1E /* OverdriveProcessor */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7357906E276C008A009F1ADF /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */;
-			productName = OverdriveProcessor;
 		};
 		73F5DE922774EEE100597F1E /* NYPLUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
