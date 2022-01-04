@@ -20,7 +20,6 @@
 @property (nonatomic) NSURL *openSearchURL;
 @property (nonatomic) NSArray<NYPLCatalogFacet *> *entryPoints;
 
-
 @end
 
 // If fewer than this many books are currently available when |prepareForBookIndex:| is called, an
@@ -28,32 +27,6 @@
 static NSUInteger const preloadThreshold = 100;
 
 @implementation NYPLCatalogUngroupedFeed
-
-+ (void)withURL:(NSURL *)URL
-handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
-{
-  if(!handler) {
-    @throw NSInvalidArgumentException;
-  }
-  
-  [NYPLOPDSFeed
-   withURL:URL
-   shouldResetCache:NO
-   completionHandler:^(NYPLOPDSFeed *const ungroupedFeed, __unused NSDictionary *error) {
-     if(!ungroupedFeed) {
-       handler(nil);
-       return;
-     }
-     
-     if(ungroupedFeed.type != NYPLOPDSFeedTypeAcquisitionUngrouped) {
-       NYPLLOG(@"Ignoring feed of invalid type.");
-       handler(nil);
-       return;
-     }
-     
-     handler([[self alloc] initWithOPDSFeed:ungroupedFeed]);
-   }];
-}
 
 - (instancetype)initWithOPDSFeed:(NYPLOPDSFeed *const)feed
 {
@@ -188,29 +161,29 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   
   NSUInteger const location = self.books.count;
   
-  [NYPLCatalogUngroupedFeed
-   withURL:self.nextURL
-   handler:^(NYPLCatalogUngroupedFeed *const ungroupedFeed) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       if(!ungroupedFeed) {
-         NYPLLOG(@"Failed to fetch next page.");
-         self.currentlyFetchingNextURL = NO;
-         return;
-       }
-       
-       [self.books addObjectsFromArray:ungroupedFeed.books];
-       self.nextURL = ungroupedFeed.nextURL;
-       self.currentlyFetchingNextURL = NO;
-       
-       [self prepareForBookIndex:self.greatestPreparationIndex];
-       
-       NSRange const range = {.location = location, .length = ungroupedFeed.books.count};
-       
-       [self.delegate catalogUngroupedFeed:self
-                               didAddBooks:ungroupedFeed.books
-                                     range:range];
-     }];
-   }];
+  [NYPLFeedFetcher fetchCatalogUngroupedFeedWithUrl:self.nextURL
+                                         retryCount:0
+                                         completion:^(NYPLCatalogUngroupedFeed * _Nullable feed) {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      self.currentlyFetchingNextURL = NO;
+      
+      if(!feed) {
+        NYPLLOG(@"Failed to fetch next page.");
+        return;
+      }
+      
+      [self.books addObjectsFromArray:feed.books];
+      self.nextURL = feed.nextURL;
+      
+      [self prepareForBookIndex:self.greatestPreparationIndex];
+      
+      NSRange const range = {.location = location, .length = feed.books.count};
+      
+      [self.delegate catalogUngroupedFeed:self
+                              didAddBooks:feed.books
+                                    range:range];
+    }];
+  }];
 }
 
 - (void)refreshBooks

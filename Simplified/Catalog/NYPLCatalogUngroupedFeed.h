@@ -20,6 +20,7 @@
 @property (nonatomic, readonly) NSMutableArray *books;
 @property (nonatomic, weak) id<NYPLCatalogUngroupedFeedDelegate> delegate; // nilable
 @property (nonatomic, readonly) NSArray *facetGroups;
+@property (nonatomic, readonly) NSURL *nextURL;
 @property (nonatomic, readonly) NSURL *openSearchURL; // nilable
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
 @property (nonatomic, readonly) NSString *title;
@@ -28,9 +29,6 @@
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
-
-// In the callback, |ungroupedFeed| will be |nil| if an error occurred.
-+ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogUngroupedFeed *ungroupedFeed))handler;
 
 // |feed.type| must be NYPLOPDSFeedTypeAcquisitionUngrouped.
 - (instancetype)initWithOPDSFeed:(NYPLOPDSFeed *)feed;
