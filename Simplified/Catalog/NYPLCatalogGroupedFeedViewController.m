@@ -1,3 +1,5 @@
+@import PureLayout;
+
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLBook.h"
@@ -15,8 +17,6 @@
 #import "NYPLCatalogFacet.h"
 #import "SimplyE-Swift.h"
 #import "NYPLCatalogGroupedFeedViewController.h"
-
-#import <PureLayout/PureLayout.h>
 
 static CGFloat const kRowHeight = 115.0;
 static CGFloat const kSectionHeaderHeight = 50.0;

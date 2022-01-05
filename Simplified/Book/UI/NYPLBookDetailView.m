@@ -1,3 +1,5 @@
+@import PureLayout;
+
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookButtonsView.h"
@@ -17,8 +19,6 @@
 #import "NYPLOPDSFeed.h"
 #import "SimplyE-Swift.h"
 #import "UIFont+NYPLSystemFontOverride.h"
-
-#import <PureLayout/PureLayout.h>
 
 @interface NYPLBookDetailView () <NYPLBookDownloadCancellationDelegate, BookDetailTableViewDelegate>
 

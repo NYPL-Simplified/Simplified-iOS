@@ -15,7 +15,7 @@ extension AudioBookVendors {
   
   /// Vendor tag
   private var tag: String {
-    "\(FeedbookDRMPublicKeyTag)\(self.rawValue)"
+    "\(FeedbookDRM.publicKeyTag)\(self.rawValue)"
   }
   
   /// UserDefaults key to store certificate date

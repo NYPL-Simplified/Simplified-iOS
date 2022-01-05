@@ -1,6 +1,8 @@
 // TODO: This class duplicates much of the functionality of NYPLCatalogUngroupedFeedViewController.
 // After it is complete, the common portions must be factored out.
 
+@import PureLayout;
+
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
@@ -9,7 +11,6 @@
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
-#import <PureLayout/PureLayout.h>
 #import "SimplyE-Swift.h"
 
 #import "NYPLCatalogSearchViewController.h"
