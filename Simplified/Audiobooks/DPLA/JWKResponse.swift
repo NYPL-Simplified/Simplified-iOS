@@ -10,6 +10,7 @@
 
 import Foundation
 import NYPLAudiobookToolkit
+import NYPLUtilities
 
 struct JWKResponse: Codable {
   let keys: [JWK]

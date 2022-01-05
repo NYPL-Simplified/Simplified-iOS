@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "OverdriveProcessor",
+        "repositoryURL": "https://github.com/NYPL-Simplified/audiobook-ios-overdrive.git",
+        "state": {
+          "branch": "master",
+          "revision": "034e461c605ae87c71d72d2f35bf8d93a8c75c94",
+          "version": null
+        }
+      },
+      {
+        "package": "NYPLUtilities",
+        "repositoryURL": "https://github.com/NYPL-Simplified/iOS-Utilities",
+        "state": {
+          "branch": "main",
+          "revision": "42b9c48e1da947d28789be9aa5822ebc0802a80b",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

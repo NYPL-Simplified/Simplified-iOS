@@ -40,7 +40,7 @@
   NSMutableDictionary *dict = nil;
 
 #if FEATURE_OVERDRIVE_AUTH
-  if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
+  if ([book.distributor isEqualToString:OverdriveAPI.distributorKey]) {
     dict = [(NSMutableDictionary *)json mutableCopy];
     dict[@"id"] = book.identifier;
   }
@@ -248,7 +248,7 @@
     return;
   }
 
-  if ([self.book.distributor isEqualToString:OverdriveDistributorKey]) {
+  if ([self.book.distributor isEqualToString:OverdriveAPI.distributorKey]) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateODAudiobookManifest:)
                                                  name:NSNotification.NYPLMyBooksDownloadCenterDidChange

@@ -103,17 +103,6 @@
                ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "17EB3D20246B81D800183316"
-               BuildableName = "OverdriveProcessorTests.xctest"
-               BlueprintName = "OverdriveProcessorTests"
-               ReferencedContainer = "container:audiobook-ios-overdrive/OverdriveProcessor/OverdriveProcessor.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

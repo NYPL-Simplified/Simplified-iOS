@@ -34,11 +34,14 @@ fi
 
 # build
 # Note: xcodebuild creates archive `ARCHIVE_NAME.xcarchive` inside ARCHIVE_DIR
+# Also note: `-disableAutomaticPackageResolution` is for making sure to always
+# resolve packages with the version checked in in Package.resolved
 xcodebuild -project $PROJECT_NAME \
            -scheme "$SCHEME" \
            -sdk iphoneos \
            -configuration Release \
            -archivePath "$ARCHIVE_DIR/$ARCHIVE_NAME" \
+           -disableAutomaticPackageResolution \
            clean archive | \
            if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi
 

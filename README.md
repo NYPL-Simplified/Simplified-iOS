@@ -95,7 +95,7 @@ Feature branch names (for features whose development is a month or more): `featu
 
 # License
 
-Copyright © 2015-2021 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2015-2022 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
