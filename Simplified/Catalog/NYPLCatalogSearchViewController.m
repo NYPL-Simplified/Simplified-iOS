@@ -217,9 +217,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)fetchUngroupedFeedFromURL:(NSURL *)URL
 {
-  [NYPLFeedFetcher fetchCatalogUngroupedFeedWithUrl:URL
-                                         retryCount:0
-                                         completion:^(NYPLCatalogUngroupedFeed * _Nullable feed) {
+  [NYPLOPDSFeedFetcher fetchCatalogUngroupedFeedWithUrl:URL
+                                             retryCount:0
+                                             completion:^(NYPLCatalogUngroupedFeed * _Nullable feed) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       if(feed) {
         self.feed = feed;

@@ -702,9 +702,9 @@ didCompleteWithError:(NSError *)error
   [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
 
   // revoke loan with the CM
-  [NYPLFeedFetcher fetchOPDSFeedWithUrl:book.revokeURL
-                              shouldResetCache:NO
-                                    completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.revokeURL
+                           shouldResetCache:NO
+                                 completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
     if (feed && feed.entries.count == 1)  {
@@ -892,9 +892,9 @@ didCompleteWithError:(NSError *)error
           borrowCompletion:(void (^)(void))borrowCompletion
 {
   [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-  [NYPLFeedFetcher fetchOPDSFeedWithUrl:book.defaultAcquisitionIfBorrow.hrefURL
-                              shouldResetCache:NO
-                                    completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.defaultAcquisitionIfBorrow.hrefURL
+                           shouldResetCache:NO
+                                 completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
     if (errorDict || !feed || feed.entries.count < 1) {

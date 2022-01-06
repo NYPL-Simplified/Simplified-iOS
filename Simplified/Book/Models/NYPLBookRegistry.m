@@ -310,9 +310,9 @@ static NSString *const RecordsKey = @"records";
     [self broadcastChange];
   } //@synchronized
   
-  [NYPLFeedFetcher fetchOPDSFeedWithUrl:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
-                       shouldResetCache:shouldResetCache
-                             completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
+                           shouldResetCache:shouldResetCache
+                                 completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     if(!feed) {
       NYPLLOG(@"Failed to obtain sync data.");
       self.syncing = NO;

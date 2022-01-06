@@ -161,9 +161,9 @@ static NSUInteger const preloadThreshold = 100;
   
   NSUInteger const location = self.books.count;
   
-  [NYPLFeedFetcher fetchCatalogUngroupedFeedWithUrl:self.nextURL
-                                         retryCount:0
-                                         completion:^(NYPLCatalogUngroupedFeed * _Nullable feed) {
+  [NYPLOPDSFeedFetcher fetchCatalogUngroupedFeedWithUrl:self.nextURL
+                                             retryCount:0
+                                             completion:^(NYPLCatalogUngroupedFeed * _Nullable feed) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       self.currentlyFetchingNextURL = NO;
       

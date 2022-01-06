@@ -1,14 +1,14 @@
 //
-//  NYPLFeedFetcher.swift
+//  NYPLOPDSFeedFetcher.swift
 //  Simplified
 //
 //  Created by Ernest Fan on 2022-01-09.
-//  Copyright © 2022 NYPL Labs. All rights reserved.
+//  Copyright © 2022 NYPL. All rights reserved.
 //
 
 import Foundation
 
-@objcMembers class NYPLFeedFetcher: NSObject {
+@objcMembers class NYPLOPDSFeedFetcher: NSObject {
   // The the maximum attempts of books fetching allowed until we receive supported books.
   private static let fetchSupportedBooksRetryThreshold = 15
   
