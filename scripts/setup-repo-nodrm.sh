@@ -36,7 +36,6 @@ git submodule update --init --recursive
 # Remove private dependencies
 sed -i '' "s#.*lcp.*##" Cartfile
 sed -i '' "s#.*lcp.*##" Cartfile.resolved
-sed -i '' "s#.*/\* XCRemoteSwiftPackageReference \"audiobook-ios-overdrive\" \*/,.*##" Simplified.xcodeproj/project.pbxproj
 
 # These will need to be filled in with real values
 if [ ! -f "SimplyE/GoogleService-Info.plist" ]; then

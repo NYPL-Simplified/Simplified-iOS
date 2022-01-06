@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "OverdriveProcessor",
-        "repositoryURL": "https://github.com/NYPL-Simplified/audiobook-ios-overdrive.git",
-        "state": {
-          "branch": "master",
-          "revision": "32425c7f7069fe644c0d861db0d2fc80c10bac82",
-          "version": null
-        }
-      },
-      {
         "package": "NYPLCardCreator",
         "repositoryURL": "https://github.com/NYPL-Simplified/CardCreator-iOS.git",
         "state": {
