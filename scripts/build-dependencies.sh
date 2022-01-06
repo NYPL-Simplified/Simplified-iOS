@@ -48,11 +48,8 @@ esac
 # later as a separate step in GitHub actions workflows.
 ./scripts/build-carthage.sh $1
 
-# The NYPLAEToolkit build has to necessarily happen after the Carthage build,
-# because the Carthage dependencies NYPLAEToolkit has are a subset of what we
-# have in SimplyE/OpenE.
 if [ "$1" != "--no-private" ]; then # include private libraries (e.g. for DRM support)
-  if [ "$BUILD_CONTEXT" != "ci" ]; then # CI builds NYPLAEToolkit in a separate workflow step
-    ./scripts/build-NYPLAEToolkit.sh
+  if [ "$BUILD_CONTEXT" != "ci" ]; then # CI fetches AudioEngine in a separate workflow step
+    cd ./NYPLAEToolkit && ./scripts/fetch-audioengine.sh
   fi
 fi

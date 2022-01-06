@@ -1,3 +1,5 @@
+@import PureLayout;
+
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
@@ -10,7 +12,6 @@
 
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import <PureLayout/PureLayout.h>
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLMyBooksViewController.h"

@@ -95,8 +95,8 @@ jobs:
           github-token: ${{ secrets.IOS_DEV_CI_PAT }}
           platform: iOS
           use-xcframeworks: true
-      - name: Build NYPLAEToolkit
-        run: ./scripts/build-NYPLAEToolkit.sh
+      - name: Fetch AudioEngine
+        run: cd ./NYPLAEToolkit && ./scripts/fetch-audioengine.sh
 
       - name: Archive SimplyE
         if: needs.version-check.outputs.simplye_changed == '1'

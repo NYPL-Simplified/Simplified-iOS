@@ -1,3 +1,5 @@
+@import PureLayout;
+
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
@@ -5,10 +7,7 @@
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLOpenSearchDescription.h"
-
-#import "NYPLAccountSignInViewController.h"
 #import "NYPLOPDS.h"
-#import <PureLayout/PureLayout.h>
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLHoldsViewController.h"

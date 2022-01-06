@@ -1,3 +1,5 @@
+@import PureLayout;
+
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
@@ -5,8 +7,6 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
-
-#import <PureLayout/PureLayout.h>
 
 @interface NYPLRemoteViewController () <NSURLConnectionDataDelegate>
 

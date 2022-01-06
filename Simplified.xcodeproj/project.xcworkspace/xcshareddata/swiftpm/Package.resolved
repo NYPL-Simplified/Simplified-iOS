@@ -2,11 +2,11 @@
   "object": {
     "pins": [
       {
-        "package": "OverdriveProcessor",
-        "repositoryURL": "https://github.com/NYPL-Simplified/audiobook-ios-overdrive.git",
+        "package": "NYPLCardCreator",
+        "repositoryURL": "https://github.com/NYPL-Simplified/CardCreator-iOS.git",
         "state": {
-          "branch": "master",
-          "revision": "034e461c605ae87c71d72d2f35bf8d93a8c75c94",
+          "branch": "main",
+          "revision": "56ca8ded649f4e2bb184b7ee8235f13d9b438299",
           "version": null
         }
       },
@@ -15,8 +15,26 @@
         "repositoryURL": "https://github.com/NYPL-Simplified/iOS-Utilities",
         "state": {
           "branch": "main",
-          "revision": "42b9c48e1da947d28789be9aa5822ebc0802a80b",
+          "revision": "242bb22e7addf5ed35b0dfb1ea3775d4004e1228",
           "version": null
+        }
+      },
+      {
+        "package": "NYPLAudiobookToolkit",
+        "repositoryURL": "https://github.com/NYPL-Simplified/NYPLAudiobookToolkit.git",
+        "state": {
+          "branch": "master",
+          "revision": "52a8b8baaadebebee978f69a7b90dadbda1a03bb",
+          "version": null
+        }
+      },
+      {
+        "package": "PureLayout",
+        "repositoryURL": "https://github.com/PureLayout/PureLayout.git",
+        "state": {
+          "branch": null,
+          "revision": "5561683c96dc49b023c1299bfe4f6fbeed5f8199",
+          "version": "3.1.9"
         }
       }
     ]

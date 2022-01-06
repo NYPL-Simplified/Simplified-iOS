@@ -39,7 +39,7 @@
 		08A352241BDE8E640040BF1D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352231BDE8E640040BF1D /* Security.framework */; };
 		08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352251BDE8E700040BF1D /* SystemConfiguration.framework */; };
 		08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
-		08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; settings = {ATTRIBUTES = (Weak, ); }; };
+		08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		11068C55196DD37900E8A94B /* NYPLNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 11068C54196DD37900E8A94B /* NYPLNull.m */; };
 		11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
@@ -141,7 +141,7 @@
 		17BE24E725FABCDE00AE707F /* NYPLUserAccountProviderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BE24E625FABCDE00AE707F /* NYPLUserAccountProviderMock.swift */; };
 		17BE24ED25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BE24EC25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift */; };
 		17BE24EF25FB114900AE707F /* simplye_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = 17BE24EE25FB114900AE707F /* simplye_authentication_document.json */; };
-		17DFC5ED251E7FBC003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (Required, ); }; };
+		17DFC5ED251E7FBC003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
 		17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		17E81F08261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
 		17E81F09261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
@@ -275,7 +275,6 @@
 		73085E30250308A4008F6244 /* NYPLSettingsSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */; };
 		73085E3525030D27008F6244 /* SEMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E3425030D27008F6244 /* SEMigrations.swift */; };
 		73085E3A25030D80008F6244 /* OEMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E3725030D66008F6244 /* OEMigrations.swift */; };
-		73086AD62733017300475BE5 /* NYPLCardCreator.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73086AC92733017300475BE5 /* NYPLCardCreator.xcframework */; };
 		730B7868249AB9D7008F28B3 /* Float+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* Float+NYPLAdditions.swift */; };
 		730B7869249AB9D7008F28B3 /* Float+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* Float+NYPLAdditions.swift */; };
 		730D17C02552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730D17BF2552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift */; };
@@ -323,21 +322,16 @@
 		730FC05725128D64004D7C2D /* OETutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730FC05425128D63004D7C2D /* OETutorialViewController.swift */; };
 		730FC05925128D64004D7C2D /* OETutorialWelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */; };
 		730FC05B2512911E004D7C2D /* NYPLWelcomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6202A031DD52B8600C99553 /* NYPLWelcomeScreenViewController.swift */; };
-		731134C72735DB4D00234F9C /* NYPLAEToolkit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B9FD627335C36002F0092 /* NYPLAEToolkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		731134CE2735DB8D00234F9C /* NYPLCardCreator.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73086AC92733017300475BE5 /* NYPLCardCreator.xcframework */; };
-		731134CF2735DB8D00234F9C /* NYPLCardCreator.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73086AC92733017300475BE5 /* NYPLCardCreator.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		731134D02735EA2F00234F9C /* NYPLAEToolkit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B9FD627335C36002F0092 /* NYPLAEToolkit.xcframework */; };
-		731134D12735EA3000234F9C /* NYPLAEToolkit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B9FD627335C36002F0092 /* NYPLAEToolkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		731134D22735EA3700234F9C /* NYPLCardCreator.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73086AC92733017300475BE5 /* NYPLCardCreator.xcframework */; };
-		731134D32735EA3700234F9C /* NYPLCardCreator.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73086AC92733017300475BE5 /* NYPLCardCreator.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7311FD2B25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */; };
 		7311FD2C25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */; };
+		731465202786106900027CFA /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 7314651F2786106900027CFA /* PureLayout */; };
 		7314D1402551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */; };
 		7314D1422551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */; };
+		7315208A27852AD5006DA65B /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 7315208927852AD5006DA65B /* NYPLCardCreator */; };
+		7315209327852FC9006DA65B /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 7315209227852FC9006DA65B /* NYPLAudiobookToolkit */; };
 		731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */; };
 		731B2B25244A2B6E00A7A649 /* R2Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; };
 		731B2B27244A2B7100A7A649 /* R2Streamer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; };
-		731B9FD727335C37002F0092 /* NYPLAEToolkit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B9FD627335C36002F0092 /* NYPLAEToolkit.xcframework */; };
 		7320AB36251EBC9900E3F04D /* Date+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */; };
 		7320AB3A251EBC9900E3F04D /* NYPLOPDSAcquisitionPathEntry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2D8790A220129AC400E2763F /* NYPLOPDSAcquisitionPathEntry.xml */; };
 		7320AB3B251EBC9900E3F04D /* UpdateCheckNeedsUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */; };
@@ -376,12 +370,6 @@
 		732F044F263376BB0018A82E /* Minizip.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F044D263376BB0018A82E /* Minizip.xcframework */; };
 		732F0451263376BB0018A82E /* Minizip.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F044D263376BB0018A82E /* Minizip.xcframework */; };
 		732F0452263376BB0018A82E /* Minizip.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F044D263376BB0018A82E /* Minizip.xcframework */; };
-		732F0459263377250018A82E /* PureLayout.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; };
-		732F045A263377250018A82E /* PureLayout.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; };
-		732F045C263377250018A82E /* PureLayout.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; };
-		732F045D263377250018A82E /* PureLayout.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; };
-		732F04632633776A0018A82E /* NYPLAudiobookToolkit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; };
-		732F04652633776A0018A82E /* NYPLAudiobookToolkit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; };
 		732F046D2633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; };
 		732F046E2633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; };
 		732F04702633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; };
@@ -416,6 +404,14 @@
 		732F474F260B224A00E2CB64 /* NYPLBookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */; };
 		732F929323ECB51F0099244C /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
 		7335BA9F2453C5B6000295F2 /* NYPLReaderPositions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */; };
+		73369F1327862B4500752ECB /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1227862B4500752ECB /* NYPLCardCreator */; };
+		73369F1527862B4500752ECB /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1427862B4500752ECB /* NYPLAudiobookToolkit */; };
+		73369F1727862B4500752ECB /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1627862B4500752ECB /* PureLayout */; };
+		73369F1927862B9900752ECB /* NYPLAEToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1827862B9900752ECB /* NYPLAEToolkit */; };
+		73369F1A27862C4D00752ECB /* R2Navigator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B18244A1D8600A7A649 /* R2Navigator.framework */; };
+		73369F1C27862D0000752ECB /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1B27862D0000752ECB /* NYPLAudiobookToolkit */; };
+		73369F1E27862D6800752ECB /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1D27862D6800752ECB /* PureLayout */; };
+		73369F2027862E6400752ECB /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1F27862E6400752ECB /* NYPLCardCreator */; };
 		733875652423E1B0000FEB67 /* NYPLNetworkExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */; };
 		733875672423E540000FEB67 /* NYPLCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733875662423E540000FEB67 /* NYPLCaching.swift */; };
 		733DEC92241090C7008C74BC /* NYPLRootTabBarController+R2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */; };
@@ -511,9 +507,7 @@
 		735694E526C70264008768E0 /* R2Navigator.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0485263379680018A82E /* R2Navigator.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		735694E626C70264008768E0 /* R2Streamer.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F048A2633799D0018A82E /* R2Streamer.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		735694E726C70264008768E0 /* R2Shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F048F263379BA0018A82E /* R2Shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		735694ED26C70291008768E0 /* PureLayout.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		735694F026C702A4008768E0 /* PDFRendererProvider.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		735694F526C703EA008768E0 /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7357073B272B487700B7BF16 /* NYPLSignInBusinessLogic+OE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357073A272B487700B7BF16 /* NYPLSignInBusinessLogic+OE.swift */; };
 		735771A02537635600067CEA /* NYPLSignInBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357719F2537635600067CEA /* NYPLSignInBusinessLogicTests.swift */; };
 		735771A52537635D00067CEA /* NYPLSignInBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357719F2537635600067CEA /* NYPLSignInBusinessLogicTests.swift */; };
@@ -555,9 +549,7 @@
 		7369A3822649C07F0029D8AB /* Fuzi.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0438263375520018A82E /* Fuzi.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7369A3832649C07F0029D8AB /* GCDWebServer.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04472633768D0018A82E /* GCDWebServer.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7369A3842649C07F0029D8AB /* Minizip.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F044D263376BB0018A82E /* Minizip.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		7369A3852649C07F0029D8AB /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7369A3882649C07F0029D8AB /* PDFRendererProvider.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		7369A3892649C07F0029D8AB /* PureLayout.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7369A38A2649C07F0029D8AB /* SQLite.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04722633784F0018A82E /* SQLite.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7369A38B2649C07F0029D8AB /* SwiftSoup.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0441263376530018A82E /* SwiftSoup.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7369A38C2649C07F0029D8AB /* ZIPFoundation.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0433263374FC0018A82E /* ZIPFoundation.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -598,6 +590,7 @@
 		7380E71F254B40D6004613B1 /* NYPLReaderTOCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F9245276CA004C78BD /* NYPLReaderTOCCell.swift */; };
 		7380E720254B4169004613B1 /* NYPLBookContentMetadataFilesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLBookContentMetadataFilesHelper.swift */; };
 		738170152526504800BA2C44 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738170142526504800BA2C44 /* GoogleService-Info.plist */; };
+		73829F4127861584008B2A80 /* NYPLAEToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 73829F4027861584008B2A80 /* NYPLAEToolkit */; };
 		7384C757252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C756252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift */; };
 		7384C759252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C756252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift */; };
 		7384C800242BB43400D5F960 /* NYPLCachingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C7FF242BB43300D5F960 /* NYPLCachingTests.swift */; };
@@ -614,7 +607,6 @@
 		73898590264127C200088C07 /* GCDWebServer.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04472633768D0018A82E /* GCDWebServer.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73898591264127C200088C07 /* Minizip.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F044D263376BB0018A82E /* Minizip.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73898595264127C200088C07 /* PDFRendererProvider.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		73898596264127C200088C07 /* PureLayout.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73898597264127C200088C07 /* ReadiumLCP.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F042E263374860018A82E /* ReadiumLCP.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73898598264127C200088C07 /* R2Navigator.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0485263379680018A82E /* R2Navigator.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73898599264127C200088C07 /* R2Streamer.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F048A2633799D0018A82E /* R2Streamer.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -787,7 +779,7 @@
 		739E6105244A0D8600D00301 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092251E7883C400AD338D /* libiconv.tbd */; };
 		739E6106244A0D8600D00301 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		739E6107244A0D8600D00301 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092231E78839D00AD338D /* QuartzCore.framework */; };
-		739E6108244A0D8600D00301 /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; settings = {ATTRIBUTES = (Weak, ); }; };
+		739E6108244A0D8600D00301 /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		739E610A244A0D8600D00301 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		739E610B244A0D8600D00301 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352211BDE8E560040BF1D /* libicucore.tbd */; };
 		739E610C244A0D8600D00301 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
@@ -819,7 +811,6 @@
 		739EC8922643D588001FE730 /* GCDWebServer.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04472633768D0018A82E /* GCDWebServer.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		739EC8932643D588001FE730 /* Minizip.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F044D263376BB0018A82E /* Minizip.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		739EC8972643D588001FE730 /* PDFRendererProvider.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		739EC8982643D588001FE730 /* PureLayout.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0458263377250018A82E /* PureLayout.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		739EC89A2643D588001FE730 /* R2Navigator.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0485263379680018A82E /* R2Navigator.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		739EC89B2643D588001FE730 /* R2Streamer.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F048A2633799D0018A82E /* R2Streamer.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		739EC89C2643D588001FE730 /* R2Shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F048F263379BA0018A82E /* R2Shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -866,6 +857,8 @@
 		73B5DFDD26052A1800225C12 /* NYPLBookButtonsState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */; };
 		73B5DFDF26052A1800225C12 /* NYPLBookButtonsState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */; };
 		73B5DFE026052A1800225C12 /* NYPLBookButtonsState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */; };
+		73B6E276278665AC0043FA30 /* OverdriveProcessor in Frameworks */ = {isa = PBXBuildFile; productRef = 73B6E275278665AC0043FA30 /* OverdriveProcessor */; };
+		73B6E278278665E10043FA30 /* OverdriveProcessor in Frameworks */ = {isa = PBXBuildFile; productRef = 73B6E277278665E10043FA30 /* OverdriveProcessor */; };
 		73B80BAB25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */; };
 		73BC285D269F96C00037930A /* NYPLReaderSettings+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC285C269F96C00037930A /* NYPLReaderSettings+Conversions.swift */; };
 		73BC285E269F96C00037930A /* NYPLReaderSettings+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC285C269F96C00037930A /* NYPLReaderSettings+Conversions.swift */; };
@@ -874,7 +867,6 @@
 		73BC286A269F995E0037930A /* NYPLReaderSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC2869269F995E0037930A /* NYPLReaderSettingsTests.swift */; };
 		73BC286B269F995E0037930A /* NYPLReaderSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC2869269F995E0037930A /* NYPLReaderSettingsTests.swift */; };
 		73BDB07A25F198D200556C35 /* R2Streamer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		73BDB08125F198F800556C35 /* R2Navigator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B18244A1D8600A7A649 /* R2Navigator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73BDB08325F1992B00556C35 /* R2Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73BF0CCE245769D80009FC61 /* NYPLReaderTOCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F9245276CA004C78BD /* NYPLReaderTOCCell.swift */; };
 		73C3CF5425C8EB6900CA8166 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
@@ -926,9 +918,6 @@
 		73DE897E260BEA13003D9135 /* NYPLRequestExecuting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DE8979260BEA13003D9135 /* NYPLRequestExecuting.swift */; };
 		73DEB54E2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
 		73DEB54F2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
-		73E1FB77277537B50078E61B /* OverdriveProcessor in Frameworks */ = {isa = PBXBuildFile; productRef = 73E1FB76277537B50078E61B /* OverdriveProcessor */; };
-		73E370D02746F75000BF052A /* NYPLAudiobookToolkit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; };
-		73E370D12746F7A600BF052A /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73E64E6A252BB82600276953 /* NYPLWelcomeEULAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */; };
 		73E64E6C252BB89A00276953 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = 73E64E6B252BB89A00276953 /* eula.html */; };
 		73EB0A6525821DF4006BC997 /* NYPLLibraryDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0826CD2E24AA2801000F4030 /* NYPLLibraryDescriptionCell.swift */; };
@@ -1486,11 +1475,7 @@
 				7389858F264127C200088C07 /* Fuzi.xcframework in Embed Frameworks */,
 				73898590264127C200088C07 /* GCDWebServer.xcframework in Embed Frameworks */,
 				73898591264127C200088C07 /* Minizip.xcframework in Embed Frameworks */,
-				731134C72735DB4D00234F9C /* NYPLAEToolkit.xcframework in Embed Frameworks */,
-				73E370D12746F7A600BF052A /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */,
-				731134CF2735DB8D00234F9C /* NYPLCardCreator.xcframework in Embed Frameworks */,
 				73898595264127C200088C07 /* PDFRendererProvider.xcframework in Embed Frameworks */,
-				73898596264127C200088C07 /* PureLayout.xcframework in Embed Frameworks */,
 				73898597264127C200088C07 /* ReadiumLCP.xcframework in Embed Frameworks */,
 				73898598264127C200088C07 /* R2Navigator.xcframework in Embed Frameworks */,
 				7389859A264127C200088C07 /* R2Shared.xcframework in Embed Frameworks */,
@@ -1516,7 +1501,6 @@
 				739EC8932643D588001FE730 /* Minizip.xcframework in Embed Frameworks */,
 				5941F5ED268C5E8500F69F0B /* NYPLAxis.framework in Embed Frameworks */,
 				739EC8972643D588001FE730 /* PDFRendererProvider.xcframework in Embed Frameworks */,
-				739EC8982643D588001FE730 /* PureLayout.xcframework in Embed Frameworks */,
 				739EC89A2643D588001FE730 /* R2Navigator.xcframework in Embed Frameworks */,
 				739EC89B2643D588001FE730 /* R2Streamer.xcframework in Embed Frameworks */,
 				73F5DE892774EE3200597F1E /* NYPLUtilities in Embed Frameworks */,
@@ -1540,15 +1524,10 @@
 				7369A3822649C07F0029D8AB /* Fuzi.xcframework in Embed Frameworks */,
 				7369A3832649C07F0029D8AB /* GCDWebServer.xcframework in Embed Frameworks */,
 				7369A3842649C07F0029D8AB /* Minizip.xcframework in Embed Frameworks */,
-				731134D12735EA3000234F9C /* NYPLAEToolkit.xcframework in Embed Frameworks */,
-				7369A3852649C07F0029D8AB /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */,
-				731134D32735EA3700234F9C /* NYPLCardCreator.xcframework in Embed Frameworks */,
 				73F5DE942774EEE100597F1E /* NYPLUtilities in Embed Frameworks */,
 				7369A3882649C07F0029D8AB /* PDFRendererProvider.xcframework in Embed Frameworks */,
-				7369A3892649C07F0029D8AB /* PureLayout.xcframework in Embed Frameworks */,
 				7369A3802649C0520029D8AB /* ReadiumLCP.framework in Embed Frameworks */,
 				73BDB08325F1992B00556C35 /* R2Shared.framework in Embed Frameworks */,
-				73BDB08125F198F800556C35 /* R2Navigator.framework in Embed Frameworks */,
 				73BDB07A25F198D200556C35 /* R2Streamer.framework in Embed Frameworks */,
 				7369A38A2649C07F0029D8AB /* SQLite.xcframework in Embed Frameworks */,
 				7369A38B2649C07F0029D8AB /* SwiftSoup.xcframework in Embed Frameworks */,
@@ -1569,9 +1548,7 @@
 				735694D026C70224008768E0 /* Fuzi.xcframework in Embed Frameworks */,
 				735694D326C7022C008768E0 /* GCDWebServer.xcframework in Embed Frameworks */,
 				735694D626C70231008768E0 /* Minizip.xcframework in Embed Frameworks */,
-				735694F526C703EA008768E0 /* NYPLAudiobookToolkit.xcframework in Embed Frameworks */,
 				735694F026C702A4008768E0 /* PDFRendererProvider.xcframework in Embed Frameworks */,
-				735694ED26C70291008768E0 /* PureLayout.xcframework in Embed Frameworks */,
 				735694E526C70264008768E0 /* R2Navigator.xcframework in Embed Frameworks */,
 				735694E726C70264008768E0 /* R2Shared.xcframework in Embed Frameworks */,
 				735694E626C70264008768E0 /* R2Streamer.xcframework in Embed Frameworks */,
@@ -1881,7 +1858,6 @@
 		73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsSplitViewController.swift; sourceTree = "<group>"; };
 		73085E3425030D27008F6244 /* SEMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SEMigrations.swift; sourceTree = "<group>"; };
 		73085E3725030D66008F6244 /* OEMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OEMigrations.swift; sourceTree = "<group>"; };
-		73086AC92733017300475BE5 /* NYPLCardCreator.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NYPLCardCreator.xcframework; path = Carthage/Build/NYPLCardCreator.xcframework; sourceTree = "<group>"; };
 		730B7867249AB9D7008F28B3 /* Float+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+NYPLAdditions.swift"; sourceTree = "<group>"; };
 		730D17BF2552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMyBooksDownloadsCenterMock.swift; sourceTree = "<group>"; };
 		730D17CB25535954004CAC83 /* NYPLSignInBusinessLogic+BookmarkSyncing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+BookmarkSyncing.swift"; sourceTree = "<group>"; };
@@ -1909,12 +1885,12 @@
 		7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInOutBusinessLogicUIDelegateMock.swift; sourceTree = "<group>"; };
 		731272AC259CF6F90032D7B4 /* xcode-export-appstore.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-export-appstore.sh"; sourceTree = "<group>"; };
 		731272B1259CFB180032D7B4 /* testflight-upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "testflight-upload.sh"; sourceTree = "<group>"; };
+		7314651C27860FCA00027CFA /* NYPLAEToolkit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = NYPLAEToolkit; sourceTree = "<group>"; };
 		7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+SignOut.swift"; sourceTree = "<group>"; };
 		73165C67268662FA0021A6AD /* checkout-r2-branch.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "checkout-r2-branch.sh"; sourceTree = "<group>"; };
 		731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogic.swift; sourceTree = "<group>"; };
 		731B2B12244A1D6500A7A649 /* R2Streamer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = R2Streamer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		731B2B18244A1D8600A7A649 /* R2Navigator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = R2Navigator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		731B9FD627335C36002F0092 /* NYPLAEToolkit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NYPLAEToolkit.xcframework; path = NYPLAEToolkit/build/NYPLAEToolkit.xcframework; sourceTree = "<group>"; };
 		7320AB48251EBC9900E3F04D /* OpenEbooksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenEbooksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73225DEA250B471400EF1877 /* NYPLRootTabBarController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+OE.swift"; sourceTree = "<group>"; };
 		732327B12478504500A041E6 /* NSError+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSError+NYPLAdditions.swift"; sourceTree = "<group>"; };
@@ -1925,8 +1901,6 @@
 		732F0441263376530018A82E /* SwiftSoup.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SwiftSoup.xcframework; path = Carthage/Build/SwiftSoup.xcframework; sourceTree = "<group>"; };
 		732F04472633768D0018A82E /* GCDWebServer.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GCDWebServer.xcframework; path = Carthage/Build/GCDWebServer.xcframework; sourceTree = "<group>"; };
 		732F044D263376BB0018A82E /* Minizip.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Minizip.xcframework; path = Carthage/Build/Minizip.xcframework; sourceTree = "<group>"; };
-		732F0458263377250018A82E /* PureLayout.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PureLayout.xcframework; path = Carthage/Build/PureLayout.xcframework; sourceTree = "<group>"; };
-		732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NYPLAudiobookToolkit.xcframework; path = Carthage/Build/NYPLAudiobookToolkit.xcframework; sourceTree = "<group>"; };
 		732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PDFRendererProvider.xcframework; path = Carthage/Build/PDFRendererProvider.xcframework; sourceTree = "<group>"; };
 		732F04722633784F0018A82E /* SQLite.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SQLite.xcframework; path = Carthage/Build/SQLite.xcframework; sourceTree = "<group>"; };
 		732F0480263378EF0018A82E /* ZXingObjC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ZXingObjC.xcframework; path = Carthage/Build/ZXingObjC.xcframework; sourceTree = "<group>"; };
@@ -2045,6 +2019,7 @@
 		73B59DBD274C76C9002B0EF7 /* NYPLLibrariesListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibrariesListVC.swift; sourceTree = "<group>"; };
 		73B5DFDA26052A1800225C12 /* NYPLBookButtonsState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsState.m; sourceTree = "<group>"; };
 		73B5DFDB26052A1800225C12 /* NYPLBookButtonsState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsState.h; sourceTree = "<group>"; };
+		73B6E2742786658F0043FA30 /* audiobook-ios-overdrive */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "audiobook-ios-overdrive"; sourceTree = "<group>"; };
 		73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+CardCreation.swift"; sourceTree = "<group>"; };
 		73BC285C269F96C00037930A /* NYPLReaderSettings+Conversions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLReaderSettings+Conversions.swift"; sourceTree = "<group>"; };
 		73BC2869269F995E0037930A /* NYPLReaderSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderSettingsTests.swift; sourceTree = "<group>"; };
@@ -2212,10 +2187,9 @@
 				732F04A9263739A50018A82E /* CryptoSwift.xcframework in Frameworks */,
 				73061A79273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
 				7347B4AA265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
-				7347B4B9265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
-				731134D02735EA2F00234F9C /* NYPLAEToolkit.xcframework in Frameworks */,
 				7347B4BD265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
 				7347B4C1265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */,
+				7347B4B9265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
 				7347B4B5265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */,
 				739E6113244A0D8600D00301 /* Foundation.framework in Frameworks */,
 				732F043A263375520018A82E /* Fuzi.xcframework in Frameworks */,
@@ -2229,30 +2203,33 @@
 				739E610B244A0D8600D00301 /* libicucore.tbd in Frameworks */,
 				739E610A244A0D8600D00301 /* libRDServices.a in Frameworks */,
 				739E6114244A0D8600D00301 /* libTenPrintCover.a in Frameworks */,
-				73F5DE932774EEE100597F1E /* NYPLUtilities in Frameworks */,
 				739E6116244A0D8600D00301 /* libxml2.dylib in Frameworks */,
 				739E6115244A0D8600D00301 /* libz.dylib in Frameworks */,
 				739E610D244A0D8600D00301 /* LocalAuthentication.framework in Frameworks */,
 				739E6100244A0D8600D00301 /* MediaPlayer.framework in Frameworks */,
 				732F044F263376BB0018A82E /* Minizip.xcframework in Frameworks */,
 				7347B4DE265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
-				732F04632633776A0018A82E /* NYPLAudiobookToolkit.xcframework in Frameworks */,
-				731134D22735EA3700234F9C /* NYPLCardCreator.xcframework in Frameworks */,
 				732F046E2633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347B4E6265EFD3C00E4E386 /* PromisesObjC.xcframework in Frameworks */,
-				732F045A263377250018A82E /* PureLayout.xcframework in Frameworks */,
 				739E6107244A0D8600D00301 /* QuartzCore.framework in Frameworks */,
+				7384E45726490AA200B3D530 /* R2LCPClient.framework in Frameworks */,
+				73369F1A27862C4D00752ECB /* R2Navigator.framework in Frameworks */,
 				731B2B25244A2B6E00A7A649 /* R2Shared.framework in Frameworks */,
 				731B2B27244A2B7100A7A649 /* R2Streamer.framework in Frameworks */,
 				7369A37F2649C02D0029D8AB /* ReadiumLCP.framework in Frameworks */,
 				739E610F244A0D8600D00301 /* Security.framework in Frameworks */,
 				732F0474263378500018A82E /* SQLite.xcframework in Frameworks */,
 				732F0443263376540018A82E /* SwiftSoup.xcframework in Frameworks */,
-				7384E45726490AA200B3D530 /* R2LCPClient.framework in Frameworks */,
 				739E610E244A0D8600D00301 /* SystemConfiguration.framework in Frameworks */,
 				739E6112244A0D8600D00301 /* UIKit.framework in Frameworks */,
 				732F0435263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
 				732F0482263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
+				73B6E278278665E10043FA30 /* OverdriveProcessor in Frameworks */,
+				73369F1527862B4500752ECB /* NYPLAudiobookToolkit in Frameworks */,
+				73F5DE932774EEE100597F1E /* NYPLUtilities in Frameworks */,
+				73369F1727862B4500752ECB /* PureLayout in Frameworks */,
+				73369F1927862B9900752ECB /* NYPLAEToolkit in Frameworks */,
+				73369F1327862B4500752ECB /* NYPLCardCreator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2291,12 +2268,8 @@
 				73EB0B2E25821DF4006BC997 /* MediaPlayer.framework in Frameworks */,
 				732F0451263376BB0018A82E /* Minizip.xcframework in Frameworks */,
 				7347B4DF265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
-				732F04652633776A0018A82E /* NYPLAudiobookToolkit.xcframework in Frameworks */,
-				73086AD62733017300475BE5 /* NYPLCardCreator.xcframework in Frameworks */,
-				739F43A62770FEA5005A8E1F /* NYPLUtilities in Frameworks */,
 				732F04702633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347B4E7265EFD3C00E4E386 /* PromisesObjC.xcframework in Frameworks */,
-				732F045C263377250018A82E /* PureLayout.xcframework in Frameworks */,
 				73EB0B3525821DF4006BC997 /* QuartzCore.framework in Frameworks */,
 				732F0488263379690018A82E /* R2Navigator.xcframework in Frameworks */,
 				732F0492263379BA0018A82E /* R2Shared.xcframework in Frameworks */,
@@ -2307,6 +2280,9 @@
 				73EB0B3C25821DF4006BC997 /* SystemConfiguration.framework in Frameworks */,
 				73EB0B4025821DF4006BC997 /* UIKit.framework in Frameworks */,
 				732F0484263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
+				73369F2027862E6400752ECB /* NYPLCardCreator in Frameworks */,
+				73369F1C27862D0000752ECB /* NYPLAudiobookToolkit in Frameworks */,
+				739F43A62770FEA5005A8E1F /* NYPLUtilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2342,10 +2318,8 @@
 				732F0452263376BB0018A82E /* Minizip.xcframework in Frameworks */,
 				7347B4E0265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
 				5941F5EC268C5E8500F69F0B /* NYPLAxis.framework in Frameworks */,
-				73F5DE882774EE3200597F1E /* NYPLUtilities in Frameworks */,
 				732F04712633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347B4E8265EFD3C00E4E386 /* PromisesObjC.xcframework in Frameworks */,
-				732F045D263377250018A82E /* PureLayout.xcframework in Frameworks */,
 				73FCA36425005BA4001B0C5D /* QuartzCore.framework in Frameworks */,
 				732F0489263379690018A82E /* R2Navigator.xcframework in Frameworks */,
 				732F0493263379BA0018A82E /* R2Shared.xcframework in Frameworks */,
@@ -2356,6 +2330,8 @@
 				73FCA36B25005BA4001B0C5D /* SystemConfiguration.framework in Frameworks */,
 				73FCA36F25005BA4001B0C5D /* UIKit.framework in Frameworks */,
 				732F0437263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
+				73369F1E27862D6800752ECB /* PureLayout in Frameworks */,
+				73F5DE882774EE3200597F1E /* NYPLUtilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2371,15 +2347,14 @@
 				84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */,
 				03B092281E78859E00AD338D /* CoreMedia.framework in Frameworks */,
 				03B0922E1E7886ED00AD338D /* CoreVideo.framework in Frameworks */,
-				73061A78273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
 				732F04A8263739A50018A82E /* CryptoSwift.xcframework in Frameworks */,
+				73061A78273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
 				7347B4A9265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
 				7347B4BC265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
 				7347B4C0265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */,
 				7347B4B8265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
 				7347B4B4265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
-				731134CE2735DB8D00234F9C /* NYPLCardCreator.xcframework in Frameworks */,
 				732F0439263375520018A82E /* Fuzi.xcframework in Frameworks */,
 				732F04482633768D0018A82E /* GCDWebServer.xcframework in Frameworks */,
 				7347B4D2265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */,
@@ -2392,18 +2367,13 @@
 				08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */,
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
-				73E1FB77277537B50078E61B /* OverdriveProcessor in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */,
 				03B092301E78871A00AD338D /* MediaPlayer.framework in Frameworks */,
 				732F044E263376BB0018A82E /* Minizip.xcframework in Frameworks */,
 				7347B4DD265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
-				731B9FD727335C37002F0092 /* NYPLAEToolkit.xcframework in Frameworks */,
-				73E370D02746F75000BF052A /* NYPLAudiobookToolkit.xcframework in Frameworks */,
-				73579046276BE7F2009F1ADF /* NYPLUtilities in Frameworks */,
 				732F046D2633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347B4E5265EFD3C00E4E386 /* PromisesObjC.xcframework in Frameworks */,
-				732F0459263377250018A82E /* PureLayout.xcframework in Frameworks */,
 				03B092241E78839D00AD338D /* QuartzCore.framework in Frameworks */,
 				732F0486263379680018A82E /* R2Navigator.xcframework in Frameworks */,
 				732F0490263379BA0018A82E /* R2Shared.xcframework in Frameworks */,
@@ -2416,6 +2386,12 @@
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				732F0434263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
 				732F0481263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
+				73B6E276278665AC0043FA30 /* OverdriveProcessor in Frameworks */,
+				731465202786106900027CFA /* PureLayout in Frameworks */,
+				7315208A27852AD5006DA65B /* NYPLCardCreator in Frameworks */,
+				73579046276BE7F2009F1ADF /* NYPLUtilities in Frameworks */,
+				73829F4127861584008B2A80 /* NYPLAEToolkit in Frameworks */,
+				7315209327852FC9006DA65B /* NYPLAudiobookToolkit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2691,6 +2667,15 @@
 				73D4DC182627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift */,
 			);
 			name = Bookmarks;
+			sourceTree = "<group>";
+		};
+		7314651B27860FCA00027CFA /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				7314651C27860FCA00027CFA /* NYPLAEToolkit */,
+				73B6E2742786658F0043FA30 /* audiobook-ios-overdrive */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		73225DE5250B46CE00EF1877 /* AppInfrastructure */ = {
@@ -3407,6 +3392,7 @@
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
+				7314651B27860FCA00027CFA /* Packages */,
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
 				59F7F769268B513800CCA592 /* NYPLAxis.xcodeproj */,
 				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
@@ -3466,12 +3452,8 @@
 				03B0922F1E78871A00AD338D /* MediaPlayer.framework */,
 				732F044D263376BB0018A82E /* Minizip.xcframework */,
 				7347B4DC265EFD1300E4E386 /* nanopb.xcframework */,
-				731B9FD627335C36002F0092 /* NYPLAEToolkit.xcframework */,
-				732F04612633776A0018A82E /* NYPLAudiobookToolkit.xcframework */,
-				73086AC92733017300475BE5 /* NYPLCardCreator.xcframework */,
 				732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */,
 				7347B4E4265EFD3C00E4E386 /* PromisesObjC.xcframework */,
-				732F0458263377250018A82E /* PureLayout.xcframework */,
 				03B092231E78839D00AD338D /* QuartzCore.framework */,
 				73A7BA4D25A62FE900C2906C /* R2LCPClient.framework */,
 				732F042E263374860018A82E /* ReadiumLCP.xcframework */,
@@ -3668,6 +3650,11 @@
 			name = "SimplyE-R2dev";
 			packageProductDependencies = (
 				73F5DE922774EEE100597F1E /* NYPLUtilities */,
+				73369F1227862B4500752ECB /* NYPLCardCreator */,
+				73369F1427862B4500752ECB /* NYPLAudiobookToolkit */,
+				73369F1627862B4500752ECB /* PureLayout */,
+				73369F1827862B9900752ECB /* NYPLAEToolkit */,
+				73B6E277278665E10043FA30 /* OverdriveProcessor */,
 			);
 			productName = Simplified;
 			productReference = 7347F123245A4DE200558D7F /* SimplyE-R2dev.app */;
@@ -3690,6 +3677,8 @@
 			name = "SimplyE-noDRM";
 			packageProductDependencies = (
 				739F43A52770FEA5005A8E1F /* NYPLUtilities */,
+				73369F1B27862D0000752ECB /* NYPLAudiobookToolkit */,
+				73369F1F27862E6400752ECB /* NYPLCardCreator */,
 			);
 			productName = Simplified;
 			productReference = 73EB0B7525821DF4006BC997 /* SimplyE-noDRM.app */;
@@ -3713,6 +3702,7 @@
 			name = "Open eBooks";
 			packageProductDependencies = (
 				73F5DE872774EE3200597F1E /* NYPLUtilities */,
+				73369F1D27862D6800752ECB /* PureLayout */,
 			);
 			productName = Simplified;
 			productReference = 73FCA3A425005BA4001B0C5D /* Open eBooks.app */;
@@ -3732,12 +3722,15 @@
 			buildRules = (
 			);
 			dependencies = (
-				73579072276C0153009F1ADF /* PBXTargetDependency */,
 			);
 			name = SimplyE;
 			packageProductDependencies = (
 				73579045276BE7F2009F1ADF /* NYPLUtilities */,
-				73E1FB76277537B50078E61B /* OverdriveProcessor */,
+				7315208927852AD5006DA65B /* NYPLCardCreator */,
+				7315209227852FC9006DA65B /* NYPLAudiobookToolkit */,
+				7314651F2786106900027CFA /* PureLayout */,
+				73829F4027861584008B2A80 /* NYPLAEToolkit */,
+				73B6E275278665AC0043FA30 /* OverdriveProcessor */,
 			);
 			productName = Simplified;
 			productReference = A823D80D192BABA400B55DE2 /* SimplyE.app */;
@@ -3796,7 +3789,9 @@
 			mainGroup = A823D804192BABA400B55DE2;
 			packageReferences = (
 				73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */,
-				73E1FB75277537B50078E61B /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */,
+				7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */,
+				7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */,
+				7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */,
 			);
 			productRefGroup = A823D80E192BABA400B55DE2 /* Products */;
 			projectDirPath = "";
@@ -5260,10 +5255,6 @@
 			target = 73FCA2A725005BA4001B0C5D /* Open eBooks */;
 			targetProxy = 7320AB4E251EBCB200E3F04D /* PBXContainerItemProxy */;
 		};
-		73579072276C0153009F1ADF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 73579071276C0153009F1ADF /* NYPLUtilities */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -5463,7 +5454,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5514,7 +5505,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5564,7 +5555,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5611,7 +5602,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5656,7 +5647,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5673,7 +5664,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.OpenEbooks;
 				PRODUCT_MODULE_NAME = SimplyE;
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
@@ -5705,7 +5696,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5722,7 +5713,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.OpenEbooks;
 				PRODUCT_MODULE_NAME = SimplyE;
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
@@ -5882,7 +5873,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5933,7 +5924,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -6043,6 +6034,30 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PureLayout/PureLayout.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.9;
+			};
+		};
+		7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/NYPL-Simplified/CardCreator-iOS.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/NYPL-Simplified/NYPLAudiobookToolkit.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/NYPL-Simplified/iOS-Utilities";
@@ -6051,35 +6066,78 @@
 				kind = branch;
 			};
 		};
-		73E1FB75277537B50078E61B /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/NYPL-Simplified/audiobook-ios-overdrive.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7314651F2786106900027CFA /* PureLayout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */;
+			productName = PureLayout;
+		};
+		7315208927852AD5006DA65B /* NYPLCardCreator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */;
+			productName = NYPLCardCreator;
+		};
+		7315209227852FC9006DA65B /* NYPLAudiobookToolkit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */;
+			productName = NYPLAudiobookToolkit;
+		};
+		73369F1227862B4500752ECB /* NYPLCardCreator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */;
+			productName = NYPLCardCreator;
+		};
+		73369F1427862B4500752ECB /* NYPLAudiobookToolkit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */;
+			productName = NYPLAudiobookToolkit;
+		};
+		73369F1627862B4500752ECB /* PureLayout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */;
+			productName = PureLayout;
+		};
+		73369F1827862B9900752ECB /* NYPLAEToolkit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NYPLAEToolkit;
+		};
+		73369F1B27862D0000752ECB /* NYPLAudiobookToolkit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */;
+			productName = NYPLAudiobookToolkit;
+		};
+		73369F1D27862D6800752ECB /* PureLayout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */;
+			productName = PureLayout;
+		};
+		73369F1F27862E6400752ECB /* NYPLCardCreator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */;
+			productName = NYPLCardCreator;
+		};
 		73579045276BE7F2009F1ADF /* NYPLUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
 			productName = NYPLUtilities;
 		};
-		73579071276C0153009F1ADF /* NYPLUtilities */ = {
+		73829F4027861584008B2A80 /* NYPLAEToolkit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
-			productName = NYPLUtilities;
+			productName = NYPLAEToolkit;
 		};
 		739F43A52770FEA5005A8E1F /* NYPLUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
 			productName = NYPLUtilities;
 		};
-		73E1FB76277537B50078E61B /* OverdriveProcessor */ = {
+		73B6E275278665AC0043FA30 /* OverdriveProcessor */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 73E1FB75277537B50078E61B /* XCRemoteSwiftPackageReference "audiobook-ios-overdrive" */;
+			productName = OverdriveProcessor;
+		};
+		73B6E277278665E10043FA30 /* OverdriveProcessor */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = OverdriveProcessor;
 		};
 		73F5DE872774EE3200597F1E /* NYPLUtilities */ = {
