@@ -224,8 +224,6 @@
 		5916E7DF2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5916E7E02627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
 		5916E7E32627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5916E7DE2627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift */; };
-		5941F5EC268C5E8500F69F0B /* NYPLAxis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F7F771268B513800CCA592 /* NYPLAxis.framework */; };
-		5941F5ED268C5E8500F69F0B /* NYPLAxis.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 59F7F771268B513800CCA592 /* NYPLAxis.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5941F65D268CCC1600F69F0B /* NYPLAxisProtectedAssetHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5941F657268CCC1600F69F0B /* NYPLAxisProtectedAssetHandler.swift */; };
 		5941F65E268CCC1600F69F0B /* NYPLAxisContentProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5941F658268CCC1600F69F0B /* NYPLAxisContentProtection.swift */; };
 		5941F65F268CCC1600F69F0B /* NYPLAxisDecompressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5941F659268CCC1600F69F0B /* NYPLAxisDecompressor.swift */; };
@@ -327,8 +325,6 @@
 		731465202786106900027CFA /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 7314651F2786106900027CFA /* PureLayout */; };
 		7314D1402551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */; };
 		7314D1422551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */; };
-		7315208A27852AD5006DA65B /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 7315208927852AD5006DA65B /* NYPLCardCreator */; };
-		7315209327852FC9006DA65B /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 7315209227852FC9006DA65B /* NYPLAudiobookToolkit */; };
 		731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */; };
 		731B2B25244A2B6E00A7A649 /* R2Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; };
 		731B2B27244A2B7100A7A649 /* R2Streamer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; };
@@ -404,14 +400,10 @@
 		732F474F260B224A00E2CB64 /* NYPLBookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */; };
 		732F929323ECB51F0099244C /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
 		7335BA9F2453C5B6000295F2 /* NYPLReaderPositions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */; };
-		73369F1327862B4500752ECB /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1227862B4500752ECB /* NYPLCardCreator */; };
-		73369F1527862B4500752ECB /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1427862B4500752ECB /* NYPLAudiobookToolkit */; };
 		73369F1727862B4500752ECB /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1627862B4500752ECB /* PureLayout */; };
 		73369F1927862B9900752ECB /* NYPLAEToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1827862B9900752ECB /* NYPLAEToolkit */; };
 		73369F1A27862C4D00752ECB /* R2Navigator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B18244A1D8600A7A649 /* R2Navigator.framework */; };
-		73369F1C27862D0000752ECB /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1B27862D0000752ECB /* NYPLAudiobookToolkit */; };
 		73369F1E27862D6800752ECB /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1D27862D6800752ECB /* PureLayout */; };
-		73369F2027862E6400752ECB /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1F27862E6400752ECB /* NYPLCardCreator */; };
 		733875652423E1B0000FEB67 /* NYPLNetworkExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */; };
 		733875672423E540000FEB67 /* NYPLCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733875662423E540000FEB67 /* NYPLCaching.swift */; };
 		733DEC92241090C7008C74BC /* NYPLRootTabBarController+R2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLRootTabBarController+R2.swift */; };
@@ -620,6 +612,13 @@
 		738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738EF2CB2405E38800F388FB /* GoogleService-Info.plist */; };
 		739062D225358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */; };
 		739062D425358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */; };
+		7392E4602788E752006F010E /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E45F2788E752006F010E /* NYPLAudiobookToolkit */; };
+		7392E4622788E75B006F010E /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E4612788E75B006F010E /* NYPLCardCreator */; };
+		7392E4642788E7AF006F010E /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E4632788E7AF006F010E /* NYPLAudiobookToolkit */; };
+		7392E4662788E7AF006F010E /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E4652788E7AF006F010E /* NYPLCardCreator */; };
+		7392E4682788E7CB006F010E /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E4672788E7CB006F010E /* NYPLAudiobookToolkit */; };
+		7392E46A2788E7CB006F010E /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E4692788E7CB006F010E /* NYPLCardCreator */; };
+		7392E46C2788E7D8006F010E /* NYPLAxis in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E46B2788E7D8006F010E /* NYPLAxis */; };
 		739E6046244A0D8600D00301 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
 		739E6047244A0D8600D00301 /* NYPLBookState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171966A824170819007BB87E /* NYPLBookState.swift */; };
 		739E6049244A0D8600D00301 /* NYPLPlatformAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* NYPLPlatformAPI.swift */; };
@@ -1424,20 +1423,6 @@
 			remoteGlobalIDString = 59D9CBF525FFDBC500C89B81;
 			remoteInfo = TenPrintCoverTests;
 		};
-		59F7F770268B513800CCA592 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 59F7F769268B513800CCA592 /* NYPLAxis.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5938EE74268390F000434468;
-			remoteInfo = NYPLAxis;
-		};
-		59F7F772268B513800CCA592 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 59F7F769268B513800CCA592 /* NYPLAxis.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5938EE7D268390F100434468;
-			remoteInfo = NYPLAxisTests;
-		};
 		5A569A2B1B8351C6003B5B61 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */;
@@ -1499,7 +1484,6 @@
 				739EC8912643D588001FE730 /* Fuzi.xcframework in Embed Frameworks */,
 				739EC8922643D588001FE730 /* GCDWebServer.xcframework in Embed Frameworks */,
 				739EC8932643D588001FE730 /* Minizip.xcframework in Embed Frameworks */,
-				5941F5ED268C5E8500F69F0B /* NYPLAxis.framework in Embed Frameworks */,
 				739EC8972643D588001FE730 /* PDFRendererProvider.xcframework in Embed Frameworks */,
 				739EC89A2643D588001FE730 /* R2Navigator.xcframework in Embed Frameworks */,
 				739EC89B2643D588001FE730 /* R2Streamer.xcframework in Embed Frameworks */,
@@ -1831,7 +1815,6 @@
 		597E2721268B537E00A3CD23 /* NYPLFullAxisNowResourceAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLFullAxisNowResourceAdapter.swift; sourceTree = "<group>"; };
 		597E2722268B537E00A3CD23 /* NYPLAxisBookContentDecryptionAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisBookContentDecryptionAdapter.swift; sourceTree = "<group>"; };
 		597E2731268B538B00A3CD23 /* NYPLAxisServiceAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAxisServiceAdapter.swift; sourceTree = "<group>"; };
-		59F7F769268B513800CCA592 /* NYPLAxis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NYPLAxis.xcodeproj; path = "Axis-iOS/NYPLAxis.xcodeproj"; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		5D1B141422CBE3570006C964 /* NYPLProblemDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLProblemDocument.swift; sourceTree = "<group>"; };
 		5D1B142922CC179F0006C964 /* NYPLAlertUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAlertUtils.swift; sourceTree = "<group>"; };
@@ -1968,6 +1951,7 @@
 		7358EE7B250062BD00DDA0CC /* OEImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = OEImages.xcassets; sourceTree = "<group>"; };
 		7358EE902500642900DDA0CC /* OELaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OELaunchScreen.xib; sourceTree = "<group>"; };
 		7358EE922500675700DDA0CC /* Open-eBooks-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Open-eBooks-Info.plist"; sourceTree = "<group>"; };
+		735A0E822788E39A00091B87 /* Axis-iOS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Axis-iOS"; sourceTree = "<group>"; };
 		735DD0BD252299A90096D1F9 /* UIColor+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
 		735F41A2243E381D00046182 /* String+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
 		735FCB392506FACF009A8C95 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
@@ -2000,6 +1984,8 @@
 		7390295A2739A6D80083D159 /* build-NYPLAEToolkit.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-NYPLAEToolkit.sh"; sourceTree = "<group>"; };
 		739029612739AE890083D159 /* prepare-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "prepare-carthage.sh"; sourceTree = "<group>"; };
 		739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogicUIDelegate.swift; sourceTree = "<group>"; };
+		7392E45D2788E685006F010E /* CardCreator-iOS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "CardCreator-iOS"; sourceTree = "<group>"; };
+		7392E45E2788E6E9006F010E /* NYPLAudiobookToolkit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = NYPLAudiobookToolkit; sourceTree = "<group>"; };
 		739E6157244A0F6D00D00301 /* R2Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = R2Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		739ECB2325101CCE00691A70 /* NSNotification+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSNotification+NYPL.swift"; sourceTree = "<group>"; };
 		739ECB282510207E00691A70 /* NYPLCatalogs+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLCatalogs+OE.swift"; sourceTree = "<group>"; };
@@ -2224,12 +2210,12 @@
 				739E6112244A0D8600D00301 /* UIKit.framework in Frameworks */,
 				732F0435263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
 				732F0482263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
+				7392E4662788E7AF006F010E /* NYPLCardCreator in Frameworks */,
+				7392E4642788E7AF006F010E /* NYPLAudiobookToolkit in Frameworks */,
 				73B6E278278665E10043FA30 /* OverdriveProcessor in Frameworks */,
-				73369F1527862B4500752ECB /* NYPLAudiobookToolkit in Frameworks */,
 				73F5DE932774EEE100597F1E /* NYPLUtilities in Frameworks */,
 				73369F1727862B4500752ECB /* PureLayout in Frameworks */,
 				73369F1927862B9900752ECB /* NYPLAEToolkit in Frameworks */,
-				73369F1327862B4500752ECB /* NYPLCardCreator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2280,8 +2266,8 @@
 				73EB0B3C25821DF4006BC997 /* SystemConfiguration.framework in Frameworks */,
 				73EB0B4025821DF4006BC997 /* UIKit.framework in Frameworks */,
 				732F0484263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
-				73369F2027862E6400752ECB /* NYPLCardCreator in Frameworks */,
-				73369F1C27862D0000752ECB /* NYPLAudiobookToolkit in Frameworks */,
+				7392E46A2788E7CB006F010E /* NYPLCardCreator in Frameworks */,
+				7392E4682788E7CB006F010E /* NYPLAudiobookToolkit in Frameworks */,
 				739F43A62770FEA5005A8E1F /* NYPLUtilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2317,7 +2303,6 @@
 				73FCA35D25005BA4001B0C5D /* MediaPlayer.framework in Frameworks */,
 				732F0452263376BB0018A82E /* Minizip.xcframework in Frameworks */,
 				7347B4E0265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
-				5941F5EC268C5E8500F69F0B /* NYPLAxis.framework in Frameworks */,
 				732F04712633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347B4E8265EFD3C00E4E386 /* PromisesObjC.xcframework in Frameworks */,
 				73FCA36425005BA4001B0C5D /* QuartzCore.framework in Frameworks */,
@@ -2330,6 +2315,7 @@
 				73FCA36B25005BA4001B0C5D /* SystemConfiguration.framework in Frameworks */,
 				73FCA36F25005BA4001B0C5D /* UIKit.framework in Frameworks */,
 				732F0437263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
+				7392E46C2788E7D8006F010E /* NYPLAxis in Frameworks */,
 				73369F1E27862D6800752ECB /* PureLayout in Frameworks */,
 				73F5DE882774EE3200597F1E /* NYPLUtilities in Frameworks */,
 			);
@@ -2386,12 +2372,12 @@
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				732F0434263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
 				732F0481263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
+				7392E4602788E752006F010E /* NYPLAudiobookToolkit in Frameworks */,
 				73B6E276278665AC0043FA30 /* OverdriveProcessor in Frameworks */,
 				731465202786106900027CFA /* PureLayout in Frameworks */,
-				7315208A27852AD5006DA65B /* NYPLCardCreator in Frameworks */,
+				7392E4622788E75B006F010E /* NYPLCardCreator in Frameworks */,
 				73579046276BE7F2009F1ADF /* NYPLUtilities in Frameworks */,
 				73829F4127861584008B2A80 /* NYPLAEToolkit in Frameworks */,
-				7315209327852FC9006DA65B /* NYPLAudiobookToolkit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2561,15 +2547,6 @@
 			path = Read;
 			sourceTree = "<group>";
 		};
-		59F7F76A268B513800CCA592 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				59F7F771268B513800CCA592 /* NYPLAxis.framework */,
-				59F7F773268B513800CCA592 /* NYPLAxisTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		5A569A271B8351C6003B5B61 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -2672,8 +2649,11 @@
 		7314651B27860FCA00027CFA /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				7314651C27860FCA00027CFA /* NYPLAEToolkit */,
 				73B6E2742786658F0043FA30 /* audiobook-ios-overdrive */,
+				735A0E822788E39A00091B87 /* Axis-iOS */,
+				7392E45D2788E685006F010E /* CardCreator-iOS */,
+				7392E45E2788E6E9006F010E /* NYPLAudiobookToolkit */,
+				7314651C27860FCA00027CFA /* NYPLAEToolkit */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -3394,7 +3374,6 @@
 			children = (
 				7314651B27860FCA00027CFA /* Packages */,
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
-				59F7F769268B513800CCA592 /* NYPLAxis.xcodeproj */,
 				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
 				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
 				A823D816192BABA400B55DE2 /* Simplified */,
@@ -3650,11 +3629,11 @@
 			name = "SimplyE-R2dev";
 			packageProductDependencies = (
 				73F5DE922774EEE100597F1E /* NYPLUtilities */,
-				73369F1227862B4500752ECB /* NYPLCardCreator */,
-				73369F1427862B4500752ECB /* NYPLAudiobookToolkit */,
 				73369F1627862B4500752ECB /* PureLayout */,
 				73369F1827862B9900752ECB /* NYPLAEToolkit */,
 				73B6E277278665E10043FA30 /* OverdriveProcessor */,
+				7392E4632788E7AF006F010E /* NYPLAudiobookToolkit */,
+				7392E4652788E7AF006F010E /* NYPLCardCreator */,
 			);
 			productName = Simplified;
 			productReference = 7347F123245A4DE200558D7F /* SimplyE-R2dev.app */;
@@ -3677,8 +3656,8 @@
 			name = "SimplyE-noDRM";
 			packageProductDependencies = (
 				739F43A52770FEA5005A8E1F /* NYPLUtilities */,
-				73369F1B27862D0000752ECB /* NYPLAudiobookToolkit */,
-				73369F1F27862E6400752ECB /* NYPLCardCreator */,
+				7392E4672788E7CB006F010E /* NYPLAudiobookToolkit */,
+				7392E4692788E7CB006F010E /* NYPLCardCreator */,
 			);
 			productName = Simplified;
 			productReference = 73EB0B7525821DF4006BC997 /* SimplyE-noDRM.app */;
@@ -3703,6 +3682,7 @@
 			packageProductDependencies = (
 				73F5DE872774EE3200597F1E /* NYPLUtilities */,
 				73369F1D27862D6800752ECB /* PureLayout */,
+				7392E46B2788E7D8006F010E /* NYPLAxis */,
 			);
 			productName = Simplified;
 			productReference = 73FCA3A425005BA4001B0C5D /* Open eBooks.app */;
@@ -3726,11 +3706,11 @@
 			name = SimplyE;
 			packageProductDependencies = (
 				73579045276BE7F2009F1ADF /* NYPLUtilities */,
-				7315208927852AD5006DA65B /* NYPLCardCreator */,
-				7315209227852FC9006DA65B /* NYPLAudiobookToolkit */,
 				7314651F2786106900027CFA /* PureLayout */,
 				73829F4027861584008B2A80 /* NYPLAEToolkit */,
 				73B6E275278665AC0043FA30 /* OverdriveProcessor */,
+				7392E45F2788E752006F010E /* NYPLAudiobookToolkit */,
+				7392E4612788E75B006F010E /* NYPLCardCreator */,
 			);
 			productName = Simplified;
 			productReference = A823D80D192BABA400B55DE2 /* SimplyE.app */;
@@ -3789,8 +3769,6 @@
 			mainGroup = A823D804192BABA400B55DE2;
 			packageReferences = (
 				73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */,
-				7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */,
-				7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */,
 				7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */,
 			);
 			productRefGroup = A823D80E192BABA400B55DE2 /* Products */;
@@ -3799,10 +3777,6 @@
 				{
 					ProductGroup = 5A569A271B8351C6003B5B61 /* Products */;
 					ProjectRef = 5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */;
-				},
-				{
-					ProductGroup = 59F7F76A268B513800CCA592 /* Products */;
-					ProjectRef = 59F7F769268B513800CCA592 /* NYPLAxis.xcodeproj */;
 				},
 				{
 					ProductGroup = A49C25411AE05A2600D63B89 /* Products */;
@@ -3838,20 +3812,6 @@
 			fileType = wrapper.cfbundle;
 			path = TenPrintCoverTests.xctest;
 			remoteRef = 59D9CC1B25FFDE1B00C89B81 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		59F7F771268B513800CCA592 /* NYPLAxis.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = NYPLAxis.framework;
-			remoteRef = 59F7F770268B513800CCA592 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		59F7F773268B513800CCA592 /* NYPLAxisTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = NYPLAxisTests.xctest;
-			remoteRef = 59F7F772268B513800CCA592 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5A569A2C1B8351C6003B5B61 /* libADEPT.a */ = {
@@ -5454,7 +5414,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5505,7 +5465,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5555,7 +5515,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5602,7 +5562,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5647,7 +5607,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5696,7 +5656,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5873,7 +5833,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5924,7 +5884,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -6042,22 +6002,6 @@
 				minimumVersion = 3.1.9;
 			};
 		};
-		7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/NYPL-Simplified/CardCreator-iOS.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-		7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/NYPL-Simplified/NYPLAudiobookToolkit.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/NYPL-Simplified/iOS-Utilities";
@@ -6074,26 +6018,6 @@
 			package = 7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */;
 			productName = PureLayout;
 		};
-		7315208927852AD5006DA65B /* NYPLCardCreator */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */;
-			productName = NYPLCardCreator;
-		};
-		7315209227852FC9006DA65B /* NYPLAudiobookToolkit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */;
-			productName = NYPLAudiobookToolkit;
-		};
-		73369F1227862B4500752ECB /* NYPLCardCreator */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */;
-			productName = NYPLCardCreator;
-		};
-		73369F1427862B4500752ECB /* NYPLAudiobookToolkit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */;
-			productName = NYPLAudiobookToolkit;
-		};
 		73369F1627862B4500752ECB /* PureLayout */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */;
@@ -6103,20 +6027,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = NYPLAEToolkit;
 		};
-		73369F1B27862D0000752ECB /* NYPLAudiobookToolkit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7315209127852FC9006DA65B /* XCRemoteSwiftPackageReference "NYPLAudiobookToolkit" */;
-			productName = NYPLAudiobookToolkit;
-		};
 		73369F1D27862D6800752ECB /* PureLayout */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */;
 			productName = PureLayout;
-		};
-		73369F1F27862E6400752ECB /* NYPLCardCreator */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7315208827852AD5006DA65B /* XCRemoteSwiftPackageReference "CardCreator-iOS" */;
-			productName = NYPLCardCreator;
 		};
 		73579045276BE7F2009F1ADF /* NYPLUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -6126,6 +6040,34 @@
 		73829F4027861584008B2A80 /* NYPLAEToolkit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = NYPLAEToolkit;
+		};
+		7392E45F2788E752006F010E /* NYPLAudiobookToolkit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NYPLAudiobookToolkit;
+		};
+		7392E4612788E75B006F010E /* NYPLCardCreator */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NYPLCardCreator;
+		};
+		7392E4632788E7AF006F010E /* NYPLAudiobookToolkit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NYPLAudiobookToolkit;
+		};
+		7392E4652788E7AF006F010E /* NYPLCardCreator */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NYPLCardCreator;
+		};
+		7392E4672788E7CB006F010E /* NYPLAudiobookToolkit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NYPLAudiobookToolkit;
+		};
+		7392E4692788E7CB006F010E /* NYPLCardCreator */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NYPLCardCreator;
+		};
+		7392E46B2788E7D8006F010E /* NYPLAxis */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NYPLAxis;
 		};
 		739F43A52770FEA5005A8E1F /* NYPLUtilities */ = {
 			isa = XCSwiftPackageProductDependency;

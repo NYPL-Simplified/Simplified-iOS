@@ -20,6 +20,34 @@
                ReferencedContainer = "container:Simplified.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7320AB23251EBC9900E3F04D"
+               BuildableName = "OpenEbooksTests.xctest"
+               BlueprintName = "OpenEbooksTests"
+               ReferencedContainer = "container:Simplified.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "NYPLAxisTests"
+               BuildableName = "NYPLAxisTests"
+               BlueprintName = "NYPLAxisTests"
+               ReferencedContainer = "container:Axis-iOS">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -56,17 +84,17 @@
          </BuildableReference>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5938EE73268390F000434468"
-            BuildableName = "NYPLAxis.framework"
-            BlueprintName = "NYPLAxis"
-            ReferencedContainer = "container:Axis-iOS/NYPLAxis.xcodeproj">
-         </BuildableReference>
-         <BuildableReference
-            BuildableIdentifier = "primary"
             BlueprintIdentifier = "1112A8251A3247D2002B8CC1"
             BuildableName = "libTenPrintCover.a"
             BlueprintName = "TenPrintCover"
             ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "NYPLAxis"
+            BuildableName = "NYPLAxis"
+            BlueprintName = "NYPLAxis"
+            ReferencedContainer = "container:Axis-iOS">
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
@@ -94,16 +122,6 @@
                BuildableName = "TenPrintCoverTests.xctest"
                BlueprintName = "TenPrintCoverTests"
                ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5938EE7C268390F100434468"
-               BuildableName = "NYPLAxisTests.xctest"
-               BlueprintName = "NYPLAxisTests"
-               ReferencedContainer = "container:Axis-iOS/NYPLAxis.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

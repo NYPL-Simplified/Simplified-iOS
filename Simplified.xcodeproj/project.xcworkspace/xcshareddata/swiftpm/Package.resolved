@@ -2,29 +2,11 @@
   "object": {
     "pins": [
       {
-        "package": "NYPLCardCreator",
-        "repositoryURL": "https://github.com/NYPL-Simplified/CardCreator-iOS.git",
-        "state": {
-          "branch": "main",
-          "revision": "56ca8ded649f4e2bb184b7ee8235f13d9b438299",
-          "version": null
-        }
-      },
-      {
         "package": "NYPLUtilities",
         "repositoryURL": "https://github.com/NYPL-Simplified/iOS-Utilities",
         "state": {
           "branch": "main",
-          "revision": "242bb22e7addf5ed35b0dfb1ea3775d4004e1228",
-          "version": null
-        }
-      },
-      {
-        "package": "NYPLAudiobookToolkit",
-        "repositoryURL": "https://github.com/NYPL-Simplified/NYPLAudiobookToolkit.git",
-        "state": {
-          "branch": "master",
-          "revision": "52a8b8baaadebebee978f69a7b90dadbda1a03bb",
+          "revision": "ae41a6a2468b49c44320be310053b249ddc6993b",
           "version": null
         }
       },
