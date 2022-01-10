@@ -3,7 +3,7 @@
 //  SimplyETests
 //
 //  Created by Benjamin Anderman on 5/10/19.
-//  Copyright © 2019 NYPL Labs. All rights reserved.
+//  Copyright © 2019 NYPL. All rights reserved.
 //
 
 import XCTest

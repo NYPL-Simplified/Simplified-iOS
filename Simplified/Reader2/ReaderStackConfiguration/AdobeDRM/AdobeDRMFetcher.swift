@@ -3,7 +3,7 @@
 //  Simplified
 //
 //  Created by Vladimir Fedorov on 10.02.2021.
-//  Copyright © 2021 NYPL Labs. All rights reserved.
+//  Copyright © 2021 NYPL. All rights reserved.
 //
 
 #if FEATURE_DRM_CONNECTOR

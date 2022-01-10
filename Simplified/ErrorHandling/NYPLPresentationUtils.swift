@@ -2,7 +2,7 @@
 //  NYPLPresentationUtils.swift
 //  SimplyE / Open eBooks
 //
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 class NYPLPresentationUtils: NSObject {

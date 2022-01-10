@@ -2,7 +2,7 @@
 //  NYPLLibrariesListVC.swift
 //
 //  Created by Greg O'Neill on 11/10/2016.
-//  Copyright © 2016 NYPL Labs. All rights reserved.
+//  Copyright © 2016 NYPL. All rights reserved.
 //
 
 import Foundation

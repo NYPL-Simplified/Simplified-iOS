@@ -3,7 +3,7 @@
 //  SimplyE
 //
 //  Created by Jacek Szyja on 23/06/2020.
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 import Foundation

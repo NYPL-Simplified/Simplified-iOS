@@ -3,7 +3,7 @@
 //  Simplified
 //
 //  Created by Sam Tarakajian on 9/24/15.
-//  Copyright © 2015 NYPL Labs. All rights reserved.
+//  Copyright © 2015 NYPL. All rights reserved.
 //
 
 @interface NSURL (NYPLURLAdditions)

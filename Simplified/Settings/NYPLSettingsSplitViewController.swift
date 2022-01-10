@@ -3,7 +3,7 @@
 //  SimplyE / Open eBooks
 //
 //  Created by Kyle Sakai.
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 /// Currently used only by Open eBooks, but extendable for use in SimplyE.
