@@ -3725,7 +3725,7 @@
 				CLASSPREFIX = NYPL;
 				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 1310;
-				ORGANIZATIONNAME = "NYPL Labs";
+				ORGANIZATIONNAME = NYPL;
 				TargetAttributes = {
 					2D2B47711D08F807007F7764 = {
 						CreatedOnToolsVersion = 7.3.1;

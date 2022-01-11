@@ -3,7 +3,7 @@
 //  Simplified
 //
 //  Created by Ernest Fan on 2021-03-09.
-//  Copyright © 2021 NYPL Labs. All rights reserved.
+//  Copyright © 2021 NYPL. All rights reserved.
 //
 
 import XCTest

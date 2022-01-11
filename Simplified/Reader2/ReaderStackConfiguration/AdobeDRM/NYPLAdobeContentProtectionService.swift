@@ -3,7 +3,7 @@
 //  Simplified
 //
 //  Created by Ettore Pasquini on 5/11/21.
-//  Copyright © 2021 NYPL Labs. All rights reserved.
+//  Copyright © 2021 NYPL. All rights reserved.
 //
 
 #if FEATURE_DRM_CONNECTOR

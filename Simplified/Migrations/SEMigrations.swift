@@ -2,7 +2,7 @@
 //  SEMigrations.swift
 //  Simplified
 //
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 import Foundation

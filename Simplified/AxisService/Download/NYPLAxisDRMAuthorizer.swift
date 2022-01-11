@@ -3,7 +3,7 @@
 //  Simplified
 //
 //  Created by Raman Singh on 2021-04-13.
-//  Copyright © 2021 NYPL Labs. All rights reserved.
+//  Copyright © 2021 NYPL. All rights reserved.
 //
 
 import Foundation
