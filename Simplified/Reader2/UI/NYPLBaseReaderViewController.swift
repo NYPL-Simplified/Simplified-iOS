@@ -342,7 +342,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-    Log.info(#function, "R2 locator changed to: \(locator)")
+    let bookInfo = bookmarksBusinessLogic.book.loggableShortString()
+    Log.info(#function, "R2 locator for \(bookInfo) changed to: \(locator)")
 
     lastReadPositionPoster.storeReadPosition(locator: locator)
 

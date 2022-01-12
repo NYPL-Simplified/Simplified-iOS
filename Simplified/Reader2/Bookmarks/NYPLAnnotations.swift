@@ -558,7 +558,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
 
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
       if let err = error as NSError? {
-        Log.error(#file, "Annotation POST error (nsCode: \(err.code) Description: \(err.localizedDescription))")
+        Log.error(#file, "Annotation POST for bookID \(bookID): Error (nsCode: \(err.code) Description: \(err.localizedDescription))")
         if NetworkQueue.StatusCodes.contains(err.code) && queueOffline {
           self.addToOfflineQueue(bookID, annotationsURL, parameters)
         }
@@ -579,7 +579,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
         return
       }
 
-      Log.info(#file, "Annotation POST: Success 200.")
+      Log.info(#file, "Annotation POST for bookID \(bookID): Success 200.")
       let serverAnnotationID = annotationID(fromNetworkData: data)
       completionHandler(.success(serverAnnotationID))
     }

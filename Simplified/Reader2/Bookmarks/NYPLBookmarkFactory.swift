@@ -85,7 +85,7 @@ class NYPLBookmarkFactory {
       let motivation = annotation[NYPLBookmarkSpec.Motivation.key] as? String,
       let body = annotation[NYPLBookmarkSpec.Body.key] as? [String: Any]
     else {
-      Log.error(#file, "Error parsing required info (target, source, motivation, body) in annotation: \(annotation)")
+      Log.error(#file, "Error parsing required info (target, source, motivation, body) for bookID \(bookID) in annotation: \(annotation)")
       return nil
     }
 
@@ -99,12 +99,12 @@ class NYPLBookmarkFactory {
     }
 
     guard motivation.contains(annotationType.rawValue) else {
-      Log.error(#file, "Can't create bookmark, `\(motivation)` motivation does not match expected `\(annotationType.rawValue)` motivation.")
+      Log.error(#file, "Can't create bookmark for bookID \(bookID), `\(motivation)` motivation does not match expected `\(annotationType.rawValue)` motivation.")
       return nil
     }
 
     guard let device = body[NYPLBookmarkSpec.Body.Device.key] as? String else {
-      Log.error(#file, "Error reading `device` info from `body`:\(body)")
+      Log.error(#file, "Error reading `device` info for bookID \(bookID) from `body`:\(body)")
       return nil
     }
 
@@ -112,7 +112,7 @@ class NYPLBookmarkFactory {
       let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String: Any],
       let selectorValueEscJSON = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as? String
       else {
-        Log.error(#file, "Error reading required Selector Value from Target: \(target)")
+        Log.error(#file, "Error reading required Selector Value for bookID \(bookID) from Target: \(target)")
         return nil
     }
 
@@ -123,7 +123,7 @@ class NYPLBookmarkFactory {
 
     // if we can't derive the href, we cannot use this bookmark in R2
     guard href != nil else {
-      Log.error(#file, "Error reading chapter ID from server annotation. SelectorValue=\(selectorValueEscJSON)")
+      Log.error(#file, "Error reading chapter ID for bookID \(bookID) from server annotation. SelectorValue=\(selectorValueEscJSON)")
       return nil
     }
 
