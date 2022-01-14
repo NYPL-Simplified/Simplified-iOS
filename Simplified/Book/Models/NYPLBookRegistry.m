@@ -311,6 +311,7 @@ static NSString *const RecordsKey = @"records";
   } //@synchronized
   
   [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
+                            networkExecutor:[NYPLNetworkExecutor shared]
                            shouldResetCache:shouldResetCache
                                  completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     if(!feed) {

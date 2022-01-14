@@ -41,6 +41,7 @@ class NYPLOPDSFeedFetcherMock: NYPLOPDSFeedFetcher {
   
   // Overriding this function in order to mimick the response from server
   override class func fetchOPDSFeed(url: URL,
+                                    networkExecutor: NYPLNetworkExecuting,
                                     shouldResetCache: Bool,
                                     completion: @escaping (NYPLOPDSFeed?, [String : Any]?) -> Void) {
     var requestURL = url

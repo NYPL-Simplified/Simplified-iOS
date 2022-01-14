@@ -218,6 +218,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 - (void)fetchUngroupedFeedFromURL:(NSURL *)URL
 {
   [NYPLOPDSFeedFetcher fetchCatalogUngroupedFeedWithUrl:URL
+                                        networkExecutor:[NYPLNetworkExecutor shared]
                                              retryCount:0
                                              completion:^(NYPLCatalogUngroupedFeed * _Nullable feed) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{

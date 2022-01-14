@@ -703,6 +703,7 @@ didCompleteWithError:(NSError *)error
 
   // revoke loan with the CM
   [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.revokeURL
+                            networkExecutor:[NYPLNetworkExecutor shared]
                            shouldResetCache:NO
                                  completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
@@ -893,6 +894,7 @@ didCompleteWithError:(NSError *)error
 {
   [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
   [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.defaultAcquisitionIfBorrow.hrefURL
+                            networkExecutor:[NYPLNetworkExecutor shared]
                            shouldResetCache:NO
                                  completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];

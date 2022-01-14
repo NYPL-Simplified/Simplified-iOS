@@ -17,27 +17,26 @@ import Foundation
   ///   until supported books are received or retry threshold reached.
   ///
   ///   - Parameter url: URL for fetching the catalog feed
-  ///   - Parameter retryCount: Current number of attempts to fetch supported books, use 0 as default value
+  ///   - Parameter retryCount: Current number of attempts to fetch supported books
   ///   - Parameter completion: Always invoked at the end no matter what,
   ///   providing an ungrouped feed object in case of success and nil otherwise.
   class func fetchCatalogUngroupedFeed(url: URL,
-                                       retryCount: Int,
+                                       networkExecutor: NYPLNetworkExecuting,
+                                       retryCount: Int = 0,
                                        completion: @escaping (_ feed: NYPLCatalogUngroupedFeed?) -> Void) {
     
     if (retryCount >= fetchSupportedBooksRetryThreshold) {
-      Log.info(#function, "Retry threshold reached while fetching Catalog feed.")
-      DispatchQueue.global(qos: .userInitiated).async {
-        completion(nil)
-      }
+      Log.warn(#function, "Retry threshold reached while fetching Catalog feed.")
+      completion(nil)
       return
     }
     
-    fetchOPDSFeed(url: url, shouldResetCache: false) { feed, error in
+    fetchOPDSFeed(url: url,
+                  networkExecutor: networkExecutor,
+                  shouldResetCache: false) { feed, error in
       guard let feed = feed,
             feed.type == NYPLOPDSFeedType.acquisitionUngrouped else {
-        DispatchQueue.global(qos: .userInitiated).async {
-          completion(nil)
-        }
+        completion(nil)
         return
       }
     
@@ -45,12 +44,11 @@ import Foundation
       if let catalogFeed = catalogFeed,
           catalogFeed.books.count == 0 {
         fetchCatalogUngroupedFeed(url: catalogFeed.nextURL,
+                                  networkExecutor: networkExecutor,
                                   retryCount: retryCount + 1,
                                   completion: completion)
       } else {
-        DispatchQueue.global(qos: .userInitiated).async {
-          completion(catalogFeed)
-        }
+        completion(catalogFeed)
       }
     }
   }
@@ -62,12 +60,13 @@ import Foundation
   ///   - Parameter completion: Always invoked at the end no matter what,
   ///   providing an OPDS feed object in case of success and an dictionary containing error information otherwise.
   class func fetchOPDSFeed(url: URL,
+                           networkExecutor: NYPLNetworkExecuting,
                            shouldResetCache: Bool,
                            completion: @escaping (_ feed: NYPLOPDSFeed?, _ error: [String: Any]?) -> Void) {
     let cachePolicy: NSURLRequest.CachePolicy = shouldResetCache ? .reloadIgnoringCacheData : .useProtocolCachePolicy
     
-    _ = NYPLNetworkExecutor.shared.GET(url,
-                                       cachePolicy: cachePolicy) { result, response, error in
+    _ = networkExecutor.GET(url,
+                            cachePolicy: cachePolicy) { result, response, error in
       
       if let error = error as NSError? {
         // Note: NYPLNetworkExecutor already logged this error

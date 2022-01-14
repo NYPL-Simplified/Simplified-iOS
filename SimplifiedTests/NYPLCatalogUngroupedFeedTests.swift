@@ -12,17 +12,20 @@ import XCTest
 class NYPLCatalogUngroupedFeedTests: XCTestCase {
   
   var feedFetcher: NYPLOPDSFeedFetcherMock.Type!
+  var networkExecutor: NYPLNetworkExecuting!
   
   override func setUpWithError() throws {
     try super.setUpWithError()
     feedFetcher = NYPLOPDSFeedFetcherMock.self
     feedFetcher.testType = .none
     feedFetcher.numberOfFetchAllowed = 5
+    networkExecutor = NYPLNetworkExecutor.shared
   }
 
   override func tearDownWithError() throws {
     try super.tearDownWithError()
     feedFetcher = nil
+    networkExecutor = nil
   }
 
   func testCatalogFeedWithSupportedBooks() throws {
@@ -30,6 +33,7 @@ class NYPLCatalogUngroupedFeedTests: XCTestCase {
     var result: NYPLCatalogUngroupedFeed?
     
     feedFetcher.fetchCatalogUngroupedFeed(url: NYPLCatalogUngroupedFeedBookType.supported.url(),
+                                          networkExecutor: networkExecutor,
                                           retryCount: 0) { feed in
       result = feed
       expectation.fulfill()
@@ -52,6 +56,7 @@ class NYPLCatalogUngroupedFeedTests: XCTestCase {
     feedFetcher.testType = .invertBookType
     
     feedFetcher.fetchCatalogUngroupedFeed(url: NYPLCatalogUngroupedFeedBookType.unsupported.url(),
+                                          networkExecutor: networkExecutor,
                                           retryCount: 0) { feed in
       result = feed
       expectation.fulfill()
@@ -72,6 +77,7 @@ class NYPLCatalogUngroupedFeedTests: XCTestCase {
     var result: NYPLCatalogUngroupedFeed?
 
     feedFetcher.fetchCatalogUngroupedFeed(url: NYPLCatalogUngroupedFeedBookType.unsupported.url(),
+                                          networkExecutor: networkExecutor,
                                           retryCount: 0) { feed in
       result = feed
       expectation.fulfill()
@@ -89,6 +95,7 @@ class NYPLCatalogUngroupedFeedTests: XCTestCase {
     feedFetcher.testType = .retryThreshold
     
     feedFetcher.fetchCatalogUngroupedFeed(url: NYPLCatalogUngroupedFeedBookType.unsupported.url(),
+                                          networkExecutor: networkExecutor,
                                           retryCount: 0) { feed in
       result = feed
       expectation.fulfill()
@@ -106,6 +113,7 @@ class NYPLCatalogUngroupedFeedTests: XCTestCase {
     feedFetcher.testType = .failRequest
     
     feedFetcher.fetchCatalogUngroupedFeed(url: NYPLCatalogUngroupedFeedBookType.unsupported.url(),
+                                          networkExecutor: networkExecutor,
                                           retryCount: 0) { feed in
       result = feed
       expectation.fulfill()
