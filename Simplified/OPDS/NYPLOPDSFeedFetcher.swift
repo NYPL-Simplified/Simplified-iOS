@@ -20,10 +20,15 @@ import Foundation
   ///   - Parameter retryCount: Current number of attempts to fetch supported books
   ///   - Parameter completion: Always invoked at the end no matter what,
   ///   providing an ungrouped feed object in case of success and nil otherwise.
-  class func fetchCatalogUngroupedFeed(url: URL,
+  class func fetchCatalogUngroupedFeed(url: URL?,
                                        networkExecutor: NYPLNetworkExecuting,
                                        retryCount: Int = 0,
                                        completion: @escaping (_ feed: NYPLCatalogUngroupedFeed?) -> Void) {
+    guard let url = url else {
+      Log.error(#function, "Unable to fetch feed with empty URL.")
+      completion(nil)
+      return
+    }
     
     if (retryCount >= fetchSupportedBooksRetryThreshold) {
       Log.warn(#function, "Retry threshold reached while fetching Catalog feed.")
