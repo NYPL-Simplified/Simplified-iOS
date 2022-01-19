@@ -310,98 +310,98 @@ static NSString *const RecordsKey = @"records";
     [self broadcastChange];
   } //@synchronized
   
-  [NYPLOPDSFeed
-   withURL:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
-   shouldResetCache:shouldResetCache
-   completionHandler:^(NYPLOPDSFeed *const feed, NSDictionary *error) {
-     if(!feed) {
-       NYPLLOG(@"Failed to obtain sync data.");
-       self.syncing = NO;
-       [self broadcastChange];
-       [[NSOperationQueue mainQueue]
-        addOperationWithBlock:^{
-          if(completion) completion(error);
-          if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
-          [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-        }];
-       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeApiCall
-                                 summary:@"Unable to fetch loans"
-                                metadata:@{
-                                  @"shouldResetCache": @(shouldResetCache),
-                                  @"errorDict": error ?: @"N/A"
-                                }];
-       return;
-     }
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
+                            networkExecutor:[NYPLNetworkExecutor shared]
+                           shouldResetCache:shouldResetCache
+                                 completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
+    if(!feed) {
+      NYPLLOG(@"Failed to obtain sync data.");
+      self.syncing = NO;
+      [self broadcastChange];
+      [[NSOperationQueue mainQueue]
+       addOperationWithBlock:^{
+         if(completion) completion(errorDict);
+         if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
+         [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
+       }];
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeApiCall
+                                summary:@"Unable to fetch loans"
+                               metadata:@{
+                                 @"shouldResetCache": @(shouldResetCache),
+                                 @"errorDict": errorDict ?: @"N/A"
+                               }];
+      return;
+    }
 
     [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
-     
-     if(!self.syncShouldCommit) {
-       NYPLLOG(@"[syncWithCompletionHandler] Sync shouldn't commit");
-       // A reset must have occurred.
-       self.syncing = NO;
-       [self broadcastChange];
-       [[NSOperationQueue mainQueue]
-        addOperationWithBlock:^{
-          if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
-        }];
-       return;
-     }
-     
-     void (^commitBlock)(void) = ^void() {
-       [self performSynchronizedWithoutBroadcasting:^{
+    
+    if(!self.syncShouldCommit) {
+      NYPLLOG(@"[syncWithCompletionHandler] Sync shouldn't commit");
+      // A reset must have occurred.
+      self.syncing = NO;
+      [self broadcastChange];
+      [[NSOperationQueue mainQueue]
+       addOperationWithBlock:^{
+         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
+      }];
+      return;
+    }
+    
+    void (^commitBlock)(void) = ^void() {
+      [self performSynchronizedWithoutBroadcasting:^{
 
-         if (feed.licensor) {
-           [[NYPLUserAccount sharedAccount] setLicensor:feed.licensor];
-           NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",feed.licensor[@"clientToken"],[NYPLUserAccount sharedAccount].userID);
-         } else {
-           NYPLLOG(@"A Licensor Token was not received or parsed from the OPDS feed.");
-         }
-         
-         NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
-         for(NYPLOPDSEntry *const entry in feed.entries) {
-           NYPLBook *const book = [NYPLBook bookWithEntry:entry];
-           if(!book) {
-             NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
-             continue;
-           }
-           [identifiersToRemove removeObject:book.identifier];
-           NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
-           if(existingBook) {
-             [self updateBook:book];
-           } else {
-             [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil readiumBookmarks:nil genericBookmarks:nil];
-           }
-         }
-         for (NSString *identifier in identifiersToRemove) {
-           NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
-           if (record && (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed)) {
-             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
-           }
-           [self removeBookForIdentifier:identifier];
-         }
+        if (feed.licensor) {
+          [[NYPLUserAccount sharedAccount] setLicensor:feed.licensor];
+          NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",feed.licensor[@"clientToken"],[NYPLUserAccount sharedAccount].userID);
+        } else {
+          NYPLLOG(@"A Licensor Token was not received or parsed from the OPDS feed.");
+        }
+        
+        NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
+        for(NYPLOPDSEntry *const entry in feed.entries) {
+          NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+          if(!book) {
+            NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
+            continue;
+          }
+          [identifiersToRemove removeObject:book.identifier];
+          NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
+          if(existingBook) {
+            [self updateBook:book];
+          } else {
+            [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil readiumBookmarks:nil genericBookmarks:nil];
+          }
+        }
+        for (NSString *identifier in identifiersToRemove) {
+          NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
+          if (record && (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed)) {
+            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
+          }
+          [self removeBookForIdentifier:identifier];
+        }
+      }];
+      self.syncing = NO;
+      [self broadcastChange];
+      [[NSOperationQueue mainQueue]
+       addOperationWithBlock:^{
+         [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
+         if(completion) completion(nil);
+         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNewData);
+         [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
        }];
-       self.syncing = NO;
-       [self broadcastChange];
-       [[NSOperationQueue mainQueue]
-        addOperationWithBlock:^{
-          [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
-          if(completion) completion(nil);
-          if(fetchHandler) fetchHandler(UIBackgroundFetchResultNewData);
-          [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-        }];
-     };
-     
-     if (self.delaySync) {
-       if (self.delayedSyncBlock) {
-         NYPLLOG(@"[syncWithCompletionHandler] Delaying sync; block already exists!");
-       } else {
-         NYPLLOG(@"[syncWithCompletionHandler] Delaying sync");
-       }
-       self.delayedSyncBlock = commitBlock;
-     } else {
-       commitBlock();
-     }
-   }];
+    };
+    
+    if (self.delaySync) {
+      if (self.delayedSyncBlock) {
+        NYPLLOG(@"[syncWithCompletionHandler] Delaying sync; block already exists!");
+      } else {
+        NYPLLOG(@"[syncWithCompletionHandler] Delaying sync");
+      }
+      self.delayedSyncBlock = commitBlock;
+    } else {
+      commitBlock();
+    }
+  }];
 }
 
 - (void)syncWithStandardAlertsOnCompletion

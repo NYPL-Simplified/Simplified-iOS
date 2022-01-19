@@ -702,10 +702,10 @@ didCompleteWithError:(NSError *)error
   [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
 
   // revoke loan with the CM
-  [NYPLOPDSFeed withURL:book.revokeURL
-       shouldResetCache:NO
-      completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *errorDict) {
-
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.revokeURL
+                            networkExecutor:[NYPLNetworkExecutor shared]
+                           shouldResetCache:NO
+                                 completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
     if (feed && feed.entries.count == 1)  {
@@ -893,10 +893,13 @@ didCompleteWithError:(NSError *)error
           borrowCompletion:(void (^)(void))borrowCompletion
 {
   [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-  [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL shouldResetCache:NO completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.defaultAcquisitionIfBorrow.hrefURL
+                            networkExecutor:[NYPLNetworkExecutor shared]
+                           shouldResetCache:NO
+                                 completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
-    if (error || !feed || feed.entries.count < 1) {
+    if (errorDict || !feed || feed.entries.count < 1) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if (borrowCompletion) {
           borrowCompletion();
@@ -908,12 +911,12 @@ didCompleteWithError:(NSError *)error
         UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
 
         // set different message for special type of error or just add document message for generic error
-        if (error) {
-          if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeLoanAlreadyExists]) {
+        if (errorDict) {
+          if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeLoanAlreadyExists]) {
             formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
                                                                             comment: @"When book is already checked out on patron's other device(s), they will get this message"), book.title];
             alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
-          } else if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+          } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
             NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
             __weak __auto_type wSelf = self;
             [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
@@ -923,7 +926,7 @@ didCompleteWithError:(NSError *)error
             }];
             return;
           } else {
-            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:NO];
+            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:errorDict] append:NO];
           }
         }
 

@@ -21,16 +21,6 @@ typedef NS_ENUM(NSInteger, NYPLOPDSFeedType) {
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-/// Executes a GET request for the given URL unless the last path component
-/// is `borrow`, in which case it executes a PUT.
-/// @param URL The URL to contact.
-/// @param shouldResetCache Pass YES to wipe the whole cache.
-/// @param handler The completion handler that will always be called at the
-/// end of the process.
-+ (void)  withURL:(NSURL *)URL
- shouldResetCache:(BOOL)shouldResetCache
-completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler;
-
 /// Designated initializer.
 - (instancetype)initWithXML:(NYPLXML *)feedXML;
 

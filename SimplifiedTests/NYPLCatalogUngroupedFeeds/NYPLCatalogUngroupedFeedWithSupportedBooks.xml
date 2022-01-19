@@ -1,0 +1,483 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:opds="http://opds-spec.org/2010/catalog" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:drm="http://librarysimplified.org/terms/drm" xmlns:schema="http://schema.org/" xmlns:simplified="http://librarysimplified.org/terms/" xmlns:bibframe="http://bibframe.org/vocab/" xmlns:bib="http://bib.schema.org/" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:lcp="http://readium.org/lcp-specs/ns">
+  <id>https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full&amp;q=today</id>
+  <title>Search</title>
+  <updated>2022-01-05T01:10:03+00:00</updated>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full&amp;q=today" rel="self"/>
+  <entry schema:additionalType="http://bib.schema.org/Audiobook">
+    <title>Arriving Today</title>
+    <schema:alternativeHeadline>From Factory to Front Door -- Why Everything Has Changed About How and What We Buy</schema:alternativeHeadline>
+    <contributor opf:role="nrt">
+      <name>James Fouhey</name>
+    </contributor>
+    <author>
+      <name>Christopher Mims</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Christopher Mims" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Christopher%20Mims/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <summary type="html">&lt;strong&gt;The &lt;em&gt;Wall Street Journal&lt;/em&gt; technology columnist reveals the fascinating story behind the misleadingly simple phrase shoppers take for grantedâ€”â€œArriving Todayâ€â€”in this eye-opening investigation into the new rules of online commerce, transportation, and supply chain management.&lt;/strong&gt;We are at a tipping point in retail history. While consumers are profiting from the convenience of instant gratification, rapidly advancing technologies are transforming the way goods are transported and displacing workers in ways never before seen.&lt;br&gt;&lt;/br&gt;In &lt;em&gt;Arriving Today,&lt;/em&gt; Christopher Mims goes deep, far, and wide to uncover how a single product, from creation to delivery, weaves its way from a factory on the other side of the world to our doorstep. He analyzes the evolving technologies and management strategies necessary to keep the product moving to fulfill consumersâ€™ demand for â€œarriving todayâ€ gratification. Mims reveals a world where the only thing moving faster than goods in an Amazon warehouse is the rate at which an entire industry is being gutted and rebuilt by innovation and mass shifts in human labor practices. He goes behind the scenes to uncover the paradoxes in this shiftâ€”into the worldâ€™s busiest port, the cabin of an 18-wheeler, and Amazonâ€™s automated warehousesâ€”to explore how the promise of â€œarriving todayâ€ is fulfilled through a balletic dance between humans and machines.Â The scope of such large-scale innovation and expended energy is equal parts inspiring, enlightening, and horrifying. As he offers a glimpse of our future, Mims asks us to consider the systemâ€™s vulnerability and its resilience, and who shoulders the burden, as we hurtle toward a fully automated systemâ€”and what it will mean when we are there.&lt;br&gt;&lt;/br&gt;</summary>
+    <simplified:pwid>fb73d73e-8c94-a675-0b6d-45962cf2b230</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://images.yourcloudlibrary.com/delivery/img?type=DOCUMENTIMAGE&amp;documentID=66ygv89&amp;token=nobody" type="image/png"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://images.yourcloudlibrary.com/delivery/img?type=DOCUMENTIMAGE&amp;documentID=66ygv89&amp;token=nobody&amp;size=NORMAL" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Technology" label="Technology"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Personal%20Finance%20%26%20Business" label="Personal Finance &amp; Business"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>HarperCollins</dcterms:publisher>
+    <dcterms:issued>2021-09-14</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/66ygv89/report"/>
+    <id>urn:librarysimplified.org/terms/id/Bibliotheca%20ID/66ygv89</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/66ygv89" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Bibliotheca"/>
+    <published>2021-08-31T00:00:00Z</published>
+    <updated>2022-01-03T04:58:30+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/66ygv89/borrow">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.findaway.license+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/66ygv89/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/66ygv89/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Bibliotheca%20ID/66ygv89"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Bibliotheca%20ID/66ygv89/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>If Today Be Sweet</title>
+    <author>
+      <name>Thrity Umrigar</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Thrity Umrigar" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Thrity%20Umrigar/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <summary type="html">&lt;p&gt;
+The recent death of her beloved husband, Rustom, has taken its toll on Tehmina Sethna. Now, while visiting her son, Sorab, in his suburban Ohio home, she is being asked to choose between continuing her old life in India and starting a new one in this unfamiliar country with her son, his American wife, and their child. Her destiny is uncertain, and soon the plight of two troubled young children next door will force the most difficult decision she has ever faced. Ultimately the journey is one that Tehmina must travel alone.
+&lt;/p&gt;
+</summary>
+    <simplified:pwid>f4946484-148d-df9f-72c9-90b6faff9a9f</simplified:pwid>
+    <link href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43/%25257BAE816312-6C20-4B76-8CA3-B37EDBE0BB43%25257DImg100.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43/%25257BAE816312-6C20-4B76-8CA3-B37EDBE0BB43%25257DImg100.png" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>HarperCollins e-books</dcterms:publisher>
+    <bib:publisherImprint>HarperCollins e-books</bib:publisherImprint>
+    <dcterms:issued>2009-03-17</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-08-10T00:00:00Z</published>
+    <updated>2022-01-03T18:23:35+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:indirectAcquisition type="application/atom+xml;type=entry;profile=opds-catalog">
+        <opds:indirectAcquisition type="text/html;profile=&quot;http://librarysimplified.org/terms/profiles/streaming-media&quot;"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="2" available="2"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/ae816312-6c20-4b76-8ca3-b37edbe0bb43/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>An Ethics for Today</title>
+    <contributor opf:role="asn">
+      <name>Dann, G. Elijah</name>
+    </contributor>
+    <contributor opf:role="wpr">
+      <name>Jeffrey Robbins</name>
+    </contributor>
+    <contributor opf:role="win">
+      <name>Gianni Vattimo</name>
+    </contributor>
+    <author>
+      <name>Richard Rorty</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Richard Rorty" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Richard%20Rorty/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <summary type="html">Richard Rorty is famous, maybe even infamous, for his philosophical nonchalance. His groundbreaking work not only rejects all theories of truth but also dismisses modern epistemology and its preoccupation with knowledge and representation. At the same time, the celebrated pragmatist believed there could be no universally valid answers to moral questions, which led him to a complex view of religion rarely expressed in his writings.In this posthumous publication, Rorty, a strict secularist, finds in the pragmatic thought of John Dewey, John Stuart Mill, William James, and George Santayana, among others, a political imagination shared by religious traditions. His intent is not to promote belief over nonbelief or to blur the distinction between religious and public domains. Rorty seeks only to locate patterns of similarity and difference so an ethics of decency and a politics of solidarity can rise. He particularly responds to Pope Benedict XVI and his campaign against the relativist vision. Whether holding theologians, metaphysicians, or political ideologues to account, Rorty remains steadfast in his opposition to absolute uniformity and its exploitation of political strength.</summary>
+    <simplified:pwid>68c229fb-5bd3-08ca-d35c-eb9c444cf566</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Content+Cafe/ISBN/9780231525435/Jacket.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Content+Cafe/ISBN/9780231525435/Jacket.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Religion%20%26%20Spirituality" label="Religion &amp; Spirituality"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Philosophy" label="Philosophy"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Open Road Media</dcterms:publisher>
+    <bib:publisherImprint>Columbia Univ Pr</bib:publisherImprint>
+    <dcterms:issued>2020-07-15</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Axis%20360%20ID/0026855894/report"/>
+    <id>urn:librarysimplified.org/terms/id/Axis%20360%20ID/0026855894</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Axis%20360%20ID/0026855894" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Axis 360"/>
+    <published>2021-04-08T00:00:00Z</published>
+    <updated>2022-01-03T04:13:24+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Axis%20360%20ID/0026855894/borrow/2">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Axis%20360%20ID/0026855894/borrow/3">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Axis%20360%20ID/0026855894/borrow/28">
+      <opds:indirectAcquisition type="application/vnd.librarysimplified.axisnow+json"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Axis%20360%20ID/0026855894/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Axis%20360%20ID/0026855894/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Axis%20360%20ID/0026855894"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Axis%20360%20ID/0026855894/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>Until Today!</title>
+    <schema:alternativeHeadline>Daily Devotions for Spiritual Growth and Peace of</schema:alternativeHeadline>
+    <author>
+      <name>Iyanla Vanzant</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Iyanla Vanzant" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Iyanla%20Vanzant/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <summary type="html">&lt;b&gt;â€œThe most powerful spiritual healer, fixer, teacher on the planet.â€ â€”Oprah Winfrey&lt;/b&gt;&lt;br&gt;&lt;/br&gt; &lt;br&gt;&lt;/br&gt;&lt;b&gt;Shift your attitude and live your best life with this inspiring collection of 365 daily devotionals from &lt;i&gt;New York Times &lt;/i&gt;bestselling author and star of the OWN Networkâ€™s hit show &lt;i&gt;Iyanla: Fix My Life&lt;/i&gt;.&lt;/b&gt;&lt;br&gt;&lt;/br&gt;&lt;br&gt;&lt;/br&gt;If there are situations, circumstances, or perhaps relationships in your life that you have been struggling to overcome, trying to work through, or doing your best to work around, throw your head back and declare to the universe, â€œUntil Today!â€&lt;br&gt;&lt;/br&gt; &lt;br&gt;&lt;/br&gt;Whatever has been going on in your mind, your life, or your heart can stopâ€”right now, if that is truly what you desire. However, you must be willing to â€œdo a new thing.â€ You must spend a little time, each day, in devotion to the truth about yourself and your life. You must make a conscious approach to what you think, what you feel, and what you do. Devotion will clear up misconceptions that may have obscured your vision until today!&lt;br&gt;&lt;/br&gt; &lt;br&gt;&lt;/br&gt;Bestselling author Iyanla Vanzant presents a new book of devotions for anyone on the path to spiritual empowerment. These daily devotions will create powerful changes in the circumstances of your life that have held you back and will place you on the road to personal strength and peace of mind.</summary>
+    <simplified:pwid>4ca842b3-1a98-af87-5021-80ee8bf66a9d</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Bibliotheca+ID/am6erz9/Jacket.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Bibliotheca+ID/am6erz9/Jacket.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Self-Help" label="Self-Help"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Christianity" label="Christianity"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Atria Books</dcterms:publisher>
+    <dcterms:issued>2012-10-09</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/am6erz9/report"/>
+    <id>urn:librarysimplified.org/terms/id/Bibliotheca%20ID/am6erz9</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/am6erz9" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Bibliotheca"/>
+    <published>2014-04-01T00:00:00Z</published>
+    <updated>2021-12-28T09:15:14+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/am6erz9/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="3" available="3"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/am6erz9/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/am6erz9/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Bibliotheca%20ID/am6erz9"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Bibliotheca%20ID/am6erz9/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>Today's Embrace</title>
+    <schema:alternativeHeadline>East of the Sun Series, Book 3</schema:alternativeHeadline>
+    <author>
+      <name>Linda Lee Chaikin</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Linda Lee Chaikin" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Linda%20Lee%20Chaikin/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="East of the Sun">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="East of the Sun" href="https://circulation.librarysimplified.org/NYNYPL/works/series/East%20of%20the%20Sun/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">She gambled with her husband's trust. At stake is&amp;#8211;everything. &lt;br&gt;Evy Varley's marriage to Rogan Chantry is all she had hoped it would be&amp;#8211;until she finds out that she is pregnant with a honeymoon baby. Fearing that Rogan won't allow her to travel while she is expecting, Evy plots to keep her pregnancy secret in order to accompany him to South Africa. Her thoughts are not only for her husband, but Evy is determined to travel to Bulawayo, the new mission station of Dr. Jakob van Buren&amp;#8211;the one man who can help Evy to finally clear her mother's name. &lt;br&gt;After she and Rogan set out to sea, however, Evy discovers that she has gone too far in her deceit, and the damage to her marriage may be irreversible. Matters only worsen in Africa, where malaria, murder, and an African uprising all take their toll&amp;#8211;and where Rogan and Evy must fight not only for their love, but also for their very lives.</summary>
+    <simplified:pwid>f5653b21-ceca-9a8f-dff2-0bb1b30281a3</simplified:pwid>
+    <link href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc/%25257BE2D992E8-1337-4925-8EEF-DED79AE7C5BC%25257DImg100.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc/%25257BE2D992E8-1337-4925-8EEF-DED79AE7C5BC%25257DImg100.png" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Historical%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Historical Fiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Romance" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Romance"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Religious%20Fiction" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Religious Fiction"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>The Crown Publishing Group</dcterms:publisher>
+    <bib:publisherImprint>WaterBrook Press</bib:publisherImprint>
+    <dcterms:issued>2011-12-14</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2020-03-26T00:00:00Z</published>
+    <updated>2022-01-04T21:42:19+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:indirectAcquisition type="application/atom+xml;type=entry;profile=opds-catalog">
+        <opds:indirectAcquisition type="text/html;profile=&quot;http://librarysimplified.org/terms/profiles/streaming-media&quot;"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/e2d992e8-1337-4925-8eef-ded79ae7c5bc/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>The Constitution Today</title>
+    <schema:alternativeHeadline>Timeless Lessons for the Issues of Our Era</schema:alternativeHeadline>
+    <author>
+      <name>Akhil Reed Amar</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Akhil Reed Amar" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Akhil%20Reed%20Amar/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <summary type="html">&lt;p&gt;&lt;I&gt;A leading legal scholar addresses the most important constitutional controversies of the past two decades and illuminates the Constitution's spirit and ongoing relevance&lt;/I&gt;&lt;BR&gt;America's Constitution, Chief Justice John Marshall famously observed in McCulloch v. Maryland, aspires &amp;#147;to endure for ages to come." The daily news has a shorter shelf life, and when the issues of the day involve momentous constitutional questions, present-minded journalists and busy citizens cannot always see the stakes clearly.&lt;BR&gt;In &lt;I&gt;The Constitution Today&lt;/I&gt;, Akhil Reed Amar, America's preeminent constitutional scholar, considers the biggest and most bitterly contested debates of the last two decades and provides a passionate handbook for thinking constitutionally about today's headlines. Amar shows how the Constitution's text, history, and structure are a crucial repository of collective wisdom, providing specific rules and grand themes relevant to every organ of the American body...</summary>
+    <simplified:pwid>9f995ab1-dd9a-ec6b-ddce-4c73f81d301f</simplified:pwid>
+    <link href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/68e7bbf7-661a-470b-8c88-b5df9081174d/%25257B68E7BBF7-661A-470B-8C88-B5DF9081174D%25257DImg100.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/68e7bbf7-661a-470b-8c88-b5df9081174d/%25257B68E7BBF7-661A-470B-8C88-B5DF9081174D%25257DImg100.png" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/History" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="History"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Law" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Law"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Political%20Science" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Political Science"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Basic Books</dcterms:publisher>
+    <dcterms:issued>2016-09-13</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/68e7bbf7-661a-470b-8c88-b5df9081174d/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/68e7bbf7-661a-470b-8c88-b5df9081174d</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/68e7bbf7-661a-470b-8c88-b5df9081174d" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2018-03-14T00:00:00Z</published>
+    <updated>2022-01-04T16:07:04+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/68e7bbf7-661a-470b-8c88-b5df9081174d/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:indirectAcquisition type="application/atom+xml;type=entry;profile=opds-catalog">
+        <opds:indirectAcquisition type="text/html;profile=&quot;http://librarysimplified.org/terms/profiles/streaming-media&quot;"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="2" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/68e7bbf7-661a-470b-8c88-b5df9081174d/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/68e7bbf7-661a-470b-8c88-b5df9081174d/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/68e7bbf7-661a-470b-8c88-b5df9081174d"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/68e7bbf7-661a-470b-8c88-b5df9081174d/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://bib.schema.org/Audiobook">
+    <title>42 Today</title>
+    <schema:alternativeHeadline>Jackie Robinson and His Legacy</schema:alternativeHeadline>
+    <contributor opf:role="asn">
+      <name>David McMahon</name>
+    </contributor>
+    <contributor opf:role="win">
+      <name>David McMahon</name>
+    </contributor>
+    <contributor opf:role="asn">
+      <name>Sarah Burns</name>
+    </contributor>
+    <contributor opf:role="win">
+      <name>Sarah Burns</name>
+    </contributor>
+    <contributor opf:role="asn">
+      <name>Ken Burns</name>
+    </contributor>
+    <contributor opf:role="win">
+      <name>Ken Burns</name>
+    </contributor>
+    <contributor opf:role="asn">
+      <name>Kevin Merida</name>
+    </contributor>
+    <contributor opf:role="aft">
+      <name>Kevin Merida</name>
+    </contributor>
+    <contributor opf:role="edt">
+      <name>Michael G. Long</name>
+    </contributor>
+    <contributor opf:role="nrt">
+      <name>Mirron Willis</name>
+    </contributor>
+    <summary type="html">Explores Jackie Robinson's compelling and complicated legacy Before the United States Supreme Court ruled against segregation in public schools, and before Rosa Parks refused to surrender her bus seat in Montgomery, Alabama, Jackie Robinson walked onto the diamond on April 15, 1947, as first baseman for the Brooklyn Dodgers, making history as the first African American to integrate Major League Baseball in the twentieth century. Today a national icon, Robinson was a complicated man who navigated an even more complicated world that both celebrated and despised him. Many are familiar with Robinson as a baseball hero. Few, however, know of the inner turmoil that came with his historic status. Featuring piercing essays from a range of distinguished sportswriters, cultural critics, and scholars, this book explores Robinson's perspectives and legacies on civil rights, sports, faith, youth, and nonviolence, while providing rare glimpses into the struggles and strength of one of the...</summary>
+    <simplified:pwid>2a3b00a2-daa7-6880-2d40-a906354fae01</simplified:pwid>
+    <link href="https://img1.od-cdn.com/ImageType-100/1219-1/%7BF01DA6B0-10D0-4DB0-900B-B2711A9D77E4%7DImg100.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://img1.od-cdn.com/ImageType-400/1219-1/F01/DA6/B0/%7BF01DA6B0-10D0-4DB0-900B-B2711A9D77E4%7DImg400.jpg" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Social%20Sciences" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Social Sciences"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Biography%20%26%20Memoir" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Biography &amp; Memoir"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Sports" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Sports"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Tantor Media, Inc.</dcterms:publisher>
+    <bib:publisherImprint>Tantor Audio</bib:publisherImprint>
+    <dcterms:issued>2021-02-23</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/f01da6b0-10d0-4db0-900b-b2711a9d77e4/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/f01da6b0-10d0-4db0-900b-b2711a9d77e4</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/f01da6b0-10d0-4db0-900b-b2711a9d77e4" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2021-02-17T00:00:00Z</published>
+    <updated>2022-01-03T10:35:11+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/f01da6b0-10d0-4db0-900b-b2711a9d77e4/borrow">
+      <opds:indirectAcquisition type="application/atom+xml;type=entry;profile=opds-catalog">
+        <opds:indirectAcquisition type="text/html;profile=&quot;http://librarysimplified.org/terms/profiles/streaming-media&quot;"/>
+      </opds:indirectAcquisition>
+      <opds:indirectAcquisition type="application/vnd.overdrive.circulation.api+json;profile=audiobook"/>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/f01da6b0-10d0-4db0-900b-b2711a9d77e4/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/f01da6b0-10d0-4db0-900b-b2711a9d77e4/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/f01da6b0-10d0-4db0-900b-b2711a9d77e4"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/f01da6b0-10d0-4db0-900b-b2711a9d77e4/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>This Stops Today</title>
+    <schema:alternativeHeadline>Eric Garner's Mother Seeks Justice after Losing Her Son</schema:alternativeHeadline>
+    <contributor opf:role="asn">
+      <name>Hillary Rodham Clinton</name>
+    </contributor>
+    <contributor opf:role="win">
+      <name>Hillary Rodham Clinton</name>
+    </contributor>
+    <author>
+      <name>Dave Smitherman</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Dave Smitherman" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Dave%20Smitherman/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <author>
+      <name>Gwen Carr</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Gwen Carr" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Gwen%20Carr/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <summary type="html">After the death of her son, Eric Garner, at the hands of New York City police officers on Staten Island went viral, Gwen Carr's life changed forever. The illegal chokehold that took Garner's life has been seared into the public consciousness forever as the large black man struggled to breathe while a white policeman held him down on a hot concrete sidewalk. His death set the tone for a new normal where young black men and women now automatically document police interactions with their cell phones for fear of brutality and even death. As one of the Mothers of the Movement, Gwen Carr, a retired transit train operator, now dedicates her time to fighting for racial equality, especially the way law enforcement treats blacks in the United States. &lt;br /&gt;In This Stops Today, Carr shares the tragedies she's faced, recalls her son's life and death, and recounts her newfound role as an activist in the fight for racial equality. More than the story of a single moment, her book recounts a life...</summary>
+    <simplified:pwid>61950fd6-6310-30c4-90aa-c6ee679fc0aa</simplified:pwid>
+    <link href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94/%25257BFB2EE8B2-C7B8-4B79-B3CD-DFDF052DEA94%25257DImg100.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94/%25257BFB2EE8B2-C7B8-4B79-B3CD-DFDF052DEA94%25257DImg100.png" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Political%20Science" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Political Science"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Biography%20%26%20Memoir" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Biography &amp; Memoir"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Rowman &amp; Littlefield Publishers</dcterms:publisher>
+    <dcterms:issued>2018-10-01</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2018-11-26T00:00:00Z</published>
+    <updated>2022-01-04T17:25:49+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:indirectAcquisition type="application/atom+xml;type=entry;profile=opds-catalog">
+        <opds:indirectAcquisition type="text/html;profile=&quot;http://librarysimplified.org/terms/profiles/streaming-media&quot;"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="3" available="3"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/fb2ee8b2-c7b8-4b79-b3cd-dfdf052dea94/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>Arriving Today</title>
+    <schema:alternativeHeadline>From Factory to Front Door â€” Why Everything Has Changed About How and What We Buy</schema:alternativeHeadline>
+    <author>
+      <name>Christopher Mims</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Christopher Mims" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Christopher%20Mims/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <summary type="html">&lt;p&gt;&lt;strong&gt;The Wall Street Journal technology columnist reveals the fascinating story behind the misleadingly simple phrase shoppers take for granted&amp;#8212;"Arriving Today"&amp;#8212;in this eye-opening investigation into the new rules of online commerce, transportation, and supply chain management.&lt;/strong&gt;&lt;br/&gt;We are at a tipping point in retail history. While consumers are profiting from the convenience of instant gratification, rapidly advancing technologies are transforming the way goods are transported and displacing workers in ways never before seen.&lt;/p&gt;&lt;p&gt;In Arriving Today, Christopher Mims goes deep, far, and wide to uncover how a single product, from creation to delivery, weaves its way from a factory on the other side of the world to our doorstep. He analyzes the evolving technologies and management strategies necessary to keep the product moving to fulfill consumers' demand for "arriving today" gratification. Mims reveals a world where the only thing moving faster than...</summary>
+    <simplified:pwid>fb73d73e-8c94-a675-0b6d-45962cf2b230</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://img1.od-cdn.com/ImageType-100/0293-1/%7B3DD930DF-F730-4342-8C73-8B3452ACC21B%7DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://img1.od-cdn.com/ImageType-400/0293-1/3DD/930/DF/%7B3DD930DF-F730-4342-8C73-8B3452ACC21B%7DImg400.jpg" type="image/jpeg"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Technology" label="Technology"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Business" label="Business"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Harper Business</dcterms:publisher>
+    <dcterms:issued>2021-09-14</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/3dd930df-f730-4342-8c73-8b3452acc21b/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/3dd930df-f730-4342-8c73-8b3452acc21b</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/3dd930df-f730-4342-8c73-8b3452acc21b" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2021-10-22T00:00:00Z</published>
+    <updated>2022-01-04T03:31:09+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/3dd930df-f730-4342-8c73-8b3452acc21b/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/epub+zip"/>
+      </opds:indirectAcquisition>
+      <opds:indirectAcquisition type="application/atom+xml;type=entry;profile=opds-catalog">
+        <opds:indirectAcquisition type="text/html;profile=&quot;http://librarysimplified.org/terms/profiles/streaming-media&quot;"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="unavailable"/>
+      <opds:holds total="3"/>
+      <opds:copies total="4" available="0"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/3dd930df-f730-4342-8c73-8b3452acc21b/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/3dd930df-f730-4342-8c73-8b3452acc21b/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/3dd930df-f730-4342-8c73-8b3452acc21b"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/3dd930df-f730-4342-8c73-8b3452acc21b/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://bib.schema.org/Audiobook">
+    <title>Today Matters</title>
+    <schema:alternativeHeadline>12 Daily Practices to Guarantee Tomorrows Success</schema:alternativeHeadline>
+    <contributor opf:role="nrt">
+      <name>John C. Maxwell</name>
+    </contributor>
+    <author>
+      <name>John C. Maxwell</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="John C. Maxwell" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/John%20C.%20Maxwell/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <summary type="html">Most of us look at our days in the wrong way: We exaggerate yesterday. We overestimate tomorrow. We underestimate today. The truth is that the most important day you will ever experience is today.  Today is the key to your success. Maxwell offers twelve decisions and disciplinesâ€”he calls it his daily dozenâ€”that can be learned and mastered by any person to achieve success.  </summary>
+    <simplified:pwid>2254a65b-8c78-7db6-e584-cdffb7779f6b</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/54abdf68-29d1-48f6-b198-5726a55ca9b8/%25257B54ABDF68-29D1-48F6-B198-5726A55CA9B8%25257DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/54abdf68-29d1-48f6-b198-5726a55ca9b8/%25257B54ABDF68-29D1-48F6-B198-5726A55CA9B8%25257DImg100.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Christianity" label="Christianity"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Business" label="Business"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>Hachette Audio</dcterms:publisher>
+    <bib:publisherImprint>Faith Words</bib:publisherImprint>
+    <dcterms:issued>2005-04-01</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/54abdf68-29d1-48f6-b198-5726a55ca9b8/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/54abdf68-29d1-48f6-b198-5726a55ca9b8</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/54abdf68-29d1-48f6-b198-5726a55ca9b8" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-11-14T00:00:00Z</published>
+    <updated>2022-01-04T14:06:42+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/54abdf68-29d1-48f6-b198-5726a55ca9b8/borrow">
+      <opds:indirectAcquisition type="application/atom+xml;type=entry;profile=opds-catalog">
+        <opds:indirectAcquisition type="text/html;profile=&quot;http://librarysimplified.org/terms/profiles/streaming-media&quot;"/>
+      </opds:indirectAcquisition>
+      <opds:indirectAcquisition type="application/vnd.overdrive.circulation.api+json;profile=audiobook"/>
+      <opds:availability status="unavailable"/>
+      <opds:holds total="1"/>
+      <opds:copies total="2" available="0"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/54abdf68-29d1-48f6-b198-5726a55ca9b8/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/54abdf68-29d1-48f6-b198-5726a55ca9b8/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/54abdf68-29d1-48f6-b198-5726a55ca9b8"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/54abdf68-29d1-48f6-b198-5726a55ca9b8/open_book"/>
+  </entry>
+  <link rel="start" href="https://circulation.librarysimplified.org/NYNYPL/groups/" title="All Books"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=today&amp;entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full" title="All" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" opds:activeFacet="true" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=today&amp;entrypoint=Book&amp;order=relevance&amp;available=all&amp;collection=full" title="eBooks" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=today&amp;entrypoint=Audio&amp;order=relevance&amp;available=all&amp;collection=full" title="Audiobooks" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link rel="next" href=""/>
+  <link rel="first" href="https://circulation.librarysimplified.org/NYNYPL/search/?q=today&amp;entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full&amp;after=0&amp;size=10"/>
+  <link rel="previous" href="https://circulation.librarysimplified.org/NYNYPL/search/?q=today&amp;entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full&amp;after=0&amp;size=10"/>
+  <link rel="up" href="https://circulation.librarysimplified.org/NYNYPL/groups/" title="The New York Public Library"/>
+  <link rel="http://opds-spec.org/auth/document" href="https://circulation.librarysimplified.org/NYNYPL/authentication_document"/>
+  <link rel="search" type="application/opensearchdescription+xml" href="https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full"/>
+  <link rel="http://opds-spec.org/shelf" type="application/atom+xml;profile=opds-catalog;kind=acquisition" href="https://circulation.librarysimplified.org/NYNYPL/loans/"/>
+  <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/"/>
+  <link href="https://librarysimplified.org/EULA/" type="text/html" rel="terms-of-service"/>
+  <link href="https://www.nypl.org/help/about-nypl/legal-notices/privacy-policy" type="text/html" rel="privacy-policy"/>
+  <link href="https://librarysimplified.org/about/" type="text/html" rel="about"/>
+  <link href="https://librarysimplified.org/licenses/" type="text/html" rel="license"/>
+  <link href="mailto:gethelp@nypl.org" rel="help"/>
+</feed>

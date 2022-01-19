@@ -8,6 +8,12 @@
 
 import Foundation
 
+@objc protocol NYPLNetworkExecuting {
+  func GET(_ reqURL: URL,
+           cachePolicy: NSURLRequest.CachePolicy,
+           completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask
+}
+
 /// Use this enum to express either-or semantics in a result.
 enum NYPLResult<SuccessInfo> {
   case success(SuccessInfo, URLResponse?)
@@ -108,7 +114,7 @@ extension NYPLNetworkExecutor {
 }
 
 // Objective-C compatibility
-extension NYPLNetworkExecutor {
+extension NYPLNetworkExecutor: NYPLNetworkExecuting {
   @objc class func bearerAuthorized(request: URLRequest) -> URLRequest {
     let headers: [String: String]
     if let authToken = NYPLUserAccount.sharedAccount().authToken {

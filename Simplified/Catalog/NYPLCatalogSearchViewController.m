@@ -217,17 +217,18 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)fetchUngroupedFeedFromURL:(NSURL *)URL
 {
-  [NYPLCatalogUngroupedFeed
-   withURL:URL
-   handler:^(NYPLCatalogUngroupedFeed *const category) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       if(category) {
-         self.feed = category;
-         self.feed.delegate = self;
-       }
-       [self updateUIAfterSearchSuccess:(category != nil)];
-     }];
-   }];
+  [NYPLOPDSFeedFetcher fetchCatalogUngroupedFeedWithUrl:URL
+                                        networkExecutor:[NYPLNetworkExecutor shared]
+                                             retryCount:0
+                                             completion:^(NYPLCatalogUngroupedFeed * _Nullable feed) {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      if(feed) {
+        self.feed = feed;
+        self.feed.delegate = self;
+      }
+      [self updateUIAfterSearchSuccess:(feed != nil)];
+    }];
+  }];
 }
 
 - (void)searchBarSearchButtonClicked:(__attribute__((unused)) UISearchBar *)searchBar
