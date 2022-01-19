@@ -40,7 +40,7 @@ class NYPLOPDSFeedFetcherMock: NYPLOPDSFeedFetcher {
   static var numberOfFetchAllowed = 5
   
   // Overriding this function in order to mimick the response from server
-  override class func fetchOPDSFeed(url: URL,
+  override class func fetchOPDSFeed(url: URL?,
                                     networkExecutor: NYPLNetworkExecuting,
                                     shouldResetCache: Bool,
                                     completion: @escaping (NYPLOPDSFeed?, [String : Any]?) -> Void) {
@@ -66,6 +66,11 @@ class NYPLOPDSFeedFetcherMock: NYPLOPDSFeedFetcher {
       requestURL = NYPLCatalogUngroupedFeedBookType.unsupported.url()
     case .none:
       break
+    }
+    
+    guard let requestURL = requestURL else {
+      completion(nil, nil)
+      return
     }
     
     numberOfFetchAllowed -= 1

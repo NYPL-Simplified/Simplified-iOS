@@ -25,7 +25,7 @@ import Foundation
                                        retryCount: Int = 0,
                                        completion: @escaping (_ feed: NYPLCatalogUngroupedFeed?) -> Void) {
     guard let url = url else {
-      Log.error(#function, "Unable to fetch feed with empty URL.")
+      Log.error(#function, "Unable to fetch Catalog feed with empty URL.")
       completion(nil)
       return
     }
@@ -64,10 +64,16 @@ import Foundation
   ///   - Parameter shouldResetCache: Pass YES to wipe the whole cache.
   ///   - Parameter completion: Always invoked at the end no matter what,
   ///   providing an OPDS feed object in case of success and an dictionary containing error information otherwise.
-  class func fetchOPDSFeed(url: URL,
+  class func fetchOPDSFeed(url: URL?,
                            networkExecutor: NYPLNetworkExecuting,
                            shouldResetCache: Bool,
                            completion: @escaping (_ feed: NYPLOPDSFeed?, _ error: [String: Any]?) -> Void) {
+    guard let url = url else {
+      Log.error(#function, "Unable to fetch OPDS feed with empty URL.")
+      completion(nil, nil)
+      return
+    }
+    
     let cachePolicy: NSURLRequest.CachePolicy = shouldResetCache ? .reloadIgnoringCacheData : .useProtocolCachePolicy
     
     _ = networkExecutor.GET(url,
