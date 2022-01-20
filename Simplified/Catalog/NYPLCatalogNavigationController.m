@@ -9,7 +9,7 @@
 
 @interface NYPLCatalogNavigationController()
 
-@property (nonatomic) NYPLCatalogFeedViewController *const viewController;
+@property (nonatomic) UIViewController *const feedVC;
 
 @end
 
@@ -39,19 +39,17 @@
   // another `load` command once the authentication document is received.
   NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
   NYPLLOG_F(@"urlToLoad for NYPLCatalogFeedViewController: %@", urlToLoad);
-  self.viewController = [[NYPLCatalogFeedViewController alloc]
-                         initWithURL:urlToLoad];
-  
-  self.viewController.title = NSLocalizedString(@"Catalog", nil);
+  self.feedVC = [[NYPLCatalogFeedViewController alloc] initWithURL:urlToLoad];
+  self.feedVC.title = NSLocalizedString(@"Catalog", nil);
 
 #ifdef SIMPLYE
-  self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
-  [self setNavigationLeftBarButtonForVC:self.viewController];
+  self.feedVC.navigationItem.title = [AccountsManager shared].currentAccount.name;
+  [self setNavigationLeftBarButtonForVC:self.feedVC];
 #endif
 
-  self.viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
+  self.feedVC.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
 
-  self.viewControllers = @[self.viewController];
+  self.viewControllers = @[self.feedVC];
 }
 
 #pragma mark NSObject
@@ -86,13 +84,13 @@
 - (void)syncBegan
 {
   self.navigationItem.leftBarButtonItem.enabled = NO;
-  self.viewController.navigationItem.leftBarButtonItem.enabled = NO;
+  self.feedVC.navigationItem.leftBarButtonItem.enabled = NO;
 }
 
 - (void)syncEnded
 {
   self.navigationItem.leftBarButtonItem.enabled = YES;
-  self.viewController.navigationItem.leftBarButtonItem.enabled = YES;
+  self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 #ifdef SIMPLYE
