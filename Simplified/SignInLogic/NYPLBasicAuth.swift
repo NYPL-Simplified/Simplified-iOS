@@ -47,7 +47,7 @@ import Foundation
 
       let credentials = URLCredential(user: username,
                                       password: password,
-                                      persistence: .none)
+                                      persistence: .forSession)
       completion(.useCredential, credentials)
 
     case NSURLAuthenticationMethodServerTrust:
