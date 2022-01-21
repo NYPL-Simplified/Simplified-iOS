@@ -60,8 +60,11 @@
   
   self.tabBarItem.title = NSLocalizedString(@"Catalog", nil);
   self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
-  
-  [self loadTopLevelCatalogViewController];
+
+  NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
+  if (urlToLoad) {
+    [self loadTopLevelCatalogViewController];
+  }
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NSNotification.NYPLCurrentAccountDidChange object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncBegan) name:NSNotification.NYPLSyncBegan object:nil];
@@ -166,12 +169,7 @@
 
     __block NSURL *mainFeedUrl = [NSURL URLWithString:account.catalogUrl];
     void (^completion)(void) = ^() {
-      [[NYPLSettings sharedSettings] setAccountMainFeedURL:mainFeedUrl];
-      [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-      // TODO: SIMPLY-2862 should this be posted only if actually different?
-      [[NSNotificationCenter defaultCenter]
-      postNotificationName:NSNotification.NYPLCurrentAccountDidChange
-      object:nil];
+      [NYPLSettings.shared updateMainFeedURLIfNeededWithURL:mainFeedUrl];
     };
 
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {

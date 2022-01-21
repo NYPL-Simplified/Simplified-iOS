@@ -123,3 +123,17 @@ import Foundation
     }
   }
 }
+
+extension NYPLSettings {
+  @objc(updateMainFeedURLIfNeededWithURL:)
+  func updateMainFeedURLIfNeeded(with newFeedURL: URL?) {
+    let currentFeedURL = accountMainFeedURL
+    if ((newFeedURL == nil && currentFeedURL != nil)
+        || (newFeedURL != nil && newFeedURL != currentFeedURL)) {
+      accountMainFeedURL = newFeedURL
+      UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
+      NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange,
+                                      object: nil)
+    }
+  }
+}

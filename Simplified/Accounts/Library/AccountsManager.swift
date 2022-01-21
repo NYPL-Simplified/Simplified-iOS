@@ -206,9 +206,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
               Log.debug(#function, "mainFeedURL=\(String(describing: mainFeed))")
-              NYPLSettings.shared.accountMainFeedURL = mainFeed
-              UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
-              NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
+              NYPLSettings.shared.updateMainFeedURLIfNeeded(with: mainFeed)
               completion(true)
             }
 
