@@ -16,6 +16,8 @@
 
 @implementation NYPLCatalogNavigationController
 
+#pragma mark - Catalog loading
+
 /// Replaces the current view controllers on the navigation stack with a single
 /// view controller pointed at the current catalog URL.
 - (void)loadTopLevelCatalogViewController
@@ -32,14 +34,14 @@
 - (void)loadTopLevelCatalogViewControllerInternal
 {
   // TODO: SIMPLY-2862
-  // unfortunately it is possible to get here with a nil feed URL. This is
-  // the result of an early initialization of the navigation controller
+  // unfortunately it's possible to get here with a nil feed URL at startup.
+  // This is the result of an early initialization of the navigation controller
   // while the account is not yet set up. While this is definitely not
   // ideal, in my observations this seems to always be followed by
   // another `load` command once the authentication document is received.
-  NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
-  NYPLLOG_F(@"urlToLoad for NYPLCatalogFeedViewController: %@", urlToLoad);
-  self.feedVC = [[NYPLCatalogFeedViewController alloc] initWithURL:urlToLoad];
+  NSURL *catalogURL = [self topLevelCatalogURL];
+  NYPLLOG_F(@"topLevelCatalogURL: %@", catalogURL);
+  self.feedVC = [[NYPLCatalogFeedViewController alloc] initWithURL:catalogURL];
   self.feedVC.title = NSLocalizedString(@"Catalog", nil);
 
 #ifdef SIMPLYE
@@ -52,7 +54,12 @@
   self.viewControllers = @[self.feedVC];
 }
 
-#pragma mark NSObject
+- (NSURL *)topLevelCatalogURL
+{
+  return [[NYPLSettings sharedSettings] accountMainFeedURL];
+}
+
+#pragma mark - NSObject
 
 - (instancetype)init
 {
@@ -61,8 +68,7 @@
   self.tabBarItem.title = NSLocalizedString(@"Catalog", nil);
   self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
 
-  NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
-  if (urlToLoad) {
+  if ([self topLevelCatalogURL] != nil) {
     [self loadTopLevelCatalogViewController];
   }
   
@@ -79,21 +85,11 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Account change logic
+
 - (void)currentAccountChanged
 {
   [self loadTopLevelCatalogViewController];
-}
-
-- (void)syncBegan
-{
-  self.navigationItem.leftBarButtonItem.enabled = NO;
-  self.feedVC.navigationItem.leftBarButtonItem.enabled = NO;
-}
-
-- (void)syncEnded
-{
-  self.navigationItem.leftBarButtonItem.enabled = YES;
-  self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 #ifdef SIMPLYE
@@ -159,6 +155,8 @@
     [NYPLMainThreadRun asyncIfNeeded:completion];
   }
 }
+
+#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
@@ -241,6 +239,20 @@
     }
   }
 #endif
+}
+
+#pragma mark -
+
+- (void)syncBegan
+{
+  self.navigationItem.leftBarButtonItem.enabled = NO;
+  self.feedVC.navigationItem.leftBarButtonItem.enabled = NO;
+}
+
+- (void)syncEnded
+{
+  self.navigationItem.leftBarButtonItem.enabled = YES;
+  self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 - (void)welcomeScreenCompletionHandlerForAccount:(Account *const)account
