@@ -163,24 +163,19 @@
   [super viewDidLoad];
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   if (settings.userHasSeenWelcomeScreen) {
-    Account *account = [[AccountsManager sharedInstance] currentAccount];
-
-    __block NSURL *mainFeedUrl = [NSURL URLWithString:account.catalogUrl];
-    void (^completion)(void) = ^() {
-      [NYPLSettings.shared updateMainFeedURLIfNeededWithURL:mainFeedUrl];
-    };
-
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
       [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
                                                                        currentLibraryAccountProvider:[AccountsManager shared]
                                                                                           completion:^(BOOL isOfAge) {
         dispatch_async(dispatch_get_main_queue(), ^{
-          mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
-          completion();
+          NSURL *mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
+          [NYPLSettings.shared updateMainFeedURLIfNeededWithURL:mainFeedUrl];
         });
       }];
     } else {
-      completion();
+      Account *account = [[AccountsManager sharedInstance] currentAccount];
+      NSURL *accountFeedUrl = [NSURL URLWithString:account.catalogUrl];
+      [NYPLSettings.shared updateMainFeedURLIfNeededWithURL:accountFeedUrl];
     }
   }
 }
