@@ -125,6 +125,14 @@ import Foundation
 }
 
 extension NYPLSettings {
+
+  /// Updates the main feed URL stored in NSUserDefaults with a given URL
+  /// if this new URL is different from the existing `self.accountMainFeedURL`.
+  ///
+  /// If `newFeedURL` == `self.accountMainFeedURL` this call will result in a
+  /// no-op.
+  ///
+  /// - Parameter newFeedURL: The new URL to update `accountMainFeedURL` with.
   @objc(updateMainFeedURLIfNeededWithURL:)
   func updateMainFeedURLIfNeeded(with newFeedURL: URL?) {
     let currentFeedURL = accountMainFeedURL
