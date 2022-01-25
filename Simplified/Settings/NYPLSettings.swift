@@ -123,3 +123,25 @@ import Foundation
     }
   }
 }
+
+extension NYPLSettings {
+
+  /// Updates the main feed URL stored in NSUserDefaults with a given URL
+  /// if this new URL is different from the existing `self.accountMainFeedURL`.
+  ///
+  /// If `newFeedURL` == `self.accountMainFeedURL` this call will result in a
+  /// no-op.
+  ///
+  /// - Parameter newFeedURL: The new URL to update `accountMainFeedURL` with.
+  @objc(updateMainFeedURLIfNeededWithURL:)
+  func updateMainFeedURLIfNeeded(with newFeedURL: URL?) {
+    let currentFeedURL = accountMainFeedURL
+    if ((newFeedURL == nil && currentFeedURL != nil)
+        || (newFeedURL != nil && newFeedURL != currentFeedURL)) {
+      accountMainFeedURL = newFeedURL
+      UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
+      NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange,
+                                      object: nil)
+    }
+  }
+}

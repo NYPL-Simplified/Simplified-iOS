@@ -9,12 +9,14 @@
 
 @interface NYPLCatalogNavigationController()
 
-@property (nonatomic) NYPLCatalogFeedViewController *const viewController;
+@property (nonatomic) UIViewController *const feedVC;
 
 @end
 
 
 @implementation NYPLCatalogNavigationController
+
+#pragma mark - Catalog loading
 
 /// Replaces the current view controllers on the navigation stack with a single
 /// view controller pointed at the current catalog URL.
@@ -32,29 +34,32 @@
 - (void)loadTopLevelCatalogViewControllerInternal
 {
   // TODO: SIMPLY-2862
-  // unfortunately it is possible to get here with a nil feed URL. This is
-  // the result of an early initialization of the navigation controller
+  // unfortunately it's possible to get here with a nil feed URL at startup.
+  // This is the result of an early initialization of the navigation controller
   // while the account is not yet set up. While this is definitely not
   // ideal, in my observations this seems to always be followed by
   // another `load` command once the authentication document is received.
-  NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
-  NYPLLOG_F(@"urlToLoad for NYPLCatalogFeedViewController: %@", urlToLoad);
-  self.viewController = [[NYPLCatalogFeedViewController alloc]
-                         initWithURL:urlToLoad];
-  
-  self.viewController.title = NSLocalizedString(@"Catalog", nil);
+  NSURL *catalogURL = [self topLevelCatalogURL];
+  NYPLLOG_F(@"topLevelCatalogURL: %@", catalogURL);
+  self.feedVC = [[NYPLCatalogFeedViewController alloc] initWithURL:catalogURL];
+  self.feedVC.title = NSLocalizedString(@"Catalog", nil);
 
 #ifdef SIMPLYE
-  self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
-  [self setNavigationLeftBarButtonForVC:self.viewController];
+  self.feedVC.navigationItem.title = [AccountsManager shared].currentAccount.name;
+  [self setNavigationLeftBarButtonForVC:self.feedVC];
 #endif
 
-  self.viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
+  self.feedVC.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
 
-  self.viewControllers = @[self.viewController];
+  self.viewControllers = @[self.feedVC];
 }
 
-#pragma mark NSObject
+- (NSURL *)topLevelCatalogURL
+{
+  return [[NYPLSettings sharedSettings] accountMainFeedURL];
+}
+
+#pragma mark - NSObject
 
 - (instancetype)init
 {
@@ -62,8 +67,10 @@
   
   self.tabBarItem.title = NSLocalizedString(@"Catalog", nil);
   self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
-  
-  [self loadTopLevelCatalogViewController];
+
+  if ([self topLevelCatalogURL] != nil) {
+    [self loadTopLevelCatalogViewController];
+  }
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NSNotification.NYPLCurrentAccountDidChange object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncBegan) name:NSNotification.NYPLSyncBegan object:nil];
@@ -78,21 +85,11 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Account change logic
+
 - (void)currentAccountChanged
 {
   [self loadTopLevelCatalogViewController];
-}
-
-- (void)syncBegan
-{
-  self.navigationItem.leftBarButtonItem.enabled = NO;
-  self.viewController.navigationItem.leftBarButtonItem.enabled = NO;
-}
-
-- (void)syncEnded
-{
-  self.navigationItem.leftBarButtonItem.enabled = YES;
-  self.viewController.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 #ifdef SIMPLYE
@@ -159,34 +156,26 @@
   }
 }
 
+#pragma mark - UIViewController
+
 - (void)viewDidLoad
 {
   [super viewDidLoad];
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   if (settings.userHasSeenWelcomeScreen) {
-    Account *account = [[AccountsManager sharedInstance] currentAccount];
-
-    __block NSURL *mainFeedUrl = [NSURL URLWithString:account.catalogUrl];
-    void (^completion)(void) = ^() {
-      [[NYPLSettings sharedSettings] setAccountMainFeedURL:mainFeedUrl];
-      [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-      // TODO: SIMPLY-2862 should this be posted only if actually different?
-      [[NSNotificationCenter defaultCenter]
-      postNotificationName:NSNotification.NYPLCurrentAccountDidChange
-      object:nil];
-    };
-
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
       [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
                                                                        currentLibraryAccountProvider:[AccountsManager shared]
                                                                                           completion:^(BOOL isOfAge) {
         dispatch_async(dispatch_get_main_queue(), ^{
-          mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
-          completion();
+          NSURL *mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
+          [NYPLSettings.shared updateMainFeedURLIfNeededWithURL:mainFeedUrl];
         });
       }];
     } else {
-      completion();
+      Account *account = [[AccountsManager sharedInstance] currentAccount];
+      NSURL *accountFeedUrl = [NSURL URLWithString:account.catalogUrl];
+      [NYPLSettings.shared updateMainFeedURLIfNeededWithURL:accountFeedUrl];
     }
   }
 }
@@ -245,6 +234,20 @@
     }
   }
 #endif
+}
+
+#pragma mark -
+
+- (void)syncBegan
+{
+  self.navigationItem.leftBarButtonItem.enabled = NO;
+  self.feedVC.navigationItem.leftBarButtonItem.enabled = NO;
+}
+
+- (void)syncEnded
+{
+  self.navigationItem.leftBarButtonItem.enabled = YES;
+  self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 - (void)welcomeScreenCompletionHandlerForAccount:(Account *const)account
