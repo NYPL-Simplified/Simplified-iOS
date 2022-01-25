@@ -3,7 +3,9 @@
     {
       "links": [
         {
-          "href": "https://circulation.openebooks.us/USOEI/",
+          "href": "https://simplye-web-git-oe-326-mobile-webview-nypl.vercel.app",
+          "href_prodweb": "https://beta.openebooks.us/app",
+          "href_native": "https://circulation.openebooks.us/USOEI/",
           "type": "application/atom+xml;profile=opds-catalog;kind=acquisition",
           "rel": "http://opds-spec.org/catalog"
         },

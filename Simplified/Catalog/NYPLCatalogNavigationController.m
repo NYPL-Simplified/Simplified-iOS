@@ -41,7 +41,16 @@
   // another `load` command once the authentication document is received.
   NSURL *catalogURL = [self topLevelCatalogURL];
   NYPLLOG_F(@"topLevelCatalogURL: %@", catalogURL);
+
+#if WEB_CATALOG_POC
+  NYPLUserAccount *user = [NYPLUserAccount sharedAccount];
+  self.feedVC = [[NYPLCatalogFeedWebVC alloc] initWithUrl:catalogURL
+                                                 username:user.username
+                                                 password:user.pin];
+#else
   self.feedVC = [[NYPLCatalogFeedViewController alloc] initWithURL:catalogURL];
+#endif
+
   self.feedVC.title = NSLocalizedString(@"Catalog", nil);
 
 #ifdef SIMPLYE
