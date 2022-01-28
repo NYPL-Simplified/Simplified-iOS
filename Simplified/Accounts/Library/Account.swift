@@ -383,7 +383,17 @@ class OPDS2SamlIDP: NSObject, Codable {
     subtitle = publication.metadata.description
     uuid = publication.metadata.id
     
-    catalogUrl = publication.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href
+    if let tmpCatalogUrl = publication.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href {
+      if tmpCatalogUrl == "https://circulation.librarysimplified.org/NYNYPL/" {
+        catalogUrl = "https://simplye-web-git-oe-326-mobile-webview-nypl.vercel.app"
+      } else {
+        catalogUrl = tmpCatalogUrl
+      }
+    } else {
+      catalogUrl = nil
+    }
+
+
     supportEmail = publication.links.first(where: { $0.rel == "help" })?.href.replacingOccurrences(of: "mailto:", with: "")
     
     authenticationDocumentUrl = publication.links.first(where: { $0.type == "application/vnd.opds.authentication.v1.0+json" })?.href

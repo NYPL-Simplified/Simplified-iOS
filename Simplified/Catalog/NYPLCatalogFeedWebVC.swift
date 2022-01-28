@@ -94,7 +94,11 @@ struct NYPLWebAuthProvider {
     return "Basic \(base64LoginString)"
   }
 
+  #if OPENEBOOKS
   let cookieKey = "CPW_AUTH_COOKIE%2Foe-qa"
+  #else
+  let cookieKey = "CPW_AUTH_COOKIE%2Fsimply-qa"
+  #endif
 
   var cookieValue: String {
     "{\"token\":\"\(basicToken)\",\"methodType\":\"http://opds-spec.org/auth/basic\"}"
