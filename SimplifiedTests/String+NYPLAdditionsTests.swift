@@ -3,7 +3,7 @@
 //  SimplyETests
 //
 //  Created by Ettore Pasquini on 4/8/20.
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 import XCTest
@@ -28,11 +28,6 @@ class String_NYPLAdditionsTests: XCTestCase {
 
     let otherEscapes = "~`!#%^*()[]|\\".stringURLEncodedAsQueryParamValue()
     XCTAssertEqual(otherEscapes, "~%60!%23%25%5E*()%5B%5D%7C%5C")
-  }
-
-  func testMD5() {
-    XCTAssertEqual("password".md5hex(), "5f4dcc3b5aa765d61d8327deb882cf99")
-    XCTAssertEqual("password".md5String(), "5f4dcc3b5aa765d61d8327deb882cf99")
   }
 
   func testBase64Encode() {

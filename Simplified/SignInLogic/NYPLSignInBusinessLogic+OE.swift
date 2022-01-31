@@ -3,7 +3,7 @@
 //  Open eBooks
 //
 //  Created by Ettore Pasquini on 10/28/21.
-//  Copyright © 2021 NYPL Labs. All rights reserved.
+//  Copyright © 2021 NYPL. All rights reserved.
 //
 
 import Foundation

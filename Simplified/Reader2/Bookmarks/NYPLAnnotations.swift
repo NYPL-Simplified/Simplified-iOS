@@ -1,7 +1,49 @@
 import UIKit
 import R2Shared
 
-@objcMembers final class NYPLAnnotations: NSObject {
+protocol NYPLAnnotationSyncing: AnyObject {
+  // Server status
+  
+  static func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
+                                      completion: @escaping (_ enableSync: Bool) -> ())
+  
+  static func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->())
+  
+  // Reading position
+  
+  static func syncReadingPosition(ofBook bookID: String?,
+                                  publication: Publication?,
+                                  toURL url:URL?,
+                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ())
+  
+  static func postReadingPosition(forBook bookID: String, selectorValue: String)
+  
+  // Bookmark
+  
+  static func getServerBookmarks(forBook bookID:String?,
+                                 publication: Publication?,
+                                 atURL annotationURL:URL?,
+                                 completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ())
+  
+  static func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark])
+  
+  static func deleteBookmark(annotationId: String,
+                             completionHandler: @escaping (_ success: Bool) -> ())
+  
+  static func uploadLocalBookmarks(_ bookmarks: [NYPLReadiumBookmark],
+                                   forBook bookID: String,
+                                   completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->())
+  
+  static func postBookmark(_ bookmark: NYPLReadiumBookmark,
+                           forBookID bookID: String,
+                           completion: @escaping (_ serverID: String?) -> ())
+  
+  // Permission
+  
+  static func syncIsPossibleAndPermitted() -> Bool
+}
+
+@objcMembers final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   // MARK: - Sync Settings
 
   /// Shows (if needed) the opt-in flow for syncing the user bookmarks and
@@ -516,7 +558,7 @@ import R2Shared
 
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
       if let err = error as NSError? {
-        Log.error(#file, "Annotation POST error (nsCode: \(err.code) Description: \(err.localizedDescription))")
+        Log.error(#file, "Annotation POST for bookID \(bookID): Error (nsCode: \(err.code) Description: \(err.localizedDescription))")
         if NetworkQueue.StatusCodes.contains(err.code) && queueOffline {
           self.addToOfflineQueue(bookID, annotationsURL, parameters)
         }
@@ -537,7 +579,7 @@ import R2Shared
         return
       }
 
-      Log.info(#file, "Annotation POST: Success 200.")
+      Log.info(#file, "Annotation POST for bookID \(bookID): Success 200.")
       let serverAnnotationID = annotationID(fromNetworkData: data)
       completionHandler(.success(serverAnnotationID))
     }

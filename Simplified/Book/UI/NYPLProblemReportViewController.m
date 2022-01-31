@@ -3,12 +3,12 @@
 //  Simplified
 //
 //  Created by Sam Tarakajian on 10/29/15.
-//  Copyright © 2015 NYPL Labs. All rights reserved.
+//  Copyright © 2015 NYPL. All rights reserved.
 //
 
 @import MessageUI;
+@import PureLayout;
 
-#import <PureLayout/PureLayout.h>
 #import "NYPLProblemReportViewController.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "SimplyE-Swift.h"

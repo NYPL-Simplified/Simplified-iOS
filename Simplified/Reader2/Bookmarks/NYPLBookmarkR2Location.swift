@@ -2,7 +2,7 @@
 //  NYPLBookmarkR2Location.swift
 //
 //  Created by Ettore Pasquini on 4/23/20.
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 import Foundation

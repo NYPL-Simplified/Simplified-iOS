@@ -3,7 +3,7 @@
 //  Simplified
 //
 //  Created by Ernest Fan on 2020-11-09.
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 import Foundation

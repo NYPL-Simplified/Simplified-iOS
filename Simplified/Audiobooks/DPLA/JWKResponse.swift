@@ -3,13 +3,14 @@
 //  Simplified
 //
 //  Created by Vladimir Fedorov on 31.08.2020.
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 #if FEATURE_AUDIOBOOKS
 
 import Foundation
 import NYPLAudiobookToolkit
+import NYPLUtilities
 
 struct JWKResponse: Codable {
   let keys: [JWK]

@@ -1,6 +1,5 @@
 @import LocalAuthentication;
-
-#import <PureLayout/PureLayout.h>
+@import PureLayout;
 
 #import "SimplyE-Swift.h"
 

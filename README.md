@@ -45,7 +45,9 @@ cd Simplified-iOS
 
 Unless the DRM dependencies change (which is very seldom) you shouldn't need to run the `bootstrap-drm.sh` script more than once.
 
-Other dependencies are managed via Carthage and a few git submodules. To rebuild them you can use the following idempotent script:
+First party dependencies are managed via Swift Package Manager. Most of these dependencies are managed via local Swift packages, given by the git submodules checkouts. They are built automatically when you build the `Simplified` Xcode project targets.
+
+Other 3rd party dependencies are managed via Carthage. To rebuild them you can use the following idempotent script:
 ```bash
 cd Simplified-iOS #repo root
 ./scripts/build-dependencies.sh
@@ -95,7 +97,7 @@ Feature branch names (for features whose development is a month or more): `featu
 
 # License
 
-Copyright © 2015-2021 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2015-2022 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -22,3 +22,9 @@
 [submodule "Certificates"]
 	path = Certificates
 	url = git@github.com:NYPL-Simplified/Certificates.git
+[submodule "CardCreator-iOS"]
+	path = CardCreator-iOS
+	url = https://github.com/NYPL-Simplified/CardCreator-iOS.git
+[submodule "NYPLAudiobookToolkit"]
+	path = NYPLAudiobookToolkit
+	url = https://github.com/NYPL-Simplified/NYPLAudiobookToolkit.git

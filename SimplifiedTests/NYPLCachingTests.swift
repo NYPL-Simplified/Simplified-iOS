@@ -3,7 +3,7 @@
 //  SimplyETests
 //
 //  Created by Ettore Pasquini on 3/25/20.
-//  Copyright © 2020 NYPL Labs. All rights reserved.
+//  Copyright © 2020 NYPL. All rights reserved.
 //
 
 import XCTest

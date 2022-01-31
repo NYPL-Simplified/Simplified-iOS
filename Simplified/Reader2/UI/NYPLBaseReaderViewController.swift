@@ -54,14 +54,17 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 
     lastReadPositionPoster = NYPLLastReadPositionPoster(
       book: book,
-      bookRegistryProvider: NYPLBookRegistry.shared())
+      bookRegistryProvider: NYPLBookRegistry.shared(),
+      annotationsSynchronizer: NYPLAnnotations.self
+    )
 
     bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(
       book: book,
       r2Publication: publication,
       drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
       bookRegistryProvider: NYPLBookRegistry.shared(),
-      currentLibraryAccountProvider: AccountsManager.shared)
+      currentLibraryAccountProvider: AccountsManager.shared,
+      annotationsSynchronizer: NYPLAnnotations.self)
 
     bookmarksBusinessLogic.syncBookmarks { (_, _) in }
 
@@ -339,7 +342,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-    Log.info(#function, "R2 locator changed to: \(locator)")
+    let bookInfo = bookmarksBusinessLogic.book.loggableShortString()
+    Log.info(#function, "R2 locator for \(bookInfo) changed to: \(locator)")
 
     lastReadPositionPoster.storeReadPosition(locator: locator)
 

@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "NYPLUtilities",
+        "repositoryURL": "https://github.com/NYPL-Simplified/iOS-Utilities",
+        "state": {
+          "branch": "main",
+          "revision": "dda470221a5e6eca49e1acef8bd2c08bebbeebe1",
+          "version": null
+        }
+      },
+      {
+        "package": "PureLayout",
+        "repositoryURL": "https://github.com/PureLayout/PureLayout.git",
+        "state": {
+          "branch": null,
+          "revision": "5561683c96dc49b023c1299bfe4f6fbeed5f8199",
+          "version": "3.1.9"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

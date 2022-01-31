@@ -757,11 +757,11 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   @synchronized(self) {
     [self.coverRegistry removePinnedThumbnailImageForBookIdentifier:identifier];
+
+    // somehow it is possible to get here with a nil book ID (see IOS-277) in
+    // which case the book has already been removed from the registry, but we
+    // still need to broadcast this removal event.
     if (identifier) {
-      // introduced for IOS-277. While it seems impossible for the app to
-      // create a book instance with a nil id or set the id to nil, somehow
-      // that is happening while returning the book. See other IOS-277 tags in
-      // the code base for more context.
       [self.identifiersToRecords removeObjectForKey:identifier];
     }
     [self broadcastChange];

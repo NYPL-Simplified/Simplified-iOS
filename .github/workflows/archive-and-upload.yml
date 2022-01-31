@@ -8,23 +8,33 @@ on:
 jobs:
   version-check:
     runs-on: macOS-11
+    env:
+      GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
       - name: Dump GitHub event context
         env:
           FULL_EVENT: ${{ toJson(github.event) }}
         run: echo "FULL_EVENT=$FULL_EVENT"
+      - name: Print System Info
+        run: uname -a
       - name: Check Carthage version
         run: command -v carthage && carthage version
       - name: Checkout main repo
         uses: actions/checkout@v2.3.4
         with:
           token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Add Private Repo Auth
+        # This ensures SPM can resolve dependencies for private repos.
+        # Other options included using `-usePackageSupportBuiltinSCM` (or
+        # possibly `-scmProvider system`) in xcodebuild
+        run: echo "GITHUB_REPO_OWNER=$GITHUB_REPO_OWNER" && git config --global --add url."https://${GITHUB_TOKEN}@github.com/${GITHUB_REPO_OWNER}".insteadOf "https://github.com/${GITHUB_REPO_OWNER}"
+        env:
+          GITHUB_REPO_OWNER: ${{ github.repository_owner }}
       - id: detectapp
         name: Detect which app to build
         run: ./scripts/detect-app-to-build.sh
         env:
           BUILD_CONTEXT: ci
-          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
           COMMIT_BEFORE_MERGE: ${{ github.event.before }}
     outputs:
       simplye_changed: ${{ steps.detectapp.outputs.simplye_changed }}
@@ -33,6 +43,8 @@ jobs:
     runs-on: macOS-11
     needs: version-check
     if: needs.version-check.outputs.simplye_changed == '1' || needs.version-check.outputs.openebooks_changed == '1'
+    env:
+      GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
       - name: Force Xcode 13.1
         run: sudo xcode-select -switch /Applications/Xcode_13.1.app
@@ -45,6 +57,13 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Add Private Repo Auth
+        # This ensures SPM can resolve dependencies for private repos.
+        # Other options included using `-usePackageSupportBuiltinSCM` (or
+        # possibly `-scmProvider system`) in xcodebuild
+        run: echo "GITHUB_REPO_OWNER=$GITHUB_REPO_OWNER" && git config --global --add url."https://${GITHUB_TOKEN}@github.com/${GITHUB_REPO_OWNER}".insteadOf "https://github.com/${GITHUB_REPO_OWNER}"
+        env:
+          GITHUB_REPO_OWNER: ${{ github.repository_owner }}
       - name: Checkout Adobe RMSDK
         if: needs.version-check.outputs.simplye_changed == '1'
         uses: actions/checkout@v2.3.4
@@ -76,10 +95,8 @@ jobs:
           github-token: ${{ secrets.IOS_DEV_CI_PAT }}
           platform: iOS
           use-xcframeworks: true
-      - name: Build NYPLAEToolkit
-        run: ./scripts/build-NYPLAEToolkit.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Fetch AudioEngine
+        run: cd ./NYPLAEToolkit && ./scripts/fetch-audioengine.sh
 
       - name: Archive SimplyE
         if: needs.version-check.outputs.simplye_changed == '1'
@@ -96,7 +113,6 @@ jobs:
         run: ./scripts/firebase-upload.sh simplye
         env:
           BUILD_CONTEXT: ci
-          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Export SimplyE for App Store
         if: needs.version-check.outputs.simplye_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/xcode-export-appstore.sh simplye
@@ -128,7 +144,6 @@ jobs:
         run: ./scripts/firebase-upload.sh openebooks
         env:
           BUILD_CONTEXT: ci
-          GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Export Open eBooks for App Store
         if: needs.version-check.outputs.openebooks_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/xcode-export-appstore.sh openebooks

@@ -74,10 +74,31 @@
          </BuildableReference>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "17EB3D17246B81D800183316"
-            BuildableName = "OverdriveProcessor.framework"
+            BlueprintIdentifier = "OverdriveProcessor"
+            BuildableName = "OverdriveProcessor"
             BlueprintName = "OverdriveProcessor"
-            ReferencedContainer = "container:audiobook-ios-overdrive/OverdriveProcessor/OverdriveProcessor.xcodeproj">
+            ReferencedContainer = "container:audiobook-ios-overdrive">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "NYPLAEToolkit"
+            BuildableName = "NYPLAEToolkit"
+            BlueprintName = "NYPLAEToolkit"
+            ReferencedContainer = "container:NYPLAEToolkit">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "NYPLAudiobookToolkit"
+            BuildableName = "NYPLAudiobookToolkit"
+            BlueprintName = "NYPLAudiobookToolkit"
+            ReferencedContainer = "container:NYPLAudiobookToolkit">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "NYPLCardCreator"
+            BuildableName = "NYPLCardCreator"
+            BlueprintName = "NYPLCardCreator"
+            ReferencedContainer = "container:CardCreator-iOS">
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
@@ -101,17 +122,6 @@
                BuildableName = "TenPrintCoverTests.xctest"
                BlueprintName = "TenPrintCoverTests"
                ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "17EB3D20246B81D800183316"
-               BuildableName = "OverdriveProcessorTests.xctest"
-               BlueprintName = "OverdriveProcessorTests"
-               ReferencedContainer = "container:audiobook-ios-overdrive/OverdriveProcessor/OverdriveProcessor.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
