@@ -13,7 +13,9 @@ import WebKit
 class NYPLCatalogFeedWebVC: UIViewController {
   private static let webViewHeader = "X-NYPL-Mobile-Webview"
   private static let defaultDomain = "simplye-web-git-oe-326-mobile-webview-nypl.vercel.app"
-  private static let jsCallbackName = "bookDetailMsgHandler"
+  private static let jsBookDetailPageCallbackName = "bookDetailMsgHandler"
+  fileprivate static let librarySlug = "oe-qa"  //for Vercel app
+//  fileprivate static let librarySlug = "app"  //for loading https://beta.openebooks.us/app
 
   private var url: URL?
   var webView: WKWebView!
@@ -77,33 +79,13 @@ class NYPLCatalogFeedWebVC: UIViewController {
 
     // remove all script handling to achieve idempotency
     contentController.removeAllUserScripts()
-    contentController.removeScriptMessageHandler(forName: NYPLCatalogFeedWebVC.jsCallbackName)
+    contentController.removeScriptMessageHandler(forName: NYPLCatalogFeedWebVC.jsBookDetailPageCallbackName)
 
     // install ourselves as message handler, to receive callbacks from JS
-    contentController.add(self, name: NYPLCatalogFeedWebVC.jsCallbackName)
+    contentController.add(self, name: NYPLCatalogFeedWebVC.jsBookDetailPageCallbackName)
 
     // inject JS code into the web page
-    let js = """
-    (function(history){
-      var pushState = history.pushState;
-      history.pushState = function(state) {
-        //if uri format changes this will break
-        if (state.as.startsWith('/app/book/https')) {
-          var encodedUri = state.as.split('/')[3]
-          var uri = decodeURIComponent(encodedUri)
-
-          if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.\(NYPLCatalogFeedWebVC.jsCallbackName)) {
-            // this will call our native callback
-            window.webkit.messageHandlers.\(NYPLCatalogFeedWebVC.jsCallbackName).postMessage({
-              "uri": uri
-            });
-          }
-        }
-        return pushState.apply(history, arguments);
-      };
-    })(window.history);
-    """
-    let script = WKUserScript(source: js,
+    let script = WKUserScript(source: bookDetailInjectableJS,
                               injectionTime: .atDocumentEnd,
                               forMainFrameOnly: false)
     contentController.addUserScript(script)
@@ -113,6 +95,63 @@ class NYPLCatalogFeedWebVC: UIViewController {
     var req = URLRequest(url: url)
     req.setValue("true", forHTTPHeaderField: NYPLCatalogFeedWebVC.webViewHeader)
     webView.load(req)
+  }
+
+  var bookDetailInjectableJS: String {
+    if NYPLCatalogFeedWebVC.librarySlug == "app" {
+      return """
+      (function(history){
+        var pushState = history.pushState;
+        history.pushState = function(state) {
+          //if uri format changes this will break
+          if (state.as.startsWith('/\(NYPLCatalogFeedWebVC.librarySlug)/book/https')) {
+            var encodedUri = state.as.split('/')[3]
+            var uri = decodeURIComponent(encodedUri)
+
+            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.\(NYPLCatalogFeedWebVC.jsBookDetailPageCallbackName)) {
+              // this will call our native callback
+              window.webkit.messageHandlers.\(NYPLCatalogFeedWebVC.jsBookDetailPageCallbackName).postMessage({
+                "uri": uri
+              });
+            }
+          }
+          return pushState.apply(history, arguments);
+        };
+      })(window.history);
+      """
+    } else {
+      return """
+      (function (document) {
+        function handleLinkClick(evt) {
+          // determine if it's a book
+          var url = new URL(evt.currentTarget.href);
+          var isBookLink = url.pathname.startsWith("/\(NYPLCatalogFeedWebVC.librarySlug)/book/https");
+          if (isBookLink){
+            // don't navigate
+            evt.preventDefault();
+            var encodedUri = url.pathname.split("/")[3];
+            var uri = decodeURIComponent(encodedUri);
+            if (
+              window.webkit &&
+              window.webkit.messageHandlers &&
+              window.webkit.messageHandlers.\(NYPLCatalogFeedWebVC.jsBookDetailPageCallbackName)
+            ) {
+              // this will call our native callback
+              window.webkit
+                .messageHandlers.\(NYPLCatalogFeedWebVC.jsBookDetailPageCallbackName)
+                .postMessage({
+                  uri: uri,
+                });
+            }
+          }
+        }
+        var links = document.querySelectorAll("a");
+        for (var i = 0; i < links.length; i++) {
+          links[i].addEventListener("click", handleLinkClick);
+        }
+      })(document);
+      """
+    }
   }
 }
 
@@ -130,11 +169,14 @@ extension NYPLCatalogFeedWebVC: WKNavigationDelegate {
 extension NYPLCatalogFeedWebVC: WKScriptMessageHandler{
   func userContentController(_ userContentController: WKUserContentController,
                              didReceive message: WKScriptMessage) {
-    guard let dict = message.body as? [String : AnyObject] else {
-      return
-    }
 
-    print(dict)
+    if message.name == NYPLCatalogFeedWebVC.jsBookDetailPageCallbackName {
+      guard let dict = message.body as? [String : AnyObject] else {
+        return
+      }
+
+      print(dict["uri"] ?? "")
+    }
   }
 }
 
@@ -152,8 +194,7 @@ struct NYPLWebAuthProvider {
   }
 
 #if OPENEBOOKS
-//  let cookieKey = "CPW_AUTH_COOKIE%2Foe-qa"
-  let cookieKey = "CPW_AUTH_COOKIE%2Fapp" //for loading https://beta.openebooks.us/app
+  let cookieKey = "CPW_AUTH_COOKIE%2F\(NYPLCatalogFeedWebVC.librarySlug)"
 #else
   let cookieKey = "CPW_AUTH_COOKIE%2Fsimply-qa"
 #endif
