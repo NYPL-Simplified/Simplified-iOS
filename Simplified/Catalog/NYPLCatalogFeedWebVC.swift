@@ -13,6 +13,7 @@ import WebKit
 class NYPLCatalogFeedWebVC: UIViewController {
   private static let webViewHeader = "X-NYPL-Mobile-Webview"
   private static let defaultDomain = "simplye-web-git-oe-326-mobile-webview-nypl.vercel.app"
+  private static let jsCallbackName = "bookDetailMsgHandler"
 
   private var url: URL?
   var webView: WKWebView!
@@ -25,6 +26,8 @@ class NYPLCatalogFeedWebVC: UIViewController {
     super.init(nibName: nil, bundle: nil)
   }
 
+  // MARK: - UIViewController
+
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -32,6 +35,7 @@ class NYPLCatalogFeedWebVC: UIViewController {
   override func loadView() {
     let webConfig = WKWebViewConfiguration()
 
+    // set up cookie for authentication
     let cookie = HTTPCookie(properties: [
       .domain: url?.host ?? NYPLCatalogFeedWebVC.defaultDomain,
       .path: "",
@@ -44,6 +48,8 @@ class NYPLCatalogFeedWebVC: UIViewController {
     } else {
       // Fallback on earlier versions
     }
+
+    // install webview
     webView = WKWebView(frame: .zero, configuration: webConfig)
     webView.navigationDelegate = self
     view = webView
@@ -53,8 +59,54 @@ class NYPLCatalogFeedWebVC: UIViewController {
     super.viewDidLoad()
 
     if let url = url {
+      // install message handler and inject JS code
+      setUpJavascriptBridge()
+
       loadWebPage(url: url)
     }
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+  }
+
+  // MARK: - Helpers
+
+  func setUpJavascriptBridge() {
+    let contentController = webView.configuration.userContentController
+
+    // remove all script handling to achieve idempotency
+    contentController.removeAllUserScripts()
+    contentController.removeScriptMessageHandler(forName: NYPLCatalogFeedWebVC.jsCallbackName)
+
+    // install ourselves as message handler, to receive callbacks from JS
+    contentController.add(self, name: NYPLCatalogFeedWebVC.jsCallbackName)
+
+    // inject JS code into the web page
+    let js = """
+    (function(history){
+      var pushState = history.pushState;
+      history.pushState = function(state) {
+        //if uri format changes this will break
+        if (state.as.startsWith('/app/book/https')) {
+          var encodedUri = state.as.split('/')[3]
+          var uri = decodeURIComponent(encodedUri)
+
+          if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.\(NYPLCatalogFeedWebVC.jsCallbackName)) {
+            // this will call our native callback
+            window.webkit.messageHandlers.\(NYPLCatalogFeedWebVC.jsCallbackName).postMessage({
+              "uri": uri
+            });
+          }
+        }
+        return pushState.apply(history, arguments);
+      };
+    })(window.history);
+    """
+    let script = WKUserScript(source: js,
+                              injectionTime: .atDocumentEnd,
+                              forMainFrameOnly: false)
+    contentController.addUserScript(script)
   }
 
   func loadWebPage(url: URL)  {
@@ -64,6 +116,8 @@ class NYPLCatalogFeedWebVC: UIViewController {
   }
 }
 
+// MARK: - Delegate methods
+
 extension NYPLCatalogFeedWebVC: WKNavigationDelegate {
   func webView(_ webView: WKWebView,
                decidePolicyFor navAction: WKNavigationAction,
@@ -71,17 +125,20 @@ extension NYPLCatalogFeedWebVC: WKNavigationDelegate {
     print("navAction.request.url=\(String(describing: navAction.request.url))")
     decisionHandler(.allow)
   }
-
-//  func webView(_ webView: WKWebView,
-//               didReceive challenge: URLAuthenticationChallenge,
-//               completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-//
-//    let credsProvider = NYPLUserAccount.sharedAccount()
-//    let authChallenger = NYPLBasicAuth(credentialsProvider: credsProvider)
-//    authChallenger.handleChallenge(challenge, completion: completionHandler)
-//  }
 }
 
+extension NYPLCatalogFeedWebVC: WKScriptMessageHandler{
+  func userContentController(_ userContentController: WKUserContentController,
+                             didReceive message: WKScriptMessage) {
+    guard let dict = message.body as? [String : AnyObject] else {
+      return
+    }
+
+    print(dict)
+  }
+}
+
+// MARK: -
 
 struct NYPLWebAuthProvider {
   let username: String
@@ -94,11 +151,12 @@ struct NYPLWebAuthProvider {
     return "Basic \(base64LoginString)"
   }
 
-  #if OPENEBOOKS
-  let cookieKey = "CPW_AUTH_COOKIE%2Foe-qa"
-  #else
+#if OPENEBOOKS
+//  let cookieKey = "CPW_AUTH_COOKIE%2Foe-qa"
+  let cookieKey = "CPW_AUTH_COOKIE%2Fapp" //for loading https://beta.openebooks.us/app
+#else
   let cookieKey = "CPW_AUTH_COOKIE%2Fsimply-qa"
-  #endif
+#endif
 
   var cookieValue: String {
     "{\"token\":\"\(basicToken)\",\"methodType\":\"http://opds-spec.org/auth/basic\"}"
