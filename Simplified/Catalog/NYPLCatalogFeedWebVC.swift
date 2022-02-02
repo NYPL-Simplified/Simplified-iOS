@@ -171,11 +171,39 @@ extension NYPLCatalogFeedWebVC: WKScriptMessageHandler{
                              didReceive message: WKScriptMessage) {
 
     if message.name == NYPLCatalogFeedWebVC.jsBookDetailPageCallbackName {
-      guard let dict = message.body as? [String : AnyObject] else {
+      guard let dict = message.body as? [String: AnyObject] else {
+        Log.error(#function, "No message body compatible with the message name used to open a native Book Detail page from Javascript")
         return
       }
 
-      print(dict["uri"] ?? "")
+      guard
+        let urlString = dict["uri"] as? String,
+        let url = URL(string: urlString)
+      else {
+        Log.error(#function, "Missing uri parameter in Javascript callback used to open native Book Detail page: \(dict["uri"] as? String ?? "")")
+        return
+      }
+
+      Log.info(#function, "Attempting to open native Book Detail page from a JS message with url: \(url)")
+
+      NYPLOPDSFeedFetcher.fetchOPDSFeed(url: url,
+                                        networkExecutor: NYPLNetworkExecutor.shared,
+                                        shouldResetCache: false) { feed, error in
+        guard
+          let feed = feed,
+          let opdsEntry = feed.entries?.first as? NYPLOPDSEntry
+        else {
+          Log.error(#function, "Unable to fetch OPDS entry for book with url: \(url)")
+          return
+        }
+
+        let book = NYPLBook(entry: opdsEntry)
+
+        NYPLMainThreadRun.asyncIfNeeded {
+          let bookVC = NYPLBookDetailViewController(book: book)
+          bookVC?.present(from: self)
+        }
+      }
     }
   }
 }

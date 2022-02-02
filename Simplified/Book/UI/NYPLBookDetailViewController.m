@@ -257,8 +257,8 @@
   [self.bookDetailView updateFonts];
 }
 
-// HACK ALERT: in the current usage in the app, this method MUST present
-// the `viewController` synchronously!
+// HACK ALERT: in the current usage in the app, the implementation of this
+// method MUST present the `viewController` synchronously!
 - (void)presentFromViewController:(UIViewController *)viewController{
   NSUInteger index = [[NYPLRootTabBarController sharedController] selectedIndex];
 
