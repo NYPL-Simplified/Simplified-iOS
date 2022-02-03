@@ -14,8 +14,13 @@ class NYPLCatalogFeedWebVC: UIViewController {
   private static let webViewHeader = "X-NYPL-Mobile-Webview"
   private static let defaultDomain = "simplye-web-git-oe-326-mobile-webview-nypl.vercel.app"
   private static let jsBookDetailPageCallbackName = "bookDetailMsgHandler"
+
+  #if OPENEBOOKS
   fileprivate static let librarySlug = "oe-qa"  //for Vercel app
 //  fileprivate static let librarySlug = "app"  //for loading https://beta.openebooks.us/app
+  #else
+  fileprivate static let librarySlug = "simply-qa"  //for Vercel app
+  #endif
 
   private var url: URL?
   var webView: WKWebView!
@@ -221,11 +226,7 @@ struct NYPLWebAuthProvider {
     return "Basic \(base64LoginString)"
   }
 
-#if OPENEBOOKS
   let cookieKey = "CPW_AUTH_COOKIE%2F\(NYPLCatalogFeedWebVC.librarySlug)"
-#else
-  let cookieKey = "CPW_AUTH_COOKIE%2Fsimply-qa"
-#endif
 
   var cookieValue: String {
     "{\"token\":\"\(basicToken)\",\"methodType\":\"http://opds-spec.org/auth/basic\"}"

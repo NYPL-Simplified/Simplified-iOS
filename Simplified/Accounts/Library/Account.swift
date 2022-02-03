@@ -385,7 +385,7 @@ class OPDS2SamlIDP: NSObject, Codable {
     
     if let tmpCatalogUrl = publication.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href {
       if tmpCatalogUrl == "https://circulation.librarysimplified.org/NYNYPL/" {
-        catalogUrl = "https://simplye-web-git-oe-326-mobile-webview-nypl.vercel.app"
+        catalogUrl = "https://simplye-web-git-oe-326-mobile-webview-nypl.vercel.app/simply-qa"
       } else {
         catalogUrl = tmpCatalogUrl
       }
