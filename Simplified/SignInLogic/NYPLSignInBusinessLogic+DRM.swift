@@ -10,6 +10,8 @@ import Foundation
 
 #if FEATURE_DRM_CONNECTOR || AXIS
 
+
+
 extension NYPLSignInBusinessLogic {
 
   /// Extract authorization credentials from binary data and perform DRM
@@ -40,14 +42,15 @@ extension NYPLSignInBusinessLogic {
                                metadata: loggingContext)
     }
     
-    #if FEATURE_DRM_CONNECTOR
-    authorizeWithAdobe(userProfile: profileDoc, loggingContext: loggingContext)
-    #endif
-    #if AXIS //TODO: IOS-336
+#if AXIS //TODO: IOS-336
     drmAuthorizeAxis(username: profileDoc.authorizationIdentifier ?? "",
                      password: profileDoc.authorizationIdentifier,
                      loggingContext: loggingContext)
-    #endif
+#endif
+
+#if FEATURE_DRM_CONNECTOR
+    authorizeWithAdobe(userProfile: profileDoc, loggingContext: loggingContext)
+#endif
   }
 
   @objc func dismissAfterUnexpectedDRMDelay(_ arg: Any) {
