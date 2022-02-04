@@ -18,9 +18,9 @@ extension NYPLSignInBusinessLogic {
   ///   - username: DRM token username.
   ///   - password: DRM token password.
   ///   - loggingContext: Information to report when logging errors.
-  func drmAuthorize(username: String,
-                    password: String?,
-                    loggingContext: [String: Any]) {
+  func drmAuthorizeAxis(username: String,
+                        password: String?,
+                        loggingContext: [String: Any]) {
     
     let vendor = userAccount.licensor?["vendor"] as? String
     
@@ -31,7 +31,7 @@ extension NYPLSignInBusinessLogic {
       VendorID: \(vendor ?? "N/A")
       """)
     
-    drmAuthorizer?
+    drmAuthorizerAxis?
       .authorize(
         withVendorID: vendor,
         username: username,
@@ -63,6 +63,7 @@ extension NYPLSignInBusinessLogic {
         
         if success, let userID = userID, let deviceID = deviceID {
           NYPLMainThreadRun.asyncIfNeeded {
+            //TODO: IOS-336
             self.userAccount.setUserID(userID)
             self.userAccount.setDeviceID(deviceID)
           }

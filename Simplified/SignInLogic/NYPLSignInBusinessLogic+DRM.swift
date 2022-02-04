@@ -42,10 +42,11 @@ extension NYPLSignInBusinessLogic {
     
     #if FEATURE_DRM_CONNECTOR
     authorizeWithAdobe(userProfile: profileDoc, loggingContext: loggingContext)
-    #elseif AXIS
-    drmAuthorize(username: profileDoc.authorizationIdentifier ?? "",
-                 password: profileDoc.authorizationIdentifier,
-                 loggingContext: loggingContext)
+    #endif
+    #if AXIS //TODO: IOS-336
+    drmAuthorizeAxis(username: profileDoc.authorizationIdentifier ?? "",
+                     password: profileDoc.authorizationIdentifier,
+                     loggingContext: loggingContext)
     #endif
   }
 
@@ -70,9 +71,15 @@ extension NYPLSignInBusinessLogic {
                                                     completion: nil)
     }
   }
+}
+#endif
+
+#if FEATURE_DRM_CONNECTOR
+
+extension NYPLSignInBusinessLogic {
 
   @objc func logInIfUserAuthorized() {
-    if let drmAuthorizer = drmAuthorizer,
+    if let drmAuthorizer = drmAuthorizerAdobe,
       !drmAuthorizer.isUserAuthorized(userAccount.userID,
                                       withDevice: userAccount.deviceID) {
 

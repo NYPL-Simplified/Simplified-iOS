@@ -49,9 +49,9 @@ extension NYPLSignInBusinessLogic {
     licensorItems.removeLast()
     let tokenUsername = (licensorItems as NSArray).componentsJoined(by: "|")
     
-    drmAuthorize(username: tokenUsername,
-                 password: tokenPassword,
-                 loggingContext: loggingContext)
+    drmAuthorizeAdobe(username: tokenUsername,
+                      password: tokenPassword,
+                      loggingContext: loggingContext)
     
   }
   
@@ -63,9 +63,9 @@ extension NYPLSignInBusinessLogic {
   ///   optional is because ADEPT already handles `nil` values, so we don't
   ///   have to do the same here.
   ///   - loggingContext: Information to report when logging errors.
-  private func drmAuthorize(username: String,
-                            password: String?,
-                            loggingContext: [String: Any]) {
+  private func drmAuthorizeAdobe(username: String,
+                                 password: String?,
+                                 loggingContext: [String: Any]) {
 
     let vendor = userAccount.licensor?["vendor"] as? String
 
@@ -76,7 +76,7 @@ extension NYPLSignInBusinessLogic {
       VendorID: \(vendor ?? "N/A")
       """)
 
-    drmAuthorizer?
+    drmAuthorizerAdobe?
       .authorize(withVendorID: vendor,
                  username: username,
                  password: password) { success, error, deviceID, userID in
@@ -101,6 +101,7 @@ extension NYPLSignInBusinessLogic {
 
                   if success, let userID = userID, let deviceID = deviceID {
                     NYPLMainThreadRun.asyncIfNeeded {
+                      //TODO: IOS-336
                       self.userAccount.setUserID(userID)
                       self.userAccount.setDeviceID(deviceID)
                     }
