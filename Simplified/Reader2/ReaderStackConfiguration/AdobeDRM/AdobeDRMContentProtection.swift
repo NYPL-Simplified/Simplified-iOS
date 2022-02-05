@@ -10,6 +10,7 @@
 
 import Foundation
 import R2Shared
+import NYPLAxis
 
 class AdobeDRMContentProtection: ContentProtection {
   func open(asset: PublicationAsset,
@@ -59,6 +60,12 @@ class AdobeDRMContentProtection: ContentProtection {
 
 private extension Fetcher {
   func fetchAdobeEncryptionData() -> Data? {
+    // Since publications protected by Axis DRM also contain the `META-INF` directory,
+    // we need to add another check to make sure this is not an AxisDRM protected file.
+    if let _ = try? get("/" + NYPLAxisKeysProvider().userKey).read().get() {
+      return nil
+    }
+    
     // The `META-INF` directory is a part of EPUBs structure, and Adobe DRM
     // expects to find encryption algorithms for each .epub file in it.
     // Other DRM systems may look for other files to underestand the type of
