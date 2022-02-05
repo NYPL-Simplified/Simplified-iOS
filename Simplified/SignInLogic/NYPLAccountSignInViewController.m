@@ -88,6 +88,15 @@ CGFloat const marginPadding = 2.0;
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
 
+  id<NYPLDRMAuthorizing> drmAuthorizerAdobe = nil;
+  id<NYPLDRMAuthorizing> drmAuthorizerAxis = nil;
+#if defined(FEATURE_DRM_CONNECTOR)
+  drmAuthorizerAdobe = [NYPLADEPT sharedInstance];
+#endif
+#if defined(AXIS)
+  drmAuthorizerAxis = [NYPLAxisDRMAuthorizer sharedInstance];
+#endif
+
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:AccountsManager.shared.currentAccountId
                         libraryAccountsProvider:AccountsManager.shared
@@ -96,15 +105,8 @@ CGFloat const marginPadding = 2.0;
                         bookDownloadsCenter:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
-                        drmAuthorizer:
-#if FEATURE_DRM_CONNECTOR
-                        [NYPLADEPT sharedInstance]
-#elif AXIS
-                        [NYPLAxisDRMAuthorizer sharedInstance]
-#else
-                        nil
-#endif
-                        ];
+                        drmAuthorizerAdobe:drmAuthorizerAdobe
+                        drmAuthorizerAxis:drmAuthorizerAxis];
 
   self.title = NSLocalizedString(@"Sign In", nil);
 

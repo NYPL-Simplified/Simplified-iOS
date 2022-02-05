@@ -10,7 +10,7 @@ import Foundation
 import R2Shared
 import R2Streamer
 
-typealias ProtectedAssetCompletion = (Result<ProtectedAsset, Publication.OpeningError>) -> Void
+typealias ProtectedAssetCompletion = (Result<ProtectedAsset?, Publication.OpeningError>) -> Void
 
 protocol NYPLAxisProtectedAssetOpening {
   func openAsset(_ asset: FileAsset,
