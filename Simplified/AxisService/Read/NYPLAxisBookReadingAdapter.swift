@@ -52,8 +52,12 @@ struct NYPLAxisBookReadingAdapter {
     licenseService.extractAESKey { result in
       switch result {
       case .success(let key):
+        guard let keyData = key else {
+          completion(.success(nil))
+          return
+        }
         let protectedAsset = self.getProtectedAsset(
-          from: asset, key: key, fetcher: fetcher)
+          from: asset, key: keyData, fetcher: fetcher)
         completion(.success(protectedAsset))
       case .failure(let error):
         completion(.failure(.forbidden(error)))

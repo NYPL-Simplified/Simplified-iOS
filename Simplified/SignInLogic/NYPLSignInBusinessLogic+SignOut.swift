@@ -161,7 +161,7 @@ extension NYPLSignInBusinessLogic {
     AdobeDeviceID: \(adobeDeviceID ?? "N/A")
     """)
 
-    drmAuthorizer?.deauthorize(
+    drmAuthorizerAdobe?.deauthorize(
       withUsername: tokenUsername,
       password: tokenPassword,
       userID: adobeUserID,
