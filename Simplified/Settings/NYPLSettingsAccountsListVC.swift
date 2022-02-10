@@ -233,18 +233,17 @@ import UIKit
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if (indexPath.section == 0) {
-      guard let account = self.manager.currentAccount else {
-        // Should never happen, but better than crashing
-        return UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
-      }
-      return cellForLibrary(account, indexPath)
+      return cellForLibrary(manager.currentAccount, indexPath)
     }
-    return cellForLibrary(AccountsManager.shared.account(userAddedSecondaryAccounts[indexPath.row])!, indexPath)
+
+    return cellForLibrary(manager.account(userAddedSecondaryAccounts[indexPath.row]), indexPath)
   }
   
-  func cellForLibrary(_ account: Account, _ indexPath: IndexPath) -> UITableViewCell {
-
+  private func cellForLibrary(_ account: Account?, _ indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
+    guard let account = account else {
+      return cell
+    }
 
     let container = UIView()
     let textContainer = UIView()
