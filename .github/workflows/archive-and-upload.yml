@@ -80,6 +80,7 @@ jobs:
           FASTLANE_USER: ${{ secrets.APPLEID_USERNAME }}
           FASTLANE_PASSWORD: ${{ secrets.APPLEID_PASSWORD }}
           FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
+          SPACESHIP_ONLY_ALLOW_INTERACTIVE_2FA: 'true'
       - name: Set up repo for Adobe DRM build
         if: needs.version-check.outputs.simplye_changed == '1'
         run: exec ./scripts/setup-repo-drm.sh
