@@ -78,7 +78,8 @@ extension NYPLSignInBusinessLogic {
     if bookRegistry.syncing {
       msg = NSLocalizedString("Your bookmarks and reading positions are in the process of being saved to the server. Would you like to stop that and continue logging out?",
                               comment: "Warning message offering the user the choice of interrupting book registry syncing to log out immediately, or waiting until that finishes.")
-    } else if let drm = drmAuthorizer, drm.workflowsInProgress {
+    } else if (drmAuthorizerAdobe?.workflowsInProgress ?? false) ||
+                (drmAuthorizerAxis?.workflowsInProgress ?? false) {
       msg = NSLocalizedString("It looks like you may have a book download or return in progress. Would you like to stop that and continue logging out?",
                               comment: "Warning message offering the user the choice of interrupting the download or return of a book to log out immediately, or waiting until that finishes.")
     } else {

@@ -12,13 +12,15 @@ import XCTest
 class NYPLSignInBusinessLogicTests: XCTestCase {
   var businessLogic: NYPLSignInBusinessLogic!
   var libraryAccountMock: NYPLLibraryAccountMock!
-  var drmAuthorizer: NYPLDRMAuthorizingMock!
+  var drmAuthorizerAdobe: NYPLDRMAuthorizingMock!
+  var drmAuthorizerAxis: NYPLDRMAuthorizingMock!
   var uiDelegate: NYPLSignInOutBusinessLogicUIDelegateMock!
 
   override func setUpWithError() throws {
     try super.setUpWithError()
     libraryAccountMock = NYPLLibraryAccountMock()
-    drmAuthorizer = NYPLDRMAuthorizingMock()
+    drmAuthorizerAdobe = NYPLDRMAuthorizingMock()
+    drmAuthorizerAxis = NYPLDRMAuthorizingMock()
     uiDelegate = NYPLSignInOutBusinessLogicUIDelegateMock()
     businessLogic = NYPLSignInBusinessLogic(
       libraryAccountID: libraryAccountMock.NYPLAccountUUID,
@@ -29,7 +31,8 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
       userAccountProvider: NYPLUserAccountMock.self,
       networkExecutor: NYPLRequestExecutorMock(),
       uiDelegate: uiDelegate,
-      drmAuthorizer: drmAuthorizer)
+      drmAuthorizerAdobe: drmAuthorizerAdobe,
+      drmAuthorizerAxis: drmAuthorizerAxis)
   }
 
   override func tearDownWithError() throws {
@@ -38,7 +41,7 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
     businessLogic.userAccount.removeAll()
     businessLogic = nil
     libraryAccountMock = nil
-    drmAuthorizer = nil
+    drmAuthorizerAdobe = nil
     uiDelegate = nil
   }
 
@@ -189,14 +192,16 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
       let isSigningIn = notif.object as! Bool
       // sanity verification
       XCTAssertNotNil(user)
-      XCTAssertNotNil(self.drmAuthorizer)
+      XCTAssertNotNil(self.drmAuthorizerAdobe)
 
       if isSigningIn == false {
         // verification
         XCTAssertFalse(self.businessLogic.isValidatingCredentials)
+        #if SIMPLYE //TODO: IOS-336
         XCTAssertNotNil(user.deviceID)
-        XCTAssertEqual(user.deviceID, self.drmAuthorizer.deviceID)
-        XCTAssertEqual(user.userID, self.drmAuthorizer.userID)
+        XCTAssertEqual(user.deviceID, self.drmAuthorizerAdobe.deviceID)
+        XCTAssertEqual(user.userID, self.drmAuthorizerAdobe.userID)
+        #endif
         XCTAssertEqual(user.username, self.uiDelegate.username)
         XCTAssertEqual(user.barcode, self.uiDelegate.username)
         XCTAssertEqual(user.pin, self.uiDelegate.pin)

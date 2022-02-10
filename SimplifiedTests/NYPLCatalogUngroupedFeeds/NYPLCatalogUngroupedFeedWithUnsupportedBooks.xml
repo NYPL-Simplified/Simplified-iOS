@@ -1,0 +1,415 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:opds="http://opds-spec.org/2010/catalog" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:drm="http://librarysimplified.org/terms/drm" xmlns:schema="http://schema.org/" xmlns:simplified="http://librarysimplified.org/terms/" xmlns:bibframe="http://bibframe.org/vocab/" xmlns:bib="http://bib.schema.org/" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:lcp="http://readium.org/lcp-specs/ns">
+  <id>https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full&amp;q=How+to+do+everything+with</id>
+  <title>Search</title>
+  <updated>2022-01-05T00:03:24+00:00</updated>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full&amp;q=How+to+do+everything+with" rel="self"/>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with Mac</title>
+    <author>
+      <name>Dwight Spivey</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Dwight Spivey" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Dwight%20Spivey/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">&lt;p&gt;&lt;b&gt;Have more fun and get more done with your Mac!&lt;/b&gt;&lt;p&gt;Now you can get the most out of your Mac, whether it's an iMac, MacBook, or Mac mini. &lt;i&gt;How to Do Everything: Mac&lt;/i&gt; shows you how to set up and customize your Mac and use all of the built-in tools and applications, such as iTunes, Mail, Safari, and the iLife and iWork suites. The revolutionary new features available in Mac OS X Leopard are also covered, such as Quick Look, Time Machine, and Spaces. Plus, you'll get details on hardware and peripherals, networking, troubleshooting, and maintenance. This is your must-have Mac guide!&lt;ul&gt;&lt;li&gt;Manage files, folders, and applications with the Finder&lt;/li&gt;&lt;li&gt;Connect to the Internet and explore with Safari&lt;/li&gt;&lt;li&gt;Use iWork for word processing, spreadsheets, and presentations&lt;/li&gt;&lt;li&gt;Edit, organize, and share your pictures with iPhoto&lt;/li&gt;&lt;li&gt;Master iTunes and iMovie for music, video, and movies&lt;/li&gt;&lt;li&gt;Tweak the System Preferences&lt;/li&gt;&lt;li&gt;Synchronize your Mac with your iPod...&lt;/ul&gt;</summary>
+    <simplified:pwid>bed8d222-f6a5-350a-7f27-e1908c21b503</simplified:pwid>
+    <link href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/2c721944-ecc1-476b-a2a8-bc9926e33d71/%25257B2C721944-ECC1-476B-A2A8-BC9926E33D71%25257DImg100.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/2c721944-ecc1-476b-a2a8-bc9926e33d71/%25257B2C721944-ECC1-476B-A2A8-BC9926E33D71%25257DImg100.png" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Computers" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Computers"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2008-01-09</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/2c721944-ecc1-476b-a2a8-bc9926e33d71/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/2c721944-ecc1-476b-a2a8-bc9926e33d71</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/2c721944-ecc1-476b-a2a8-bc9926e33d71" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-08-16T00:00:00Z</published>
+    <updated>2022-01-03T14:58:26+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/2c721944-ecc1-476b-a2a8-bc9926e33d71/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/2c721944-ecc1-476b-a2a8-bc9926e33d71/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/2c721944-ecc1-476b-a2a8-bc9926e33d71/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/2c721944-ecc1-476b-a2a8-bc9926e33d71"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/2c721944-ecc1-476b-a2a8-bc9926e33d71/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with YouTube</title>
+    <author>
+      <name>Chad Fahs</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Chad Fahs" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Chad%20Fahs/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">&lt;p&gt;Create, post, and promote your own videos on the world's most popular online service! &lt;i&gt;How to Do Everything with YouTube&lt;/i&gt; explains how to shoot and edit videos, insert titles and captions, add special effects, and upload content. You'll learn how to set up a YouTube channel and integrate YouTube videos into your websites and blogs. You'll also discover the success secrets behind YouTube celebrities and breakout videos. Share your unique video creations with millions of viewers with help from this easy-to-follow guide. &lt;ul&gt;&lt;li&gt;Navigate the YouTube interface, play videos, and set up an account&lt;/li&gt;&lt;li&gt;Shoot professional-quality videos with a camcorder, Web cam, or camera phone&lt;/li&gt;&lt;li&gt;Get the lighting right and add sound and special effects&lt;/li&gt;&lt;li&gt;Create a short film, vlog, or video mashup&lt;/li&gt;&lt;li&gt;Edit your videos with Windows Movie Maker, iMovie, and Remixer&lt;/li&gt;&lt;li&gt;Add audio tracks with AudioSwap&lt;/li&gt;&lt;li&gt;Optimize your videos and upload them to YouTube&lt;/li&gt;&lt;li&gt;Join...&lt;/ul&gt;</summary>
+    <simplified:pwid>ec4cbf9b-9d77-bc42-3ce8-4d8f9541cf86</simplified:pwid>
+    <link href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/72e642ca-168e-4c36-a05f-cf8bff745878/%25257B72E642CA-168E-4C36-A05F-CF8BFF745878%25257DImg100.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/72e642ca-168e-4c36-a05f-cf8bff745878/%25257B72E642CA-168E-4C36-A05F-CF8BFF745878%25257DImg100.png" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Computers" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Computers"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2007-12-10</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/72e642ca-168e-4c36-a05f-cf8bff745878/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/72e642ca-168e-4c36-a05f-cf8bff745878</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/72e642ca-168e-4c36-a05f-cf8bff745878" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-08-10T00:00:00Z</published>
+    <updated>2022-01-04T03:35:08+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/72e642ca-168e-4c36-a05f-cf8bff745878/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/72e642ca-168e-4c36-a05f-cf8bff745878/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/72e642ca-168e-4c36-a05f-cf8bff745878/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/72e642ca-168e-4c36-a05f-cf8bff745878"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/72e642ca-168e-4c36-a05f-cf8bff745878/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with GarageBand&lt;sup&gt;TM&lt;/sup&gt;</title>
+    <author>
+      <name>Emile Menasche</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Emile Menasche" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Emile%20Menasche/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">&lt;p&gt;Create, record, and remix professional-level music with the recently released GarageBand and this great resource as your guide. Get expert help mastering the amazing tools at your fingertips&amp;#8212;built-in software instruments, tons of pre-recorded loops, amps, effects, and editing tools. The special color section features a project that walks you through writing a song from scratch, mixing tracks, and creating a master recording. Includes a detailed overview of JamPack&amp;#8212;the new Mac add-on that triples available music content.</summary>
+    <simplified:pwid>75443fd1-63f1-7325-8591-55c7b7e6e150</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a/%25257B97E3BBFA-BD3B-4947-8B2B-73F6F9050C2A%25257DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a/%25257B97E3BBFA-BD3B-4947-8B2B-73F6F9050C2A%25257DImg100.jpg" type="image/jpeg"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Computers" label="Computers"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2004-09-14</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-06-06T00:00:00Z</published>
+    <updated>2022-01-04T03:47:50+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/97e3bbfa-bd3b-4947-8b2b-73f6f9050c2a/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with HTML</title>
+    <author>
+      <name>James H. Pence</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="James H. Pence" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/James%20H.%20Pence/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">Another release in our popular &lt;b&gt;How to Do Everything&lt;/b&gt; series, this friendly, solutions-oriented book is filled with step-by-step examples for writing HTML code. Each chapter begins with the specific how-to topics that will be covered. Within the chapters, each topic is accompanied by a solid, easy-to-follow walkthrough of the process. You'll learn to build a dynamic Web site with HTML, complete with graphics, links, multimedia, and animation. The book also contains practical coverage of DHTML, JavaScript, and CGI.</summary>
+    <simplified:pwid>9fab0274-b384-584f-011f-8ac8c1c7924d</simplified:pwid>
+    <link href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb/%25257B20F9868D-420D-45C3-B13A-1C145B6A5AEB%25257DImg100.gif" type="image/gif" rel="http://opds-spec.org/image"/>
+    <link href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb/%25257B20F9868D-420D-45C3-B13A-1C145B6A5AEB%25257DImg100.gif" type="image/gif" rel="http://opds-spec.org/image/thumbnail"/>
+    <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+    <category term="http://librarysimplified.org/terms/fiction/Nonfiction" scheme="http://librarysimplified.org/terms/fiction/" label="Nonfiction"/>
+    <category term="http://librarysimplified.org/terms/genres/Simplified/Computers" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Computers"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2001-06-18</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-06-06T00:00:00Z</published>
+    <updated>2022-01-03T14:44:15+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/20f9868d-420d-45c3-b13a-1c145b6a5aeb/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with Yahoo!</title>
+    <author>
+      <name>Alan Neibauer</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Alan Neibauer" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Alan%20Neibauer/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">Take full advantage of all the features Yahoo! has to offer. This unique guide explains how to set up your free Yahoo! e-mail account, customize your screen, and create your free Web site. You'll get advice on how to store private information securely on the Yahoo! server. Lots of other great features are covers, such as "voice-chat", stock tips, and much more.</summary>
+    <simplified:pwid>a28b8c0b-16eb-d14c-14fc-adffc86b9e4b</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec/%25257B8FBC17E2-2D0D-4B23-9BB7-DAC8D3B749EC%25257DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec/%25257B8FBC17E2-2D0D-4B23-9BB7-DAC8D3B749EC%25257DImg100.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Computers" label="Computers"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2000-07-17</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-05-02T00:00:00Z</published>
+    <updated>2022-01-04T03:24:46+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/8fbc17e2-2d0d-4b23-9bb7-dac8d3b749ec/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with PowerPoint&amp;#174;</title>
+    <author>
+      <name>Ellen Finkelstein</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Ellen Finkelstein" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Ellen%20Finkelstein/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">&lt;p&gt;Create high-quality, attention-getting PowerPoint presentations quickly and easily with this solutions-packed guide. Make slides and effectively convey your message through text, graphics, and multimedia - for show-stopping presentations.</summary>
+    <simplified:pwid>0253481e-bc67-0458-875c-0b1ee8ee805d</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/c81e766b-009a-49b0-a3b3-9015455d39c8/%25257BC81E766B-009A-49B0-A3B3-9015455D39C8%25257DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/c81e766b-009a-49b0-a3b3-9015455d39c8/%25257BC81E766B-009A-49B0-A3B3-9015455D39C8%25257DImg100.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Computers" label="Computers"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2008-03-26</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c81e766b-009a-49b0-a3b3-9015455d39c8/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/c81e766b-009a-49b0-a3b3-9015455d39c8</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c81e766b-009a-49b0-a3b3-9015455d39c8" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-10-24T00:00:00Z</published>
+    <updated>2022-01-03T22:16:32+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c81e766b-009a-49b0-a3b3-9015455d39c8/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c81e766b-009a-49b0-a3b3-9015455d39c8/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c81e766b-009a-49b0-a3b3-9015455d39c8/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/c81e766b-009a-49b0-a3b3-9015455d39c8"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/c81e766b-009a-49b0-a3b3-9015455d39c8/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with PowerPoint&amp;#174;</title>
+    <author>
+      <name>Ellen Finkelstein</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Ellen Finkelstein" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Ellen%20Finkelstein/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">Create high-quality, attention-getting PowerPoint presentations quickly and easily with this solutions-packed guide. Make slides and effectively convey your message through text, graphics, and multimedia&amp;#8212;for show-stopping presentations.</summary>
+    <simplified:pwid>0253481e-bc67-0458-875c-0b1ee8ee805d</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40/%25257BA3D43A1E-4E62-49F1-99B1-520E5FC81B40%25257DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40/%25257BA3D43A1E-4E62-49F1-99B1-520E5FC81B40%25257DImg100.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Computers" label="Computers"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2002-12-06</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-06-06T00:00:00Z</published>
+    <updated>2022-01-03T23:41:28+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/a3d43a1e-4e62-49f1-99b1-520e5fc81b40/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with Podcasting</title>
+    <author>
+      <name>Neville Hobson</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Neville Hobson" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Neville%20Hobson/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <author>
+      <name>Shel Holtz</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Shel Holtz" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Shel%20Holtz/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">&lt;li&gt;Extensive coverage of podcasting for business, unlike other books on the market, which focus on hobbyists&lt;/li&gt; &lt;li&gt;Authors produce a twice-weekly podcast on public relations and technology news, forimmediaterelease.biz&lt;/li&gt; &lt;li&gt;Authors reach 25,000 people each month through their podcast, blogs, and e-newsletters&lt;/li&gt;</summary>
+    <simplified:pwid>a10c5e0d-37d5-44c2-fe2c-c541b804deb9</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/d3222c04-e101-4371-8e85-d7e8155ae396/%25257BD3222C04-E101-4371-8E85-D7E8155AE396%25257DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/d3222c04-e101-4371-8e85-d7e8155ae396/%25257BD3222C04-E101-4371-8E85-D7E8155AE396%25257DImg100.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Computers" label="Computers"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2006-11-22</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/d3222c04-e101-4371-8e85-d7e8155ae396/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/d3222c04-e101-4371-8e85-d7e8155ae396</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/d3222c04-e101-4371-8e85-d7e8155ae396" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-06-06T00:00:00Z</published>
+    <updated>2022-01-03T19:12:11+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/d3222c04-e101-4371-8e85-d7e8155ae396/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="2" available="2"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/d3222c04-e101-4371-8e85-d7e8155ae396/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/d3222c04-e101-4371-8e85-d7e8155ae396/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/d3222c04-e101-4371-8e85-d7e8155ae396"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/d3222c04-e101-4371-8e85-d7e8155ae396/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with Access 2002</title>
+    <author>
+      <name>Virginia Andersen</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Virginia Andersen" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Virginia%20Andersen/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">&lt;p&gt;Another release in our successful How to Do Everything series, this friendly, solutions-oriented book is filled with step-by-step examples for using Access 2002 as an information manager. Each chapter begins with the specific how-to topics that will be covered, and within the chapter, each topic is accompanied by a solid, easy-to-follow walkthrough of the process. The book covers designing tables for storing information, entering and editing data, retrieving specific information, and presenting the information in customized forms, reports, and dynamic data access pages. You'll also learn how to quickly customize Access with special-purpose menus and toolbars.&lt;/p&gt;</summary>
+    <simplified:pwid>14b9dcd5-3458-b52c-6f7c-0416b01e135b</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e/%25257B32EF3CC9-9E50-48E4-8845-629CA0C1325E%25257DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e/%25257B32EF3CC9-9E50-48E4-8845-629CA0C1325E%25257DImg100.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Computers" label="Computers"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2001-05-30</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-05-02T00:00:00Z</published>
+    <updated>2022-01-03T23:43:40+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="1" available="1"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/32ef3cc9-9e50-48e4-8845-629ca0c1325e/open_book"/>
+  </entry>
+  <entry schema:additionalType="http://schema.org/EBook">
+    <title>How to Do Everything with Photoshop&amp;#174; 7</title>
+    <author>
+      <name>Laurie McCanna</name>
+      <link rel="contributor" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Laurie McCanna" href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Laurie%20McCanna/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </author>
+    <schema:Series name="How to Do Everything Guides">
+      <link rel="series" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="How to Do Everything Guides" href="https://circulation.librarysimplified.org/NYNYPL/works/series/How%20to%20Do%20Everything%20Guides/eng/Adult%2CAdults%2BOnly%2CAll%2BAges%2CChildren%2CYoung%2BAdult"/>
+    </schema:Series>
+    <summary type="html">The world's most popular photo editing tool just got easier to use. This user-friendly step-by-step resource breaks down the full range of features and shows you how to become more productive in Photoshop, and even points out potential stumbling blocks for beginners.</summary>
+    <simplified:pwid>4d27b053-fabc-4aaa-28ac-aa94f2c76920</simplified:pwid>
+    <link rel="http://opds-spec.org/image" href="https://covers.nypl.org/Library+Simplified+metadata+wrangler/Overdrive+ID/c44ae639-6906-4568-bab9-85b2a4588a2e/%25257BC44AE639-6906-4568-BAB9-85B2A4588A2E%25257DImg100.jpg" type="image/jpeg"/>
+    <link rel="http://opds-spec.org/image/thumbnail" href="https://covers.nypl.org/scaled/300/Library+Simplified+metadata+wrangler/Overdrive+ID/c44ae639-6906-4568-bab9-85b2a4588a2e/%25257BC44AE639-6906-4568-BAB9-85B2A4588A2E%25257DImg100.png" type="image/png"/>
+    <category scheme="http://librarysimplified.org/terms/fiction/" term="http://librarysimplified.org/terms/fiction/Nonfiction" label="Nonfiction"/>
+    <category scheme="http://librarysimplified.org/terms/genres/Simplified/" term="http://librarysimplified.org/terms/genres/Simplified/Computers" label="Computers"/>
+    <category scheme="http://schema.org/audience" term="Adult" label="Adult"/>
+    <dcterms:language>en</dcterms:language>
+    <dcterms:publisher>McGraw-Hill Education</dcterms:publisher>
+    <bib:publisherImprint>McGraw-Hill Osborne Media</bib:publisherImprint>
+    <dcterms:issued>2002-12-06</dcterms:issued>
+    <link rel="issues" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c44ae639-6906-4568-bab9-85b2a4588a2e/report"/>
+    <id>urn:librarysimplified.org/terms/id/Overdrive%20ID/c44ae639-6906-4568-bab9-85b2a4588a2e</id>
+    <link rel="alternate" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c44ae639-6906-4568-bab9-85b2a4588a2e" type="application/atom+xml;type=entry;profile=opds-catalog"/>
+    <bibframe:distribution bibframe:ProviderName="Overdrive"/>
+    <published>2014-06-06T00:00:00Z</published>
+    <updated>2022-01-04T03:33:48+00:00</updated>
+    <link type="application/atom+xml;type=entry;profile=opds-catalog" rel="http://opds-spec.org/acquisition/borrow" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c44ae639-6906-4568-bab9-85b2a4588a2e/borrow">
+      <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+        <opds:indirectAcquisition type="application/pdf"/>
+      </opds:indirectAcquisition>
+      <opds:availability status="available"/>
+      <opds:holds total="0"/>
+      <opds:copies total="2" available="2"/>
+    </link>
+    <link rel="recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c44ae639-6906-4568-bab9-85b2a4588a2e/recommendations"/>
+    <link rel="related" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Recommended Works" href="https://circulation.librarysimplified.org/NYNYPL/works/Overdrive%20ID/c44ae639-6906-4568-bab9-85b2a4588a2e/related_books"/>
+    <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/Overdrive%20ID/c44ae639-6906-4568-bab9-85b2a4588a2e"/>
+    <link rel="http://librarysimplified.org/terms/rel/analytics/open-book" href="https://circulation.librarysimplified.org/NYNYPL/analytics/Overdrive%20ID/c44ae639-6906-4568-bab9-85b2a4588a2e/open_book"/>
+  </entry>
+  <link rel="start" href="https://circulation.librarysimplified.org/NYNYPL/groups/" title="All Books"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=How+to+do+everything+with&amp;entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full" title="All" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" opds:activeFacet="true" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=How+to+do+everything+with&amp;entrypoint=Book&amp;order=relevance&amp;available=all&amp;collection=full" title="eBooks" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=How+to+do+everything+with&amp;entrypoint=Audio&amp;order=relevance&amp;available=all&amp;collection=full" title="Audiobooks" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link rel="next" href=""/>
+  <link rel="up" href="https://circulation.librarysimplified.org/NYNYPL/groups/" title="The New York Public Library"/>
+  <link rel="http://opds-spec.org/auth/document" href="https://circulation.librarysimplified.org/NYNYPL/authentication_document"/>
+  <link rel="search" type="application/opensearchdescription+xml" href="https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full"/>
+  <link rel="http://opds-spec.org/shelf" type="application/atom+xml;profile=opds-catalog;kind=acquisition" href="https://circulation.librarysimplified.org/NYNYPL/loans/"/>
+  <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/"/>
+  <link href="https://librarysimplified.org/EULA/" type="text/html" rel="terms-of-service"/>
+  <link href="https://www.nypl.org/help/about-nypl/legal-notices/privacy-policy" type="text/html" rel="privacy-policy"/>
+  <link href="https://librarysimplified.org/about/" type="text/html" rel="about"/>
+  <link href="https://librarysimplified.org/licenses/" type="text/html" rel="license"/>
+  <link href="mailto:gethelp@nypl.org" rel="help"/>
+</feed>

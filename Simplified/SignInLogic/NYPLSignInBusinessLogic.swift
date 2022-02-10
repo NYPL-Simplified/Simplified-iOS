@@ -53,7 +53,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
                          bookDownloadsCenter: NYPLBookDownloadsDeleting,
                          userAccountProvider: NYPLUserAccountProvider.Type,
                          uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
-                         drmAuthorizer: NYPLDRMAuthorizing?) {
+                         drmAuthorizerAdobe: NYPLDRMAuthorizing?,
+                         drmAuthorizerAxis: NYPLDRMAuthorizing?) {
     self.init(libraryAccountID: libraryAccountID,
               libraryAccountsProvider: libraryAccountsProvider,
               urlSettingsProvider: urlSettingsProvider,
@@ -64,7 +65,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
                                                    cachingStrategy: .ephemeral,
                                                    delegateQueue: OperationQueue.main),
               uiDelegate: uiDelegate,
-              drmAuthorizer: drmAuthorizer)
+              drmAuthorizerAdobe: drmAuthorizerAdobe,
+              drmAuthorizerAxis: drmAuthorizerAxis)
   }
 
   /// Designated initializer.
@@ -76,7 +78,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
        userAccountProvider: NYPLUserAccountProvider.Type,
        networkExecutor: NYPLRequestExecuting,
        uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
-       drmAuthorizer: NYPLDRMAuthorizing?) {
+       drmAuthorizerAdobe: NYPLDRMAuthorizing?,
+       drmAuthorizerAxis: NYPLDRMAuthorizing?) {
     self.uiDelegate = uiDelegate
     self.libraryAccountID = libraryAccountID
     self.libraryAccountsProvider = libraryAccountsProvider
@@ -85,7 +88,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     self.bookDownloadsCenter = bookDownloadsCenter
     self.userAccountProvider = userAccountProvider
     self.networker = networkExecutor
-    self.drmAuthorizer = drmAuthorizer
+    self.drmAuthorizerAdobe = drmAuthorizerAdobe
+    self.drmAuthorizerAxis = drmAuthorizerAxis
     self.samlHelper = NYPLSAMLHelper()
     super.init()
     self.samlHelper.businessLogic = self
@@ -103,8 +107,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   /// Provides the user account for a given library.
   private let userAccountProvider: NYPLUserAccountProvider.Type
 
-  /// THe object determining whether there's an ongoing DRM authorization.
-  weak private(set) var drmAuthorizer: NYPLDRMAuthorizing?
+  /// THe objects determining whether there's an ongoing DRM authorization.
+  weak private(set) var drmAuthorizerAdobe: NYPLDRMAuthorizing?
+  weak private(set) var drmAuthorizerAxis: NYPLDRMAuthorizing?
 
   /// The primary way for the business logic to communicate with the UI.
   @objc weak var uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?

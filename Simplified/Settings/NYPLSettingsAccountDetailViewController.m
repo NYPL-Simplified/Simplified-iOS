@@ -148,11 +148,13 @@ Authenticating with any of those barcodes should work.
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
 
-  id<NYPLDRMAuthorizing> drmAuthorizer = nil;
+  id<NYPLDRMAuthorizing> drmAuthorizerAdobe = nil;
+  id<NYPLDRMAuthorizing> drmAuthorizerAxis = nil;
 #if defined(FEATURE_DRM_CONNECTOR)
-  drmAuthorizer = [NYPLADEPT sharedInstance];
-#elif defined(AXIS)
-  drmAuthorizer = [NYPLAxisDRMAuthorizer sharedInstance];
+  drmAuthorizerAdobe = [NYPLADEPT sharedInstance];
+#endif
+#if defined(AXIS)
+  drmAuthorizerAxis = [NYPLAxisDRMAuthorizer sharedInstance];
 #endif
 
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
@@ -163,7 +165,8 @@ Authenticating with any of those barcodes should work.
                         bookDownloadsCenter:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
-                        drmAuthorizer:drmAuthorizer];
+                        drmAuthorizerAdobe:drmAuthorizerAdobe
+                        drmAuthorizerAxis:drmAuthorizerAxis];
 
   self.title = NSLocalizedString(@"Account", nil);
 

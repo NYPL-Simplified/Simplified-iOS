@@ -34,7 +34,16 @@ class NYPLAxisDRMAuthorizer: NSObject, NYPLDRMAuthorizing {
    return true
   }
   
-  /// As of now, we're creating a deviceID which stays saved until the user uninstalls the app.
+  /// Creates a deviceID which stays saved until the user uninstalls the app.
+  ///
+  /// - Note: the parameters of this function are implicit unwrapped optionals
+  /// to match the signature of an ObjC api for another DRM authorizer.
+  ///
+  /// - Parameters:
+  ///   - vendorID: Ignored.
+  ///   - username: Must not be nil.
+  ///   - password: Ignored.
+  ///   - completion: Must not be nil.
   func authorize(withVendorID vendorID: String!,
                  username: String!,
                  password: String!,
