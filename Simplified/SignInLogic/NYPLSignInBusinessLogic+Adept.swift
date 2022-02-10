@@ -17,7 +17,8 @@ extension NYPLSignInBusinessLogic {
   ///   - profileDoc: UserProfile document from which client token is extracted
   ///   - loggingContext: Information to report when logging errors.
   func authorizeWithAdobe(userProfile profileDoc: UserProfileDocument,
-                          loggingContext: [String: Any]) {
+                          loggingContext: [String: Any],
+                          completion: @escaping ((Bool, Error?, String?, String?) -> Void)) {
     
     guard
       let drm = profileDoc.drm?.first,
@@ -51,7 +52,7 @@ extension NYPLSignInBusinessLogic {
     
     drmAuthorizeAdobe(username: tokenUsername,
                       password: tokenPassword,
-                      loggingContext: loggingContext)
+                      completion: completion)
     
   }
   
@@ -65,7 +66,7 @@ extension NYPLSignInBusinessLogic {
   ///   - loggingContext: Information to report when logging errors.
   private func drmAuthorizeAdobe(username: String,
                                  password: String?,
-                                 loggingContext: [String: Any]) {
+                                 completion: @escaping ((Bool, Error?, String?, String?) -> Void)) {
 
     let vendor = userAccount.licensor?["vendor"] as? String
 
@@ -76,51 +77,33 @@ extension NYPLSignInBusinessLogic {
       VendorID: \(vendor ?? "N/A")
       """)
 
-    drmAuthorizerAdobe?
-      .authorize(withVendorID: vendor,
-                 username: username,
-                 password: password) { success, error, deviceID, userID in
-
-                  // make sure to cancel the previously scheduled selector
-                  // from the same thread it was scheduled on
-                  NYPLMainThreadRun.asyncIfNeeded { [weak self] in
-                    if let self = self {
-                      NSObject.cancelPreviousPerformRequests(withTarget: self)
-                    }
-                  }
-
-                  Log.info(#file, """
-                    Activation success: \(success)
-                    Error: \(error?.localizedDescription ?? "N/A")
-                    DeviceID: \(deviceID ?? "N/A")
-                    UserID: \(userID ?? "N/A")
-                    ***DRM Auth/Activation completion***
-                    """)
-
-                  var success = success
-
-                  if success, let userID = userID, let deviceID = deviceID {
-                    NYPLMainThreadRun.asyncIfNeeded {
-                      //TODO: IOS-336
-                      self.userAccount.setUserID(userID)
-                      self.userAccount.setDeviceID(deviceID)
-                    }
-                  } else {
-                    success = false
-                    NYPLErrorLogger.logLocalAuthFailed(error: error as NSError?,
-                                                       library: self.libraryAccount,
-                                                       metadata: loggingContext)
-                  }
-
-                  self.finalizeSignIn(forDRMAuthorization: success,
-                                      error: error as NSError?)
-    }
+    drmAuthorizerAdobe?.authorize(withVendorID: vendor,
+                                  username: username,
+                                  password: password,
+                                  completion: completion)
 
     NYPLMainThreadRun.asyncIfNeeded { [weak self] in
       self?.perform(#selector(self?.dismissAfterUnexpectedDRMDelay), with: self, afterDelay: 25)
     }
   }
   
+  @objc func logInIfUserAuthorized() {
+    if let drmAuthorizer = drmAuthorizerAdobe,
+      !drmAuthorizer.isUserAuthorized(userAccount.userID,
+                                      withDevice: userAccount.deviceID) {
+
+      if userAccount.hasBarcodeAndPIN() && !isValidatingCredentials {
+        if let usernameTextField = uiDelegate?.usernameTextField,
+          let PINTextField = uiDelegate?.PINTextField
+        {
+          usernameTextField.text = userAccount.barcode
+          PINTextField.text = userAccount.PIN
+        }
+
+        logIn()
+      }
+    }
+  }
 }
 
 #endif

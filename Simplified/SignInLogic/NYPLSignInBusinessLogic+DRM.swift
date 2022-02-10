@@ -42,14 +42,16 @@ extension NYPLSignInBusinessLogic {
                                metadata: loggingContext)
     }
     
-#if AXIS //TODO: IOS-336
+#if AXIS
     drmAuthorizeAxis(username: profileDoc.authorizationIdentifier ?? "",
                      password: profileDoc.authorizationIdentifier,
-                     loggingContext: loggingContext)
+                     completion: axisAuthorizationCompletion(loggingContext))
 #endif
 
 #if FEATURE_DRM_CONNECTOR
-    authorizeWithAdobe(userProfile: profileDoc, loggingContext: loggingContext)
+    authorizeWithAdobe(userProfile: profileDoc,
+                       loggingContext: loggingContext,
+                       completion: adobeAuthorizationCompletion(loggingContext))
 #endif
   }
 
@@ -74,30 +76,115 @@ extension NYPLSignInBusinessLogic {
                                                     completion: nil)
     }
   }
-}
-#endif
-
+  
+  // MARK: - Helper
+    
 #if FEATURE_DRM_CONNECTOR
-
-extension NYPLSignInBusinessLogic {
-
-  @objc func logInIfUserAuthorized() {
-    if let drmAuthorizer = drmAuthorizerAdobe,
-      !drmAuthorizer.isUserAuthorized(userAccount.userID,
-                                      withDevice: userAccount.deviceID) {
-
-      if userAccount.hasBarcodeAndPIN() && !isValidatingCredentials {
-        if let usernameTextField = uiDelegate?.usernameTextField,
-          let PINTextField = uiDelegate?.PINTextField
-        {
-          usernameTextField.text = userAccount.barcode
-          PINTextField.text = userAccount.PIN
+  /// A completion block that logs error (if available), update user info
+  /// and finalize sign in process after DRM authorization is completed,
+  /// designated for Adobe DRM.
+  private func adobeAuthorizationCompletion(_ loggingContext: [String: Any]) -> (
+    (Bool, Error?, String?, String?) -> Void
+  ) {
+    return { [weak self] success, error, deviceID, userID in
+      // make sure to cancel the previously scheduled selector
+      // from the same thread it was scheduled on
+      NYPLMainThreadRun.asyncIfNeeded {
+        if let self = self {
+          NSObject.cancelPreviousPerformRequests(withTarget: self)
         }
-
-        logIn()
       }
+      
+      guard let self = self else {
+        
+        let error = NSError(
+          domain: "NYPLSignInBusinessLogic deallocated prematurely",
+          code: 418, userInfo: nil)
+        
+        NYPLErrorLogger.logLocalAuthFailed(error: error,
+                                           library: nil,
+                                           metadata: loggingContext)
+      
+        return
+      }
+      
+      Log.info(#file, """
+        Activation success: \(success)
+        Error: \(error?.localizedDescription ?? "N/A")
+        DeviceID: \(deviceID ?? "N/A")
+        UserID: \(userID ?? "N/A")
+        ***DRM Auth/Activation completion***
+        """)
+
+      var success = success
+
+      if success, let userID = userID, let deviceID = deviceID {
+        NYPLMainThreadRun.asyncIfNeeded {
+          self.userAccount.setUserID(userID)
+          self.userAccount.setDeviceID(deviceID)
+        }
+      } else {
+        success = false
+        NYPLErrorLogger.logLocalAuthFailed(error: error as NSError?,
+                                           library: self.libraryAccount,
+                                           metadata: loggingContext)
+      }
+      
+      Log.info(#file, "Finalizing sign in for Adobe")
+      self.finalizeSignIn(forDRMAuthorization: success,
+                          error: error as NSError?)
     }
   }
-}
+#endif // FEATURE_DRM_CONNECTOR
+  
+#if AXIS
+  /// A completion block that logs error (if available) and finalize sign in process
+  /// after DRM authorization is completed, designated for AxisDRM.
+  /// While it is very similar to the one for Adobe,
+  /// it does not update the `userID` and `deviceID` because
+  /// the AxisDRM does not return valid values of these parameters.
+  /// It also avoid calling finalizeSignIn twice when both Adobe and Axis exist.
+  private func axisAuthorizationCompletion(_ loggingContext: [String: Any]) -> (
+    (Bool, Error?, String?, String?) -> Void
+  ) {
+    return { [weak self] success, error, deviceID, userID in
+      guard let self = self else {
+        
+        let error = NSError(
+          domain: "NYPLSignInBusinessLogic deallocated prematurely",
+          code: 418, userInfo: nil)
+        
+        NYPLErrorLogger.logLocalAuthFailed(error: error,
+                                           library: nil,
+                                           metadata: loggingContext)
+      
+        return
+      }
+      
+      Log.info(#file, """
+        Activation success: \(success)
+        Error: \(error?.localizedDescription ?? "N/A")
+        DeviceID: \(deviceID ?? "N/A")
+        UserID: \(userID ?? "N/A")
+        ***DRM Auth/Activation completion***
+        """)
 
+      let success = success && userID != nil && deviceID != nil
+
+      if !success {
+        NYPLErrorLogger.logLocalAuthFailed(error: error as NSError?,
+                                           library: self.libraryAccount,
+                                           metadata: loggingContext)
+      }
+
+#if !FEATURE_DRM_CONNECTOR
+      // finalizeSignIn should only be called once,
+      // so here we are calling it if only AXIS is the available DRM
+      self.finalizeSignIn(forDRMAuthorization: success,
+                          error: error as NSError?)
 #endif
+    }
+  }
+#endif // AXIS
+}
+#endif // FEATURE_DRM_CONNECTOR || AXIS
