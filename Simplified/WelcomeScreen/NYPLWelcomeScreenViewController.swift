@@ -44,7 +44,7 @@ import PureLayout
                                  buttonTargetSelector: #selector(pickYourLibraryTapped))
     
     let view2 = splashScreenView("SplashInstantClassicsIcon",
-                                 headline: NSLocalizedString("The SimplyE Collection", comment: "Title to show a user an option if they do not have a library card to check out books."),
+                                 headline: NSLocalizedString("Books for All", comment: "Title to show a user an option if they do not have a library card to check out books."),
                                  subheadline: nil,
                                  buttonTitle: NSLocalizedString("Add a Library Later", comment: "Name of section for free books means books that are well-known popular novels for many people."),
                                  buttonTargetSelector: #selector(instantClassicsTapped))
