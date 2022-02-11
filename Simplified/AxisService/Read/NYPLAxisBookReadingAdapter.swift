@@ -52,6 +52,8 @@ struct NYPLAxisBookReadingAdapter {
     licenseService.extractAESKey { result in
       switch result {
       case .success(let key):
+        // If it succeeded and returned data is nil,
+        // the asset is not protected by AxisDRM.
         guard let keyData = key else {
           completion(.success(nil))
           return
