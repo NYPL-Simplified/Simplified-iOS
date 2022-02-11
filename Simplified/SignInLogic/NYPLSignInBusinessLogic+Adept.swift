@@ -18,7 +18,7 @@ extension NYPLSignInBusinessLogic {
   ///   - loggingContext: Information to report when logging errors.
   func authorizeWithAdobe(userProfile profileDoc: UserProfileDocument,
                           loggingContext: [String: Any],
-                          completion: @escaping ((Bool, Error?, String?, String?) -> Void)) {
+                          completion: @escaping ((Bool, Error?) -> Void)) {
     
     guard
       let drm = profileDoc.drm?.first,
@@ -52,8 +52,8 @@ extension NYPLSignInBusinessLogic {
     
     drmAuthorizeAdobe(username: tokenUsername,
                       password: tokenPassword,
+                      loggingContext: loggingContext,
                       completion: completion)
-    
   }
   
   /// Perform the DRM authorization request with the given credentials
@@ -66,7 +66,8 @@ extension NYPLSignInBusinessLogic {
   ///   - loggingContext: Information to report when logging errors.
   private func drmAuthorizeAdobe(username: String,
                                  password: String?,
-                                 completion: @escaping ((Bool, Error?, String?, String?) -> Void)) {
+                                 loggingContext: [String: Any],
+                                 completion: @escaping ((Bool, Error?) -> Void)) {
 
     let vendor = userAccount.licensor?["vendor"] as? String
 
@@ -80,7 +81,52 @@ extension NYPLSignInBusinessLogic {
     drmAuthorizerAdobe?.authorize(withVendorID: vendor,
                                   username: username,
                                   password: password,
-                                  completion: completion)
+                                  completion: { [weak self] success, error, deviceID, userID in
+      // make sure to cancel the previously scheduled selector
+      // from the same thread it was scheduled on
+      NYPLMainThreadRun.asyncIfNeeded {
+        if let self = self {
+          NSObject.cancelPreviousPerformRequests(withTarget: self)
+        }
+      }
+      
+      guard let self = self else {
+        
+        let error = NSError(
+          domain: "NYPLSignInBusinessLogic deallocated prematurely",
+          code: 418, userInfo: nil)
+        
+        NYPLErrorLogger.logLocalAuthFailed(error: error,
+                                           library: nil,
+                                           metadata: loggingContext)
+      
+        return
+      }
+      
+      Log.info(#file, """
+        Activation success: \(success)
+        Error: \(error?.localizedDescription ?? "N/A")
+        DeviceID: \(deviceID ?? "N/A")
+        UserID: \(userID ?? "N/A")
+        ***DRM Auth/Activation completion***
+        """)
+
+      var success = success
+
+      if success, let userID = userID, let deviceID = deviceID {
+        NYPLMainThreadRun.asyncIfNeeded {
+          self.userAccount.setUserID(userID)
+          self.userAccount.setDeviceID(deviceID)
+        }
+      } else {
+        success = false
+        NYPLErrorLogger.logLocalAuthFailed(error: error as NSError?,
+                                           library: self.libraryAccount,
+                                           metadata: loggingContext)
+      }
+      
+      completion(success, error)
+    })
 
     NYPLMainThreadRun.asyncIfNeeded { [weak self] in
       self?.perform(#selector(self?.dismissAfterUnexpectedDRMDelay), with: self, afterDelay: 25)

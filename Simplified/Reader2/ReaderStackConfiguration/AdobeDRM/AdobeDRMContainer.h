@@ -11,7 +11,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define RIGHTS_XML_SUFFIX @"_rights.xml"
+#define ADOBE_RIGHTS_XML_SUFFIX @"_rights.xml"
 
 @interface AdobeDRMContainer : NSObject
 NS_ASSUME_NONNULL_BEGIN

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import NYPLCardCreator
 
 #if AXIS
 
@@ -21,7 +20,8 @@ extension NYPLSignInBusinessLogic {
   ///   - loggingContext: Information to report when logging errors.
   func drmAuthorizeAxis(username: String,
                         password: String?,
-                        completion: @escaping ((Bool, Error?, String?, String?) -> Void)) {
+                        loggingContext: [String: Any],
+                        completion: @escaping ((Bool, Error?) -> Void)) {
     
     let vendor = userAccount.licensor?["vendor"] as? String
     
@@ -35,7 +35,38 @@ extension NYPLSignInBusinessLogic {
     drmAuthorizerAxis?.authorize(withVendorID: vendor,
                                  username: username,
                                  password: password,
-                                 completion: completion)
+                                 completion: { [weak self] success, error, deviceID, userID in
+      guard let self = self else {
+        
+        let error = NSError(
+          domain: "NYPLSignInBusinessLogic deallocated prematurely",
+          code: 418, userInfo: nil)
+        
+        NYPLErrorLogger.logLocalAuthFailed(error: error,
+                                           library: nil,
+                                           metadata: loggingContext)
+      
+        return
+      }
+      
+      Log.info(#file, """
+        Activation success: \(success)
+        Error: \(error?.localizedDescription ?? "N/A")
+        DeviceID: \(deviceID ?? "N/A")
+        UserID: \(userID ?? "N/A")
+        ***DRM Auth/Activation completion***
+        """)
+
+      let success = success && userID != nil && deviceID != nil
+
+      if !success {
+        NYPLErrorLogger.logLocalAuthFailed(error: error as NSError?,
+                                           library: self.libraryAccount,
+                                           metadata: loggingContext)
+      }
+
+      completion(success, error)
+    })
   }
   
 }

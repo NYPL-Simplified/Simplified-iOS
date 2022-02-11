@@ -66,7 +66,7 @@ private extension Fetcher {
   func fetchAdobeEncryptionData(from asset: FileAsset) -> Data? {
     let lastComponent = asset.url.lastPathComponent as NSString
     let rightsPath = asset.url.deletingLastPathComponent().absoluteString + lastComponent.deletingPathExtension
-    let rightsExtension = lastComponent.pathExtension + RIGHTS_XML_SUFFIX
+    let rightsExtension = lastComponent.pathExtension + ADOBE_RIGHTS_XML_SUFFIX
     
     // If a '[file]_rights.xml' file exists, the asset is protected by AdobeDRM and we proceed forward.
     // Otherwise, we return nil
