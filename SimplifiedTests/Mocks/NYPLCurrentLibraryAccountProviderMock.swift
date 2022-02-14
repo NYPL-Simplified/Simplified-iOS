@@ -22,7 +22,7 @@ class NYPLCurrentLibraryAccountProviderMock: NSObject, NYPLCurrentLibraryAccount
     let feedData = try! Data(contentsOf: feedURL)
     let feed = try! OPDS2CatalogsFeed.fromData(feedData)
 
-    currentAccount = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "The SimplyE Collection" })!)
+    currentAccount = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Books for All" })!)
     
     super.init()
     
