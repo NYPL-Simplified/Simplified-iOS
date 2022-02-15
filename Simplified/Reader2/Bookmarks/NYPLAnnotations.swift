@@ -395,18 +395,22 @@ protocol NYPLAnnotationSyncing: AnyObject {
     request.timeoutInterval = NYPLDefaultRequestTimeout
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      let response = response as? HTTPURLResponse
-      if response?.statusCode == 200 {
-        Log.info(#file, "200: DELETE bookmark success")
-        completionHandler(true)
-      } else if let code = response?.statusCode {
-        Log.error(#file, "DELETE bookmark failed with server response code: \(code)")
+      guard let statusCode = (response as? HTTPURLResponse)?.statusCode,
+            statusCode == 200
+      else {
+        let metadata: [String: Any] = ["annotationId": annotationId]
+        NYPLErrorLogger.logNetworkError(error,
+                                        code: .responseFail,
+                                        summary: "NYPLAnnotations::deleteBookmark error",
+                                        request: request,
+                                        response: response,
+                                        metadata: metadata)
         completionHandler(false)
-      } else {
-        guard let error = error as NSError? else { return }
-        Log.error(#file, "DELETE bookmark Request Failed with Error Code: \(error.code). Description: \(error.localizedDescription)")
-        completionHandler(false)
+        return
       }
+      
+      Log.info(#file, "200: DELETE bookmark success")
+      completionHandler(true)
     }
     task.resume()
   }
@@ -480,7 +484,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
         completion(id)
       case .failure(let err):
         NYPLErrorLogger.logError(err,
-                                 summary: "Error posting bookmark",
+                                 summary: "NYPLAnnotations::postBookmark error",
                                  metadata: ["bookID": bookID])
         completion(nil)
       }
@@ -494,21 +498,28 @@ protocol NYPLAnnotationSyncing: AnyObject {
                                       motivation: NYPLBookmarkSpec.Motivation,
                                       publication: Publication?,
                                       bookID: String) -> [NYPLReadiumBookmark]? {
+    let metadata: [String: Any] = ["bookID":bookID]
     if let error = error as NSError? {
-      Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+      NYPLErrorLogger.logError(error,
+                               summary: "NYPLAnnotations::parseAnnotationsResponse error",
+                               metadata: metadata)
       return nil
     }
 
     guard let data = data,
       let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
       let json = jsonObject as? [String: Any] else {
-        Log.error(#file, "Response from annotation server could not be serialized.")
+        NYPLErrorLogger.logError(withCode: .serializationFail,
+                                 summary: "NYPLAnnotations::parseAnnotationsResponse error",
+                                 metadata: metadata)
         return nil
     }
 
     guard let first = json["first"] as? [String: Any],
       let items = first["items"] as? [[String: Any]] else {
-        Log.error(#file, "Missing required key from Annotations response, or no items exist.")
+        NYPLErrorLogger.logError(withCode: .annotationFeedNoData,
+                                 summary: "NYPLAnnotations::parseAnnotationsResponse error",
+                                 metadata: metadata)
         return nil
     }
 
