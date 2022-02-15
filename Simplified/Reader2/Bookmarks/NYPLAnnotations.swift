@@ -498,7 +498,8 @@ protocol NYPLAnnotationSyncing: AnyObject {
                                       motivation: NYPLBookmarkSpec.Motivation,
                                       publication: Publication?,
                                       bookID: String) -> [NYPLReadiumBookmark]? {
-    let metadata: [String: Any] = ["bookID":bookID]
+    let metadata: [String: Any] = ["bookID": bookID,
+                                   "motivation": motivation]
     if let error = error as NSError? {
       NYPLErrorLogger.logError(error,
                                summary: "NYPLAnnotations::parseAnnotationsResponse error",
@@ -517,7 +518,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
 
     guard let first = json["first"] as? [String: Any],
       let items = first["items"] as? [[String: Any]] else {
-        NYPLErrorLogger.logError(withCode: .annotationFeedNoData,
+        NYPLErrorLogger.logError(withCode: .noData,
                                  summary: "NYPLAnnotations::parseAnnotationsResponse error",
                                  metadata: metadata)
         return nil
