@@ -20,6 +20,8 @@
 #import "NYPLJSON.h"
 #import "NSString+NYPLStringAdditions.h"
 
+static NSInteger AudiobookProgressSavingInterval = 60;
+
 @implementation NYPLBookCellDelegate (Audiobooks)
 
 #pragma mark - Audiobook Methods
@@ -110,6 +112,11 @@
 
       // poll audiobook player so that we can save the reading position
       [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
+      
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(scheduleAudiobookProgressSavingTimer)
+                                                   name:UIApplicationWillResignActiveNotification
+                                                 object:nil];
     }];
   }];
 }
@@ -213,6 +220,34 @@
     [[NYPLBookRegistry sharedRegistry]
      setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
      forIdentifier:book.identifier];
+  }];
+}
+
+// Create a timer that saves the audiobook progress periodically when the app is inactive.
+// We do save the progress when app is being killed and applicationWillTerminate: is called,
+// but applicationWillTerminate: is not always called when users force quit the app.
+// This method is triggered when app resigns active.
+- (void)scheduleAudiobookProgressSavingTimer {
+  if (self.audiobookProgressSavingTimer) {
+    return;
+  }
+  
+  self.audiobookProgressSavingTimer = [NSTimer scheduledTimerWithTimeInterval:AudiobookProgressSavingInterval
+                                                                      repeats:YES
+                                                                        block:^(NSTimer *_Nonnull timer) {
+    [NYPLMainThreadRun asyncIfNeeded:^{
+      if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
+        [timer invalidate];
+        self.audiobookProgressSavingTimer = nil;
+        return;
+      }
+    }];
+    
+    if (self.manager && !self.manager.audiobook.player.isPlaying) {
+      return;
+    }
+    
+    [[NYPLBookRegistry sharedRegistry] save];
   }];
 }
 
