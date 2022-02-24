@@ -41,14 +41,6 @@ extension NYPLSettingsSplitViewController {
       ),
       NYPLSettingsPrimaryTableItem.init(
         indexPath: IndexPath(row: 0, section: 1),
-        title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
-        viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
-          title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
-          url: URLsProvider.accountURL(forType: .acknowledgements)
-        )
-      ),
-      NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 1, section: 1),
         title: NSLocalizedString("EULA", comment: "Title for User Agreement section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
           title: NSLocalizedString("EULA", comment: "Title for User Agreement section"),
@@ -56,11 +48,27 @@ extension NYPLSettingsSplitViewController {
         )
       ),
       NYPLSettingsPrimaryTableItem.init(
-        indexPath: IndexPath(row: 2, section: 1),
+        indexPath: IndexPath(row: 1, section: 1),
         title: NSLocalizedString("PrivacyPolicy", comment: "Title for Privacy Policy section"),
         viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
           title: NSLocalizedString("PrivacyPolicy", comment: "Title for Privacy Policy section"),
           url: URLsProvider.accountURL(forType: .privacyPolicy)
+        )
+      ),
+      NYPLSettingsPrimaryTableItem.init(
+        indexPath: IndexPath(row: 2, section: 1),
+        title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
+        viewController: NYPLSettingsPrimaryTableItem.generateRemoteView(
+          title: NSLocalizedString("Acknowledgements", comment: "Title for acknowledgements section"),
+          url: URLsProvider.accountURL(forType: .acknowledgements)
+        )
+      ),
+      NYPLSettingsPrimaryTableItem.init(
+        indexPath: IndexPath(row: 3, section: 1),
+        title: NSLocalizedString("SoftwareLicenses", comment: "Title for software licenses section"),
+        viewController: NYPLSettingsPrimaryTableItem.generateLocalWebView(
+          title: NSLocalizedString("SoftwareLicenses", comment: "Title for software licenses section"),
+          fileURL: Bundle.main.url(forResource: "software-licenses", withExtension: "html") ?? URL(string: "https://openebooks.net")!
         )
       )
     ]

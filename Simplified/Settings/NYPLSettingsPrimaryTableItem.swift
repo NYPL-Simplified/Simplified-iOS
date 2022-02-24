@@ -46,4 +46,9 @@ class NYPLSettingsPrimaryTableItem {
     )
     return handleVCWrap(remoteView)
   }
+
+  class func generateLocalWebView(title: String, fileURL: URL) -> UIViewController {
+    let remoteView = BundledHTMLViewController(fileURL: fileURL, title: title)
+    return handleVCWrap(remoteView)
+  }
 }
