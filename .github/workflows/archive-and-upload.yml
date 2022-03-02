@@ -5,6 +5,7 @@ on:
       - develop
       - release/**
       - feature/**
+      - story/IOS-356/newrelic
 jobs:
   version-check:
     runs-on: macOS-12

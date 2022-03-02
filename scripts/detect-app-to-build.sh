@@ -32,7 +32,7 @@ echo "Detecting which app to build..."
 git clone https://github.com/NYPL-Simplified/Simplified-iOS.git SimplifiedBeforeMerge
 
 ./scripts/build-number-check.sh simplye
-SIMPLYE_CHANGED=$?
+SIMPLYE_CHANGED=1
 
 ./scripts/build-number-check.sh openebooks
 OPENEBOOKS_CHANGED=$?

@@ -7,6 +7,7 @@
 #import "SimplyE-Swift.h"
 
 #import "NYPLSettingsSplitViewController.h"
+@import NewRelic;
 
 @interface NYPLSettingsSplitViewController ()
   <UISplitViewControllerDelegate, NYPLSettingsPrimaryTableViewControllerDelegate>
@@ -105,7 +106,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[RemoteHTMLViewController alloc]
-                        initWithURL:[NSURL URLWithString: NYPLSettings.NYPLAboutSimplyEURLString]
+                        initWithURL:nil //[NSURL URLWithString: NYPLSettings.NYPLAboutSimplyEURLString]
                         title:NSLocalizedString(@"AboutApp", nil)
                         failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       break;
@@ -116,6 +117,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                         failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
+      [NewRelic crashNow:@"Test Crash"];
       viewController = [[BundledHTMLViewController alloc]
                         initWithFileURL:[[NSBundle mainBundle]
                                          URLForResource:@"software-licenses"
