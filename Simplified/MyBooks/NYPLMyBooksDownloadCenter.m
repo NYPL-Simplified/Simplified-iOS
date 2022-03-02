@@ -1523,7 +1523,7 @@ didFinishDownload:(BOOL)didFinishDownload
   // See Container::Open(const string& path) in container.cpp.
   //
   if(![rightsData writeToFile:[[[self fileURLForBookIndentifier:book.identifier] path]
-                               stringByAppendingString:@"_rights.xml"]
+                               stringByAppendingString:ADOBE_RIGHTS_XML_SUFFIX]
                    atomically:YES]) {
     NYPLLOG(@"Failed to store rights data.");
   }

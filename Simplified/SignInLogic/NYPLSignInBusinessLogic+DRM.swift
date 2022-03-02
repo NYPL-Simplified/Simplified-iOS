@@ -42,14 +42,30 @@ extension NYPLSignInBusinessLogic {
                                metadata: loggingContext)
     }
     
-#if AXIS //TODO: IOS-336
+#if AXIS
     drmAuthorizeAxis(username: profileDoc.authorizationIdentifier ?? "",
                      password: profileDoc.authorizationIdentifier,
-                     loggingContext: loggingContext)
+                     loggingContext: loggingContext) { [weak self] success, error in
+      guard let self = self else {
+        return
+      }
+#if !FEATURE_DRM_CONNECTOR
+      // finalizeSignIn should only be called once,
+      // so here we are calling it if only AXIS is the available DRM
+      self.finalizeSignIn(forDRMAuthorization: success,
+                          error: error as NSError?)
 #endif
+    }
+#endif // AXIS
 
 #if FEATURE_DRM_CONNECTOR
-    authorizeWithAdobe(userProfile: profileDoc, loggingContext: loggingContext)
+    authorizeWithAdobe(userProfile: profileDoc,
+                       loggingContext: loggingContext) { [weak self] success, error in
+      guard let self = self else {
+        return
+      }
+      self.finalizeSignIn(forDRMAuthorization: success, error: error)
+    }
 #endif
   }
 
@@ -75,29 +91,4 @@ extension NYPLSignInBusinessLogic {
     }
   }
 }
-#endif
-
-#if FEATURE_DRM_CONNECTOR
-
-extension NYPLSignInBusinessLogic {
-
-  @objc func logInIfUserAuthorized() {
-    if let drmAuthorizer = drmAuthorizerAdobe,
-      !drmAuthorizer.isUserAuthorized(userAccount.userID,
-                                      withDevice: userAccount.deviceID) {
-
-      if userAccount.hasBarcodeAndPIN() && !isValidatingCredentials {
-        if let usernameTextField = uiDelegate?.usernameTextField,
-          let PINTextField = uiDelegate?.PINTextField
-        {
-          usernameTextField.text = userAccount.barcode
-          PINTextField.text = userAccount.PIN
-        }
-
-        logIn()
-      }
-    }
-  }
-}
-
-#endif
+#endif // FEATURE_DRM_CONNECTOR || AXIS

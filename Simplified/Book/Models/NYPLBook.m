@@ -544,11 +544,18 @@ static NSString *const UpdatedKey = @"updated";
                             acquisitions:@[acquisition]];
     
     if (paths.count >= 1) {
-#if defined(AXIS)
+#if AXIS || FEATURE_DRM_CONNECTOR
       for (NYPLOPDSAcquisitionPath *path in paths) {
+#if FEATURE_DRM_CONNECTOR
+        if ([path.types containsObject:ContentTypeAdobeAdept]) {
+          return acquisition;
+        }
+#endif
+#if AXIS
         if ([path.types containsObject:ContentTypeAxis360]) {
           return acquisition;
         }
+#endif
       }
       
       if (!fallbackAcquisition) {

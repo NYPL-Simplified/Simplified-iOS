@@ -8,7 +8,7 @@
 
 import Foundation
 
-let NYPLDefaultRequestTimeout: TimeInterval = 30.0
+let NYPLDefaultRequestTimeout: TimeInterval = 65.0
 
 protocol NYPLRequestExecuting {
   /// Execute a given request.

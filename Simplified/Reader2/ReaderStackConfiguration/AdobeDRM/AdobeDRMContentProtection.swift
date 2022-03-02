@@ -35,7 +35,7 @@ class AdobeDRMContentProtection: ContentProtection {
       return
     }
     
-    guard let encryptionData = fetcher.fetchAdobeEncryptionData() else {
+    guard let encryptionData = fetcher.fetchAdobeEncryptionData(from: fileAsset) else {
       // .success(nil) means it is not an asset protected with Adobe DRM
       // Streamer continues to iterate over available ContentProtections
       // Don't use .failure(...) in this case, it means .epub is protected with this type of Content Protection,
@@ -59,10 +59,19 @@ class AdobeDRMContentProtection: ContentProtection {
 }
 
 private extension Fetcher {
-  func fetchAdobeEncryptionData() -> Data? {
-    // Since publications protected by Axis DRM also contain the `META-INF` directory,
-    // we need to add another check to make sure this is not an AxisDRM protected file.
-    if let _ = try? get("/" + NYPLAxisKeysProvider().userKey).read().get() {
+  /// Fetch the encryption file data from the file asset.
+  ///
+  /// - Parameter asset: File asset containing the encryption file.
+  /// - Returns: Data of the encryption file if asset is protected by Adobe and file is found. Otherwise `nil`.
+  func fetchAdobeEncryptionData(from asset: FileAsset) -> Data? {
+    let lastComponent = asset.url.lastPathComponent as NSString
+    let rightsPath = asset.url.deletingLastPathComponent().absoluteString + lastComponent.deletingPathExtension
+    let rightsExtension = lastComponent.pathExtension + ADOBE_RIGHTS_XML_SUFFIX
+    
+    // If a '[file]_rights.xml' file exists, the asset is protected by AdobeDRM and we proceed forward.
+    // Otherwise, we return nil
+    guard let rightsURL = URL(string: rightsPath)?.appendingPathExtension(rightsExtension),
+          FileManager.default.fileExists(atPath: rightsURL.path) else {
       return nil
     }
     
