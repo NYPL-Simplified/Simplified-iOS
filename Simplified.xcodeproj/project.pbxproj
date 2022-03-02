@@ -554,6 +554,7 @@
 		735FCB3A2506FAD0009A8C95 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 735FCB392506FACF009A8C95 /* ReaderClientCert.sig */; };
 		735FED262427494900144C97 /* NYPLNetworkResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735FED252427494900144C97 /* NYPLNetworkResponder.swift */; };
 		7360D0D524BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
+		7361D0B727CEDBB1007B582B /* NewRelic in Frameworks */ = {isa = PBXBuildFile; productRef = 7361D0B627CEDBB1007B582B /* NewRelic */; };
 		7364D69C2492A38C0087B056 /* Publication+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */; };
 		7364D69D2492A38C0087B056 /* Publication+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */; };
 		7369A3812649C07F0029D8AB /* CryptoSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F04A7263739A40018A82E /* CryptoSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -2440,6 +2441,7 @@
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				732F0434263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
 				732F0481263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
+				7361D0B727CEDBB1007B582B /* NewRelic in Frameworks */,
 				7392E4602788E752006F010E /* NYPLAudiobookToolkit in Frameworks */,
 				73B6E276278665AC0043FA30 /* OverdriveProcessor in Frameworks */,
 				731465202786106900027CFA /* PureLayout in Frameworks */,
@@ -3780,6 +3782,7 @@
 				A823D80B192BABA400B55DE2 /* Resources */,
 				17DFC5F5251E84C5003A19CC /* Embed Frameworks */,
 				73DA43AD2404CA9500985482 /* Crashlytics */,
+				7361D0BC27CEDE2A007B582B /* NewRelic */,
 			);
 			buildRules = (
 			);
@@ -3794,6 +3797,7 @@
 				7392E45F2788E752006F010E /* NYPLAudiobookToolkit */,
 				7392E4612788E75B006F010E /* NYPLCardCreator */,
 				73A1731127ADA7D3005E7BCF /* NYPLAxis */,
+				7361D0B627CEDBB1007B582B /* NewRelic */,
 			);
 			productName = Simplified;
 			productReference = A823D80D192BABA400B55DE2 /* SimplyE.app */;
@@ -3853,6 +3857,7 @@
 			packageReferences = (
 				73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */,
 				7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */,
+				7361D0B527CEDBB1007B582B /* XCRemoteSwiftPackageReference "newrelic-ios-agent-spm" */,
 			);
 			productRefGroup = A823D80E192BABA400B55DE2 /* Products */;
 			projectDirPath = "";
@@ -4117,6 +4122,44 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/\"\nsed -i '' \"s/SimplyE/Open eBooks/\" software-licenses.html\nsed -i '' \"s/.*EXCLUDE_FROM_OPENEBOOKS.*//\" software-licenses.html \n";
+		};
+		7361D0BC27CEDE2A007B582B /* NewRelic */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = NewRelic;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SCRIPT=`/usr/bin/find \"${SRCROOT}\" -name newrelic_postbuild.sh | head -n 1`\n/bin/sh \"${SCRIPT}\" \"AAd9210b74e40d09df10054d9466c4fccbcc37ac9d-NRMA\"\necho \"Done with NewRelic\"\n";
+		};
+		739E614C244A0D8600D00301 /* Copy Frameworks (Carthage) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/R2LCPClient.framework",
+			);
+			name = "Copy Frameworks (Carthage)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/R2LCPClient.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "PATH=/opt/homebrew/bin:/usr/local/bin:${PATH}\ncarthage copy-frameworks\n";
 		};
 		739E614D244A0D8600D00301 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5951,11 +5994,14 @@
 					"$(inherited)",
 					"SIMPLYE=1",
 					"DEBUG=1",
-					"FEATURE_DRM_CONNECTOR=1",
-					"FEATURE_CRASH_REPORTING=1",
+					"FEATURE_AUDIOBOOKS=1",
 					"FEATURE_OVERDRIVE_AUTH=1",
 					"FEATURE_AUDIOBOOKS=1",
+					"FEATURE_DRM_CONNECTOR=1",
+					"LCP=1",
 					"AXIS=1",
+					"FEATURE_CRASHLYTICS=1",
+					"FEATURE_NEWRELIC=1",
 				);
 				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5968,6 +6014,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Development";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG SIMPLYE FEATURE_DRM_CONNECTOR FEATURE_CRASH_REPORTING FEATURE_OVERDRIVE_AUTH FEATURE_AUDIOBOOKS AXIS";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG SIMPLYE FEATURE_AUDIOBOOKS FEATURE_OVERDRIVE_AUTH FEATURE_DRM_CONNECTOR LCP AXIS FEATURE_CRASHLYTICS FEATURE_NEWRELIC";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
@@ -6001,11 +6048,14 @@
 					"$(inherited)",
 					"SIMPLYE=1",
 					"DEBUG=0",
-					"FEATURE_DRM_CONNECTOR=1",
-					"FEATURE_CRASH_REPORTING=1",
+					"FEATURE_AUDIOBOOKS=1",
 					"FEATURE_OVERDRIVE_AUTH=1",
 					"FEATURE_AUDIOBOOKS=1",
+					"FEATURE_DRM_CONNECTOR=1",
+					"LCP=1",
 					"AXIS=1",
+					"FEATURE_CRASHLYTICS=1",
+					"FEATURE_NEWRELIC=1",
 				);
 				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6018,6 +6068,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SIMPLYE FEATURE_DRM_CONNECTOR FEATURE_CRASH_REPORTING FEATURE_OVERDRIVE_AUTH FEATURE_AUDIOBOOKS AXIS";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SIMPLYE FEATURE_AUDIOBOOKS FEATURE_OVERDRIVE_AUTH FEATURE_DRM_CONNECTOR LCP AXIS FEATURE_CRASHLYTICS FEATURE_NEWRELIC";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				WARNING_CFLAGS = (
@@ -6118,6 +6169,14 @@
 				kind = branch;
 			};
 		};
+		7361D0B527CEDBB1007B582B /* XCRemoteSwiftPackageReference "newrelic-ios-agent-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/newrelic/newrelic-ios-agent-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -6144,6 +6203,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
 			productName = NYPLUtilities;
+		};
+		7361D0B627CEDBB1007B582B /* NewRelic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7361D0B527CEDBB1007B582B /* XCRemoteSwiftPackageReference "newrelic-ios-agent-spm" */;
+			productName = NewRelic;
 		};
 		73829F4027861584008B2A80 /* NYPLAEToolkit */ = {
 			isa = XCSwiftPackageProductDependency;

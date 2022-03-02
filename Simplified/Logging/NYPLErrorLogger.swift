@@ -5,7 +5,12 @@
 
 import CFNetwork
 import Foundation
+#if FEATURE_CRASHLYTICS
 import Firebase
+#endif
+#if FEATURE_NEWRELIC
+import NewRelic
+#endif
 
 fileprivate let nullString = "null"
 
@@ -147,23 +152,36 @@ fileprivate let nullString = "null"
   // MARK:- Configuration
 
   class func configureCrashAnalytics() {
-    #if FEATURE_CRASH_REPORTING
+    #if FEATURE_CRASHLYTICS
     FirebaseApp.configure()
 
     if let deviceID = UIDevice.current.identifierForVendor?.uuidString {
       Crashlytics.crashlytics().setCustomValue(deviceID, forKey: "NYPLDeviceID")
     }
     #endif
+
+    #if FEATURE_NEWRELIC
+    NRLogger.setLogLevels(NRLogLevelInfo.rawValue)
+    NewRelic.start(withApplicationToken: "AAd9210b74e40d09df10054d9466c4fccbcc37ac9d-NRMA")
+    #endif
   }
 
   class func setUserID(_ userID: String?) {
-    #if FEATURE_CRASH_REPORTING
     if let userIDmd5 = userID?.md5hex() {
+      #if FEATURE_CRASHLYTICS
       Crashlytics.crashlytics().setUserID(userIDmd5)
+      #endif
+      #if FEATURE_NEWRELIC
+      NewRelic.setUserId(userIDmd5)
+      #endif
     } else {
+      #if FEATURE_CRASHLYTICS
       Crashlytics.crashlytics().setUserID("SIGNED_OUT_USER")
+      #endif
+      #if FEATURE_NEWRELIC
+      NewRelic.setUserId("SIGNED_OUT_USER")
+      #endif
     }
-    #endif
   }
 
   //----------------------------------------------------------------------------
@@ -315,11 +333,10 @@ fileprivate let nullString = "null"
       severity: .warning,
       message: "No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.",
       metadata: metadata)
-    let err = NSError(domain: "SignOut deauthorization error: no licensor",
-                      code: NYPLErrorCode.invalidLicensor.rawValue,
-                      userInfo: userInfo)
 
-    record(error: err)
+    recordEvent("SignOut deauthorization error: no licensor",
+                code: .invalidLicensor,
+                attributes: userInfo)
   }
 
   /// Report when there's an issue parsing a user profile document obtained
@@ -361,11 +378,10 @@ fileprivate let nullString = "null"
     addAccountInfoToMetadata(&metadata)
     
     let userInfo = additionalInfo(severity: .info, metadata: metadata)
-    let err = NSError(domain: clientDomain,
-                      code: NYPLErrorCode.appLaunch.rawValue,
-                      userInfo: userInfo)
 
-    record(error: err)
+    recordEvent("New App Launch: \(clientDomain)",
+                code: .appLaunch,
+                attributes: userInfo)
   }
 
   /**
@@ -439,11 +455,36 @@ fileprivate let nullString = "null"
   // MARK:- Private helpers
 
   private class func record(error: NSError) {
-    #if FEATURE_CRASH_REPORTING
+    #if FEATURE_CRASHLYTICS
     Crashlytics.crashlytics().record(error: error)
-    #else
+    #endif
+
+    #if FEATURE_NEWRELIC
+    NewRelic.recordError(error)
+    #endif
+
+    #if !FEATURE_CRASHLYTICS && !FEATURE_NEWRELIC
     Log.error("LOG_ERROR", "\(error)")
     #endif
+  }
+
+  private class func recordEvent(_ eventName: String,
+                                 code: NYPLErrorCode,
+                                 attributes: [String: Any]) {
+#if FEATURE_CRASHLYTICS
+    let err = NSError(domain: eventName,
+                      code: code.rawValue,
+                      userInfo: attributes)
+    Crashlytics.crashlytics().record(error: err)
+#endif
+
+#if FEATURE_NEWRELIC
+    NewRelic.recordCustomEvent(eventName, name: eventName, attributes: attributes)
+#endif
+
+#if !FEATURE_CRASHLYTICS && !FEATURE_NEWRELIC
+    Log.error("LOG_EVENT", "\(eventName) Code: \(code) Attributes: \(attributes)")
+#endif
   }
 
   /// Helper to log a generic error to Crashlytics.
@@ -606,6 +647,12 @@ fileprivate let nullString = "null"
     metadata["currentAccountLoansURL"] = currentLibrary?.loansUrl ?? nullString
     metadata["currentAccountDetails"] = currentLibrary?.details?.debugDescription ?? nullString
     metadata["numAccounts"] = AccountsManager.shared.accounts().count
+
+    #if FEATURE_NEWRELIC
+    metadata.forEach { (key, value) in
+      NewRelic.setAttribute(key, value: value)
+    }
+    #endif
   }
 
   /// Creates a dictionary with information to be logged in relation to an event.

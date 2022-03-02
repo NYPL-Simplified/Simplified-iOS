@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "NewRelic",
+        "repositoryURL": "https://github.com/newrelic/newrelic-ios-agent-spm",
+        "state": {
+          "branch": null,
+          "revision": "4e793768516dfa1809fd92620bda414fa392d46f",
+          "version": "7.3.5"
+        }
+      },
+      {
         "package": "PureLayout",
         "repositoryURL": "https://github.com/PureLayout/PureLayout.git",
         "state": {
