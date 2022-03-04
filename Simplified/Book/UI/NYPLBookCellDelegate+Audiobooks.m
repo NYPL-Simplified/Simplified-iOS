@@ -20,8 +20,6 @@
 #import "NYPLJSON.h"
 #import "NSString+NYPLStringAdditions.h"
 
-static NSInteger AudiobookProgressSavingInterval = 60;
-
 @implementation NYPLBookCellDelegate (Audiobooks)
 
 #pragma mark - Audiobook Methods
@@ -223,32 +221,8 @@ static NSInteger AudiobookProgressSavingInterval = 60;
   }];
 }
 
-// Create a timer that saves the audiobook progress periodically when the app is inactive.
-// We do save the progress when app is being killed and applicationWillTerminate: is called,
-// but applicationWillTerminate: is not always called when users force quit the app.
-// This method is triggered when app resigns active.
 - (void)scheduleAudiobookProgressSavingTimer {
-  if (self.audiobookProgressSavingTimer) {
-    return;
-  }
-  
-  self.audiobookProgressSavingTimer = [NSTimer scheduledTimerWithTimeInterval:AudiobookProgressSavingInterval
-                                                                      repeats:YES
-                                                                        block:^(NSTimer *_Nonnull timer) {
-    [NYPLMainThreadRun asyncIfNeeded:^{
-      if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-        [timer invalidate];
-        self.audiobookProgressSavingTimer = nil;
-        return;
-      }
-    }];
-    
-    if (self.manager && !self.manager.audiobook.player.isPlaying) {
-      return;
-    }
-    
-    [[NYPLBookRegistry sharedRegistry] save];
-  }];
+  [self scheduleProgressSavingTimerForAudiobookManager:self.manager];
 }
 
 - (void)presentDRMKeyError:(NSError *) error

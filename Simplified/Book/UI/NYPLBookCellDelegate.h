@@ -1,5 +1,5 @@
 #if FEATURE_AUDIOBOOKS
-@import NYPLAudiobookToolkit;
+@class DefaultAudiobookManager;
 #endif
 
 #import "NYPLBookDownloadFailedCell.h"
