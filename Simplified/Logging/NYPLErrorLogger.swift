@@ -83,7 +83,7 @@ fileprivate let nullString = "null"
   case libraryListLoadFail = 701
 
   // feeds
-  case opdsFeedNoData = 800
+  case noData = 800
   case invalidFeedType = 801
   case noAgeGateElement = 802
 
