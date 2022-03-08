@@ -446,35 +446,27 @@
 		734731232514235900BE3D2C /* NYPLAppDelegate+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734731222514235900BE3D2C /* NYPLAppDelegate+SE.swift */; };
 		734731262514236A00BE3D2C /* NYPLAppDelegate+OE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734731252514236A00BE3D2C /* NYPLAppDelegate+OE.swift */; };
 		7347312925142FE200BE3D2C /* NYPLSettings+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7347312825142FE200BE3D2C /* NYPLSettings+SE.swift */; };
-		7347B4A9265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */; };
 		7347B4AA265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */; };
 		7347B4AB265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */; };
 		7347B4AC265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */; };
-		7347B4B4265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */; };
 		7347B4B5265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */; };
 		7347B4B6265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */; };
 		7347B4B7265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */; };
-		7347B4B8265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */; };
 		7347B4B9265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */; };
 		7347B4BA265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */; };
 		7347B4BB265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */; };
-		7347B4BC265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */; };
 		7347B4BD265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */; };
 		7347B4BE265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */; };
 		7347B4BF265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */; };
-		7347B4C0265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B3265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework */; };
 		7347B4C1265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B3265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework */; };
 		7347B4C2265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B3265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework */; };
 		7347B4C3265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B3265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework */; };
-		7347B4CA265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */; };
 		7347B4CB265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */; };
 		7347B4CC265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */; };
 		7347B4CD265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */; };
-		7347B4CE265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */; };
 		7347B4CF265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */; };
 		7347B4D0265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */; };
 		7347B4D1265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */; };
-		7347B4D2265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */; };
 		7347B4D3265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */; };
 		7347B4D4265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */; };
 		7347B4D5265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */; };
@@ -627,7 +619,6 @@
 		7389859E264127C200088C07 /* ZXingObjC.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 732F0480263378EF0018A82E /* ZXingObjC.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		738CB2002509A61E00891F31 /* NYPLConfiguration+OE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738CB1FF2509A61E00891F31 /* NYPLConfiguration+OE.swift */; };
 		738CB2062509A87700891F31 /* NYPLConfiguration+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738CB2052509A87700891F31 /* NYPLConfiguration+SE.swift */; };
-		738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738EF2CB2405E38800F388FB /* GoogleService-Info.plist */; };
 		739062D225358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */; };
 		739062D425358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */; };
 		7392E4602788E752006F010E /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E45F2788E752006F010E /* NYPLAudiobookToolkit */; };
@@ -2404,18 +2395,10 @@
 				03B0922E1E7886ED00AD338D /* CoreVideo.framework in Frameworks */,
 				732F04A8263739A50018A82E /* CryptoSwift.xcframework in Frameworks */,
 				73061A78273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
-				7347B4A9265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
-				7347B4BC265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
 				73A1731227ADA7D3005E7BCF /* NYPLAxis in Frameworks */,
-				7347B4C0265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */,
-				7347B4B8265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
-				7347B4B4265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				732F0439263375520018A82E /* Fuzi.xcframework in Frameworks */,
 				732F04482633768D0018A82E /* GCDWebServer.xcframework in Frameworks */,
-				7347B4D2265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */,
-				7347B4CA265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */,
-				7347B4CE265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */,
 				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
 				03B092261E7883C400AD338D /* libiconv.tbd in Frameworks */,
@@ -4097,7 +4080,6 @@
 				7347F0272459E10900558D7F /* NYPLReaderPositions.storyboard in Resources */,
 				172F40FA26F0A0170017476A /* Colors.xcassets in Resources */,
 				84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */,
-				738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4201,7 +4183,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/scripts/firebase/run\"\n";
+			shellScript = "#\"${PROJECT_DIR}/scripts/firebase/run\"\n";
 		};
 		73EB0B7125821DF4006BC997 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6002,7 +5984,6 @@
 					"FEATURE_DRM_CONNECTOR=1",
 					"LCP=1",
 					"AXIS=1",
-					"FEATURE_CRASHLYTICS=1",
 					"FEATURE_NEWRELIC=1",
 				);
 				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
@@ -6017,6 +5998,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG SIMPLYE FEATURE_DRM_CONNECTOR FEATURE_CRASH_REPORTING FEATURE_OVERDRIVE_AUTH FEATURE_AUDIOBOOKS AXIS";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG SIMPLYE FEATURE_AUDIOBOOKS FEATURE_OVERDRIVE_AUTH FEATURE_DRM_CONNECTOR LCP AXIS FEATURE_CRASHLYTICS FEATURE_NEWRELIC";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG SIMPLYE FEATURE_AUDIOBOOKS FEATURE_OVERDRIVE_AUTH FEATURE_DRM_CONNECTOR LCP AXIS FEATURE_NEWRELIC";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
@@ -6058,7 +6040,6 @@
 					"FEATURE_DRM_CONNECTOR=1",
 					"LCP=1",
 					"AXIS=1",
-					"FEATURE_CRASHLYTICS=1",
 					"FEATURE_NEWRELIC=1",
 				);
 				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
@@ -6073,6 +6054,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SIMPLYE FEATURE_DRM_CONNECTOR FEATURE_CRASH_REPORTING FEATURE_OVERDRIVE_AUTH FEATURE_AUDIOBOOKS AXIS";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SIMPLYE FEATURE_AUDIOBOOKS FEATURE_OVERDRIVE_AUTH FEATURE_DRM_CONNECTOR LCP AXIS FEATURE_CRASHLYTICS FEATURE_NEWRELIC";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SIMPLYE FEATURE_AUDIOBOOKS FEATURE_OVERDRIVE_AUTH FEATURE_DRM_CONNECTOR LCP AXIS FEATURE_NEWRELIC";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/AppInfrastructure/SimplyE-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				WARNING_CFLAGS = (
