@@ -1,6 +1,11 @@
 import os
 import Foundation
+
+#if FEATURE_CRASHLYTICS
 import Firebase
+#elseif FEATURE_NEWRELIC
+import NewRelic
+#endif
 
 final class Log: NSObject {
   static var dateFormatter: DateFormatter = {
@@ -31,7 +36,13 @@ final class Log: NSObject {
     let timestamp = dateFormatter.string(from: Date())
     if level != .debug {
       let formattedMsg = "[\(levelToString(level))] \(timestamp) \(tag): \(message)"
+      #if FEATURE_CRASHLYTICS
       Crashlytics.crashlytics().log("\(formattedMsg)")
+      #elseif FEATURE_NEWRELIC
+      NewRelic.recordBreadcrumb(message, attributes: ["level": level,
+                                                      "tag": tag,
+                                                      "time": timestamp])
+      #endif
     }
     #endif
 

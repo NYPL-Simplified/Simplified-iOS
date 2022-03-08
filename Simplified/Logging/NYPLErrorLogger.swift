@@ -7,8 +7,7 @@ import CFNetwork
 import Foundation
 #if FEATURE_CRASHLYTICS
 import Firebase
-#endif
-#if FEATURE_NEWRELIC
+#elseif FEATURE_NEWRELIC
 import NewRelic
 #endif
 
@@ -158,11 +157,10 @@ fileprivate let nullString = "null"
     if let deviceID = UIDevice.current.identifierForVendor?.uuidString {
       Crashlytics.crashlytics().setCustomValue(deviceID, forKey: "NYPLDeviceID")
     }
-    #endif
-
-    #if FEATURE_NEWRELIC
-    NRLogger.setLogLevels(NRLogLevelInfo.rawValue)
+    #elseif FEATURE_NEWRELIC
     NewRelic.start(withApplicationToken: "AAd9210b74e40d09df10054d9466c4fccbcc37ac9d-NRMA")
+    NRLogger.setLogLevels(NRLogLevelInfo.rawValue)
+    NewRelic.enableFeatures(.NRFeatureFlag_CrashReporting)
     #endif
   }
 
@@ -170,15 +168,13 @@ fileprivate let nullString = "null"
     if let userIDmd5 = userID?.md5hex() {
       #if FEATURE_CRASHLYTICS
       Crashlytics.crashlytics().setUserID(userIDmd5)
-      #endif
-      #if FEATURE_NEWRELIC
+      #elseif FEATURE_NEWRELIC
       NewRelic.setUserId(userIDmd5)
       #endif
     } else {
       #if FEATURE_CRASHLYTICS
       Crashlytics.crashlytics().setUserID("SIGNED_OUT_USER")
-      #endif
-      #if FEATURE_NEWRELIC
+      #elseif FEATURE_NEWRELIC
       NewRelic.setUserId("SIGNED_OUT_USER")
       #endif
     }
@@ -457,13 +453,9 @@ fileprivate let nullString = "null"
   private class func record(error: NSError) {
     #if FEATURE_CRASHLYTICS
     Crashlytics.crashlytics().record(error: error)
-    #endif
-
-    #if FEATURE_NEWRELIC
+    #elseif FEATURE_NEWRELIC
     NewRelic.recordError(error)
-    #endif
-
-    #if !FEATURE_CRASHLYTICS && !FEATURE_NEWRELIC
+    #else
     Log.error("LOG_ERROR", "\(error)")
     #endif
   }
@@ -476,13 +468,9 @@ fileprivate let nullString = "null"
                       code: code.rawValue,
                       userInfo: attributes)
     Crashlytics.crashlytics().record(error: err)
-#endif
-
-#if FEATURE_NEWRELIC
+#elseif FEATURE_NEWRELIC
     NewRelic.recordCustomEvent(eventName, name: eventName, attributes: attributes)
-#endif
-
-#if !FEATURE_CRASHLYTICS && !FEATURE_NEWRELIC
+#else
     Log.error("LOG_EVENT", "\(eventName) Code: \(code) Attributes: \(attributes)")
 #endif
   }
