@@ -12,3 +12,4 @@ Carthage*
 **/GoogleService-Info.plist
 **/NYPLSecrets.swift
 fastlane/report.xml
+upload_dsym_results

@@ -118,6 +118,11 @@ jobs:
         run: ./scripts/firebase-upload.sh simplye
         env:
           BUILD_CONTEXT: ci
+      - name: Upload SimplyE dSYMs
+        if: needs.version-check.outputs.simplye_changed == '1'
+        run: ./scripts/upload-symbols.sh simplye
+        env:
+          BUILD_CONTEXT: ci
       - name: Export SimplyE for App Store
         if: needs.version-check.outputs.simplye_changed == '1' && startsWith(github.ref, 'refs/heads/release/')
         run: ./scripts/xcode-export-appstore.sh simplye
@@ -147,6 +152,11 @@ jobs:
       - name: Upload Open eBooks to Firebase
         if: needs.version-check.outputs.openebooks_changed == '1'
         run: ./scripts/firebase-upload.sh openebooks
+        env:
+          BUILD_CONTEXT: ci
+      - name: Upload Open eBooks dSYMs
+        if: needs.version-check.outputs.openebooks_changed == '1'
+        run: ./scripts/upload-symbols.sh openebooks
         env:
           BUILD_CONTEXT: ci
       - name: Export Open eBooks for App Store

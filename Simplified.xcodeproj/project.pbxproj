@@ -2014,7 +2014,7 @@
 		735771AA2537650E00067CEA /* NYPLLibraryAccountsProviderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibraryAccountsProviderMock.swift; sourceTree = "<group>"; };
 		735771AD2537687D00067CEA /* NYPLURLSettingsProviderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLURLSettingsProviderMock.swift; sourceTree = "<group>"; };
 		735771B02537691800067CEA /* NYPLDRMAuthorizingMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLDRMAuthorizingMock.swift; sourceTree = "<group>"; };
-		7358A94B25898F4200E66D34 /* firebase-upload-symbols.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "firebase-upload-symbols.sh"; sourceTree = "<group>"; };
+		7358A94B25898F4200E66D34 /* upload-symbols.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "upload-symbols.sh"; sourceTree = "<group>"; };
 		7358A951258997A900E66D34 /* xcode-test.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-test.sh"; sourceTree = "<group>"; };
 		7358A9532589A70B00E66D34 /* decode-install-secrets.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "decode-install-secrets.sh"; sourceTree = "<group>"; };
 		7358EE7B250062BD00DDA0CC /* OEImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = OEImages.xcassets; sourceTree = "<group>"; };
@@ -3281,7 +3281,7 @@
 				73060917268E6FEF00C21547 /* detect-app-to-build.sh */,
 				730608A6268D3A0100C21547 /* build-number-check.sh */,
 				7364FC6025B7C5AB00B0A9FD /* firebase-upload.sh */,
-				7358A94B25898F4200E66D34 /* firebase-upload-symbols.sh */,
+				7358A94B25898F4200E66D34 /* upload-symbols.sh */,
 				731272B1259CFB180032D7B4 /* testflight-upload.sh */,
 				73EB0B802582CD59006BC997 /* bootstrap-drm.sh */,
 				73EB0B812582CD59006BC997 /* setup-repo-drm.sh */,
@@ -4139,7 +4139,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "SCRIPT=`/usr/bin/find \"${SRCROOT}\" -name newrelic_postbuild.sh | head -n 1`\n/bin/sh \"${SCRIPT}\" \"AAd9210b74e40d09df10054d9466c4fccbcc37ac9d-NRMA\"\necho \"Done with NewRelic\"\n";
+			shellScript = "#SCRIPT=`/usr/bin/find \"${BUILD_ROOT}/../..\" -name newrelic_postbuild.sh | head -n 1`\n#/bin/sh \"${SCRIPT}\" \"AAd9210b74e40d09df10054d9466c4fccbcc37ac9d-NRMA\"\n#echo \"Done with NewRelic\"\n";
 		};
 		739E614C244A0D8600D00301 /* Copy Frameworks (Carthage) */ = {
 			isa = PBXShellScriptBuildPhase;

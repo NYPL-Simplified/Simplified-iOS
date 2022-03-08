@@ -34,10 +34,12 @@ case "$APPNAME_PARAM" in
   se | simplye)
     APP_NAME=SimplyE
     APP_NAME_FOLDER=SimplyE
+    NEWRELIC_APP_TOKEN="AAd9210b74e40d09df10054d9466c4fccbcc37ac9d-NRMA"
     ;;
   oe | openebooks | open_ebooks)
     APP_NAME="Open eBooks"
     APP_NAME_FOLDER=OpenEbooks
+    NEWRELIC_APP_TOKEN=""
     ;;
   *)
     echo "xcode-settings: please specify a valid app. Possible values: simplye | openebooks"
@@ -46,6 +48,7 @@ case "$APPNAME_PARAM" in
 esac
 TARGET_NAME=$APP_NAME
 SCHEME=$APP_NAME
+GOOGLE_PLIST_PATH="./$APP_NAME/GoogleService-Info.plist"
 
 # app-agnostic settings
 PROV_PROFILES_DIR_PATH="$HOME/Library/MobileDevice/Provisioning Profiles"
@@ -54,6 +57,7 @@ BUILD_PATH="./Build"
 BUILD_SETTINGS="`xcodebuild -project $PROJECT_NAME -showBuildSettings -target \"$TARGET_NAME\"`"
 VERSION_NUM=`echo "$BUILD_SETTINGS" | grep "MARKETING_VERSION" | sed 's/[ ]*MARKETING_VERSION = //'`
 BUILD_NUM=`echo "$BUILD_SETTINGS" | grep "CURRENT_PROJECT_VERSION" | sed 's/[ ]*CURRENT_PROJECT_VERSION = //'`
+SPM_ROOT=`echo "$BUILD_SETTINGS" | grep "OBJROOT" | sed 's/[ ]*OBJROOT = //'`/../../SourcePackages/
 ARCHIVE_NAME="$APP_NAME-$VERSION_NUM.$BUILD_NUM"
 ARCHIVE_FILENAME="$ARCHIVE_NAME.xcarchive"
 ARCHIVE_DIR="$BUILD_PATH/$ARCHIVE_NAME"
