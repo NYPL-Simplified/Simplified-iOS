@@ -28,25 +28,29 @@ private let NYPLAudiobookProgressSavingInterval: DispatchTimeInterval = .seconds
       return
     }
 
+    let audiobookProgressSavingQueue = DispatchQueue(label: "audiobookProgressSavingQueue")
+    
     weak var weakManager = manager
-    manager.progressSavingTimer = DispatchSource.repeatingTimer(interval: NYPLAudiobookProgressSavingInterval) {
+    
+    let timer = DispatchSource.repeatingTimer(interval: NYPLAudiobookProgressSavingInterval,
+                                              queue: audiobookProgressSavingQueue) { [weak self] in
       var isActive = false
 
-      NYPLMainThreadRun.asyncIfNeeded {
+      NYPLMainThreadRun.sync {
         isActive = UIApplication.shared.applicationState == .active
       }
 
-      DispatchQueue.global(qos: .background).async { [weak self] in
-        if isActive {
-          weakManager?.progressSavingTimer?.suspend()
-          weakManager?.progressSavingTimer = nil
-        } else {
-          if weakManager?.progressSavingTimer != nil {
-            self?.savePosition()
-          }
+      if isActive {
+        // DispatchSourceTimer will automatically cancel the timer if it is released.
+        weakManager?.cancelProgressSavingTimer()
+      } else {
+        if let manager = weakManager,
+           !manager.progressSavingTimerIsNil() {
+          self?.savePosition()
         }
       }
     }
+    manager.setProgressSavingTimer(timer)
   }
 }
 #endif
