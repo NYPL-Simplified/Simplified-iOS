@@ -177,16 +177,18 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     // no problem document nor error, but response could still be a failure
     if let httpResponse = task.response as? HTTPURLResponse {
       guard httpResponse.isSuccess() else {
-        logMetadata["response"] = httpResponse
-        logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("UnknownRequestError", comment: "A generic error message for when a network request fails")
-        let err = NSError(domain: "Api call with failure HTTP status",
-                          code: NYPLErrorCode.responseFail.rawValue,
-                          userInfo: logMetadata)
-        currentTaskInfo.completion(.failure(err, task.response))
+        logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("Server response failure: please check your connection or try again later.", comment: "A generic error message for a HTTP response failure")
         NYPLErrorLogger.logNetworkError(code: NYPLErrorCode.responseFail,
                                         summary: "Network request failed: server error response",
                                         request: task.originalRequest,
+                                        response: httpResponse,
                                         metadata: logMetadata)
+
+        logMetadata[NSError.httpResponseKey] = httpResponse
+        let err = NSError(domain: "API call failure",
+                          code: NYPLErrorCode.responseFail.rawValue,
+                          userInfo: logMetadata)
+        currentTaskInfo.completion(.failure(err, httpResponse))
         return
       }
     }
@@ -250,7 +252,7 @@ extension URLSessionTask {
       userInfo["taskOriginalRequest"] = originalRequest
     }
     if let response = response {
-      userInfo["response"] = response
+      userInfo[NSError.httpResponseKey] = response
     }
 
     let err = NSError.makeFromProblemDocument(

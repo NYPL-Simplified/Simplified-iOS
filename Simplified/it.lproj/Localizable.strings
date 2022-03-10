@@ -83,6 +83,10 @@
 "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "Non è stato possibile caricare questa pagina. Prova a chiudere l'app del tutto e a riaprirla, e se il problema persiste, contatta l'help desk della tua biblioteca.";
 "The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";
 
+// Generic networking
+"Server response failure: please check your connection or try again later." = "Comunicazione col server fallita: controlla la tua connessione a internet o riprova più tardi.";
+"HTTP status" = "Codice errore HTTP";
+
 // NYPLAppDelegate
 "AppDelegateUpdateRequiredTitle" = "Aggiornamento Necessario";
 "AppDelegateUpdateRequiredMessageFormat" = "Un aggiornamento critico è necessario per versioni più vecchie della %@. Parti essenziali dell'app non funzioneranno correttamente fino a quando verrà eseguito un aggiornamento.";

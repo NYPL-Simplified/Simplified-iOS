@@ -87,6 +87,10 @@
 "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.";
 "The page could not load due to a connection error." = "The page could not load due to a connection error.";
 
+// Generic networking
+"Server response failure: please check your connection or try again later." = "Server response failure: please check your connection or try again later.";
+"HTTP status" = "HTTP status";
+
 // NYPLAppDelegate
 "AppDelegateUpdateRequiredTitle" = "Update Required";
 "AppDelegateUpdateRequiredMessageFormat" = "A critical update is required for applications older than version %@. Essential parts of the application will not function correctly until an update is performed.";

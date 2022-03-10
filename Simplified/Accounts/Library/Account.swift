@@ -1,3 +1,4 @@
+import UIKit
 
 private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
@@ -406,7 +407,7 @@ class OPDS2SamlIDP: NSObject, Codable {
   /// No guarantees are being made about whether this is called on the main
   /// thread or not. This closure is not retained by `self`.
   @objc(loadAuthenticationDocumentUsingSignedInStateProvider:completion:)
-  func loadAuthenticationDocument(using signedInStateProvider: NYPLSignedInStateProvider? = nil, completion: @escaping (Bool) -> ()) {
+  func loadAuthenticationDocument(using signedInStateProvider: NYPLSignedInStateProvider? = nil, completion: @escaping (Bool, Error?) -> ()) {
     Log.debug(#function, "Entering...")
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       NYPLErrorLogger.logError(
@@ -415,7 +416,7 @@ class OPDS2SamlIDP: NSObject, Codable {
         metadata: ["self.uuid": uuid,
                    "urlString": authenticationDocumentUrl ?? "N/A"]
       )
-      completion(false)
+      completion(false, nil)
       return
     }
 
@@ -425,7 +426,7 @@ class OPDS2SamlIDP: NSObject, Codable {
         do {
           self.authenticationDocument = try
             OPDS2AuthenticationDocument.fromData(serverData)
-          completion(true)
+          completion(true, nil)
           if let provider = signedInStateProvider,
             provider.isSignedIn(),
             let announcements = self.authenticationDocument?.announcements {
@@ -444,15 +445,20 @@ class OPDS2SamlIDP: NSObject, Codable {
               "url": url
             ]
           )
-          completion(false)
+          completion(false, error)
         }
       case .failure(let error, _):
         NYPLErrorLogger.logError(
           withCode: .authDocLoadFail,
           summary: "Authentication Document request failed to load",
-          metadata: ["loadError": error, "url": url]
+          metadata: [
+            "loadError": error,
+            "url": url,
+            "HTTPStatusCode": error.httpStatusCode
+          ]
         )
-        completion(false)
+
+        completion(false, error)
       }
     }
   }

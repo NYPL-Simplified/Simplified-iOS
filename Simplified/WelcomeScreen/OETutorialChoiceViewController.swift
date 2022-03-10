@@ -6,6 +6,8 @@
 //  Copyright © 2020 NYPL. All rights reserved.
 //
 
+import UIKit
+
 class OETutorialChoiceViewController : UIViewController {
   var completionHandler: (()->Void)?
   
@@ -112,7 +114,7 @@ class OETutorialChoiceViewController : UIViewController {
     let libAccount = AccountsManager.shared.currentAccount
     let userAccount = NYPLUserAccount.sharedAccount()
     if libAccount?.details == nil {
-      libAccount?.loadAuthenticationDocument(using: userAccount) { success in
+      libAccount?.loadAuthenticationDocument(using: userAccount) { success, error in
         NYPLMainThreadRun.asyncIfNeeded {
           if success {
             self.presentSignInVC(for: loginChoice)
