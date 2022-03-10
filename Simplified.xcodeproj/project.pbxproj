@@ -332,6 +332,7 @@
 		730FC05725128D64004D7C2D /* OETutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730FC05425128D63004D7C2D /* OETutorialViewController.swift */; };
 		730FC05925128D64004D7C2D /* OETutorialWelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */; };
 		730FC05B2512911E004D7C2D /* NYPLWelcomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6202A031DD52B8600C99553 /* NYPLWelcomeScreenViewController.swift */; };
+		731116AB27DA7CA800E4455E /* R2Navigator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B18244A1D8600A7A649 /* R2Navigator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7311FD2B25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */; };
 		7311FD2C25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */; };
 		731465202786106900027CFA /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 7314651F2786106900027CFA /* PureLayout */; };
@@ -1561,6 +1562,7 @@
 				73F5DE942774EEE100597F1E /* NYPLUtilities in Embed Frameworks */,
 				7369A3882649C07F0029D8AB /* PDFRendererProvider.xcframework in Embed Frameworks */,
 				7369A3802649C0520029D8AB /* ReadiumLCP.framework in Embed Frameworks */,
+				731116AB27DA7CA800E4455E /* R2Navigator.framework in Embed Frameworks */,
 				73BDB08325F1992B00556C35 /* R2Shared.framework in Embed Frameworks */,
 				73BDB07A25F198D200556C35 /* R2Streamer.framework in Embed Frameworks */,
 				7369A38A2649C07F0029D8AB /* SQLite.xcframework in Embed Frameworks */,
