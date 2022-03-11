@@ -9,6 +9,7 @@
 import Foundation
 import NYPLAudiobookToolkit
 import UIKit
+import NYPLUtilities
 
 private let NYPLAudiobookProgressSavingInterval: DispatchTimeInterval = .seconds(60)
 
@@ -28,12 +29,10 @@ private let NYPLAudiobookProgressSavingInterval: DispatchTimeInterval = .seconds
       return
     }
 
-    let audiobookProgressSavingQueue = DispatchQueue(label: "audiobookProgressSavingQueue")
-    
     weak var weakManager = manager
     
-    let timer = DispatchSource.repeatingTimer(interval: NYPLAudiobookProgressSavingInterval,
-                                              queue: audiobookProgressSavingQueue) { [weak self] in
+    let timer = NYPLRepeatingTimer(interval: NYPLAudiobookProgressSavingInterval,
+                                   queue: self.audiobookProgressSavingQueue) { [weak self] in
       var isActive = false
 
       NYPLMainThreadRun.sync {

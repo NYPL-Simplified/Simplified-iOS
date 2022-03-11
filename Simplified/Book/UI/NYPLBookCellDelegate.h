@@ -19,6 +19,7 @@ shared cover registry, shared download center, et cetera. */
 @property (nonatomic) NYPLBook *book;
 #if FEATURE_AUDIOBOOKS
 @property DefaultAudiobookManager *manager;
+@property dispatch_queue_t audiobookProgressSavingQueue;
 #endif
 @property (strong) NSLock *refreshAudiobookLock;
 
