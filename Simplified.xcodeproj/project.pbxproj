@@ -5653,6 +5653,7 @@
 					"SIMPLYE=1",
 					"DEBUG=1",
 					"$(inherited)",
+					"FEATURE_AUDIOBOOKS=1",
 				);
 				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5699,6 +5700,7 @@
 					"SIMPLYE=1",
 					"DEBUG=0",
 					"$(inherited)",
+					"FEATURE_AUDIOBOOKS=1",
 				);
 				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
