@@ -585,7 +585,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
                           code: NYPLErrorCode.responseFail.rawValue,
                           userInfo: [
                             "Serializable annotation params": parameters,
-                            "Response": response ?? "N/A"
+                            NSError.httpResponseKey: response ?? "N/A"
                           ])
         completionHandler(.failure(err))
         return

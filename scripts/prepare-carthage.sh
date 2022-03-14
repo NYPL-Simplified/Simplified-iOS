@@ -19,7 +19,7 @@
 #
 #     git checkout Cartfile
 #     git checkout Cartfile.resolved
-#     ./scripts/build-carthage.sh
+#     ./scripts/prepare-carthage.sh
 #
 # NOTES
 #   If working on R2 integration, use the `build-carthage-R2-integration.sh`

@@ -17,6 +17,9 @@ protocol NYPLUserFriendlyError: Error {
   /// A user-friendly short message describing the error in more detail,
   /// if possible.
   var userFriendlyMessage: String? { get }
+
+  /// The status code of a HTTP response, if present. Should be 0 otherwise.
+  var httpStatusCode: Int { get }
 }
 
 // Dummy implementation merely to ease error reporting work upstream, where
@@ -26,13 +29,19 @@ protocol NYPLUserFriendlyError: Error {
 extension NYPLUserFriendlyError {
   var userFriendlyTitle: String? { return nil }
   var userFriendlyMessage: String? { return nil  }
+  var httpStatusCode: Int { return 0 }
 }
 
 extension NSError: NYPLUserFriendlyError {
   private static let problemDocumentKey = "problemDocument"
+  public static let httpResponseKey = "response"
 
   @objc var problemDocument: NYPLProblemDocument? {
     return userInfo[NSError.problemDocumentKey] as? NYPLProblemDocument
+  }
+
+  var httpResponse: HTTPURLResponse? {
+    return userInfo[NSError.httpResponseKey] as? HTTPURLResponse
   }
 
   /// Feeds off of the `problemDocument` computed property
@@ -44,6 +53,10 @@ extension NSError: NYPLUserFriendlyError {
   /// error description.
   @objc var userFriendlyMessage: String? {
     return (problemDocument?.detail ?? userInfo[NSLocalizedDescriptionKey]) as? String
+  }
+
+  @objc var httpStatusCode: Int {
+    return httpResponse?.statusCode ?? 0
   }
 
   /// Builds an NSError using the given problem document for its user-friendly

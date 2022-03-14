@@ -6,6 +6,8 @@
 //  Copyright © 2020 NYPL. All rights reserved.
 //
 
+import Foundation
+
 @objc enum NYPLAuthRequestType: Int {
   case signIn = 1
   case signOut = 2
@@ -372,7 +374,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     }
 
     isAuthenticationDocumentLoading = true
-    libraryAccount?.loadAuthenticationDocument(using: self) { success in
+    libraryAccount?.loadAuthenticationDocument(using: self) { success, _error in
       self.isAuthenticationDocumentLoading = false
       completion(success)
     }

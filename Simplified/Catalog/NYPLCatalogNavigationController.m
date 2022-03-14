@@ -95,7 +95,7 @@
 #ifdef SIMPLYE
 - (void)updateCatalogFeedSettingCurrentAccount:(Account *)account
 {
-  [account loadAuthenticationDocumentUsingSignedInStateProvider:nil completion:^(BOOL success) {
+  [account loadAuthenticationDocumentUsingSignedInStateProvider:nil completion:^(BOOL success, NSError *error) {
     dispatch_async(dispatch_get_main_queue(), ^{
       if (success) {
         [AccountsManager shared].currentAccount = account;
@@ -103,6 +103,9 @@
       } else {
         NSString *title = NSLocalizedString(@"Error Loading Library", @"Title for alert related to error loading library authentication doc");
         NSString *msg = NSLocalizedString(@"We can’t get your library right now. Please close and reopen the app to try again.", @"Message for alert related to error loading library authentication doc");
+        msg = [msg stringByAppendingFormat:@" (%@: %ld)",
+               NSLocalizedString(@"HTTP status", "Label for HTTP error code"),
+               (long)error.httpStatusCode];
         UIAlertController *alert = [NYPLAlertUtils
                                     alertWithTitle:title
                                     message:msg];
