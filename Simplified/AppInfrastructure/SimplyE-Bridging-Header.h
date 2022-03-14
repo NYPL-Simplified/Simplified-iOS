@@ -42,3 +42,4 @@
 #import "NYPLXML.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLBookCellDelegate.h"
