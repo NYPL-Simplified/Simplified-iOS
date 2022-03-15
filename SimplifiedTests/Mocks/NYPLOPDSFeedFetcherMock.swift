@@ -19,6 +19,7 @@ enum NYPLOPDSFeedFetcherTestType {
 enum NYPLCatalogUngroupedFeedBookType {
   case supported
   case unsupported
+  case zeroBooks
   
   func url() -> URL {
     switch self {
@@ -28,6 +29,9 @@ enum NYPLCatalogUngroupedFeedBookType {
     case .unsupported:
       return Bundle.init(for: NYPLOPDSFeedFetcherMock.self)
         .url(forResource: "NYPLCatalogUngroupedFeedWithUnsupportedBooks", withExtension: "xml")!
+    case .zeroBooks:
+      return Bundle.init(for: NYPLOPDSFeedFetcherMock.self)
+        .url(forResource: "NYPLCatalogUngroupedFeedWithZeroBooks", withExtension: "xml")!
     }
   }
 }

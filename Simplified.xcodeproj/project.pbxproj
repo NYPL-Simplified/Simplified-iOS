@@ -128,6 +128,8 @@
 		17631AEE25E488CD006079C4 /* NYPLAgeCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */; };
 		17631AF025E488CD006079C4 /* NYPLAgeCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */; };
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
+		17681C5127E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml in Resources */ = {isa = PBXBuildFile; fileRef = 17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */; };
+		17681C5227E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml in Resources */ = {isa = PBXBuildFile; fileRef = 17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */; };
 		17843D0D2785026A000D488E /* NYPLCatalogUngroupedFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17843D0C2785026A000D488E /* NYPLCatalogUngroupedFeedTests.swift */; };
 		17843D0E2785026A000D488E /* NYPLCatalogUngroupedFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17843D0C2785026A000D488E /* NYPLCatalogUngroupedFeedTests.swift */; };
 		17843D1A27851853000D488E /* NYPLCatalogUngroupedFeedWithUnsupportedBooks.xml in Resources */ = {isa = PBXBuildFile; fileRef = 17843D1927851853000D488E /* NYPLCatalogUngroupedFeedWithUnsupportedBooks.xml */; };
@@ -1778,6 +1780,7 @@
 		175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementBusinessLogic.swift; sourceTree = "<group>"; };
 		17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckViewController.swift; sourceTree = "<group>"; };
 		1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementManagerTests.swift; sourceTree = "<group>"; };
+		17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NYPLCatalogUngroupedFeedWithZeroBooks.xml; sourceTree = "<group>"; };
 		176F8A802519684D00CE5BFB /* AudioEngine.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AudioEngine.xcframework; path = NYPLAEToolkit/build/AudioEngine.xcframework; sourceTree = "<group>"; };
 		17843D0C2785026A000D488E /* NYPLCatalogUngroupedFeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCatalogUngroupedFeedTests.swift; sourceTree = "<group>"; };
 		17843D1927851853000D488E /* NYPLCatalogUngroupedFeedWithUnsupportedBooks.xml */ = {isa = PBXFileReference; explicitFileType = text.xml; path = NYPLCatalogUngroupedFeedWithUnsupportedBooks.xml; sourceTree = "<group>"; };
@@ -2467,6 +2470,7 @@
 			children = (
 				17843D1927851853000D488E /* NYPLCatalogUngroupedFeedWithUnsupportedBooks.xml */,
 				17843D1C278527B2000D488E /* NYPLCatalogUngroupedFeedWithSupportedBooks.xml */,
+				17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */,
 			);
 			path = NYPLCatalogUngroupedFeeds;
 			sourceTree = "<group>";
@@ -3916,6 +3920,7 @@
 				730EF25A26093E53008E1DC3 /* valid-bookmark-0.json in Resources */,
 				2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */,
 				730EF26026093E53008E1DC3 /* valid-bookmark-2.json in Resources */,
+				17681C5127E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml in Resources */,
 				730EF25826093E53008E1DC3 /* valid-locator-1.json in Resources */,
 				730EF24526093E40008E1DC3 /* invalid-bookmark-3.json in Resources */,
 				219901F524FD2DE9001BC727 /* jwk.json in Resources */,
@@ -3959,6 +3964,7 @@
 				7320AB3F251EBC9900E3F04D /* jwk_public in Resources */,
 				730EF24826093E40008E1DC3 /* invalid-bookmark-2.json in Resources */,
 				5941F691268D1B2000F69F0B /* DummyCatalog.xml in Resources */,
+				17681C5227E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml in Resources */,
 				7320AB40251EBC9900E3F04D /* dpl_authentication_document.json in Resources */,
 				73418F2C2616AAF000583569 /* valid-bookmark-3.json in Resources */,
 				7320AB41251EBC9900E3F04D /* UpdateCheckUnknown.json in Resources */,

@@ -47,12 +47,15 @@ import Foundation
     
       let catalogFeed = NYPLCatalogUngroupedFeed.init(opdsFeed: feed)
       if let catalogFeed = catalogFeed,
-          catalogFeed.books.count == 0 {
-        fetchCatalogUngroupedFeed(url: catalogFeed.nextURL,
+         catalogFeed.books.count == 0,
+         let nextURL = catalogFeed.nextURL {
+        // Returned feed contains zero supported books, but more feed is available
+        fetchCatalogUngroupedFeed(url: nextURL,
                                   networkExecutor: networkExecutor,
                                   retryCount: retryCount + 1,
                                   completion: completion)
       } else {
+        // Feed contains supported books or no books at all
         completion(catalogFeed)
       }
     }
