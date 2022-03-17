@@ -39,7 +39,7 @@ extension NYPLAppDelegate {
       && NYPLSettings.shared.userHasSeenWelcomeScreen
       && !isSigningIn {
       
-      OETutorialChoiceViewController.showLoginPicker(handler: nil)
+      OETutorialChoiceViewController.showLoginPicker()
     }
   }
 
