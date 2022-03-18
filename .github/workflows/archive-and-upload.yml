@@ -17,6 +17,8 @@ jobs:
         run: echo "FULL_EVENT=$FULL_EVENT"
       - name: Print System Info
         run: uname -a
+      - name: Print Fastlane version
+        run: fastlane -v
       - name: Check Carthage version
         run: command -v carthage && carthage version
       - name: Checkout main repo
