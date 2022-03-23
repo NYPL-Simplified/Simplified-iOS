@@ -6,7 +6,7 @@
 //  Copyright © 2020 NYPL. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// The functionalities on the UI that the sign-in business logic requires.
 @objc protocol NYPLSignInBusinessLogicUIDelegate: NYPLBasicAuthCredentialsProvider, NYPLUserAccountInputProvider {

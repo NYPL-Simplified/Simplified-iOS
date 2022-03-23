@@ -380,7 +380,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   if (failureRequiringAlert) {
     dispatch_async(dispatch_get_main_queue(), ^{
       BOOL hasCredentials = [NYPLUserAccount.sharedAccount hasCredentials];
-      BOOL loginRequired = NYPLUserAccount.sharedAccount.authDefinition.needsAuth;
+      BOOL loginRequired = NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication;
       if ([downloadTask.response indicatesAuthenticationNeedsRefresh:problemDoc]
           || (!hasCredentials && loginRequired)) {
 
@@ -657,7 +657,7 @@ didCompleteWithError:(NSError *)error
 
   // ----------------------------------------------
 
-  if (fulfillmentId && NYPLUserAccount.sharedAccount.authDefinition.needsAuth) {
+  if (fulfillmentId && NYPLUserAccount.sharedAccount.requiresUserAuthentication) {
     NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLUserAccount sharedAccount] userID]);
     [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
                                     userID:[[NYPLUserAccount sharedAccount] userID]
@@ -993,7 +993,7 @@ didCompleteWithError:(NSError *)error
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry]
                          stateForIdentifier:book.identifier];
 
-  BOOL loginRequired = NYPLUserAccount.sharedAccount.authDefinition.needsAuth;
+  BOOL loginRequired = NYPLUserAccount.sharedAccount.requiresUserAuthentication;
 
   switch(state) {
     case NYPLBookStateUnregistered:

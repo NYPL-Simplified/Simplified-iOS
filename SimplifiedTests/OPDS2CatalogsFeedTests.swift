@@ -132,7 +132,7 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       dpl.authenticationDocument = try OPDS2AuthenticationDocument.fromData(try Data(contentsOf: dplAuthUrl))
       nypl.authenticationDocument = try OPDS2AuthenticationDocument.fromData(try Data(contentsOf: nyplAuthUrl))
       
-      XCTAssertEqual(gpl.details?.defaultAuth?.needsAuth, true)
+      XCTAssertEqual(gpl.details?.defaultAuth?.requiresUserAuthentication, true)
       XCTAssertEqual(gpl.details?.uuid, gpl.uuid)
       XCTAssertEqual(gpl.details?.supportsReservations, true)
       XCTAssertEqual(gpl.details?.userProfileUrl, "http://califa108.simplye-ca.org/CAGLEN/patrons/me/")
@@ -150,7 +150,7 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       XCTAssertEqual(gpl.details?.defaultAuth?.pinKeyboard, .numeric)
       XCTAssertEqual(gpl.details?.defaultAuth?.authPasscodeLength, 99)
       
-      XCTAssertEqual(acl.details?.defaultAuth?.needsAuth, true)
+      XCTAssertEqual(acl.details?.defaultAuth?.requiresUserAuthentication, true)
       XCTAssertEqual(acl.details?.uuid, acl.uuid)
       XCTAssertEqual(acl.details?.supportsReservations, true)
       XCTAssertEqual(acl.details?.userProfileUrl, "http://acl.simplye-ca.org/CALMDA/patrons/me/")
@@ -182,7 +182,7 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       XCTAssertEqual(dpl.details?.getLicenseURL(.acknowledgements), nil)
       XCTAssertEqual(dpl.details?.mainColor, "cyan")
       
-      XCTAssertEqual(nypl.details?.defaultAuth?.needsAuth, true)
+      XCTAssertEqual(nypl.details?.defaultAuth?.requiresUserAuthentication, true)
       XCTAssertEqual(nypl.details?.uuid, nypl.uuid)
       XCTAssertEqual(nypl.details?.supportsReservations, true)
       XCTAssertEqual(nypl.details?.userProfileUrl, "https://circulation.librarysimplified.org/NYNYPL/patrons/me/")

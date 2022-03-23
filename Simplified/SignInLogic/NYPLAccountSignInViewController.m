@@ -606,7 +606,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSArray *)accountInfoSection {
   NSMutableArray *workingSection = @[].mutableCopy;
-  if (!self.businessLogic.selectedAuthentication.needsAuth) {
+  if (!self.businessLogic.selectedAuthentication.requiresUserAuthentication) {
     // no authentication needed, empty section
 
   } else if (self.businessLogic.selectedAuthentication && self.businessLogic.isSignedIn) {
@@ -614,7 +614,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     // show only the selected auth method
 
     [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
-  } else if (!self.businessLogic.isSignedIn && self.businessLogic.userAccount.needsAuth) {
+  } else if (!self.businessLogic.isSignedIn && self.businessLogic.userAccount.requiresUserAuthentication) {
     // user needs to sign in
 
     if (self.businessLogic.isSamlPossible) {
