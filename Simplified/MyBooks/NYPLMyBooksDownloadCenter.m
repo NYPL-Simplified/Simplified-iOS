@@ -385,9 +385,8 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
           || (!hasCredentials && loginRequired)) {
 
         // re-auth so that when we "Try again" we won't fail for the same reason
-        [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
-                          usingExistingCredentials:hasCredentials
-                          authenticationCompletion:nil];
+        [self.reauthenticator authenticateIfNeededUsingExistingCredentials:hasCredentials
+                                                  authenticationCompletion:nil];
       }
 
       [self alertForProblemDocument:problemDoc error:failureError book:book];
@@ -731,9 +730,8 @@ didCompleteWithError:(NSError *)error
     } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
       NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
       __weak __auto_type wSelf = self;
-      [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
-                        usingExistingCredentials:NO
-                        authenticationCompletion:^{
+      [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
+                                                authenticationCompletion:^{
         [wSelf returnBookWithIdentifier:identifier];
       }];
     } else {
@@ -919,9 +917,8 @@ didCompleteWithError:(NSError *)error
           } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
             NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
             __weak __auto_type wSelf = self;
-            [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
-                              usingExistingCredentials:NO
-                              authenticationCompletion:^{
+            [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
+                                                      authenticationCompletion:^{
               [wSelf startDownloadForBook:book];
             }];
             return;
@@ -1159,9 +1156,8 @@ didCompleteWithError:(NSError *)error
             [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:book.identifier];
 
             __weak __auto_type wSelf = self;
-            [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
-                              usingExistingCredentials:NO
-                              authenticationCompletion:^{
+            [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
+                                                      authenticationCompletion:^{
               [wSelf startDownloadForBook:book];
             }];
           };
@@ -1555,9 +1551,8 @@ didFinishDownload:(BOOL)didFinishDownload
   // "This handles a bug that seems to occur when the user updates,
   // where the barcode and pin are entered but according to ADEPT the device
   // is not authorized. To be used, the account must have a barcode and pin."
-  [self.reauthenticator authenticateIfNeeded:[NYPLUserAccount sharedAccount]
-                    usingExistingCredentials:YES
-                    authenticationCompletion:nil];
+  [self.reauthenticator authenticateIfNeededUsingExistingCredentials:YES
+                                            authenticationCompletion:nil];
 }
 
 #endif

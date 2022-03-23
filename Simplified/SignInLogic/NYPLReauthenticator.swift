@@ -27,14 +27,12 @@ import Foundation
   /// modal UI or not, depending on the sign-in business logic.
   ///
   /// - Parameters:
-  ///   - user: The current user.
   ///   - usingExistingCredentials: Use the existing credentials for `user`.
   ///   - authenticationCompletion: Code to run after the authentication
   ///   flow completes.
   /// - Returns: `true` if an authentication flow was started to refresh the
   /// credentials, `false` otherwise.
-  @objc func authenticateIfNeeded(_ user: NYPLUserAccount,
-                                  usingExistingCredentials: Bool,
+  @objc func authenticateIfNeeded(usingExistingCredentials: Bool,
                                   authenticationCompletion: (()-> Void)?) {
     NYPLMainThreadRun.asyncIfNeeded {
       let vc = NYPLAccountSignInViewController()

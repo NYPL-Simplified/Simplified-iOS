@@ -211,11 +211,9 @@
         if (self.needsReauthentication) {
           self.needsReauthentication = NO;
 
-          NYPLUserAccount *user = [NYPLUserAccount sharedAccount];
           __block NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
-          [reauthenticator authenticateIfNeeded:user
-                       usingExistingCredentials:YES
-                       authenticationCompletion:^{
+          [reauthenticator authenticateIfNeededUsingExistingCredentials:YES
+                                               authenticationCompletion:^{
             // make sure to retain the reauthenticator until end of auth
             // flow and then break any possible retain cycle
             reauthenticator = nil;
