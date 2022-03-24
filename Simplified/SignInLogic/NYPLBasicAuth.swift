@@ -13,6 +13,8 @@ import Foundation
 @objc protocol NYPLBasicAuthCredentialsProvider: NSObjectProtocol {
   var username: String? {get}
   var pin: String? {get}
+  var requiresUserAuthentication: Bool {get}
+  func hasCredentials() -> Bool
 }
 
 @objc class NYPLBasicAuth: NSObject {

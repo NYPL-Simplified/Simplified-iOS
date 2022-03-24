@@ -81,6 +81,16 @@ CGFloat const marginPadding = 2.0;
   return self.PINTextField.text;
 }
 
+- (BOOL)requiresUserAuthentication
+{
+  return self.businessLogic.userAccount.requiresUserAuthentication;
+}
+
+- (BOOL)hasCredentials
+{
+  return self.businessLogic.userAccount.hasCredentials;
+}
+
 #pragma mark - NSObject
 
 - (instancetype)init
@@ -580,7 +590,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (NSArray *)cellsForAuthMethod:(AccountDetailsAuthentication *)authenticationMethod {
   NSArray *authCells;
 
-  if (authenticationMethod.isOauth) {
+  if (authenticationMethod.isOauthIntermediary) {
     // Oauth just needs the login button since it will open Safari for
     // actual authentication
     authCells = @[@(CellKindLogIn)];
@@ -918,7 +928,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
-  if (!businessLogic.selectedAuthentication.isOauth
+  if (!businessLogic.selectedAuthentication.isOauthIntermediary
       && !businessLogic.selectedAuthentication.isSaml) {
     [self.usernameTextField resignFirstResponder];
     [self.PINTextField resignFirstResponder];

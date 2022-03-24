@@ -313,9 +313,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   /// Uses the problem document's `title` and `message` fields to
   ///  communicate a user friendly error info to the `uiDelegate`.
   /// Also logs the `error`.
-  private func handleNetworkError(_ error: NSError,
-                                  response: URLResponse? = nil,
-                                  loggingContext: [String: Any]) {
+  func handleNetworkError(_ error: NSError,
+                          response: URLResponse? = nil,
+                          loggingContext: [String: Any]) {
     let problemDoc = error.problemDocument
 
     // NYPLNetworkExecutor already logged the error, but this is more
@@ -351,8 +351,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
       self.uiDelegate?.businessLogicWillSignIn(self)
     }
 
-    if selectedAuthentication?.isOauth ?? false {
-      oauthLogIn()
+    if selectedAuthentication?.isOauthIntermediary ?? false {
+      oauthIntermediaryLogIn()
+    } else if selectedAuthentication?.isOauthClientCredentials ?? false {
+      oauthClientCredentialsLogin()
     } else if selectedAuthentication?.isSaml ?? false {
       samlHelper.logIn()
     } else {

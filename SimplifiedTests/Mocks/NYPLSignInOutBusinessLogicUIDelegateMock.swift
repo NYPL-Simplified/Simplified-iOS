@@ -10,6 +10,9 @@ import Foundation
 @testable import SimplyE
 
 class NYPLSignInOutBusinessLogicUIDelegateMock: NSObject, NYPLSignInOutBusinessLogicUIDelegate {
+
+  // MARK: - NYPLSignInOutBusinessLogicUIDelegate
+
   func businessLogicWillSignOut(_ businessLogic: NYPLSignInBusinessLogic) {
   }
 
@@ -20,6 +23,8 @@ class NYPLSignInOutBusinessLogicUIDelegateMock: NSObject, NYPLSignInOutBusinessL
 
   func businessLogicDidFinishDeauthorizing(_ logic: NYPLSignInBusinessLogic) {
   }
+
+  // MARK: - NYPLSignInBusinessLogicUIDelegate
 
   var context = "Unit Tests Context"
 
@@ -45,9 +50,21 @@ class NYPLSignInOutBusinessLogicUIDelegateMock: NSObject, NYPLSignInOutBusinessL
     completion?()
   }
 
+  // MARK: - NYPLBasicAuthCredentialsProvider
+
   var username: String? = "username"
 
   var pin: String? = "pin"
+
+  var requiresUserAuthentication: Bool {
+    return true
+  }
+
+  func hasCredentials() -> Bool {
+    return false
+  }
+
+  // MARK: - NYPLUserAccountInputProvider
 
   var usernameTextField: UITextField? = nil
 

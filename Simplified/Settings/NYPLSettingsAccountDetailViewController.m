@@ -116,6 +116,16 @@ Authenticating with any of those barcodes should work.
   return self.PINTextField.text;
 }
 
+- (BOOL)requiresUserAuthentication
+{
+  return self.selectedUserAccount.requiresUserAuthentication;
+}
+
+- (BOOL)hasCredentials
+{
+  return self.selectedUserAccount.hasCredentials;
+}
+
 #pragma mark - Computed variables
 
 - (NSString *)selectedAccountId
@@ -351,7 +361,7 @@ Authenticating with any of those barcodes should work.
 - (NSArray *) cellsForAuthMethod:(AccountDetailsAuthentication *)authenticationMethod {
   NSArray *authCells;
 
-  if (authenticationMethod.isOauth) {
+  if (authenticationMethod.isOauthIntermediary) {
     // if authentication method is Oauth, just insert login/logout button, it will decide what to do by itself
     authCells = @[@(CellKindLogInSignOut)];
   } else if (authenticationMethod.isSaml && self.businessLogic.isSignedIn) {
@@ -390,7 +400,7 @@ Authenticating with any of those barcodes should work.
     // show only the selected auth method
 
     [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
-  } else if (!self.businessLogic.isSignedIn && self.businessLogic.userAccount.requiresUserAuthentication) {
+  } else if (!self.businessLogic.isSignedIn && self.selectedUserAccount.requiresUserAuthentication) {
     // user needs to sign in
 
     if (self.businessLogic.isSamlPossible) {
@@ -1517,7 +1527,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
-  if (!businessLogic.selectedAuthentication.isOauth
+  if (!businessLogic.selectedAuthentication.isOauthIntermediary
       && !businessLogic.selectedAuthentication.isSaml) {
     [self.usernameTextField resignFirstResponder];
     [self.PINTextField resignFirstResponder];

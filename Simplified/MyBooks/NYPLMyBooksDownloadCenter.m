@@ -379,15 +379,11 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   
   if (failureRequiringAlert) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      BOOL hasCredentials = [NYPLUserAccount.sharedAccount hasCredentials];
-      BOOL loginRequired = NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication;
-      if ([downloadTask.response indicatesAuthenticationNeedsRefresh:problemDoc]
-          || (!hasCredentials && loginRequired)) {
-
-        // re-auth so that when we "Try again" we won't fail for the same reason
-        [self.reauthenticator authenticateIfNeededUsingExistingCredentials:hasCredentials
-                                                  authenticationCompletion:nil];
-      }
+      // re-auth so that when we "Try again" we won't fail for the same reason
+      [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
+                               afterHTTPResponse:downloadTask.response
+                             withProblemDocument:problemDoc
+                        authenticationCompletion:nil];
 
       [self alertForProblemDocument:problemDoc error:failureError book:book];
     });
