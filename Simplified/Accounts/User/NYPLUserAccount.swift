@@ -10,6 +10,8 @@ private enum StorageKey: String {
   case licensor = "NYPLAccountLicensorKey"
   case patron = "NYPLAccountPatronKey"
   case authToken = "NYPLAccountAuthTokenKey" // legacy
+  case authTokenRefreshUsername = "NYPLAccountAuthTokenRefreshUsernameKey"
+  case authTokenRefreshPassword = "NYPLAccountAuthTokenRefreshPasswordKey"
   case adobeVendor = "NYPLAccountAdobeVendorKey"
   case provider = "NYPLAccountProviderKey"
   case userID = "NYPLAccountUserIDKey"
@@ -57,6 +59,8 @@ private enum StorageKey: String {
         StorageKey.credentials: _credentials,
         StorageKey.authDefinition: _authDefinition,
         StorageKey.cookies: _cookies,
+        StorageKey.authTokenRefreshUsername: _authTokenRefreshUsername,
+        StorageKey.authTokenRefreshPassword: _authTokenRefreshPassword,
 
         // legacy
         StorageKey.barcode: _barcode,
@@ -219,6 +223,12 @@ private enum StorageKey: String {
   private lazy var _cookies: NYPLKeychainVariable<[HTTPCookie]> = StorageKey.cookies
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
+  private lazy var _authTokenRefreshUsername: NYPLKeychainVariable<String> = StorageKey.authTokenRefreshUsername
+    .keyForLibrary(uuid: libraryUUID)
+    .asKeychainVariable(with: accountInfoLock)
+  private lazy var _authTokenRefreshPassword: NYPLKeychainVariable<String> = StorageKey.authTokenRefreshPassword
+    .keyForLibrary(uuid: libraryUUID)
+    .asKeychainVariable(with: accountInfoLock)
 
   // Legacy
   private lazy var _barcode: NYPLKeychainVariable<String> = StorageKey.barcode
@@ -284,7 +294,10 @@ private enum StorageKey: String {
   var barcode: String? {
     if let credentials = credentials, case let NYPLCredentials.barcodeAndPin(barcode: barcode, pin: _) = credentials {
       return barcode
+    } else if let authDefinition = authDefinition, authDefinition.isOauthClientCredentials {
+      return authTokenRefreshUsername
     }
+
     return nil
   }
 
@@ -306,6 +319,8 @@ private enum StorageKey: String {
   var PIN: String? {
     if let credentials = credentials, case let NYPLCredentials.barcodeAndPin(barcode: _, pin: pin) = credentials {
       return pin
+    } else if let authDefinition = authDefinition, authDefinition.isOauthClientCredentials {
+      return authTokenRefreshPassword
     }
     return nil
   }
@@ -327,6 +342,8 @@ private enum StorageKey: String {
   var adobeToken: String? { _adobeToken.read() }
   var licensor: [String:Any]? { _licensor.read() }
   var cookies: [HTTPCookie]? { _cookies.read() }
+  var authTokenRefreshUsername: String? { _authTokenRefreshUsername.read() }
+  var authTokenRefreshPassword: String? { _authTokenRefreshPassword.read() }
 
   var authToken: String? {
     if let credentials = credentials, case let NYPLCredentials.token(authToken: token) = credentials {
@@ -422,6 +439,11 @@ private enum StorageKey: String {
     credentials = .token(authToken: token)
   }
 
+  func setRefreshTokenInfo(username: String, password: String) {
+    _authTokenRefreshUsername.write(username)
+    _authTokenRefreshPassword.write(password)
+  }
+
   @objc(setCookies:)
   func setCookies(_ cookies: [HTTPCookie]) {
     _cookies.write(cookies)
@@ -463,6 +485,8 @@ private enum StorageKey: String {
         _credentials.write(nil)
         _cookies.write(nil)
         _authorizationIdentifier.write(nil)
+        _authTokenRefreshUsername.write(nil)
+        _authTokenRefreshPassword.write(nil)
 
         // remove legacy, just in case
         _barcode.write(nil)

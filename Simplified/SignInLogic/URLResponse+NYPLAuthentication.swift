@@ -38,6 +38,11 @@ extension HTTPURLResponse {
       return true
     }
 
+    if let problemDoc = problemDoc,
+       problemDoc.type == NYPLProblemDocument.TypeExpiredBearerToken {
+      return true
+    }
+
     if statusCode == 401 {
       return true
     }

@@ -11,12 +11,15 @@ import Foundation
 fileprivate struct NYPLNetworkTaskInfo {
   var progressData: Data
   var startDate: Date
+  var retryCount: Int
   var completion: ((NYPLResult<Data>) -> Void)
 
   //----------------------------------------------------------------------------
-  init(completion: (@escaping (NYPLResult<Data>) -> Void)) {
+  init(retryCount: Int = 1,
+       completion: (@escaping (NYPLResult<Data>) -> Void)) {
     self.progressData = Data()
     self.startDate = Date()
+    self.retryCount = retryCount
     self.completion = completion
   }
 }
@@ -37,7 +40,11 @@ class NYPLNetworkResponder: NSObject {
 
   /// The object providing the credentials to respond to an authentication
   /// challenge. If `nil`, the shared `NYPLUserAccount` singleton will be used.
-  private let credentialsProvider: NYPLBasicAuthCredentialsProvider?
+  private let credentialsProvider: NYPLBasicAuthCredentialsProvider
+
+  private let reauthenticator: NYPLReauthenticator
+
+  private let maxRetries = 3
 
   //----------------------------------------------------------------------------
   /// - Parameter shouldEnableFallbackCaching: If set to `true`, the executor
@@ -50,19 +57,22 @@ class NYPLNetworkResponder: NSObject {
     self.taskInfo = [Int: NYPLNetworkTaskInfo]()
     self.taskInfoLock = NSRecursiveLock()
     self.useFallbackCaching = useFallbackCaching
-    self.credentialsProvider = credentialsProvider
+    self.credentialsProvider = credentialsProvider ?? NYPLUserAccount.sharedAccount()
+    self.reauthenticator = NYPLReauthenticator()
     super.init()
   }
 
   //----------------------------------------------------------------------------
   func addCompletion(_ completion: @escaping (NYPLResult<Data>) -> Void,
-                     taskID: TaskID) {
+                     taskID: TaskID,
+                     retryCount: Int = 1) {
     taskInfoLock.lock()
     defer {
       taskInfoLock.unlock()
     }
 
-    taskInfo[taskID] = NYPLNetworkTaskInfo(completion: completion)
+    taskInfo[taskID] = NYPLNetworkTaskInfo(retryCount: retryCount,
+                                           completion: completion)
   }
 }
 
@@ -151,11 +161,27 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     Log.info(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
 
     // attempt parsing of Problem Document
-    if task.response?.isProblemDocument() ?? false {
+    if let response = task.response, response.isProblemDocument() {
       let errorWithProblemDoc = task.parseAndLogError(fromProblemDocumentData: responseData,
                                                       networkError: networkError,
                                                       logMetadata: logMetadata)
-      currentTaskInfo.completion(.failure(errorWithProblemDoc, task.response))
+      let problemDoc = errorWithProblemDoc.problemDocument
+
+      if response.indicatesAuthenticationNeedsRefresh(with: problemDoc) {
+        reauthenticator.authenticateIfNeeded(credentialsProvider,
+                                             afterHTTPResponse: response,
+                                             withProblemDocument: problemDoc) { [weak self] in
+          // re-execute the request now that we are re-authenticated
+          guard currentTaskInfo.retryCount <= 3 else {
+            currentTaskInfo.completion(.failure(errorWithProblemDoc, task.response))
+            return
+          }
+
+          self?.retry(task, taskInfo: currentTaskInfo, usingSession: session)
+        }
+      } else {
+        currentTaskInfo.completion(.failure(errorWithProblemDoc, task.response))
+      }
       return
     }
 
@@ -194,6 +220,30 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     }
 
     currentTaskInfo.completion(.success(responseData, task.response))
+  }
+
+  //----------------------------------------------------------------------------
+  private func retry(_ task: URLSessionTask,
+                     taskInfo: NYPLNetworkTaskInfo,
+                     usingSession session: URLSession) {
+    guard let req = task.originalRequest else {
+      Log.error(#function, "unable to repeat request for task")
+      return
+    }
+
+    let newTask: URLSessionTask!
+    if task.isKind(of: URLSessionDataTask.self) {
+      newTask = session.dataTask(with: req)
+    } else if task.isKind(of: URLSessionDownloadTask.self) {
+      newTask = session.downloadTask(with: req)
+    } else {
+      return
+    }
+
+    self.addCompletion(taskInfo.completion,
+                       taskID: newTask.taskIdentifier,
+                       retryCount: taskInfo.retryCount + 1)
+    newTask.resume()
   }
 }
 
@@ -273,8 +323,7 @@ extension NYPLNetworkResponder: URLSessionTaskDelegate {
                   didReceive challenge: URLAuthenticationChallenge,
                   completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
   {
-    let credsProvider = credentialsProvider ?? NYPLUserAccount.sharedAccount()
-    let authChallenger = NYPLBasicAuth(credentialsProvider: credsProvider)
+    let authChallenger = NYPLBasicAuth(credentialsProvider: credentialsProvider)
     authChallenger.handleChallenge(challenge, completion: completionHandler)
   }
 }

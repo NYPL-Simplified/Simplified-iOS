@@ -421,6 +421,20 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
           selectedAuthentication = nil
         }
       }
+
+      if authDef.isOauthClientCredentials {
+        // always use existing credentials in this case
+        if userAccount.username == nil || userAccount.pin == nil {
+          ignoreSignedInState = true
+          return true
+        } else {
+          ignoreSignedInState = false
+          uiDelegate?.usernameTextField?.text = userAccount.username
+          uiDelegate?.PINTextField?.text = userAccount.pin
+          logIn()
+          return false
+        }
+      }
     }
 
     // set up UI and log in if needed
@@ -484,6 +498,13 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     #endif
 
     if let selectedAuthentication = selectedAuthentication {
+      if selectedAuthentication.isOauthClientCredentials {
+        if let username = barcode, let password = pin {
+          // this is needed to that when the authToken expires, we can
+          // refresh the token
+          userAccount.setRefreshTokenInfo(username: username, password: password)
+        }
+      }
       if selectedAuthentication.isOauth || selectedAuthentication.isSaml {
         if let authToken = authToken {
           userAccount.setAuthToken(authToken)
