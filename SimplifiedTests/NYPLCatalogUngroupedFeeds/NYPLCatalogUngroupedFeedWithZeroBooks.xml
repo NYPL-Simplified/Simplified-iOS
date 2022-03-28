@@ -1,0 +1,20 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:opds="http://opds-spec.org/2010/catalog" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:drm="http://librarysimplified.org/terms/drm" xmlns:schema="http://schema.org/" xmlns:simplified="http://librarysimplified.org/terms/" xmlns:bibframe="http://bibframe.org/vocab/" xmlns:bib="http://bib.schema.org/" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:lcp="http://readium.org/lcp-specs/ns">
+  <id>https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=Audio&amp;order=relevance&amp;available=all&amp;collection=full&amp;q=Deshimaru</id>
+  <title>Search</title>
+  <updated>2022-03-15T02:26:33+00:00</updated>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=Audio&amp;order=relevance&amp;available=all&amp;collection=full&amp;q=Deshimaru" rel="self"/>
+  <link rel="start" href="https://circulation.librarysimplified.org/NYNYPL/groups/" title="All Books"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=Deshimaru&amp;entrypoint=All&amp;order=relevance&amp;available=all&amp;collection=full" title="All" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=Deshimaru&amp;entrypoint=Book&amp;order=relevance&amp;available=all&amp;collection=full" title="eBooks" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/search/?q=Deshimaru&amp;entrypoint=Audio&amp;order=relevance&amp;available=all&amp;collection=full" title="Audiobooks" rel="http://opds-spec.org/facet" opds:facetGroup="Formats" opds:activeFacet="true" simplified:facetGroupType="http://librarysimplified.org/terms/rel/entrypoint"/>
+  <link rel="up" href="https://circulation.librarysimplified.org/NYNYPL/groups/" title="The New York Public Library"/>
+  <link rel="http://opds-spec.org/auth/document" href="https://circulation.librarysimplified.org/NYNYPL/authentication_document"/>
+  <link rel="search" type="application/opensearchdescription+xml" href="https://circulation.librarysimplified.org/NYNYPL/search/?entrypoint=Audio&amp;order=relevance&amp;available=all&amp;collection=full"/>
+  <link rel="http://opds-spec.org/shelf" type="application/atom+xml;profile=opds-catalog;kind=acquisition" href="https://circulation.librarysimplified.org/NYNYPL/loans/"/>
+  <link rel="http://www.w3.org/ns/oa#annotationService" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" href="https://circulation.librarysimplified.org/NYNYPL/annotations/"/>
+  <link href="https://librarysimplified.org/EULA/" type="text/html" rel="terms-of-service"/>
+  <link href="https://www.nypl.org/help/about-nypl/legal-notices/privacy-policy" type="text/html" rel="privacy-policy"/>
+  <link href="https://librarysimplified.org/about/" type="text/html" rel="about"/>
+  <link href="https://librarysimplified.org/licenses/" type="text/html" rel="license"/>
+  <link href="mailto:gethelp@nypl.org" rel="help"/>
+</feed>

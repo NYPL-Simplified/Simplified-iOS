@@ -73,7 +73,7 @@ extension NYPLSignInBusinessLogic {
         barcode: barcode,
         metadata: [
           "Request": request.loggableString,
-          "Response": response ?? "N/A",
+          NSError.httpResponseKey: response ?? "N/A",
           "HTTP status code": statusCode
       ])
       self.uiDelegate?.businessLogic(self,

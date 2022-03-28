@@ -39,6 +39,9 @@
   self = [super init];
     
   _refreshAudiobookLock = [[NSLock alloc] init];
+#if FEATURE_AUDIOBOOKS
+  _audiobookProgressSavingQueue = dispatch_queue_create("org.nypl.labs.SimplyE.BookCellDelegate.audiobookProgressSavingQueue", nil);
+#endif
   
   return self;
 }

@@ -110,6 +110,11 @@
 
       // poll audiobook player so that we can save the reading position
       [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
+      
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(scheduleAudiobookProgressSavingTimer)
+                                                   name:UIApplicationWillResignActiveNotification
+                                                 object:nil];
     }];
   }];
 }
@@ -214,6 +219,10 @@
      setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
      forIdentifier:book.identifier];
   }];
+}
+
+- (void)scheduleAudiobookProgressSavingTimer {
+  [self scheduleProgressSavingTimerForAudiobookManager:self.manager];
 }
 
 - (void)presentDRMKeyError:(NSError *) error

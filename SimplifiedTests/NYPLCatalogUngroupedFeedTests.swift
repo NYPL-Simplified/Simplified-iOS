@@ -88,6 +88,27 @@ class NYPLCatalogUngroupedFeedTests: XCTestCase {
     XCTAssertNil(result)
   }
 
+  func testCatalogFeedWithZeroBooks() throws {
+    let expectation = self.expectation(description: "fetching")
+    var result: NYPLCatalogUngroupedFeed?
+    
+    feedFetcher.fetchCatalogUngroupedFeed(url: NYPLCatalogUngroupedFeedBookType.zeroBooks.url(),
+                                          networkExecutor: networkExecutor,
+                                          retryCount: 0) { feed in
+      result = feed
+      expectation.fulfill()
+    }
+    
+    waitForExpectations(timeout: 3, handler: nil)
+    
+    guard let result = result else {
+      XCTFail()
+      return
+    }
+    
+    XCTAssertEqual(result.books.count, 0)
+  }
+  
   func testCatalogFeedWithUnsupportedBooksUntilNoNextURLAvailable() throws {
     let expectation = self.expectation(description: "fetching")
     var result: NYPLCatalogUngroupedFeed?

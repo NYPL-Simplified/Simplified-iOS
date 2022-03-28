@@ -57,6 +57,10 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.IOS_DEV_CI_PAT }}
+      - name: Update Fastlane
+        run: bundle update --bundler && bundle update fastlane
+      - name: Print Fastlane version
+        run: fastlane -v
       - name: Add Private Repo Auth
         # This ensures SPM can resolve dependencies for private repos.
         # Other options included using `-usePackageSupportBuiltinSCM` (or

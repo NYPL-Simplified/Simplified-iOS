@@ -201,7 +201,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       // changing the `accountsSets` dictionary will also change `currentAccount`
       Log.debug(#function, "hadAccount=\(hadAccount) currentAccountID=\(currentAccountId ?? "N/A") currentAcct=\(String(describing: currentAccount))")
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { success in
+        self.currentAccount?.loadAuthenticationDocument(using: NYPLUserAccount.sharedAccount(), completion: { _success, _error in
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
