@@ -112,7 +112,7 @@ CGFloat const marginPadding = 2.0;
                         libraryAccountsProvider:AccountsManager.shared
                         urlSettingsProvider: NYPLSettings.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
-                        bookDownloadsCenter:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                        bookDownloadsRemover:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
                         drmAuthorizerAdobe:drmAuthorizerAdobe

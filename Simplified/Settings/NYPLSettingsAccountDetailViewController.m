@@ -172,7 +172,7 @@ Authenticating with any of those barcodes should work.
                         libraryAccountsProvider:AccountsManager.shared
                         urlSettingsProvider: NYPLSettings.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
-                        bookDownloadsCenter:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                        bookDownloadsRemover:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
                         drmAuthorizerAdobe:drmAuthorizerAdobe

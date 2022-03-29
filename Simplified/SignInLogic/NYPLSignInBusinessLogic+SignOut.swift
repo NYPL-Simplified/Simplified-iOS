@@ -127,7 +127,7 @@ extension NYPLSignInBusinessLogic {
   #endif
   
   private func completeLogOutProcess() {
-    bookDownloadsCenter.reset(libraryAccountID)
+    bookDownloadsRemover.reset(libraryAccountID)
     bookRegistry.reset(libraryAccountID)
     userAccount.removeAll()
     selectedIDP = nil
