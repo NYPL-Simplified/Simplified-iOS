@@ -46,6 +46,7 @@
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 @property (nonatomic) NYPLReauthenticator *reauthenticator;
+@property (nonatomic) DefaultAudiobookManager *audiobookManager;
 
 /// Maps a task identifier to a non-negative redirect attempt count. This
 /// tracks the number of redirect attempts for a particular download task.
@@ -392,6 +393,41 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
      setState:NYPLBookStateDownloadFailed
      forIdentifier:book.identifier];
   }
+  
+#if FEATURE_AUDIOBOOKS
+  if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
+    [AudiobookManifestHelper parseAudiobookManifestWithBook:book
+                                                 completion:^(NSDictionary<NSString *,id> * _Nullable json,
+                                                              id<DRMDecryptor> _Nullable decryptor,
+                                                              enum AudiobookManifestError error) {
+      if (error == AudiobookManifestErrorNone) {
+        // Create audiobook
+        id<Audiobook> const audiobook = [AudiobookFactory audiobook:json decryptor:decryptor];
+        
+        if (!audiobook) {
+          NYPLLOG(@"Audiobook initiate failed");
+          // TODO: Handle Error
+          [self broadcastUpdate:book.identifier];
+          return;
+        }
+        AudiobookMetadata *const metadata = [[AudiobookMetadata alloc] initWithTitle:book.title
+                                                                             authors:@[book.authors]];
+        
+        DefaultAudiobookManager *manager = [[DefaultAudiobookManager alloc] initWithMetadata:metadata
+                                                                                   audiobook:audiobook];
+        // TODO: Create download object and make it a property of MyBooksDownloadCenter
+        self.audiobookManager = manager;
+        [self.audiobookManager.networkService fetch];
+        NYPLLOG(@"Fetching audiobook");
+      } else {
+        NYPLLOG(@"Audiobook corrupted/unsupported");
+        // TODO: Handle Error
+        [self broadcastUpdate:book.identifier];
+      }
+    }];
+    return;
+  }
+#endif
 
   [self broadcastUpdate:book.identifier];
 }

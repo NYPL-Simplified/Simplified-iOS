@@ -25,48 +25,26 @@
 #pragma mark - Audiobook Methods
 
 - (void)openAudiobook:(NYPLBook *)book {
-  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-  NSData *const data = [NSData dataWithContentsOfURL:url];
-  if (data == nil) {
-    [self presentCorruptedItemErrorWithLog:@{
-      @"book": book.loggableDictionary ?: @"N/A",
-      @"fileURL": url ?: @"N/A"
-    }];
-    return;
-  }
-
-  id const json = NYPLJSONObjectFromData(data);
-
-  NSMutableDictionary *dict = nil;
-
-#if FEATURE_OVERDRIVE_AUTH
-  if ([book.distributor isEqualToString:OverdriveAPI.distributorKey]) {
-    dict = [(NSMutableDictionary *)json mutableCopy];
-    dict[@"id"] = book.identifier;
-  }
-#endif
-
-#if defined(LCP)
-  if ([LCPAudiobooks canOpenBook:book]) {
-    LCPAudiobooks *lcpAudiobooks = [[LCPAudiobooks alloc] initFor:url];
-    [lcpAudiobooks contentDictionaryWithCompletion:^(NSDictionary * _Nullable dict, NSError * _Nullable error) {
-      if (error) {
-        [self presentUnsupportedItemError];
-        return;
-      }
-      if (dict) {
-        NSMutableDictionary *mutableDict = [dict mutableCopy];
-        mutableDict[@"id"] = book.identifier;
-        [self openAudiobook:book withJSON:mutableDict decryptor:lcpAudiobooks];
-      }
-    }];
-  } else {
-    // Not an LCP book
-    [self openAudiobook:book withJSON:dict ?: json decryptor:nil];
-  }
-#else
-  [self openAudiobook:book withJSON:dict ?: json decryptor:nil];
-#endif//LCP
+  [AudiobookManifestHelper parseAudiobookManifestWithBook:book
+                                               completion:^(NSDictionary<NSString *,id> * _Nullable json,
+                                                            id<DRMDecryptor> _Nullable decryptor,
+                                                            enum AudiobookManifestError error) {
+    if (error == AudiobookManifestErrorCorrupted) {
+      NSURL *url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+      [self presentCorruptedItemErrorWithLog:@{
+        @"book": book.loggableDictionary ?: @"N/A",
+        @"fileURL": url ?: @"N/A"
+      }];
+      return;
+    }
+    
+    if (error == AudiobookManifestErrorUnsupported) {
+      [self presentUnsupportedItemError];
+      return;
+    }
+    
+    [self openAudiobook:book withJSON:json decryptor:decryptor];
+  }];
 }
 
 - (void)openAudiobook:(NYPLBook *)book withJSON:(NSDictionary *)json decryptor:(id<DRMDecryptor>)audiobookDrmDecryptor {
