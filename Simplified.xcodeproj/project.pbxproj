@@ -138,6 +138,9 @@
 		17843D1E278527B2000D488E /* NYPLCatalogUngroupedFeedWithSupportedBooks.xml in Resources */ = {isa = PBXBuildFile; fileRef = 17843D1C278527B2000D488E /* NYPLCatalogUngroupedFeedWithSupportedBooks.xml */; };
 		17843D2327853914000D488E /* NYPLOPDSFeedFetcherMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17843D2227853914000D488E /* NYPLOPDSFeedFetcherMock.swift */; };
 		17843D2427853914000D488E /* NYPLOPDSFeedFetcherMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17843D2227853914000D488E /* NYPLOPDSFeedFetcherMock.swift */; };
+		1785228C27F52B58004445ED /* AudiobookManifestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785228B27F52B58004445ED /* AudiobookManifestHelper.swift */; };
+		1785228D27F52B59004445ED /* AudiobookManifestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785228B27F52B58004445ED /* AudiobookManifestHelper.swift */; };
+		1785228E27F52B59004445ED /* AudiobookManifestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785228B27F52B58004445ED /* AudiobookManifestHelper.swift */; };
 		178AD3E8276053BE003A6C12 /* NYPLAnnotationsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AD3E7276053BE003A6C12 /* NYPLAnnotationsMock.swift */; };
 		178AD3F8276C7638003A6C12 /* NYPLAnnotationsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AD3E7276053BE003A6C12 /* NYPLAnnotationsMock.swift */; };
 		1798538B255A4092009F94D9 /* NYPLBookLocation+Locator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */; };
@@ -1798,6 +1801,7 @@
 		17843D1927851853000D488E /* NYPLCatalogUngroupedFeedWithUnsupportedBooks.xml */ = {isa = PBXFileReference; explicitFileType = text.xml; path = NYPLCatalogUngroupedFeedWithUnsupportedBooks.xml; sourceTree = "<group>"; };
 		17843D1C278527B2000D488E /* NYPLCatalogUngroupedFeedWithSupportedBooks.xml */ = {isa = PBXFileReference; explicitFileType = text.xml; path = NYPLCatalogUngroupedFeedWithSupportedBooks.xml; sourceTree = "<group>"; };
 		17843D2227853914000D488E /* NYPLOPDSFeedFetcherMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOPDSFeedFetcherMock.swift; sourceTree = "<group>"; };
+		1785228B27F52B58004445ED /* AudiobookManifestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookManifestHelper.swift; sourceTree = "<group>"; };
 		178AD3E7276053BE003A6C12 /* NYPLAnnotationsMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnotationsMock.swift; sourceTree = "<group>"; };
 		1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookLocation+Locator.swift"; sourceTree = "<group>"; };
 		17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCPPassphraseAuthenticationService.swift; sourceTree = "<group>"; };
@@ -2526,6 +2530,7 @@
 				A92FB0F821CDCE3D004740F4 /* NYPLReturnPromptHelper.swift */,
 				21EC1B8E2501538600A12384 /* AudioBookVendors+Extensions.swift */,
 				2198F90F250A90EE000D9DAB /* AudioBookVendorsHelper.swift */,
+				1785228B27F52B58004445ED /* AudiobookManifestHelper.swift */,
 			);
 			path = Audiobooks;
 			sourceTree = "<group>";
@@ -4356,6 +4361,7 @@
 				7327528E2578D69300A073E2 /* URLResponse+NYPLAuthentication.swift in Sources */,
 				739E6070244A0D8600D00301 /* OPDS2CatalogsFeed.swift in Sources */,
 				739E6071244A0D8600D00301 /* BundledHTMLViewController.swift in Sources */,
+				1785228D27F52B59004445ED /* AudiobookManifestHelper.swift in Sources */,
 				739E6072244A0D8600D00301 /* NYPLBookDetailView.m in Sources */,
 				739E6073244A0D8600D00301 /* UIButton+NYPLAppearanceAdditions.m in Sources */,
 				21DDE32925D2CEFC002CBCE3 /* AdobeDRMContentProtection.swift in Sources */,
@@ -4688,6 +4694,7 @@
 				73EB0ACD25821DF4006BC997 /* NYPLMyBooksDownloadInfo.m in Sources */,
 				73EB0ACE25821DF4006BC997 /* NYPLBookLocation.m in Sources */,
 				73EB0ACF25821DF4006BC997 /* NYPLFacetView.m in Sources */,
+				1785228E27F52B59004445ED /* AudiobookManifestHelper.swift in Sources */,
 				2126FE3C25C059810095C45C /* ReaderError.swift in Sources */,
 				73EB0AD125821DF4006BC997 /* ProblemReportEmail.swift in Sources */,
 				73EB0AD225821DF4006BC997 /* NYPLBookCellDelegate.m in Sources */,
@@ -5109,6 +5116,7 @@
 				73A794A625477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift in Sources */,
 				B51C1DFA2285FDF9003B49A5 /* OPDS2CatalogsFeed.swift in Sources */,
 				2D62568B1D412BCB0080A81F /* BundledHTMLViewController.swift in Sources */,
+				1785228C27F52B58004445ED /* AudiobookManifestHelper.swift in Sources */,
 				110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */,
 				21DDE32825D2CEFC002CBCE3 /* AdobeDRMContentProtection.swift in Sources */,
 				73B80BAB25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift in Sources */,
