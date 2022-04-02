@@ -14,16 +14,16 @@ class NYPLAxisNetworkExecutor: NYPLAxisNetworkExecuting {
   private let requestExecutor: NYPLRequestExecuting
   var requestTimeout: TimeInterval { return requestExecutor.requestTimeout }
   
-  init(
-    networkExecutor: NYPLRequestExecuting = NYPLNetworkExecutor(
-    cachingStrategy: .ephemeral)) {
-    self.requestExecutor = networkExecutor
+  init() {
+    self.requestExecutor = NYPLNetworkExecutor(
+      credentialsProvider: NYPLUserAccount.sharedAccount(),
+      cachingStrategy: .ephemeral)
   }
   
   func GET(_ request: URLRequest,
-           completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask {
+           completion: @escaping (Result<Data, Error>) -> Void) {
     
-    let task = requestExecutor.executeRequest(request) { (result) in
+    requestExecutor.executeRequest(request) { (result) in
       switch result {
       case .success(let data, _):
         completion(.success(data))
@@ -31,8 +31,6 @@ class NYPLAxisNetworkExecutor: NYPLAxisNetworkExecuting {
         completion(.failure(error))
       }
     }
-    
-    return task
   }
 
 }

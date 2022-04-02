@@ -99,12 +99,7 @@ Authenticating with any of those barcodes should work.
 
 @synthesize forceEditability;
 
-#pragma mark - NYPLSignInOutBusinessLogicUIDelegate properties
-
-- (NSString *)context
-{
-  return @"Settings Tab";
-}
+#pragma mark - NYPLBasicAuthCredentialsProvider
 
 - (NSString *)username
 {
@@ -569,12 +564,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 
   CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
-  
+
   switch(cellKind) {
     case CellKindAgeCheck: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      
+
       if (!NYPLSettings.shared.userPresentedAgeCheck) {
         __weak NYPLSettingsAccountDetailViewController *weakSelf = self;
         [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:self.businessLogic.userAccount
@@ -625,8 +620,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                     actionWithTitle:NSLocalizedString(@"SignOut", @"Title for sign out action")
                                     style:UIAlertActionStyleDestructive
                                     handler:^(__attribute__((unused)) UIAlertAction *action) {
-                                      [self logOut];
-                                    }]];
+          [self logOut];
+        }]];
         [alertController addAction:[UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                     style:UIAlertActionStyleCancel
@@ -771,7 +766,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                              completion:nil];
       return;
     }
-    
+
     [NYPLMainThreadRun asyncIfNeeded:^{
       navVC.navigationBar.topItem.leftBarButtonItem =
       [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
@@ -781,7 +776,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       navVC.modalPresentationStyle = UIModalPresentationFormSheet;
       [weakSelf presentViewController:navVC animated:YES completion:nil];
     }];
-    
+
   }];
 #endif
 }
@@ -870,11 +865,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.usernameTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
         [self.usernameTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
         [self.usernameTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
-                                               ofView:[self.usernameTextField superview]
-                                           withOffset:sVerticalMarginPadding];
+                                                ofView:[self.usernameTextField superview]
+                                            withOffset:sVerticalMarginPadding];
         [self.usernameTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
-                                               ofView:[self.usernameTextField superview]
-                                           withOffset:-sVerticalMarginPadding];
+                                                ofView:[self.usernameTextField superview]
+                                            withOffset:-sVerticalMarginPadding];
 
         if (self.businessLogic.selectedAuthentication.supportsBarcodeScanner) {
           [cell.contentView addSubview:self.barcodeScanButton];
@@ -961,8 +956,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindLogInSignOut: {
       if(!self.logInSignOutCell) {
         self.logInSignOutCell = [[UITableViewCell alloc]
-                                initWithStyle:UITableViewCellStyleDefault
-                                reuseIdentifier:nil];
+                                 initWithStyle:UITableViewCellStyleDefault
+                                 reuseIdentifier:nil];
         self.logInSignOutCell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       }
       [self updateLoginLogoutCellAppearance];
@@ -975,7 +970,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.ageCheckCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
-      
+
       UIImageView *accessoryView = NYPLSettings.shared.userPresentedAgeCheck ? [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckedCircle"]] : nil;
       accessoryView.image = [accessoryView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
       accessoryView.tintColor = [UIColor systemGreenColor];
@@ -1012,8 +1007,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindAbout: {
       UITableViewCell *cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = [NSString stringWithFormat:@"About %@",self.selectedAccount.name];
@@ -1022,8 +1017,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindPrivacyPolicy: {
       UITableViewCell *cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
@@ -1032,8 +1027,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindContentLicense: {
       UITableViewCell *cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"Content Licenses", nil);
@@ -1147,7 +1142,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     subtitleLabel.numberOfLines = 0;
     UIImageView *logoView = [[UIImageView alloc] initWithImage:self.selectedAccount.logo];
     logoView.contentMode = UIViewContentModeScaleAspectFit;
-    
+
     titleLabel.text = self.selectedAccount.name;
     titleLabel.font = [UIFont systemFontOfSize:14];
     subtitleLabel.text = self.selectedAccount.subtitle;
@@ -1155,19 +1150,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       subtitleLabel.text = @" "; // Make sure it takes up at least some space
     }
     subtitleLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:12];
-    
+
     [containerView addSubview:titleLabel];
     [containerView addSubview:subtitleLabel];
     [containerView addSubview:logoView];
-    
+
     [logoView autoSetDimensionsToSize:CGSizeMake(45, 45)];
     [logoView autoPinEdgeToSuperviewMargin:ALEdgeLeft];
     [logoView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:16];
-    
+
     [titleLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:16];
     [titleLabel autoPinEdgeToSuperviewMargin:ALEdgeRight];
     [titleLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:logoView withOffset:8];
-    
+
     [subtitleLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:titleLabel];
     [subtitleLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:titleLabel];
     [subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:0];
@@ -1241,7 +1236,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   // This nudges the scroll view up slightly so that the log in button is clearly visible even on
   // older 3:2 iPhone displays. I wish there were a more general way to do this, but this does at
   // least work very well.
-  
+
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ||
        (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
@@ -1335,7 +1330,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         self.barcodeScanButton.hidden = NO;
       }
     }
-    
+
     [self setupTableData];
 
     [self updateLoginLogoutCellAppearance];
@@ -1389,15 +1384,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
   UIActivityIndicatorView *const activityIndicatorView = aiv;
   [activityIndicatorView startAnimating];
-  
+
   UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   titleLabel.text = text;
   titleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   [titleLabel sizeToFit];
-  
+
   // This view is used to keep the title label centered as in Apple's Settings application.
   UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
-  
+
   NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
   linearView.tag = sLinearViewTag;
   linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
@@ -1407,7 +1402,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [linearView addSubview:rightPaddingView];
   [linearView sizeToFit];
   [linearView autoSetDimensionsToSize:CGSizeMake(linearView.frame.size.width, linearView.frame.size.height)];
-  
+
   self.logInSignOutCell.textLabel.text = nil;
   [self.logInSignOutCell.contentView addSubview:linearView];
   [linearView autoCenterInSuperview];
@@ -1429,10 +1424,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAppLogicInconsistency
                             summary:@"Barcode button was displayed"
                            metadata:@{
-                             @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
-                             @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",
-                             @"Context": @"Settings tab"
-                           }];
+    @"Supports barcode display": @(auth.supportsBarcodeDisplay) ?: @"N/A",
+    @"Supports barcode scanner": @(auth.supportsBarcodeScanner) ?: @"N/A",
+    @"Context": @"Settings tab"
+  }];
 #else
   [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
     if (resultString) {
@@ -1454,22 +1449,22 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (void)confirmAgeChange:(void (^)(BOOL))completion
 {
   UIAlertController *alertCont = [UIAlertController
-                                    alertControllerWithTitle:NSLocalizedString(@"Age Verification", @"An alert title indicating the user needs to verify their age")
-                                    message:NSLocalizedString(@"If you are under 13, all content downloaded to My Books will be removed.",
-                                                              @"An alert message warning the user they will lose their downloaded books if they continue.")
-                                    preferredStyle:UIAlertControllerStyleAlert];
-  
+                                  alertControllerWithTitle:NSLocalizedString(@"Age Verification", @"An alert title indicating the user needs to verify their age")
+                                  message:NSLocalizedString(@"If you are under 13, all content downloaded to My Books will be removed.",
+                                                            @"An alert message warning the user they will lose their downloaded books if they continue.")
+                                  preferredStyle:UIAlertControllerStyleAlert];
+
   [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"Under 13", comment: @"A button title indicating an age range")
                                                  style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                 if (completion) { completion(YES); }
-                                               }]];
-  
+    if (completion) { completion(YES); }
+  }]];
+
   [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"13 or Older", comment: @"A button title indicating an age range")
                                                  style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                 if (completion) { completion(NO); }
-                                               }]];
+    if (completion) { completion(NO); }
+  }]];
 
   if ([self.selectedAccountId isEqualToString:[AccountsManager NYPLAccountUUIDs][2]]) {
     [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alertCont viewController:nil animated:YES completion:nil];
@@ -1524,6 +1519,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 #pragma mark - NYPLSignInOutBusinessLogicUIDelegate
+
+- (NSString *)context
+{
+  return @"Settings Tab";
+}
 
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {

@@ -1108,7 +1108,7 @@ didCompleteWithError:(NSError *)error
       if (initedRequest) {
         request = initedRequest;
       } else {
-        request = [[NYPLNetworkExecutor bearerAuthorizedWithRequest:[NSURLRequest requestWithURL:URL]] mutableCopy];
+        request = [[NYPLNetworkExecutor.shared requestFor:URL] mutableCopy];
       }
 
       if(!request.URL) {

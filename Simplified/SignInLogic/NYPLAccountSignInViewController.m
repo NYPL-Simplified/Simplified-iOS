@@ -64,12 +64,7 @@ typedef NS_ENUM(NSInteger, Section) {
 
 CGFloat const marginPadding = 2.0;
 
-#pragma mark - NYPLSignInOutBusinessLogicUIDelegate properties
-
-- (NSString *)context
-{
-  return @"SignIn-modal";
-}
+#pragma mark - NYPLBasicAuthCredentialsProvider
 
 - (NSString *)username
 {
@@ -925,6 +920,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 #pragma mark - NYPLSignInOutBusinessLogicUIDelegate
+
+- (NSString *)context
+{
+  return @"SignIn-modal";
+}
 
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {

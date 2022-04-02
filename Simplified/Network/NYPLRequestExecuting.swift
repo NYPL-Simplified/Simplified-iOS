@@ -36,3 +36,10 @@ extension NYPLRequestExecuting {
   }
 }
 
+/// Protocol for Objectove-C compatibility.
+@objc protocol NYPLRequestExecutingObjC {
+  func GET(_ reqURL: URL,
+           cachePolicy: NSURLRequest.CachePolicy,
+           completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask
+}
+
