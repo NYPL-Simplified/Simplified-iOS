@@ -66,7 +66,6 @@ extension NYPLRequestExecutorMock: NYPLOAuthTokenFetching {
     completion: @escaping (_ result: NYPLResult<NYPLOAuthAccessToken>) -> Void) {
   }
 
-  func reset() {
-    responseBodies = [:]
+  func resetLibrarySpecificInfo() {
   }
 }

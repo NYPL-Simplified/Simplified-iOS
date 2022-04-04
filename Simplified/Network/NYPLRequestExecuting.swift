@@ -42,7 +42,7 @@ protocol NYPLOAuthTokenFetching {
     at url: URL,
     completion: @escaping (_ result: NYPLResult<NYPLOAuthAccessToken>) -> Void)
 
-  func reset()
+  func resetLibrarySpecificInfo()
 }
 
 /// Protocol for Objective-C compatibility.

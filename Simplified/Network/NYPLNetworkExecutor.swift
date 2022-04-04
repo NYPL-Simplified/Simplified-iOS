@@ -52,11 +52,6 @@ enum NYPLResult<SuccessInfo> {
     urlSession.finishTasksAndInvalidate()
   }
 
-  func reset() {
-    responder.oauthTokenRefresher = nil
-    clearCache()
-  }
-
   @objc func clearCache() {
     urlSession.configuration.urlCache?.removeAllCachedResponses()
   }
@@ -117,6 +112,14 @@ extension NYPLNetworkExecutor: NYPLOAuthTokenFetching {
     DispatchQueue.global(qos: .userInitiated).async {
       self.oauthTokenRefresher!.refreshIfNeeded(completion: completion)
     }
+  }
+
+  /// Resets internal state that's related to a specific library.
+  ///
+  /// - Important: this leaves network cache unaltered.
+  func resetLibrarySpecificInfo() {
+    responder.oauthTokenRefresher = nil
+    NYPLNetworkExecutor.shared.responder.oauthTokenRefresher = nil
   }
 }
 

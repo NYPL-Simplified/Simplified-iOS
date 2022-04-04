@@ -130,6 +130,7 @@ extension NYPLSignInBusinessLogic {
     bookDownloadsRemover.reset(libraryAccountID)
     bookRegistry.reset(libraryAccountID)
     userAccount.removeAll()
+    networker.resetLibrarySpecificInfo()
     selectedIDP = nil
     uiDelegate?.businessLogicDidFinishDeauthorizing(self)
   }

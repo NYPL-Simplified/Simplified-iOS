@@ -74,6 +74,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       Log.debug(#file, "Setting currentAccount to <\(newValue?.name ?? "[name N/A]") LibUUID=\(newValue?.uuid ?? "[UUID N/A]")>")
       currentAccountId = newValue?.uuid
       NYPLErrorLogger.setUserID(NYPLUserAccount.sharedAccount().barcode)
+      NYPLNetworkExecutor.shared.resetLibrarySpecificInfo()
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange,
                                       object: nil)
     }
