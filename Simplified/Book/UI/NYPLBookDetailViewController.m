@@ -41,7 +41,7 @@
   self.book = book;
     
   self.executor = [[NYPLNetworkExecutor alloc]
-                   initWithCredentialsProvider:nil
+                   initWithCredentialsProvider:NYPLUserAccount.sharedAccount
                    cachingStrategy:NYPLCachingStrategyEphemeral
                    delegateQueue:nil];
 

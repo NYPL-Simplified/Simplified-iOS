@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import NYPLUtilities
 
 @objc enum NYPLAuthRequestType: Int {
   case signIn = 1
@@ -54,7 +55,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
                          bookRegistry: NYPLBookRegistrySyncing,
                          bookDownloadsRemover: NYPLBookDownloadsDeleting,
                          userAccountProvider: NYPLUserAccountProvider.Type,
-                         uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
+                         uiDelegate: NYPLSignInOutBusinessLogicUIDelegate,
                          drmAuthorizerAdobe: NYPLDRMAuthorizing?,
                          drmAuthorizerAxis: NYPLDRMAuthorizing?) {
     self.init(libraryAccountID: libraryAccountID,
@@ -78,8 +79,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
        bookRegistry: NYPLBookRegistrySyncing,
        bookDownloadsRemover: NYPLBookDownloadsDeleting,
        userAccountProvider: NYPLUserAccountProvider.Type,
-       networkExecutor: NYPLRequestExecuting,
-       uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
+       networkExecutor: NYPLRequestExecuting & NYPLOAuthTokenFetching,
+       uiDelegate: NYPLSignInOutBusinessLogicUIDelegate,
        drmAuthorizerAdobe: NYPLDRMAuthorizing?,
        drmAuthorizerAxis: NYPLDRMAuthorizing?) {
     self.uiDelegate = uiDelegate
@@ -206,7 +207,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
 
   // MARK: - Network Requests Logic
 
-  let networker: NYPLRequestExecuting
+  let networker: NYPLRequestExecuting & NYPLOAuthTokenFetching
 
   /// Creates a request object for signing in or out, depending on
   /// on which authentication mechanism is currently selected.
@@ -505,7 +506,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
       if selectedAuthentication.isOauthClientCredentials {
         if let username = barcode, let password = pin {
           // this is needed to that when the authToken expires, we can
-          // refresh the token
+          // refresh the token.
           userAccount.setRefreshTokenInfo(username: username, password: password)
         }
       }

@@ -86,6 +86,28 @@ CGFloat const marginPadding = 2.0;
   return self.businessLogic.userAccount.hasCredentials;
 }
 
+#pragma mark - NYPLOAuthTokenProvider
+
+- (NSString *)authToken
+{
+  return self.businessLogic.userAccount.authToken;
+}
+
+- (void)setAuthToken:(NSString * _Nonnull)token
+{
+  [self.businessLogic.userAccount setAuthToken:token];
+}
+
+- (BOOL)hasOAuthClientCredentials
+{
+  return [self.businessLogic.userAccount hasOAuthClientCredentials];
+}
+
+- (NSURL *)oauthTokenRefreshURL
+{
+  return [self.businessLogic.userAccount oauthTokenRefreshURL];
+}
+
 #pragma mark - NSObject
 
 - (instancetype)init

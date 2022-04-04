@@ -33,7 +33,7 @@ enum NYPLResult<SuccessInfo> {
   /// - Parameter credentialsProvider: The object responsible with providing credentials.
   /// - Parameter cachingStrategy: The strategy to cache responses with.
   /// - Parameter delegateQueue: The queue where callbacks will be called.
-  @objc init(credentialsProvider: NYPLBasicAuthCredentialsProvider? = nil,
+  @objc init(credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider,
              cachingStrategy: NYPLCachingStrategy,
              delegateQueue: OperationQueue? = nil) {
     self.responder = NYPLNetworkResponder(credentialsProvider: credentialsProvider,
@@ -53,6 +53,7 @@ enum NYPLResult<SuccessInfo> {
   }
 
   func reset() {
+    responder.oauthTokenRefresher = nil
     clearCache()
   }
 
@@ -68,7 +69,7 @@ enum NYPLResult<SuccessInfo> {
     var urlRequest = URLRequest(url: url,
                                 cachePolicy: urlSession.configuration.requestCachePolicy)
 
-    if let authToken = NYPLUserAccount.sharedAccount().authToken {
+    if let authToken = responder.credentialsProvider.authToken {
       let headers = [
         "Authorization" : "Bearer \(authToken)",
         "Content-Type" : "application/json"
@@ -92,26 +93,34 @@ enum NYPLResult<SuccessInfo> {
   }
 }
 
-// Objective-C compatibility
-extension NYPLNetworkExecutor: NYPLRequestExecuting {
-  @objc class func bearerAuthorized(request: URLRequest) -> URLRequest {
-    let headers: [String: String]
-    if let authToken = NYPLUserAccount.sharedAccount().authToken {
-      headers = [
-        "Authorization" : "Bearer \(authToken)",
-        "Content-Type" : "application/json"]
-    } else {
-      headers = [
-        "Authorization" : "",
-        "Content-Type" : "application/json"]
+extension NYPLNetworkExecutor: NYPLOAuthTokenFetching {
+
+  private var oauthTokenRefresher: NYPLOAuthTokenRefresher? {
+    return responder.oauthTokenRefresher
+  }
+
+  /// Fetches a short lived OAuth token and communicates the intention to use
+  /// that as authentication mechanism.
+  ///
+  /// - Parameters:
+  ///   - url: The URL to fetch the OAuth token at.
+  ///   - completion: Closure to invoke once the token call has completed.
+  func fetchAndStoreShortLivedOAuthToken(at url: URL,
+                                         completion: @escaping (_ result: NYPLResult<NYPLOAuthAccessToken>) -> Void) {
+    if oauthTokenRefresher == nil {
+      responder.oauthTokenRefresher = NYPLOAuthTokenRefresher(
+        refreshURL: url,
+        oauthTokenProvider: responder.credentialsProvider,
+        urlSession: urlSession)
     }
 
-    var request = request
-    for (headerKey, headerValue) in headers {
-      request.setValue(headerValue, forHTTPHeaderField: headerKey)
+    DispatchQueue.global(qos: .userInitiated).async {
+      self.oauthTokenRefresher!.refreshIfNeeded(completion: completion)
     }
-    return request
   }
+}
+
+extension NYPLNetworkExecutor: NYPLRequestExecuting {
 
   /// Executes a given request.
   /// - Parameters:
@@ -132,7 +141,15 @@ extension NYPLNetworkExecutor: NYPLRequestExecuting {
       task.resume()
     }
 
-    startTask()
+    if responder.credentialsProvider.hasOAuthClientCredentials(),
+       let tokenRefreshURL = responder.credentialsProvider.oauthTokenRefreshURL {
+
+      fetchAndStoreShortLivedOAuthToken(at: tokenRefreshURL) { result in
+        startTask()
+      }
+    } else {
+      startTask()
+    }
 
     return task
   }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import NYPLUtilities
 
 let NYPLDefaultRequestTimeout: TimeInterval = 65.0
 
@@ -36,7 +37,15 @@ extension NYPLRequestExecuting {
   }
 }
 
-/// Protocol for Objectove-C compatibility.
+protocol NYPLOAuthTokenFetching {
+  func fetchAndStoreShortLivedOAuthToken(
+    at url: URL,
+    completion: @escaping (_ result: NYPLResult<NYPLOAuthAccessToken>) -> Void)
+
+  func reset()
+}
+
+/// Protocol for Objective-C compatibility.
 @objc protocol NYPLRequestExecutingObjC {
   func GET(_ reqURL: URL,
            cachePolicy: NSURLRequest.CachePolicy,

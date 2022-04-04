@@ -71,4 +71,21 @@ class NYPLSignInOutBusinessLogicUIDelegateMock: NSObject, NYPLSignInOutBusinessL
   var PINTextField: UITextField? = nil
 
   var forceEditability: Bool = false
+
+  // MARK: - NYPLOAuthTokenProvider
+
+  var authToken: String? {
+    return "fake token"
+  }
+
+  func setAuthToken(_ token: String) {
+  }
+
+  func hasOAuthClientCredentials() -> Bool {
+    return false
+  }
+
+  var oauthTokenRefreshURL: URL? {
+    return nil
+  }
 }

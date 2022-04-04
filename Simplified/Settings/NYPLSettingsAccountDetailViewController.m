@@ -121,6 +121,28 @@ Authenticating with any of those barcodes should work.
   return self.selectedUserAccount.hasCredentials;
 }
 
+#pragma mark - NYPLOAuthTokenProvider
+
+- (NSString *)authToken
+{
+  return self.selectedUserAccount.authToken;
+}
+
+- (void)setAuthToken:(NSString * _Nonnull)token
+{
+  [self.selectedUserAccount setAuthToken:token];
+}
+
+- (BOOL)hasOAuthClientCredentials
+{
+  return [self.selectedUserAccount hasOAuthClientCredentials];
+}
+
+- (NSURL *)oauthTokenRefreshURL
+{
+  return [self.selectedUserAccount oauthTokenRefreshURL];
+}
+
 #pragma mark - Computed variables
 
 - (NSString *)selectedAccountId

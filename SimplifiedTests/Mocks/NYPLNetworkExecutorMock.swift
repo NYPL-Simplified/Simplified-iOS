@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import NYPLUtilities
 @testable import SimplyE
 
 class NYPLRequestExecutorMock: NYPLRequestExecuting {
@@ -57,5 +58,15 @@ class NYPLRequestExecutorMock: NYPLRequestExecuting {
     }
 
     return URLSessionDataTask()
+  }
+}
+
+extension NYPLRequestExecutorMock: NYPLOAuthTokenFetching {
+  func fetchAndStoreShortLivedOAuthToken(at url: URL,
+    completion: @escaping (_ result: NYPLResult<NYPLOAuthAccessToken>) -> Void) {
+  }
+
+  func reset() {
+    responseBodies = [:]
   }
 }
