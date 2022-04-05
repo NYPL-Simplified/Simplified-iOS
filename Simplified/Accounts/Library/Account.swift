@@ -31,12 +31,25 @@ class OPDS2SamlIDP: NSObject, Codable {
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
   enum AuthType: String, Codable {
+    /// This is used with barcode/username credentials on SimplyE. It was also
+    /// used for FirstBook authentication on Open eBooks versions before 2.4.0.
     case basic = "http://opds-spec.org/auth/basic"
-    case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa" //used for Simplified collection
-    case anonymous = "http://librarysimplified.org/rel/auth/anonymous"
+    /// This is used for the "Book for All" collection in SimplyE.
+    case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa"
+    /// This is used by Clever on Open eBooks.
     case oauthIntermediary = "http://librarysimplified.org/authtype/OAuth-with-intermediary"
     case saml = "http://librarysimplified.org/authtype/SAML-2.0"
+    case anonymous = "http://librarysimplified.org/rel/auth/anonymous"
     case none
+
+    var requiresUserAuthentication: Bool {
+      switch self {
+      case .basic, .oauthIntermediary, .saml:
+        return true
+      case .coppa, .anonymous, .none:
+        return false
+      }
+    }
   }
   
   @objc(AccountDetailsAuthentication)
@@ -76,7 +89,7 @@ class OPDS2SamlIDP: NSObject, Codable {
         oauthIntermediaryUrl = nil
         samlIdps = nil
 
-      case .oauthIntermediary:
+      case .oauthIntermediary, .oauthClientCredentials:
         oauthIntermediaryUrl = URL.init(string: auth.links?.first(where: { $0.rel == "authenticate" })?.href ?? "")
         coppaUnderUrl = nil
         coppaOverUrl = nil
@@ -97,11 +110,11 @@ class OPDS2SamlIDP: NSObject, Codable {
       }
     }
 
-    var needsAuth:Bool {
-      return authType == .basic || authType == .oauthIntermediary || authType == .saml
+    var requiresUserAuthentication: Bool {
+      return authType.requiresUserAuthentication
     }
 
-    var needsAgeCheck:Bool {
+    var needsAgeCheck: Bool {
       return authType == .coppa
     }
 

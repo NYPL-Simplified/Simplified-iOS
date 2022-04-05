@@ -9,8 +9,6 @@
 import UIKit
 
 class OETutorialChoiceViewController : UIViewController {
-  var completionHandler: (()->Void)?
-  
   var descriptionLabel: UILabel
   var firstBookLoginButton: UIButton
   var loginWithCleverButton: UIButton
@@ -18,7 +16,6 @@ class OETutorialChoiceViewController : UIViewController {
   var stackView: UIStackView
   
   init() {
-    completionHandler = nil
     descriptionLabel = UILabel(frame: CGRect.zero)
     firstBookLoginButton = UIButton(type: .custom)
     loginWithCleverButton = UIButton(type: .custom)
@@ -96,10 +93,6 @@ class OETutorialChoiceViewController : UIViewController {
       return
     }
     appWindow?.rootViewController = NYPLRootTabBarController.shared()
-    
-    let oldCompletionHandler = completionHandler
-    completionHandler = nil
-    oldCompletionHandler?.self()
   }
 
   @objc func didSelectFirstBook() {
@@ -139,9 +132,8 @@ class OETutorialChoiceViewController : UIViewController {
     UIApplication.shared.open(NYPLConfiguration.openEBooksRequestCodesURL)
   }
   
-  @objc class func showLoginPicker(handler: (()->Void)?) {
+  class func showLoginPicker() {
     let choiceVC = OETutorialChoiceViewController()
-    choiceVC.completionHandler = handler
     let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: choiceVC, action: #selector(didSelectCancel))
     choiceVC.navigationItem.leftBarButtonItem = cancelBarButtonItem
     let navVC = UINavigationController(rootViewController: choiceVC)

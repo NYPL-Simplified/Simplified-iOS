@@ -32,7 +32,7 @@ private enum StorageKey: String {
 }
 
 @objc protocol NYPLUserAccountProvider: NSObjectProtocol {
-  var needsAuth:Bool { get }
+  var requiresUserAuthentication: Bool { get }
   
   static func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
 }
@@ -310,12 +310,11 @@ private enum StorageKey: String {
     return nil
   }
 
-  var needsAuth:Bool {
-    let authType = authDefinition?.authType ?? .none
-    return authType == .basic || authType == .oauthIntermediary || authType == .saml
+  var requiresUserAuthentication: Bool {
+    return authDefinition?.requiresUserAuthentication ?? false
   }
 
-  var needsAgeCheck:Bool {
+  var needsAgeCheck: Bool {
     return authDefinition?.authType == .coppa
   }
 

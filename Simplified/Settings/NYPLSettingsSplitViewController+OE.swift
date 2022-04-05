@@ -35,7 +35,7 @@ extension NYPLSettingsSplitViewController {
               sender: nil
             )
           } else {
-            OETutorialChoiceViewController.showLoginPicker(handler: nil)
+            OETutorialChoiceViewController.showLoginPicker()
           }
       }
       ),

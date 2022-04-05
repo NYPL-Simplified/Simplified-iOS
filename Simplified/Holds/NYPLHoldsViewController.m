@@ -267,7 +267,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didPullToRefresh
 {  
-  if ([NYPLUserAccount sharedAccount].needsAuth) {
+  if ([NYPLUserAccount sharedAccount].requiresUserAuthentication) {
     if([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
