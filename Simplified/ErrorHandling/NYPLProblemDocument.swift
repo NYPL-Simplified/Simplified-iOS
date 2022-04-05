@@ -10,6 +10,7 @@ import Foundation
     "http://librarysimplified.org/terms/problem/loan-already-exists";
   static let TypeInvalidCredentials =
     "http://librarysimplified.org/terms/problem/credentials-invalid";
+  static let TypeExpiredBearerToken = "http://librarysimplified.org/terms/problem/expired-http-basic-bearer-token"
 
   private static let noStatus: Int = -1
 

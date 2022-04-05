@@ -20,6 +20,9 @@ protocol NYPLUserFriendlyError: Error {
 
   /// The status code of a HTTP response, if present. Should be 0 otherwise.
   var httpStatusCode: Int { get }
+
+  /// The problem document from the server, if available.
+  var problemDocument: NYPLProblemDocument? { get }
 }
 
 // Dummy implementation merely to ease error reporting work upstream, where
@@ -30,6 +33,7 @@ extension NYPLUserFriendlyError {
   var userFriendlyTitle: String? { return nil }
   var userFriendlyMessage: String? { return nil  }
   var httpStatusCode: Int { return 0 }
+  var problemDocument: NYPLProblemDocument? { return nil }
 }
 
 extension NSError: NYPLUserFriendlyError {

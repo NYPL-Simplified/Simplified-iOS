@@ -10,7 +10,7 @@ import Foundation
 
 extension NYPLSignInBusinessLogic {
   //----------------------------------------------------------------------------
-  func oauthLogIn() {
+  func oauthIntermediaryLogIn() {
     // for this kind of authentication, we want to redirect user to Safari to
     // conduct the process
     guard let oauthURL = selectedAuthentication?.oauthIntermediaryUrl else {

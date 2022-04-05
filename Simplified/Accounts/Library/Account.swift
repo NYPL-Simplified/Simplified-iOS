@@ -38,13 +38,16 @@ class OPDS2SamlIDP: NSObject, Codable {
     case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa"
     /// This is used by Clever on Open eBooks.
     case oauthIntermediary = "http://librarysimplified.org/authtype/OAuth-with-intermediary"
+    /// This is used by FirstBook on Open eBooks. This is using the
+    /// OAuth 2.0 Password Grant flow.
+    case oauthClientCredentials = "http://librarysimplified.org/authtype/OAuth-Client-Credentials"
     case saml = "http://librarysimplified.org/authtype/SAML-2.0"
     case anonymous = "http://librarysimplified.org/rel/auth/anonymous"
     case none
 
     var requiresUserAuthentication: Bool {
       switch self {
-      case .basic, .oauthIntermediary, .saml:
+      case .basic, .oauthIntermediary, .oauthClientCredentials, .saml:
         return true
       case .coppa, .anonymous, .none:
         return false
@@ -126,8 +129,16 @@ class OPDS2SamlIDP: NSObject, Codable {
       return authType == .basic
     }
 
-    var isOauth: Bool {
+    var isOauthIntermediary: Bool {
       return authType == .oauthIntermediary
+    }
+
+    var isOauthClientCredentials: Bool {
+      return authType == .oauthClientCredentials
+    }
+
+    var isOauth: Bool {
+      return isOauthIntermediary || isOauthClientCredentials
     }
 
     var isSaml: Bool {
@@ -135,8 +146,8 @@ class OPDS2SamlIDP: NSObject, Codable {
     }
 
     var catalogRequiresAuthentication: Bool {
-      // you need an oauth token in order to access catalogs if authentication type is either oauth with intermediary (ex. Clever), or SAML
-      return authType == .oauthIntermediary || authType == .saml
+      // you need a token in order to access catalogs for oauth types or SAML
+      return authType == .oauthIntermediary || authType == .oauthClientCredentials || authType == .saml
     }
 
     func encode(with coder: NSCoder) {
@@ -224,15 +235,25 @@ class OPDS2SamlIDP: NSObject, Codable {
     defaults = .standard
     self.uuid = uuid
 
-    auths = authenticationDocument.authentication?.map({ (opdsAuth) -> Authentication in
+    let auths = authenticationDocument.authentication?.map({ (opdsAuth) -> Authentication in
       return Authentication.init(auth: opdsAuth)
     }) ?? []
 
-//    // TODO: Code below will remove all oauth only auth methods, this behaviour wasn't tested though
-//    // and may produce undefined results in viewcontrollers that do present auth methods if none are available
-//    auths = authenticationDocument.authentication?.map({ (opdsAuth) -> Authentication in
-//      return Authentication.init(auth: opdsAuth)
-//    }).filter { $0.authType != .oauthIntermediary } ?? []
+    // for OpenE, if OAuthClientCredentials auth type is allowed, that replaces
+    // Basic authentication
+#if OPENEBOOKS
+    if auths.contains(where: { auth in
+      auth.authType == .oauthClientCredentials
+    }) {
+      self.auths = auths.filter { auth in
+        !auth.isBasic
+      }
+    } else {
+      self.auths = auths
+    }
+#else
+    self.auths = auths
+#endif
 
     supportsReservations = authenticationDocument.features?.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
     userProfileUrl = authenticationDocument.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href

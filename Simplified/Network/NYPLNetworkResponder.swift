@@ -36,8 +36,10 @@ class NYPLNetworkResponder: NSObject {
   private let useFallbackCaching: Bool
 
   /// The object providing the credentials to respond to an authentication
-  /// challenge. If `nil`, the shared `NYPLUserAccount` singleton will be used.
-  private let credentialsProvider: NYPLBasicAuthCredentialsProvider?
+  /// challenge.
+  let credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider
+
+  var oauthTokenRefresher: NYPLOAuthTokenRefresher?
 
   //----------------------------------------------------------------------------
   /// - Parameter shouldEnableFallbackCaching: If set to `true`, the executor
@@ -45,7 +47,7 @@ class NYPLNetworkResponder: NSObject {
   /// caching headers. The default is `false`.
   /// - Parameter credentialsProvider: The object providing the credentials
   /// to respond to an authentication challenge.
-  init(credentialsProvider: NYPLBasicAuthCredentialsProvider? = nil,
+  init(credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider,
        useFallbackCaching: Bool = false) {
     self.taskInfo = [Int: NYPLNetworkTaskInfo]()
     self.taskInfoLock = NSRecursiveLock()
@@ -151,10 +153,18 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     Log.info(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
 
     // attempt parsing of Problem Document
-    if task.response?.isProblemDocument() ?? false {
+    if let response = task.response, response.isProblemDocument() {
       let errorWithProblemDoc = task.parseAndLogError(fromProblemDocumentData: responseData,
                                                       networkError: networkError,
                                                       logMetadata: logMetadata)
+      // if we detect an expired client credentials token,
+      // nil it out so that next time it will trigger a token refresh
+      let problemDoc = errorWithProblemDoc.problemDocument
+      if credentialsProvider.hasOAuthClientCredentials(),
+         response.indicatesAuthenticationNeedsRefresh(with: problemDoc) {
+        oauthTokenRefresher?.currentToken = nil
+      }
+
       currentTaskInfo.completion(.failure(errorWithProblemDoc, task.response))
       return
     }
@@ -273,8 +283,7 @@ extension NYPLNetworkResponder: URLSessionTaskDelegate {
                   didReceive challenge: URLAuthenticationChallenge,
                   completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
   {
-    let credsProvider = credentialsProvider ?? NYPLUserAccount.sharedAccount()
-    let authChallenger = NYPLBasicAuth(credentialsProvider: credsProvider)
+    let authChallenger = NYPLBasicAuth(credentialsProvider: credentialsProvider)
     authChallenger.handleChallenge(challenge, completion: completionHandler)
   }
 }

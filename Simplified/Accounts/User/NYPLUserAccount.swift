@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 private enum StorageKey: String {
   // .barcode, .PIN, .authToken became legacy, as storage for those types was moved into .credentials enum
@@ -10,6 +10,8 @@ private enum StorageKey: String {
   case licensor = "NYPLAccountLicensorKey"
   case patron = "NYPLAccountPatronKey"
   case authToken = "NYPLAccountAuthTokenKey" // legacy
+  case authTokenRefreshUsername = "NYPLAccountAuthTokenRefreshUsernameKey"
+  case authTokenRefreshPassword = "NYPLAccountAuthTokenRefreshPasswordKey"
   case adobeVendor = "NYPLAccountAdobeVendorKey"
   case provider = "NYPLAccountProviderKey"
   case userID = "NYPLAccountUserIDKey"
@@ -37,8 +39,21 @@ private enum StorageKey: String {
   static func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
 }
 
-@objcMembers class NYPLUserAccount : NSObject, NYPLUserAccountProvider {
+@objc protocol NYPLOAuthTokenProvider {
+  var authToken: String? { get }
+  func setAuthToken(_ token: String)
+  func hasOAuthClientCredentials() -> Bool
+  var oauthTokenRefreshURL: URL? { get }
+}
+
+
+/// Represents the user account the app currently sees, be it signed in or not.
+///
+/// This class works as a singleton even if the initializer is not private
+/// for unit tests reasons.
+@objcMembers class NYPLUserAccount : NSObject, NYPLUserAccountProvider, NYPLOAuthTokenProvider {
   static private let shared = NYPLUserAccount()
+
   private let accountInfoLock = NSRecursiveLock()
   private lazy var keychainTransaction = NYPLKeychainVariableTransaction(accountInfoLock: accountInfoLock)
     
@@ -57,6 +72,8 @@ private enum StorageKey: String {
         StorageKey.credentials: _credentials,
         StorageKey.authDefinition: _authDefinition,
         StorageKey.cookies: _cookies,
+        StorageKey.authTokenRefreshUsername: _authTokenRefreshUsername,
+        StorageKey.authTokenRefreshPassword: _authTokenRefreshPassword,
 
         // legacy
         StorageKey.barcode: _barcode,
@@ -158,6 +175,12 @@ private enum StorageKey: String {
     }
   }
 
+
+  /// At all times, this returns the current user account.
+  ///
+  /// - Important: Do not attempt to manually create an instance of
+  /// NYPLUserAccount.
+  /// - Returns: The current user account.
   @objc class func sharedAccount() -> NYPLUserAccount {
     // Note: it's important to use `currentAccountId` instead of
     // `currentAccount.uuid` because the former is immediately available
@@ -219,6 +242,12 @@ private enum StorageKey: String {
   private lazy var _cookies: NYPLKeychainVariable<[HTTPCookie]> = StorageKey.cookies
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
+  private lazy var _authTokenRefreshUsername: NYPLKeychainVariable<String> = StorageKey.authTokenRefreshUsername
+    .keyForLibrary(uuid: libraryUUID)
+    .asKeychainVariable(with: accountInfoLock)
+  private lazy var _authTokenRefreshPassword: NYPLKeychainVariable<String> = StorageKey.authTokenRefreshPassword
+    .keyForLibrary(uuid: libraryUUID)
+    .asKeychainVariable(with: accountInfoLock)
 
   // Legacy
   private lazy var _barcode: NYPLKeychainVariable<String> = StorageKey.barcode
@@ -259,6 +288,14 @@ private enum StorageKey: String {
     return hasAuthToken() || hasBarcodeAndPIN()
   }
 
+  func hasOAuthClientCredentials() -> Bool {
+    return self.authDefinition?.isOauthClientCredentials ?? false
+  }
+
+  var oauthTokenRefreshURL: URL? {
+    return self.authDefinition?.oauthIntermediaryUrl
+  }
+  
   // Oauth requires login to load catalog
   var catalogRequiresAuthentication: Bool {
     return authDefinition?.catalogRequiresAuthentication ?? false
@@ -284,7 +321,10 @@ private enum StorageKey: String {
   var barcode: String? {
     if let credentials = credentials, case let NYPLCredentials.barcodeAndPin(barcode: barcode, pin: _) = credentials {
       return barcode
+    } else if hasOAuthClientCredentials() {
+      return authTokenRefreshUsername
     }
+
     return nil
   }
 
@@ -306,6 +346,8 @@ private enum StorageKey: String {
   var PIN: String? {
     if let credentials = credentials, case let NYPLCredentials.barcodeAndPin(barcode: _, pin: pin) = credentials {
       return pin
+    } else if hasOAuthClientCredentials() {
+      return authTokenRefreshPassword
     }
     return nil
   }
@@ -327,6 +369,8 @@ private enum StorageKey: String {
   var adobeToken: String? { _adobeToken.read() }
   var licensor: [String:Any]? { _licensor.read() }
   var cookies: [HTTPCookie]? { _cookies.read() }
+  var authTokenRefreshUsername: String? { _authTokenRefreshUsername.read() }
+  var authTokenRefreshPassword: String? { _authTokenRefreshPassword.read() }
 
   var authToken: String? {
     if let credentials = credentials, case let NYPLCredentials.token(authToken: token) = credentials {
@@ -416,10 +460,32 @@ private enum StorageKey: String {
     _patron.write(patron)
     notifyAccountDidChange()
   }
-  
+
+
+  /// Saves the OAuth token in the keychain, for both the regular OAuth flow
+  /// (e.g. for Clever) and the Client Credentials flow.
+  ///
+  /// - Important: For OAuth Client Credentials flow, it is required to save
+  /// to call `setRefreshTokenInfo(username:password:)` before calling
+  /// `setAuthToken:`.
+  /// - Parameter token: The new OAuth token.
   @objc(setAuthToken:)
   func setAuthToken(_ token: String) {
-    credentials = .token(authToken: token)
+    // this check is required because in the client credentials flow we need
+    // to save both the username/password and authtoken. However, during
+    // sign-in, when we save the OAuth token this triggers an accountDidChange
+    // notification (set `credentials` setter) which then triggers a nil-out
+    // of the username and password on the UI, which then makes it impossible
+    // to save username and password. For this reason we require to save
+    // the refresh username and password *before* saving the authToken.
+    if !hasOAuthClientCredentials() || authTokenRefreshUsername != nil {
+      credentials = .token(authToken: token)
+    }
+  }
+
+  func setRefreshTokenInfo(username: String, password: String) {
+    _authTokenRefreshUsername.write(username)
+    _authTokenRefreshPassword.write(password)
   }
 
   @objc(setCookies:)
@@ -463,6 +529,8 @@ private enum StorageKey: String {
         _credentials.write(nil)
         _cookies.write(nil)
         _authorizationIdentifier.write(nil)
+        _authTokenRefreshUsername.write(nil)
+        _authTokenRefreshPassword.write(nil)
 
         // remove legacy, just in case
         _barcode.write(nil)
