@@ -25,10 +25,10 @@
 #pragma mark - Audiobook Methods
 
 - (void)openAudiobook:(NYPLBook *)book {
-  [AudiobookManifestHelper parseAudiobookManifestWithBook:book
-                                               completion:^(NSDictionary<NSString *,id> * _Nullable json,
-                                                            id<DRMDecryptor> _Nullable decryptor,
-                                                            enum AudiobookManifestError error) {
+  [AudiobookManifestAdapter transformAudiobookManifestWithBook:book
+                                                    completion:^(NSDictionary<NSString *,id> * _Nullable json,
+                                                                 id<DRMDecryptor> _Nullable decryptor,
+                                                                 enum AudiobookManifestError error) {
     if (error == AudiobookManifestErrorCorrupted) {
       NSURL *url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
       [self presentCorruptedItemErrorWithLog:@{

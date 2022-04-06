@@ -18,11 +18,11 @@ import UIKit
   case corrupted
 }
 
-@objc class AudiobookManifestHelper: NSObject {
-  @objc class func parseAudiobookManifest(book: NYPLBook,
-                                          completion: @escaping (_ manifest: [String: Any]?,
-                                                                 _ decryptor: DRMDecryptor?,
-                                                                 _ error: AudiobookManifestError) -> Void)
+@objc class AudiobookManifestAdapter: NSObject {
+  @objc class func transformAudiobookManifest(book: NYPLBook,
+                                              completion: @escaping (_ manifest: [String: Any]?,
+                                                                     _ decryptor: DRMDecryptor?,
+                                                                     _ error: AudiobookManifestError) -> Void)
   {
     guard let url = NYPLMyBooksDownloadCenter.shared().fileURL(forBookIndentifier: book.identifier),
           let data = try? Data.init(contentsOf: url),
