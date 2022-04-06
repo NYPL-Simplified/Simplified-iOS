@@ -52,4 +52,8 @@
 // This returns a URL even if the book is not on-disk. Returns nil if |identifier| is nil.
 - (NSURL *)fileURLForBookIndentifier:(NSString *)identifier;
 
+#if FEATURE_AUDIOBOOKS
+- (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID;
+#endif
+
 @end

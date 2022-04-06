@@ -46,7 +46,7 @@
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 @property (nonatomic) NYPLReauthenticator *reauthenticator;
-@property (nonatomic) DefaultAudiobookManager *audiobookManager;
+@property (nonatomic) NYPLAudiobookDownloader *audiobookDownloader;
 
 /// Maps a task identifier to a non-negative redirect attempt count. This
 /// tracks the number of redirect attempts for a particular download task.
@@ -86,6 +86,11 @@
   
 #if defined(FEATURE_DRM_CONNECTOR)
   [NYPLADEPT sharedInstance].delegate = self;
+#endif
+  
+#if FEATURE_AUDIOBOOKS
+  self.audiobookDownloader = [[NYPLAudiobookDownloader alloc] init];
+  self.audiobookDownloader.delegate = (id)self;
 #endif
   
   NSURLSessionConfiguration *const configuration =
@@ -397,10 +402,10 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   
 #if FEATURE_AUDIOBOOKS
   if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
-    [AudiobookManifestHelper parseAudiobookManifestWithBook:book
-                                                 completion:^(NSDictionary<NSString *,id> * _Nullable json,
-                                                              id<DRMDecryptor> _Nullable decryptor,
-                                                              enum AudiobookManifestError error) {
+    [AudiobookManifestAdapter transformAudiobookManifestWithBook:book
+                                                      completion:^(NSDictionary<NSString *,id> * _Nullable json,
+                                                                   id<DRMDecryptor> _Nullable decryptor,
+                                                                   enum AudiobookManifestError error) {
       if (error == AudiobookManifestErrorNone) {
         // Create audiobook
         id<Audiobook> const audiobook = [AudiobookFactory audiobook:json decryptor:decryptor];
@@ -411,15 +416,20 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
           [self broadcastUpdate:book.identifier];
           return;
         }
-        AudiobookMetadata *const metadata = [[AudiobookMetadata alloc] initWithTitle:book.title
-                                                                             authors:@[book.authors]];
+        AudiobookMetadata *metadata = [[AudiobookMetadata alloc] initWithTitle:book.title
+                                                                       authors:@[book.authors]];
         
         DefaultAudiobookManager *manager = [[DefaultAudiobookManager alloc] initWithMetadata:metadata
                                                                                    audiobook:audiobook];
-        // TODO: Create download object and make it a property of MyBooksDownloadCenter
-        self.audiobookManager = manager;
-        [self.audiobookManager.networkService fetch];
-        NYPLLOG(@"Fetching audiobook");
+        
+        [[NYPLBookRegistry sharedRegistry]
+         setState:NYPLBookStateDownloading
+         forIdentifier:book.identifier];
+        
+        [self downloadProgressDidUpdateTo:0 forBookIdentifier:book.identifier];
+        
+        [self.audiobookDownloader downloadAudiobookForBookID:book.identifier
+                                            audiobookManager:manager];
       } else {
         NYPLLOG(@"Audiobook corrupted/unsupported");
         // TODO: Handle Error
@@ -428,9 +438,9 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
     }];
     return;
   }
-#endif
-
+#else
   [self broadcastUpdate:book.identifier];
+#endif
 }
 
 #pragma mark - NSURLSessionTaskDelegate
@@ -1664,5 +1674,14 @@ didFinishDownload:(BOOL)didFinishDownload
 }
 #endif
 
+#if FEATURE_AUDIOBOOKS
+- (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID {
+  NYPLLOG_F(@"Download progress updated to %f for %@", progress, bookID);
+  self.bookIdentifierToDownloadInfo[bookID] = [[self downloadInfoForBookIdentifier:bookID]
+                                               withDownloadProgress:progress];
+
+  [self broadcastUpdate:bookID];
+}
+#endif
 
 @end
