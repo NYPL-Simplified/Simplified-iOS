@@ -192,5 +192,9 @@
    cancelDownloadForBookIdentifier:cell.book.identifier];
 }
 
+- (void)didSelectListenForBookDownloadingCell:(NYPLBookDownloadingCell *)cell
+{
+  [self didSelectReadForBook:cell.book successCompletion:nil];
+}
 
 @end
