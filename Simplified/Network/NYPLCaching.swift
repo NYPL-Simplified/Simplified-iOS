@@ -196,8 +196,13 @@ class NYPLCaching {
   /// Note that regardless of these caching strategies, the request caching
   /// policy will always follow the one defined in the request protocol
   /// implementation.
+  /// - Parameter waitsForConnectivity: Determines if the urlSession should
+  /// wait for connectivity to become available or instead fail immediately.
+  /// - Parameter requestTimeout: This is also used, with a multiplier, to
+  /// set up the resource timeout.
   /// - Returns: A configuration with 8 max connections per host.
   class func makeURLSessionConfiguration(caching: NYPLCachingStrategy,
+                                         waitsForConnectivity: Bool,
                                          requestTimeout: TimeInterval) -> URLSessionConfiguration {
     guard caching != .ephemeral else {
       return .ephemeral
@@ -213,7 +218,7 @@ class NYPLCaching {
     config.urlCache = makeCache()
 
     if #available(iOS 11.0, *) {
-      config.waitsForConnectivity = true
+      config.waitsForConnectivity = waitsForConnectivity
     }
 
     if #available(iOS 13.0, *) {

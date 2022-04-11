@@ -37,6 +37,29 @@ extension NYPLRequestExecuting {
   }
 }
 
+protocol NYPLHTTPRequestExecuting: NYPLRequestExecuting {
+  func GET(_ reqURL: URL,
+           cachePolicy: URLRequest.CachePolicy?,
+           completion: @escaping (_ result: NYPLResult<Data>) -> Void)
+
+  func POST(_ reqURL: URL,
+            additionalHeaders: [String: String]?,
+            httpBody: Data?,
+            completion: @escaping (_ result: NYPLResult<Data>) -> Void)
+
+  func DELETE(_ reqURL: URL,
+              completion: @escaping (_ result: NYPLResult<Data>) -> Void)
+}
+
+/// Protocol for Objective-C compatibility.
+@objc protocol NYPLHTTPRequestExecutingBasic {
+  func GET(_ reqURL: URL,
+           cachePolicy: NSURLRequest.CachePolicy,
+           completion: @escaping (_ result: Data?,
+                                  _ response: URLResponse?,
+                                  _ error: Error?) -> Void) -> URLSessionDataTask
+}
+
 protocol NYPLOAuthTokenFetching {
   func fetchAndStoreShortLivedOAuthToken(
     at url: URL,
@@ -44,11 +67,3 @@ protocol NYPLOAuthTokenFetching {
 
   func resetLibrarySpecificInfo()
 }
-
-/// Protocol for Objective-C compatibility.
-@objc protocol NYPLRequestExecutingObjC {
-  func GET(_ reqURL: URL,
-           cachePolicy: NSURLRequest.CachePolicy,
-           completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask
-}
-

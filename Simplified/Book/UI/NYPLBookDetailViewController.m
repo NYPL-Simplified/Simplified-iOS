@@ -43,6 +43,7 @@
   self.executor = [[NYPLNetworkExecutor alloc]
                    initWithCredentialsProvider:NYPLUserAccount.sharedAccount
                    cachingStrategy:NYPLCachingStrategyEphemeral
+                   waitsForConnectivity:YES
                    delegateQueue:nil];
 
   self.title = book.title;

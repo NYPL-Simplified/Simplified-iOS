@@ -65,14 +65,16 @@ import UIKit
     alert.view.addSubview(loadingIndicator)
     present(alert, animated: true, completion: nil)
 
-    NYPLAnnotations.updateServerSyncSetting(toEnabled: false, completion: { success in
-      self.dismiss(animated: true, completion: nil)
-      if (success) {
-        self.account.details?.syncPermissionGranted = false;
-        NYPLSettings.shared.userHasSeenFirstTimeSyncMessage = false;
-        self.navigationController?.popViewController(animated: true)
+    NYPLAnnotations.updateServerSyncSetting(toEnabled: false) { success in
+      NYPLMainThreadRun.asyncIfNeeded {
+        self.dismiss(animated: true, completion: nil)
+        if success {
+          self.account.details?.syncPermissionGranted = false
+          NYPLSettings.shared.userHasSeenFirstTimeSyncMessage = false
+          self.navigationController?.popViewController(animated: true)
+        }
       }
-    })
+    }
   }
   
   // MARK: - UITableViewDataSource

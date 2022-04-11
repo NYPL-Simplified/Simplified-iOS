@@ -24,13 +24,16 @@ extension NYPLSignInBusinessLogic {
   /// - Parameters:
   ///   - granted: Whether the user is granting sync permission or not.
   ///   - postServerSyncCompletion: Only run when granting sync permission.
+  ///   This closure is run on the main thread.
   @objc func changeSyncPermission(to granted: Bool,
                                   postServerSyncCompletion: @escaping (Bool) -> Void) {
     if granted {
       // When granting, attempt to enable on the server.
       NYPLAnnotations.updateServerSyncSetting(toEnabled: true) { success in
         self.libraryAccount?.details?.syncPermissionGranted = success
-        postServerSyncCompletion(success)
+        NYPLMainThreadRun.asyncIfNeeded {
+          postServerSyncCompletion(success)
+        }
       }
     } else {
       // When revoking, just ignore the server's annotations.

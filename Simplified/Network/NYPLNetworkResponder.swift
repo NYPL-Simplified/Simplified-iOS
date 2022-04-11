@@ -152,7 +152,10 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     logMetadata["elapsedTime"] = elapsed
     Log.info(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
 
-    // attempt parsing of Problem Document
+    // attempt parsing of Problem Document. Note that per URLSessionTaskDelegate
+    // docs, server errors are not communicated via the `networkError` parameter
+    // to this urlSession delegate method. So if there is a problem document, we
+    // can ignore `networkError`.
     if let response = task.response, response.isProblemDocument() {
       let errorWithProblemDoc = task.parseAndLogError(fromProblemDocumentData: responseData,
                                                       networkError: networkError,
@@ -212,6 +215,17 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
 
 extension URLSessionTask {
   //----------------------------------------------------------------------------
+  /// Parses the response data and builds an error that includes the problem
+  /// document if one was present. If not, it falls back to either the provided
+  /// network-related error or the problem document parse error.
+  ///
+  /// - Parameters:
+  ///   - responseData: The Data to extract the problem document from.
+  ///   - networkError: If somehow the parsing of the problem document fails,
+  ///   this error will be used as base for the returned error.
+  ///   - logMetadata: The metadata
+  /// - Returns: An error whose `code` is NOT included in
+  /// `NetworkQueue.StatusCodes`.
   fileprivate func parseAndLogError(fromProblemDocumentData responseData: Data,
                                     networkError: Error?,
                                     logMetadata: [String: Any]) -> NYPLUserFriendlyError {

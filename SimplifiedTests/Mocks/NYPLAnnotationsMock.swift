@@ -34,6 +34,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   static func syncReadingPosition(ofBook bookID: String?,
                                   publication: Publication?,
                                   toURL url:URL?,
+                                  usingNetworkExecutor: NYPLHTTPRequestExecutingBasic,
                                   completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
     guard !failRequest,
           let id = bookID,

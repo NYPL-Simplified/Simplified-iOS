@@ -21,7 +21,7 @@ import Foundation
   ///   - Parameter completion: Always invoked at the end no matter what,
   ///   providing an ungrouped feed object in case of success and nil otherwise.
   class func fetchCatalogUngroupedFeed(url: URL?,
-                                       networkExecutor: NYPLRequestExecutingObjC,
+                                       networkExecutor: NYPLHTTPRequestExecutingBasic,
                                        retryCount: Int = 0,
                                        completion: @escaping (_ feed: NYPLCatalogUngroupedFeed?) -> Void) {
     guard let url = url else {
@@ -68,7 +68,7 @@ import Foundation
   ///   - Parameter completion: Always invoked at the end no matter what,
   ///   providing an OPDS feed object in case of success and an dictionary containing error information otherwise.
   class func fetchOPDSFeed(url: URL?,
-                           networkExecutor: NYPLRequestExecutingObjC,
+                           networkExecutor: NYPLHTTPRequestExecutingBasic,
                            shouldResetCache: Bool,
                            completion: @escaping (_ feed: NYPLOPDSFeed?, _ error: [String: Any]?) -> Void) {
     guard let url = url else {

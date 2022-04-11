@@ -107,11 +107,13 @@ class NYPLLastReadPositionPoster {
 
   /// Wrapper for actual api call.
   private func postQueuedReadPosition() {
-    if self.queuedReadPosition != "" {
-      annotationsSynchronizer.postReadingPosition(forBook: book.identifier,
-                                          selectorValue: self.queuedReadPosition)
-      self.queuedReadPosition = ""
-      self.lastReadPositionUploadDate = Date()
+    guard self.queuedReadPosition != "" else {
+      return
     }
+
+    annotationsSynchronizer.postReadingPosition(forBook: book.identifier,
+                                                selectorValue: queuedReadPosition)
+    self.queuedReadPosition = ""
+    self.lastReadPositionUploadDate = Date()
   }
 }
