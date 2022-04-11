@@ -11,10 +11,16 @@
 
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) NYPLRoundedButton *cancelButton;
+@property (nonatomic) NSLayoutConstraint *cancelButtonWidthConstraint;
 @property (nonatomic) UILabel *downloadingLabel;
 @property (nonatomic) UILabel *percentageLabel;
 @property (nonatomic) UIProgressView *progressView;
 @property (nonatomic) UILabel *titleLabel;
+@property (nonatomic) UIStackView *buttonStackView;
+#if FEATURE_AUDIOBOOKS
+@property (nonatomic) NYPLRoundedButton *listenButton;
+@property (nonatomic) NSLayoutConstraint *listenButtonWidthConstraint;
+#endif
 
 @end
 
@@ -83,13 +89,18 @@
   [self.progressView integralizeFrame];
   
   [self.cancelButton sizeToFit];
-  self.cancelButton.center = self.contentView.center;
-  self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
-                                       (CGRectGetHeight([self contentFrame]) -
-                                        CGRectGetHeight(self.cancelButton.frame) - 5),
-                                       CGRectGetWidth(self.cancelButton.frame),
-                                       CGRectGetHeight(self.cancelButton.frame));
-  [self.cancelButton integralizeFrame];
+  [self.cancelButtonWidthConstraint setConstant:self.cancelButton.frame.size.width];
+  
+#if FEATURE_AUDIOBOOKS
+  [self.listenButton sizeToFit];
+  [self.listenButtonWidthConstraint setConstant:self.listenButton.frame.size.width];
+#endif
+  
+  [[self.buttonStackView.centerXAnchor constraintEqualToAnchor:self.contentView.centerXAnchor] setActive:YES];
+  [[self.buttonStackView.topAnchor constraintEqualToAnchor:self.downloadingLabel.bottomAnchor constant:5] setActive:YES];
+  [[self.buttonStackView.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-5] setActive:YES];
+  [[self.buttonStackView.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.contentView.leadingAnchor] setActive:YES];
+  [[self.buttonStackView.trailingAnchor constraintLessThanOrEqualToAnchor:self.contentView.trailingAnchor] setActive:YES];
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
@@ -120,6 +131,25 @@
   self.authorsLabel.textColor = [NYPLConfiguration secondaryTextColor];
   [self.contentView addSubview:self.authorsLabel];
   
+  NSMutableArray *buttonSubviews = [[NSMutableArray alloc] init];
+  
+#if FEATURE_AUDIOBOOKS
+  self.listenButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
+  [self.listenButton setHidden:YES];
+  self.listenButton.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
+  self.listenButton.tintColor = [NYPLConfiguration primaryTextColor];
+  self.listenButton.layer.borderWidth = 0;
+  [self.listenButton setTitle:NSLocalizedString(@"Listen", nil)
+                     forState:UIControlStateNormal];
+  [self.listenButton addTarget:self
+                        action:@selector(didSelectListen)
+              forControlEvents:UIControlEventTouchUpInside];
+  [self.contentView addSubview:self.listenButton];
+  [buttonSubviews addObject:self.listenButton];
+  self.listenButtonWidthConstraint = [self.listenButton.widthAnchor constraintEqualToConstant:self.listenButton.frame.size.width];
+  [self.listenButtonWidthConstraint setActive:YES];
+#endif
+  
   self.cancelButton = [[NYPLRoundedButton alloc] initWithType:NYPLRoundedButtonTypeNormal isFromDetailView:NO];
   self.cancelButton.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
   self.cancelButton.tintColor = [NYPLConfiguration primaryTextColor];
@@ -130,6 +160,16 @@
                         action:@selector(didSelectCancel)
               forControlEvents:UIControlEventTouchUpInside];
   [self.contentView addSubview:self.cancelButton];
+  [buttonSubviews addObject:self.cancelButton];
+  self.cancelButtonWidthConstraint = [self.cancelButton.widthAnchor constraintEqualToConstant:self.cancelButton.frame.size.width];
+  [self.cancelButtonWidthConstraint setActive:YES];
+  
+  self.buttonStackView = [[UIStackView alloc] initWithArrangedSubviews:buttonSubviews];
+  [self.buttonStackView setAlignment:UIStackViewAlignmentCenter];
+  [self.buttonStackView setAxis:UILayoutConstraintAxisHorizontal];
+  [self.buttonStackView setSpacing:5.0];
+  [self.buttonStackView setTranslatesAutoresizingMaskIntoConstraints:NO];
+  [self.contentView addSubview:self.buttonStackView];
   
   self.downloadingLabel = [[UILabel alloc] init];
   self.downloadingLabel.font = [UIFont systemFontOfSize:12];
@@ -182,9 +222,22 @@
   self.percentageLabel.text = [NSString stringWithFormat:@"%d%%", (int) (downloadProgress * 100)];
 }
 
+#if FEATURE_AUDIOBOOKS
+- (void)enableListenButton {
+  [self.listenButton setHidden:NO];
+}
+#endif
+
 - (void)didSelectCancel
 {
   [self.delegate didSelectCancelForBookDownloadingCell:self];
 }
+
+#if FEATURE_AUDIOBOOKS
+- (void)didSelectListen
+{
+  [self.delegate didSelectListenForBookDownloadingCell:self];
+}
+#endif
 
 @end
