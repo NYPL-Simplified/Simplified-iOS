@@ -25,6 +25,13 @@
 #pragma mark - Audiobook Methods
 
 - (void)openAudiobook:(NYPLBook *)book {
+  // If an audiobook download is in progress, we should use the existing AudiobookManager.
+  DefaultAudiobookManager *audiobookManager = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] audiobookManagerForBookID:book.identifier];
+  if (audiobookManager) {
+    [self presentAudiobook:book withAudiobookManager:audiobookManager];
+    return;
+  }
+  
   [AudiobookManifestAdapter transformAudiobookManifestWithBook:book
                                                     completion:^(NSDictionary<NSString *,id> * _Nullable json,
                                                                  id<DRMDecryptor> _Nullable decryptor,
@@ -44,6 +51,36 @@
     }
     
     [self openAudiobook:book withJSON:json decryptor:decryptor];
+  }];
+}
+
+- (void)presentAudiobook:(NYPLBook *)book withAudiobookManager:(DefaultAudiobookManager *)audiobookManager {
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    AudiobookPlayerViewController *audiobookVC = [self createPlayerVCForAudiobook:audiobookManager.audiobook
+                                                                         withBook:book
+                                                      configuringAudiobookManager:audiobookManager];
+
+    // present audiobook player on screen
+    [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
+    
+    NYPLBookLocation *const bookLocation =
+    [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
+
+    // move player to saved position
+    if (bookLocation) {
+      NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
+      ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
+      NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
+      [audiobookManager.audiobook.player movePlayheadToLocation:chapterLocation];
+    }
+    
+    // poll audiobook player so that we can save the reading position
+    [self scheduleTimerForAudiobook:book manager:audiobookManager viewController:audiobookVC];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(scheduleAudiobookProgressSavingTimer)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object:nil];
   }];
 }
 
@@ -68,31 +105,7 @@
                                                 initWithMetadata:metadata
                                                 audiobook:audiobook];
 
-      AudiobookPlayerViewController *audiobookVC = [self createPlayerVCForAudiobook:audiobook
-                                                                           withBook:book
-                                                        configuringAudiobookManager:manager];
-
-      // present audiobook player on screen
-      [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
-
-      NYPLBookLocation *const bookLocation =
-      [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
-
-      // move player to saved position
-      if (bookLocation) {
-        NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
-        ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
-        NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
-        [manager.audiobook.player movePlayheadToLocation:chapterLocation];
-      }
-
-      // poll audiobook player so that we can save the reading position
-      [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
-      
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(scheduleAudiobookProgressSavingTimer)
-                                                   name:UIApplicationWillResignActiveNotification
-                                                 object:nil];
+      [self presentAudiobook:book withAudiobookManager:manager];
     }];
   }];
 }

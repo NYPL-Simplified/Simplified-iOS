@@ -53,6 +53,8 @@
 - (NSURL *)fileURLForBookIndentifier:(NSString *)identifier;
 
 #if FEATURE_AUDIOBOOKS
+- (id)audiobookManagerForBookID:(NSString *)bookID;
+
 - (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID;
 #endif
 
