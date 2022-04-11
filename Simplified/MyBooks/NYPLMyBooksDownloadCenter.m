@@ -1675,6 +1675,10 @@ didFinishDownload:(BOOL)didFinishDownload
 #endif
 
 #if FEATURE_AUDIOBOOKS
+- (id)audiobookManagerForBookID:(NSString *)bookID {
+  return [_audiobookDownloader audiobookManagerFor:bookID];
+}
+
 - (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID {
   NYPLLOG_F(@"Download progress updated to %f for %@", progress, bookID);
   self.bookIdentifierToDownloadInfo[bookID] = [[self downloadInfoForBookIdentifier:bookID]
