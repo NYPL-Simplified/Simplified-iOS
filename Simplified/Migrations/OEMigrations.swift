@@ -23,7 +23,11 @@ extension NYPLMigrationManager {
     #if AXIS
     migrate_2_1_1(ifNeededFrom: versionComponents)
     #endif
+
+    // Migrate (or create if missing) Network Queue DB
+    NetworkQueue.shared.migrateOrSetUpIfNeeded()
   }
+
   #if FEATURE_DRM_CONNECTOR
   /// v1.8.1
   /// Adept API changed to allow multiple accounts
