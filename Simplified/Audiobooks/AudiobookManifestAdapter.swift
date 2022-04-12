@@ -9,8 +9,11 @@
 
 import Foundation
 import NYPLAudiobookToolkit
-import OverdriveProcessor
 import UIKit
+
+#if FEATURE_OVERDRIVE_AUTH
+import OverdriveProcessor
+#endif
 
 @objc enum AudiobookManifestError: Int {
   case none
