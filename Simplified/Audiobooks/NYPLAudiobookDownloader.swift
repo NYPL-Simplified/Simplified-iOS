@@ -29,7 +29,7 @@ class NYPLAudiobookDownloadObject {
 @objcMembers class NYPLAudiobookDownloader: NSObject {
   weak var delegate: NYPLAudiobookDownloadStatusDelegate?
   
-  private var queue: DispatchQueue = DispatchQueue(label: "org.nypl.labs.NYPLAudiobooksDownloader")
+  private var serialQueue: DispatchQueue = DispatchQueue(label: "org.nypl.labs.NYPLAudiobooksDownloader")
   private var downloadObjects: [NYPLAudiobookDownloadObject] = []
   private var currentDownloadObject: NYPLAudiobookDownloadObject?
   
@@ -40,8 +40,9 @@ class NYPLAudiobookDownloadObject {
       return
     }
     
-    queue.sync {
-      downloadObjects.append(NYPLAudiobookDownloadObject(bookID: bookID, audiobookManager: audiobookManager))
+    serialQueue.async {
+      self.downloadObjects.append(NYPLAudiobookDownloadObject(bookID: bookID,
+                                                              audiobookManager: audiobookManager))
     }
     fetchNext()
   }
@@ -54,8 +55,8 @@ class NYPLAudiobookDownloadObject {
       fetchNext()
     } else if let index = downloadObjects.firstIndex(where: { $0.bookID == bookID }) {
       cancelDownload(for: downloadObjects[index])
-      queue.sync {
-        _ = downloadObjects.remove(at: index)
+      serialQueue.async {
+        _ = self.downloadObjects.remove(at: index)
       }
     }
   }
@@ -67,22 +68,22 @@ class NYPLAudiobookDownloadObject {
   // MARK: - Helper
   
   private func releaseCurrentDownloadObject() {
-    queue.sync {
-      currentDownloadObject = nil
+    serialQueue.async {
+      self.currentDownloadObject = nil
     }
   }
   
   private func fetchNext() {
-    guard currentDownloadObject == nil else {
-      return
-    }
-    
-    queue.sync {
-      if let downloadObject = downloadObjects.popFirst() {
+    serialQueue.async {
+      guard self.currentDownloadObject == nil else {
+        return
+      }
+      
+      if let downloadObject = self.downloadObjects.popFirst() {
         Log.debug(#file, "Fetch initiated for \(downloadObject.bookID)")
         downloadObject.audiobookManager.networkService.registerDelegate(self)
         downloadObject.audiobookManager.networkService.fetch()
-        currentDownloadObject = downloadObject
+        self.currentDownloadObject = downloadObject
       }
     }
   }
