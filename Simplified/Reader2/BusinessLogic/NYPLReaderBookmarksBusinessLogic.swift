@@ -236,9 +236,9 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   }
     
   func updateLocalBookmarks(serverBookmarks: [NYPLReadiumBookmark],
-                                     localBookmarks: [NYPLReadiumBookmark],
-                                     bookmarksFailedToUpload: [NYPLReadiumBookmark],
-                                     completion: @escaping () -> ())
+                            localBookmarks: [NYPLReadiumBookmark],
+                            bookmarksFailedToUpload: [NYPLReadiumBookmark],
+                            completion: @escaping () -> ())
   {
     // Bookmarks that are present on the client, and have a corresponding version on the server
     // with matching annotation ID's should be kept on the client.

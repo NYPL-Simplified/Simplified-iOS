@@ -51,7 +51,8 @@ extension NYPLSignInBusinessLogic {
   ///   on the main thread. It's not run at all if a request is
   ///   already ongoing or if the current library doesn't support syncing.
   @objc func checkSyncPermission(preWork: () -> Void,
-                                 postWork: @escaping (_ enableSync: Bool) -> Void) {
+                                 postWork: @escaping (_ enableSync: Bool,
+                                                      _ error: Error?) -> Void) {
     guard let libraryDetails = libraryAccount?.details else {
       return
     }
@@ -65,13 +66,9 @@ extension NYPLSignInBusinessLogic {
       preWork()
     }
 
-    NYPLAnnotations.requestServerSyncStatus(forAccount: userAccount) { enableSync in
-      if enableSync {
-        libraryDetails.syncPermissionGranted = true
-      }
-
+    NYPLAnnotations.requestServerSyncStatus(forAccount: userAccount) { enableSync, error in
       NYPLMainThreadRun.sync {
-        postWork(enableSync)
+        postWork(enableSync, error)
       }
 
       self.permissionsCheckLock.unlock()

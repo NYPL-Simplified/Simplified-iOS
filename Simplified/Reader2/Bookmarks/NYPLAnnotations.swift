@@ -5,7 +5,8 @@ protocol NYPLAnnotationSyncing: AnyObject {
   // Server status
   
   static func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
-                                      completion: @escaping (_ enableSync: Bool) -> ())
+                                      syncSupportedCompletion: @escaping (_ enableSync: Bool,
+                                                                          _ error: Error?) -> ())
   
   static func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->())
   
@@ -59,51 +60,57 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   /// selected library. Anything else will result in a no-op.
   /// - Parameters:
   ///   - userAccount: The account to attempt to enable annotations-syncing on.
-  ///   - completion: Handler always called at the end of the process.
+  ///   - syncSupportedCompletion: Handler always called at the end of the
+  ///   process, unless sync is not supported by the current library.
   @objc
   class func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
-                                     completion: @escaping (_ enableSync: Bool) -> ()) {
-    
+                                     syncSupportedCompletion: @escaping (_ enableSync: Bool,
+                                                                         _ error: Error?) -> ()) {
     guard syncIsPossible(userAccount) else {
-      Log.debug(#file, "Account does not satisfy conditions for sync setting request.")
-      completion(false)
+      Log.info(#function, "Account does not satisfy conditions for sync setting request.")
       return
     }
 
     let settings = NYPLSettings.shared
-
-    if (settings.userHasSeenFirstTimeSyncMessage == true &&
-        AccountsManager.shared.currentAccount?.details?.syncPermissionGranted == false) {
-      completion(false)
+    if settings.userHasSeenFirstTimeSyncMessage == true &&
+        AccountsManager.shared.currentAccount?.details?.syncPermissionGranted == false {
+      syncSupportedCompletion(false, nil)
       return
     }
 
-    self.fetchSyncStatus { (initialized, syncIsPermitted) in
+    self.fetchSyncStatus { (initialized, syncIsPermitted, error) in
+
+      guard error == nil else {
+        NYPLErrorLogger.logError(error,
+                                 summary: "Unable to fetch current bookmark sync status")
+        syncSupportedCompletion(false, error)
+        return
+      }
 
       if (initialized && syncIsPermitted) {
-        completion(true)
+        Log.info(#function, "Sync has already been enabled on the server. Enabling in UserDefaults as well.")
+        syncSupportedCompletion(true, nil)
         settings.userHasSeenFirstTimeSyncMessage = true;
-        Log.debug(#file, "Sync has already been enabled on the server. Enable here as well.")
         return
       }
 
       if (!initialized && settings.userHasSeenFirstTimeSyncMessage == false) {
-        Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
+        Log.info(#function, "Sync has never been initialized for the patron. Showing alert flow.")
         NYPLMainThreadRun.asyncIfNeeded {
-        #if OPENEBOOKS
+          #if OPENEBOOKS
           let title = "Open eBooks Sync"
-        #else
+          #else
           let title = "SimplyE Sync"
-        #endif
+          #endif
           let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
           let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
           let notNowAction = UIAlertAction(title: "Not Now", style: .default) { action in
-            completion(false)
+            syncSupportedCompletion(false, nil)
             settings.userHasSeenFirstTimeSyncMessage = true;
           }
           let enableSyncAction = UIAlertAction(title: "Enable Sync", style: .default) { action in
             self.updateServerSyncSetting(toEnabled: true) { success in
-              completion(success)
+              syncSupportedCompletion(success, nil)
               settings.userHasSeenFirstTimeSyncMessage = true;
             }
           }
@@ -113,7 +120,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
           NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: nil, animated: true, completion: nil)
         }
       } else {
-        completion(false)
+        syncSupportedCompletion(false, nil)
       }
     }
   }
@@ -146,9 +153,9 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     }
   }
 
-  /// - Parameter successHandler: Called only if the request succeeds.
-  private class func fetchSyncStatus(successHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
-
+  private class func fetchSyncStatus(completion: @escaping (_ initialized: Bool,
+                                                            _ syncIsPermitted: Bool,
+                                                            _ error: Error?) -> ()) {
     guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
       Log.error(#file, "Failed to create user profile URL from string. Abandoning attempt to retrieve sync setting.")
       return
@@ -157,20 +164,30 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     NYPLNetworkExecutor.shared.GET(userProfileUrl, cachePolicy: .reloadIgnoringCacheData) { result in
       switch result {
       case .success(let data, _):
-        if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Any],
-           let settings = json["settings"] as? [String:Any],
-           let syncSetting = settings["simplified:synchronize_annotations"] {
-          if syncSetting is NSNull {
-            successHandler(false, false)
+        do {
+          let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+
+          if let settings = json?["settings"] as? [String: Any],
+             let syncSetting = settings["simplified:synchronize_annotations"] {
+            if syncSetting is NSNull {
+              completion(false, false, nil)
+            } else {
+              completion(true, syncSetting as? Bool ?? false, nil)
+            }
           } else {
-            successHandler(true, syncSetting as? Bool ?? false)
+            let error = NSError(domain: "Error finding sync-setting key/value",
+                                code: NYPLErrorCode.parseFail.rawValue,
+                                userInfo: ["jsonData": json ?? "N/A"])
+            Log.error(#function, "\(error)")
+            completion(false, false, error)
           }
-        } else {
-          Log.error(#file, "Error parsing JSON or finding sync-setting key/value.")
+        } catch {
+          completion(false, false, error)
         }
       case .failure(let error, let response):
         let httpStatus = (response as? HTTPURLResponse)?.statusCode ?? -1
         Log.error(#file, "Error fetching annotations permissions: \(httpStatus); error: \(error)")
+        completion(false, false, error)
       }
     }
   }
