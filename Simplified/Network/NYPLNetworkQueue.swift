@@ -19,13 +19,7 @@ extension Connection {
  */
 final class NetworkQueue: NSObject {
 
-  static let sharedInstance = NetworkQueue()
-
-  // For Objective-C classes
-  @objc class func shared() -> NetworkQueue
-  {
-    return NetworkQueue.sharedInstance
-  }
+  @objc static let shared = NetworkQueue()
 
   deinit {
     NotificationCenter.default.removeObserver(self)
@@ -81,8 +75,7 @@ final class NetworkQueue: NSObject {
                   _ updateID: String?,
                   _ requestUrl: URL,
                   _ method: HTTPMethodType,
-                  _ parameters: Data?,
-                  _ headers: [String : String]?) -> Void
+                  _ parameters: Data?) -> Void
   {
     self.serialQueue.async {
 
@@ -90,14 +83,9 @@ final class NetworkQueue: NSObject {
       let urlString = requestUrl.absoluteString
       let methodString = method.rawValue
       let dateCreated = NSKeyedArchiver.archivedData(withRootObject: Date())
-      
-      let headerData: Data?
-      if headers != nil {
-        headerData = NSKeyedArchiver.archivedData(withRootObject: headers!)
-      } else {
-        headerData = nil
-      }
-      
+      // left for backward compatibility
+      let headerData = NSKeyedArchiver.archivedData(withRootObject: [:])
+
       guard let db = self.startDatabaseConnection() else { return }
       
       // Update (not insert) if uniqueID and libraryID match existing row in table
@@ -111,16 +99,23 @@ final class NetworkQueue: NSObject {
           Log.debug(#file, "SQLite: Row Updated")
         } else {
           //Insert new row
-          try db.run(self.sqlTable.insert(self.sqlLibraryID <- libraryID, self.sqlUpdateID <- updateID, self.sqlUrl <- urlString, self.sqlMethod <- methodString, self.sqlParameters <- parameters, self.sqlHeader <- headerData, self.sqlRetries <- 0, self.sqlDateCreated <- dateCreated))
+          try db.run(self.sqlTable.insert(self.sqlLibraryID <- libraryID,
+                                          self.sqlUpdateID <- updateID,
+                                          self.sqlUrl <- urlString,
+                                          self.sqlMethod <- methodString,
+                                          self.sqlParameters <- parameters,
+                                          self.sqlHeader <- headerData,
+                                          self.sqlRetries <- 0,
+                                          self.sqlDateCreated <- dateCreated))
           Log.debug(#file, "SQLite: Row Added")
         }
       } catch {
-        Log.error(#file, "SQLite Error: Could not insert or update row")
+        Log.error(#file, "SQLite Error: Could not insert or update row: \(error)")
       }
     }
   }
 
-  func migrate()
+  func migrateOrSetUpIfNeeded()
   {
     self.serialQueue.async {
       guard let db = self.startDatabaseConnection() else {
@@ -221,29 +216,30 @@ final class NetworkQueue: NSObject {
     }
     
     // Re-attempt network request
-    var urlRequest = URLRequest(url: URL(string: requestRow[sqlUrl])!)
-    urlRequest.httpMethod = requestRow[sqlMethod]
-    urlRequest.httpBody = requestRow[sqlParameters]
-    
-    if let headerData = requestRow[sqlHeader],
-       let headers = NSKeyedUnarchiver.unarchiveObject(with: headerData) as? [String:String] {
-      for (headerKey, headerValue) in headers {
-        urlRequest.setValue(headerValue, forHTTPHeaderField: headerKey)
-      }
-    }
-    
-    let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-      self.serialQueue.async {
-        if let response = response as? HTTPURLResponse {
-          if response.statusCode == 200 {
-            Log.info(#file, "Queued Request Upload: Success")
-            self.deleteRow(db, id: requestRow[self.sqlID])
-          }
+    let urlRequest = NYPLNetworkExecutor.shared
+      .request(for: URL(string: requestRow[sqlUrl])!,
+               httpMethod: requestRow[sqlMethod],
+               httpBody: requestRow[sqlParameters])
+
+    Log.info(#file, "Retrying request from offline queue: \(urlRequest)")
+    NYPLNetworkExecutor.shared.executeRequest(urlRequest) { result in
+      self.serialQueue.async { [weak self] in
+        guard let self = self else { return }
+        switch result {
+        case .success(_, _):
+          Log.info(#file, "Queued Request Upload: Success")
+          self.deleteRow(db, id: requestRow[self.sqlID])
+        case .failure(let error, let response):
+          NYPLErrorLogger.logNetworkError(error,
+                                          code: .responseFail,
+                                          summary: "Error retrying request from offline queue",
+                                          request: urlRequest,
+                                          response: response)
         }
+
         self.retryRequestCount -= 1
       }
     }
-    task.resume()
   }
 
   private func deleteRow(_ db: Connection, id: Int)

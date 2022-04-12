@@ -12,7 +12,7 @@ import XCTest
 class NYPLCatalogUngroupedFeedTests: XCTestCase {
   
   var feedFetcher: NYPLOPDSFeedFetcherMock.Type!
-  var networkExecutor: NYPLRequestExecutingObjC!
+  var networkExecutor: NYPLHTTPRequestExecutingBasic!
   
   override func setUpWithError() throws {
     try super.setUpWithError()

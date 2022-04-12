@@ -240,8 +240,10 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
       }
       
       if let removedBookmark = bookmarksBusinessLogic?.deleteBookmark(at: indexPath.row) {
-        delegate?.positionsVC(self, didDeleteBookmark: removedBookmark)
-        tableView.deleteRows(at: [indexPath], with: .fade)
+        NYPLMainThreadRun.asyncIfNeeded {
+          self.delegate?.positionsVC(self, didDeleteBookmark: removedBookmark)
+          self.tableView.deleteRows(at: [indexPath], with: .fade)
+        }
       }
     }
   }

@@ -127,6 +127,8 @@ completionHandler:(void (^)(NSData *data,
   NSString *lpe = [URL lastPathComponent];
   if ([lpe isEqualToString:@"borrow"]) {
     [NYPLNetworkExecutor.shared PUT:URL
+                  additionalHeaders:nil
+                           httpBody:nil
                          completion:completionWrapper];
   } else {
     (void)[NYPLNetworkExecutor.shared GET:URL

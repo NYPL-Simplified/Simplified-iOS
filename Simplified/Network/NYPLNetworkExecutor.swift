@@ -32,15 +32,19 @@ enum NYPLResult<SuccessInfo> {
   /// Designated initializer.
   /// - Parameter credentialsProvider: The object responsible with providing credentials.
   /// - Parameter cachingStrategy: The strategy to cache responses with.
+  /// - Parameter waitsForConnectivity: if `false`, a request submitted when
+  /// there's no internet will fail immediately.
   /// - Parameter delegateQueue: The queue where callbacks will be called.
   @objc init(credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider,
              cachingStrategy: NYPLCachingStrategy,
+             waitsForConnectivity: Bool = true,
              delegateQueue: OperationQueue? = nil) {
     self.responder = NYPLNetworkResponder(credentialsProvider: credentialsProvider,
                                           useFallbackCaching: cachingStrategy == .fallback)
 
     let config = NYPLCaching.makeURLSessionConfiguration(
       caching: cachingStrategy,
+      waitsForConnectivity: waitsForConnectivity,
       requestTimeout: NYPLNetworkExecutor.defaultRequestTimeout)
     self.urlSession = URLSession(configuration: config,
                                  delegate: self.responder,
@@ -61,8 +65,18 @@ enum NYPLResult<SuccessInfo> {
                                                 cachingStrategy: .fallback)
 
   @objc func request(for url: URL) -> URLRequest {
-    var urlRequest = URLRequest(url: url,
-                                cachePolicy: urlSession.configuration.requestCachePolicy)
+    return request(for: url, cachePolicy: nil)
+  }
+
+  func request(for url: URL,
+               cachePolicy: URLRequest.CachePolicy? = nil,
+               additionalHeaders: [String: String]? = nil,
+               httpMethod: String = "GET",
+               httpBody: Data? = nil) -> URLRequest {
+    let cachePolicy = cachePolicy ?? urlSession.configuration.requestCachePolicy
+    var request = URLRequest(url: url, cachePolicy: cachePolicy)
+    request.httpMethod = httpMethod
+    request.httpBody = httpBody
 
     if let authToken = responder.credentialsProvider.authToken {
       let headers = [
@@ -70,20 +84,51 @@ enum NYPLResult<SuccessInfo> {
         "Content-Type" : "application/json"
       ]
 
-      headers.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
+      headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
+    } else {
+      Log.debug(#function, "Not using Bearer token...")
     }
 
-    return urlRequest
-  }
+    additionalHeaders?.forEach { (key: String, value: String) in
+      request.setValue(value, forHTTPHeaderField: key)
+    }
 
+    return request
+  }
+}
+
+extension NYPLNetworkExecutor: NYPLHTTPRequestExecuting {
   /// Performs a GET request using the specified URL
   /// - Parameters:
   ///   - reqURL: URL of the resource to GET.
+  ///   - cachePolicy: If nil, the policy set up by the executor will be used.
   ///   - completion: Always called when the resource is either fetched from
   /// the network or from the cache.
   func GET(_ reqURL: URL,
+           cachePolicy: URLRequest.CachePolicy? = nil,
            completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
-    let req = request(for: reqURL)
+    let req = request(for: reqURL, cachePolicy: cachePolicy)
+    executeRequest(req, completion: completion)
+  }
+
+  func POST(_ reqURL: URL,
+            additionalHeaders: [String: String]? = nil,
+            httpBody: Data? = nil,
+            completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
+    let req = request(for: reqURL,
+                      additionalHeaders: additionalHeaders,
+                      httpMethod: "POST",
+                      httpBody: httpBody)
+    executeRequest(req, completion: completion)
+  }
+
+  /// Performs a DELETE request at the specified URL.
+  /// - Parameters:
+  ///   - reqURL: URL of the resource to DELETE.
+  ///   - completion: Always called after the server responds.
+  func DELETE(_ reqURL: URL,
+              completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
+    let req = request(for: reqURL, httpMethod: "DELETE")
     executeRequest(req, completion: completion)
   }
 }
@@ -159,7 +204,7 @@ extension NYPLNetworkExecutor: NYPLRequestExecuting {
 }
 
 // MARK: -  Objective-C compatibility
-extension NYPLNetworkExecutor: NYPLRequestExecutingObjC {
+extension NYPLNetworkExecutor: NYPLHTTPRequestExecutingBasic {
 
   /// Performs a GET request using the specified URL, adding authentication
   /// headers if needed.
@@ -172,8 +217,7 @@ extension NYPLNetworkExecutor: NYPLRequestExecutingObjC {
   func GET(_ reqURL: URL,
            cachePolicy: NSURLRequest.CachePolicy = .useProtocolCachePolicy,
            completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) -> URLSessionDataTask {
-    var req = request(for: reqURL)
-    req.cachePolicy = cachePolicy
+    let req = request(for: reqURL, cachePolicy: cachePolicy)
     let completionWrapper: (_ result: NYPLResult<Data>) -> Void = { result in
       switch result {
       case let .success(data, response): completion(data, response, nil)
@@ -192,9 +236,13 @@ extension NYPLNetworkExecutor: NYPLRequestExecutingObjC {
   ///   guaranteed to be mutually exclusive.
   @objc
   func PUT(_ reqURL: URL,
+           additionalHeaders: [String: String]? = nil,
+           httpBody: Data? = nil,
            completion: @escaping (_ result: Data?, _ response: URLResponse?,  _ error: Error?) -> Void) {
-    var req = request(for: reqURL)
-    req.httpMethod = "PUT"
+    let req = request(for: reqURL,
+                      additionalHeaders: additionalHeaders,
+                      httpMethod: "PUT",
+                      httpBody: httpBody)
     let completionWrapper: (_ result: NYPLResult<Data>) -> Void = { result in
       switch result {
       case let .success(data, response): completion(data, response, nil)

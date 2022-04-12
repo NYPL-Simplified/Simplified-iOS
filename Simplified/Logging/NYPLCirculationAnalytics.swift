@@ -14,29 +14,28 @@ import Foundation
   
   private class func post(_ event: String, withURL url: URL) -> Void
   {
-    var request = URLRequest(url: url)
-    request.httpMethod = "GET"
-
-    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      
-      if let response = response as? HTTPURLResponse {
-        if response.statusCode == 200 {
-          debugPrint(#file, "Analytics Upload: Success")
-        }
-      } else {
-        guard let error = error as NSError? else { return }
+    NYPLNetworkExecutor.shared.GET(url) { result in
+      switch result {
+      case .success(_, _):
+        debugPrint(#file, "Analytics Upload: Success")
+      case .failure(let err, let response):
+        let error = err as NSError
         if NetworkQueue.StatusCodes.contains(error.code) {
           self.addToOfflineAnalyticsQueue(event, url)
         }
-        Log.error(#file, "URLRequest Error: \(error.code). Description: \(error.localizedDescription)")
+        NYPLErrorLogger.logError(error,
+                                 summary: "Circulation analytics error",
+                                 metadata: [
+                                  "response": response ?? "",
+                                  "event": event,
+                                  "url": url])
       }
     }
-    dataTask.resume()
   }
   
   private class func addToOfflineAnalyticsQueue(_ event: String, _ bookURL: URL) -> Void
   {
     let libraryID = AccountsManager.shared.currentAccount?.uuid ?? ""
-    NetworkQueue.shared().addRequest(libraryID, nil, bookURL, .GET, nil, NYPLAnnotations.headers)
+    NetworkQueue.shared.addRequest(libraryID, nil, bookURL, .GET, nil)
   }
 }

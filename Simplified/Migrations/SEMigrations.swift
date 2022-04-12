@@ -21,8 +21,8 @@ extension NYPLMigrationManager {
       migrate2();
     }
 
-    // Migrate Network Queue DB
-    NetworkQueue.sharedInstance.migrate()
+    // Migrate (or create if missing) Network Queue DB 
+    NetworkQueue.shared.migrateOrSetUpIfNeeded()
   }
 
   // v3.2.0

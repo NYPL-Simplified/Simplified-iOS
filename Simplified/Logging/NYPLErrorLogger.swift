@@ -21,6 +21,10 @@ fileprivate let nullString = "null"
   }
 }
 
+//
+// ** Make sure these error codes do not coincide with NSError error codes, **
+// ** in particular the ones listed at `NYPLNetworkQueue.StatusCodes`.      **
+//
 /// Detailed error codes that span across different error reports.
 /// E.g. you could have a `invalidURLSession` for a number of different api
 /// calls, happening in catalog loading, sign-in, etc. So the `summary` of
