@@ -121,9 +121,10 @@
                                                fromFileURL:url
                                          successCompletion:successCompletion];
 
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
-    if (enableSync == YES) {
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount]
+                             syncSupportedCompletion:^(BOOL enableSync, NSError *error) {
+    if (error == nil) {
       currentAccount.details.syncPermissionGranted = enableSync;
     }
   }];

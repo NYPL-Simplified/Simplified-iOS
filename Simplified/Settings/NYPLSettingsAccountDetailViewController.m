@@ -1517,9 +1517,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   [self.businessLogic checkSyncPermissionWithPreWork:^{
     self.syncSwitch.enabled = NO;
-  } postWork:^(BOOL enableSync){
-    self.syncSwitch.on = enableSync;
-    self.syncSwitch.enabled = YES;
+  } postWork:^(BOOL enableSync, NSError* error) {
+    if (error == nil) {
+      self.syncSwitch.enabled = YES;
+      self.syncSwitch.on = enableSync;
+    }
   }];
 }
 
