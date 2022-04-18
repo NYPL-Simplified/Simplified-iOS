@@ -158,7 +158,9 @@ fileprivate let nullString = "null"
       Crashlytics.crashlytics().setCustomValue(deviceID, forKey: "NYPLDeviceID")
     }
     #elseif FEATURE_NEWRELIC
-    NewRelic.start(withApplicationToken: "AAd9210b74e40d09df10054d9466c4fccbcc37ac9d-NRMA")
+    NewRelic.start(withApplicationToken: "AAd9210b74e40d09df10054d9466c4fccbcc37ac9d-NRMA",
+                   andCollectorAddress: "gov-mobile-collector.newrelic.com",
+                   andCrashCollectorAddress:"gov-mobile-crash.newrelic.com")
     NRLogger.setLogLevels(NRLogLevelInfo.rawValue)
     NewRelic.enableFeatures(.NRFeatureFlag_CrashReporting)
     #endif
