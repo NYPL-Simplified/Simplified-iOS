@@ -27,7 +27,7 @@ class NYPLSignInBusinessLogicTests: XCTestCase {
       libraryAccountsProvider: libraryAccountMock,
       urlSettingsProvider: NYPLURLSettingsProviderMock(),
       bookRegistry: NYPLBookRegistryMock(),
-      bookDownloadsCenter: NYPLMyBooksDownloadsCenterMock(),
+      bookDownloadsRemover: NYPLMyBooksDownloadsCenterMock(),
       userAccountProvider: NYPLUserAccountMock.self,
       networkExecutor: NYPLRequestExecutorMock(),
       uiDelegate: uiDelegate,

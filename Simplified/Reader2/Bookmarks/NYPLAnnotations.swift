@@ -5,7 +5,8 @@ protocol NYPLAnnotationSyncing: AnyObject {
   // Server status
   
   static func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
-                                      completion: @escaping (_ enableSync: Bool) -> ())
+                                      syncSupportedCompletion: @escaping (_ enableSync: Bool,
+                                                                          _ error: Error?) -> ())
   
   static func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->())
   
@@ -13,7 +14,8 @@ protocol NYPLAnnotationSyncing: AnyObject {
   
   static func syncReadingPosition(ofBook bookID: String?,
                                   publication: Publication?,
-                                  toURL url:URL?,
+                                  toURL url: URL?,
+                                  usingNetworkExecutor executor: NYPLHTTPRequestExecutingBasic,
                                   completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ())
   
   static func postReadingPosition(forBook bookID: String, selectorValue: String)
@@ -43,7 +45,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
   static func syncIsPossibleAndPermitted() -> Bool
 }
 
-@objcMembers final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
+final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   // MARK: - Sync Settings
 
   /// Shows (if needed) the opt-in flow for syncing the user bookmarks and
@@ -57,60 +59,68 @@ protocol NYPLAnnotationSyncing: AnyObject {
   /// - Note: This flow will be run only for the user account on the currently
   /// selected library. Anything else will result in a no-op.
   /// - Parameters:
-  ///   - userAccount: the account to attempt to enable annotations-syncing on.
-  ///   - completion: if a network request is actually performed, this block
-  /// is guaranteed to be called on the Main queue. Otherwise, this is called
-  /// either on the same thread the function was invoked on or on the main
-  /// thread.
+  ///   - userAccount: The account to attempt to enable annotations-syncing on.
+  ///   - syncSupportedCompletion: Handler always called at the end of the
+  ///   process, unless sync is not supported by the current library.
+  @objc
   class func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
-                                     completion: @escaping (_ enableSync: Bool) -> ()) {
-    
+                                     syncSupportedCompletion: @escaping (_ enableSync: Bool,
+                                                                         _ error: Error?) -> ()) {
     guard syncIsPossible(userAccount) else {
-      Log.debug(#file, "Account does not satisfy conditions for sync setting request.")
-      completion(false)
+      Log.info(#function, "Account does not satisfy conditions for sync setting request.")
       return
     }
 
     let settings = NYPLSettings.shared
-
-    if (settings.userHasSeenFirstTimeSyncMessage == true &&
-        AccountsManager.shared.currentAccount?.details?.syncPermissionGranted == false) {
-      completion(false)
+    if settings.userHasSeenFirstTimeSyncMessage == true &&
+        AccountsManager.shared.currentAccount?.details?.syncPermissionGranted == false {
+      syncSupportedCompletion(false, nil)
       return
     }
 
-    self.permissionUrlRequest { (initialized, syncIsPermitted) in
+    self.fetchSyncStatus { (initialized, syncIsPermitted, error) in
+
+      guard error == nil else {
+        NYPLErrorLogger.logError(error,
+                                 summary: "Unable to fetch current bookmark sync status")
+        syncSupportedCompletion(false, error)
+        return
+      }
 
       if (initialized && syncIsPermitted) {
-        completion(true)
+        Log.info(#function, "Sync has already been enabled on the server. Enabling in UserDefaults as well.")
+        syncSupportedCompletion(true, nil)
         settings.userHasSeenFirstTimeSyncMessage = true;
-        Log.debug(#file, "Sync has already been enabled on the server. Enable here as well.")
         return
-      } else if (!initialized && settings.userHasSeenFirstTimeSyncMessage == false) {
-        Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
-        #if OPENEBOOKS
-        let title = "Open eBooks Sync"
-        #else
-        let title = "SimplyE Sync"
-        #endif
-        let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
-        let alertController = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
-        let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
-          completion(false)
-          settings.userHasSeenFirstTimeSyncMessage = true;
-        })
-        let enableSyncAction = UIAlertAction.init(title: "Enable Sync", style: .default, handler: { action in
-          self.updateServerSyncSetting(toEnabled: true) { success in
-            completion(success)
+      }
+
+      if (!initialized && settings.userHasSeenFirstTimeSyncMessage == false) {
+        Log.info(#function, "Sync has never been initialized for the patron. Showing alert flow.")
+        NYPLMainThreadRun.asyncIfNeeded {
+          #if OPENEBOOKS
+          let title = "Open eBooks Sync"
+          #else
+          let title = "SimplyE Sync"
+          #endif
+          let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
+          let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+          let notNowAction = UIAlertAction(title: "Not Now", style: .default) { action in
+            syncSupportedCompletion(false, nil)
             settings.userHasSeenFirstTimeSyncMessage = true;
           }
-        })
-        alertController.addAction(notNowAction)
-        alertController.addAction(enableSyncAction)
-        alertController.preferredAction = enableSyncAction
-        NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: nil, animated: true, completion: nil)
+          let enableSyncAction = UIAlertAction(title: "Enable Sync", style: .default) { action in
+            self.updateServerSyncSetting(toEnabled: true) { success in
+              syncSupportedCompletion(success, nil)
+              settings.userHasSeenFirstTimeSyncMessage = true;
+            }
+          }
+          alertController.addAction(notNowAction)
+          alertController.addAction(enableSyncAction)
+          alertController.preferredAction = enableSyncAction
+          NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: nil, animated: true, completion: nil)
+        }
       } else {
-        completion(false)
+        syncSupportedCompletion(false, nil)
       }
     }
   }
@@ -134,7 +144,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
         return
       }
       let parameters = ["settings": ["simplified:synchronize_annotations": enabled]] as [String : Any]
-      syncSettingUrlRequest(userProfileUrl, parameters, 20, { success in
+      updateSyncSettings(at: userProfileUrl, parameters, { success in
         if !success {
           handleSyncSettingError()
         }
@@ -143,113 +153,84 @@ protocol NYPLAnnotationSyncing: AnyObject {
     }
   }
 
-
-  /// - Parameter successHandler: Called only if the request succeeds.
-  /// Always called on the main thread.
-  private class func permissionUrlRequest(successHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
-
+  private class func fetchSyncStatus(completion: @escaping (_ initialized: Bool,
+                                                            _ syncIsPermitted: Bool,
+                                                            _ error: Error?) -> ()) {
     guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
       Log.error(#file, "Failed to create user profile URL from string. Abandoning attempt to retrieve sync setting.")
       return
     }
 
-    var request = URLRequest.init(url: userProfileUrl,
-                                  cachePolicy: .reloadIgnoringLocalCacheData,
-                                  timeoutInterval: 60)
-    request.httpMethod = "GET"
-    setDefaultAnnotationHeaders(forRequest: &request)
+    NYPLNetworkExecutor.shared.GET(userProfileUrl, cachePolicy: .reloadIgnoringCacheData) { result in
+      switch result {
+      case .success(let data, _):
+        do {
+          let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
 
-    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-
-      DispatchQueue.main.async {
-
-        if let error = error as NSError? {
-          Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-          return
-        }
-        guard let data = data,
-          let response = (response as? HTTPURLResponse) else {
-            Log.error(#file, "No Data or No Server Response present after request.")
-            return
-        }
-
-        if response.statusCode == 200 {
-          if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Any],
-            let settings = json["settings"] as? [String:Any],
-            let syncSetting = settings["simplified:synchronize_annotations"] {
+          if let settings = json?["settings"] as? [String: Any],
+             let syncSetting = settings["simplified:synchronize_annotations"] {
             if syncSetting is NSNull {
-              successHandler(false, false)
+              completion(false, false, nil)
             } else {
-              successHandler(true, syncSetting as? Bool ?? false)
+              completion(true, syncSetting as? Bool ?? false, nil)
             }
           } else {
-            Log.error(#file, "Error parsing JSON or finding sync-setting key/value.")
+            let error = NSError(domain: "Error finding sync-setting key/value",
+                                code: NYPLErrorCode.parseFail.rawValue,
+                                userInfo: ["jsonData": json ?? "N/A"])
+            Log.error(#function, "\(error)")
+            completion(false, false, error)
           }
-        } else {
-          Log.error(#file, "Server response returned error code: \(response.statusCode))")
+        } catch {
+          completion(false, false, error)
         }
+      case .failure(let error, let response):
+        let httpStatus = (response as? HTTPURLResponse)?.statusCode ?? -1
+        Log.error(#file, "Error fetching annotations permissions: \(httpStatus); error: \(error)")
+        completion(false, false, error)
       }
     }
-    dataTask.resume()
   }
 
   /// - parameter completion: if a network request is actually performed, this
   /// is guaranteed to be called on the Main queue. Otherwise, this is called
   /// on the same thread the function was invoked on.
-  private class func syncSettingUrlRequest(_ url: URL,
-                                           _ parameters: [String:Any],
-                                           _ timeout: Double?,
-                                           _ completion: @escaping (Bool)->()) {
+  private class func updateSyncSettings(at url: URL,
+                                        _ parameters: [String:Any],
+                                        _ completion: @escaping (Bool)->()) {
     guard let jsonData = makeSubmissionData(fromRepresentation: parameters) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
       completion(false)
       return
     }
-    
-    var request = URLRequest(url: url)
-    request.httpMethod = "PUT"
-    request.httpBody = jsonData
-    setDefaultAnnotationHeaders(forRequest: &request)
-    request.setValue("vnd.librarysimplified/user-profile+json", forHTTPHeaderField: "Content-Type")
-    if let timeout = timeout {
-      request.timeoutInterval = timeout
-    }
-    
-    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
 
-      DispatchQueue.main.async {
-
-        if let error = error as NSError? {
-          Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-          if NetworkQueue.StatusCodes.contains(error.code) {
-            self.addToOfflineQueue(nil, url, parameters)
-          }
-          completion(false)
-          return
+    NYPLNetworkExecutor.shared.PUT(url,
+                                   additionalHeaders: ["Content-Type": "vnd.librarysimplified/user-profile+json"],
+                                   httpBody: jsonData) { data, response, error in
+      if let error = error as NSError? {
+        let httpStatus = (response as? HTTPURLResponse)?.statusCode ?? -1
+        Log.error(#file, "Error updating sync settings, server returned: \(httpStatus)")
+        if NetworkQueue.StatusCodes.contains(error.code) {
+          self.addRequestToOfflineQueue(httpMethod: .PUT,
+                                        url: url,
+                                        parameters: parameters)
         }
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-          Log.error(#file, "No response received from server")
-          completion(false)
-          return
-        }
-
-        if statusCode == 200 {
-          completion(true)
-        } else {
-          Log.error(#file, "Server Response Error. Status Code: \(statusCode)")
-          completion(false)
-        }
+        completion(false)
+        return
       }
+
+      completion(true)
     }
-    task.resume()
   }
 
-  class func handleSyncSettingError() {
-    let title = NSLocalizedString("Error Changing Sync Setting", comment: "")
-    let message = NSLocalizedString("There was a problem contacting the server.\nPlease make sure you are connected to the internet, or try again later.", comment: "")
-    let alert = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
-    alert.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
-    NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: nil, animated: true, completion: nil)
+  private class func handleSyncSettingError() {
+    NYPLMainThreadRun.asyncIfNeeded {
+      let title = NSLocalizedString("Error Changing Sync Setting", comment: "")
+      let message = NSLocalizedString("There was a problem contacting the server.\nPlease make sure you are connected to the internet, or try again later.", comment: "")
+      let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+      NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: nil, animated: true, completion: nil)
+    }
   }
 
   // MARK: - Reading Position
@@ -259,6 +240,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
   class func syncReadingPosition(ofBook bookID: String?,
                                  publication: Publication?,
                                  toURL url:URL?,
+                                 usingNetworkExecutor executor: NYPLHTTPRequestExecutingBasic,
                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
@@ -273,12 +255,8 @@ protocol NYPLAnnotationSyncing: AnyObject {
       return
     }
 
-    var request = URLRequest(url: url,
-                             cachePolicy: .reloadIgnoringLocalCacheData,
-                             timeoutInterval: NYPLDefaultRequestTimeout)
-    setDefaultAnnotationHeaders(forRequest: &request)
-
-    let dataTask = URLSession.shared.dataTask(with: request) { (data, _, error) in
+    _ = executor.GET(url,
+                     cachePolicy: .reloadIgnoringLocalCacheData) { data, _, error in
       let bookmarks = parseAnnotationsResponse(data,
                                                error: error,
                                                motivation: .readingProgress,
@@ -287,7 +265,6 @@ protocol NYPLAnnotationSyncing: AnyObject {
       let readPos = bookmarks?.first
       completion(readPos)
     }
-    dataTask.resume()
   }
 
   class func postReadingPosition(forBook bookID: String, selectorValue: String) {
@@ -338,12 +315,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
       return
     }
 
-    var request = URLRequest(url: annotationURL,
-                             cachePolicy: .reloadIgnoringLocalCacheData,
-                             timeoutInterval: NYPLDefaultRequestTimeout)
-    setDefaultAnnotationHeaders(forRequest: &request)
-
-    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+    NYPLNetworkExecutor.shared.GET(annotationURL, cachePolicy: .reloadIgnoringLocalCacheData) { data, _, error in
       let bookmarks = parseAnnotationsResponse(data,
                                                error: error,
                                                motivation: .bookmark,
@@ -351,7 +323,6 @@ protocol NYPLAnnotationSyncing: AnyObject {
                                                bookID: bookID)
       completion(bookmarks)
     }
-    dataTask.resume()
   }
 
   class func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark]) {
@@ -389,32 +360,21 @@ protocol NYPLAnnotationSyncing: AnyObject {
       return
     }
 
-    var request = URLRequest(url: url)
-    request.httpMethod = "DELETE"
-    setDefaultAnnotationHeaders(forRequest: &request)
-    request.timeoutInterval = NYPLDefaultRequestTimeout
-    
-    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      guard let statusCode = (response as? HTTPURLResponse)?.statusCode,
-            statusCode == 200
-      else {
-        let metadata: [String: Any] = ["annotationId": annotationId]
-        NYPLErrorLogger.logNetworkError(error,
-                                        code: .responseFail,
-                                        summary: "NYPLAnnotations::deleteBookmark error",
-                                        request: request,
-                                        response: response,
-                                        metadata: metadata)
+    NYPLNetworkExecutor.shared.DELETE(url) { result in
+      switch result {
+      case .success(_, _):
+        Log.info(#file, "200: DELETE bookmark success")
+        completionHandler(true)
+      case .failure(let error, let response):
+        NYPLErrorLogger.logError(error,
+                                 summary: "NYPLAnnotations::deleteBookmark error",
+                                 metadata: ["annotationId": annotationId,
+                                            "DELETE url": url,
+                                            "response": response ?? ""])
         completionHandler(false)
-        return
       }
-      
-      Log.info(#file, "200: DELETE bookmark success")
-      completionHandler(true)
     }
-    task.resume()
   }
-
 
   // Method is called when the SyncManager is syncing bookmarks
   // If an existing local bookmark is missing an annotationID, assume it still needs to be uploaded.
@@ -491,13 +451,13 @@ protocol NYPLAnnotationSyncing: AnyObject {
     }
   }
 
-  // MARK:- Helpers / Private methods
+  // MARK: - Helpers / Private methods
 
-  class func parseAnnotationsResponse(_ data: Data?,
-                                      error: Error?,
-                                      motivation: NYPLBookmarkSpec.Motivation,
-                                      publication: Publication?,
-                                      bookID: String) -> [NYPLReadiumBookmark]? {
+  private class func parseAnnotationsResponse(_ data: Data?,
+                                              error: Error?,
+                                              motivation: NYPLBookmarkSpec.Motivation,
+                                              publication: Publication?,
+                                              bookID: String) -> [NYPLReadiumBookmark]? {
     let metadata: [String: Any] = ["bookID": bookID,
                                    "motivation": motivation]
     if let error = error as NSError? {
@@ -538,18 +498,16 @@ protocol NYPLAnnotationSyncing: AnyObject {
   ///
   /// - Note: Does not log error reports to Crashlytics. That responsibility is
   /// left to the caller.
-  private class func postAnnotation(
-    forBook bookID: String,
-    withParameters parameters: [String: Any],
-    timeout: TimeInterval = NYPLDefaultRequestTimeout,
-    queueOffline: Bool,
-    _ completionHandler: @escaping (_ result: Result<String?, Error>) -> ()) {
+  private class func postAnnotation(forBook bookID: String,
+                                    withParameters parameters: [String: Any],
+                                    queueOffline: Bool,
+                                    _ completion: @escaping (_ result: Result<String?, Error>) -> ()) {
 
     guard let annotationsURL = NYPLAnnotations.annotationsURL else {
       let err = NSError(domain: "Error posting annotation",
                         code: NYPLErrorCode.appLogicInconsistency.rawValue,
                         userInfo: ["Reason": "annotationsURL is nil"])
-      completionHandler(.failure(err))
+      completion(.failure(err))
       return
     }
 
@@ -558,44 +516,29 @@ protocol NYPLAnnotationSyncing: AnyObject {
                         code: NYPLErrorCode.serializationFail.rawValue,
                         userInfo: ["Reason": "Could not create JSON body from input params",
                                    "Serializable annotation params": parameters])
-      completionHandler(.failure(err))
+      completion(.failure(err))
       return
     }
 
-    var request = URLRequest(url: annotationsURL)
-    request.httpMethod = "POST"
-    request.httpBody = jsonData
-    setDefaultAnnotationHeaders(forRequest: &request)
-    request.timeoutInterval = timeout
-
-    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      if let err = error as NSError? {
+    NYPLNetworkExecutor.shared.POST(annotationsURL,
+                                    httpBody: jsonData) { result in
+      switch result {
+      case .success(let data, _):
+        Log.info(#file, "Annotation POST for bookID \(bookID): Success 200.")
+        let serverAnnotationID = annotationID(fromNetworkData: data)
+        completion(.success(serverAnnotationID))
+      case .failure(let error, _):
+        let err = error as NSError
         Log.error(#file, "Annotation POST for bookID \(bookID): Error (nsCode: \(err.code) Description: \(err.localizedDescription))")
         if NetworkQueue.StatusCodes.contains(err.code) && queueOffline {
-          self.addToOfflineQueue(bookID, annotationsURL, parameters)
+          self.addRequestToOfflineQueue(httpMethod: .POST,
+                                        url: annotationsURL,
+                                        bookID: bookID,
+                                        parameters: parameters)
         }
-        completionHandler(.failure(err))
-        return
+        completion(.failure(err))
       }
-
-      guard let statusCode = (response as? HTTPURLResponse)?.statusCode,
-            statusCode == 200
-      else {
-        let err = NSError(domain: "Error posting annotation",
-                          code: NYPLErrorCode.responseFail.rawValue,
-                          userInfo: [
-                            "Serializable annotation params": parameters,
-                            NSError.httpResponseKey: response ?? "N/A"
-                          ])
-        completionHandler(.failure(err))
-        return
-      }
-
-      Log.info(#file, "Annotation POST for bookID \(bookID): Success 200.")
-      let serverAnnotationID = annotationID(fromNetworkData: data)
-      completionHandler(.success(serverAnnotationID))
     }
-    task.resume()
   }
 
   private class func annotationID(fromNetworkData data: Data?) -> String? {
@@ -631,41 +574,28 @@ protocol NYPLAnnotationSyncing: AnyObject {
     return NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
   }
 
-  private class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
-    for (headerKey, headerValue) in NYPLAnnotations.headers {
-      request.setValue(headerValue, forHTTPHeaderField: headerKey)
-    }
-  }
-
-  class var headers: [String:String] {
-    if let barcode = NYPLUserAccount.sharedAccount().barcode, let pin = NYPLUserAccount.sharedAccount().PIN {
-      let authenticationString = "\(barcode):\(pin)"
-      if let authenticationData = authenticationString.data(using: String.Encoding.ascii) {
-        let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: .lineLength64Characters))"
-        return ["Authorization" : "\(authenticationValue)",
-                "Content-Type" : "application/json"]
-      } else {
-        Log.error(#file, "Error formatting auth headers.")
-      }
-    } else if let authToken = NYPLUserAccount.sharedAccount().authToken {
-        let authenticationValue = "Bearer \(authToken)"
-        return ["Authorization" : "\(authenticationValue)",
-            "Content-Type" : "application/json"]
-    } else {
-      Log.error(#file, "Attempted to create authorization header with neither an oauth token nor a barcode and pin pair.")
-    }
-    return ["Authorization" : "",
-            "Content-Type" : "application/json"]
-  }
-
   class func makeSubmissionData(fromRepresentation dict: [String: Any]) -> Data? {
     return try? JSONSerialization.data(withJSONObject: dict,
                                        options: [.prettyPrinted])
   }
 
-  private class func addToOfflineQueue(_ bookID: String?, _ url: URL, _ parameters: [String:Any]) {
+  private class func addRequestToOfflineQueue(httpMethod: NetworkQueue.HTTPMethodType,
+                                              url: URL,
+                                              bookID: String? = nil,
+                                              parameters: [String:Any]) {
     let libraryID = AccountsManager.shared.currentAccount?.uuid ?? ""
     let parameterData = makeSubmissionData(fromRepresentation: parameters)
-    NetworkQueue.shared().addRequest(libraryID, bookID, url, .POST, parameterData, headers)
+    NetworkQueue.shared.addRequest(libraryID, bookID, url, httpMethod, parameterData)
+  }
+}
+
+extension NYPLAnnotations {
+  class func test_parseAnnotationsResponse(_ data: Data?,
+                                           error: Error?,
+                                           motivation: NYPLBookmarkSpec.Motivation,
+                                           publication: Publication?,
+                                           bookID: String) -> [NYPLReadiumBookmark]? {
+    parseAnnotationsResponse(data, error: error, motivation: motivation,
+                             publication: publication, bookID: bookID)
   }
 }

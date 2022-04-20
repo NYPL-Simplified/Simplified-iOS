@@ -20,10 +20,10 @@
  If @p error is nil, @p data may also be nil.
  @return The request that was issued.
  */
-- (nonnull NSURLRequest*)withURL:(nonnull NSURL *)URL
-                shouldResetCache:(BOOL)shouldResetCache
-               completionHandler:(void (^ _Nonnull)(NSData * _Nullable data,
-                                                    NSURLResponse * _Nullable response,
-                                                    NSError * _Nullable error))handler;
+- (void)  withURL:(nonnull NSURL *)URL
+ shouldResetCache:(BOOL)shouldResetCache
+completionHandler:(void (^ _Nonnull)(NSData * _Nullable data,
+                                     NSURLResponse * _Nullable response,
+                                     NSError * _Nullable error))handler;
 
 @end

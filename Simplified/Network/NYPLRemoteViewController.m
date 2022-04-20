@@ -126,9 +126,9 @@
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
 
   NYPLLOG_F(@"RemoteVC: issueing request [%@]", [request loggableString]);
-  self.dataTask = [NYPLNetworkExecutor.shared addBearerAndExecute:request
-                           completion:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-
+  self.dataTask = [NYPLNetworkExecutor.shared GET:self.URL
+                                      cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                       completion:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
     NSHTTPURLResponse *httpResponse = nil;
     if ([response isKindOfClass: [NSHTTPURLResponse class]]) {
       httpResponse = (NSHTTPURLResponse *) response;
@@ -211,11 +211,9 @@
         if (self.needsReauthentication) {
           self.needsReauthentication = NO;
 
-          NYPLUserAccount *user = [NYPLUserAccount sharedAccount];
           __block NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
-          [reauthenticator authenticateIfNeeded:user
-                       usingExistingCredentials:YES
-                       authenticationCompletion:^{
+          [reauthenticator authenticateIfNeededUsingExistingCredentials:YES
+                                               authenticationCompletion:^{
             // make sure to retain the reauthenticator until end of auth
             // flow and then break any possible retain cycle
             reauthenticator = nil;

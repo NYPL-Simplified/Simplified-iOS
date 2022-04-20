@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import NYPLUtilities
 
 @objc enum NYPLAuthRequestType: Int {
   case signIn = 1
@@ -52,16 +53,16 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
                          libraryAccountsProvider: NYPLLibraryAccountsProvider,
                          urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider,
                          bookRegistry: NYPLBookRegistrySyncing,
-                         bookDownloadsCenter: NYPLBookDownloadsDeleting,
+                         bookDownloadsRemover: NYPLBookDownloadsDeleting,
                          userAccountProvider: NYPLUserAccountProvider.Type,
-                         uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
+                         uiDelegate: NYPLSignInOutBusinessLogicUIDelegate,
                          drmAuthorizerAdobe: NYPLDRMAuthorizing?,
                          drmAuthorizerAxis: NYPLDRMAuthorizing?) {
     self.init(libraryAccountID: libraryAccountID,
               libraryAccountsProvider: libraryAccountsProvider,
               urlSettingsProvider: urlSettingsProvider,
               bookRegistry: bookRegistry,
-              bookDownloadsCenter: bookDownloadsCenter,
+              bookDownloadsRemover: bookDownloadsRemover,
               userAccountProvider: userAccountProvider,
               networkExecutor: NYPLNetworkExecutor(credentialsProvider: uiDelegate,
                                                    cachingStrategy: .ephemeral,
@@ -76,10 +77,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
        libraryAccountsProvider: NYPLLibraryAccountsProvider,
        urlSettingsProvider: NYPLUniversalLinksSettings & NYPLFeedURLProvider,
        bookRegistry: NYPLBookRegistrySyncing,
-       bookDownloadsCenter: NYPLBookDownloadsDeleting,
+       bookDownloadsRemover: NYPLBookDownloadsDeleting,
        userAccountProvider: NYPLUserAccountProvider.Type,
-       networkExecutor: NYPLRequestExecuting,
-       uiDelegate: NYPLSignInOutBusinessLogicUIDelegate?,
+       networkExecutor: NYPLRequestExecuting & NYPLOAuthTokenFetching,
+       uiDelegate: NYPLSignInOutBusinessLogicUIDelegate,
        drmAuthorizerAdobe: NYPLDRMAuthorizing?,
        drmAuthorizerAxis: NYPLDRMAuthorizing?) {
     self.uiDelegate = uiDelegate
@@ -87,7 +88,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     self.libraryAccountsProvider = libraryAccountsProvider
     self.urlSettingsProvider = urlSettingsProvider
     self.bookRegistry = bookRegistry
-    self.bookDownloadsCenter = bookDownloadsCenter
+    self.bookDownloadsRemover = bookDownloadsRemover
     self.userAccountProvider = userAccountProvider
     self.networker = networkExecutor
     self.drmAuthorizerAdobe = drmAuthorizerAdobe
@@ -97,20 +98,19 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     self.samlHelper.businessLogic = self
   }
 
-  /// Lock for ensuring internal state consistency.
-  let permissionsCheckLock = NSLock()
-
   /// Signing in and out may imply syncing the book registry.
   let bookRegistry: NYPLBookRegistrySyncing
 
   /// Signing out implies removing book downloads from the device.
-  let bookDownloadsCenter: NYPLBookDownloadsDeleting
+  let bookDownloadsRemover: NYPLBookDownloadsDeleting
 
   /// Provides the user account for a given library.
   private let userAccountProvider: NYPLUserAccountProvider.Type
 
-  /// THe objects determining whether there's an ongoing DRM authorization.
+  /// The object determining whether there's an ongoing Adobe DRM authorization.
   weak private(set) var drmAuthorizerAdobe: NYPLDRMAuthorizing?
+
+  /// The object determining whether there's an ongoing Axis DRM authorization.
   weak private(set) var drmAuthorizerAxis: NYPLDRMAuthorizing?
 
   /// The primary way for the business logic to communicate with the UI.
@@ -120,6 +120,11 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     return uiDelegate?.context ?? "Unknown"
   }
 
+  // MARK: - Flow control
+
+  /// Lock for ensuring internal state consistency.
+  let permissionsCheckLock = NSLock()
+
   /// This flag should be set if the instance is used to register new users.
   @objc var isLoggingInAfterSignUp: Bool = false
 
@@ -127,7 +132,21 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   /// refreshing authentication.
   var refreshAuthCompletion: (() -> Void)? = nil
 
-  // MARK:- OAuth / SAML / Clever Info
+  /// This overrides the sign-in state logic to behave as if the user isn't
+  /// authenticated. This is useful if we already have credentials, but
+  /// the session expired (e.g. SAML flow).
+  var ignoreSignedInState: Bool = false
+
+  /// This is `true` during the process of validating credentials.
+  ///
+  /// Credentials validation happens *after* the initial sign-in intent
+  /// where the app obtains the credentials in some way (e.g. user
+  /// typing them in, or the redirection to 3rd party website for OAuth;
+  /// see `logIn`), and *before* doing DRM authorization (see
+  /// `drmAuthorizeUserData`).
+  @objc var isValidatingCredentials = false
+
+  // MARK: - OAuth / SAML / Clever Info
 
   /// The current OAuth token if available.
   var authToken: String? = nil
@@ -144,28 +163,14 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   /// Performs initiation rites for SAML sign-in.
   let samlHelper: NYPLSAMLHelper
 
-  /// This overrides the sign-in state logic to behave as if the user isn't
-  /// authenticated. This is useful if we already have credentials, but
-  /// the session expired (e.g. SAML flow).
-  var ignoreSignedInState: Bool = false
-
-  /// This is `true` during the process of validating credentials.
-  ///
-  /// Credentials validation happens *after* the initial sign-in intent
-  /// where the app obtains the credentials in some way (e.g. user
-  /// typing them in, or the redirection to 3rd party website for OAuth;
-  /// see `logIn`), and *before* doing DRM authorization (see
-  /// `drmAuthorizeUserData`).
-  @objc var isValidatingCredentials = false
-
-  // MARK:- Card Creation Info
+  // MARK: - Card Creation Info
 
   let cardCreationLock = NSLock()
   @objc var cardCreationIsOngoing = false
   var cardCreationCoordinator: FlowCoordinating?
   var allowJuvenileCardCreation = false
 
-  // MARK:- Library Accounts Info
+  // MARK: - Library-related Info
 
   /// The ID of the library this object is signing in to.
   /// - Note: This is also provided by `libraryAccountsProvider::currentAccount`
@@ -200,9 +205,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     }
   }
 
-  // MARK:- Network Requests Logic
+  // MARK: - Network Requests Logic
 
-  let networker: NYPLRequestExecuting
+  let networker: NYPLRequestExecuting & NYPLOAuthTokenFetching
 
   /// Creates a request object for signing in or out, depending on
   /// on which authentication mechanism is currently selected.
@@ -313,9 +318,9 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   /// Uses the problem document's `title` and `message` fields to
   ///  communicate a user friendly error info to the `uiDelegate`.
   /// Also logs the `error`.
-  private func handleNetworkError(_ error: NSError,
-                                  response: URLResponse? = nil,
-                                  loggingContext: [String: Any]) {
+  func handleNetworkError(_ error: NSError,
+                          response: URLResponse? = nil,
+                          loggingContext: [String: Any]) {
     let problemDoc = error.problemDocument
 
     // NYPLNetworkExecutor already logged the error, but this is more
@@ -351,8 +356,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
       self.uiDelegate?.businessLogicWillSignIn(self)
     }
 
-    if selectedAuthentication?.isOauth ?? false {
-      oauthLogIn()
+    if selectedAuthentication?.isOauthIntermediary ?? false {
+      oauthIntermediaryLogIn()
+    } else if selectedAuthentication?.isOauthClientCredentials ?? false {
+      oauthClientCredentialsLogin()
     } else if selectedAuthentication?.isSaml ?? false {
       samlHelper.logIn()
     } else {
@@ -419,6 +426,20 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
           selectedAuthentication = nil
         }
       }
+
+      if authDef.isOauthClientCredentials {
+        // always use existing credentials in this case
+        if userAccount.username == nil || userAccount.pin == nil {
+          ignoreSignedInState = true
+          return true
+        } else {
+          ignoreSignedInState = false
+          uiDelegate?.usernameTextField?.text = userAccount.username
+          uiDelegate?.PINTextField?.text = userAccount.pin
+          logIn()
+          return false
+        }
+      }
     }
 
     // set up UI and log in if needed
@@ -482,6 +503,13 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     #endif
 
     if let selectedAuthentication = selectedAuthentication {
+      if selectedAuthentication.isOauthClientCredentials {
+        if let username = barcode, let password = pin {
+          // this is needed to that when the authToken expires, we can
+          // refresh the token.
+          userAccount.setRefreshTokenInfo(username: username, password: password)
+        }
+      }
       if selectedAuthentication.isOauth || selectedAuthentication.isSaml {
         if let authToken = authToken {
           userAccount.setAuthToken(authToken)

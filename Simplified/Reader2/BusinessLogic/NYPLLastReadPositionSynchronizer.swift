@@ -18,12 +18,18 @@ class NYPLLastReadPositionSynchronizer {
     case stay, moveToServerLocator
   }
 
+  private let failFastNetworkExecutor: NYPLNetworkExecutor
+
   /// Designated initializer.
   ///
   /// - Parameters:
   ///   - bookRegistry: The registry that stores the reading progresses.
   init(bookRegistry: NYPLBookRegistryProvider) {
     self.bookRegistry = bookRegistry
+    failFastNetworkExecutor = NYPLNetworkExecutor(
+      credentialsProvider: NYPLUserAccount.sharedAccount(),
+      cachingStrategy: .ephemeral,
+      waitsForConnectivity: false)
   }
 
   /// Fetches the read position from the server and alerts the user
@@ -38,9 +44,9 @@ class NYPLLastReadPositionSynchronizer {
   ///   - book: The book whose position needs syncing.
   ///   - drmDeviceID: The device ID is used to identify if the last read
   ///   position retrieved from the server was from a different device.
-  ///   - completion: Called when syncing is complete. The `Locator` parameter
-  ///  will be not nil if a more recent position was found on the server and
-  ///  the user chose to move to that position.
+  ///   - completion: Called on the main thread when syncing is complete.
+  ///  The `Locator` parameter will be not nil if a more recent position
+  ///  was found on the server and the user chose to move to that position.
   func sync(for publication: Publication,
             book: NYPLBook,
             drmDeviceID: String?,
@@ -97,7 +103,7 @@ class NYPLLastReadPositionSynchronizer {
     let localLocation = bookRegistry.location(forIdentifier: book.identifier)
 
     NYPLAnnotations
-      .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL) { bookmark in
+      .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL, usingNetworkExecutor: failFastNetworkExecutor) { bookmark in
 
         guard let bookmark = bookmark else {
           Log.info(#function, "No reading position annotation exists on the server for \(book.loggableShortString()).")

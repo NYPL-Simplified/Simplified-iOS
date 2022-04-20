@@ -82,8 +82,7 @@ Most of the code follows Apple's usual pattern of passive views,
 relatively passive models, and one-off controllers for integrating everything.
 Immutability is preferred wherever possible.
 
-Questions, suggestions, and general discussion occurs via Slack: Email
-`swans062@umn.edu` for access.
+Currently we are not accepting contributions but will update this document when we are.
 
 ## Branching and CI
 

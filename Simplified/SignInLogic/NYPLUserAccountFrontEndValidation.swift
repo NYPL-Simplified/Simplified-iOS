@@ -40,7 +40,7 @@ protocol NYPLUserAccountInputProvider {
     let pinHasText = pin.count > 0
     let selectedAuth = businessLogic?.selectedAuthentication
     let pinIsNotRequired = selectedAuth?.pinKeyboard == LoginKeyboard.none
-    let isOAuthLogin = selectedAuth?.isOauth ?? false
+    let isOAuthLogin = selectedAuth?.isOauthIntermediary ?? false
 
     return isOAuthLogin || usernameHasText && (pinHasText || pinIsNotRequired)
   }

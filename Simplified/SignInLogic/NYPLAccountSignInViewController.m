@@ -64,12 +64,7 @@ typedef NS_ENUM(NSInteger, Section) {
 
 CGFloat const marginPadding = 2.0;
 
-#pragma mark - NYPLSignInOutBusinessLogicUIDelegate properties
-
-- (NSString *)context
-{
-  return @"SignIn-modal";
-}
+#pragma mark - NYPLBasicAuthCredentialsProvider
 
 - (NSString *)username
 {
@@ -79,6 +74,38 @@ CGFloat const marginPadding = 2.0;
 - (NSString *)pin
 {
   return self.PINTextField.text;
+}
+
+- (BOOL)requiresUserAuthentication
+{
+  return self.businessLogic.userAccount.requiresUserAuthentication;
+}
+
+- (BOOL)hasCredentials
+{
+  return self.businessLogic.userAccount.hasCredentials;
+}
+
+#pragma mark - NYPLOAuthTokenProvider
+
+- (NSString *)authToken
+{
+  return self.businessLogic.userAccount.authToken;
+}
+
+- (void)setAuthToken:(NSString * _Nonnull)token
+{
+  [self.businessLogic.userAccount setAuthToken:token];
+}
+
+- (BOOL)hasOAuthClientCredentials
+{
+  return [self.businessLogic.userAccount hasOAuthClientCredentials];
+}
+
+- (NSURL *)oauthTokenRefreshURL
+{
+  return [self.businessLogic.userAccount oauthTokenRefreshURL];
 }
 
 #pragma mark - NSObject
@@ -102,7 +129,7 @@ CGFloat const marginPadding = 2.0;
                         libraryAccountsProvider:AccountsManager.shared
                         urlSettingsProvider: NYPLSettings.shared
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
-                        bookDownloadsCenter:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                        bookDownloadsRemover:[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         userAccountProvider:[NYPLUserAccount class]
                         uiDelegate:self
                         drmAuthorizerAdobe:drmAuthorizerAdobe
@@ -580,7 +607,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (NSArray *)cellsForAuthMethod:(AccountDetailsAuthentication *)authenticationMethod {
   NSArray *authCells;
 
-  if (authenticationMethod.isOauth) {
+  if (authenticationMethod.isOauthIntermediary) {
     // Oauth just needs the login button since it will open Safari for
     // actual authentication
     authCells = @[@(CellKindLogIn)];
@@ -606,7 +633,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSArray *)accountInfoSection {
   NSMutableArray *workingSection = @[].mutableCopy;
-  if (!self.businessLogic.selectedAuthentication.needsAuth) {
+  if (!self.businessLogic.selectedAuthentication.requiresUserAuthentication) {
     // no authentication needed, empty section
 
   } else if (self.businessLogic.selectedAuthentication && self.businessLogic.isSignedIn) {
@@ -614,7 +641,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     // show only the selected auth method
 
     [workingSection addObjectsFromArray:[self cellsForAuthMethod:self.businessLogic.selectedAuthentication]];
-  } else if (!self.businessLogic.isSignedIn && self.businessLogic.userAccount.needsAuth) {
+  } else if (!self.businessLogic.isSignedIn && self.businessLogic.userAccount.requiresUserAuthentication) {
     // user needs to sign in
 
     if (self.businessLogic.isSamlPossible) {
@@ -916,9 +943,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 #pragma mark - NYPLSignInOutBusinessLogicUIDelegate
 
+- (NSString *)context
+{
+  return @"SignIn-modal";
+}
+
 - (void)businessLogicWillSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
-  if (!businessLogic.selectedAuthentication.isOauth
+  if (!businessLogic.selectedAuthentication.isOauthIntermediary
       && !businessLogic.selectedAuthentication.isSaml) {
     [self.usernameTextField resignFirstResponder];
     [self.PINTextField resignFirstResponder];

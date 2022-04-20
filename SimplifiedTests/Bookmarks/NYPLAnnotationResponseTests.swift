@@ -35,11 +35,12 @@ class NYPLAnnotationResponseTests: XCTestCase {
 
   func testParseAnnotationsResponseForReadingProgress() throws {
     // test
-    let annotations = NYPLAnnotations.parseAnnotationsResponse(responseData,
-                                                               error: nil,
-                                                               motivation: .readingProgress,
-                                                               publication: publication,
-                                                               bookID: bookID)
+    let annotations = NYPLAnnotations.test_parseAnnotationsResponse(
+      responseData,
+      error: nil,
+      motivation: .readingProgress,
+      publication: publication,
+      bookID: bookID)
 
     // verify
     XCTAssertNotNil(annotations)
@@ -57,11 +58,12 @@ class NYPLAnnotationResponseTests: XCTestCase {
 
   func testParseAnnotationsResponseForBookmarks() throws {
     // test
-    let annotations = NYPLAnnotations.parseAnnotationsResponse(responseData,
-                                                               error: nil,
-                                                               motivation: .bookmark,
-                                                               publication: publication,
-                                                               bookID: bookID)
+    let annotations = NYPLAnnotations.test_parseAnnotationsResponse(
+      responseData,
+      error: nil,
+      motivation: .bookmark,
+      publication: publication,
+      bookID: bookID)
 
     // verify
     XCTAssertNotNil(annotations)

@@ -12,14 +12,14 @@ import Foundation
 class NYPLUserAccountProviderMock: NSObject, NYPLUserAccountProvider {
   private static let userAccountMock = NYPLUserAccountMock()
   
-  var needsAuth: Bool
+  var requiresUserAuthentication: Bool
   
   static func sharedAccount(libraryUUID: String?) -> NYPLUserAccount {
     return userAccountMock
   }
   
   override init() {
-    needsAuth = false
+    requiresUserAuthentication = false
     
     super.init()
   }

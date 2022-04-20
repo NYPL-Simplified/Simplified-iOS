@@ -82,11 +82,11 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                      completionHandler:handler] resume];
 }
 
-- (NSURLRequest*)withURL:(NSURL *const)URL
-        shouldResetCache:(BOOL)shouldResetCache
-       completionHandler:(void (^)(NSData *data,
-                                   NSURLResponse *response,
-                                   NSError *error))handler
+- (void)  withURL:(NSURL *const)URL
+ shouldResetCache:(BOOL)shouldResetCache
+completionHandler:(void (^)(NSData *data,
+                            NSURLResponse *response,
+                            NSError *error))handler
 {
   if(!handler) {
     @throw NSInvalidArgumentException;
@@ -125,12 +125,16 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   }
 
   NSString *lpe = [URL lastPathComponent];
-  if ([lpe isEqualToString:@"borrow"])
-    req = [[NYPLNetworkExecutor.shared PUT:URL completion:completionWrapper] originalRequest];
-  else
-    req = [[NYPLNetworkExecutor.shared GET:URL cachePolicy:NSURLRequestUseProtocolCachePolicy completion:completionWrapper] originalRequest];
-
-  return req;
+  if ([lpe isEqualToString:@"borrow"]) {
+    [NYPLNetworkExecutor.shared PUT:URL
+                  additionalHeaders:nil
+                           httpBody:nil
+                         completion:completionWrapper];
+  } else {
+    (void)[NYPLNetworkExecutor.shared GET:URL
+                              cachePolicy:NSURLRequestUseProtocolCachePolicy
+                               completion:completionWrapper];
+  }
 }
 
 @end

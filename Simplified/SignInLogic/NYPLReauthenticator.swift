@@ -23,18 +23,32 @@ import Foundation
 
   private var signInModalVC: NYPLAccountSignInViewController?
 
+  @objc
+  func authenticateIfNeeded(_ user: NYPLBasicAuthCredentialsProvider,
+                            afterHTTPResponse response: URLResponse,
+                            withProblemDocument problemDoc: NYPLProblemDocument?,
+                            authenticationCompletion: (()-> Void)?) {
+    let hasCredentials = user.hasCredentials()
+    let loginRequired = user.requiresUserAuthentication
+    let serverNeedsRefresh = response.indicatesAuthenticationNeedsRefresh(with: problemDoc)
+
+    if serverNeedsRefresh || (!hasCredentials && loginRequired) {
+      authenticateIfNeeded(usingExistingCredentials: hasCredentials,
+                           authenticationCompletion: authenticationCompletion)
+    }
+  }
+
+
   /// Re-authenticates the user. This may involve presenting the sign-in
   /// modal UI or not, depending on the sign-in business logic.
   ///
   /// - Parameters:
-  ///   - user: The current user.
   ///   - usingExistingCredentials: Use the existing credentials for `user`.
   ///   - authenticationCompletion: Code to run after the authentication
   ///   flow completes.
   /// - Returns: `true` if an authentication flow was started to refresh the
   /// credentials, `false` otherwise.
-  @objc func authenticateIfNeeded(_ user: NYPLUserAccount,
-                                  usingExistingCredentials: Bool,
+  @objc func authenticateIfNeeded(usingExistingCredentials: Bool,
                                   authenticationCompletion: (()-> Void)?) {
     NYPLMainThreadRun.asyncIfNeeded {
       let vc = NYPLAccountSignInViewController()

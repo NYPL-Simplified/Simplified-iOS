@@ -36,8 +36,10 @@ class NYPLNetworkResponder: NSObject {
   private let useFallbackCaching: Bool
 
   /// The object providing the credentials to respond to an authentication
-  /// challenge. If `nil`, the shared `NYPLUserAccount` singleton will be used.
-  private let credentialsProvider: NYPLBasicAuthCredentialsProvider?
+  /// challenge.
+  let credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider
+
+  var oauthTokenRefresher: NYPLOAuthTokenRefresher?
 
   //----------------------------------------------------------------------------
   /// - Parameter shouldEnableFallbackCaching: If set to `true`, the executor
@@ -45,7 +47,7 @@ class NYPLNetworkResponder: NSObject {
   /// caching headers. The default is `false`.
   /// - Parameter credentialsProvider: The object providing the credentials
   /// to respond to an authentication challenge.
-  init(credentialsProvider: NYPLBasicAuthCredentialsProvider? = nil,
+  init(credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider,
        useFallbackCaching: Bool = false) {
     self.taskInfo = [Int: NYPLNetworkTaskInfo]()
     self.taskInfoLock = NSRecursiveLock()
@@ -150,11 +152,22 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     logMetadata["elapsedTime"] = elapsed
     Log.info(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
 
-    // attempt parsing of Problem Document
-    if task.response?.isProblemDocument() ?? false {
+    // attempt parsing of Problem Document. Note that per URLSessionTaskDelegate
+    // docs, server errors are not communicated via the `networkError` parameter
+    // to this urlSession delegate method. So if there is a problem document, we
+    // can ignore `networkError`.
+    if let response = task.response, response.isProblemDocument() {
       let errorWithProblemDoc = task.parseAndLogError(fromProblemDocumentData: responseData,
                                                       networkError: networkError,
                                                       logMetadata: logMetadata)
+      // if we detect an expired client credentials token,
+      // nil it out so that next time it will trigger a token refresh
+      let problemDoc = errorWithProblemDoc.problemDocument
+      if credentialsProvider.hasOAuthClientCredentials(),
+         response.indicatesAuthenticationNeedsRefresh(with: problemDoc) {
+        oauthTokenRefresher?.currentToken = nil
+      }
+
       currentTaskInfo.completion(.failure(errorWithProblemDoc, task.response))
       return
     }
@@ -202,6 +215,17 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
 
 extension URLSessionTask {
   //----------------------------------------------------------------------------
+  /// Parses the response data and builds an error that includes the problem
+  /// document if one was present. If not, it falls back to either the provided
+  /// network-related error or the problem document parse error.
+  ///
+  /// - Parameters:
+  ///   - responseData: The Data to extract the problem document from.
+  ///   - networkError: If somehow the parsing of the problem document fails,
+  ///   this error will be used as base for the returned error.
+  ///   - logMetadata: The metadata
+  /// - Returns: An error whose `code` is NOT included in
+  /// `NetworkQueue.StatusCodes`.
   fileprivate func parseAndLogError(fromProblemDocumentData responseData: Data,
                                     networkError: Error?,
                                     logMetadata: [String: Any]) -> NYPLUserFriendlyError {
@@ -273,8 +297,7 @@ extension NYPLNetworkResponder: URLSessionTaskDelegate {
                   didReceive challenge: URLAuthenticationChallenge,
                   completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
   {
-    let credsProvider = credentialsProvider ?? NYPLUserAccount.sharedAccount()
-    let authChallenger = NYPLBasicAuth(credentialsProvider: credsProvider)
+    let authChallenger = NYPLBasicAuth(credentialsProvider: credentialsProvider)
     authChallenger.handleChallenge(challenge, completion: completionHandler)
   }
 }

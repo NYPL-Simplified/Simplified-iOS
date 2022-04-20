@@ -73,7 +73,7 @@ protocol NYPLAgeCheckValidationDelegate: AnyObject {
         return
       }
       
-      if userAccountProvider.needsAuth == true || accountDetails.userAboveAgeLimit {
+      if userAccountProvider.requiresUserAuthentication || accountDetails.userAboveAgeLimit {
         completion?(true)
         return
       }

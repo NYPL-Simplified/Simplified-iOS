@@ -77,9 +77,8 @@
     // where the barcode and pin are entered but according to ADEPT the device
     // is not authorized. To be used, the account must have a barcode and pin."
     NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
-    [reauthenticator authenticateIfNeeded:user
-                 usingExistingCredentials:YES
-                 authenticationCompletion:^{
+    [reauthenticator authenticateIfNeededUsingExistingCredentials:YES
+                                         authenticationCompletion:^{
       dispatch_async(dispatch_get_main_queue(), ^{
         [self openBook:book successCompletion:successCompletion]; // with successful DRM activation
       });
@@ -122,9 +121,10 @@
                                                fromFileURL:url
                                          successCompletion:successCompletion];
 
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
-    if (enableSync == YES) {
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount]
+                             syncSupportedCompletion:^(BOOL enableSync, NSError *error) {
+    if (error == nil) {
       currentAccount.details.syncPermissionGranted = enableSync;
     }
   }];

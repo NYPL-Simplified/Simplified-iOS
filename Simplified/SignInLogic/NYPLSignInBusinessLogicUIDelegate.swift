@@ -6,10 +6,10 @@
 //  Copyright © 2020 NYPL. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// The functionalities on the UI that the sign-in business logic requires.
-@objc protocol NYPLSignInBusinessLogicUIDelegate: NYPLBasicAuthCredentialsProvider, NYPLUserAccountInputProvider {
+@objc protocol NYPLSignInBusinessLogicUIDelegate: NYPLBasicAuthCredentialsProvider, NYPLOAuthTokenProvider, NYPLUserAccountInputProvider {
   /// The context in which the UI delegate is operating in, such as in a modal
   /// sheet or a tab.
   /// - Note: This should not be derived from a computation involving views,
