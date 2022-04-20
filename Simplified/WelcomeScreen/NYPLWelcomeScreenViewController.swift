@@ -4,8 +4,10 @@ import PureLayout
 
 /// Welcome screen for a first-time user
 @objcMembers final class NYPLWelcomeScreenViewController: UIViewController {
-  
-  var completion: ((Account) -> ())?
+
+  /// Always called on the main thread after user chooses a library or the
+  /// Books for All collection.
+  private let completion: ((Account) -> ())?
   
   required init(completion: ((Account) -> ())?) {
     self.completion = completion

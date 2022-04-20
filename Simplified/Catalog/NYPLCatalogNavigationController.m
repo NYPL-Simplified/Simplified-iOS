@@ -191,51 +191,8 @@
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
 
-  // TODO: SIMPLY-3048 refactor better in a extension
 #ifdef SIMPLYE
-  NYPLSettings *settings = [NYPLSettings sharedSettings];
-  
-  if (!settings.userHasSeenWelcomeScreen) {
-    Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-
-    __block NSURL *mainFeedUrl = [NSURL URLWithString:currentAccount.catalogUrl];
-    void (^completion)(void) = ^() {
-      [[NYPLSettings sharedSettings] setAccountMainFeedURL:mainFeedUrl];
-      [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-      
-      NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
-        if (![NSThread isMainThread]) {
-          dispatch_async(dispatch_get_main_queue(), ^{
-            [self welcomeScreenCompletionHandlerForAccount:account];
-          });
-        } else {
-          [self welcomeScreenCompletionHandlerForAccount:account];
-        }
-      }];
-
-      UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
-
-      if([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
-        [navController setModalPresentationStyle:UIModalPresentationFormSheet];
-      } else {
-        [navController setModalPresentationStyle:UIModalPresentationFullScreen];
-      }
-      [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-
-      NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
-      [vc safelyPresentViewController:navController animated:YES completion:nil];
-    };
-    if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
-      [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
-                                                                       currentLibraryAccountProvider:[AccountsManager shared]
-                                                                                          completion:^(BOOL isOfAge) {
-        mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
-        completion();
-      }];
-    } else {
-      completion();
-    }
-  }
+  [self presentWelcomeScreenIfNeeded];
 #endif
 }
 
@@ -253,7 +210,59 @@
   self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
-- (void)welcomeScreenCompletionHandlerForAccount:(Account *const)account
+#ifdef SIMPLYE
+
+- (void)presentWelcomeScreenIfNeeded
+{
+  NYPLSettings *settings = [NYPLSettings sharedSettings];
+
+  if (settings.userHasSeenWelcomeScreen) {
+    return;
+  }
+
+  if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
+    NYPLUserAccount *userAccount = [NYPLUserAccount sharedAccount];
+    [[[AccountsManager shared] ageCheck]
+     verifyCurrentAccountAgeRequirementWithUserAccountProvider:userAccount
+     currentLibraryAccountProvider:[AccountsManager shared]
+     completion:^(BOOL isOfAge) {
+      NSURL *mainFeedUrl = [userAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
+      [settings setAccountMainFeedURL:mainFeedUrl];
+      [NYPLMainThreadRun asyncIfNeeded:^{
+        [self presentWelcomeScreen];
+      }];
+    }];
+  } else {
+    Account *libAccount = [[AccountsManager sharedInstance] currentAccount];
+    NSURL *mainFeedUrl = [NSURL URLWithString:libAccount.catalogUrl];
+    [settings setAccountMainFeedURL:mainFeedUrl];
+    [self presentWelcomeScreen];
+  }
+}
+
+- (void)presentWelcomeScreen
+{
+  [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
+
+  NYPLWelcomeScreenViewController *welcomeVC = [[NYPLWelcomeScreenViewController alloc]
+                                                initWithCompletion:^(Account *const account) {
+    [self completeWelcomeScreenForLibraryAccount:account];
+  }];
+
+  UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeVC];
+
+  if([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
+    [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+  } else {
+    [navController setModalPresentationStyle:UIModalPresentationFullScreen];
+  }
+  [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+
+  NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
+  [vc safelyPresentViewController:navController animated:YES completion:nil];
+}
+
+- (void)completeWelcomeScreenForLibraryAccount:(Account *const)account
 {
   [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
   [[NYPLBookRegistry sharedRegistry] save];
@@ -262,5 +271,7 @@
     [self updateFeedAndRegistryOnAccountChange];
   }];
 }
+
+#endif
 
 @end
