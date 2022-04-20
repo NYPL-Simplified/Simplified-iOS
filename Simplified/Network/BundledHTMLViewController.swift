@@ -11,13 +11,9 @@ import WebKit
   
   required init(fileURL: URL, title: String) {
     self.fileURL = fileURL
-    if #available(iOS 10.0, *) {
-      let config = WKWebViewConfiguration()
-      config.dataDetectorTypes = WKDataDetectorTypes()
-      self.webView = WKWebView(frame: .zero, configuration: config)
-    } else {
-      self.webView = WKWebView()
-    }
+    let config = WKWebViewConfiguration()
+    config.dataDetectorTypes = WKDataDetectorTypes()
+    self.webView = WKWebView(frame: .zero, configuration: config)
     self.webViewDelegate = WebViewDelegate()
     super.init(nibName: nil, bundle: nil)
     self.title = title
@@ -56,11 +52,7 @@ import WebKit
         if !UIApplication.shared.canOpenURL(url) {
           decisionHandler(.cancel)
         } else {
-          if #available(iOS 10.0, *) {
-            UIApplication.shared.open(url)
-          } else {
-            UIApplication.shared.openURL(url)
-          }
+          UIApplication.shared.open(url)
           decisionHandler(.cancel)
         }
       } else {

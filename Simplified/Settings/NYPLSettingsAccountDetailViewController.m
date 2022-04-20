@@ -1320,12 +1320,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   self.PINTextField.rightView.hidden = YES;
 
-  // LAPolicyDeviceOwnerAuthentication is only on iOS >= 9.0
-  if([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 9) {
-    LAContext *const context = [[LAContext alloc] init];
-    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
-      self.PINTextField.rightView.hidden = NO;
-    }
+  LAContext *const context = [[LAContext alloc] init];
+  if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+    self.PINTextField.rightView.hidden = NO;
   }
 }
 
