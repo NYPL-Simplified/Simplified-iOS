@@ -191,8 +191,29 @@
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
 
-  // TODO: SIMPLY-3048 refactor better in a extension
 #ifdef SIMPLYE
+  [self presentWelcomeScreenIfNeeded];
+#endif
+}
+
+#pragma mark -
+
+- (void)syncBegan
+{
+  self.navigationItem.leftBarButtonItem.enabled = NO;
+  self.feedVC.navigationItem.leftBarButtonItem.enabled = NO;
+}
+
+- (void)syncEnded
+{
+  self.navigationItem.leftBarButtonItem.enabled = YES;
+  self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
+}
+
+#ifdef SIMPLYE
+
+- (void)presentWelcomeScreenIfNeeded
+{
   NYPLSettings *settings = [NYPLSettings sharedSettings];
 
   if (settings.userHasSeenWelcomeScreen) {
@@ -217,24 +238,7 @@
     [settings setAccountMainFeedURL:mainFeedUrl];
     [self presentWelcomeScreen];
   }
-#endif
 }
-
-#pragma mark -
-
-- (void)syncBegan
-{
-  self.navigationItem.leftBarButtonItem.enabled = NO;
-  self.feedVC.navigationItem.leftBarButtonItem.enabled = NO;
-}
-
-- (void)syncEnded
-{
-  self.navigationItem.leftBarButtonItem.enabled = YES;
-  self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
-}
-
-#ifdef SIMPLYE
 
 - (void)presentWelcomeScreen
 {
