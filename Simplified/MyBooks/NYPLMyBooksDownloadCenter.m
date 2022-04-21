@@ -46,9 +46,6 @@
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 @property (nonatomic) NYPLReauthenticator *reauthenticator;
-#if FEATURE_AUDIOBOOKS
-@property (nonatomic) NYPLAudiobookDownloader *audiobookDownloader;
-#endif
 
 /// Maps a task identifier to a non-negative redirect attempt count. This
 /// tracks the number of redirect attempts for a particular download task.
@@ -404,7 +401,6 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
 #if FEATURE_AUDIOBOOKS
   if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
     [self downloadAudiobookForBook:book];
-    return;
   }
 #else
   [self broadcastUpdate:book.identifier];
@@ -1288,7 +1284,7 @@ didCompleteWithError:(NSError *)error
      setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
   }
 #if FEATURE_AUDIOBOOKS
-  [self.audiobookDownloader cancelDownloadFor:identifier];
+  [self.audiobookDownloader cancelDownloadFetchingNextIfNeededFor:identifier];
 #endif
 }
 
@@ -1639,48 +1635,6 @@ didFinishDownload:(BOOL)didFinishDownload
 #endif
 
 #if FEATURE_AUDIOBOOKS
-/// Create an audiobook object and add to download queue
-- (void)downloadAudiobookForBook:(NYPLBook *)book {
-  [AudiobookManifestAdapter transformAudiobookManifestWithBook:book
-                                                    completion:^(NSDictionary<NSString *,id> * _Nullable json,
-                                                                 id<DRMDecryptor> _Nullable decryptor,
-                                                                 enum AudiobookManifestError error) {
-    if (error == AudiobookManifestErrorNone) {
-      // Create audiobook
-      id<Audiobook> const audiobook = [AudiobookFactory audiobook:json decryptor:decryptor];
-      
-      if (!audiobook) {
-        NYPLLOG(@"Audiobook initiate failed");
-        // TODO: Handle Error
-        [self broadcastUpdate:book.identifier];
-        return;
-      }
-      AudiobookMetadata *metadata = [[AudiobookMetadata alloc] initWithTitle:book.title
-                                                                     authors:@[book.authors]];
-      
-      DefaultAudiobookManager *manager = [[DefaultAudiobookManager alloc] initWithMetadata:metadata
-                                                                                 audiobook:audiobook];
-      
-      [[NYPLBookRegistry sharedRegistry]
-       setState:NYPLBookStateDownloading
-       forIdentifier:book.identifier];
-      
-      [self downloadProgressDidUpdateTo:manager.networkService.downloadProgress forBookIdentifier:book.identifier];
-      
-      [self.audiobookDownloader downloadAudiobookForBookID:book.identifier
-                                          audiobookManager:manager];
-    } else {
-      NYPLLOG(@"Audiobook corrupted/unsupported");
-      // TODO: Handle Error
-      [self broadcastUpdate:book.identifier];
-    }
-  }];
-}
-
-- (id)audiobookManagerForBookID:(NSString *)bookID {
-  return [_audiobookDownloader audiobookManagerFor:bookID];
-}
-
 - (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID {
   NYPLLOG_F(@"Download progress updated to %f for %@", progress, bookID);
   self.bookIdentifierToDownloadInfo[bookID] = [[self downloadInfoForBookIdentifier:bookID]

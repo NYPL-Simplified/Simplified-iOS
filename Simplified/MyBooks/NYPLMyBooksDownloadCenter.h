@@ -1,7 +1,12 @@
 @class NYPLBook;
 @class NYPLMyBooksDownloadInfo;
+@class NYPLAudiobookDownloader;
 
 @interface NYPLMyBooksDownloadCenter : NSObject
+
+#if FEATURE_AUDIOBOOKS
+@property (nonatomic) NYPLAudiobookDownloader *audiobookDownloader;
+#endif
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -53,7 +58,7 @@
 - (NSURL *)fileURLForBookIndentifier:(NSString *)identifier;
 
 #if FEATURE_AUDIOBOOKS
-- (id)audiobookManagerForBookID:(NSString *)bookID;
+- (void)broadcastUpdate:(NSString *)bookID;
 
 - (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID;
 #endif
