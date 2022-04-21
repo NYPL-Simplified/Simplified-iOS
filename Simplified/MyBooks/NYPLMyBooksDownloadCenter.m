@@ -1193,8 +1193,12 @@ didCompleteWithError:(NSError *)error
 }
 
 - (void)addDownloadTaskWithRequest:(NSURLRequest *)request
-                              book:(NYPLBook *)book {
-  if (book == nil) {
+                              book:(NYPLBook *)book
+{
+  if (book == nil || request == nil) {
+    NYPLLOG_F(@"Unable to add download task for book [%@] with request: %@",
+              book.loggableDictionary, request.loggableString)
+    [self alertForProblemDocument:nil error:nil book:book];
     return;
   }
     
