@@ -32,22 +32,25 @@
     return;
   }
   
-  [AudiobookManifestAdapter transformAudiobookManifestWithBook:book
-                                                    completion:^(NSDictionary<NSString *,id> * _Nullable json,
-                                                                 id<DRMDecryptor> _Nullable decryptor,
-                                                                 enum AudiobookManifestError error) {
-    if (error == AudiobookManifestErrorCorrupted) {
-      NSURL *url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-      [self presentCorruptedItemErrorWithLog:@{
-        @"book": book.loggableDictionary ?: @"N/A",
-        @"fileURL": url ?: @"N/A"
-      }];
-      return;
-    }
-    
-    if (error == AudiobookManifestErrorUnsupported) {
-      [self presentUnsupportedItemError];
-      return;
+  NSURL *url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+  
+  [AudiobookManifestAdapter transformManifestToDictionaryFor:book
+                                                     fileURL:url
+                                                  completion:^(NSDictionary<NSString *,id> * _Nullable json,
+                                                               id<DRMDecryptor> _Nullable decryptor,
+                                                               enum AudiobookManifestError error) {
+    switch (error) {
+      case AudiobookManifestErrorCorrupted:
+        [self presentCorruptedItemErrorWithLog:@{
+          @"book": book.loggableDictionary ?: @"N/A",
+          @"fileURL": url ?: @"N/A"
+        }];
+        return;
+      case AudiobookManifestErrorUnsupported:
+        [self presentUnsupportedItemError];
+        return;
+      case AudiobookManifestErrorNone:
+        break;
     }
     
     [self openAudiobook:book withJSON:json decryptor:decryptor];

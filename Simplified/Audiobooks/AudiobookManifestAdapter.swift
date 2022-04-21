@@ -22,17 +22,22 @@ import OverdriveProcessor
 }
 
 @objc class AudiobookManifestAdapter: NSObject {
-  @objc class func transformAudiobookManifest(book: NYPLBook,
-                                              completion: @escaping (_ manifest: [String: Any]?,
-                                                                     _ decryptor: DRMDecryptor?,
-                                                                     _ error: AudiobookManifestError) -> Void)
+  /// Transform the book manifest into a dictionary for creating an audiobook object,
+  /// and add needed information for the dedicated DRM method.
+  @objc class func transformManifestToDictionary(for audiobook: NYPLBook?,
+                                                 fileURL: URL?,
+                                                 completion: @escaping (_ manifest: [String: Any]?,
+                                                                        _ decryptor: DRMDecryptor?,
+                                                                        _ error: AudiobookManifestError) -> Void)
   {
-    guard let url = NYPLMyBooksDownloadCenter.shared().fileURL(forBookIndentifier: book.identifier),
+    guard let book = audiobook,
+          let url = fileURL,
           let data = try? Data.init(contentsOf: url),
           let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
             completion(nil, nil, .corrupted)
             return
           }
+    
     var dict: [String: Any] = json
 #if FEATURE_OVERDRIVE_AUTH
     if (book.distributor == OverdriveAPI.distributorKey) {

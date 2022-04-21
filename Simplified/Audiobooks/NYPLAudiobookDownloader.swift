@@ -10,7 +10,7 @@ import Foundation
 import NYPLAudiobookToolkit
 
 @objc protocol NYPLAudiobookDownloadStatusDelegate {
-  func audiobookDidUpdateDownloadProgress(progress: Float, bookID: String)
+  func audiobookDidUpdateDownloadProgress(_ progress: Float, bookID: String)
   func audiobookDidCompleteDownload(bookID: String)
   func audiobookDidCompleteDownloadFirstElement(bookID: String)
   func audiobookDidReceiveDownloadError(error: NSError?, bookID: String)
@@ -26,8 +26,13 @@ class NYPLAudiobookDownloadObject {
   }
 }
 
-@objcMembers class NYPLAudiobookDownloader: NSObject {
-  weak var delegate: NYPLAudiobookDownloadStatusDelegate?
+/// This class is designed to download audiobook files in the background.
+/// Only one audiobook would be downloaded at a time,
+/// when it completes or being cancelled, the next audiobook in queue will be downloaded.
+/// When the download fails, a second download attempt will be triggered immediately.
+/// If the case of a second failure, the audiobook will be removed and user can manually retry download.
+@objc class NYPLAudiobookDownloader: NSObject {
+  @objc weak var delegate: NYPLAudiobookDownloadStatusDelegate?
   
   private var serialQueue: DispatchQueue = DispatchQueue(label: "org.nypl.labs.NYPLAudiobooksDownloader")
   private var downloadObjects: [NYPLAudiobookDownloadObject] = []
@@ -44,15 +49,19 @@ class NYPLAudiobookDownloadObject {
       self.downloadObjects.append(NYPLAudiobookDownloadObject(bookID: bookID,
                                                               audiobookManager: audiobookManager))
     }
-    fetchNext()
+    fetchNextIfNeeded()
   }
   
-  @objc func cancelDownload(for bookID: String) {
+  @objc func cancelDownloadFetchingNextIfNeeded(for bookID: String?) {
+    guard let bookID = bookID else {
+      return
+    }
+    
     if let downloadObject = currentDownloadObject,
        downloadObject.bookID == bookID {
       cancelDownload(for: downloadObject)
       releaseCurrentDownloadObject()
-      fetchNext()
+      fetchNextIfNeeded()
     } else if let index = downloadObjects.firstIndex(where: { $0.bookID == bookID }) {
       cancelDownload(for: downloadObjects[index])
       serialQueue.async {
@@ -61,7 +70,7 @@ class NYPLAudiobookDownloadObject {
     }
   }
   
-  func audiobookManager(for bookID: String) -> DefaultAudiobookManager? {
+  @objc func audiobookManager(for bookID: String) -> DefaultAudiobookManager? {
     return downloadObject(for: bookID)?.audiobookManager
   }
   
@@ -73,14 +82,14 @@ class NYPLAudiobookDownloadObject {
     }
   }
   
-  private func fetchNext() {
+  private func fetchNextIfNeeded() {
     serialQueue.async {
       guard self.currentDownloadObject == nil else {
         return
       }
       
       if let downloadObject = self.downloadObjects.popFirst() {
-        Log.debug(#file, "Fetch initiated for \(downloadObject.bookID)")
+        Log.info(#file, "Fetch initiated for \(downloadObject.bookID)")
         downloadObject.audiobookManager.networkService.registerDelegate(self)
         downloadObject.audiobookManager.networkService.fetch()
         self.currentDownloadObject = downloadObject
@@ -91,7 +100,7 @@ class NYPLAudiobookDownloadObject {
   private func cancelDownload(for downloadObject: NYPLAudiobookDownloadObject) {
     downloadObject.audiobookManager.networkService.cancelFetch()
     downloadObject.audiobookManager.networkService.removeDelegate(self)
-    Log.debug(#file, "Fetch cancelled for \(downloadObject.bookID)")
+    Log.info(#file, "Fetch cancelled for \(downloadObject.bookID)")
   }
   
   private func downloadObject(for bookID: String) -> NYPLAudiobookDownloadObject? {
@@ -108,7 +117,7 @@ class NYPLAudiobookDownloadObject {
 extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
   func audiobookNetworkService(_ audiobookNetworkService: AudiobookNetworkService, didCompleteDownloadFor spineElement: SpineElement) {
     if let downloadObject = currentDownloadObject {
-      delegate?.audiobookDidUpdateDownloadProgress(progress: audiobookNetworkService.downloadProgress,
+      delegate?.audiobookDidUpdateDownloadProgress(audiobookNetworkService.downloadProgress,
                                                    bookID: downloadObject.bookID)
     }
   }
@@ -121,10 +130,10 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
     {
       delegate?.audiobookDidCompleteDownload(bookID: downloadObject.bookID)
       downloadObject.audiobookManager.networkService.removeDelegate(self)
-      Log.debug(#file, "\(downloadObject.bookID) download completed and removed")
+      Log.info(#file, "Audiobook - \(downloadObject.bookID) download completed and removed")
 
       releaseCurrentDownloadObject()
-      fetchNext()
+      fetchNextIfNeeded()
     }
   }
   
@@ -135,7 +144,7 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
     if let downloadObject = currentDownloadObject {
       delegate?.audiobookDidReceiveDownloadError(error: error, bookID: downloadObject.bookID)
       releaseCurrentDownloadObject()
-      fetchNext()
+      fetchNextIfNeeded()
     }
   }
 }
