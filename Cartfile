@@ -3,4 +3,4 @@ binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.j
 github "NYPL-Simplified/PDFRendererProvider-iOS" "master"
 github "stephencelis/SQLite.swift" ~> 0.12.2
 github "zxingify/zxingify-objc" ~> 3.6
-github "readium/swift-toolkit" "develop"
+github "readium/swift-toolkit" ~> 2.3.0

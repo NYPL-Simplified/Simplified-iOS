@@ -14,7 +14,7 @@ import Foundation
       return
     }
 
-    libraryService.openBook(book, fromFileURL: fileURL, sender: self) { [weak self] result in
+    libraryService.openBook(fromFileURL: fileURL, sender: self) { [weak self] result in
       guard let navVC = self?.selectedViewController as? UINavigationController else {
         preconditionFailure("No navigation controller, unable to present reader")
       }
