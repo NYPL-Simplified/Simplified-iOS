@@ -87,6 +87,11 @@
   [NYPLADEPT sharedInstance].delegate = self;
 #endif
   
+#if FEATURE_AUDIOBOOKS
+  self.audiobookDownloader = [[NYPLAudiobookDownloader alloc] init];
+  self.audiobookDownloader.delegate = (id)self;
+#endif
+  
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
@@ -392,8 +397,14 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
      setState:NYPLBookStateDownloadFailed
      forIdentifier:book.identifier];
   }
-
+  
+#if FEATURE_AUDIOBOOKS
+  if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
+    [self downloadAudiobookForBook:book];
+  }
+#else
   [self broadcastUpdate:book.identifier];
+#endif
 }
 
 // this doesn't log to crashlytics because it assumes that the caller
@@ -1276,6 +1287,9 @@ didCompleteWithError:(NSError *)error
     [[NYPLBookRegistry sharedRegistry]
      setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
   }
+#if FEATURE_AUDIOBOOKS
+  [self.audiobookDownloader cancelDownloadFetchingNextIfNeededFor:identifier];
+#endif
 }
 
 - (void)deleteAudiobooksForAccount:(NSString * const)account
@@ -1624,5 +1638,14 @@ didFinishDownload:(BOOL)didFinishDownload
 }
 #endif
 
+#if FEATURE_AUDIOBOOKS
+- (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID {
+  NYPLLOG_F(@"Download progress updated to %f for %@", progress, bookID);
+  self.bookIdentifierToDownloadInfo[bookID] = [[self downloadInfoForBookIdentifier:bookID]
+                                               withDownloadProgress:progress];
+
+  [self broadcastUpdate:bookID];
+}
+#endif
 
 @end

@@ -79,8 +79,15 @@
         if([cell isKindOfClass:[NYPLBookDownloadingCell class]]) {
           NYPLBookDownloadingCell *const downloadingCell = (NYPLBookDownloadingCell *)cell;
           NSString *const bookIdentifier = downloadingCell.book.identifier;
-          downloadingCell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                              downloadProgressForBookIdentifier:bookIdentifier];
+          double downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                                     downloadProgressForBookIdentifier:bookIdentifier];
+          downloadingCell.downloadProgress = downloadProgress;
+#if FEATURE_AUDIOBOOKS
+          if (downloadingCell.book.defaultBookContentType == NYPLBookContentTypeAudiobook
+              && downloadProgress > 0.1) {
+            [downloadingCell enableListenButton];
+          }
+#endif
         }
       }
     }]];
