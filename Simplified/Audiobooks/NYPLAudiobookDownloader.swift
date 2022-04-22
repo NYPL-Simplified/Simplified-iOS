@@ -19,6 +19,7 @@ import NYPLAudiobookToolkit
 class NYPLAudiobookDownloadObject {
   var bookID: String
   var audiobookManager: DefaultAudiobookManager
+  var didRetryDownload: Bool = false
   
   init(bookID: String, audiobookManager: DefaultAudiobookManager) {
     self.bookID = bookID
@@ -142,9 +143,16 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
   func audiobookNetworkService(_ audiobookNetworkService: AudiobookNetworkService, didReceive error: NSError?, for spineElement: SpineElement) {
     audiobookNetworkService.cancelFetch()
     if let downloadObject = currentDownloadObject {
-      delegate?.audiobookDidReceiveDownloadError(error: error, bookID: downloadObject.bookID)
-      releaseCurrentDownloadObject()
-      fetchNextIfNeeded()
+      if downloadObject.didRetryDownload {
+        Log.error(#file, "Audiobook download failed, bookID - \(downloadObject.bookID)")
+        delegate?.audiobookDidReceiveDownloadError(error: error, bookID: downloadObject.bookID)
+        releaseCurrentDownloadObject()
+        fetchNextIfNeeded()
+      } else {
+        Log.info(#file, "Audiobook retrying download, bookID - \(downloadObject.bookID)")
+        downloadObject.audiobookManager.networkService.fetch()
+        downloadObject.didRetryDownload = true
+      }
     }
   }
 }
