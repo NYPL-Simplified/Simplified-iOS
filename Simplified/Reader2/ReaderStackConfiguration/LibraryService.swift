@@ -95,10 +95,15 @@ final class LibraryService: Loggable {
   private func preparePresentation(of publication: Publication) {
     // What we want to avoid here it to add a webPub to the publication server,
     // because there's no need to do that if it is loaded remotely from a URL.
-    // Since webPub is not a Publication.Profile, and we can only open
-    // publications that conform to a given Profile, if the Publication
-    // contains no conforming profiles, we know we cannot process it.
-    guard !publication.metadata.conformsTo.isEmpty else {
+    // Note that WebPub is not a Publication.Profile, and it will never
+    // become one because it's the super set of all the profiles.
+    // However, if the WebPub is packaged in a .webpub file, we do need to
+    // add it to the publication server.
+    // Note that all packaged publications will have a `baseURL` set to nil,
+    // while a WebPub will have it set to a nonnull value.
+    // Note that a publication that was already added to the web server
+    // will also have a nonnull `baseURL`.
+    guard publication.baseURL == nil else {
       return
     }
     
