@@ -79,8 +79,8 @@ final class ReaderModule: ReaderModuleAPI {
     if delegate == nil {
       NYPLErrorLogger.logError(nil, summary: "ReaderModule delegate is not set")
     }
-    
-    guard let formatModule = self.formatModules.first(where:{ $0.publicationFormats.contains(publication.format) }) else {
+
+    guard let formatModule = self.formatModules.first(where:{ $0.supports(publication) }) else {
       delegate?.presentError(ReaderError.formatNotSupported, from: navigationController)
       return
     }
