@@ -9,6 +9,7 @@ let HoldingKey = "holding"
 let UsedKey = "used"
 let UnsupportedKey = "unsupported"
 let SAMLStartedKey = "saml-started"
+let DownloadingUsableKey = "downloading-usable"
 
 @objc public enum NYPLBookState : Int, CaseIterable {
   case Unregistered = 0
@@ -21,6 +22,10 @@ let SAMLStartedKey = "saml-started"
   case Unsupported
   // This state means that user is logged using SAML environment and app begun download process, but didn't transition to download center yet
   case SAMLStarted
+  // This state is designated for audiobook that is downloading in background but ready to listen.
+  // It should be treated as DownloadSuccessful for business related logic,
+  // and treated as Downloading for UI update.
+  case DownloadingUsable
 
   init?(_ stringValue: String) {
     switch stringValue {
@@ -42,6 +47,8 @@ let SAMLStartedKey = "saml-started"
         self = .Unsupported
       case SAMLStartedKey:
         self = .SAMLStarted
+      case DownloadingUsableKey:
+        self = .DownloadingUsable
       default:
         return nil
     }
@@ -65,8 +72,10 @@ let SAMLStartedKey = "saml-started"
         return UsedKey;
       case .Unsupported:
         return UnsupportedKey;
-    case .SAMLStarted:
-      return SAMLStartedKey;
+      case .SAMLStarted:
+        return SAMLStartedKey;
+      case .DownloadingUsable:
+        return DownloadingUsableKey
     }
   }
 }

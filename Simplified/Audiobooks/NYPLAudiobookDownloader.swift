@@ -12,7 +12,6 @@ import NYPLAudiobookToolkit
 @objc protocol NYPLAudiobookDownloadStatusDelegate {
   func audiobookDidUpdateDownloadProgress(_ progress: Float, bookID: String)
   func audiobookDidCompleteDownload(bookID: String)
-  func audiobookDidCompleteDownloadFirstElement(bookID: String)
   func audiobookDidReceiveDownloadError(error: NSError?, bookID: String)
 }
 

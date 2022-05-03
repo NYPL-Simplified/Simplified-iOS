@@ -290,6 +290,8 @@
     return;
   }
 
+  // Excluding NYPLBookStateDownloadingUsable here because updating audiobook
+  // in the middle of file download might interupt download and causes error.
   if (bookState == NYPLBookStateDownloadSuccessful || bookState == NYPLBookStateUsed) {
     // sanity check before casting. Note that self.manager could be nil.
     if (![(NSObject*)self.manager.audiobook isKindOfClass:[OverdriveAudiobook class]]) {
