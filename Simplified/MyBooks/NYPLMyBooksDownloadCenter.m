@@ -1014,6 +1014,7 @@ didCompleteWithError:(NSError *)error
         state = NYPLBookStateDownloadNeeded;
       }
       break;
+    case NYPLBookStateDownloadingUsable:
     case NYPLBookStateDownloading:
       // Ignore double button presses, et cetera.
       return;

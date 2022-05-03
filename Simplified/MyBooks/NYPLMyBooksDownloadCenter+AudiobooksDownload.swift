@@ -86,6 +86,13 @@ extension NYPLMyBooksDownloadCenter {
 
 extension NYPLMyBooksDownloadCenter: NYPLAudiobookDownloadStatusDelegate {
   func audiobookDidUpdateDownloadProgress(_ progress: Float, bookID: String) {
+    // Since this delegate is only called when an audiobook file download completed,
+    // we know it's ready to play once the download progress is greater than 0
+    if (progress > 0 &&
+        NYPLBookRegistry.shared().stateRawValue(forIdentifier: bookID) == NYPLBookState.Downloading.rawValue) {
+      NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadingUsable.rawValue, forIdentifier: bookID)
+    }
+    
     downloadProgressDidUpdate(to: Double(progress), forBookIdentifier: bookID)
   }
   
@@ -93,10 +100,6 @@ extension NYPLMyBooksDownloadCenter: NYPLAudiobookDownloadStatusDelegate {
     NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadSuccessful.rawValue,
                                                forIdentifier: bookID)
     NYPLBookRegistry.shared().save()
-  }
-  
-  func audiobookDidCompleteDownloadFirstElement(bookID: String) {
-    // Update UI to present listen button
   }
   
   func audiobookDidReceiveDownloadError(error: NSError?, bookID: String) {

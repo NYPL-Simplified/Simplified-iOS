@@ -131,6 +131,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
       newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadInProgress:
+    case NYPLBookButtonsStateDownloadingUsable:
       break;
     default:
       break;

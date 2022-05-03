@@ -84,7 +84,7 @@
           downloadingCell.downloadProgress = downloadProgress;
 #if FEATURE_AUDIOBOOKS
           if (downloadingCell.book.defaultBookContentType == NYPLBookContentTypeAudiobook
-              && downloadProgress > 0.1) {
+              && [[NYPLBookRegistry sharedRegistry] stateForIdentifier:bookIdentifier] == NYPLBookStateDownloadingUsable) {
             [downloadingCell enableListenButton];
           }
 #endif
