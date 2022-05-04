@@ -58,12 +58,11 @@
 }
 
 - (void)updateColors {
+  self.backgroundColor = [NYPLConfiguration mainColor];
   if (@available(iOS 12.0, *)) {
     if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
       self.backgroundColor = [NYPLConfiguration secondaryBackgroundColor];
     }
-  } else {
-    self.backgroundColor = [NYPLConfiguration mainColor];
   }
 }
 
