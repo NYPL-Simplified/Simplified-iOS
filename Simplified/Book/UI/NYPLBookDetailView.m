@@ -617,8 +617,10 @@ static NSString *DetailHTMLTemplate = nil;
       self.buttonsView.state = NYPLBookButtonsStateDownloadingUsable;
       break;
     case NYPLBookStateDownloadFailed:
+      self.downloadFailedView.showAudiobookError = self.book.defaultBookContentType == NYPLBookContentTypeAudiobook;
       [self.downloadFailedView configureFailMessageWithProblemDocument:[[NYPLProblemDocumentCacheManager shared] getLastCachedDoc:self.book.identifier]];
       self.downloadFailedView.hidden = NO;
+      self.normalView.hidden = YES;
       [self hideDownloadingView:YES];
       self.buttonsView.hidden = NO;
       self.buttonsView.state = NYPLBookButtonsStateDownloadFailed;
