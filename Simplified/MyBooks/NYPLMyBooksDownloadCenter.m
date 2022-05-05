@@ -110,7 +110,7 @@
   return self;
 }
 
-#pragma mark NSURLSessionDownloadDelegate
+#pragma mark - NSURLSessionDownloadDelegate
 
 // All of these delegate methods can be called (in very rare circumstances) after the shared
 // download center has been reset. As such, they must be careful to bail out immediately if that is
@@ -397,36 +397,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
   [self broadcastUpdate:book.identifier];
 }
 
-// this doesn't log to crashlytics because it assumes that the caller
-// is responsible for that.
-- (void)alertForProblemDocument:(NYPLProblemDocument *)problemDoc
-                          error:(NSError *)error
-                           book:(NYPLBook *)book
-{
-  NSString *msg = [NSString stringWithFormat:
-                   NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
-                   book.title];
-  UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed"
-                                                    message:msg];
-  if (problemDoc) {
-    [[NYPLProblemDocumentCacheManager sharedInstance]
-     cacheProblemDocument:problemDoc
-     key:book.identifier];
-    [NYPLAlertUtils setProblemDocumentWithController:alert
-                                            document:problemDoc
-                                              append:YES];
-    if ([problemDoc.type isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
-      [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
-    }
-  } else if (error && !error.localizedDescriptionWithRecovery.isEmptyNoWhitespace) {
-    alert.message = [NSString stringWithFormat:@"%@\n\nError: %@",
-                     msg, error.localizedDescriptionWithRecovery];
-  }
-
-  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
-}
-
-#pragma mark NSURLSessionTaskDelegate
+#pragma mark - NSURLSessionTaskDelegate
 
 // As with the NSURLSessionDownloadDelegate methods, we need to be mindful of resets for the task
 // delegate methods too.
@@ -531,7 +502,75 @@ didCompleteWithError:(NSError *)error
   }
 }
 
-#pragma mark -
+#pragma mark - File Management
+
+- (BOOL)moveFileAtURL:(NSURL *)sourceLocation
+ toDestinationForBook:(NYPLBook *)book
+      forDownloadTask:(NSURLSessionDownloadTask *)downloadTask
+{
+  NSError *removeError = nil, *moveError = nil;
+  NSURL *finalFileURL = [self fileURLForBookIndentifier:book.identifier];
+
+  [[NSFileManager defaultManager]
+   removeItemAtURL:finalFileURL
+   error:&removeError];
+
+  BOOL success = [[NSFileManager defaultManager]
+                  moveItemAtURL:sourceLocation
+                  toURL:finalFileURL
+                  error:&moveError];
+
+  if (success) {
+    [[NYPLBookRegistry sharedRegistry]
+     setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
+  } else if (moveError) {
+    [self logBookDownloadFailure:book
+                          reason:@"Couldn't move book to final disk location"
+                    downloadTask:downloadTask
+                        metadata:@{
+      @"moveError": moveError,
+      @"removeError": removeError.debugDescription ?: @"N/A",
+      @"sourceLocation": sourceLocation ?: @"N/A",
+      @"finalFileURL": finalFileURL ?: @"N/A",
+    }];
+  }
+
+  return success;
+}
+
+- (BOOL)replaceBook:(NYPLBook *)book
+      withFileAtURL:(NSURL *)sourceLocation
+    forDownloadTask:(NSURLSessionDownloadTask *)downloadTask
+{
+  NSError *replaceError = nil;
+  NSURL *destURL = [self fileURLForBookIndentifier:book.identifier];
+  BOOL success = [[NSFileManager defaultManager] replaceItemAtURL:destURL
+                                                    withItemAtURL:sourceLocation
+                                                   backupItemName:nil
+                                                          options:NSFileManagerItemReplacementUsingNewMetadataOnly
+                                                 resultingItemURL:nil
+                                                            error:&replaceError];
+
+  if(success) {
+    [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
+  } else {
+    [self logBookDownloadFailure:book
+                          reason:@"Couldn't replace downloaded book"
+                    downloadTask:downloadTask
+                        metadata:@{
+      @"replaceError": replaceError ?: @"N/A",
+      @"destinationFileURL": destURL ?: @"N/A",
+      @"sourceFileURL": sourceLocation ?: @"N/A",
+    }];
+  }
+#if defined(AXIS)
+  [self.bookIdentifierToAxisAdapter removeObjectForKey:book.identifier];
+#endif
+
+  return success;
+}
 
 - (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier
 {
@@ -640,141 +679,6 @@ didCompleteWithError:(NSError *)error
 
 #endif//FEATURE_AUDIOBOOKS
 
-- (void)returnBookWithIdentifier:(NSString *)identifier
-{
-  NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
-  NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
-
-  // Process Adobe Return
-#if defined(FEATURE_DRM_CONNECTOR)
-  NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
-
-  // ----------------------------------------------
-
-  if (fulfillmentId && NYPLUserAccount.sharedAccount.requiresUserAuthentication) {
-    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLUserAccount sharedAccount] userID]);
-    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
-                                    userID:[[NYPLUserAccount sharedAccount] userID]
-                                  deviceID:[[NYPLUserAccount sharedAccount] deviceID]
-                                completion:^(BOOL success, NSError *error) {
-                                  if(success) {
-                                    [self revokeLoanAndRemoveBook:book state:state];
-                                  } else {
-                                    NYPLLOG(@"Failed to return loan via NYPLAdept.");
-                                    [self presentAlertForError:error
-                                                   orErrorDict:nil
-                                                 returningBook:book];
-                                  }
-                                }];
-  } else {
-    // if we have no fulfillment ID or we don't require authentication, we just
-    // need to let the Circulation Manager server know and remove the book
-    [self revokeLoanAndRemoveBook:book state:state];
-  }
-#else
-  [self revokeLoanAndRemoveBook:book state:state];
-#endif//FEATURE_DRM_CONNECTOR
-}
-
-- (void)revokeLoanAndRemoveBook:(NYPLBook *)book state:(NYPLBookState)state
-{
-  BOOL didDownloadBook = (state == NYPLBookStateDownloadSuccessful
-                          || state == NYPLBookStateUsed);
-  NSString *const identifier = book.identifier;
-
-  // The main case for not having a revoke link is when the library doesn't
-  // authenticate its users. In the case there's no server-side loan to revoke.
-  if (!book.revokeURL) {
-    if (didDownloadBook) {
-      [self deleteLocalContentForBookIdentifier:identifier];
-    }
-    [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
-    [[NYPLBookRegistry sharedRegistry] save];
-    return;
-  }
-
-  [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-
-  // revoke loan with the CM
-  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.revokeURL
-                            networkExecutor:[NYPLNetworkExecutor shared]
-                           shouldResetCache:NO
-                                 completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
-    [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
-
-    if (feed && feed.entries.count == 1)  {
-      NYPLOPDSEntry *const entry = feed.entries[0];
-      if(didDownloadBook) {
-        [self deleteLocalContentForBookIdentifier:identifier];
-      }
-      NYPLBook *returnedBook = [NYPLBook bookWithEntry:entry];
-      [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
-      [[NYPLBookRegistry sharedRegistry] save];
-      [NYPLMyBooksNotifier announceSuccessfulBookReturn:returnedBook];
-      return;
-    }
-
-    // handle errors
-    if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
-      if (didDownloadBook) {
-        [self deleteLocalContentForBookIdentifier:identifier];
-      }
-      [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
-      [[NYPLBookRegistry sharedRegistry] save];
-      [NYPLMyBooksNotifier announceSuccessfulBookReturn:book];
-    } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
-      NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
-      __weak __auto_type wSelf = self;
-      [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
-                                                authenticationCompletion:^{
-        [wSelf returnBookWithIdentifier:identifier];
-      }];
-    } else {
-      [self presentAlertForError:nil orErrorDict:errorDict returningBook:book];
-    }
-  }];
-}
-
-- (void)presentAlertForError:(NSError *)error
-                 orErrorDict:(NSDictionary *)errorDict
-               returningBook:(NYPLBook *)book
-{
-  [NYPLErrorLogger logError:error
-                    summary:@"Failed returning book"
-                   metadata:@{
-                     @"errorDict": errorDict ?: @"",
-                     @"returningBook": book.loggableDictionary ?: @""
-                   }];
-
-  NSString *msg = NSLocalizedString(@"ReturnCouldNotBeCompletedFormat", nil);
-  msg = [NSString stringWithFormat:msg, book.title];
-  if (error) {
-    msg = [NSString stringWithFormat:@"%@\n%@",
-           msg, error.localizedDescriptionWithRecovery];
-  }
-
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    UIAlertController *alert = [NYPLAlertUtils
-                                alertWithTitle:@"ReturnFailed"
-                                message:msg];
-    if (errorDict) {
-      NYPLProblemDocument *problemDoc = [NYPLProblemDocument fromDictionary:errorDict];
-      [NYPLAlertUtils setProblemDocumentWithController:alert
-                                              document:problemDoc
-                                                append:YES];
-    }
-    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert
-                                                       viewController:nil
-                                                             animated:YES
-                                                           completion:nil];
-  }];
-}
-
-- (NYPLMyBooksDownloadInfo *)downloadInfoForBookIdentifier:(NSString *const)bookIdentifier
-{
-  return self.bookIdentifierToDownloadInfo[bookIdentifier];
-}
-
 - (NSURL *)contentDirectoryURL
 {
   return [self contentDirectoryURL:[AccountsManager sharedInstance].currentAccount.uuid];
@@ -830,55 +734,60 @@ didCompleteWithError:(NSError *)error
           URLByAppendingPathExtension:pathExtension];
 }
 
-- (void)logBookDownloadFailure:(NYPLBook *)book
-                        reason:(NSString *)reason
-                  downloadTask:(NSURLSessionTask *)downloadTask
-                      metadata:(NSDictionary<NSString*, id> *)metadata
-{
-  NSString *rights = [[self downloadInfoForBookIdentifier:book.identifier]
-                      rightsManagementString];
-  NSString *bookType = [NYPLBookContentTypeConverter stringValueOf:
-                        [book defaultBookContentType]];
-  NSString *context = [NSString stringWithFormat:@"%@ %@ download fail: %@",
-                       book.distributor, bookType, reason];
-
-  NSMutableDictionary<NSString*, id> *dict = [[NSMutableDictionary alloc] initWithDictionary:metadata];
-  dict[@"book"] = book.loggableDictionary;
-  dict[@"rightsManagement"] = rights;
-  dict[@"taskOriginalRequest"] = downloadTask.originalRequest.loggableString;
-  dict[@"taskCurrentRequest"] = downloadTask.currentRequest.loggableString;
-  dict[@"response"] = downloadTask.response ?: @"N/A";
-  dict[@"downloadError"] = downloadTask.error ?: @"N/A";
-
-  [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeDownloadFail
-                            summary:context
-                           metadata:dict];
-}
-
-/// Notifies the book registry AND the user that a book failed to download.
-/// @note This method does NOT log to Crashlytics.
-/// @param book The book that failed to download.
-- (void)failDownloadWithAlertForBook:(NYPLBook *const)book
+- (void)deleteAudiobooksForAccount:(NSString * const)account
 {
   [[NYPLBookRegistry sharedRegistry]
-   addBook:book
-   location:nil
-   state:NYPLBookStateDownloadFailed
-   fulfillmentId:nil
-   readiumBookmarks:nil
-   genericBookmarks:nil];
-  
-#if defined(AXIS)
-  [self.bookIdentifierToAxisAdapter removeObjectForKey:book.identifier];
-#endif
-  
-  dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
-    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed" message:formattedMessage];
-    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
-  });
+   performUsingAccount:account
+   block:^{
+    NSArray<NSString *> const *books = [[NYPLBookRegistry sharedRegistry] allBooks];
+    for (NYPLBook *const book in books) {
+      if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
+        [self deleteLocalContentForBookIdentifier:book.identifier
+                                          account:account];
+      }
+    }
+  }];
+}
 
-  [self broadcastUpdate:book.identifier];
+- (void)reset:(NSString *)account
+{
+  if ([[AccountsManager shared].currentAccount.uuid isEqualToString:account])
+  {
+    [self reset];
+  }
+  else
+  {
+    [self deleteAudiobooksForAccount:account];
+    [[NSFileManager defaultManager]
+     removeItemAtURL:[self contentDirectoryURL:account]
+     error:NULL];
+  }
+}
+
+- (void)reset
+{
+  [self deleteAudiobooksForAccount:[AccountsManager sharedInstance].currentAccount.uuid];
+
+  for(NYPLMyBooksDownloadInfo *const info in [self.bookIdentifierToDownloadInfo allValues]) {
+    [info.downloadTask cancelByProducingResumeData:^(__unused NSData *resumeData) {}];
+  }
+
+  [self.bookIdentifierToDownloadInfo removeAllObjects];
+  [self.taskIdentifierToBook removeAllObjects];
+  self.bookIdentifierOfBookToRemove = nil;
+
+  [[NSFileManager defaultManager]
+   removeItemAtURL:[self contentDirectoryURL]
+   error:NULL];
+
+  [self broadcastUpdate:@""];
+}
+
+#pragma mark - Download Logic
+
+- (NYPLMyBooksDownloadInfo *)downloadInfoForBookIdentifier:(NSString *const)bookIdentifier
+{
+  return self.bookIdentifierToDownloadInfo[bookIdentifier];
 }
 
 - (void)startBorrowForBook:(NYPLBook *)book
@@ -1170,12 +1079,14 @@ didCompleteWithError:(NSError *)error
         });
       } else {
         // clear all cookies
+        // NB: I think for anything other than SAML this will result in a no-op
         NSHTTPCookieStorage *cookieStorage = self.session.configuration.HTTPCookieStorage;
         for (NSHTTPCookie *each in cookieStorage.cookies) {
           [cookieStorage deleteCookie:each];
         }
 
         // set new cookies
+        // NB: I think for anything other than SAML this will result in a no-op
         for (NSHTTPCookie *cookie in NYPLUserAccount.sharedAccount.cookies) {
           [self.session.configuration.HTTPCookieStorage setCookie:cookie];
         }
@@ -1277,60 +1188,12 @@ didCompleteWithError:(NSError *)error
   }
 }
 
-- (void)deleteAudiobooksForAccount:(NSString * const)account
-{
-  [[NYPLBookRegistry sharedRegistry]
-   performUsingAccount:account
-   block:^{
-     NSArray<NSString *> const *books = [[NYPLBookRegistry sharedRegistry] allBooks];
-     for (NYPLBook *const book in books) {
-       if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
-         [self deleteLocalContentForBookIdentifier:book.identifier
-                                           account:account];
-       }
-     }
-   }];
-}
-
-- (void)reset:(NSString *)account
-{
-  if ([[AccountsManager shared].currentAccount.uuid isEqualToString:account])
-  {
-    [self reset];
-  }
-  else
-  {
-    [self deleteAudiobooksForAccount:account];
-    [[NSFileManager defaultManager]
-     removeItemAtURL:[self contentDirectoryURL:account]
-     error:NULL];
-  }
-}
-
-
-- (void)reset
-{
-  [self deleteAudiobooksForAccount:[AccountsManager sharedInstance].currentAccount.uuid];
-  
-  for(NYPLMyBooksDownloadInfo *const info in [self.bookIdentifierToDownloadInfo allValues]) {
-    [info.downloadTask cancelByProducingResumeData:^(__unused NSData *resumeData) {}];
-  }
-  
-  [self.bookIdentifierToDownloadInfo removeAllObjects];
-  [self.taskIdentifierToBook removeAllObjects];
-  self.bookIdentifierOfBookToRemove = nil;
-  
-  [[NSFileManager defaultManager]
-   removeItemAtURL:[self contentDirectoryURL]
-   error:NULL];
-  
-  [self broadcastUpdate:@""];
-}
-
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
 {
   return [self downloadInfoForBookIdentifier:bookIdentifier].downloadProgress;
 }
+
+#pragma mark - Send out NYPLMyBooksDownloadCenterDidChange
 
 - (void)broadcastUpdate:(NSString *)bookID
 {
@@ -1358,77 +1221,223 @@ didCompleteWithError:(NSError *)error
   });
 }
 
-- (BOOL)moveFileAtURL:(NSURL *)sourceLocation
- toDestinationForBook:(NYPLBook *)book
-      forDownloadTask:(NSURLSessionDownloadTask *)downloadTask
+#pragma mark - Return Logic
+
+- (void)returnBookWithIdentifier:(NSString *)identifier
 {
-  NSError *removeError = nil, *moveError = nil;
-  NSURL *finalFileURL = [self fileURLForBookIndentifier:book.identifier];
+  NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
+  NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
 
-  [[NSFileManager defaultManager]
-   removeItemAtURL:finalFileURL
-   error:&removeError];
+  // Process Adobe Return
+#if defined(FEATURE_DRM_CONNECTOR)
+  NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
 
-  BOOL success = [[NSFileManager defaultManager]
-                  moveItemAtURL:sourceLocation
-                  toURL:finalFileURL
-                  error:&moveError];
+  // ----------------------------------------------
 
-  if (success) {
-    [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
-    [[NYPLBookRegistry sharedRegistry] save];
-  } else if (moveError) {
-    [self logBookDownloadFailure:book
-                          reason:@"Couldn't move book to final disk location"
-                    downloadTask:downloadTask
-                        metadata:@{
-                          @"moveError": moveError,
-                          @"removeError": removeError.debugDescription ?: @"N/A",
-                          @"sourceLocation": sourceLocation ?: @"N/A",
-                          @"finalFileURL": finalFileURL ?: @"N/A",
-                        }];
+  if (fulfillmentId && NYPLUserAccount.sharedAccount.requiresUserAuthentication) {
+    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLUserAccount sharedAccount] userID]);
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
+                                    userID:[[NYPLUserAccount sharedAccount] userID]
+                                  deviceID:[[NYPLUserAccount sharedAccount] deviceID]
+                                completion:^(BOOL success, NSError *error) {
+      if(success) {
+        [self revokeLoanAndRemoveBook:book state:state];
+      } else {
+        NYPLLOG(@"Failed to return loan via NYPLAdept.");
+        [self presentAlertForError:error
+                       orErrorDict:nil
+                     returningBook:book];
+      }
+    }];
+  } else {
+    // if we have no fulfillment ID or we don't require authentication, we just
+    // need to let the Circulation Manager server know and remove the book
+    [self revokeLoanAndRemoveBook:book state:state];
   }
-
-  return success;
+#else
+  [self revokeLoanAndRemoveBook:book state:state];
+#endif//FEATURE_DRM_CONNECTOR
 }
 
-- (BOOL)replaceBook:(NYPLBook *)book
-      withFileAtURL:(NSURL *)sourceLocation
-    forDownloadTask:(NSURLSessionDownloadTask *)downloadTask
+- (void)revokeLoanAndRemoveBook:(NYPLBook *)book state:(NYPLBookState)state
 {
-  NSError *replaceError = nil;
-  NSURL *destURL = [self fileURLForBookIndentifier:book.identifier];
-  BOOL success = [[NSFileManager defaultManager] replaceItemAtURL:destURL
-                                                    withItemAtURL:sourceLocation
-                                                   backupItemName:nil
-                                                          options:NSFileManagerItemReplacementUsingNewMetadataOnly
-                                                 resultingItemURL:nil
-                                                            error:&replaceError];
-  
-  if(success) {
-    [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+  BOOL didDownloadBook = (state == NYPLBookStateDownloadSuccessful
+                          || state == NYPLBookStateUsed);
+  NSString *const identifier = book.identifier;
+
+  // The main case for not having a revoke link is when the library doesn't
+  // authenticate its users. In the case there's no server-side loan to revoke.
+  if (!book.revokeURL) {
+    if (didDownloadBook) {
+      [self deleteLocalContentForBookIdentifier:identifier];
+    }
+    [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
     [[NYPLBookRegistry sharedRegistry] save];
-  } else {
-    [self logBookDownloadFailure:book
-                          reason:@"Couldn't replace downloaded book"
-                    downloadTask:downloadTask
-                        metadata:@{
-                          @"replaceError": replaceError ?: @"N/A",
-                          @"destinationFileURL": destURL ?: @"N/A",
-                          @"sourceFileURL": sourceLocation ?: @"N/A",
-                        }];
+    return;
   }
+
+  [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
+
+  // revoke loan with the CM
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.revokeURL
+                            networkExecutor:[NYPLNetworkExecutor shared]
+                           shouldResetCache:NO
+                                 completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
+    [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
+
+    if (feed && feed.entries.count == 1)  {
+      NYPLOPDSEntry *const entry = feed.entries[0];
+      if(didDownloadBook) {
+        [self deleteLocalContentForBookIdentifier:identifier];
+      }
+      NYPLBook *returnedBook = [NYPLBook bookWithEntry:entry];
+      [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
+      [[NYPLBookRegistry sharedRegistry] save];
+      [NYPLMyBooksNotifier announceSuccessfulBookReturn:returnedBook];
+      return;
+    }
+
+    // handle errors
+    if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
+      if (didDownloadBook) {
+        [self deleteLocalContentForBookIdentifier:identifier];
+      }
+      [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+      [[NYPLBookRegistry sharedRegistry] save];
+      [NYPLMyBooksNotifier announceSuccessfulBookReturn:book];
+    } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+      NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
+      __weak __auto_type wSelf = self;
+      [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
+                                                authenticationCompletion:^{
+        [wSelf returnBookWithIdentifier:identifier];
+      }];
+    } else {
+      [self presentAlertForError:nil orErrorDict:errorDict returningBook:book];
+    }
+  }];
+}
+
+#pragma mark - Error Handling
+
+/// Notifies the book registry AND the user that a book failed to download.
+/// @note This method does NOT log to Crashlytics.
+/// @param book The book that failed to download.
+- (void)failDownloadWithAlertForBook:(NYPLBook *const)book
+{
+  [[NYPLBookRegistry sharedRegistry]
+   addBook:book
+   location:nil
+   state:NYPLBookStateDownloadFailed
+   fulfillmentId:nil
+   readiumBookmarks:nil
+   genericBookmarks:nil];
+
 #if defined(AXIS)
   [self.bookIdentifierToAxisAdapter removeObjectForKey:book.identifier];
 #endif
-  
-  return success;
+
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
+    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed" message:formattedMessage];
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+  });
+
+  [self broadcastUpdate:book.identifier];
+}
+
+// this doesn't log to crashlytics because it assumes that the caller
+// is responsible for that.
+- (void)alertForProblemDocument:(NYPLProblemDocument *)problemDoc
+                          error:(NSError *)error
+                           book:(NYPLBook *)book
+{
+  NSString *msg = [NSString stringWithFormat:
+                   NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
+                   book.title];
+  UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed"
+                                                    message:msg];
+  if (problemDoc) {
+    [[NYPLProblemDocumentCacheManager sharedInstance]
+     cacheProblemDocument:problemDoc
+     key:book.identifier];
+    [NYPLAlertUtils setProblemDocumentWithController:alert
+                                            document:problemDoc
+                                              append:YES];
+    if ([problemDoc.type isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
+      [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
+    }
+  } else if (error && !error.localizedDescriptionWithRecovery.isEmptyNoWhitespace) {
+    alert.message = [NSString stringWithFormat:@"%@\n\nError: %@",
+                     msg, error.localizedDescriptionWithRecovery];
+  }
+
+  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+}
+
+- (void)presentAlertForError:(NSError *)error
+                 orErrorDict:(NSDictionary *)errorDict
+               returningBook:(NYPLBook *)book
+{
+  [NYPLErrorLogger logError:error
+                    summary:@"Failed returning book"
+                   metadata:@{
+    @"errorDict": errorDict ?: @"",
+    @"returningBook": book.loggableDictionary ?: @""
+  }];
+
+  NSString *msg = NSLocalizedString(@"ReturnCouldNotBeCompletedFormat", nil);
+  msg = [NSString stringWithFormat:msg, book.title];
+  if (error) {
+    msg = [NSString stringWithFormat:@"%@\n%@",
+           msg, error.localizedDescriptionWithRecovery];
+  }
+
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    UIAlertController *alert = [NYPLAlertUtils
+                                alertWithTitle:@"ReturnFailed"
+                                message:msg];
+    if (errorDict) {
+      NYPLProblemDocument *problemDoc = [NYPLProblemDocument fromDictionary:errorDict];
+      [NYPLAlertUtils setProblemDocumentWithController:alert
+                                              document:problemDoc
+                                                append:YES];
+    }
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert
+                                                       viewController:nil
+                                                             animated:YES
+                                                           completion:nil];
+  }];
+}
+
+- (void)logBookDownloadFailure:(NYPLBook *)book
+                        reason:(NSString *)reason
+                  downloadTask:(NSURLSessionTask *)downloadTask
+                      metadata:(NSDictionary<NSString*, id> *)metadata
+{
+  NSString *rights = [[self downloadInfoForBookIdentifier:book.identifier]
+                      rightsManagementString];
+  NSString *bookType = [NYPLBookContentTypeConverter stringValueOf:
+                        [book defaultBookContentType]];
+  NSString *context = [NSString stringWithFormat:@"%@ %@ download fail: %@",
+                       book.distributor, bookType, reason];
+
+  NSMutableDictionary<NSString*, id> *dict = [[NSMutableDictionary alloc] initWithDictionary:metadata];
+  dict[@"book"] = book.loggableDictionary;
+  dict[@"rightsManagement"] = rights;
+  dict[@"taskOriginalRequest"] = downloadTask.originalRequest.loggableString;
+  dict[@"taskCurrentRequest"] = downloadTask.currentRequest.loggableString;
+  dict[@"response"] = downloadTask.response ?: @"N/A";
+  dict[@"downloadError"] = downloadTask.error ?: @"N/A";
+
+  [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeDownloadFail
+                            summary:context
+                           metadata:dict];
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
   
-#pragma mark NYPLADEPTDelegate
+#pragma mark - NYPLADEPTDelegate
   
 - (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didUpdateProgress:(double)progress tag:(NSString *)tag
 {
