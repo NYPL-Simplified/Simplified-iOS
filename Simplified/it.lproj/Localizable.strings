@@ -32,6 +32,7 @@
 "DownloadCouldNotBeCompletedFormat" = "Il download di %@ non può essere completato.";
 "The download could not be completed.\nScroll down to 'View Issues' to see details." = "Il download non è stato completato.\nScorri in fondo alla pagina per i dettagli dell'errore.";
 "The download could not be completed." = "Il download non è stato completato.";
+"Your download did not complete successfully. Retry or contact support." = "Si è verificato un problema durante lo scaricamento del tuo audiolibro. Riprova oppure contatta la tua biblioteca.";
 "View Issues" = "Mostra il problema";
 "Report a Problem" = "Riferisci un problema";
 "Related Books" = "Libri correlati";

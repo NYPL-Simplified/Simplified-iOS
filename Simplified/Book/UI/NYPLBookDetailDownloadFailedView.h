@@ -6,6 +6,8 @@
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
+@property (nonatomic) BOOL showAudiobookError;
+
 - (void)configureFailMessageWithProblemDocument:(NYPLProblemDocument *)problemDoc;
 
 @end

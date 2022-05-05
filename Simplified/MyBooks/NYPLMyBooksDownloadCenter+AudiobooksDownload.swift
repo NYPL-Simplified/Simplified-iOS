@@ -43,7 +43,9 @@ extension NYPLMyBooksDownloadCenter {
               Log.error(#file, "Audiobooks: unsupported - \(String(describing: book.loggableShortString))")
             }
             
-            // TODO: Handle Error, set state in book registry
+            NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadFailed.rawValue,
+                                                       forIdentifier: book.identifier)
+            NYPLBookRegistry.shared().save()
             self?.broadcastUpdate(book.identifier)
             return
           }
@@ -54,7 +56,9 @@ extension NYPLMyBooksDownloadCenter {
         NYPLErrorLogger.logError(withCode: .audiobookCorrupted,
                                  summary: "Audiobooks: corrupted audiobook",
                                  metadata: metadata)
-        // TODO: Handle Error, set state in book registry
+        NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadFailed.rawValue,
+                                                   forIdentifier: book.identifier)
+        NYPLBookRegistry.shared().save()
         self.broadcastUpdate(book.identifier)
       }
     }
@@ -103,11 +107,11 @@ extension NYPLMyBooksDownloadCenter: NYPLAudiobookDownloadStatusDelegate {
   }
   
   func audiobookDidReceiveDownloadError(error: NSError?, bookID: String) {
-    // TODO: iOS-392 Update UI
     NYPLErrorLogger.logError(error,
                              summary: "Audiobook download in background failed",
                              metadata: nil)
     NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadFailed.rawValue, forIdentifier: bookID)
+    NYPLBookRegistry.shared().save()
     self.broadcastUpdate(bookID)
   }
 }
