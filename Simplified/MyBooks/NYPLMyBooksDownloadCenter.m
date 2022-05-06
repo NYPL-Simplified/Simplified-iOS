@@ -124,7 +124,8 @@ expectedTotalBytes:(__attribute__((unused)) int64_t)expectedTotalBytes
   NYPLLOG(@"Ignoring unexpected resumption.");
 }
 
-// this appears to be called only once per book download for both Adobe and Axis
+/// This appears to be called only once per book download for Adobe and Axis.
+/// For Bearer Token requests this is called multiple times.
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
       downloadTask:(NSURLSessionDownloadTask *const)downloadTask
       didWriteData:(int64_t const)bytesWritten
@@ -520,7 +521,6 @@ didCompleteWithError:(NSError *)error
   */
   
   if(error && error.code != NSURLErrorCancelled) {
-    // TODO: SIMPLY-2985 filter out codes in NYPLErrorLogger
     [self logBookDownloadFailure:book
                           reason:@"networking error"
                     downloadTask:task
@@ -528,7 +528,6 @@ didCompleteWithError:(NSError *)error
                           @"urlSessionError": error
                         }];
     [self failDownloadWithAlertForBook:book];
-    return;
   }
 }
 
@@ -1451,13 +1450,11 @@ didFinishDownload:(BOOL)didFinishDownload
   NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:tag];
   NSString *rights = [[NSString alloc] initWithData:rightsData encoding:kCFStringEncodingUTF8];
   BOOL didSucceedCopying = NO;
+  NSURL *destURL = [self fileURLForBookIndentifier:book.identifier];
 
   if(didFinishDownload) {
-    [[NSFileManager defaultManager]
-     removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-     error:NULL];
-
-    if (![self fileURLForBookIndentifier:book.identifier]) {
+    [[NSFileManager defaultManager] removeItemAtURL:destURL error:NULL];
+    if (destURL == nil) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAdobeDRMFulfillmentFail
                                 summary:@"Adobe DRM error: destination file URL unavailable"
                                metadata:@{
@@ -1473,13 +1470,11 @@ didFinishDownload:(BOOL)didFinishDownload
     }
     
     // This needs to be a copy else the Adept connector will explode when it tries to delete the
-    // temporary file.
+    // temporary file. This is saving the actual book to disk in its final location.
     NSError *copyError = nil;
-    NSURL *destURL = [self fileURLForBookIndentifier:book.identifier];
-    didSucceedCopying = [[NSFileManager defaultManager]
-                         copyItemAtURL:adeptToURL
-                         toURL:destURL
-                         error:&copyError];
+    didSucceedCopying = [[NSFileManager defaultManager] copyItemAtURL:adeptToURL
+                                                                toURL:destURL
+                                                                error:&copyError];
     if(!didSucceedCopying) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAdobeDRMFulfillmentFail
                                 summary:@"Adobe DRM error: failure copying file"
@@ -1518,7 +1513,7 @@ didFinishDownload:(BOOL)didFinishDownload
   // opening the EPUB 3.
   // See Container::Open(const string& path) in container.cpp.
   //
-  if(![rightsData writeToFile:[[[self fileURLForBookIndentifier:book.identifier] path]
+  if(![rightsData writeToFile:[[destURL path]
                                stringByAppendingString:ADOBE_RIGHTS_XML_SUFFIX]
                    atomically:YES]) {
     NYPLLOG(@"Failed to store rights data.");
