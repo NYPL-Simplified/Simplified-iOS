@@ -8,7 +8,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
-      - name: Force Xcode 13.1
+      - name: Force Xcode 13.3.1
         run: sudo xcode-select -switch /Applications/Xcode_13.1.app
       - name: Print System Info
         run: uname -a

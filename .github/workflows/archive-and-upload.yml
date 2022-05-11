@@ -19,8 +19,6 @@ jobs:
         run: uname -a
       - name: Check Carthage version
         run: command -v carthage && carthage version
-      - name: Check Python version
-        run: command -v python && python --version
       - name: Checkout main repo
         uses: actions/checkout@v2.3.4
         with:
@@ -48,7 +46,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
-      - name: Force Xcode 13.1
+      - name: Force Xcode 13.3.1
         run: sudo xcode-select -switch /Applications/Xcode_13.1.app
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
