@@ -7,7 +7,7 @@ on:
       - feature/**
 jobs:
   version-check:
-    runs-on: macOS-11
+    runs-on: macOS-12
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
@@ -19,6 +19,8 @@ jobs:
         run: uname -a
       - name: Check Carthage version
         run: command -v carthage && carthage version
+      - name: Check Python version
+        run: command -v python && python --version
       - name: Checkout main repo
         uses: actions/checkout@v2.3.4
         with:
@@ -40,7 +42,7 @@ jobs:
       simplye_changed: ${{ steps.detectapp.outputs.simplye_changed }}
       openebooks_changed: ${{ steps.detectapp.outputs.openebooks_changed }}
   upload-arc:
-    runs-on: macOS-11
+    runs-on: macOS-12
     needs: version-check
     if: needs.version-check.outputs.simplye_changed == '1' || needs.version-check.outputs.openebooks_changed == '1'
     env:

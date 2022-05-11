@@ -3,7 +3,7 @@ on:
   pull_request:
 jobs:
   build:
-    runs-on: macOS-11
+    runs-on: macOS-12
     steps:
       - name: Check available Xcodes
         run: ls -la /Applications

@@ -3,7 +3,7 @@ on:
   pull_request:
 jobs:
   build-and-test:
-    runs-on: macOS-11
+    runs-on: macOS-12
     if: github.event.pull_request.head.repo.full_name == github.repository
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
