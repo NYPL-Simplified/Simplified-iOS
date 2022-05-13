@@ -471,7 +471,11 @@ fileprivate let nullString = "null"
                       userInfo: attributes)
     Crashlytics.crashlytics().record(error: err)
 #elseif FEATURE_NEWRELIC
-    NewRelic.recordCustomEvent(eventName, name: eventName, attributes: attributes)
+    // see https://docs.newrelic.com/docs/mobile-monitoring/new-relic-mobile-ios/ios-sdk-api/ios-sdk-api-guide/#swift-custom-att-events
+    let success = NewRelic.recordCustomEvent("event",
+                                             name: eventName,
+                                             attributes: attributes)
+    assert(success, "Failed to record New Relic custom event: verify there are no more than 128 attributes")
 #else
     Log.error("LOG_EVENT", "\(eventName) Code: \(code) Attributes: \(attributes)")
 #endif
