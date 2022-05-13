@@ -5536,7 +5536,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SIMPLYE=1",
-					"DEBUG=1",
 					"FEATURE_DRM_CONNECTOR=1",
 					"FEATURE_CRASH_REPORTING=1",
 					"FEATURE_OVERDRIVE_AUTH=1",
@@ -5585,7 +5584,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SIMPLYE=1",
-					"DEBUG=0",
 					"FEATURE_DRM_CONNECTOR=1",
 					"FEATURE_CRASH_REPORTING=1",
 					"FEATURE_OVERDRIVE_AUTH=1",
@@ -5633,9 +5631,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"SIMPLYE=1",
-					"DEBUG=1",
 					"$(inherited)",
+					"SIMPLYE=1",
 					"FEATURE_AUDIOBOOKS=1",
 				);
 				INFOPLIST_FILE = "SimplyE/Simplified-Info.plist";
@@ -5681,7 +5678,6 @@
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"SIMPLYE=1",
-					"DEBUG=0",
 					"$(inherited)",
 					"FEATURE_AUDIOBOOKS=1",
 				);
@@ -5727,7 +5723,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"OPENEBOOKS=1",
-					"DEBUG=1",
 					"FEATURE_CRASH_REPORTING=1",
 					"AXIS=1",
 				);
@@ -5775,7 +5770,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"OPENEBOOKS=1",
-					"DEBUG=0",
 					"FEATURE_CRASH_REPORTING=1",
 					"AXIS=1",
 				);
@@ -5953,7 +5947,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SIMPLYE=1",
-					"DEBUG=1",
 					"FEATURE_AUDIOBOOKS=1",
 					"FEATURE_OVERDRIVE_AUTH=1",
 					"FEATURE_AUDIOBOOKS=1",
@@ -6004,7 +5997,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SIMPLYE=1",
-					"DEBUG=0",
 					"FEATURE_AUDIOBOOKS=1",
 					"FEATURE_OVERDRIVE_AUTH=1",
 					"FEATURE_AUDIOBOOKS=1",
