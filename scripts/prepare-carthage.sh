@@ -33,9 +33,10 @@ else
   echo "Preparing Carthage build for [$BUILD_CONTEXT]..."
 fi
 
-# additional setup for builds with DRM
-if [ "$1" != "--no-private" ]; then
-  # LCP support in R2 requires a private client library, available via Certificates repo
-  echo "Fixing up the Cartfile for LCP..."
-  swift ./Certificates/SimplyE/iOS/LCPLib.swift
-fi
+# currently disabled since we don't support LCP at the moment
+## additional setup for builds with DRM
+#if [ "$1" != "--no-private" ]; then
+#  # LCP support in R2 requires a private client library, available via Certificates repo
+#  echo "Fixing up the Cartfile for LCP..."
+#  swift ./Certificates/SimplyE/iOS/LCPLib.swift
+#fi

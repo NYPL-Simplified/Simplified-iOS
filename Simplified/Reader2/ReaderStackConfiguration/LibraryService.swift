@@ -51,16 +51,14 @@ final class LibraryService: Loggable {
   
   // MARK: Opening
   
-  /// Opens the Readium 2 Publication for the given `book`.
+  /// Opens the book file in Readium 2.
   ///
   /// - Parameters:
-  ///   - book: The book to be opened.
   ///   - sender: The VC that requested the opening and that will handle
   ///   error alerts or other messages for the user.
   ///   - completion: When this is called, the book is ready for
   ///   presentation if there are no errors.
-  func openBook(_ book: NYPLBook,
-                fromFileURL bookFileURL: URL?,
+  func openBook(fromFileURL bookFileURL: URL?,
                 sender: UIViewController,
                 completion: @escaping (CancellableResult<Publication, LibraryServiceError>) -> Void) {
 
@@ -79,7 +77,7 @@ final class LibraryService: Loggable {
           }
         }
         
-        self.preparePresentation(of: publication, book: book)
+        self.preparePresentation(of: publication)
         return .success(publication)
     }
     .mapError { LibraryServiceError.openFailed($0) }
@@ -94,9 +92,18 @@ final class LibraryService: Loggable {
     .eraseToAnyError()
   }
   
-  private func preparePresentation(of publication: Publication, book: NYPLBook) {
-    // If the book is a webpub, it means it is loaded remotely from a URL, and it doesn't need to be added to the publication server.
-    guard publication.format != .webpub else {
+  private func preparePresentation(of publication: Publication) {
+    // What we want to avoid here it to add a webPub to the publication server,
+    // because there's no need to do that if it is loaded remotely from a URL.
+    // Note that WebPub is not a Publication.Profile, and it will never
+    // become one because it's the super set of all the profiles.
+    // However, if the WebPub is packaged in a .webpub file, we do need to
+    // add it to the publication server.
+    // Note that all packaged publications will have a `baseURL` set to nil,
+    // while a WebPub will have it set to a nonnull value.
+    // Note that a publication that was already added to the web server
+    // will also have a nonnull `baseURL`.
+    guard publication.baseURL == nil else {
       return
     }
     

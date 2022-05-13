@@ -5,7 +5,7 @@ typedef NS_ENUM(NSInteger, NYPLMyBooksDownloadRightsManagement) {
   NYPLMyBooksDownloadRightsManagementNone,
   NYPLMyBooksDownloadRightsManagementAdobe,
   NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON,
-  NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON,
+  NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON, // only used for audiobooks
   NYPLMyBooksDownloadRightsManagementLCP,
   NYPLMyBooksDownloadRightsManagementAxis
 };

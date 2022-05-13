@@ -12,7 +12,10 @@ final class NYPLLibrariesListVC: UIViewController, UITableViewDelegate, UITableV
 
   var accounts: [Account]!
   var nyplAccounts: [Account]!
-  let completion: (Account) -> ()
+
+  /// Always called on the main thread after selecting a library.
+  private let completion: (Account) -> ()
+
   weak var tableView : UITableView!
 
   required init(completion: @escaping (Account) -> ()) {
