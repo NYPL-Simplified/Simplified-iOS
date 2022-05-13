@@ -20,8 +20,11 @@ source "$(dirname $0)/xcode-settings.sh"
 #./scripts/firebase/upload-symbols -gsp "$GOOGLE_PLIST_PATH" -p ios "$DSYMS_PATH"
 #FIREBASE_UPLOAD_RESULT_UNIX=$?
 
-echo "Uploading $APP_NAME dSYMs to New Relic..."
 echo "SPM_ROOT=$SPM_ROOT"
+echo "Check Python version:"
+command -v python && python --version
+
+echo "Uploading $APP_NAME dSYMs to New Relic..."
 NEWRELIC_UPLOAD_RESULT=`$SPM_ROOT/artifacts/NewRelic/NewRelic.xcframework/Resources/generateMap.py "$DSYMS_PATH" $NEWRELIC_APP_TOKEN`
 NEWRELIC_UPLOAD_RESULT_UNIX=$?
 
