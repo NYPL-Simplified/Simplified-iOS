@@ -7,7 +7,7 @@ on:
       - feature/**
 jobs:
   version-check:
-    runs-on: macOS-11
+    runs-on: macOS-12
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
@@ -40,13 +40,13 @@ jobs:
       simplye_changed: ${{ steps.detectapp.outputs.simplye_changed }}
       openebooks_changed: ${{ steps.detectapp.outputs.openebooks_changed }}
   upload-arc:
-    runs-on: macOS-11
+    runs-on: macOS-12
     needs: version-check
     if: needs.version-check.outputs.simplye_changed == '1' || needs.version-check.outputs.openebooks_changed == '1'
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
-      - name: Force Xcode 13.1
+      - name: Force Xcode 13.3.1
         run: sudo xcode-select -switch /Applications/Xcode_13.1.app
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
