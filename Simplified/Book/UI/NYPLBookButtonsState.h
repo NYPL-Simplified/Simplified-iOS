@@ -17,6 +17,7 @@ typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
   NYPLBookButtonsStateDownloadSuccessful,
   NYPLBookButtonsStateUsed,
   NYPLBookButtonsStateDownloadInProgress,
+  NYPLBookButtonsStateDownloadingUsable,
   NYPLBookButtonsStateDownloadFailed,
   NYPLBookButtonsStateUnsupported
 };

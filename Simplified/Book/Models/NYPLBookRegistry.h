@@ -149,6 +149,12 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 // Returns the state of a book given its identifier.
 - (NYPLBookState)stateForIdentifier:(nonnull NSString *)identifier;
 
+// For Swift, since stateForIdentifier method above is not being compiled into the bridging header
+// possibly due to the enum NYPLBookState is being declared in both Swift and ObjC
+// stateCode should always be one of NYPLBookState cases
+// TODO: Remove when migrate to Swift, use stateForIdentifier: instead
+- (NSInteger)stateRawValueForIdentifier:(nonnull NSString *)identifier;
+
 // Sets the location for a book previously registered given its identifier.
 - (void)setLocation:(nullable NYPLBookLocation *)location
       forIdentifier:(nonnull NSString *)identifier;

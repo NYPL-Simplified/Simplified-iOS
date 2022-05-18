@@ -1,7 +1,12 @@
 @class NYPLBook;
 @class NYPLMyBooksDownloadInfo;
+@class NYPLAudiobookDownloader;
 
 @interface NYPLMyBooksDownloadCenter : NSObject
+
+#if FEATURE_AUDIOBOOKS
+@property (nonatomic) NYPLAudiobookDownloader *audiobookDownloader;
+#endif
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -51,5 +56,11 @@
 
 // This returns a URL even if the book is not on-disk. Returns nil if |identifier| is nil.
 - (NSURL *)fileURLForBookIndentifier:(NSString *)identifier;
+
+#if FEATURE_AUDIOBOOKS
+- (void)broadcastUpdate:(NSString *)bookID;
+
+- (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID;
+#endif
 
 @end
