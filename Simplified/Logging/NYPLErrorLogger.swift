@@ -462,7 +462,7 @@ fileprivate let nullString = "null"
     #endif
   }
 
-  private class func recordEvent(_ eventName: String,
+  private class func recordEvent(_ eventSummary: String,
                                  code: NYPLErrorCode,
                                  attributes: [String: Any]) {
 #if FEATURE_CRASHLYTICS
@@ -472,9 +472,10 @@ fileprivate let nullString = "null"
     Crashlytics.crashlytics().record(error: err)
 #elseif FEATURE_NEWRELIC
     // see https://docs.newrelic.com/docs/mobile-monitoring/new-relic-mobile-ios/ios-sdk-api/ios-sdk-api-guide/#swift-custom-att-events
-    let success = NewRelic.recordCustomEvent("event",
-                                             name: eventName,
-                                             attributes: attributes)
+    let flattenedAttributes = attributes.flattenToStringsAndNumbers()
+    let success = NewRelic.recordCustomEvent("iOSCustomEvent",
+                                             name: eventSummary,
+                                             attributes: flattenedAttributes)
     assert(success, "Failed to record New Relic custom event: verify there are no more than 128 attributes")
 #else
     Log.error("LOG_EVENT", "\(eventName) Code: \(code) Attributes: \(attributes)")
@@ -638,14 +639,15 @@ fileprivate let nullString = "null"
     metadata["currentAccountId (from UserDefaults)"] = AccountsManager.shared.currentAccountId ?? nullString
     metadata["currentAccountCatalogURL"] = currentLibrary?.catalogUrl ?? nullString
     metadata["currentAccountAuthDocURL"] = currentLibrary?.authenticationDocumentUrl ?? nullString
-    metadata["currentAccountLoansURL"] = currentLibrary?.loansUrl ?? nullString
+    metadata["currentAccountLoansURL"] = currentLibrary?.loansUrl?.description ?? nullString
     metadata["currentAccountDetails"] = currentLibrary?.details?.debugDescription ?? nullString
-    metadata["numAccounts"] = AccountsManager.shared.accounts().count
 
     #if FEATURE_NEWRELIC
-    metadata.forEach { (key, value) in
-      NewRelic.setAttribute(key, value: value)
-    }
+    let numLibraryAccounts = AccountsManager.shared.accounts().count
+    let success = NewRelic.setAttribute("numLibraryAccounts", value: numLibraryAccounts)
+    assert(success, "Failure in NewRelic.setAttribute call for numLibraryAccounts")
+    #else
+    metadata["numLibraryAccounts"] = AccountsManager.shared.accounts().count
     #endif
   }
 
