@@ -1607,10 +1607,4 @@ didEncounterSignOutError:(NSError *)error
 #endif
 }
 
-- (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
-{
-  [self removeActivityTitle];
-  [self setupTableData];
-}
-
 @end

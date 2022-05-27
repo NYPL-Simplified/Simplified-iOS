@@ -39,6 +39,7 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLSAMLHelper.h"
 #import "NYPLSettingsAccountDetailViewController.h"
+#import "NYPLSettingsAccountDetailViewController+Swift.h"
 #import "NYPLXML.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "UIView+NYPLViewAdditions.h"

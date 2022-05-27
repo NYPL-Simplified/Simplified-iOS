@@ -1005,14 +1005,17 @@ didEncounterValidationError:(NSError *)error
 didEncounterSignOutError:(NSError *)error
       withHTTPStatusCode:(NSInteger)statusCode
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 - (void)businessLogicWillSignOut:(NYPLSignInBusinessLogic *)businessLogic
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 - (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 @end
