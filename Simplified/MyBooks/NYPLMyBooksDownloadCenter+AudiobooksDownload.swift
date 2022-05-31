@@ -8,6 +8,7 @@
 #if FEATURE_AUDIOBOOKS
 import Foundation
 import NYPLAudiobookToolkit
+import NYPLUtilitiesObjc
 
 extension NYPLMyBooksDownloadCenter {
   /// Create an audiobook object and add to download queue.
@@ -100,7 +101,13 @@ extension NYPLMyBooksDownloadCenter: NYPLAudiobookDownloadStatusDelegate {
     downloadProgressDidUpdate(to: Double(progress), forBookIdentifier: bookID)
   }
   
-  func audiobookDidCompleteDownload(bookID: String) {
+  func audiobookDidCompleteDownload(bookID: String, beyondTimeLimit: Bool) {
+    if beyondTimeLimit {
+      NYPLErrorLogger.logError(withCode: .audiobookDownloadCompletedBeyondTimeLimit,
+                               summary: "Audiobook Download Completed Beyond Time Limit",
+                               metadata: ["BookID": bookID])
+    }
+    
     NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadSuccessful.rawValue,
                                                forIdentifier: bookID)
     NYPLBookRegistry.shared().save()
@@ -108,8 +115,18 @@ extension NYPLMyBooksDownloadCenter: NYPLAudiobookDownloadStatusDelegate {
   
   func audiobookDidReceiveDownloadError(error: NSError?, bookID: String) {
     NYPLErrorLogger.logError(error,
-                             summary: "Audiobook download in background failed",
-                             metadata: nil)
+                             summary: "Audiobook Download Failed",
+                             metadata: ["BookID": bookID])
+    NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadFailed.rawValue, forIdentifier: bookID)
+    NYPLBookRegistry.shared().save()
+    self.broadcastUpdate(bookID)
+  }
+  
+  func audiobookDownloadDidTimeout(bookID: String, networkStatus: NetworkStatus, metadata: [String : Any]) {
+    let errorCode: NYPLErrorCode = networkStatus == NotReachable ? .audiobookDownloadTimedOutNotReachable : .audiobookDownloadTimedOutReachable
+    NYPLErrorLogger.logError(withCode: errorCode,
+                             summary: "Audiobook Download Timed Out",
+                             metadata: metadata)
     NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.DownloadFailed.rawValue, forIdentifier: bookID)
     NYPLBookRegistry.shared().save()
     self.broadcastUpdate(bookID)

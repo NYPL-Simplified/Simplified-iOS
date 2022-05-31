@@ -8,17 +8,20 @@
 #if FEATURE_AUDIOBOOKS
 import Foundation
 import NYPLAudiobookToolkit
+import NYPLUtilitiesObjc
 
 @objc protocol NYPLAudiobookDownloadStatusDelegate {
   func audiobookDidUpdateDownloadProgress(_ progress: Float, bookID: String)
-  func audiobookDidCompleteDownload(bookID: String)
+  func audiobookDidCompleteDownload(bookID: String, beyondTimeLimit: Bool)
   func audiobookDidReceiveDownloadError(error: NSError?, bookID: String)
+  func audiobookDownloadDidTimeout(bookID: String, networkStatus: NetworkStatus, metadata: [String: Any])
 }
 
 class NYPLAudiobookDownloadObject {
   var bookID: String
   var audiobookManager: DefaultAudiobookManager
   var didRetryDownload: Bool = false
+  var beyondTimeLimit: Bool = false
   
   init(bookID: String, audiobookManager: DefaultAudiobookManager) {
     self.bookID = bookID
@@ -128,9 +131,9 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
     if progress == 1,
       let downloadObject = currentDownloadObject
     {
-      delegate?.audiobookDidCompleteDownload(bookID: downloadObject.bookID)
-      downloadObject.audiobookManager.networkService.removeDelegate(self)
       Log.info(#file, "Audiobook - \(downloadObject.bookID) download completed and removed")
+      delegate?.audiobookDidCompleteDownload(bookID: downloadObject.bookID, beyondTimeLimit: downloadObject.beyondTimeLimit)
+      downloadObject.audiobookManager.networkService.removeDelegate(self)
 
       releaseCurrentDownloadObject()
       fetchNextIfNeeded()
@@ -152,6 +155,42 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
         downloadObject.audiobookManager.networkService.fetch()
         downloadObject.didRetryDownload = true
       }
+    }
+  }
+  
+  func audiobookNetworkService(_ audiobookNetworkService: AudiobookNetworkService,
+                               didTimeoutFor spineElement: SpineElement?,
+                               networkStatus: NetworkStatus) {
+    if let downloadObject = currentDownloadObject {
+      let metadata = [
+        "BookID": downloadObject.bookID,
+        "Connectivity": connectivityString(networkStatus),
+        "Chapter Info": spineElement?.chapter.description ?? "N/A",
+      ]
+      delegate?.audiobookDownloadDidTimeout(bookID: downloadObject.bookID,
+                                            networkStatus: networkStatus,
+                                            metadata: metadata)
+      releaseCurrentDownloadObject()
+      fetchNextIfNeeded()
+    }
+  }
+  
+  func audiobookNetworkService(_ audiobookNetworkService: AudiobookNetworkService,
+                               downloadExceededTimeLimitFor spineElement: SpineElement,
+                               elapsedTime: TimeInterval,
+                               networkStatus: NetworkStatus) {
+    currentDownloadObject?.beyondTimeLimit = true
+    Log.warn(#file, "Audiobook Download Exceeded Time Limit. Chapter: \(spineElement.chapter.description), download progress for current file - \(spineElement.downloadTask.downloadProgress * 100)%, elapsed time - \(elapsedTime)seconds, connectivity - \(connectivityString(networkStatus))")
+  }
+  
+  private func connectivityString(_  networkStatus: NetworkStatus) -> String {
+    switch networkStatus {
+    case ReachableViaWWAN:
+      return "Cellular"
+    case ReachableViaWiFi:
+      return "WiFi"
+    default:
+      return "No Internet Connection"
     }
   }
 }
