@@ -20,7 +20,7 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
   static let NYPLAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949", //NYPL proper
     "urn:uuid:edef2358-9f6a-4ce6-b64f-9b351ec68ac4", //Brooklyn
-    "urn:uuid:56906f26-2c9a-4ae9-bd02-552557720b99"  //Simplified Instant Classics
+    "urn:uuid:56906f26-2c9a-4ae9-bd02-552557720b99"  //Books for All
   ]
 
   let NYPLAccountUUID = AccountsManager.NYPLAccountUUIDs[0]

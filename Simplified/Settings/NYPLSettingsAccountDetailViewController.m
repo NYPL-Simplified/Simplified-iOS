@@ -1607,4 +1607,14 @@ didEncounterSignOutError:(NSError *)error
 #endif
 }
 
+- (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
+{
+#if OPENEBOOKS
+  [((NYPLAppDelegate*)UIApplication.sharedApplication.delegate) setUpRootVC];
+#else
+  [self removeActivityTitle];
+  [self setupTableData];
+#endif
+}
+
 @end
