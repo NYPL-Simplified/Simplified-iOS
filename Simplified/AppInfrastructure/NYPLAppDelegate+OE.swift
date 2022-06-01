@@ -11,7 +11,9 @@ import Foundation
 extension NYPLAppDelegate {
   @objc func setUpRootVC() {
     if NYPLSettings.shared.userHasAcceptedEULA {
-      if NYPLSettings.shared.userHasSeenWelcomeScreen {
+      if NYPLSettings.shared.userHasSeenWelcomeScreen,
+          NYPLUserAccount.sharedAccount().isSignedIn()
+      {
         window.rootViewController = NYPLRootTabBarController.shared()
       } else {
         window.rootViewController = OETutorialViewController()
@@ -35,7 +37,7 @@ extension NYPLAppDelegate {
   }
 
   @objc func completeBecomingActive() {
-    if !NYPLUserAccount.sharedAccount().hasCredentials()
+    if !NYPLUserAccount.sharedAccount().isSignedIn()
       && NYPLSettings.shared.userHasSeenWelcomeScreen
       && !isSigningIn {
       

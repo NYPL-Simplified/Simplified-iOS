@@ -92,6 +92,7 @@ class OETutorialChoiceViewController : UIViewController {
       Log.error("", "Could not load app window")
       return
     }
+    Log.info(#function, "Installing main root VC")
     appWindow?.rootViewController = NYPLRootTabBarController.shared()
   }
 
