@@ -51,7 +51,12 @@ extension NYPLMyBooksDownloadCenter {
             return
           }
           
-          self?.addAudiobookToDownloader(for: book, audiobook: audiobook)
+          let metadata = AudiobookMetadata(title: book.title, authors: [(book.authors ?? "")])
+          let audiobookManager = DefaultAudiobookManager(metadata: metadata, audiobook: audiobook)
+          
+          self?.addAudiobookManagerToDownloader(audiobookManager: audiobookManager,
+                                                bookID: book.identifier,
+                                                isHighPriority: false)
         }
       } else {
         NYPLErrorLogger.logError(withCode: .audiobookCorrupted,
@@ -65,6 +70,26 @@ extension NYPLMyBooksDownloadCenter {
     }
   }
   
+  /// - Parameters:
+  ///   - audiobookManager: Audiobook manager responsible for the download mechanism
+  ///   - bookID: The book identifier for updating download status through delegate
+  ///   - isHighPriority: Only pass in `true` if user is opening the audiobook to listen
+  ///
+  ///   We use `AudiobookManager` instead of `Audiobook` here because `AudiobookManager`
+  ///   allow us to determine if download is needed or not before presenting the audiobook.
+  @objc func addAudiobookManagerToDownloader(audiobookManager: DefaultAudiobookManager,
+                                             bookID: String,
+                                             isHighPriority: Bool) {
+    NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.Downloading.rawValue, forIdentifier: bookID)
+    
+    self.downloadProgressDidUpdate(to: Double(audiobookManager.networkService.downloadProgress),
+                                   forBookIdentifier: bookID)
+    
+    self.audiobookDownloader.downloadAudiobook(for: bookID,
+                                               audiobookManager: audiobookManager,
+                                               isHighPriority: isHighPriority)
+  }
+  
   @objc(audiobookManagerForBookID:)
   func audiobookManager(for bookID: String?) -> DefaultAudiobookManager? {
     guard let bookID = bookID else {
@@ -72,20 +97,6 @@ extension NYPLMyBooksDownloadCenter {
     }
     
     return self.audiobookDownloader.audiobookManager(for: bookID)
-  }
-  
-  // MARK: - Helper
-  
-  private func addAudiobookToDownloader(for book: NYPLBook, audiobook: Audiobook) {
-    let metadata = AudiobookMetadata(title: book.title, authors: [(book.authors ?? "")])
-    let manager = DefaultAudiobookManager(metadata: metadata, audiobook: audiobook)
-    
-    NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.Downloading.rawValue, forIdentifier: book.identifier)
-    
-    self.downloadProgressDidUpdate(to: Double(manager.networkService.downloadProgress),
-                                   forBookIdentifier: book.identifier)
-    
-    self.audiobookDownloader.downloadAudiobook(for: book.identifier, audiobookManager: manager)
   }
 }
 
