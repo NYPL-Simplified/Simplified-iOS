@@ -114,8 +114,10 @@ class NYPLAudiobookDownloadObject {
   }
   
   private func cancelDownload(for downloadObject: NYPLAudiobookDownloadObject) {
-    downloadObject.audiobookManager.networkService.cancelFetch()
-    downloadObject.audiobookManager.networkService.removeDelegate(self)
+    serialQueue.async {
+      downloadObject.audiobookManager.networkService.cancelFetch()
+      downloadObject.audiobookManager.networkService.removeDelegate(self)
+    }
     Log.info(#file, "Fetch cancelled for \(downloadObject.bookID)")
   }
   
@@ -146,7 +148,9 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
     {
       Log.info(#file, "Audiobook - \(downloadObject.bookID) download completed and removed")
       delegate?.audiobookDidCompleteDownload(bookID: downloadObject.bookID, beyondTimeLimit: downloadObject.beyondTimeLimit)
-      downloadObject.audiobookManager.networkService.removeDelegate(self)
+      serialQueue.async {
+        downloadObject.audiobookManager.networkService.removeDelegate(self)
+      }
 
       releaseCurrentDownloadObject()
       fetchNextIfNeeded()
@@ -192,7 +196,10 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
                                downloadExceededTimeLimitFor spineElement: SpineElement,
                                elapsedTime: TimeInterval,
                                networkStatus: NetworkStatus) {
-    currentDownloadObject?.beyondTimeLimit = true
+    serialQueue.async {
+      self.currentDownloadObject?.beyondTimeLimit = true
+    }
+    
     Log.warn(#file, "Audiobook Download Exceeded Time Limit. Chapter: \(spineElement.chapter.description), download progress for current file - \(spineElement.downloadTask.downloadProgress * 100)%, elapsed time - \(elapsedTime)seconds, connectivity - \(connectivityString(networkStatus))")
   }
   

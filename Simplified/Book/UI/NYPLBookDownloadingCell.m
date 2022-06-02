@@ -219,9 +219,7 @@
 - (void)setDownloadProgress:(double const)downloadProgress
 {
 #if FEATURE_AUDIOBOOKS
-  if (downloadProgress == 0.0 || downloadProgress == 1.0) {
-    [self.listenButton setHidden:YES];
-  }
+  [self.listenButton setHidden:(downloadProgress == 0.0)];
 #endif
   self.progressView.progress = downloadProgress;
   self.percentageLabel.text = [NSString stringWithFormat:@"%d%%", (int) (downloadProgress * 100)];

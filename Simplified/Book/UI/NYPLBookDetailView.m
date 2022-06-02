@@ -614,6 +614,7 @@ static NSString *DetailHTMLTemplate = nil;
       self.downloadFailedView.hidden = YES;
       [self hideDownloadingView:NO];
       self.buttonsView.hidden = NO;
+      self.downloadingView.downloadStarted = YES;
       self.buttonsView.state = NYPLBookButtonsStateDownloadingUsable;
       break;
     case NYPLBookStateDownloadFailed:

@@ -54,7 +54,7 @@ extension NYPLMyBooksDownloadCenter {
           let metadata = AudiobookMetadata(title: book.title, authors: [(book.authors ?? "")])
           let audiobookManager = DefaultAudiobookManager(metadata: metadata, audiobook: audiobook)
           
-          self?.addAudiobookManagerToDownloader(audiobookManager: audiobookManager,
+          self?.addAudiobookManagerToDownloader(audiobookManager,
                                                 bookID: book.identifier,
                                                 isHighPriority: false)
         }
@@ -77,7 +77,7 @@ extension NYPLMyBooksDownloadCenter {
   ///
   ///   We use `AudiobookManager` instead of `Audiobook` here because `AudiobookManager`
   ///   allow us to determine if download is needed or not before presenting the audiobook.
-  @objc func addAudiobookManagerToDownloader(audiobookManager: DefaultAudiobookManager,
+  @objc func addAudiobookManagerToDownloader(_ audiobookManager: DefaultAudiobookManager,
                                              bookID: String,
                                              isHighPriority: Bool) {
     NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.Downloading.rawValue, forIdentifier: bookID)

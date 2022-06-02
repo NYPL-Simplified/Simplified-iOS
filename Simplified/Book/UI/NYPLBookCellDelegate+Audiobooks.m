@@ -110,7 +110,7 @@
       
       if (!manager.networkService.downloadCompleted) {
         [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-         addAudiobookManagerToDownloaderWithAudiobookManager:manager
+         addAudiobookManagerToDownloader:manager
          bookID:book.identifier
          isHighPriority:YES
         ];
