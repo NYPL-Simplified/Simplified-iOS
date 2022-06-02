@@ -107,6 +107,14 @@
       DefaultAudiobookManager *const manager = [[DefaultAudiobookManager alloc]
                                                 initWithMetadata:metadata
                                                 audiobook:audiobook];
+      
+      if (!manager.networkService.downloadCompleted) {
+        [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+         addAudiobookManagerToDownloader:manager
+         bookID:book.identifier
+         isHighPriority:YES
+        ];
+      }
 
       [self presentAudiobook:book withAudiobookManager:manager];
     }];

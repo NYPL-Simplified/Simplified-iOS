@@ -8,17 +8,20 @@
 #if FEATURE_AUDIOBOOKS
 import Foundation
 import NYPLAudiobookToolkit
+import NYPLUtilitiesObjc
 
 @objc protocol NYPLAudiobookDownloadStatusDelegate {
   func audiobookDidUpdateDownloadProgress(_ progress: Float, bookID: String)
-  func audiobookDidCompleteDownload(bookID: String)
+  func audiobookDidCompleteDownload(bookID: String, beyondTimeLimit: Bool)
   func audiobookDidReceiveDownloadError(error: NSError?, bookID: String)
+  func audiobookDownloadDidTimeout(bookID: String, networkStatus: NetworkStatus, metadata: [String: Any])
 }
 
 class NYPLAudiobookDownloadObject {
   var bookID: String
   var audiobookManager: DefaultAudiobookManager
   var didRetryDownload: Bool = false
+  var beyondTimeLimit: Bool = false
   
   init(bookID: String, audiobookManager: DefaultAudiobookManager) {
     self.bookID = bookID
@@ -38,18 +41,31 @@ class NYPLAudiobookDownloadObject {
   private var downloadObjects: [NYPLAudiobookDownloadObject] = []
   private var currentDownloadObject: NYPLAudiobookDownloadObject?
   
-  @objc(downloadAudiobookForBookID:audiobookManager:)
+  /// - Parameters:
+  ///   - bookID: The book identifier for updating download status through delegate
+  ///   - audiobookManager: Audiobook manager responsible for the download mechanism
+  ///   - isHighPriority: If `true`, the audiobook will be the next one in queue,
+  ///   download will start once the current download completes.
+  ///   Otherwise, audiobook will be added to end of the downlaod queue.
+  ///   
+  ///   Note: Calling this function does nothing if an audiobook has already been added to queue.
   func downloadAudiobook(for bookID: String,
-                         audiobookManager: DefaultAudiobookManager) {
+                         audiobookManager: DefaultAudiobookManager,
+                         isHighPriority: Bool) {
     guard downloadObject(for: bookID) == nil else {
       return
     }
     
     serialQueue.async {
-      self.downloadObjects.append(NYPLAudiobookDownloadObject(bookID: bookID,
-                                                              audiobookManager: audiobookManager))
+      let newDownloadObject = NYPLAudiobookDownloadObject(bookID: bookID,
+                                                          audiobookManager: audiobookManager)
+      if isHighPriority {
+        self.downloadObjects.insert(newDownloadObject, at: 0)
+      } else {
+        self.downloadObjects.append(newDownloadObject)
+      }
+      self.fetchNextIfNeeded()
     }
-    fetchNextIfNeeded()
   }
   
   @objc func cancelDownloadFetchingNextIfNeeded(for bookID: String?) {
@@ -98,8 +114,10 @@ class NYPLAudiobookDownloadObject {
   }
   
   private func cancelDownload(for downloadObject: NYPLAudiobookDownloadObject) {
-    downloadObject.audiobookManager.networkService.cancelFetch()
-    downloadObject.audiobookManager.networkService.removeDelegate(self)
+    serialQueue.async {
+      downloadObject.audiobookManager.networkService.cancelFetch()
+      downloadObject.audiobookManager.networkService.removeDelegate(self)
+    }
     Log.info(#file, "Fetch cancelled for \(downloadObject.bookID)")
   }
   
@@ -128,9 +146,11 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
     if progress == 1,
       let downloadObject = currentDownloadObject
     {
-      delegate?.audiobookDidCompleteDownload(bookID: downloadObject.bookID)
-      downloadObject.audiobookManager.networkService.removeDelegate(self)
       Log.info(#file, "Audiobook - \(downloadObject.bookID) download completed and removed")
+      delegate?.audiobookDidCompleteDownload(bookID: downloadObject.bookID, beyondTimeLimit: downloadObject.beyondTimeLimit)
+      serialQueue.async {
+        downloadObject.audiobookManager.networkService.removeDelegate(self)
+      }
 
       releaseCurrentDownloadObject()
       fetchNextIfNeeded()
@@ -152,6 +172,45 @@ extension NYPLAudiobookDownloader: AudiobookNetworkServiceDelegate {
         downloadObject.audiobookManager.networkService.fetch()
         downloadObject.didRetryDownload = true
       }
+    }
+  }
+  
+  func audiobookNetworkService(_ audiobookNetworkService: AudiobookNetworkService,
+                               didTimeoutFor spineElement: SpineElement?,
+                               networkStatus: NetworkStatus) {
+    if let downloadObject = currentDownloadObject {
+      let metadata = [
+        "BookID": downloadObject.bookID,
+        "Connectivity": connectivityString(networkStatus),
+        "Chapter Info": spineElement?.chapter.description ?? "N/A",
+      ]
+      delegate?.audiobookDownloadDidTimeout(bookID: downloadObject.bookID,
+                                            networkStatus: networkStatus,
+                                            metadata: metadata)
+      releaseCurrentDownloadObject()
+      fetchNextIfNeeded()
+    }
+  }
+  
+  func audiobookNetworkService(_ audiobookNetworkService: AudiobookNetworkService,
+                               downloadExceededTimeLimitFor spineElement: SpineElement,
+                               elapsedTime: TimeInterval,
+                               networkStatus: NetworkStatus) {
+    serialQueue.async {
+      self.currentDownloadObject?.beyondTimeLimit = true
+    }
+    
+    Log.warn(#file, "Audiobook Download Exceeded Time Limit. Chapter: \(spineElement.chapter.description), download progress for current file - \(spineElement.downloadTask.downloadProgress * 100)%, elapsed time - \(elapsedTime)seconds, connectivity - \(connectivityString(networkStatus))")
+  }
+  
+  private func connectivityString(_  networkStatus: NetworkStatus) -> String {
+    switch networkStatus {
+    case ReachableViaWWAN:
+      return "Cellular"
+    case ReachableViaWiFi:
+      return "WiFi"
+    default:
+      return "No Internet Connection"
     }
   }
 }

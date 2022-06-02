@@ -1205,7 +1205,19 @@ didCompleteWithError:(NSError *)error
 
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
 {
-  return [self downloadInfoForBookIdentifier:bookIdentifier].downloadProgress;
+  NYPLMyBooksDownloadInfo *info = [self downloadInfoForBookIdentifier:bookIdentifier];
+#if FEATURE_AUDIOBOOKS
+  /// In the case of resuming audiobook download, we do not have the `downloadInfo`
+  /// and we cannot create one because we no longer have access to the original `downloadTask`.
+  /// Therefore we retrieve the download progress from `NYPLAudiobookDownloader` directly.
+  if (!info) {
+    DefaultAudiobookManager *audiobookManager = [self.audiobookDownloader audiobookManagerFor:bookIdentifier];
+    if (audiobookManager) {
+      return audiobookManager.networkService.downloadProgress;
+    }
+  }
+#endif
+  return info.downloadProgress;
 }
 
 #pragma mark - Send out NYPLMyBooksDownloadCenterDidChange
