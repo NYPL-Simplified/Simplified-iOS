@@ -53,6 +53,9 @@
                             <state key="normal" title="Sign in with Clever" image="LogoClever">
                                 <color key="titleColor" systemColor="linkColor"/>
                             </state>
+                            <connections>
+                                <action selector="didSelectClever" destination="-1" eventType="touchUpInside" id="z4P-Ox-Gwm"/>
+                            </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2FO-PV-W8O">
                             <rect key="frame" x="0.0" y="76" width="299.5" height="56"/>
