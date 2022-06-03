@@ -37,6 +37,13 @@ class OETutorialChoiceViewController : UIViewController {
     firstBookLoginButton?.setTitle(NSLocalizedString("Sign in with First Book", comment: "Login button text"), for: .normal)
     termsButton?.setTitle(NSLocalizedString("Terms of Use", comment: "Button Text"), for: .normal)
     privacyButton?.setTitle(NSLocalizedString("Privacy Notice", comment: "Button Text"), for: .normal)
+
+    cleverLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
+    cleverLoginButton?.layer.cornerRadius = 6
+    cleverLoginButton?.layer.borderWidth = 1
+    firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
+    firstBookLoginButton?.layer.cornerRadius = 6
+    firstBookLoginButton?.layer.borderWidth = 1
   }
   
 
