@@ -37,8 +37,6 @@ extension NYPLConfiguration {
 
   // MARK:-
 
-  static let openEBooksRequestCodesURL = URL(string: "http://openebooks.net/getstarted.html")!
-
   @objc static func mainColor() -> UIColor {
     if #available(iOS 12.0, *),
        UIScreen.main.traitCollection.userInterfaceStyle == UIUserInterfaceStyle.dark {

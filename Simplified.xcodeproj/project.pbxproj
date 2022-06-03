@@ -333,8 +333,6 @@
 		730EF26A260967FF008E1DC3 /* NYPLBookmarkFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730EF265260967FF008E1DC3 /* NYPLBookmarkFactory.swift */; };
 		730FC05025127FA2004D7C2D /* NYPLSettings+OE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730FC04F25127FA2004D7C2D /* NYPLSettings+OE.swift */; };
 		730FC05125128224004D7C2D /* NYPLSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD5677122B7ECE3001F0C83 /* NYPLSettings.swift */; };
-		730FC05725128D64004D7C2D /* OETutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730FC05425128D63004D7C2D /* OETutorialViewController.swift */; };
-		730FC05925128D64004D7C2D /* OETutorialWelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */; };
 		730FC05B2512911E004D7C2D /* NYPLWelcomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6202A031DD52B8600C99553 /* NYPLWelcomeScreenViewController.swift */; };
 		731116AB27DA7CA800E4455E /* R2Navigator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B18244A1D8600A7A649 /* R2Navigator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7311FD2B25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */; };
@@ -1211,6 +1209,7 @@
 		73F11E0F251945BE00FCD22B /* NYPLAppDelegate+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734731222514235900BE3D2C /* NYPLAppDelegate+SE.swift */; };
 		73F11E10251945E500FCD22B /* NYPLPresentationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E192502DE88008F6244 /* NYPLPresentationUtils.swift */; };
 		73F36BD825CC76C60057954C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F36BD325CC76C60057954C /* XCTest.framework */; };
+		73F4B8B028496A0B0032F9FC /* OELoginChoice.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F4B8AF28496A0B0032F9FC /* OELoginChoice.xib */; };
 		73F5DE882774EE3200597F1E /* NYPLUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 73F5DE872774EE3200597F1E /* NYPLUtilities */; };
 		73F5DE892774EE3200597F1E /* NYPLUtilities in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 73F5DE872774EE3200597F1E /* NYPLUtilities */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		73F5DE932774EEE100597F1E /* NYPLUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 73F5DE922774EEE100597F1E /* NYPLUtilities */; };
@@ -1930,8 +1929,6 @@
 		730EF262260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLBookmarkSpecTests.swift; path = Bookmarks/NYPLBookmarkSpecTests.swift; sourceTree = "<group>"; };
 		730EF265260967FF008E1DC3 /* NYPLBookmarkFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkFactory.swift; sourceTree = "<group>"; };
 		730FC04F25127FA2004D7C2D /* NYPLSettings+OE.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NYPLSettings+OE.swift"; sourceTree = "<group>"; };
-		730FC05425128D63004D7C2D /* OETutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialViewController.swift; sourceTree = "<group>"; };
-		730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OETutorialWelcomeViewController.swift; sourceTree = "<group>"; };
 		7311FD2A25CBD086004447CB /* NYPLSignInOutBusinessLogicUIDelegateMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInOutBusinessLogicUIDelegateMock.swift; sourceTree = "<group>"; };
 		731272AC259CF6F90032D7B4 /* xcode-export-appstore.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "xcode-export-appstore.sh"; sourceTree = "<group>"; };
 		731272B1259CFB180032D7B4 /* testflight-upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "testflight-upload.sh"; sourceTree = "<group>"; };
@@ -2108,6 +2105,7 @@
 		73ED9436271F95F3001E5B73 /* NYPLBookCellDelegate+Audiobooks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NYPLBookCellDelegate+Audiobooks.h"; sourceTree = "<group>"; };
 		73ED9437271F95F3001E5B73 /* NYPLBookCellDelegate+Audiobooks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NYPLBookCellDelegate+Audiobooks.m"; sourceTree = "<group>"; };
 		73F36BD325CC76C60057954C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		73F4B8AF28496A0B0032F9FC /* OELoginChoice.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OELoginChoice.xib; sourceTree = "<group>"; };
 		73F6BF97261E511100A71AB8 /* valid-R1-readingprogress-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "valid-R1-readingprogress-1.json"; path = "Bookmarks/valid-R1-readingprogress-1.json"; sourceTree = "<group>"; };
 		73F6BF9D261E511100A71AB8 /* valid-R1-bookmark-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "valid-R1-bookmark-1.json"; path = "Bookmarks/valid-R1-bookmark-1.json"; sourceTree = "<group>"; };
 		73F6BFA2261E515E00A71AB8 /* NYPLR1BookmarkDeserializationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLR1BookmarkDeserializationTests.swift; path = Bookmarks/NYPLR1BookmarkDeserializationTests.swift; sourceTree = "<group>"; };
@@ -2961,8 +2959,7 @@
 				73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */,
 				E6202A031DD52B8600C99553 /* NYPLWelcomeScreenViewController.swift */,
 				73085E182502DE87008F6244 /* OETutorialChoiceViewController.swift */,
-				730FC05425128D63004D7C2D /* OETutorialViewController.swift */,
-				730FC05625128D64004D7C2D /* OETutorialWelcomeViewController.swift */,
+				73F4B8AF28496A0B0032F9FC /* OELoginChoice.xib */,
 			);
 			path = WelcomeScreen;
 			sourceTree = "<group>";
@@ -4054,6 +4051,7 @@
 				17E81F30261FF758001003C2 /* Localizable.stringsdict in Resources */,
 				73FCA38C25005BA4001B0C5D /* NYPLProblemReportViewController.xib in Resources */,
 				735FCB3A2506FAD0009A8C95 /* ReaderClientCert.sig in Resources */,
+				73F4B8B028496A0B0032F9FC /* OELoginChoice.xib in Resources */,
 				73FCA38F25005BA4001B0C5D /* software-licenses.html in Resources */,
 				7358EE912500642900DDA0CC /* OELaunchScreen.xib in Resources */,
 				73FCA39225005BA4001B0C5D /* InfoPlist.strings in Resources */,
@@ -4839,7 +4837,6 @@
 				73DB56CA25F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift in Sources */,
 				73FCA2C125005BA4001B0C5D /* NYPLXML.m in Sources */,
 				732F474F260B224A00E2CB64 /* NYPLBookmarkSpec.swift in Sources */,
-				730FC05725128D64004D7C2D /* OETutorialViewController.swift in Sources */,
 				73C3CF5725C8EB6B00CA8166 /* NYPLUserAccount.swift in Sources */,
 				17BE24C625F2ED5800AE707F /* NYPLAgeCheckViewController.swift in Sources */,
 				7380E71D254B40C3004613B1 /* Float+NYPLAdditions.swift in Sources */,
@@ -4967,7 +4964,6 @@
 				5941F661268CCC1600F69F0B /* NYPLAxisLibraryService.swift in Sources */,
 				597E2724268B537E00A3CD23 /* NYPLAxisXMLCreator.swift in Sources */,
 				73FCA31A25005BA4001B0C5D /* NYPLBookDownloadFailedCell.m in Sources */,
-				730FC05925128D64004D7C2D /* OETutorialWelcomeViewController.swift in Sources */,
 				17BE24C125F2ED5400AE707F /* NYPLAgeCheck.swift in Sources */,
 				73FCA31B25005BA4001B0C5D /* NYPLBookDetailViewController.m in Sources */,
 				73FCA31E25005BA4001B0C5D /* NYPLContentTypeBadge.swift in Sources */,

@@ -42,6 +42,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 {
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+  [self.window setBackgroundColor:[NYPLConfiguration primaryBackgroundColor]];
 
   if (@available(iOS 15.0, *)) {
     UINavigationBarAppearance *navBarAppearance = [[UINavigationBarAppearance alloc] init];
@@ -183,7 +184,6 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 -(void)applicationDidBecomeActive:(__unused UIApplication *)app
 {
   [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
-  [self completeBecomingActive];
 }
 
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application

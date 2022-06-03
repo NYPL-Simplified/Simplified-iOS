@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OETutorialChoiceViewController" customModule="SimplyE" customModuleProvider="target">
+            <connections>
+                <outlet property="cleverLoginButton" destination="mNl-Kk-26v" id="NZu-qs-Oaa"/>
+                <outlet property="firstBookLoginButton" destination="2FO-PV-W8O" id="aKZ-Ce-7pf"/>
+                <outlet property="headerLabel" destination="kBk-Yz-S6I" id="6ZP-rb-2eG"/>
+                <outlet property="privacyButton" destination="BBG-sg-YOF" id="fjC-l5-OpD"/>
+                <outlet property="subHeaderLabel" destination="r6d-RP-zth" id="If9-0C-ju2"/>
+                <outlet property="termsButton" destination="TVY-67-KcQ" id="Zip-dy-Lsc"/>
+                <outlet property="view" destination="iN0-l3-epB" id="CUS-kX-hy8"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="r7H-2F-5yY" userLabel="Header Stack View">
+                    <rect key="frame" x="20" y="190.66666666666666" width="335" height="58.333333333333343"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Get Started" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kBk-Yz-S6I">
+                            <rect key="frame" x="97.333333333333329" y="0.0" width="140.33333333333337" height="31.333333333333332"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login to access the collection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r6d-RP-zth">
+                            <rect key="frame" x="71.666666666666686" y="41.333333333333343" width="192" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
+                <stackView opaque="NO" contentMode="scaleAspectFit" verticalHuggingPriority="800" horizontalCompressionResistancePriority="800" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="7se-wG-U8e" userLabel="Buttons Stack View">
+                    <rect key="frame" x="20" y="349" width="335" height="124"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mNl-Kk-26v">
+                            <rect key="frame" x="0.0" y="0.0" width="335" height="52"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                            <inset key="contentEdgeInsets" minX="0.0" minY="6" maxX="0.0" maxY="6"/>
+                            <inset key="titleEdgeInsets" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="4" maxY="0.0"/>
+                            <state key="normal" title="Sign in with Clever" image="LogoClever">
+                                <color key="titleColor" systemColor="linkColor"/>
+                            </state>
+                        </button>
+                        <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2FO-PV-W8O">
+                            <rect key="frame" x="0.0" y="72" width="335" height="52"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                            <inset key="contentEdgeInsets" minX="0.0" minY="6" maxX="0.0" maxY="6"/>
+                            <inset key="titleEdgeInsets" minX="6" minY="2" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="-2" minY="0.0" maxX="4" maxY="0.0"/>
+                            <state key="normal" title="Sign in with First Book" image="LogoFirstBook">
+                                <color key="titleColor" systemColor="linkColor"/>
+                            </state>
+                            <connections>
+                                <action selector="didSelectFirstBook" destination="-1" eventType="touchUpInside" id="mfx-lF-Gmr"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="2FO-PV-W8O" firstAttribute="height" secondItem="mNl-Kk-26v" secondAttribute="height" id="GVD-Cu-RmY"/>
+                    </constraints>
+                </stackView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="xrU-C6-Ubg" userLabel="Footer Stack View">
+                    <rect key="frame" x="20" y="573" width="335" height="68"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TVY-67-KcQ">
+                            <rect key="frame" x="124.66666666666666" y="0.0" width="86" height="29"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Terms of Use">
+                                <color key="titleColor" systemColor="linkColor"/>
+                            </state>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BBG-sg-YOF">
+                            <rect key="frame" x="120.66666666666666" y="39" width="94" height="29"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Privacy Notice">
+                                <color key="titleColor" systemColor="linkColor"/>
+                            </state>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="7se-wG-U8e" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="5Uo-xF-uh7"/>
+                <constraint firstItem="7se-wG-U8e" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="HXC-sd-l0b"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="7se-wG-U8e" secondAttribute="trailing" constant="20" id="Hj9-oR-BHb"/>
+                <constraint firstItem="xrU-C6-Ubg" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="LeH-yH-bHz"/>
+                <constraint firstItem="xrU-C6-Ubg" firstAttribute="top" secondItem="7se-wG-U8e" secondAttribute="bottom" constant="100" id="SkU-ra-dYq"/>
+                <constraint firstItem="7se-wG-U8e" firstAttribute="top" secondItem="r7H-2F-5yY" secondAttribute="bottom" constant="100" id="iTQ-FW-A1L"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="r7H-2F-5yY" secondAttribute="trailing" constant="20" id="mf3-EH-Ja0"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="xrU-C6-Ubg" secondAttribute="trailing" constant="20" id="nzY-zr-li7"/>
+                <constraint firstItem="r7H-2F-5yY" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="rCj-BB-PVq"/>
+            </constraints>
+            <point key="canvasLocation" x="137.68115942028987" y="125.89285714285714"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="LogoClever" width="40" height="40"/>
+        <image name="LogoFirstBook" width="47" height="40"/>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -9,23 +9,16 @@
 import UIKit
 
 class OETutorialChoiceViewController : UIViewController {
-  var descriptionLabel: UILabel
-  var firstBookLoginButton: UIButton
-  var loginWithCleverButton: UIButton
-  var requestCodesButton: UIButton
-  var stackView: UIStackView
+  @IBOutlet var headerLabel: UILabel?
+  @IBOutlet var subHeaderLabel: UILabel?
+  @IBOutlet var cleverLoginButton: UIButton?
+  @IBOutlet var firstBookLoginButton: UIButton?
+  @IBOutlet var termsButton: UIButton?
+  @IBOutlet var privacyButton: UIButton?
+
   
   init() {
-    descriptionLabel = UILabel(frame: CGRect.zero)
-    firstBookLoginButton = UIButton(type: .custom)
-    loginWithCleverButton = UIButton(type: .custom)
-    requestCodesButton = UIButton(type: .system)
-    stackView = UIStackView(arrangedSubviews: [
-      descriptionLabel,
-      firstBookLoginButton,
-      loginWithCleverButton
-    ])
-    super.init(nibName: nil, bundle: nil)
+    super.init(nibName: "OELoginChoice", bundle: nil)
   }
   
   @available(*, unavailable)
@@ -34,48 +27,19 @@ class OETutorialChoiceViewController : UIViewController {
   }
   
   // MARK: UIViewController
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    title = NSLocalizedString("LogIn", comment: "")
-    
-    descriptionLabel.font = NYPLConfiguration.welcomeScreenFont()
-    descriptionLabel.text = NSLocalizedString("You need to login to access the collection.", comment: "")
-    descriptionLabel.textAlignment = .center
-    descriptionLabel.numberOfLines = 0
-    descriptionLabel.sizeToFit()
-    
-    firstBookLoginButton.setImage(UIImage(named: "FirstbookLoginButton"), for: .normal)
-    firstBookLoginButton.addTarget(self, action: #selector(didSelectFirstBook), for: .touchUpInside)
-    firstBookLoginButton.sizeToFit()
-    
-    loginWithCleverButton.setImage(UIImage(named: "CleverLoginButton"), for: .normal)
-    loginWithCleverButton.addTarget(self, action: #selector(didSelectClever), for: .touchUpInside)
-    loginWithCleverButton.sizeToFit()
-    
-    requestCodesButton.titleLabel?.font = UIFont.systemFont(ofSize: 20.0)
-    requestCodesButton.setTitle(NSLocalizedString("Request New Codes", comment: ""),
-                                for: .normal)
-    requestCodesButton.addTarget(self, action: #selector(didSelectRequestCodes),
-                                 for: .touchUpInside)
-    requestCodesButton.sizeToFit()
-    
-    stackView.axis = .vertical
-    stackView.distribution = .equalSpacing
-    view.addSubview(stackView)
+
+    headerLabel?.text = NSLocalizedString("Get Started", comment: "Login page header")
+    subHeaderLabel?.text = NSLocalizedString("Login to access the collection", comment: "Login page sub header")
+    cleverLoginButton?.setTitle(NSLocalizedString("Sign in with Clever", comment: "Login button text"), for: .normal)
+    firstBookLoginButton?.setTitle(NSLocalizedString("Sign in with First Book", comment: "Login button text"), for: .normal)
+    termsButton?.setTitle(NSLocalizedString("Terms of Use", comment: "Button Text"), for: .normal)
+    privacyButton?.setTitle(NSLocalizedString("Privacy Notice", comment: "Button Text"), for: .normal)
   }
   
-  override func viewWillLayoutSubviews() {
-    super.viewWillLayoutSubviews()
-    let minSize = min(view.frame.width, 428)
-    
-    // TODO: Magic number usage
-    stackView.frame = CGRect(x: 0, y: 0, width: minSize, height: 170.0)
-    stackView.centerInSuperview()
-    stackView.integralizeFrame()
-  }
-  
+
   // MARK: -
   
   private func loginCompletionHandler() {
@@ -96,12 +60,12 @@ class OETutorialChoiceViewController : UIViewController {
     appWindow?.rootViewController = NYPLRootTabBarController.shared()
   }
 
-  @objc func didSelectFirstBook() {
-    didSelectAuthenticationMethod(.firstBook)
+  @IBAction func didSelectClever() {
+    didSelectAuthenticationMethod(.clever)
   }
 
-  @objc func didSelectClever() {
-    didSelectAuthenticationMethod(.clever)
+  @IBAction func didSelectFirstBook() {
+    didSelectAuthenticationMethod(.firstBook)
   }
 
   private func didSelectAuthenticationMethod(_ loginChoice: LoginChoice) {
@@ -127,10 +91,6 @@ class OETutorialChoiceViewController : UIViewController {
     let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
     signInVC.presentIfNeeded(usingExistingCredentials: false,
                              completionHandler: self.loginCompletionHandler)
-  }
-
-  @objc func didSelectRequestCodes() {
-    UIApplication.shared.open(NYPLConfiguration.openEBooksRequestCodesURL)
   }
   
   class func showLoginPicker() {
