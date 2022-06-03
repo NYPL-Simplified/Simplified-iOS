@@ -8,7 +8,6 @@
 #import "NYPLCatalogFacetGroup.h"
 #import "NYPLCatalogFeedViewController.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLFacetView.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLReloadView.h"

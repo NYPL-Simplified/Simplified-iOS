@@ -5,7 +5,6 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLFacetView.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLAccountSignInViewController.h"

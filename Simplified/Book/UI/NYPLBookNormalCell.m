@@ -2,7 +2,6 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLBookButtonsView.h"
 #import "SimplyE-Swift.h"
 

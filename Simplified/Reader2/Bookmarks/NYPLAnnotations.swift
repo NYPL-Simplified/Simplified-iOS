@@ -571,7 +571,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   }
 
   static var annotationsURL: URL? {
-    return NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
+    return NYPLConfiguration.mainFeedURL?.appendingPathComponent("annotations/")
   }
 
   class func makeSubmissionData(fromRepresentation dict: [String: Any]) -> Data? {

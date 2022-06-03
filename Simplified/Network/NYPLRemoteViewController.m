@@ -1,6 +1,5 @@
 @import PureLayout;
 
-#import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
 

@@ -1,6 +1,5 @@
 #import "SimplyE-Swift.h"
 #import "NYPLCatalogFeedViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBookRegistry.h"

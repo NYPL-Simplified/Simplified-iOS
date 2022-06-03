@@ -7,7 +7,6 @@
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLXML.h"
 
-#import "NYPLConfiguration.h"
 #import "NYPLCatalogFacet.h"
 #import "SimplyE-Swift.h"
 

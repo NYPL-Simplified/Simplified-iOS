@@ -8,7 +8,6 @@
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLXML.h"

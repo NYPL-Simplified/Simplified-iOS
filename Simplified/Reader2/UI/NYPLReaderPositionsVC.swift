@@ -166,9 +166,9 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
                  estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
     switch currentTab {
     case .toc:
-      return NYPLConfiguration.defaultTOCRowHeight()
+      return NYPLConfiguration.defaultTOCRowHeight
     case .bookmarks:
-      return NYPLConfiguration.defaultBookmarkRowHeight()
+      return NYPLConfiguration.defaultBookmarkRowHeight
     }
   }
 

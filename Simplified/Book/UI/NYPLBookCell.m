@@ -4,7 +4,6 @@
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"

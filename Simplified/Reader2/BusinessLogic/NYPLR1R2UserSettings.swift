@@ -42,10 +42,10 @@ class NYPLR1R2UserSettings: NSObject {
 
     switch appearance.toString() {
     case "readium-sepia-on":
-      backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor()
+      backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor
       textColor = UIColor.black
     case "readium-night-on":
-      backgroundColor = NYPLConfiguration.readerBackgroundDarkColor()
+      backgroundColor = NYPLConfiguration.readerBackgroundDarkColor
       textColor = UIColor.white
     default:
       backgroundColor = UIColor.white

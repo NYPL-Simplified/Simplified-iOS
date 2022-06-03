@@ -1,5 +1,5 @@
-#import "NYPLConfiguration.h"
 #import "UIFont+NYPLSystemFontOverride.h"
+#import "SimplyE-Swift.h"
 
 @implementation UIFont (NYPLSystemFontOverride)
 

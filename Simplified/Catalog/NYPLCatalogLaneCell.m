@@ -1,6 +1,5 @@
 @import PureLayout;
 #import "NYPLBook.h"
-#import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLCatalogLaneCell.h"
