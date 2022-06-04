@@ -133,7 +133,7 @@ import PureLayout
     button.setTitleColor(NYPLConfiguration.iconLogoBlueColor(), for: .normal)
     button.layer.borderColor = NYPLConfiguration.iconLogoGreenColor().cgColor
     button.layer.borderWidth = 2
-    button.layer.cornerRadius = 6
+    button.layer.cornerRadius = NYPLConfiguration.cornerRadius
 
     button.contentEdgeInsets = UIEdgeInsets.init(top: 8.0, left: 10.0, bottom: 8.0, right: 10.0)
     button.addTarget(self, action: buttonTargetSelector, for: .touchUpInside)
