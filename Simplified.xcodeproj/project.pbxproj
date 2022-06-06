@@ -2836,6 +2836,8 @@
 				73A794A525477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift */,
 				739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */,
 				73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */,
+				73085E182502DE87008F6244 /* OELoginChoiceViewController.swift */,
+				73F4B8AF28496A0B0032F9FC /* OELoginChoice.xib */,
 				734B789025659611006FB8AD /* URLResponse+NYPLAuthentication.swift */,
 			);
 			path = SignInLogic;
@@ -2958,8 +2960,6 @@
 			children = (
 				73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */,
 				E6202A031DD52B8600C99553 /* NYPLWelcomeScreenViewController.swift */,
-				73085E182502DE87008F6244 /* OELoginChoiceViewController.swift */,
-				73F4B8AF28496A0B0032F9FC /* OELoginChoice.xib */,
 			);
 			path = WelcomeScreen;
 			sourceTree = "<group>";
