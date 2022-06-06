@@ -1,7 +1,5 @@
-#import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "UIColor+NYPLColorAdditions.h"
-
 #import "NYPLReaderSettings.h"
 
 #import "SimplyE-Swift.h"

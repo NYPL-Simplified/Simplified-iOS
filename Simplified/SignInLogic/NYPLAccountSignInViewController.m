@@ -7,7 +7,6 @@
 #import "NYPLAppDelegate.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"

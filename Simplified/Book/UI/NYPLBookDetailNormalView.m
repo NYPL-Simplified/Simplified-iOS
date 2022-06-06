@@ -2,7 +2,6 @@
 #import "SimplyE-Swift.h"
 
 #import "NSDate+NYPLDateAdditions.h"
-#import "NYPLConfiguration.h"
 #import "NYPLOPDS.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"

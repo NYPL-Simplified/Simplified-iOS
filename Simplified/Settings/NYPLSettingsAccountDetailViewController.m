@@ -5,7 +5,6 @@
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogNavigationController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLOPDS.h"

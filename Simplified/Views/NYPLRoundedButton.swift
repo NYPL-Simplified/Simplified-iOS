@@ -69,7 +69,7 @@ private let NYPLRoundedButtonPadding: CGFloat = 6.0
     titleLabel?.font = UIFont.systemFont(ofSize: 14)
     layer.borderColor = tintColor.cgColor
     layer.borderWidth = 1
-    layer.cornerRadius = 3
+    layer.cornerRadius = NYPLConfiguration.cornerRadius
     
     label.textColor = self.tintColor
     label.font = UIFont.systemFont(ofSize: 9)
