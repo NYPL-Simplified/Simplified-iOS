@@ -23,9 +23,7 @@ extension NYPLSettingsSplitViewController {
         indexPath: IndexPath(row: 0, section: 0),
         title: NSLocalizedString("Account", comment: "Title for account section"),
         selectionHandler: { (splitVC, tableVC) in
-          if NYPLUserAccount.sharedAccount().hasCredentials(),
-            let currentLibraryID = AccountsManager.shared.currentAccountId {
-
+          if let currentLibraryID = AccountsManager.shared.currentAccountId {
             splitVC.showDetailViewController(
               NYPLSettingsPrimaryTableItem.handleVCWrap(
                 NYPLSettingsAccountDetailViewController(
@@ -34,8 +32,6 @@ extension NYPLSettingsSplitViewController {
               ),
               sender: nil
             )
-          } else {
-            OELoginChoiceViewController.showLoginPicker()
           }
       }
       ),
