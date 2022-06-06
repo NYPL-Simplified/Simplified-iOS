@@ -3305,7 +3305,6 @@
 				738EF2CB2405E38800F388FB /* GoogleService-Info.plist */,
 				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
-				172F40F926F0A0170017476A /* Colors.xcassets */,
 			);
 			path = SimplyE;
 			sourceTree = SOURCE_ROOT;
@@ -3569,6 +3568,7 @@
 				7300D467258829E1002256A3 /* .github */,
 				73A1DACF2592AD0F00712B5F /* fastlane */,
 				73CEF8332526FE80006B2820 /* scripts */,
+				172F40F926F0A0170017476A /* Colors.xcassets */,
 				17071060242A923400E2648F /* NYPLSecrets.swift */,
 				CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */,
 				2D6AF74A1E7E341F005CEC90 /* Simplified+RMSDK.xcconfig */,
