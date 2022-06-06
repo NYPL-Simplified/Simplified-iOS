@@ -1,5 +1,5 @@
 //
-//  OETutorialChoiceViewController.swift
+//  OELoginChoiceViewController.swift
 //  Open eBooks
 //
 //  Created by Kyle Sakai.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OETutorialChoiceViewController : UIViewController {
+class OELoginChoiceViewController : UIViewController {
   @IBOutlet var headerLabel: UILabel?
   @IBOutlet var subHeaderLabel: UILabel?
   @IBOutlet var cleverLoginButton: UIButton?
@@ -101,7 +101,7 @@ class OETutorialChoiceViewController : UIViewController {
   }
   
   class func showLoginPicker() {
-    let choiceVC = OETutorialChoiceViewController()
+    let choiceVC = OELoginChoiceViewController()
     let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: choiceVC, action: #selector(didSelectCancel))
     choiceVC.navigationItem.leftBarButtonItem = cancelBarButtonItem
     let navVC = UINavigationController(rootViewController: choiceVC)
