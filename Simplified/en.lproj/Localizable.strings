@@ -258,12 +258,15 @@
 "Under 13" = "Under 13";
 "13 or Older" = "13 or Older";
 
-// NYPLSettingsAdvancedViewController
-"Advanced" = "Advanced";
-"Selecting \"Delete\" will remove all bookmarks from the server for %@." = "Selecting \"Delete\" will remove all bookmarks from the server for %@.";
-"Delete Server Data" = "Delete Server Data";
+// Account / Data deletion
+"Delete my SimplyE Data" = "Delete my SimplyE Data";
+"Delete Reading Data" = "Delete Reading Data";
 "Please wait..." = "Please wait...";
 "Delete all the bookmarks you have saved in the cloud." = "Delete all the bookmarks you have saved in the cloud.";
+"You have successfully deleted your SimplyE data" = "You have successfully deleted your SimplyE data";
+"Unsubscribe from emails" = "Unsubscribe from emails";
+"Delete my library account" = "Delete my library account";
+"Delete Data Failed" = "Delete Data Failed";
 
 // Open eBooks
 "Welcome to Open eBooks" = "Welcome to Open eBooks!";

@@ -118,6 +118,10 @@
 		172F410D26F3BAF70017476A /* NYPLConfiguration+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172F410926F3BAF70017476A /* NYPLConfiguration+Color.swift */; };
 		172F41A626FD0A8D0017476A /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 172F40F926F0A0170017476A /* Colors.xcassets */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
+		1747331C284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
+		1747331D284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
+		1747331E284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
+		1747332C284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
 		17536B9E26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
 		17536B9F26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
 		17536BA026A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
@@ -1786,6 +1790,8 @@
 		172F40F926F0A0170017476A /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		172F410926F3BAF70017476A /* NYPLConfiguration+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLConfiguration+Color.swift"; sourceTree = "<group>"; };
 		173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookStateTests.swift; sourceTree = "<group>"; };
+		1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettingsDeleteServerDataViewController.swift; sourceTree = "<group>"; };
+		1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLActivityIndicatorMessageViewController.swift; sourceTree = "<group>"; };
 		17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookDetailView+Accessibility.swift"; sourceTree = "<group>"; };
 		175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementBusinessLogic.swift; sourceTree = "<group>"; };
 		17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckViewController.swift; sourceTree = "<group>"; };
@@ -2675,6 +2681,7 @@
 				111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */,
 				73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */,
 				7353940B250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift */,
+				1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3195,6 +3202,7 @@
 				081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */,
 				1107835C19816E3D0071AB1E /* UIView+NYPLViewAdditions.h */,
 				1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */,
+				1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -4331,6 +4339,7 @@
 				73A172F627ADA6FA005E7BCF /* NYPLAxisXMLRepresentation.swift in Sources */,
 				5916E7D5262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */,
 				73A172FC27ADA6FA005E7BCF /* NYPLAxisProtectedAssetHandler.swift in Sources */,
+				1747331D284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
 				73B5510D2511750A00D05B86 /* NYPLSamlIDPCell.swift in Sources */,
 				73A172FA27ADA6FA005E7BCF /* NYPLAxisErrorLogsAdapter.swift in Sources */,
 				739E605F244A0D8600D00301 /* NYPLXML.m in Sources */,
@@ -4569,6 +4578,7 @@
 				73EB0A6A25821DF4006BC997 /* NYPLAttributedString.m in Sources */,
 				73D8D27B25A68D4300DF5F69 /* NYPLRootTabBarController+R2.swift in Sources */,
 				73982910284AC94500382FE1 /* NYPLConfiguration.swift in Sources */,
+				1747331E284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
 				73EB0A6D25821DF4006BC997 /* NYPLBookContentTypeConverter.swift in Sources */,
 				73EB0A6E25821DF4006BC997 /* NYPLAgeCheck.swift in Sources */,
 				73EB0A6F25821DF4006BC997 /* Log.swift in Sources */,
@@ -5084,6 +5094,7 @@
 				73A172E027ADA6F9005E7BCF /* NYPLAxisXMLRepresentation.swift in Sources */,
 				5916E7D4262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */,
 				73A172E627ADA6F9005E7BCF /* NYPLAxisProtectedAssetHandler.swift in Sources */,
+				1747331C284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
 				111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */,
 				73A172E427ADA6F9005E7BCF /* NYPLAxisErrorLogsAdapter.swift in Sources */,
 				731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */,
@@ -5253,6 +5264,7 @@
 				73A229A2240F3BEB006B9EAD /* LibraryService.swift in Sources */,
 				730B7868249AB9D7008F28B3 /* Float+NYPLAdditions.swift in Sources */,
 				AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */,
+				1747332C284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */,
 				733DEC92241090C7008C74BC /* NYPLRootTabBarController+R2.swift in Sources */,
 				7369A39C264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */,
 				113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */,

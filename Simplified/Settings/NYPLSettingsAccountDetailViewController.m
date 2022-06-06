@@ -21,7 +21,7 @@
 #endif
 
 typedef NS_ENUM(NSInteger, CellKind) {
-  CellKindAdvancedSettings,
+  CellKindDeleteServerData,
   CellKindAgeCheck,
   CellKindBarcodeImage,
   CellKindBarcode,
@@ -36,7 +36,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLSignInOutBusinessLogicUIDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NYPLSignInOutBusinessLogicUIDelegate, NYPLServerDataDeleting>
 
 // view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
@@ -60,6 +60,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UIView *accountInfoHeaderView;
 @property (nonatomic) UIView *accountInfoFooterView;
 @property (nonatomic) UIView *syncFooterView;
+@property (nonatomic) UIView *deleteServerDataFooterView;
 @property (nonatomic) UIActivityIndicatorView *juvenileActivityView;
 
 // account state
@@ -74,6 +75,7 @@ static const CGFloat sVerticalMarginPadding = 2.0;
 // table view sections indeces
 static const NSInteger sSection0AccountInfo = 0;
 static const NSInteger sSection1Sync = 1;
+static const NSInteger sSection2DeleteServerData = 2;
 
 // Constraint constants
 static const CGFloat sConstantZero = 0.0;
@@ -460,23 +462,24 @@ Authenticating with any of those barcodes should work.
 {
   NSArray *section0AcctInfo = [self accountInfoSection];
 
-  NSMutableArray *section2About = [[NSMutableArray alloc] init];
+  NSMutableArray *section3About = [[NSMutableArray alloc] init];
   if ([self.selectedAccount.details getLicenseURL:URLTypePrivacyPolicy]) {
-    [section2About addObject:@(CellKindPrivacyPolicy)];
+    [section3About addObject:@(CellKindPrivacyPolicy)];
   }
   if ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) {
-    [section2About addObject:@(CellKindContentLicense)];
+    [section3About addObject:@(CellKindContentLicense)];
   }
   NSMutableArray *section1Sync = [[NSMutableArray alloc] init];
+  NSMutableArray *section2DeleteServerData = [[NSMutableArray alloc] init];
   if ([self.businessLogic shouldShowSyncButton]) {
     [section1Sync addObject:@(CellKindSyncButton)];
-    [section2About addObject:@(CellKindAdvancedSettings)];
+    [section2DeleteServerData addObject:@(CellKindDeleteServerData)];
   }
   
   if ([self.businessLogic registrationIsPossible]) {
-    self.tableData = @[section0AcctInfo, @[@(CellKindRegistration)], section1Sync].mutableCopy;
+    self.tableData = @[section0AcctInfo, @[@(CellKindRegistration)], section1Sync, section2DeleteServerData].mutableCopy;
   } else {
-    self.tableData = @[section0AcctInfo, section1Sync].mutableCopy;
+    self.tableData = @[section0AcctInfo, section1Sync, section2DeleteServerData].mutableCopy;
   }
 
   if ([self.businessLogic juvenileCardsManagementIsPossible]) {
@@ -487,7 +490,7 @@ Authenticating with any of those barcodes should work.
     [self.tableData addObject:@[@(CellReportIssue)]];
   }
   
-  [self.tableData addObject:section2About];
+  [self.tableData addObject:section3About];
 
   // compute final tableview contents, adding all non-empty sections
   NSMutableArray *finalTableContents = [[NSMutableArray alloc] init];
@@ -669,9 +672,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindSyncButton: {
       break;
     }
-    case CellKindAdvancedSettings: {
-      NYPLSettingsAdvancedViewController *vc = [[NYPLSettingsAdvancedViewController alloc] initWithAccount:self.selectedAccountId];
-      [self.navigationController pushViewController:vc animated:YES];
+    case CellKindDeleteServerData: {
+      NYPLSettingsDeleteServerDataViewController *vc = [[NYPLSettingsDeleteServerDataViewController alloc] initWithDelegate:self];
+      UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:vc];
+      [self presentViewController:navVC animated:YES completion:nil];
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       break;
     }
     case CellKindBarcodeImage: {
@@ -1056,16 +1061,36 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.hidden = ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
       return cell;
     }
-    case CellKindAdvancedSettings: {
+    case CellKindDeleteServerData: {
       UITableViewCell *cell = [[UITableViewCell alloc]
                                initWithStyle:UITableViewCellStyleDefault
                                reuseIdentifier:nil];
-      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = NSLocalizedString(@"Advanced", nil);
+      cell.textLabel.text = NSLocalizedString(@"Delete my SimplyE Data", nil);
+      cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
+      
+      UIImageView *imageView = [self rightArrowImageView];
+      imageView.tintColor = NYPLConfiguration.deleteActionColor;
+      cell.accessoryView = imageView;
+      
       return cell;
     }
   }
+}
+
+- (UIImageView *)rightArrowImageView {
+  UIImage *image;
+  if (@available(iOS 13.0, *)) {
+    image = [UIImage systemImageNamed:@"chevron.right"];
+  } else {
+    image = [[UIImage imageNamed:@"ArrowRight"]
+             imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  }
+  
+  UIImageView *imageView = [[UIImageView alloc]
+                            initWithFrame:CGRectMake(0, 0, image.size.width, image.size.height)];
+  imageView.image = image;
+  return imageView;
 }
 
 - (UITableViewCell *)createRegistrationCell
@@ -1123,7 +1148,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
 {
   if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
+      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
+      (section == sSection2DeleteServerData && [self.businessLogic shouldShowSyncButton])) {
     return UITableViewAutomaticDimension;
   }
   return 0;
@@ -1138,7 +1164,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForFooterInSection:(__unused NSInteger)section
 {
   if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
+      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
+      (section == sSection2DeleteServerData && [self.businessLogic shouldShowSyncButton])) {
     return 44;
   }
   return 0;
@@ -1199,7 +1226,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   // something's wrong, it gets called every refresh cycle when scrolling
   if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
+      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
+      (section == sSection2DeleteServerData && [self.businessLogic shouldShowSyncButton])) {
+    
+    if (section == sSection0AccountInfo && self.accountInfoFooterView) {
+      return self.accountInfoFooterView;
+    } else if (section == sSection1Sync && self.syncFooterView) {
+      return self.syncFooterView;
+    } else if (section == sSection2DeleteServerData && self.deleteServerDataFooterView) {
+      return self.deleteServerDataFooterView;
+    }
 
     UIView *container = [[UIView alloc] init];
     container.preservesSuperviewLayoutMargins = YES;
@@ -1208,7 +1244,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
-    NSMutableAttributedString *eulaString;
+    NSMutableAttributedString *footerString;
     if (section == sSection0AccountInfo) {
       [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
@@ -1216,17 +1252,25 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                           [NYPLConfiguration actionColor],
                                         NSUnderlineStyleAttributeName :
                                           @(NSUnderlineStyleSingle) };
-      eulaString = [[NSMutableAttributedString alloc]
-                    initWithString:NSLocalizedString(@"By signing in, you agree to the End User License Agreement.", nil) attributes:linkAttributes];
-    } else { // sync section
+      footerString = [[NSMutableAttributedString alloc]
+                      initWithString:NSLocalizedString(@"By signing in, you agree to the End User License Agreement.", nil) attributes:linkAttributes];
+    } else if (section == sSection1Sync) { // sync section
       NSDictionary *attrs;
       attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration primaryTextColor] };
-      eulaString = [[NSMutableAttributedString alloc]
-                    initWithString:NSLocalizedString(@"Save your reading position and bookmarks to all your other devices.",
-                                                     @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
-                    attributes:attrs];
+      footerString = [[NSMutableAttributedString alloc]
+                      initWithString:NSLocalizedString(@"Save your reading position and bookmarks to all your other devices.",
+                                                       @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
+                      attributes:attrs];
+    } else { // Delete Server Data
+      NSDictionary *attrs;
+      attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration primaryTextColor] };
+      footerString = [[NSMutableAttributedString alloc]
+                      initWithString:NSLocalizedString(@"Delete all the bookmarks you have saved in the cloud.",
+                                                       @"Explain to the user they can delete their bookmarks in the cloud.")
+                      attributes:attrs];
+
     }
-    footerLabel.attributedText = eulaString;
+    footerLabel.attributedText = footerString;
 
     [container addSubview:footerLabel];
     [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
@@ -1238,6 +1282,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.accountInfoFooterView = container;
     } else if (section == sSection1Sync) {
       self.syncFooterView = container;
+    } else if (section == sSection2DeleteServerData) {
+      self.deleteServerDataFooterView = container;
     }
 
     return container;
@@ -1614,6 +1660,21 @@ didEncounterSignOutError:(NSError *)error
   [self removeActivityTitle];
   [self setupTableData];
 #endif
+}
+
+#pragma mark - NYPLServerDataDeleting Delegate
+
+- (void)didDeleteServerData {
+  [self dismissViewControllerAnimated:YES completion:^{
+    [[AccountsManager shared] account:self.selectedAccountId].details.syncPermissionGranted = NO;
+    NYPLSettings.shared.userHasSeenFirstTimeSyncMessage = NO;
+    
+    // Present alert and update sync button
+    self.syncSwitch.enabled = NO;
+    NSString *alertTitle = NSLocalizedString(@"You have successfully deleted your SimplyE data", nil);
+    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:alertTitle message:nil];
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:self animated:YES completion:nil];
+  }];
 }
 
 @end
