@@ -39,10 +39,10 @@ class OETutorialChoiceViewController : UIViewController {
     privacyButton?.setTitle(NSLocalizedString("Privacy Notice", comment: "Button Text"), for: .normal)
 
     cleverLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
-    cleverLoginButton?.layer.cornerRadius = 6
+    cleverLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     cleverLoginButton?.layer.borderWidth = 1
     firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
-    firstBookLoginButton?.layer.cornerRadius = 6
+    firstBookLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     firstBookLoginButton?.layer.borderWidth = 1
   }
   
