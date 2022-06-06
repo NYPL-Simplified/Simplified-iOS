@@ -1,7 +1,27 @@
 {
   "images" : [
     {
-      "filename" : "Logo.pdf",
+      "filename" : "oe-for-any.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "light"
+        }
+      ],
+      "filename" : "oe-for-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "oe-for-dark.pdf",
       "idiom" : "universal"
     }
   ],

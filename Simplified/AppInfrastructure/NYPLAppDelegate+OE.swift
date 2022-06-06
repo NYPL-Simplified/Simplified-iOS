@@ -12,11 +12,13 @@ extension NYPLAppDelegate {
   @objc func setUpRootVC() {
     if NYPLSettings.shared.userHasAcceptedEULA {
       if NYPLSettings.shared.userHasSeenWelcomeScreen,
+
+          // NB: this causes the lazy creation of AccountManager
           NYPLUserAccount.sharedAccount().isSignedIn()
       {
         window.rootViewController = NYPLRootTabBarController.shared()
       } else {
-        window.rootViewController = OETutorialViewController()
+        window.rootViewController = OETutorialChoiceViewController()
       }
     } else {
       let eulaURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
@@ -26,22 +28,13 @@ extension NYPLAppDelegate {
           duration: 0.5,
           options: [.transitionCurlUp, .allowAnimatedContent, .layoutSubviews],
           animations: {
-            self.window?.rootViewController = OETutorialViewController()
+            self.window?.rootViewController = OETutorialChoiceViewController()
         },
           completion: nil
         )
       }
       let eulaNavController = UINavigationController(rootViewController: eulaVC)
       self.window?.rootViewController = eulaNavController
-    }
-  }
-
-  @objc func completeBecomingActive() {
-    if !NYPLUserAccount.sharedAccount().isSignedIn()
-      && NYPLSettings.shared.userHasSeenWelcomeScreen
-      && !isSigningIn {
-      
-      OETutorialChoiceViewController.showLoginPicker()
     }
   }
 
