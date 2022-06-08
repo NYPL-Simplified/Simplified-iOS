@@ -25,11 +25,13 @@ class OELoginChoiceViewController : UIViewController {
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-  
+
   // MARK: UIViewController
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    navigationItem.titleView = OELoginNavHeader()
 
     headerLabel?.text = NSLocalizedString("Get Started", comment: "Login page header")
     subHeaderLabel?.text = NSLocalizedString("Login to access the collection", comment: "Login page sub header")
@@ -98,19 +100,5 @@ class OELoginChoiceViewController : UIViewController {
     let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
     signInVC.presentIfNeeded(usingExistingCredentials: false,
                              completionHandler: self.loginCompletionHandler)
-  }
-  
-  class func showLoginPicker() {
-    let choiceVC = OELoginChoiceViewController()
-    let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: choiceVC, action: #selector(didSelectCancel))
-    choiceVC.navigationItem.leftBarButtonItem = cancelBarButtonItem
-    let navVC = UINavigationController(rootViewController: choiceVC)
-    navVC.modalPresentationStyle = .formSheet
-    navVC.view.backgroundColor = NYPLConfiguration.welcomeTutorialBackgroundColor
-    NYPLPresentationUtils.safelyPresent(navVC)
-  }
-  
-  @objc func didSelectCancel() {
-    navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
   }
 }
