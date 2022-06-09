@@ -1,5 +1,5 @@
 //
-//  OETutorialChoiceViewController.swift
+//  OELoginChoiceViewController.swift
 //  Open eBooks
 //
 //  Created by Kyle Sakai.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OETutorialChoiceViewController : UIViewController {
+class OELoginChoiceViewController : UIViewController {
   @IBOutlet var headerLabel: UILabel?
   @IBOutlet var subHeaderLabel: UILabel?
   @IBOutlet var cleverLoginButton: UIButton?
@@ -25,11 +25,13 @@ class OETutorialChoiceViewController : UIViewController {
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-  
+
   // MARK: UIViewController
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    navigationItem.titleView = OELoginNavHeader()
 
     headerLabel?.text = NSLocalizedString("Get Started", comment: "Login page header")
     subHeaderLabel?.text = NSLocalizedString("Login to access the collection", comment: "Login page sub header")
@@ -39,10 +41,10 @@ class OETutorialChoiceViewController : UIViewController {
     privacyButton?.setTitle(NSLocalizedString("Privacy Notice", comment: "Button Text"), for: .normal)
 
     cleverLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
-    cleverLoginButton?.layer.cornerRadius = 6
+    cleverLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     cleverLoginButton?.layer.borderWidth = 1
     firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
-    firstBookLoginButton?.layer.cornerRadius = 6
+    firstBookLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     firstBookLoginButton?.layer.borderWidth = 1
   }
   
@@ -98,19 +100,5 @@ class OETutorialChoiceViewController : UIViewController {
     let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
     signInVC.presentIfNeeded(usingExistingCredentials: false,
                              completionHandler: self.loginCompletionHandler)
-  }
-  
-  class func showLoginPicker() {
-    let choiceVC = OETutorialChoiceViewController()
-    let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: choiceVC, action: #selector(didSelectCancel))
-    choiceVC.navigationItem.leftBarButtonItem = cancelBarButtonItem
-    let navVC = UINavigationController(rootViewController: choiceVC)
-    navVC.modalPresentationStyle = .formSheet
-    navVC.view.backgroundColor = NYPLConfiguration.welcomeTutorialBackgroundColor
-    NYPLPresentationUtils.safelyPresent(navVC)
-  }
-  
-  @objc func didSelectCancel() {
-    navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
   }
 }

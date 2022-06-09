@@ -18,7 +18,7 @@ extension NYPLAppDelegate {
       {
         window.rootViewController = NYPLRootTabBarController.shared()
       } else {
-        window.rootViewController = OETutorialChoiceViewController()
+        window.rootViewController = OELoginNavigationController()
       }
     } else {
       let eulaURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
@@ -28,7 +28,7 @@ extension NYPLAppDelegate {
           duration: 0.5,
           options: [.transitionCurlUp, .allowAnimatedContent, .layoutSubviews],
           animations: {
-            self.window?.rootViewController = OETutorialChoiceViewController()
+            self.window?.rootViewController = OELoginNavigationController()
         },
           completion: nil
         )
