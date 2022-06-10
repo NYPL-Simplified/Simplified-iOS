@@ -32,6 +32,14 @@ class OELoginChoiceViewController : UIViewController {
     super.viewDidLoad()
 
     navigationItem.titleView = OELoginNavHeader()
+    if #available(iOS 14, *) {
+      navigationItem.backButtonDisplayMode = .minimal
+    } else {
+      navigationItem.backBarButtonItem = UIBarButtonItem(title: "",
+                                                         style: .plain,
+                                                         target: nil,
+                                                         action: nil)
+    }
 
     headerLabel?.text = NSLocalizedString("Get Started", comment: "Login page header")
     subHeaderLabel?.text = NSLocalizedString("Login to access the collection", comment: "Login page sub header")
@@ -57,12 +65,12 @@ class OELoginChoiceViewController : UIViewController {
     
     NYPLSettings.shared.userHasSeenWelcomeScreen = true
     guard let appDelegate = UIApplication.shared.delegate else {
-      Log.error("", "Could not load app delegate")
+      Log.error(#function, "Could not load app delegate")
       return
     }
     
     guard let appWindow = appDelegate.window else {
-      Log.error("", "Could not load app window")
+      Log.error(#function, "Could not load app window")
       return
     }
     Log.info(#function, "Installing main root VC")
@@ -74,7 +82,8 @@ class OELoginChoiceViewController : UIViewController {
   }
 
   @IBAction func didSelectFirstBook() {
-    didSelectAuthenticationMethod(.firstBook)
+    let firstBookVC = OELoginFirstBookVC()
+    navigationController?.pushViewController(firstBookVC, animated: true)
   }
 
   private func didSelectAuthenticationMethod(_ loginChoice: LoginChoice) {
