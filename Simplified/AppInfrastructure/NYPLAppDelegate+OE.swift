@@ -18,7 +18,7 @@ extension NYPLAppDelegate {
       {
         window.rootViewController = NYPLRootTabBarController.shared()
       } else {
-        window.rootViewController = OELoginNavigationController()
+        window.rootViewController = createLoginNavController()
       }
     } else {
       let eulaURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
@@ -28,7 +28,7 @@ extension NYPLAppDelegate {
           duration: 0.5,
           options: [.transitionCurlUp, .allowAnimatedContent, .layoutSubviews],
           animations: {
-            self.window?.rootViewController = OELoginNavigationController()
+            self.window?.rootViewController = self.createLoginNavController()
         },
           completion: nil
         )
@@ -36,6 +36,10 @@ extension NYPLAppDelegate {
       let eulaNavController = UINavigationController(rootViewController: eulaVC)
       self.window?.rootViewController = eulaNavController
     }
+  }
+
+  private func createLoginNavController() -> UINavigationController {
+    return UINavigationController(rootViewController: OELoginChoiceViewController())
   }
 
   /// Handle all custom URL schemes specific to Open eBooks here.

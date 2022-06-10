@@ -289,7 +289,6 @@
 		73085E30250308A4008F6244 /* NYPLSettingsSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */; };
 		73085E3525030D27008F6244 /* SEMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E3425030D27008F6244 /* SEMigrations.swift */; };
 		73085E3A25030D80008F6244 /* OEMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73085E3725030D66008F6244 /* OEMigrations.swift */; };
-		7308DBE2284EB8FB001E6DD0 /* OELoginNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7308DBE1284EB8FB001E6DD0 /* OELoginNavigationController.swift */; };
 		730B7868249AB9D7008F28B3 /* Float+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* Float+NYPLAdditions.swift */; };
 		730B7869249AB9D7008F28B3 /* Float+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730B7867249AB9D7008F28B3 /* Float+NYPLAdditions.swift */; };
 		730D17C02552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730D17BF2552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift */; };
@@ -1910,7 +1909,6 @@
 		73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsSplitViewController.swift; sourceTree = "<group>"; };
 		73085E3425030D27008F6244 /* SEMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SEMigrations.swift; sourceTree = "<group>"; };
 		73085E3725030D66008F6244 /* OEMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OEMigrations.swift; sourceTree = "<group>"; };
-		7308DBE1284EB8FB001E6DD0 /* OELoginNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OELoginNavigationController.swift; path = Simplified/SignInLogic/OELoginNavigationController.swift; sourceTree = SOURCE_ROOT; };
 		730B7867249AB9D7008F28B3 /* Float+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+NYPLAdditions.swift"; sourceTree = "<group>"; };
 		730D17BF2552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMyBooksDownloadsCenterMock.swift; sourceTree = "<group>"; };
 		730D17CB25535954004CAC83 /* NYPLSignInBusinessLogic+BookmarkSyncing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+BookmarkSyncing.swift"; sourceTree = "<group>"; };
@@ -2846,7 +2844,6 @@
 				73F4B8AF28496A0B0032F9FC /* OELoginChoice.xib */,
 				73B70A33284FCD8100BDF490 /* OELoginNavHeader.xib */,
 				73CB8CC8285012D700603BA1 /* OELoginNavHeader.swift */,
-				7308DBE1284EB8FB001E6DD0 /* OELoginNavigationController.swift */,
 				734B789025659611006FB8AD /* URLResponse+NYPLAuthentication.swift */,
 			);
 			path = SignInLogic;
@@ -4821,7 +4818,6 @@
 				73085E2F250308A3008F6244 /* NYPLSettingsPrimaryTableViewController.swift in Sources */,
 				730FC05025127FA2004D7C2D /* NYPLSettings+OE.swift in Sources */,
 				73085E1A2502DE88008F6244 /* OELoginChoiceViewController.swift in Sources */,
-				7308DBE2284EB8FB001E6DD0 /* OELoginNavigationController.swift in Sources */,
 				73FCA2B225005BA4001B0C5D /* NYPLBookContentTypeConverter.swift in Sources */,
 				73FCA2B425005BA4001B0C5D /* Log.swift in Sources */,
 				73FCA2B525005BA4001B0C5D /* NYPLBookRegistry.m in Sources */,
