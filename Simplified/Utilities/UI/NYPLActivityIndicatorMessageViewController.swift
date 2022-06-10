@@ -15,7 +15,7 @@ class NYPLActivityIndicatorMessageViewController: UIViewController {
   
   // MARK: - Life Cycle
   
-  init(with message: String) {
+  init(message: String) {
     super.init(nibName: nil, bundle: nil)
     
     self.textLabel.text = message
@@ -40,14 +40,8 @@ class NYPLActivityIndicatorMessageViewController: UIViewController {
   
   // MARK: - Setup
   
-  func setupUI() {
-    // Transparent background
-    if #available(iOS 12.0, *),
-       UIScreen.main.traitCollection.userInterfaceStyle == .dark {
-      self.view.backgroundColor = UIColor(white: 0.2, alpha: 0.7)
-    } else {
-      self.view.backgroundColor = UIColor(white: 0, alpha: 0.7)
-    }
+  private func setupUI() {
+    self.view.backgroundColor = NYPLConfiguration.transparentBackgroundColor
     
     // Background of the activity indicator and text
     let backgroundView = UIView()

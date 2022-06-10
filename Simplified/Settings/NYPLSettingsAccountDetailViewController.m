@@ -473,6 +473,9 @@ Authenticating with any of those barcodes should work.
   NSMutableArray *section2DeleteServerData = [[NSMutableArray alloc] init];
   if ([self.businessLogic shouldShowSyncButton]) {
     [section1Sync addObject:@(CellKindSyncButton)];
+  }
+  
+  if ([self.businessLogic isSignedIn]) {
     [section2DeleteServerData addObject:@(CellKindDeleteServerData)];
   }
   
@@ -1066,7 +1069,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                initWithStyle:UITableViewCellStyleDefault
                                reuseIdentifier:nil];
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+#ifdef SIMPLYE
       cell.textLabel.text = NSLocalizedString(@"Delete my SimplyE Data", nil);
+#else
+      cell.textLabel.text = NSLocalizedString(@"Delete my OpenEBooks Data", nil);
+#endif
+      
       cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
       
       UIImageView *imageView = [self rightArrowImageView];
@@ -1149,7 +1157,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
       (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
-      (section == sSection2DeleteServerData && [self.businessLogic shouldShowSyncButton])) {
+      (section == sSection2DeleteServerData && [self.businessLogic isSignedIn])) {
     return UITableViewAutomaticDimension;
   }
   return 0;
@@ -1165,7 +1173,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
       (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
-      (section == sSection2DeleteServerData && [self.businessLogic shouldShowSyncButton])) {
+      (section == sSection2DeleteServerData && [self.businessLogic isSignedIn])) {
     return 44;
   }
   return 0;
@@ -1227,7 +1235,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   // something's wrong, it gets called every refresh cycle when scrolling
   if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
       (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
-      (section == sSection2DeleteServerData && [self.businessLogic shouldShowSyncButton])) {
+      (section == sSection2DeleteServerData && [self.businessLogic isSignedIn])) {
     
     if (section == sSection0AccountInfo && self.accountInfoFooterView) {
       return self.accountInfoFooterView;

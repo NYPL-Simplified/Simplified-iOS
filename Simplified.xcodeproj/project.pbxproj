@@ -122,6 +122,10 @@
 		1747331D284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
 		1747331E284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
 		1747332C284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
+		174733552853B1110090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
+		1747335A2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
+		1747335B2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
+		1747335C2853B1190090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
 		17536B9E26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
 		17536B9F26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
 		17536BA026A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
@@ -4359,6 +4363,7 @@
 				739E6071244A0D8600D00301 /* BundledHTMLViewController.swift in Sources */,
 				739E6072244A0D8600D00301 /* NYPLBookDetailView.m in Sources */,
 				739E6073244A0D8600D00301 /* UIButton+NYPLAppearanceAdditions.m in Sources */,
+				174733552853B1110090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */,
 				21DDE32925D2CEFC002CBCE3 /* AdobeDRMContentProtection.swift in Sources */,
 				739E6074244A0D8600D00301 /* NYPLBookCoverRegistry.m in Sources */,
 				21DDE31825D2CE9B002CBCE3 /* AdobeDRMLibraryService.swift in Sources */,
@@ -4784,6 +4789,7 @@
 				73D8D27D25A68D4300DF5F69 /* NYPLReaderTOCBusinessLogic.swift in Sources */,
 				73EB0B2225821DF4006BC997 /* NYPLSecrets.swift in Sources */,
 				73EB0B2325821DF4006BC997 /* NYPLBarcodeScanningViewController.m in Sources */,
+				1747335A2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */,
 				73C3CF5825C8EB6B00CA8166 /* NYPLUserAccount.swift in Sources */,
 				73EB0B2425821DF4006BC997 /* NYPLBookDetailDownloadFailedView.m in Sources */,
 				73EB0B2525821DF4006BC997 /* NYPLOPDSFeed.m in Sources */,
@@ -4824,6 +4830,7 @@
 				73225DED250B4B9100EF1877 /* NYPLRootTabBarController+OE.swift in Sources */,
 				734731262514236A00BE3D2C /* NYPLAppDelegate+OE.swift in Sources */,
 				597E272A268B537E00A3CD23 /* NYPLAxisDecompressionAdapter.swift in Sources */,
+				1747335B2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */,
 				73FCA2BA25005BA4001B0C5D /* NYPLAlertUtils.swift in Sources */,
 				73FCA2BB25005BA4001B0C5D /* OPDS2Publication.swift in Sources */,
 				73FCA2BC25005BA4001B0C5D /* String+MD5.swift in Sources */,
@@ -4855,6 +4862,7 @@
 				73A794A825477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift in Sources */,
 				7359DCB527E92462001C4254 /* NYPLSignInBusinessLogic+OAuthClientCredentials.swift in Sources */,
 				73FCA2C625005BA4001B0C5D /* NYPLReloadView.m in Sources */,
+				1747335C2853B1190090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
 				73FCA2C725005BA4001B0C5D /* NYPLReachabilityManager.m in Sources */,
 				73FCA2C925005BA4001B0C5D /* NYPLCatalogGroupedFeedViewController.m in Sources */,
 				73FCA2CA25005BA4001B0C5D /* NYPLBackgroundExecutor.swift in Sources */,
