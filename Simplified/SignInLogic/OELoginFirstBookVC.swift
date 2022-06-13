@@ -10,6 +10,8 @@ import UIKit
 
 class OELoginFirstBookVC: UIViewController {
 
+  @IBOutlet var scrollView: UIScrollView!
+
   @IBOutlet var signInHeader: UILabel!
 
   @IBOutlet var accessCodeLabel: UILabel!
@@ -31,7 +33,12 @@ class OELoginFirstBookVC: UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
 
-  // MARK: UIViewController
+  deinit {
+    NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidShowNotification, object: nil)
+    NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidHideNotification, object: nil)
+  }
+
+  // MARK: - UIViewController
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -51,9 +58,53 @@ class OELoginFirstBookVC: UIViewController {
     faqButton.setTitle(NSLocalizedString("Frequently Asked Questions", comment: ""),
                             for: .normal)
 
+    registerForKeyboardNotifications()
   }
 
   @IBAction func signIn() {
     Log.info(#function, "strunz")
+  }
+
+  // MARK: - Keyboard bs
+
+  func registerForKeyboardNotifications() {
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(keyboardDidAppear(_:)),
+                                           name: UIResponder.keyboardDidShowNotification,
+                                           object: nil)
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(keyboardDidDisappear(_:)),
+                                           name: UIResponder.keyboardDidHideNotification,
+                                           object: nil)
+  }
+
+  @objc func keyboardDidAppear(_ notification: NSNotification) {
+    guard
+      let info = notification.userInfo,
+      let rect = info[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect
+    else {
+      return
+    }
+
+    let kbSize = rect.size
+    let insets = UIEdgeInsets(top: 0, left: 0, bottom: kbSize.height, right: 0)
+    scrollView.contentInset = insets
+    scrollView.scrollIndicatorInsets = insets
+
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    var viewableFrame = self.view.frame;
+    viewableFrame.size.height -= kbSize.height;
+    let activeField = [accessCodeField, pinField].first { $0.isFirstResponder }
+    if let activeField = activeField {
+      if !viewableFrame.contains(activeField.frame.origin) {
+        let scrollPoint = CGPoint(x: 0, y: activeField.frame.origin.y-kbSize.height)
+        scrollView.setContentOffset(scrollPoint, animated: true)
+      }
+    }
+  }
+
+  @objc func keyboardDidDisappear(_ notification: NSNotification) {
+    scrollView.contentInset = UIEdgeInsets.zero
+    scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
   }
 }
