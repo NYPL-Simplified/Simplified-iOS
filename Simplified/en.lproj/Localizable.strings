@@ -260,13 +260,22 @@
 
 // Account / Data deletion
 "Delete my SimplyE Data" = "Delete my SimplyE Data";
+"Delete my Open eBooks Data" = "Delete my Open eBooks Data";
 "Delete Reading Data" = "Delete Reading Data";
 "Please wait..." = "Please wait...";
 "Delete all the bookmarks you have saved in the cloud." = "Delete all the bookmarks you have saved in the cloud.";
 "You have successfully deleted your SimplyE data" = "You have successfully deleted your SimplyE data";
 "Unsubscribe from emails" = "Unsubscribe from emails";
-"Delete my library account" = "Delete my library account";
+"E-Mail to cancel your library card" = "E-Mail to cancel your library card";
+"Delete Library Card" = "Delete Library Card";
 "Delete Data Failed" = "Delete Data Failed";
+"DeleteServerDataDescription" = "SimplyE does not create any accounts outside of your library card. The content that the SimplyE app saves is:
+
+• your library card information to log into your library
+• your last known place in the book you’re reading or listening to
+• and any bookmarks or highlights you’ve created for your current book
+
+Your account information is saved outside of your current device if you specifically permit us to save it. If you only want your bookmarks and reading location deleted, please go to back to the prior screen. Set the “Sync Bookmarks” toggle to OFF, then come back to this page and tap “Delete Reading Data”. Then you can log out, and SimplyE will no longer save any of your information.";
 
 // Open eBooks
 "Welcome to Open eBooks" = "Welcome to Open eBooks!";

@@ -1072,7 +1072,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 #ifdef SIMPLYE
       cell.textLabel.text = NSLocalizedString(@"Delete my SimplyE Data", nil);
 #else
-      cell.textLabel.text = NSLocalizedString(@"Delete my OpenEBooks Data", nil);
+      cell.textLabel.text = NSLocalizedString(@"Delete my Open eBooks Data", nil);
 #endif
       
       cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
