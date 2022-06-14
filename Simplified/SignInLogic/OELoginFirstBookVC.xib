@@ -19,6 +19,7 @@
                 <outlet property="scrollView" destination="16T-Xw-D86" id="L53-be-hOi"/>
                 <outlet property="signInButton" destination="pqW-PY-aKd" id="Stw-Ju-xTn"/>
                 <outlet property="signInHeader" destination="Iry-k1-t9g" id="XPS-ME-XNa"/>
+                <outlet property="spinner" destination="LpP-7w-4UM" id="Kqr-K2-JbV"/>
                 <outlet property="troublesButton" destination="w82-VR-y3G" id="oZz-15-SvB"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -69,7 +70,10 @@
                                         <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Access Code" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="fbn-ND-Xrg" userLabel="Access Code Field">
                                             <rect key="frame" x="0.0" y="15.5" width="498" height="34"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="username"/>
+                                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="username"/>
+                                            <connections>
+                                                <action selector="textFieldDidChange:" destination="-1" eventType="editingChanged" id="eE6-Bd-BcH"/>
+                                            </connections>
                                         </textField>
                                     </subviews>
                                 </stackView>
@@ -85,9 +89,10 @@
                                         <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PIN" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="5Ha-4R-aDH" userLabel="PIN Field">
                                             <rect key="frame" x="0.0" y="15.5" width="498" height="34"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
+                                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                             <connections>
                                                 <action selector="signIn" destination="-1" eventType="primaryActionTriggered" id="wot-Pe-4GG"/>
+                                                <action selector="textFieldDidChange:" destination="-1" eventType="editingChanged" id="3fl-Xi-zn2"/>
                                             </connections>
                                         </textField>
                                     </subviews>
@@ -98,6 +103,9 @@
                                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="plain" title="Sign In" cornerStyle="small"/>
+                                    <connections>
+                                        <action selector="signIn" destination="-1" eventType="touchUpInside" id="dPY-ig-2Ew"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w82-VR-y3G" userLabel="havingTroubleButton">
                                     <rect key="frame" x="0.0" y="250" width="498" height="31"/>
@@ -123,11 +131,18 @@
                                 <constraint firstAttribute="width" relation="lessThanOrEqual" secondItem="bBA-wY-sp6" secondAttribute="height" multiplier="1.5:1" priority="751" id="i14-F3-0Un"/>
                             </constraints>
                         </stackView>
+                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="LpP-7w-4UM">
+                            <rect key="frame" x="731" y="224.5" width="20" height="20"/>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </activityIndicatorView>
                     </subviews>
                     <constraints>
                         <constraint firstItem="bBA-wY-sp6" firstAttribute="leading" secondItem="16T-Xw-D86" secondAttribute="leading" priority="751" constant="20" id="2m3-gh-cxb"/>
                         <constraint firstItem="bBA-wY-sp6" firstAttribute="centerX" secondItem="16T-Xw-D86" secondAttribute="centerX" id="4ha-Dx-BQN"/>
                         <constraint firstAttribute="bottom" secondItem="bBA-wY-sp6" secondAttribute="bottom" priority="252" constant="85" id="77y-3G-nXX"/>
+                        <constraint firstItem="LpP-7w-4UM" firstAttribute="trailing" secondItem="pqW-PY-aKd" secondAttribute="trailing" constant="-10" id="7YG-RF-NLs"/>
+                        <constraint firstItem="LpP-7w-4UM" firstAttribute="centerY" secondItem="pqW-PY-aKd" secondAttribute="centerY" id="emA-Yu-h4S"/>
                         <constraint firstAttribute="trailing" secondItem="bBA-wY-sp6" secondAttribute="trailing" priority="751" constant="20" id="f17-vL-Pyr"/>
                         <constraint firstItem="bBA-wY-sp6" firstAttribute="top" secondItem="16T-Xw-D86" secondAttribute="top" constant="20" id="hYf-NH-wmb"/>
                     </constraints>
@@ -142,7 +157,7 @@
                 <constraint firstItem="16T-Xw-D86" firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="q4p-3z-rA6"/>
             </constraints>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
-            <point key="canvasLocation" x="133.125" y="122.5"/>
+            <point key="canvasLocation" x="133.0078125" y="122.10834553440702"/>
         </view>
     </objects>
     <resources>

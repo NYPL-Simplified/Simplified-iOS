@@ -19,6 +19,7 @@ extension NYPLAppDelegate {
         window.rootViewController = NYPLRootTabBarController.shared()
       } else {
         window.rootViewController = createLoginNavController()
+        NYPLSettings.shared.userHasSeenWelcomeScreen = true
       }
     } else {
       let eulaURL = URL(string: "https://openebooks.net/app_user_agreement.html")!

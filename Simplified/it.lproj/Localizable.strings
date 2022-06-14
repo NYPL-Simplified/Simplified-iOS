@@ -1,8 +1,8 @@
-// Accessibility Labels
+// MARK: - Accessibility Labels
 
 "AccessibilitySwitchLibrary" = "Cambia biblioteca";
 
-// Generic
+// MARK: - Generic
 "AlphabetFontType" = "Aa";
 "AlphabetFontStyle" = "ABCabc";
 "AboutApp" = "Riguardo SimplyE";
@@ -82,18 +82,19 @@
 "Back" = "Indietro";
 "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "Non è stato possibile caricare questa pagina. Prova a chiudere l'app del tutto e a riaprirla, e se il problema persiste, contatta l'help desk della tua biblioteca.";
 "The page could not load due to a connection error." = "Non è stato possibile caricare questa pagina per via di un problema nella connessione.";
+"An unrecoverable error occurred. Please force-quit the app and try again." = "Si è verificato un errore critico. È consigliato chiudere l'applicazione e riprovare.";
 
-// Generic networking
+// MARK: - Generic networking
 "Server response failure: please check your connection or try again later." = "Comunicazione col server fallita: controlla la tua connessione a internet o riprova più tardi.";
 "HTTP status" = "Codice errore HTTP";
 
-// NYPLAppDelegate
+// MARK: - NYPLAppDelegate
 "AppDelegateUpdateRequiredTitle" = "Aggiornamento Necessario";
 "AppDelegateUpdateRequiredMessageFormat" = "Un aggiornamento critico è necessario per versioni più vecchie della %@. Parti essenziali dell'app non funzioneranno correttamente fino a quando verrà eseguito un aggiornamento.";
 "AppDelegateUpdateNow" = "Aggiorna ora";
 "AppDelegateUpdateRemindMeLater" = "Ricordamelo dopo";
 
-// NYPLBookButtonsView
+// MARK: - NYPLBookButtonsView
 "BookButtonsViewRemoveHoldTitle" = "Rimuovi prenotazione";
 "BookButtonsViewRemoveHoldMessage" = "Sei sicuro di voler cancellare la prenotazione di \"%@\"? Perderai il tuo posto nella fila per accedere a questo libro.";
 "BookButtonsViewRemoveHoldConfirm" = "Rimuovere";
@@ -103,7 +104,7 @@
 "Cancels hold for %@" = "Rimuovi la prenotazione per %@";
 "Downloads %@" = "Scarica %@";
 
-// Book Details
+// MARK: - Book Details
 "BookDetailViewControllerTitle" = "Dettagli";
 "BookDetailViewControllerDownloadNeededTitle" = "Il libro non è stato ancora scaricato.";
 "BookDetailViewControllerDownloadSuccessfulTitle" = "Il libro è pronto da leggere!";
@@ -114,33 +115,29 @@
 "BookDetailViewControllerDistributedByFormat" = "Distribuito da: ";
 "It will expire in %@." = "Scadrà tra %@.";
 
-// NYPLBookCellDelegate
+// MARK: - NYPLBookCellDelegate
 "Unsupported Item" = "Formato non supportato";
 "The item you are trying to open is not currently supported." = "Il libro che stai cercando di aprire non è ancora supportato.";
 "Corrupted Audiobook" = "Audiobook compromesso";
 "The audiobook you are trying to open appears to be corrupted. Try downloading it again." = "L'audiobook che stai cercando di ascoltare sembra avere dei problemi. Prova a scaricarlo di nuovo.";
 
-// NYPLFacetView
+// MARK: - NYPLFacetView
 "FacetViewNotActive" = "<>";
 
-// NYPLHoldsViewController
+// MARK: - NYPLHoldsViewController
 "HoldsViewControllerTitle" = "Prenotazioni";
 "HoldsViewControllerSearchTitle" = "Cerca le prenotazioni";
 "AvailableForCheckoutHeader" = "DISPONIBILE PER PRESTITO";
 "WaitingForAvailabilityHeader" = "IN ATTESA DI DISPONIBILITÀ";
 "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download." = "I libri prenotati appariranno qui. A quel punto, controlla di tanto in tanto per vedere se sono diventati disponibili e possono essere scaricati.";
 
-// MyBooks
+// MARK: - MyBooks
 "%@ was returned successfully." = "%@ è stato restituito.";
-
-// NYPLMyBooksDownloadCenter
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Cancellare";
 "MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Sei sicuro di voler eliminare %@?";
 "MyBooksGoToCatalog" = "Visita il catalogo per aggiungere i tuoi libri";
 "MyBooksDownloadCenterConfirmReturnTitle" = "Restituisci";
 "MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Sei sicuro di voler restituire %@?";
-
-// NYPLMyBooksViewController
 "MyBooksViewControllerTitle" = "I miei libri";
 "MyBooksViewControllerSearchTitle" = "Cerca i miei libri";
 "MyBooksViewControllerFacetAll" = "Tutti";
@@ -150,13 +147,13 @@
 "MyBooksViewControllerGroupShow" = "Mostra";
 "MyBooksViewControllerGroupSortBy" = "Ordina per";
 
-// ereader
+// MARK: - ereader
 "ReaderViewControllerCorruptTitle" = "Prenota Impossibile visualizzare";
 "ReaderViewControllerCorruptMessage" = "Questo libro è danneggiato e non può essere letto.";
 "Previous Chapter" = "Capitolo precedente";
 "Next Chapter" = "Capitolo successivo";
 
-// NYPLReaderSettingsView
+// MARK: - NYPLReaderSettingsView
 "Sans serif font" = "Font sans serif";
 "Serif font" = "Font serif";
 "Special font" = "Font speciale";
@@ -171,34 +168,34 @@
 "Publisher's Default" = "Impostazioni dell'editore";
 "Show the publisher-specified fonts and layout choices in this ebook" = "Usa le impostazioni specificate dall'editore per il testo e la formattazione di questo ebook";
 
-// NYPLReaderSettingsViewController
+// MARK: - NYPLReaderSettingsViewController
 "ReaderViewControllerToggleReaderSettings" = "impostazioni del lettore Toggle";
 
-// Reader Positions (TOC and Bookmarks)
+// MARK: - Reader Positions (TOC and Bookmarks)
 "ReaderTOCViewControllerTitle" = "Sommario";
 "%@ through chapter" = "%@ del capitolo";
 "There are no bookmarks for this book." = "Non ci sono segnalibri per questo libro.";
 
-// Reader error messages (R2)
+// MARK: - Reader error messages (R2)
 "Content Protection Error" = "Errore nella protezione del contenuto";
 "The book you were trying to open is invalid." = "Il libro che stavi cercando di leggere è in un formato non valido.";
 "An error was encountered while trying to open this book." = "Si è verificato un errore durante l'apertura di questo libro.";
 "The book you were trying to read is in an unsupported format." = "Il libro che stavi cercando di aprire è in un formato non supportato.";
 "The book you were trying to read is corrupted. Please try downloading it again." = "Il libro che stavi cercando di leggere è danneggiato. Prova a scaricarlo di nuovo.";
 
-// Authentication generic
+// MARK: - Authentication generic
 "Authentication Expired" = "Credenziali di accesso scadute";
 "Your authentication details have expired. Please sign in again." = "Le tue credenziali di identificazione non sono più valide. Riaccedi per continuare.";
 "Authentication Required" = "Autenticazione necessaria";
 "Please sign in to use this functionality." = "Accedi con uno dei meccanismi di identificazione per poter usare questa funzionalità.";
 
-// Age Check
+// MARK: - Age Check
 "Age Verification" = "Verifica dell'età";
 "Please enter your birth year" = "Per favore inserisci il tuo anno di nascita";
 "Done" = "Finito";
 "Next" = "Continua";
 
-// NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
+// MARK: - Account settings VC and sign-in modal
 "Add Library" = "Aggiungi Biblioteca";
 "Report an Issue" = "Riferisci un problema";
 "Show Barcode" = "Mostra il codice a barre";
@@ -221,31 +218,31 @@
 "Location" = "Condivisione della posizione";
 "Error parsing user profile document." = "Si è verificato un errore nella decodifica del documento relativo al profilo utente.";
 "Trouble locating DRM in profile document." = "Si è verificato un errore relativo al DRM del documento.";
-"By signing in, you agree to the End User License Agreement." = "Accedendo acconsenti al contratto con gli utenti.";
+"By signing in, you agree to the End User License Agreement." = "Accedendo acconsenti all'accordo con gli utenti.";
 "Please log out and try your card information again." = "Prova a disconnetterti e a riaccedere per cercare di risolvere questo problema.";
 "Sign-in Error" = "Errore di autenticazione";
 "We could not find a match for the credentials provided." = "Non è stato possibile trovare il tuo utente con le informazioni ricevute.";
 
-// sign up / card creation
+// MARK: - sign up / card creation
 "Need a library card for your child?" = "Vuoi una tessera per i tuoi figli?";
 "Your eligibility for this card can't be confirmed. Please contact your library if this is in error." = "Si è verificato un errore per il quale è impossibile verificare se la tua tessera è idonea.";
 "We're sorry. Currently we do not support signups for new patrons via the app." = "La creazione di nuovi utenti non è supportata da questa biblioteca";
 "We're sorry. Our sign up system is currently down. Please try again later." = "Siamo spiacenti, il nostro sistema di registrazione non è attivo al momento. Riprova più tardi.";
 
-// NYPLSettingsEULAViewController
+// MARK: - NYPLSettingsEULAViewController
 "Accept" = "Accetta";
 "Reject" = "Rifiuta";
-"EULA" = "Accordo per gli utenti";
-"EULAHaveToAgree" = "È necessario accettare il contratto di licenza con l'utente finale per utilizzare questa applicazione.";
+"EULA" = "Accordo con gli utenti";
+"EULAHaveToAgree" = "È necessario accettare l'accordo di licenza con gli utenti per utilizzare questa applicazione.";
 "NOTICE" = "AVVISO";
 
-// NYPLSettingsLibrarySelectionViewController
+// MARK: - NYPLSettingsLibrarySelectionViewController
 "Add Your Library" = "Aggiungi la tua biblioteca";
 
-// NYPLSettingsPrivacyPolicyViewController
+// MARK: - NYPLSettingsPrivacyPolicyViewController
 "SettingsAccountViewControllerMessageTooManyActivations" = "Sono stati autorizzati troppi dispositivi per questo utente.";
 
-// NYPLWelcomeScreen
+// MARK: - NYPLWelcomeScreen
 "Age Verification" = "Verifica dell'età";
 "You must be 13 years of age or older to download some of the books from this collection. How old are you?" = "Devi avere almeno 13 anni per scaricare alcuni dei libri nella nostra collection. Quanti anni hai?";
 "Read E-Books from Your Library" = "Leggi ebook dalla tua biblioteca";
@@ -267,6 +264,15 @@
 // Open eBooks
 "Welcome to Open eBooks" = "Benvenuti a Open eBooks!";
 "You need to login to access the collection." = "Scegli la modalità di accesso.";
+"Access Code" = "Codice di accesso";
+"Having trouble signing in?" = "Problemi ad accedere?";
+"Frequently Asked Questions" = "Domande frequenti";
+"Get Started" = "Inizia";
+"Login to access the collection" = "Accedi alla collezione";
+"Sign in with Clever" = "Accedi con Clever";
+"Sign in with First Book" = "Accedi con First Book";
+"Terms of Use" = "Termini di utilizzo";
+"Privacy Notice" = "Informativa sulla privacy";
 
 // Date+NYPLAdditions
 "year_suffix_short" = "%d a";

@@ -49,6 +49,8 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) UITableViewCell *logInCell;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) NSArray *tableData;
+@property (nonatomic) UITextField *usernameTextField;
+@property (nonatomic) UITextField *PINTextField;
 
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
@@ -57,9 +59,6 @@ typedef NS_ENUM(NSInteger, Section) {
 @end
 
 @implementation NYPLAccountSignInViewController
-
-@synthesize usernameTextField;
-@synthesize PINTextField;
 
 CGFloat const marginPadding = 2.0;
 

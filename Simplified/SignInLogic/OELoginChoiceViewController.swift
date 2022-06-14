@@ -26,7 +26,7 @@ class OELoginChoiceViewController : UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
 
-  // MARK: UIViewController
+  // MARK: - UIViewController
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -57,33 +57,40 @@ class OELoginChoiceViewController : UIViewController {
   }
   
 
-  // MARK: -
+  // MARK: - Actions
   
-  private func loginCompletionHandler() {
-    view.window?.rootViewController?.dismiss(animated: true, completion: nil)
-    dismiss(animated: true, completion: nil)
-    
-    NYPLSettings.shared.userHasSeenWelcomeScreen = true
-    guard let appDelegate = UIApplication.shared.delegate else {
-      Log.error(#function, "Could not load app delegate")
-      return
-    }
-    
-    guard let appWindow = appDelegate.window else {
-      Log.error(#function, "Could not load app window")
-      return
-    }
-    Log.info(#function, "Installing main root VC")
-    appWindow?.rootViewController = NYPLRootTabBarController.shared()
-  }
-
   @IBAction func didSelectClever() {
     didSelectAuthenticationMethod(.clever)
   }
 
   @IBAction func didSelectFirstBook() {
-    let firstBookVC = OELoginFirstBookVC()
+    guard let libraryAccount = AccountsManager.shared.currentAccount else {
+      displayGenericAlert(for: "Unable to get library Account instance after selecting First Book as login choice")
+      return
+    }
+
+    let firstBookVC = OELoginFirstBookVC(libraryAccount: libraryAccount,
+                                         loginSuccessCompletion: completeLogin)
     navigationController?.pushViewController(firstBookVC, animated: true)
+  }
+  // MARK: - Private
+
+  private func completeLogin() {
+    view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+    dismiss(animated: true, completion: nil)
+
+    guard let appDelegate = UIApplication.shared.delegate else {
+      displayGenericAlert(for: "Could not load app delegate")
+      return
+    }
+
+    guard let appWindow = appDelegate.window else {
+      displayGenericAlert(for: "Could not load app window")
+      return
+    }
+
+    Log.info(#function, "Installing main root VC")
+    appWindow?.rootViewController = NYPLRootTabBarController.shared()
   }
 
   private func didSelectAuthenticationMethod(_ loginChoice: LoginChoice) {
@@ -105,9 +112,19 @@ class OELoginChoiceViewController : UIViewController {
     }
   }
 
+  // TODO: IOS-511: see NYPLSignInVC::presentAsModal
+
   private func presentSignInVC(for loginChoice: LoginChoice) {
     let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
     signInVC.presentIfNeeded(usingExistingCredentials: false,
-                             completionHandler: self.loginCompletionHandler)
+                             completionHandler: self.completeLogin)
+  }
+
+  private func displayGenericAlert(for error: String) {
+    Log.error(#file, error)
+    let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""),
+                                  message: NSLocalizedString("An unrecoverable error occurred. Please force-quit the app and try again.", comment: "Generic error message for internal errors"),
+                                  preferredStyle: .alert)
+    NYPLPresentationUtils.safelyPresent(alert)
   }
 }

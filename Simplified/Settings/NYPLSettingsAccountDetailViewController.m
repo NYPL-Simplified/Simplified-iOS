@@ -61,6 +61,20 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UIView *accountInfoFooterView;
 @property (nonatomic) UIView *syncFooterView;
 @property (nonatomic) UIActivityIndicatorView *juvenileActivityView;
+@property (nonatomic) UITextField *PINTextField;
+
+/**
+ For NYPL, this field can accept any of the following:
+ - a username
+ - a 14-digit NYPL-issued barcode
+ - a 16-digit NYC ID issued by the city of New York to its residents. Patrons
+ can set up the NYC ID as a NYPL barcode even if they already have a NYPL card.
+ All of these types of authentication can be used with the PIN to sign in.
+ - Note: A patron can have multiple barcodes, because patrons may lose
+ their library card and get a new one with a different barcode.
+ Authenticating with any of those barcodes should work.
+ */
+@property (nonatomic) UITextField *usernameTextField;
 
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
@@ -80,21 +94,6 @@ static const CGFloat sConstantZero = 0.0;
 static const CGFloat sConstantSpacing = 12.0;
 
 @implementation NYPLSettingsAccountDetailViewController
-
-/*
- For NYPL, this field can accept any of the following:
- - a username
- - a 14-digit NYPL-issued barcode
- - a 16-digit NYC ID issued by the city of New York to its residents. Patrons
- can set up the NYC ID as a NYPL barcode even if they already have a NYPL card.
- All of these types of authentication can be used with the PIN to sign in.
- - Note: A patron can have multiple barcodes, because patrons may lose
-their library card and get a new one with a different barcode.
-Authenticating with any of those barcodes should work.
- */
-@synthesize usernameTextField;
-
-@synthesize PINTextField;
 
 @synthesize forceEditability;
 

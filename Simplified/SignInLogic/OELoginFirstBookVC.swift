@@ -10,6 +10,8 @@ import UIKit
 
 class OELoginFirstBookVC: UIViewController {
 
+  // MARK: - UI
+
   @IBOutlet var scrollView: UIScrollView!
 
   @IBOutlet var signInHeader: UILabel!
@@ -20,12 +22,48 @@ class OELoginFirstBookVC: UIViewController {
   @IBOutlet var pinField: UITextField!
 
   @IBOutlet var signInButton: UIButton!
+  @IBOutlet var spinner: UIActivityIndicatorView!
 
   @IBOutlet var troublesButton: UIButton!
   @IBOutlet var faqButton: UIButton!
 
-  init() {
+  // MARK: - Validation logic
+
+  private var businessLogic: NYPLSignInBusinessLogic!
+
+  private var frontEndValidator: NYPLUserAccountFrontEndValidation!
+
+  /// There are situations where the user appears signed in, but their
+  /// credentials are expired. In that case, it is desired to show the
+  /// sign-in modal with prefilled yet editable values. This flag provides
+  /// a way to do so in conjuction with the @p isSignedIn() function on
+  /// the @p NYPLSignInBusinessLogic.
+  var forceEditability: Bool = false
+
+  private let loginSuccessCompletion: () -> Void
+
+  // MARK: - Init / Deinit
+
+  init(libraryAccount: Account, loginSuccessCompletion: @escaping () -> Void) {
+    self.loginSuccessCompletion = loginSuccessCompletion
+
     super.init(nibName: "OELoginFirstBookVC", bundle: nil)
+
+    businessLogic = NYPLSignInBusinessLogic(
+      libraryAccountID: libraryAccount.uuid,
+      libraryAccountsProvider: AccountsManager.shared,
+      urlSettingsProvider: NYPLSettings.shared,
+      bookRegistry: NYPLBookRegistry.shared(),
+      bookDownloadsRemover: NYPLMyBooksDownloadCenter.shared(),
+      userAccountProvider: NYPLUserAccount.self,
+      uiDelegate: self,
+      drmAuthorizerAdobe: nil,
+      drmAuthorizerAxis: NYPLAxisDRMAuthorizer.sharedInstance)
+
+    frontEndValidator = NYPLUserAccountFrontEndValidation(
+      account: libraryAccount,
+      businessLogic: businessLogic,
+      inputProvider: self)
   }
 
   @available(*, unavailable)
@@ -34,8 +72,7 @@ class OELoginFirstBookVC: UIViewController {
   }
 
   deinit {
-    NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidShowNotification, object: nil)
-    NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidHideNotification, object: nil)
+    NotificationCenter.default.removeObserver(self)
   }
 
   // MARK: - UIViewController
@@ -43,6 +80,7 @@ class OELoginFirstBookVC: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    // -- set up UI
     navigationItem.titleView = OELoginNavHeader()
 
     signInHeader.text = NSLocalizedString("Sign In", comment: "")
@@ -58,16 +96,66 @@ class OELoginFirstBookVC: UIViewController {
     faqButton.setTitle(NSLocalizedString("Frequently Asked Questions", comment: ""),
                             for: .normal)
 
+    if let selectedAuthentication = businessLogic.selectedAuthentication {
+      switch selectedAuthentication.pinKeyboard {
+      case .standard, .none:
+        pinField.keyboardType = .asciiCapable
+      case .email:
+        pinField.keyboardType = .emailAddress
+      case .numeric:
+        pinField.keyboardType = .numberPad
+      }
+    }
+
+    updateColors()
+
+    // -- set up validation hooks
+    accessCodeField.delegate = frontEndValidator
+    pinField.delegate = frontEndValidator
+
+    // -- set up UI control logic
     registerForKeyboardNotifications()
+    setUpKeyboardDismissal()
+  }
+
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+
+    if #available(iOS 12.0, *) {
+      if let previousStyle = previousTraitCollection?.userInterfaceStyle {
+        if previousStyle != UIScreen.main.traitCollection.userInterfaceStyle {
+          updateColors()
+        }
+      }
+    }
+  }
+
+  // MARK: - Actions
+
+  @IBAction func textFieldDidChange(_ sender: Any) {
+    updateColors()
   }
 
   @IBAction func signIn() {
-    Log.info(#function, "strunz")
+    Log.info(#function, "User tapped on Sign In button")
+    businessLogic.logIn()
+  }
+
+  // MARK: - Helpers
+
+  private func updateColors() {
+    if frontEndValidator.canAttemptSignIn() {
+      signInButton.isUserInteractionEnabled = true
+      signInButton.backgroundColor = NYPLConfiguration.actionColor
+    } else {
+      signInButton.isUserInteractionEnabled = false
+      signInButton.backgroundColor = NYPLConfiguration.disabledFieldTextColor
+    }
   }
 
   // MARK: - Keyboard bs
 
-  func registerForKeyboardNotifications() {
+  private func registerForKeyboardNotifications() {
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(keyboardDidAppear(_:)),
                                            name: UIResponder.keyboardDidShowNotification,
@@ -78,7 +166,7 @@ class OELoginFirstBookVC: UIViewController {
                                            object: nil)
   }
 
-  @objc func keyboardDidAppear(_ notification: NSNotification) {
+  @objc private func keyboardDidAppear(_ notification: NSNotification) {
     guard
       let info = notification.userInfo,
       let rect = info[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect
@@ -103,8 +191,117 @@ class OELoginFirstBookVC: UIViewController {
     }
   }
 
-  @objc func keyboardDidDisappear(_ notification: NSNotification) {
+  @objc private func keyboardDidDisappear(_ notification: NSNotification) {
     scrollView.contentInset = UIEdgeInsets.zero
     scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+  }
+
+  private func setUpKeyboardDismissal() {
+    let tapGesture = UITapGestureRecognizer(target: self,
+                                            action: #selector(didTapOnEmptySpace))
+    view.addGestureRecognizer(tapGesture)
+  }
+
+  @objc private func didTapOnEmptySpace() {
+    accessCodeField.resignFirstResponder()
+    pinField.resignFirstResponder()
+  }
+}
+
+// MARK: -
+extension OELoginFirstBookVC: NYPLSignInOutBusinessLogicUIDelegate {
+
+  func businessLogicWillSignOut(_ businessLogic: NYPLSignInBusinessLogic) {
+    // this VC is not used for signing out
+  }
+
+  func businessLogic(_ logic: NYPLSignInBusinessLogic,
+                     didEncounterSignOutError error: Error?,
+                     withHTTPStatusCode httpStatusCode: Int) {
+    // this VC is not used for signing out
+  }
+
+  func businessLogicDidFinishDeauthorizing(_ logic: NYPLSignInBusinessLogic) {
+    // this VC is not used for signing out
+  }
+
+  // MARK: - NYPLSignInBusinessLogicUIDelegate
+
+  var context: String {
+    "First Book login screen"
+  }
+
+  func businessLogicWillSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
+    signInButton.isUserInteractionEnabled = false
+    spinner.startAnimating()
+  }
+
+  func businessLogicDidCompleteSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
+    signInButton.isUserInteractionEnabled = true
+    spinner.stopAnimating()
+    loginSuccessCompletion()
+  }
+
+  func businessLogic(_ logic: NYPLSignInBusinessLogic,
+                     didEncounterValidationError error: Error?,
+                     userFriendlyErrorTitle title: String?,
+                     andMessage serverMessage: String?) {
+    signInButton.isUserInteractionEnabled = true
+    spinner.stopAnimating()
+
+    let alert: UIAlertController!
+    if serverMessage != nil {
+      alert = NYPLAlertUtils.alert(title: title, message: serverMessage)
+    } else {
+      alert = NYPLAlertUtils.alert(title: title, error: error as? NSError)
+    }
+
+    self.present(alert, animated: true)
+  }
+
+  // MARK: - NYPLBasicAuthCredentialsProvider
+
+  var username: String? {
+    accessCodeField.text
+  }
+
+  var pin: String? {
+    pinField.text
+  }
+
+  var requiresUserAuthentication: Bool {
+    businessLogic.userAccount.requiresUserAuthentication
+  }
+
+  func hasCredentials() -> Bool {
+    businessLogic.userAccount.hasCredentials()
+  }
+
+  // MARK: - NYPLOAuthTokenProvider
+
+  var authToken: String? {
+    businessLogic.userAccount.authToken
+  }
+
+  func setAuthToken(_ token: String) {
+    businessLogic.userAccount.setAuthToken(token)
+  }
+
+  func hasOAuthClientCredentials() -> Bool {
+    businessLogic.userAccount.hasOAuthClientCredentials()
+  }
+
+  var oauthTokenRefreshURL: URL? {
+    businessLogic.userAccount.oauthTokenRefreshURL
+  }
+
+  // MARK: - NYPLUserAccountInputProvider
+
+  var usernameTextField: UITextField? {
+    accessCodeField
+  }
+
+  var PINTextField: UITextField? {
+    pinField
   }
 }
