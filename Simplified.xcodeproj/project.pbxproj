@@ -126,6 +126,9 @@
 		1747335A2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
 		1747335B2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
 		1747335C2853B1190090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
+		174733662857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */; };
+		174733672857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */; };
+		174733682857A6960090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */; };
 		17536B9E26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
 		17536B9F26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
 		17536BA026A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
@@ -1792,6 +1795,7 @@
 		173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookStateTests.swift; sourceTree = "<group>"; };
 		1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettingsDeleteServerDataViewController.swift; sourceTree = "<group>"; };
 		1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLActivityIndicatorMessageViewController.swift; sourceTree = "<group>"; };
+		174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettingsDeleteLibraryCardViewController.swift; sourceTree = "<group>"; };
 		17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookDetailView+Accessibility.swift"; sourceTree = "<group>"; };
 		175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementBusinessLogic.swift; sourceTree = "<group>"; };
 		17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckViewController.swift; sourceTree = "<group>"; };
@@ -2680,6 +2684,7 @@
 				73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */,
 				7353940B250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift */,
 				1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */,
+				174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -4401,6 +4406,7 @@
 				73A172EF27ADA6FA005E7BCF /* NYPLAxisNetworkExecutor.swift in Sources */,
 				73B550FC2511729E00D05B86 /* NYPLBookContentTypeConverter.swift in Sources */,
 				73F11E10251945E500FCD22B /* NYPLPresentationUtils.swift in Sources */,
+				174733672857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */,
 				739E608D244A0D8600D00301 /* NYPLReadiumBookmark.swift in Sources */,
 				73B5DFDD26052A1800225C12 /* NYPLBookButtonsState.m in Sources */,
 				73DEB54F2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */,
@@ -4613,6 +4619,7 @@
 				73EB0A8A25821DF4006BC997 /* NYPLReturnPromptHelper.swift in Sources */,
 				73EB0A8B25821DF4006BC997 /* NYPLReaderBookmarkCell.swift in Sources */,
 				73EB0A8C25821DF4006BC997 /* NYPLOpenSearchDescription.m in Sources */,
+				174733682857A6960090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */,
 				73EB0A8E25821DF4006BC997 /* NYPLSignInBusinessLogic+UI.swift in Sources */,
 				73D8D27825A68D3B00DF5F69 /* NYPLUserSettingsVC.swift in Sources */,
 				73EB0A9025821DF4006BC997 /* OPDS2CatalogsFeed.swift in Sources */,
@@ -5157,6 +5164,7 @@
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				03690E291EB2B44300F75D5F /* NYPLReadiumBookmark.swift in Sources */,
 				E683953B217663B100371072 /* NYPLFacetViewDefaultDataSource.swift in Sources */,
+				174733662857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */,
 				73B5DFDC26052A1800225C12 /* NYPLBookButtonsState.m in Sources */,
 				E6207B652118973800864143 /* NYPLAppTheme.swift in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,

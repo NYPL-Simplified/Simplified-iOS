@@ -33,7 +33,14 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindAbout,
   CellKindPrivacyPolicy,
   CellKindContentLicense,
-  CellReportIssue
+  CellReportIssue,
+  CellKindDeleteLibraryAccount
+};
+
+typedef NS_ENUM(NSInteger, AccountDetailSection) {
+  AccountInfoSection,
+  SyncSection,
+  DeleteServerDataSection
 };
 
 @interface NYPLSettingsAccountDetailViewController () <NYPLSignInOutBusinessLogicUIDelegate, NYPLServerDataDeleting>
@@ -71,11 +78,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 static const NSInteger sLinearViewTag = 1111;
 static const CGFloat sVerticalMarginPadding = 2.0;
-
-// table view sections indeces
-static const NSInteger sSection0AccountInfo = 0;
-static const NSInteger sSection1Sync = 1;
-static const NSInteger sSection2DeleteServerData = 2;
 
 // Constraint constants
 static const CGFloat sConstantZero = 0.0;
@@ -406,7 +408,7 @@ Authenticating with any of those barcodes should work.
   return authCells;
 }
 
-- (NSArray *) accountInfoSection {
+- (NSArray *) cellKindForAccountInfoSection {
   NSMutableArray *workingSection = @[].mutableCopy;
   if (self.businessLogic.selectedAuthentication.needsAgeCheck) {
     workingSection = @[@(CellKindAgeCheck)].mutableCopy;
@@ -460,17 +462,18 @@ Authenticating with any of those barcodes should work.
 
 - (void)setupTableData
 {
-  NSArray *section0AcctInfo = [self accountInfoSection];
-
+  NSArray *section0AcctInfo = [self cellKindForAccountInfoSection];
+  NSMutableArray *section1Sync = [[NSMutableArray alloc] init];
+  NSMutableArray *section2DeleteServerData = [[NSMutableArray alloc] init];
   NSMutableArray *section3About = [[NSMutableArray alloc] init];
+  
   if ([self.selectedAccount.details getLicenseURL:URLTypePrivacyPolicy]) {
     [section3About addObject:@(CellKindPrivacyPolicy)];
   }
   if ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) {
     [section3About addObject:@(CellKindContentLicense)];
   }
-  NSMutableArray *section1Sync = [[NSMutableArray alloc] init];
-  NSMutableArray *section2DeleteServerData = [[NSMutableArray alloc] init];
+  
   if ([self.businessLogic shouldShowSyncButton]) {
     [section1Sync addObject:@(CellKindSyncButton)];
   }
@@ -489,11 +492,21 @@ Authenticating with any of those barcodes should work.
     [self.tableData addObject:@[@(CellKindJuvenile)]];
   }
 
+  [self.tableData addObject:section3About];
+#ifdef SIMPLYE
+  NSMutableArray *section4DeleteAccount = [[NSMutableArray alloc] init];
+  // TODO: iOS-412 Unsubscribe from email
   if (self.selectedAccount.supportEmail != nil) {
     [self.tableData addObject:@[@(CellReportIssue)]];
+    if ([self.businessLogic isSignedIn]
+        && [self.selectedAccount.details supportsCardCreator]) {
+      /// Delete library account is only shown when patron is signed in and library supported card creation
+      [section4DeleteAccount addObject:@(CellKindDeleteLibraryAccount)];
+    }
   }
   
-  [self.tableData addObject:section3About];
+  [self.tableData addObject:section4DeleteAccount];
+#endif
 
   // compute final tableview contents, adding all non-empty sections
   NSMutableArray *finalTableContents = [[NSMutableArray alloc] init];
@@ -734,6 +747,20 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       title:NSLocalizedString(@"Content Licenses", nil)
                                       failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       [self.navigationController pushViewController:vc animated:YES];
+      break;
+    }
+    case CellKindDeleteLibraryAccount: {
+#ifdef SIMPLYE
+      if (self.selectedAccount.supportEmail.length != 0
+          && self.selectedUserAccount.barcode.length != 0) {
+        NYPLSettingsDeleteLibraryCardViewController *vc = [[NYPLSettingsDeleteLibraryCardViewController alloc]
+                                                           initWithEmail:self.selectedAccount.supportEmail
+                                                           barcode:self.selectedUserAccount.barcode];
+        UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:vc];
+        [self presentViewController:navVC animated:YES completion:nil];
+      }
+#endif
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       break;
     }
   }
@@ -1083,6 +1110,20 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       
       return cell;
     }
+    case CellKindDeleteLibraryAccount: {
+      UITableViewCell *cell = [[UITableViewCell alloc]
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+      cell.textLabel.text = NSLocalizedString(@"Delete Library Card", nil);
+      cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
+      
+      UIImageView *imageView = [self rightArrowImageView];
+      imageView.tintColor = NYPLConfiguration.deleteActionColor;
+      cell.accessoryView = imageView;
+      
+      return cell;
+    }
   }
 }
 
@@ -1148,32 +1189,32 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-  if (section == sSection0AccountInfo) {
+  if (section == AccountInfoSection) {
     return UITableViewAutomaticDimension;
   }
   return 0;
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
 {
-  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
-      (section == sSection2DeleteServerData && [self.businessLogic isSignedIn])) {
+  if ((section == AccountInfoSection && [self.businessLogic shouldShowEULALink]) ||
+      (section == SyncSection && [self.businessLogic shouldShowSyncButton]) ||
+      (section == DeleteServerDataSection && [self.businessLogic isSignedIn])) {
     return UITableViewAutomaticDimension;
   }
   return 0;
 }
 -(CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
 {
-  if (section == sSection0AccountInfo) {
+  if (section == AccountInfoSection) {
     return 80;
   }
   return 0;
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForFooterInSection:(__unused NSInteger)section
 {
-  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
-      (section == sSection2DeleteServerData && [self.businessLogic isSignedIn])) {
+  if ((section == AccountInfoSection && [self.businessLogic shouldShowEULALink]) ||
+      (section == SyncSection && [self.businessLogic shouldShowSyncButton]) ||
+      (section == DeleteServerDataSection && [self.businessLogic isSignedIn])) {
     return 44;
   }
   return 0;
@@ -1190,7 +1231,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-  if (section == sSection0AccountInfo) {
+  if (section == AccountInfoSection) {
     UIView *containerView = [[UIView alloc] init];
     containerView.preservesSuperviewLayoutMargins = YES;
     UILabel *titleLabel = [[UILabel alloc] init];
@@ -1233,15 +1274,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
   // something's wrong, it gets called every refresh cycle when scrolling
-  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton]) ||
-      (section == sSection2DeleteServerData && [self.businessLogic isSignedIn])) {
+  if ((section == AccountInfoSection && [self.businessLogic shouldShowEULALink]) ||
+      (section == SyncSection && [self.businessLogic shouldShowSyncButton]) ||
+      (section == DeleteServerDataSection && [self.businessLogic isSignedIn])) {
     
-    if (section == sSection0AccountInfo && self.accountInfoFooterView) {
+    if (section == AccountInfoSection && self.accountInfoFooterView) {
       return self.accountInfoFooterView;
-    } else if (section == sSection1Sync && self.syncFooterView) {
+    } else if (section == SyncSection && self.syncFooterView) {
       return self.syncFooterView;
-    } else if (section == sSection2DeleteServerData && self.deleteServerDataFooterView) {
+    } else if (section == DeleteServerDataSection && self.deleteServerDataFooterView) {
       return self.deleteServerDataFooterView;
     }
 
@@ -1253,7 +1294,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     footerLabel.userInteractionEnabled = YES;
 
     NSMutableAttributedString *footerString;
-    if (section == sSection0AccountInfo) {
+    if (section == AccountInfoSection) {
       [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
       NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
@@ -1262,7 +1303,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                           @(NSUnderlineStyleSingle) };
       footerString = [[NSMutableAttributedString alloc]
                       initWithString:NSLocalizedString(@"By signing in, you agree to the End User License Agreement.", nil) attributes:linkAttributes];
-    } else if (section == sSection1Sync) { // sync section
+    } else if (section == SyncSection) { // sync section
       NSDictionary *attrs;
       attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration primaryTextColor] };
       footerString = [[NSMutableAttributedString alloc]
@@ -1286,11 +1327,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8.0];
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:16.0 relation:NSLayoutRelationGreaterThanOrEqual];
 
-    if (section == sSection0AccountInfo) {
+    if (section == AccountInfoSection) {
       self.accountInfoFooterView = container;
-    } else if (section == sSection1Sync) {
+    } else if (section == SyncSection) {
       self.syncFooterView = container;
-    } else if (section == sSection2DeleteServerData) {
+    } else if (section == DeleteServerDataSection) {
       self.deleteServerDataFooterView = container;
     }
 
