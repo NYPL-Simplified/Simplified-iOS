@@ -21,9 +21,9 @@
             <rect key="frame" x="0.0" y="0.0" width="309" height="220"/>
             <subviews>
                 <view opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1Rl-h0-str" userLabel="Container">
-                    <rect key="frame" x="46" y="1" width="211" height="36"/>
+                    <rect key="frame" x="46" y="20" width="211" height="36"/>
                     <subviews>
-                        <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="755" verticalHuggingPriority="755" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="LogoText" translatesAutoresizingMaskIntoConstraints="NO" id="Abg-O2-RCx">
+                        <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="755" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="LogoText" translatesAutoresizingMaskIntoConstraints="NO" id="Abg-O2-RCx">
                             <rect key="frame" x="49" y="9" width="162" height="18"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="Abg-O2-RCx" secondAttribute="height" multiplier="9:1" id="vtH-zp-OYL"/>
@@ -38,7 +38,6 @@
                     </subviews>
                     <viewLayoutGuide key="safeArea" id="i0n-8s-0dV"/>
                     <constraints>
-                        <constraint firstItem="GIF-dA-1C2" firstAttribute="left" relation="greaterThanOrEqual" secondItem="1Rl-h0-str" secondAttribute="left" priority="749" constant="40" id="1zK-pH-dGS"/>
                         <constraint firstItem="GIF-dA-1C2" firstAttribute="leading" secondItem="1Rl-h0-str" secondAttribute="leading" id="8sa-mN-yqc"/>
                         <constraint firstItem="Abg-O2-RCx" firstAttribute="leading" secondItem="GIF-dA-1C2" secondAttribute="trailing" constant="6" id="BHY-QQ-RB4"/>
                         <constraint firstItem="GIF-dA-1C2" firstAttribute="top" secondItem="1Rl-h0-str" secondAttribute="top" id="RmE-He-4Yu"/>
@@ -47,18 +46,13 @@
                         <constraint firstItem="Abg-O2-RCx" firstAttribute="trailing" secondItem="1Rl-h0-str" secondAttribute="trailing" id="jZl-M1-3NC"/>
                         <constraint firstItem="Abg-O2-RCx" firstAttribute="centerY" secondItem="1Rl-h0-str" secondAttribute="centerY" id="q99-Jq-r77"/>
                     </constraints>
-                    <variation key="default">
-                        <mask key="constraints">
-                            <exclude reference="1zK-pH-dGS"/>
-                        </mask>
-                    </variation>
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="Gue-8l-gTl"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="1Rl-h0-str" firstAttribute="leading" secondItem="Gue-8l-gTl" secondAttribute="leading" constant="46" placeholder="YES" id="5GF-Kn-Hi9"/>
-                <constraint firstItem="1Rl-h0-str" firstAttribute="top" secondItem="Gue-8l-gTl" secondAttribute="top" constant="-19" placeholder="YES" id="w0R-fe-O7c"/>
+                <constraint firstItem="1Rl-h0-str" firstAttribute="leading" secondItem="Gue-8l-gTl" secondAttribute="leading" priority="250" constant="46" placeholder="YES" id="5GF-Kn-Hi9"/>
+                <constraint firstItem="1Rl-h0-str" firstAttribute="top" secondItem="Gue-8l-gTl" secondAttribute="top" priority="250" placeholder="YES" id="w0R-fe-O7c"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="-900.390625" y="-791.6015625"/>
