@@ -141,6 +141,28 @@ class OELoginFirstBookVC: UIViewController {
     businessLogic.logIn()
   }
 
+  @IBAction func showTroubleshooting() {
+    let url = URL(string: "https://www.openebooks.org/signin-help")!
+    let vc = RemoteHTMLViewController(
+      URL: url,
+      title: NSLocalizedString("Help!", comment: "Title for Help page"),
+      failureMessage: NSLocalizedString("The page could not load due to a connection error.", comment: "")
+    )
+
+    navigationController?.pushViewController(vc, animated: true)
+  }
+
+  @IBAction func showFAQ() {
+    let url = URL(string: "https://www.openebooks.org/faq")!
+    let vc = RemoteHTMLViewController(
+      URL: url,
+      title: NSLocalizedString("FAQ", comment: "Title for FAQ page"),
+      failureMessage: NSLocalizedString("The page could not load due to a connection error.", comment: "")
+    )
+
+    navigationController?.pushViewController(vc, animated: true)
+  }
+
   // MARK: - Helpers
 
   private func updateColors() {

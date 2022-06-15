@@ -84,6 +84,9 @@
                             <state key="normal" title="Terms of Use">
                                 <color key="titleColor" systemColor="linkColor"/>
                             </state>
+                            <connections>
+                                <action selector="showEULA" destination="-1" eventType="touchUpInside" id="cTU-7I-HG1"/>
+                            </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BBG-sg-YOF">
                             <rect key="frame" x="93" y="39" width="94" height="29"/>
@@ -92,6 +95,9 @@
                             <state key="normal" title="Privacy Notice">
                                 <color key="titleColor" systemColor="linkColor"/>
                             </state>
+                            <connections>
+                                <action selector="showPrivacyNotice" destination="-1" eventType="touchUpInside" id="UBk-Vb-nyr"/>
+                            </connections>
                         </button>
                     </subviews>
                 </stackView>

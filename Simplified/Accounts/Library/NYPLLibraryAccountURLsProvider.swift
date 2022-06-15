@@ -27,7 +27,7 @@ class NYPLLibraryAccountURLsProvider {
     case .eula:
       return URL(string: "https://openebooks.net/app_user_agreement.html")!
     case .privacyPolicy:
-      return URL(string: "https://firstbook.org/about/privacy-compliance-policies/")!
+      return URL(string: "https://www.openebooks.org/policies")!
     default:
       // should never happen for OE
       return URL(string: "https://openebooks.net")!

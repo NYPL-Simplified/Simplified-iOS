@@ -73,6 +73,24 @@ class OELoginChoiceViewController : UIViewController {
                                          loginSuccessCompletion: completeLogin)
     navigationController?.pushViewController(firstBookVC, animated: true)
   }
+
+  @IBAction func showEULA() {
+    let eulaVC = NYPLWelcomeEULAViewController(displayOnly: true)
+    navigationController?.pushViewController(eulaVC, animated: true)
+  }
+
+  @IBAction func showPrivacyNotice() {
+    let urlProvider = NYPLLibraryAccountURLsProvider(account: AccountsManager.shared.currentAccount)
+    let privacyURL = urlProvider.accountURL(forType: .privacyPolicy)
+    let vc = RemoteHTMLViewController(
+      URL: privacyURL,
+      title: NSLocalizedString("PrivacyPolicy", comment: "Title for Privacy Policy section"),
+      failureMessage: NSLocalizedString("The page could not load due to a connection error.", comment: "")
+    )
+
+    navigationController?.pushViewController(vc, animated: true)
+  }
+
   // MARK: - Private
 
   private func completeLogin() {

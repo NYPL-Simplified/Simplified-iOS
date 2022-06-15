@@ -3,15 +3,16 @@ import WebKit
 class NYPLWelcomeEULAViewController : UIViewController {
   private static let offlineEULAPathComponent = "eula.html"
 
-  private let onlineEULAURL: URL
-  private var acceptedEULAHandler: (()->Void)
+  private let onlineEULAURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
+  private let acceptedEULAHandler: (()->Void)
   private let webView: WKWebView
   private let activityIndicatorView: UIActivityIndicatorView
   private var attemptedLoadFromBundle = false
+  private let displayOnly: Bool
   
-  init(onlineEULAURL: URL,
-       acceptedEULAHandler: @escaping ()->Void) {
-    self.onlineEULAURL = onlineEULAURL
+  init(displayOnly: Bool = false,
+       acceptedEULAHandler: @escaping ()->Void = {}) {
+    self.displayOnly = displayOnly
     self.acceptedEULAHandler = acceptedEULAHandler
     self.webView = WKWebView.init()
     self.activityIndicatorView = UIActivityIndicatorView.init(style: .gray)
@@ -28,8 +29,8 @@ class NYPLWelcomeEULAViewController : UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    if NYPLSettings.shared.userHasAcceptedEULA {
+
+    if displayOnly == false && NYPLSettings.shared.userHasAcceptedEULA {
       self.acceptedEULAHandler()
       return
     }
@@ -43,28 +44,31 @@ class NYPLWelcomeEULAViewController : UIViewController {
     self.webView.navigationDelegate = self
     self.view.addSubview(self.webView)
 
-    let rejectTitle = NSLocalizedString("Reject", comment: "Title for a Reject button")
-    let acceptTitle = NSLocalizedString("Accept", comment: "Title for a Accept button")
-    
-    let rejectItem = UIBarButtonItem(title: rejectTitle,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(rejectedEULA))
-    
-    let acceptItem = UIBarButtonItem(title: acceptTitle,
-                                     style: .done,
-                                     target: self,
-                                     action: #selector(acceptedEULA))
-    if #available(iOS 12.0, *),
-       UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+    if displayOnly == false {
+      let rejectTitle = NSLocalizedString("Reject", comment: "Title for a Reject button")
+      let acceptTitle = NSLocalizedString("Accept", comment: "Title for a Accept button")
+      
+      let rejectItem = UIBarButtonItem(title: rejectTitle,
+                                       style: .plain,
+                                       target: self,
+                                       action: #selector(rejectedEULA))
+      
+      let acceptItem = UIBarButtonItem(title: acceptTitle,
+                                       style: .done,
+                                       target: self,
+                                       action: #selector(acceptedEULA))
+      if #available(iOS 12.0, *),
+         UIScreen.main.traitCollection.userInterfaceStyle == .dark {
         rejectItem.tintColor = .white
         acceptItem.tintColor = NYPLConfiguration.actionColor
+      }
+      let middleSpacer = UIBarButtonItem.init(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+      self.toolbarItems = [rejectItem, middleSpacer, acceptItem]
+      
+      activityIndicatorView.center = self.view.center
+      activityIndicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
-    let middleSpacer = UIBarButtonItem.init(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-    self.toolbarItems = [rejectItem, middleSpacer, acceptItem]
-    
-    activityIndicatorView.center = self.view.center
-    activityIndicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
     view.addSubview(activityIndicatorView)
 
     loadWebView()

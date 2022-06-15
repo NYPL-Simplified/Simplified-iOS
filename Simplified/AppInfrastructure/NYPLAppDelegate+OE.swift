@@ -22,8 +22,7 @@ extension NYPLAppDelegate {
         NYPLSettings.shared.userHasSeenWelcomeScreen = true
       }
     } else {
-      let eulaURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
-      let eulaVC = NYPLWelcomeEULAViewController(onlineEULAURL: eulaURL) {
+      let eulaVC = NYPLWelcomeEULAViewController() {
         UIView.transition(
           with: self.window,
           duration: 0.5,

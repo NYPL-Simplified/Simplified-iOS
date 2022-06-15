@@ -115,6 +115,9 @@
                                     <color key="tintColor" systemColor="linkColor"/>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="plain" title="Having trouble signing in?"/>
+                                    <connections>
+                                        <action selector="showTroubleshooting" destination="-1" eventType="touchUpInside" id="FBz-Ib-Lrs"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9JZ-mw-ahY" userLabel="FAQButton">
                                     <rect key="frame" x="0.0" y="301" width="498" height="31"/>
@@ -124,6 +127,9 @@
                                     <color key="tintColor" systemColor="linkColor"/>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="plain" title="Frequently Asked Questions"/>
+                                    <connections>
+                                        <action selector="showFAQ" destination="-1" eventType="touchUpInside" id="9oF-jA-Ogv"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <constraints>
