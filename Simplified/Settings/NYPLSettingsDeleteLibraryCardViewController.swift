@@ -55,12 +55,13 @@ import MessageUI
       let paragraphStyle = NSMutableParagraphStyle()
       paragraphStyle.alignment = .center
       
+      let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
       let attributedString = NSMutableAttributedString(string: NSLocalizedString("E-Mail to cancel your library card",
                                                                                  comment: "Button title for compose email"),
                                                        attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue,
                                                                     .foregroundColor: NYPLConfiguration.actionColor,
                                                                     .paragraphStyle: paragraphStyle,
-                                                                    .font: UIFont.systemFont(ofSize: 14)])
+                                                                    .font: font as Any])
       emailButton.setAttributedTitle(attributedString, for: .normal)
       cell.contentView.addSubview(emailButton)
       emailButton.autoPinEdge(toSuperviewEdge: .top, withInset: 0)
@@ -74,9 +75,10 @@ import MessageUI
       paragraphStyle.lineHeightMultiple = 1.25
       let string = NSLocalizedString("If the above link does not work, please email us at",
                                      comment: "Message to show support email address") + "\n\(self.supportEmail)"
+      let font = UIFont.customFont(forTextStyle: .footnote)
       let attributedString = NSMutableAttributedString(string: string,
                                                        attributes: [.paragraphStyle: paragraphStyle,
-                                                                    .font: UIFont.systemFont(ofSize: 12)])
+                                                                    .font: font as Any])
       cell.textLabel?.attributedText = attributedString
       cell.textLabel?.numberOfLines = 0
     }
@@ -149,13 +151,14 @@ import MessageUI
   
   private func libraryCardDeletionDescription() -> NSMutableAttributedString {
     let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineSpacing = 1.25
-    paragraphStyle.lineHeightMultiple = 1.25
+    paragraphStyle.lineSpacing = 1.1
+    paragraphStyle.lineHeightMultiple = 1.1
     
     let description = NSLocalizedString("DeleteLibraryCardDescription",
                                         comment: "Description of the delete action")
+    let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
     let attributedString = NSMutableAttributedString(string:description,
-                                                     attributes: [.font: UIFont.systemFont(ofSize: 14),
+                                                     attributes: [.font: font as Any,
                                                                   .foregroundColor: NYPLConfiguration.primaryTextColor,
                                                                   .paragraphStyle: paragraphStyle]
     )

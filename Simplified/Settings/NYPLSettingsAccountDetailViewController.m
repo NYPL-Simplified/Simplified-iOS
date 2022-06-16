@@ -500,7 +500,6 @@ Authenticating with any of those barcodes should work.
     [self.tableData addObject:@[@(CellReportIssue)]];
     if ([self.businessLogic isSignedIn]
         && [self.selectedAccount.details supportsCardCreator]) {
-      /// Delete library account is only shown when patron is signed in and library supported card creation
       [section4DeleteAccount addObject:@(CellKindDeleteLibraryAccount)];
     }
   }

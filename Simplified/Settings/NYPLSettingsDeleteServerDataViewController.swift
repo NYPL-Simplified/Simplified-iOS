@@ -55,12 +55,13 @@ import UIKit
       // Delete Button
       let paragraphStyle = NSMutableParagraphStyle()
       paragraphStyle.alignment = .center
+      let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
       let attributedString = NSMutableAttributedString(string: NSLocalizedString("Delete Reading Data",
                                                                                  comment: "Button title for delete reading data"),
                                                        attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue,
                                                                     .foregroundColor: NYPLConfiguration.actionColor,
                                                                     .paragraphStyle: paragraphStyle,
-                                                                    .font: UIFont.systemFont(ofSize: 14)])
+                                                                    .font: font as Any])
       deleteDataButton.setAttributedTitle(attributedString, for: .normal)
       cell.contentView.addSubview(deleteDataButton)
       deleteDataButton.autoPinEdge(toSuperviewEdge: .top, withInset: 0)
@@ -156,13 +157,14 @@ import UIKit
   
   private func dataDeletionDescription() -> NSMutableAttributedString {
     let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineSpacing = 1.25
-    paragraphStyle.lineHeightMultiple = 1.25
+    paragraphStyle.lineSpacing = 1.1
+    paragraphStyle.lineHeightMultiple = 1.1
     
     let description = NSLocalizedString("DeleteServerDataDescription",
                                         comment: "Description of the delete action")
+    let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
     let attributedString = NSMutableAttributedString(string:description,
-                                                     attributes: [.font: UIFont.systemFont(ofSize: 14),
+                                                     attributes: [.font: font as Any,
                                                                   .foregroundColor: NYPLConfiguration.primaryTextColor,
                                                                   .paragraphStyle: paragraphStyle]
     )
