@@ -118,6 +118,17 @@
 		172F410D26F3BAF70017476A /* NYPLConfiguration+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172F410926F3BAF70017476A /* NYPLConfiguration+Color.swift */; };
 		172F41A626FD0A8D0017476A /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 172F40F926F0A0170017476A /* Colors.xcassets */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
+		1747331C284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
+		1747331D284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
+		1747331E284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
+		1747332C284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
+		174733552853B1110090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
+		1747335A2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
+		1747335B2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */; };
+		1747335C2853B1190090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */; };
+		174733662857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */; };
+		174733672857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */; };
+		174733682857A6960090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */; };
 		17536B9E26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
 		17536B9F26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
 		17536BA026A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */; };
@@ -721,7 +732,6 @@
 		739E60A7244A0D8600D00301 /* NYPLBookDetailNormalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 111197381987F4070014462F /* NYPLBookDetailNormalView.m */; };
 		739E60A8244A0D8600D00301 /* NYPLSettingsPrimaryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E757C1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m */; };
 		739E60A9244A0D8600D00301 /* NYPLCatalogUngroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m */; };
-		739E60AA244A0D8600D00301 /* NYPLSettingsAdvancedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */; };
 		739E60AB244A0D8600D00301 /* NYPLMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */; };
 		739E60AC244A0D8600D00301 /* NYPLSettingsSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */; };
 		739E60AD244A0D8600D00301 /* Date+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */; };
@@ -1086,7 +1096,6 @@
 		73EB0AD325821DF4006BC997 /* NYPLBookDetailNormalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 111197381987F4070014462F /* NYPLBookDetailNormalView.m */; };
 		73EB0AD425821DF4006BC997 /* NYPLSettingsPrimaryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E757C1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m */; };
 		73EB0AD525821DF4006BC997 /* NYPLCatalogUngroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m */; };
-		73EB0AD625821DF4006BC997 /* NYPLSettingsAdvancedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */; };
 		73EB0AD725821DF4006BC997 /* NYPLMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */; };
 		73EB0AD825821DF4006BC997 /* NYPLSettingsSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */; };
 		73EB0AD925821DF4006BC997 /* Date+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */; };
@@ -1311,7 +1320,6 @@
 		73FCA30825005BA4001B0C5D /* NYPLBookCellDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 111197271986B43B0014462F /* NYPLBookCellDelegate.m */; };
 		73FCA30925005BA4001B0C5D /* NYPLBookDetailNormalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 111197381987F4070014462F /* NYPLBookDetailNormalView.m */; };
 		73FCA30B25005BA4001B0C5D /* NYPLCatalogUngroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m */; };
-		73FCA30C25005BA4001B0C5D /* NYPLSettingsAdvancedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */; };
 		73FCA30D25005BA4001B0C5D /* NYPLMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */; };
 		73FCA30F25005BA4001B0C5D /* Date+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */; };
 		73FCA31025005BA4001B0C5D /* NYPLBasicAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086C45D524AE77CA00F5108E /* NYPLBasicAuth.swift */; };
@@ -1441,7 +1449,6 @@
 		B51C1E18229456E2003B49A5 /* gpl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E14229456E2003B49A5 /* gpl_authentication_document.json */; };
 		B51C1E19229456E2003B49A5 /* nypl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */; };
 		B51C1E1A229456E2003B49A5 /* dpl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */; };
-		D787E8441FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */; };
 		E6202A021DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */; };
 		E6207B652118973800864143 /* NYPLAppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6207B642118973800864143 /* NYPLAppTheme.swift */; };
 		E627B554216D4A9700A7D1D5 /* NYPLBookContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = E627B553216D4A9700A7D1D5 /* NYPLBookContentType.m */; };
@@ -1786,6 +1793,9 @@
 		172F40F926F0A0170017476A /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		172F410926F3BAF70017476A /* NYPLConfiguration+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLConfiguration+Color.swift"; sourceTree = "<group>"; };
 		173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookStateTests.swift; sourceTree = "<group>"; };
+		1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettingsDeleteServerDataViewController.swift; sourceTree = "<group>"; };
+		1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLActivityIndicatorMessageViewController.swift; sourceTree = "<group>"; };
+		174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettingsDeleteLibraryCardViewController.swift; sourceTree = "<group>"; };
 		17536B9D26A8CDF00089C40F /* NYPLBookDetailView+Accessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookDetailView+Accessibility.swift"; sourceTree = "<group>"; };
 		175E480724EF36520066A6CF /* NYPLAnnouncementBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementBusinessLogic.swift; sourceTree = "<group>"; };
 		17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckViewController.swift; sourceTree = "<group>"; };
@@ -2176,7 +2186,6 @@
 		B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = nypl_authentication_document.json; sourceTree = "<group>"; };
 		B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = dpl_authentication_document.json; sourceTree = "<group>"; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Simplified.xcconfig; path = ../Simplified.xcconfig; sourceTree = "<group>"; };
-		D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettingsAdvancedViewController.swift; sourceTree = "<group>"; };
 		E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimplyE.entitlements; sourceTree = "<group>"; };
 		E6202A001DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountDetailViewController.h; sourceTree = "<group>"; };
 		E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountDetailViewController.m; sourceTree = "<group>"; };
@@ -2662,7 +2671,6 @@
 				E6202A001DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.h */,
 				E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */,
 				E6B1F4FA1DD20EA900D73CA1 /* NYPLSettingsAccountsListVC.swift */,
-				D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */,
 				841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */,
 				841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */,
 				111E757B1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.h */,
@@ -2675,6 +2683,8 @@
 				111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */,
 				73085E252502EDF0008F6244 /* NYPLSettingsSplitViewController.swift */,
 				7353940B250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift */,
+				1747331B284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift */,
+				174733652857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3195,6 +3205,7 @@
 				081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */,
 				1107835C19816E3D0071AB1E /* UIView+NYPLViewAdditions.h */,
 				1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */,
+				1747332B284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -4331,6 +4342,7 @@
 				73A172F627ADA6FA005E7BCF /* NYPLAxisXMLRepresentation.swift in Sources */,
 				5916E7D5262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */,
 				73A172FC27ADA6FA005E7BCF /* NYPLAxisProtectedAssetHandler.swift in Sources */,
+				1747331D284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
 				73B5510D2511750A00D05B86 /* NYPLSamlIDPCell.swift in Sources */,
 				73A172FA27ADA6FA005E7BCF /* NYPLAxisErrorLogsAdapter.swift in Sources */,
 				739E605F244A0D8600D00301 /* NYPLXML.m in Sources */,
@@ -4356,6 +4368,7 @@
 				739E6071244A0D8600D00301 /* BundledHTMLViewController.swift in Sources */,
 				739E6072244A0D8600D00301 /* NYPLBookDetailView.m in Sources */,
 				739E6073244A0D8600D00301 /* UIButton+NYPLAppearanceAdditions.m in Sources */,
+				174733552853B1110090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */,
 				21DDE32925D2CEFC002CBCE3 /* AdobeDRMContentProtection.swift in Sources */,
 				739E6074244A0D8600D00301 /* NYPLBookCoverRegistry.m in Sources */,
 				21DDE31825D2CE9B002CBCE3 /* AdobeDRMLibraryService.swift in Sources */,
@@ -4393,6 +4406,7 @@
 				73A172EF27ADA6FA005E7BCF /* NYPLAxisNetworkExecutor.swift in Sources */,
 				73B550FC2511729E00D05B86 /* NYPLBookContentTypeConverter.swift in Sources */,
 				73F11E10251945E500FCD22B /* NYPLPresentationUtils.swift in Sources */,
+				174733672857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */,
 				739E608D244A0D8600D00301 /* NYPLReadiumBookmark.swift in Sources */,
 				73B5DFDD26052A1800225C12 /* NYPLBookButtonsState.m in Sources */,
 				73DEB54F2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */,
@@ -4433,7 +4447,6 @@
 				7354A439255C9CC800B64E25 /* NYPLSignInBusinessLogic+BookmarkSyncing.swift in Sources */,
 				739E60A8244A0D8600D00301 /* NYPLSettingsPrimaryNavigationController.m in Sources */,
 				739E60A9244A0D8600D00301 /* NYPLCatalogUngroupedFeedViewController.m in Sources */,
-				739E60AA244A0D8600D00301 /* NYPLSettingsAdvancedViewController.swift in Sources */,
 				739E60AB244A0D8600D00301 /* NYPLMigrationManager.swift in Sources */,
 				739E60AC244A0D8600D00301 /* NYPLSettingsSplitViewController.m in Sources */,
 				739E60AD244A0D8600D00301 /* Date+NYPLAdditions.swift in Sources */,
@@ -4569,6 +4582,7 @@
 				73EB0A6A25821DF4006BC997 /* NYPLAttributedString.m in Sources */,
 				73D8D27B25A68D4300DF5F69 /* NYPLRootTabBarController+R2.swift in Sources */,
 				73982910284AC94500382FE1 /* NYPLConfiguration.swift in Sources */,
+				1747331E284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
 				73EB0A6D25821DF4006BC997 /* NYPLBookContentTypeConverter.swift in Sources */,
 				73EB0A6E25821DF4006BC997 /* NYPLAgeCheck.swift in Sources */,
 				73EB0A6F25821DF4006BC997 /* Log.swift in Sources */,
@@ -4605,6 +4619,7 @@
 				73EB0A8A25821DF4006BC997 /* NYPLReturnPromptHelper.swift in Sources */,
 				73EB0A8B25821DF4006BC997 /* NYPLReaderBookmarkCell.swift in Sources */,
 				73EB0A8C25821DF4006BC997 /* NYPLOpenSearchDescription.m in Sources */,
+				174733682857A6960090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */,
 				73EB0A8E25821DF4006BC997 /* NYPLSignInBusinessLogic+UI.swift in Sources */,
 				73D8D27825A68D3B00DF5F69 /* NYPLUserSettingsVC.swift in Sources */,
 				73EB0A9025821DF4006BC997 /* OPDS2CatalogsFeed.swift in Sources */,
@@ -4692,7 +4707,6 @@
 				73EB0AD325821DF4006BC997 /* NYPLBookDetailNormalView.m in Sources */,
 				73EB0AD425821DF4006BC997 /* NYPLSettingsPrimaryNavigationController.m in Sources */,
 				73EB0AD525821DF4006BC997 /* NYPLCatalogUngroupedFeedViewController.m in Sources */,
-				73EB0AD625821DF4006BC997 /* NYPLSettingsAdvancedViewController.swift in Sources */,
 				73EB0AD725821DF4006BC997 /* NYPLMigrationManager.swift in Sources */,
 				73EB0AD825821DF4006BC997 /* NYPLSettingsSplitViewController.m in Sources */,
 				73EB0AD925821DF4006BC997 /* Date+NYPLAdditions.swift in Sources */,
@@ -4782,6 +4796,7 @@
 				73D8D27D25A68D4300DF5F69 /* NYPLReaderTOCBusinessLogic.swift in Sources */,
 				73EB0B2225821DF4006BC997 /* NYPLSecrets.swift in Sources */,
 				73EB0B2325821DF4006BC997 /* NYPLBarcodeScanningViewController.m in Sources */,
+				1747335A2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */,
 				73C3CF5825C8EB6B00CA8166 /* NYPLUserAccount.swift in Sources */,
 				73EB0B2425821DF4006BC997 /* NYPLBookDetailDownloadFailedView.m in Sources */,
 				73EB0B2525821DF4006BC997 /* NYPLOPDSFeed.m in Sources */,
@@ -4822,6 +4837,7 @@
 				73225DED250B4B9100EF1877 /* NYPLRootTabBarController+OE.swift in Sources */,
 				734731262514236A00BE3D2C /* NYPLAppDelegate+OE.swift in Sources */,
 				597E272A268B537E00A3CD23 /* NYPLAxisDecompressionAdapter.swift in Sources */,
+				1747335B2853B1120090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */,
 				73FCA2BA25005BA4001B0C5D /* NYPLAlertUtils.swift in Sources */,
 				73FCA2BB25005BA4001B0C5D /* OPDS2Publication.swift in Sources */,
 				73FCA2BC25005BA4001B0C5D /* String+MD5.swift in Sources */,
@@ -4853,6 +4869,7 @@
 				73A794A825477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift in Sources */,
 				7359DCB527E92462001C4254 /* NYPLSignInBusinessLogic+OAuthClientCredentials.swift in Sources */,
 				73FCA2C625005BA4001B0C5D /* NYPLReloadView.m in Sources */,
+				1747335C2853B1190090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
 				73FCA2C725005BA4001B0C5D /* NYPLReachabilityManager.m in Sources */,
 				73FCA2C925005BA4001B0C5D /* NYPLCatalogGroupedFeedViewController.m in Sources */,
 				73FCA2CA25005BA4001B0C5D /* NYPLBackgroundExecutor.swift in Sources */,
@@ -4946,7 +4963,6 @@
 				7380E706254B407D004613B1 /* NYPLR1R2UserSettings.swift in Sources */,
 				73FCA30B25005BA4001B0C5D /* NYPLCatalogUngroupedFeedViewController.m in Sources */,
 				73085E3A25030D80008F6244 /* OEMigrations.swift in Sources */,
-				73FCA30C25005BA4001B0C5D /* NYPLSettingsAdvancedViewController.swift in Sources */,
 				73FCA30D25005BA4001B0C5D /* NYPLMigrationManager.swift in Sources */,
 				73FCA30F25005BA4001B0C5D /* Date+NYPLAdditions.swift in Sources */,
 				73FCA31025005BA4001B0C5D /* NYPLBasicAuth.swift in Sources */,
@@ -5084,6 +5100,7 @@
 				73A172E027ADA6F9005E7BCF /* NYPLAxisXMLRepresentation.swift in Sources */,
 				5916E7D4262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */,
 				73A172E627ADA6F9005E7BCF /* NYPLAxisProtectedAssetHandler.swift in Sources */,
+				1747331C284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
 				111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */,
 				73A172E427ADA6F9005E7BCF /* NYPLAxisErrorLogsAdapter.swift in Sources */,
 				731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */,
@@ -5147,6 +5164,7 @@
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				03690E291EB2B44300F75D5F /* NYPLReadiumBookmark.swift in Sources */,
 				E683953B217663B100371072 /* NYPLFacetViewDefaultDataSource.swift in Sources */,
+				174733662857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */,
 				73B5DFDC26052A1800225C12 /* NYPLBookButtonsState.m in Sources */,
 				E6207B652118973800864143 /* NYPLAppTheme.swift in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,
@@ -5186,7 +5204,6 @@
 				73DEB54E2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */,
 				111E757D1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m in Sources */,
 				11A16E69195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m in Sources */,
-				D787E8441FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift in Sources */,
 				5D60D3542297353C001080D0 /* NYPLMigrationManager.swift in Sources */,
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
 				7384C802242BCC4800D5F960 /* Date+NYPLAdditions.swift in Sources */,
@@ -5253,6 +5270,7 @@
 				73A229A2240F3BEB006B9EAD /* LibraryService.swift in Sources */,
 				730B7868249AB9D7008F28B3 /* Float+NYPLAdditions.swift in Sources */,
 				AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */,
+				1747332C284ECC980090B1F3 /* NYPLActivityIndicatorMessageViewController.swift in Sources */,
 				733DEC92241090C7008C74BC /* NYPLRootTabBarController+R2.swift in Sources */,
 				7369A39C264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */,
 				113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */,
@@ -5520,7 +5538,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5571,7 +5589,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5621,7 +5639,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5669,7 +5687,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5939,7 +5957,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5990,7 +6008,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

@@ -258,12 +258,28 @@
 "Under 13" = "Under 13";
 "13 or Older" = "13 or Older";
 
-// NYPLSettingsAdvancedViewController
-"Advanced" = "Advanced";
-"Selecting \"Delete\" will remove all bookmarks from the server for %@." = "Selecting \"Delete\" will remove all bookmarks from the server for %@.";
-"Delete Server Data" = "Delete Server Data";
+// Account / Data deletion
+"Delete my SimplyE Data" = "Delete my SimplyE Data";
+"Delete my Open eBooks Data" = "Delete my Open eBooks Data";
+"Delete Reading Data" = "Delete Reading Data";
 "Please wait..." = "Please wait...";
 "Delete all the bookmarks you have saved in the cloud." = "Delete all the bookmarks you have saved in the cloud.";
+"You have successfully deleted your SimplyE data" = "You have successfully deleted your SimplyE data";
+"Unsubscribe from emails" = "Unsubscribe from emails";
+"E-Mail to cancel your library card" = "E-Mail to cancel your library card";
+"If the above link does not work, please email us at" = "If the above link does not work, please email us at";
+"Delete Library Card" = "Delete Library Card";
+"Delete Data Failed" = "Delete Data Failed";
+"DeleteServerDataDescription" = "SimplyE does not create any accounts outside of your library card. The content that the SimplyE app saves is:
+
+• your library card information to log into your library
+• your last known place in the book you’re reading or listening to
+• and any bookmarks or highlights you’ve created for your current book
+
+Your account information is saved outside of your current device if you specifically permit us to save it. If you only want your bookmarks and reading location deleted, please go to back to the prior screen. Set the “Sync Bookmarks” toggle to OFF, then come back to this page and tap “Delete Reading Data”. Then you can log out, and SimplyE will no longer save any of your information.";
+"DeleteLibraryCardDescription" = "If you want to delete your account, or all of your library patron data, this will require deleting your library card altogether.
+
+Deleting your account means that you will no longer have access to ebooks, audiobooks, databases and other digital resources. You also can no longer use your card at your local branches. If you wish to proceed, in order to protect your privacy, please email us.";
 
 // Open eBooks
 "Welcome to Open eBooks" = "Welcome to Open eBooks!";
