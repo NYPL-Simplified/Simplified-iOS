@@ -492,13 +492,19 @@ Authenticating with any of those barcodes should work.
     [self.tableData addObject:@[@(CellKindJuvenile)]];
   }
 
-  [self.tableData addObject:section3About];
-#ifdef SIMPLYE
-  NSMutableArray *section4DeleteAccount = [[NSMutableArray alloc] init];
-  // TODO: iOS-412 Unsubscribe from email
   if (self.selectedAccount.supportEmail != nil) {
     [self.tableData addObject:@[@(CellReportIssue)]];
-    if ([self.businessLogic isSignedIn]
+  }
+  
+  [self.tableData addObject:section3About];
+
+#ifdef SIMPLYE
+  NSMutableArray *section4DeleteAccount = [[NSMutableArray alloc] init];
+  
+  if ([self.businessLogic isSignedIn]) {
+    // TODO: iOS-412 Unsubscribe from email
+    
+    if (self.selectedAccount.supportEmail != nil
         && [self.selectedAccount.details supportsCardCreator]) {
       [section4DeleteAccount addObject:@(CellKindDeleteLibraryAccount)];
     }

@@ -123,8 +123,13 @@ import UIKit
   // MARK: - Setup
   
   private func setupNavBar() {
-    self.title = NSLocalizedString("Delete Library Card",
+    #if SIMPLYE
+    self.title = NSLocalizedString("Delete my SimplyE Data",
                                    comment: "Title for navigation bar")
+    #else
+    self.title = NSLocalizedString("Delete my Open eBooks Data",
+                                   comment: "Title for navigation bar")
+    #endif
     
     let backButton = UIBarButtonItem(title: NSLocalizedString("Cancel",
                                                               comment: "Button title for dismissing view controller"),
@@ -160,8 +165,13 @@ import UIKit
     paragraphStyle.lineSpacing = 1.1
     paragraphStyle.lineHeightMultiple = 1.1
     
-    let description = NSLocalizedString("DeleteServerDataDescription",
+    #if SIMPLYE
+    let description = NSLocalizedString("DeleteServerDataDescriptionSimplyE",
                                         comment: "Description of the delete action")
+    #else
+    let description = NSLocalizedString("DeleteServerDataDescriptionOpeneBooks",
+                                        comment: "Description of the delete action")
+    #endif
     let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
     let attributedString = NSMutableAttributedString(string:description,
                                                      attributes: [.font: font as Any,
