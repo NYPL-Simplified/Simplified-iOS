@@ -501,10 +501,11 @@ static const CGFloat sConstantSpacing = 12.0;
 #ifdef SIMPLYE
   NSMutableArray *section4DeleteAccount = [[NSMutableArray alloc] init];
   
-  if ([self.businessLogic isSignedIn]) {
-    // If statement logic not complete for email unsubcribe
+  if (self.selectedAccount.details.supportsUnsubscribeEmail) {
     [section4DeleteAccount addObject:@(CellKindUnsubscribeEmail)];
-    
+  }
+  
+  if ([self.businessLogic isSignedIn]) {
     if (self.selectedAccount.supportEmail != nil
         && [self.selectedAccount.details supportsCardCreator]) {
       [section4DeleteAccount addObject:@(CellKindDeleteLibraryAccount)];
@@ -771,9 +772,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindUnsubscribeEmail: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      // TODO: Retrieve unsubscribe url
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]
+                                      initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeUnsubscribeEmail]
                                       title:NSLocalizedString(@"Unsubscribe from emails", nil)
                                       failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       [self.navigationController pushViewController:vc animated:YES];
