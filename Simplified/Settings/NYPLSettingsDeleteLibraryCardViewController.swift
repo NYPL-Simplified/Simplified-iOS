@@ -181,7 +181,6 @@ extension NYPLSettingsDeleteLibraryCardViewController: MFMailComposeViewControll
                                                       completion: nil)
       }
     case .sent:
-      // TODO: Check wordings with Risa
       let alert = UIAlertController(
         title: NSLocalizedString("Thank You", comment: "Alert title"),
         message: NSLocalizedString("Your email has been sent.", comment: "Alert message"),

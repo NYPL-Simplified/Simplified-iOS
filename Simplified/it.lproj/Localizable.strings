@@ -269,6 +269,8 @@
 "If the above link does not work, please email us at" = "Se il link soprastante non funziona, manda una mail a";
 "Delete Library Card" = "Cancella la mia tessera";
 "Delete Data Failed" = "Si è verificato un problema nella cancellazione dei dati";
+"Thank You" = "Grazie";
+"Your email has been sent." = "La tua mail è stata inviata.";
 "DeleteServerDataDescriptionSimplyE" = "SimplyE non crea nessun account a parte la tessera della biblioteca. I dati che SimplyE salva sono:
 
 • le informazioni della tua tessera che ti consentono di accedere alla biblioteca
