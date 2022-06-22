@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class OELoginChoiceViewController : UIViewController {
   @IBOutlet var headerLabel: UILabel?
@@ -17,6 +18,7 @@ class OELoginChoiceViewController : UIViewController {
   @IBOutlet var privacyButton: UIButton?
 
   weak var postLoginConfigurator: OEAppUIStructureConfigurating?
+  var cleverHelper: NYPLSignInCleverHelper?
   
   init(postLoginConfigurator: OEAppUIStructureConfigurating) {
     self.postLoginConfigurator = postLoginConfigurator
@@ -56,13 +58,17 @@ class OELoginChoiceViewController : UIViewController {
     firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
     firstBookLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     firstBookLoginButton?.layer.borderWidth = 1
+
+    if let navController = navigationController {
+      cleverHelper = NYPLSignInCleverHelper(navigationController: navController, postLoginConfigurator: postLoginConfigurator)
+    }
   }
   
 
   // MARK: - Actions
   
   @IBAction func didSelectClever() {
-    didSelectAuthenticationMethod(.clever)
+    cleverHelper?.startCleverFlow()
   }
 
   @IBAction func didSelectFirstBook() {
@@ -93,32 +99,5 @@ class OELoginChoiceViewController : UIViewController {
     navigationController?.pushViewController(vc, animated: true)
   }
 
-  // MARK: - Private
-
-  private func didSelectAuthenticationMethod(_ loginChoice: LoginChoice) {
-    let libAccount = AccountsManager.shared.currentAccount
-    let userAccount = NYPLUserAccount.sharedAccount()
-    if libAccount?.details == nil {
-      libAccount?.loadAuthenticationDocument(using: userAccount) { success, error in
-        NYPLMainThreadRun.asyncIfNeeded {
-          if success {
-            self.presentSignInVC(for: loginChoice)
-          } else {
-            let alert = NYPLAlertUtils.alert(title: "Sign-in Error", message: "We could not find a match for the credentials provided.")
-            self.present(alert, animated: true, completion: nil)
-          }
-        }
-      }
-    } else {
-      presentSignInVC(for: loginChoice)
-    }
-  }
-
   // TODO: IOS-511: see NYPLSignInVC::presentAsModal
-
-  private func presentSignInVC(for loginChoice: LoginChoice) {
-    let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
-    signInVC.presentIfNeeded(usingExistingCredentials: false,
-                             completionHandler: self.completeLogin)
-  }
 }
