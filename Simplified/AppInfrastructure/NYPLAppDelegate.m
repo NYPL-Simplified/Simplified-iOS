@@ -9,12 +9,6 @@
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
 
-
-#if defined(FEATURE_DRM_CONNECTOR)
-#import <ADEPT/ADEPT.h>
-#import "NYPLAccountSignInViewController.h"
-#endif
-
 // TODO: Remove these imports and move handling the "open a book url" code to a more appropriate handler
 #import "NYPLXML.h"
 #import "NYPLOPDSEntry.h"
