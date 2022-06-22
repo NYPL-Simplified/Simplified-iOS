@@ -301,12 +301,16 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)syncBegan
 {
-  self.navigationItem.leftBarButtonItem.enabled = NO;
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+  }];
 }
 
 - (void)syncEnded
 {
-  self.navigationItem.leftBarButtonItem.enabled = YES;
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+  }];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)__unused size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)__unused coordinator
