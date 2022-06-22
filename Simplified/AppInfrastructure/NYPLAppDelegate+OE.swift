@@ -8,7 +8,11 @@
 
 import Foundation
 
-extension NYPLAppDelegate {
+@objc protocol OEAppUIStructureConfigurating {
+  @objc func setUpRootVC()
+}
+
+extension NYPLAppDelegate: OEAppUIStructureConfigurating {
   @objc func setUpRootVC() {
     if NYPLSettings.shared.userHasAcceptedEULA {
       if NYPLSettings.shared.userHasSeenWelcomeScreen,
@@ -39,9 +43,12 @@ extension NYPLAppDelegate {
   }
 
   private func createLoginNavController() -> UINavigationController {
-    return UINavigationController(rootViewController: OELoginChoiceViewController())
+    let vc = OELoginChoiceViewController(postLoginConfigurator: self)
+    return UINavigationController(rootViewController: vc)
   }
+}
 
+extension NYPLAppDelegate {
   /// Handle all custom URL schemes specific to Open eBooks here.
   /// - Parameter url: The URL to process.
   /// - Returns: `true` if the app should handle the URL because it matches a

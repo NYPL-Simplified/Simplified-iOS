@@ -27,6 +27,8 @@ class OELoginFirstBookVC: UIViewController {
   @IBOutlet var troublesButton: UIButton!
   @IBOutlet var faqButton: UIButton!
 
+  weak var postLoginConfigurator: OEAppUIStructureConfigurating?
+
   // MARK: - Validation logic
 
   private var businessLogic: NYPLSignInBusinessLogic!
@@ -40,12 +42,11 @@ class OELoginFirstBookVC: UIViewController {
   /// the @p NYPLSignInBusinessLogic.
   var forceEditability: Bool = false
 
-  private let loginSuccessCompletion: () -> Void
-
   // MARK: - Init / Deinit
 
-  init(libraryAccount: Account, loginSuccessCompletion: @escaping () -> Void) {
-    self.loginSuccessCompletion = loginSuccessCompletion
+  init(libraryAccount: Account,
+       postLoginConfigurator: OEAppUIStructureConfigurating?) {
+    self.postLoginConfigurator = postLoginConfigurator
 
     super.init(nibName: "OELoginFirstBookVC", bundle: nil)
 
@@ -259,9 +260,11 @@ extension OELoginFirstBookVC: NYPLSignInOutBusinessLogicUIDelegate {
   }
 
   func businessLogicDidCompleteSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
-    signInButton.isUserInteractionEnabled = true
-    spinner.stopAnimating()
-    loginSuccessCompletion()
+    NYPLMainThreadRun.asyncIfNeeded { [self] in
+      signInButton.isUserInteractionEnabled = true
+      spinner.stopAnimating()
+      postLoginConfigurator?.setUpRootVC()
+    }
   }
 
   func businessLogic(_ logic: NYPLSignInBusinessLogic,
