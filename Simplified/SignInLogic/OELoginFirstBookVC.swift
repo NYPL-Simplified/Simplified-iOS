@@ -81,15 +81,14 @@ class OELoginFirstBookVC: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    // -- set up UI
     navigationItem.titleView = OELoginNavHeader()
 
+    // -- set up localized strings content
     signInHeader.text = NSLocalizedString("Sign In", comment: "")
     accessCodeLabel.text = NSLocalizedString("Access Code", comment: "")
     accessCodeField.placeholder = NSLocalizedString("Access Code", comment: "")
     pinLabel.text = NSLocalizedString("PIN", comment: "")
     pinField.placeholder = NSLocalizedString("PIN", comment: "")
-
     signInButton.setTitle(NSLocalizedString("Sign In", comment: ""),
                           for: .normal)
     troublesButton.setTitle(NSLocalizedString("Having trouble signing in?", comment: ""),
@@ -97,6 +96,7 @@ class OELoginFirstBookVC: UIViewController {
     faqButton.setTitle(NSLocalizedString("Frequently Asked Questions", comment: ""),
                             for: .normal)
 
+    // -- set up input methods
     if let selectedAuthentication = businessLogic.selectedAuthentication {
       switch selectedAuthentication.pinKeyboard {
       case .standard, .none:
@@ -108,7 +108,13 @@ class OELoginFirstBookVC: UIViewController {
       }
     }
 
-    updateColors()
+    // -- set up custom look and feel
+    accessCodeField.layer.borderWidth = 1
+    pinField.layer.borderWidth = 1
+    troublesButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    faqButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    updateSignInButton()
+    updateTextFieldColors(forEditingField: nil)
 
     // -- set up validation hooks
     accessCodeField.delegate = frontEndValidator
@@ -119,13 +125,26 @@ class OELoginFirstBookVC: UIViewController {
     setUpKeyboardDismissal()
   }
 
-  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-    super.traitCollectionDidChange(previousTraitCollection)
+  // this override is to fix colors in case the user transitions from Light
+  // mode to Dark mode or viceversa.
+  override func traitCollectionDidChange(_ previousTraits: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraits)
 
     if #available(iOS 12.0, *) {
-      if let previousStyle = previousTraitCollection?.userInterfaceStyle {
+      if let previousStyle = previousTraits?.userInterfaceStyle {
         if previousStyle != UIScreen.main.traitCollection.userInterfaceStyle {
-          updateColors()
+          updateSignInButton()
+          let selectedField: UITextField? = { [self] in
+            if accessCodeField.isFirstResponder {
+              return accessCodeField
+            } else if pinField.isFirstResponder {
+              return pinField
+            } else {
+              return nil
+            }
+          }()
+
+          updateTextFieldColors(forEditingField: selectedField)
         }
       }
     }
@@ -134,7 +153,16 @@ class OELoginFirstBookVC: UIViewController {
   // MARK: - Actions
 
   @IBAction func textFieldDidChange(_ sender: Any) {
-    updateColors()
+    updateSignInButton()
+  }
+
+  @IBAction func didBeginEditingTextField(_ sender: Any) {
+    guard let selectedTextField = sender as? UITextField else {
+      updateTextFieldColors(forEditingField: nil)
+      return
+    }
+
+    updateTextFieldColors(forEditingField: selectedTextField)
   }
 
   @IBAction func signIn() {
@@ -166,7 +194,29 @@ class OELoginFirstBookVC: UIViewController {
 
   // MARK: - Helpers
 
-  private func updateColors() {
+  private func updateTextFieldColors(forEditingField selectedField: UITextField?) {
+    guard let selectedField = selectedField else {
+      accessCodeLabel.textColor = NYPLConfiguration.disabledFieldTextColor
+      accessCodeField.layer.borderColor = NYPLConfiguration.disabledFieldTextColor.cgColor
+      pinLabel.textColor = NYPLConfiguration.disabledFieldTextColor
+      pinField.layer.borderColor = NYPLConfiguration.disabledFieldTextColor.cgColor
+      return
+    }
+
+    if selectedField == accessCodeField {
+      accessCodeLabel.textColor = NYPLConfiguration.actionColor
+      accessCodeField.layer.borderColor = NYPLConfiguration.actionColor.cgColor
+      pinLabel.textColor = NYPLConfiguration.disabledFieldTextColor
+      pinField.layer.borderColor = NYPLConfiguration.disabledFieldTextColor.cgColor
+    } else {
+      accessCodeLabel.textColor = NYPLConfiguration.disabledFieldTextColor
+      accessCodeField.layer.borderColor = NYPLConfiguration.disabledFieldTextColor.cgColor
+      pinLabel.textColor = NYPLConfiguration.actionColor
+      pinField.layer.borderColor = NYPLConfiguration.actionColor.cgColor
+    }
+  }
+
+  private func updateSignInButton() {
     if frontEndValidator.canAttemptSignIn() {
       signInButton.isUserInteractionEnabled = true
       signInButton.backgroundColor = NYPLConfiguration.actionColor
@@ -228,6 +278,7 @@ class OELoginFirstBookVC: UIViewController {
   @objc private func didTapOnEmptySpace() {
     accessCodeField.resignFirstResponder()
     pinField.resignFirstResponder()
+    updateTextFieldColors(forEditingField: nil)
   }
 }
 

@@ -51,18 +51,32 @@ class OELoginChoiceViewController : UIViewController {
     termsButton?.setTitle(NSLocalizedString("Terms of Use", comment: "Button Text"), for: .normal)
     privacyButton?.setTitle(NSLocalizedString("Privacy Notice", comment: "Button Text"), for: .normal)
 
-    cleverLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
+    // rounded corners for buttons
     cleverLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     cleverLoginButton?.layer.borderWidth = 1
-    firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
     firstBookLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     firstBookLoginButton?.layer.borderWidth = 1
 
     if let navController = navigationController {
       cleverHelper = OELoginCleverHelper(navigationController: navController, postLoginConfigurator: postLoginConfigurator)
     }
+
+    updateColors()
   }
-  
+
+  // this override is to fix colors in case the user transitions from Light
+  // mode to Dark mode or viceversa.
+  override func traitCollectionDidChange(_ previousTraits: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraits)
+
+    if #available(iOS 12.0, *) {
+      if let previousStyle = previousTraits?.userInterfaceStyle {
+        if previousStyle != UIScreen.main.traitCollection.userInterfaceStyle {
+          updateColors()
+        }
+      }
+    }
+  }
 
   // MARK: - Actions
   
@@ -96,6 +110,18 @@ class OELoginChoiceViewController : UIViewController {
     )
 
     navigationController?.pushViewController(vc, animated: true)
+  }
+
+  // MARK: - Private helpers
+
+  private func updateColors() {
+    // set up colors per our scheme
+    cleverLoginButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    firstBookLoginButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    termsButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    privacyButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    cleverLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
+    firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
   }
 
   // TODO: IOS-511: see NYPLSignInVC::presentAsModal
