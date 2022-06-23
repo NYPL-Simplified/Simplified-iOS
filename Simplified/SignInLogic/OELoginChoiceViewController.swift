@@ -17,7 +17,7 @@ class OELoginChoiceViewController : UIViewController {
   @IBOutlet var privacyButton: UIButton?
 
   weak var postLoginConfigurator: OEAppUIStructureConfigurating?
-  var cleverHelper: NYPLSignInCleverHelper?
+  var cleverHelper: OELoginCleverHelper?
   
   init(postLoginConfigurator: OEAppUIStructureConfigurating) {
     self.postLoginConfigurator = postLoginConfigurator
@@ -59,7 +59,7 @@ class OELoginChoiceViewController : UIViewController {
     firstBookLoginButton?.layer.borderWidth = 1
 
     if let navController = navigationController {
-      cleverHelper = NYPLSignInCleverHelper(navigationController: navController, postLoginConfigurator: postLoginConfigurator)
+      cleverHelper = OELoginCleverHelper(navigationController: navController, postLoginConfigurator: postLoginConfigurator)
     }
   }
   

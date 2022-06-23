@@ -1,5 +1,5 @@
 //
-//  NYPLCleverSignInHelper.swift
+//  OELoginCleverHelper.swift
 //  Simplified
 //
 //  Created by Ettore Pasquini on 6/16/22.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NYPLSignInCleverHelper: NSObject {
+class OELoginCleverHelper: NSObject {
 
   var signInBusinessLogic: NYPLSignInBusinessLogic!
   weak var navigationController: UINavigationController?
@@ -19,20 +19,6 @@ class NYPLSignInCleverHelper: NSObject {
        postLoginConfigurator: OEAppUIStructureConfigurating?) {
     self.navigationController = navigationController
     self.postLoginConfigurator = postLoginConfigurator
-
-    let drmAuthorizerAdobe: NYPLDRMAuthorizing?
-#if FEATURE_DRM_CONNECTOR
-    drmAuthorizerAdobe = NYPLADEPT.sharedInstance
-#else
-    drmAuthorizerAdobe = nil
-#endif
-
-    let drmAuthorizerAxis: NYPLDRMAuthorizing?
-#if AXIS
-    drmAuthorizerAxis = NYPLAxisDRMAuthorizer.sharedInstance
-#else
-    drmAuthorizerAxis = nil
-#endif
 
     super.init()
 
@@ -45,8 +31,8 @@ class NYPLSignInCleverHelper: NSObject {
       bookDownloadsRemover: NYPLMyBooksDownloadCenter.shared(),
       userAccountProvider: NYPLUserAccount.self,
       uiDelegate: self,
-      drmAuthorizerAdobe: drmAuthorizerAdobe,
-      drmAuthorizerAxis: drmAuthorizerAxis)
+      drmAuthorizerAdobe: nil,
+      drmAuthorizerAxis: NYPLAxisDRMAuthorizer.sharedInstance)
   }
 
   func startCleverFlow() {
@@ -60,7 +46,7 @@ class NYPLSignInCleverHelper: NSObject {
   }
 }
 
-extension NYPLSignInCleverHelper: NYPLSignInOutBusinessLogicUIDelegate {
+extension OELoginCleverHelper: NYPLSignInOutBusinessLogicUIDelegate {
   func businessLogicWillSignOut(_ businessLogic: NYPLSignInBusinessLogic) {
     // unused
   }
