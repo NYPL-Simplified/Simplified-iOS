@@ -481,6 +481,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   }
 
   /// Updates the user account for the library we are signing in to.
+  ///
   /// - Parameters:
   ///   - drmSuccess: whether the DRM authorization was successful or not.
   ///   Ignored if the app is built without DRM support.
@@ -531,16 +532,6 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     }
 
     userAccount.authDefinition = selectedAuthentication
-
-    if libraryAccountID == libraryAccountsProvider.currentAccountId {
-      bookRegistry.syncResettingCache(false) { [weak bookRegistry] errorDict in
-        if errorDict == nil {
-          bookRegistry?.save()
-        }
-      }
-    }
-
-    NotificationCenter.default.post(name: .NYPLIsSigningIn, object: false)
   }
 
   private func setBarcode(_ barcode: String?, pin: String?) {
