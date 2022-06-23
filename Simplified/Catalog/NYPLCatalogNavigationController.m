@@ -199,14 +199,18 @@
 
 - (void)syncBegan
 {
-  self.navigationItem.leftBarButtonItem.enabled = NO;
-  self.feedVC.navigationItem.leftBarButtonItem.enabled = NO;
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    self.feedVC.navigationItem.leftBarButtonItem.enabled = NO;
+  }];
 }
 
 - (void)syncEnded
 {
-  self.navigationItem.leftBarButtonItem.enabled = YES;
-  self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+    self.feedVC.navigationItem.leftBarButtonItem.enabled = YES;
+  }];
 }
 
 #ifdef SIMPLYE

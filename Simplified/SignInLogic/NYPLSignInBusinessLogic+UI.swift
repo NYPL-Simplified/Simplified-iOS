@@ -10,23 +10,40 @@ import UIKit
 
 extension NYPLSignInBusinessLogic {
 
-  /// Finalizes the sign in process by updating the user account for the
-  /// library we are signing in to and calling the completion handler in
-  /// case that was set, as well as dismissing the presented view controller
-  /// in case the `uiDelegate` was a modal.
+  /// Finalizes the sign in process.
+  ///
+  /// In order, the following tasks are performed:
+  /// 1. update the user account for the library we are signing in to,
+  /// 2. call the `refreshAuthCompletion` in case that was set,
+  /// 3. dismiss the presented view controller in case the `uiDelegate` was a modal,
+  /// 4. call the `uiDelegate` `businessLogicDidCompleteSignIn` callback,
+  /// 5. refresh / sync the BookRegistry if DRM authorization was successful.
+  ///
   /// - Note: This does not log the error/message to Crashlytics.
   /// - Parameters:
   ///   - drmSuccess: whether the DRM authorization was successful or not.
-  ///   Ignored if the app is built without DRM support.
+  ///   Pass `true` if the library where the sign-in happened does not support
+  ///   any DRM or if app is built without DRM support.
   ///   - error: The error encountered during sign-in, if any.
   ///   - errorMessage: Error message to display, taking priority over `error`.
   ///   This can be a localization key.
   func finalizeSignIn(forDRMAuthorization drmSuccess: Bool,
                       error: Error? = nil,
                       errorMessage: String? = nil) {
-    NYPLMainThreadRun.asyncIfNeeded {
+    NYPLMainThreadRun.asyncIfNeeded { [self] in
       defer {
-        self.uiDelegate?.businessLogicDidCompleteSignIn(self)
+        Log.debug(#function, "will call didCompleteSignIn async on credentialsUpdateQueue...")
+        self.userAccount.credentialsUpdateQueue.async { [weak self] in
+          guard let self = self else {
+            return
+          }
+          NotificationCenter.default.post(name: .NYPLIsSigningIn, object: false)
+          self.uiDelegate?.businessLogicDidCompleteSignIn(self)
+
+          if drmSuccess {
+            self.refreshBookRegistryIfNeeded()
+          }
+        }
       }
 
       self.updateUserAccount(forDRMAuthorization: drmSuccess,
@@ -63,6 +80,16 @@ extension NYPLSignInBusinessLogic {
       }
 
       completionHandler?()
+    }
+  }
+
+  private func refreshBookRegistryIfNeeded() {
+    if libraryAccountID == libraryAccountsProvider.currentAccountId {
+      bookRegistry.syncResettingCache(false) { [weak bookRegistry] errorDict in
+        if errorDict == nil {
+          bookRegistry?.save()
+        }
+      }
     }
   }
 

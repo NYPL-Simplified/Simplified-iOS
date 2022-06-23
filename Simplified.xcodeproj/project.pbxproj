@@ -342,6 +342,7 @@
 		731465202786106900027CFA /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 7314651F2786106900027CFA /* PureLayout */; };
 		7314D1402551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */; };
 		7314D1422551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */; };
+		73186815285B9074001B9D86 /* OELoginCleverHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73186811285B9074001B9D86 /* OELoginCleverHelper.swift */; };
 		731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */; };
 		731B2B25244A2B6E00A7A649 /* R2Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; };
 		731B2B27244A2B7100A7A649 /* R2Streamer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; };
@@ -984,7 +985,7 @@
 		73DE897E260BEA13003D9135 /* NYPLRequestExecuting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DE8979260BEA13003D9135 /* NYPLRequestExecuting.swift */; };
 		73DEB54E2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
 		73DEB54F2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
-		73E64E6A252BB82600276953 /* NYPLWelcomeEULAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */; };
+		73E64E6A252BB82600276953 /* OEEULAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E64E65252BB82600276953 /* OEEULAViewController.swift */; };
 		73E64E6C252BB89A00276953 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = 73E64E6B252BB89A00276953 /* eula.html */; };
 		73EB0A6525821DF4006BC997 /* NYPLLibraryDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0826CD2E24AA2801000F4030 /* NYPLLibraryDescriptionCell.swift */; };
 		73EB0A6725821DF4006BC997 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
@@ -1941,6 +1942,7 @@
 		7314651C27860FCA00027CFA /* NYPLAEToolkit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = NYPLAEToolkit; sourceTree = "<group>"; };
 		7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+SignOut.swift"; sourceTree = "<group>"; };
 		73165C67268662FA0021A6AD /* checkout-r2-branch.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "checkout-r2-branch.sh"; sourceTree = "<group>"; };
+		73186811285B9074001B9D86 /* OELoginCleverHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OELoginCleverHelper.swift; sourceTree = "<group>"; };
 		731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogic.swift; sourceTree = "<group>"; };
 		731B2B12244A1D6500A7A649 /* R2Streamer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = R2Streamer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		731B2B18244A1D8600A7A649 /* R2Navigator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = R2Navigator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2100,7 +2102,7 @@
 		73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibraryAccountURLsProvider.swift; sourceTree = "<group>"; };
 		73DE8979260BEA13003D9135 /* NYPLRequestExecuting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLRequestExecuting.swift; sourceTree = "<group>"; };
 		73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkR2Location.swift; sourceTree = "<group>"; };
-		73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLWelcomeEULAViewController.swift; sourceTree = "<group>"; };
+		73E64E65252BB82600276953 /* OEEULAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OEEULAViewController.swift; sourceTree = "<group>"; };
 		73E64E6B252BB89A00276953 /* eula.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = eula.html; sourceTree = "<group>"; };
 		73EB0B7525821DF4006BC997 /* SimplyE-noDRM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SimplyE-noDRM.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		73EB0B7F2582CCE9006BC997 /* build-dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-dependencies.sh"; sourceTree = "<group>"; };
@@ -2844,10 +2846,11 @@
 				73A794A525477D8F00C59CC1 /* NYPLSignInBusinessLogic+UI.swift */,
 				739062D125358CF900D0743D /* NYPLSignInBusinessLogicUIDelegate.swift */,
 				73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */,
-				73043AE12851552C0060FAAA /* OELoginFirstBookVC.xib */,
-				73043AE02851552C0060FAAA /* OELoginFirstBookVC.swift */,
 				73F4B8AF28496A0B0032F9FC /* OELoginChoice.xib */,
 				73085E182502DE87008F6244 /* OELoginChoiceViewController.swift */,
+				73186811285B9074001B9D86 /* OELoginCleverHelper.swift */,
+				73043AE12851552C0060FAAA /* OELoginFirstBookVC.xib */,
+				73043AE02851552C0060FAAA /* OELoginFirstBookVC.swift */,
 				73B70A33284FCD8100BDF490 /* OELoginNavHeader.xib */,
 				73CB8CC8285012D700603BA1 /* OELoginNavHeader.swift */,
 				734B789025659611006FB8AD /* URLResponse+NYPLAuthentication.swift */,
@@ -2970,7 +2973,7 @@
 		738CB2092509AD3B00891F31 /* WelcomeScreen */ = {
 			isa = PBXGroup;
 			children = (
-				73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */,
+				73E64E65252BB82600276953 /* OEEULAViewController.swift */,
 				E6202A031DD52B8600C99553 /* NYPLWelcomeScreenViewController.swift */,
 			);
 			path = WelcomeScreen;
@@ -4843,6 +4846,7 @@
 				597E272B268B537E00A3CD23 /* NYPLAxisBookReadingAdapter.swift in Sources */,
 				7384C759252D20AA0012C2DD /* NYPLBook+DistributorChecks.swift in Sources */,
 				7350A79B27178D400042FF3A /* NYPLMyBooksNotifier.swift in Sources */,
+				73186815285B9074001B9D86 /* OELoginCleverHelper.swift in Sources */,
 				73FCA2BF25005BA4001B0C5D /* NYPLBookCellCollectionViewController.m in Sources */,
 				597E272D268B537E00A3CD23 /* NYPLAxisBookContentDecryptionAdapter.swift in Sources */,
 				597E2727268B537E00A3CD23 /* NYPLAxisDRMAuthorizer.swift in Sources */,
@@ -5023,7 +5027,7 @@
 				73FCA34125005BA4001B0C5D /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				73FCA34225005BA4001B0C5D /* NYPLMyBooksDownloadCenter.m in Sources */,
 				73FCA34325005BA4001B0C5D /* NYPLProblemDocumentCacheManager.swift in Sources */,
-				73E64E6A252BB82600276953 /* NYPLWelcomeEULAViewController.swift in Sources */,
+				73E64E6A252BB82600276953 /* OEEULAViewController.swift in Sources */,
 				7353940C250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift in Sources */,
 				73FCA34425005BA4001B0C5D /* NYPLBookButtonsView.m in Sources */,
 				73FCA34525005BA4001B0C5D /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,

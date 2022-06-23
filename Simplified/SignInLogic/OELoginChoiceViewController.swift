@@ -16,8 +16,11 @@ class OELoginChoiceViewController : UIViewController {
   @IBOutlet var termsButton: UIButton?
   @IBOutlet var privacyButton: UIButton?
 
+  weak var postLoginConfigurator: OEAppUIStructureConfigurating?
+  var cleverHelper: OELoginCleverHelper?
   
-  init() {
+  init(postLoginConfigurator: OEAppUIStructureConfigurating) {
+    self.postLoginConfigurator = postLoginConfigurator
     super.init(nibName: "OELoginChoice", bundle: nil)
   }
   
@@ -54,28 +57,32 @@ class OELoginChoiceViewController : UIViewController {
     firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
     firstBookLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     firstBookLoginButton?.layer.borderWidth = 1
+
+    if let navController = navigationController {
+      cleverHelper = OELoginCleverHelper(navigationController: navController, postLoginConfigurator: postLoginConfigurator)
+    }
   }
   
 
   // MARK: - Actions
   
   @IBAction func didSelectClever() {
-    didSelectAuthenticationMethod(.clever)
+    cleverHelper?.startCleverFlow()
   }
 
   @IBAction func didSelectFirstBook() {
     guard let libraryAccount = AccountsManager.shared.currentAccount else {
-      displayGenericAlert(for: "Unable to get library Account instance after selecting First Book as login choice")
+      NYPLAlertUtils.presentUnrecoverableAlert(for: "Unable to get library Account instance after selecting First Book as login choice")
       return
     }
 
     let firstBookVC = OELoginFirstBookVC(libraryAccount: libraryAccount,
-                                         loginSuccessCompletion: completeLogin)
+                                         postLoginConfigurator: postLoginConfigurator)
     navigationController?.pushViewController(firstBookVC, animated: true)
   }
 
   @IBAction func showEULA() {
-    let eulaVC = NYPLWelcomeEULAViewController(displayOnly: true)
+    let eulaVC = OEEULAViewController(displayOnly: true)
     navigationController?.pushViewController(eulaVC, animated: true)
   }
 
@@ -91,58 +98,5 @@ class OELoginChoiceViewController : UIViewController {
     navigationController?.pushViewController(vc, animated: true)
   }
 
-  // MARK: - Private
-
-  private func completeLogin() {
-    view.window?.rootViewController?.dismiss(animated: true, completion: nil)
-    dismiss(animated: true, completion: nil)
-
-    guard let appDelegate = UIApplication.shared.delegate else {
-      displayGenericAlert(for: "Could not load app delegate")
-      return
-    }
-
-    guard let appWindow = appDelegate.window else {
-      displayGenericAlert(for: "Could not load app window")
-      return
-    }
-
-    Log.info(#function, "Installing main root VC")
-    appWindow?.rootViewController = NYPLRootTabBarController.shared()
-  }
-
-  private func didSelectAuthenticationMethod(_ loginChoice: LoginChoice) {
-    let libAccount = AccountsManager.shared.currentAccount
-    let userAccount = NYPLUserAccount.sharedAccount()
-    if libAccount?.details == nil {
-      libAccount?.loadAuthenticationDocument(using: userAccount) { success, error in
-        NYPLMainThreadRun.asyncIfNeeded {
-          if success {
-            self.presentSignInVC(for: loginChoice)
-          } else {
-            let alert = NYPLAlertUtils.alert(title: "Sign-in Error", message: "We could not find a match for the credentials provided.")
-            self.present(alert, animated: true, completion: nil)
-          }
-        }
-      }
-    } else {
-      presentSignInVC(for: loginChoice)
-    }
-  }
-
   // TODO: IOS-511: see NYPLSignInVC::presentAsModal
-
-  private func presentSignInVC(for loginChoice: LoginChoice) {
-    let signInVC = NYPLAccountSignInViewController(loginChoice: loginChoice)
-    signInVC.presentIfNeeded(usingExistingCredentials: false,
-                             completionHandler: self.completeLogin)
-  }
-
-  private func displayGenericAlert(for error: String) {
-    Log.error(#file, error)
-    let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""),
-                                  message: NSLocalizedString("An unrecoverable error occurred. Please force-quit the app and try again.", comment: "Generic error message for internal errors"),
-                                  preferredStyle: .alert)
-    NYPLPresentationUtils.safelyPresent(alert)
-  }
 }

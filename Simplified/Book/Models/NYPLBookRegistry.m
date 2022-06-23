@@ -308,7 +308,8 @@ static NSString *const RecordsKey = @"records";
     self.syncShouldCommit = YES;
     [self broadcastChange];
   } //@synchronized
-  
+
+  NYPLLOG(@"[syncWithCompletionHandler] Begin BookRegistry syncing...");
   [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
                             networkExecutor:[NYPLNetworkExecutor shared]
                            shouldResetCache:shouldResetCache

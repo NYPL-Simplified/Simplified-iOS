@@ -20,6 +20,8 @@ private enum StorageKey: String {
   case authDefinition = "NYPLAccountAuthDefinitionKey"
   case cookies = "NYPLAccountAuthCookiesKey"
 
+  /// Generates the Keychain key for the enum case by appending the given
+  /// library UUID to the enum raw value.
   func keyForLibrary(uuid libraryUUID: String?) -> String {
     guard
       // historically user data for NYPL has not used keys that contain the
@@ -51,6 +53,11 @@ private enum StorageKey: String {
 ///
 /// This class works as a singleton even if the initializer is not private
 /// for unit tests reasons.
+///
+/// The way this class achieves saving credentials for multiple accounts is
+/// by storing credentials on the keychain using storage keys that contain the
+/// the library UUID appended after the actual key name.
+/// - seealso: StorageKey.keyForLibrary(uuid:)
 @objcMembers class NYPLUserAccount : NSObject, NYPLUserAccountProvider, NYPLOAuthTokenProvider {
   static private let shared = NYPLUserAccount()
 
@@ -89,17 +96,11 @@ private enum StorageKey: String {
 
   var authDefinition: AccountDetails.Authentication? {
     get {
-      guard let read = _authDefinition.read() else {
-        if let libraryUUID = self.libraryUUID {
-          return AccountsManager.shared.account(libraryUUID)?.details?.auths.first
-        }
-            
-        return AccountsManager.shared.currentAccount?.details?.auths.first
-      }
-      return read
+      return _authDefinition.read()
     }
     set {
       guard let newValue = newValue else { return }
+      Log.debug(#function, "About to write value \(newValue.authType) for authDefinition")
       _authDefinition.write(newValue)
 
       DispatchQueue.main.async {
@@ -127,6 +128,11 @@ private enum StorageKey: String {
     }
   }
 
+  /// The queue where updates to the `credentials` property happen.
+  var credentialsUpdateQueue: DispatchQueue {
+    return _credentials.updateQueue
+  }
+  
   var credentials: NYPLCredentials? {
     get {
       var credentials = _credentials.read()
@@ -460,6 +466,7 @@ private enum StorageKey: String {
   
   @objc(setPatron:)
   func setPatron(_ patron: [String : Any]) {
+    Log.debug(#file, "About to write value for patron property")
     _patron.write(patron)
     notifyAccountDidChange()
   }
@@ -474,6 +481,8 @@ private enum StorageKey: String {
   /// - Parameter token: The new OAuth token.
   @objc(setAuthToken:)
   func setAuthToken(_ token: String) {
+    Log.debug(#function, "authType=\(String(describing: authDefinition?.authType)) authToken=\(token)")
+
     // this check is required because in the client credentials flow we need
     // to save both the username/password and authtoken. However, during
     // sign-in, when we save the OAuth token this triggers an accountDidChange
@@ -482,6 +491,7 @@ private enum StorageKey: String {
     // to save username and password. For this reason we require to save
     // the refresh username and password *before* saving the authToken.
     if !hasOAuthClientCredentials() || authTokenRefreshUsername != nil {
+      Log.debug(#function, "About to write credentials for authToken...")
       credentials = .token(authToken: token)
     }
   }
@@ -539,6 +549,7 @@ private enum StorageKey: String {
 
       keychainTransaction.perform {
         _authDefinition.write(nil)
+        Log.debug(#function, "authDefinition after removing value: \(String(describing: _authDefinition.read()?.authType))")
         _credentials.write(nil)
         _cookies.write(nil)
         _authorizationIdentifier.write(nil)
