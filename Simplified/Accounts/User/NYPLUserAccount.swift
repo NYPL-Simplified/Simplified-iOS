@@ -96,17 +96,11 @@ private enum StorageKey: String {
 
   var authDefinition: AccountDetails.Authentication? {
     get {
-      guard let read = _authDefinition.read() else {
-        if let libraryUUID = self.libraryUUID {
-          return AccountsManager.shared.account(libraryUUID)?.details?.auths.first
-        }
-            
-        return AccountsManager.shared.currentAccount?.details?.auths.first
-      }
-      return read
+      return _authDefinition.read()
     }
     set {
       guard let newValue = newValue else { return }
+      Log.debug(#function, "About to write value \(newValue.authType) for authDefinition")
       _authDefinition.write(newValue)
 
       DispatchQueue.main.async {
