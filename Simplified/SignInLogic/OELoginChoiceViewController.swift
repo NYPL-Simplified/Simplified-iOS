@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SafariServices
 
 class OELoginChoiceViewController : UIViewController {
   @IBOutlet var headerLabel: UILabel?

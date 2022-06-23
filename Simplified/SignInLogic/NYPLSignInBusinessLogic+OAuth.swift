@@ -52,10 +52,10 @@ extension NYPLSignInBusinessLogic {
   }
 
   func oauthIntermediaryLogIn() {
-    //TODO: OE-514 cleanup
-//    guard let finalURL = oauthIntermediaryURL() else {
-//      return
-//    }
+    guard let finalURL = oauthIntermediaryURL() else {
+      return
+    }
+
     Log.debug(#function, "setting up observer for redirect URL")
     NotificationCenter.default
       .addObserver(self,
@@ -63,9 +63,9 @@ extension NYPLSignInBusinessLogic {
                    name: .NYPLAppDelegateDidReceiveCleverRedirectURL,
                    object: nil)
 
-//    NYPLMainThreadRun.asyncIfNeeded {
-//      UIApplication.shared.open(finalURL)
-//    }
+    NYPLMainThreadRun.asyncIfNeeded {
+      UIApplication.shared.open(finalURL)
+    }
   }
 
   //----------------------------------------------------------------------------
