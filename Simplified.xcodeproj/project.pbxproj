@@ -985,7 +985,7 @@
 		73DE897E260BEA13003D9135 /* NYPLRequestExecuting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DE8979260BEA13003D9135 /* NYPLRequestExecuting.swift */; };
 		73DEB54E2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
 		73DEB54F2486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */; };
-		73E64E6A252BB82600276953 /* NYPLWelcomeEULAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */; };
+		73E64E6A252BB82600276953 /* OEEULAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E64E65252BB82600276953 /* OEEULAViewController.swift */; };
 		73E64E6C252BB89A00276953 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = 73E64E6B252BB89A00276953 /* eula.html */; };
 		73EB0A6525821DF4006BC997 /* NYPLLibraryDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0826CD2E24AA2801000F4030 /* NYPLLibraryDescriptionCell.swift */; };
 		73EB0A6725821DF4006BC997 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
@@ -2102,7 +2102,7 @@
 		73DE53302525A386003E2C56 /* NYPLLibraryAccountURLsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLibraryAccountURLsProvider.swift; sourceTree = "<group>"; };
 		73DE8979260BEA13003D9135 /* NYPLRequestExecuting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLRequestExecuting.swift; sourceTree = "<group>"; };
 		73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkR2Location.swift; sourceTree = "<group>"; };
-		73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLWelcomeEULAViewController.swift; sourceTree = "<group>"; };
+		73E64E65252BB82600276953 /* OEEULAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OEEULAViewController.swift; sourceTree = "<group>"; };
 		73E64E6B252BB89A00276953 /* eula.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = eula.html; sourceTree = "<group>"; };
 		73EB0B7525821DF4006BC997 /* SimplyE-noDRM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SimplyE-noDRM.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		73EB0B7F2582CCE9006BC997 /* build-dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-dependencies.sh"; sourceTree = "<group>"; };
@@ -2973,7 +2973,7 @@
 		738CB2092509AD3B00891F31 /* WelcomeScreen */ = {
 			isa = PBXGroup;
 			children = (
-				73E64E65252BB82600276953 /* NYPLWelcomeEULAViewController.swift */,
+				73E64E65252BB82600276953 /* OEEULAViewController.swift */,
 				E6202A031DD52B8600C99553 /* NYPLWelcomeScreenViewController.swift */,
 			);
 			path = WelcomeScreen;
@@ -5027,7 +5027,7 @@
 				73FCA34125005BA4001B0C5D /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				73FCA34225005BA4001B0C5D /* NYPLMyBooksDownloadCenter.m in Sources */,
 				73FCA34325005BA4001B0C5D /* NYPLProblemDocumentCacheManager.swift in Sources */,
-				73E64E6A252BB82600276953 /* NYPLWelcomeEULAViewController.swift in Sources */,
+				73E64E6A252BB82600276953 /* OEEULAViewController.swift in Sources */,
 				7353940C250854A90043C800 /* NYPLSettingsSplitViewController+OE.swift in Sources */,
 				73FCA34425005BA4001B0C5D /* NYPLBookButtonsView.m in Sources */,
 				73FCA34525005BA4001B0C5D /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,

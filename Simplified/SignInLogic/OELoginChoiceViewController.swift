@@ -82,7 +82,7 @@ class OELoginChoiceViewController : UIViewController {
   }
 
   @IBAction func showEULA() {
-    let eulaVC = NYPLWelcomeEULAViewController(displayOnly: true)
+    let eulaVC = OEEULAViewController(displayOnly: true)
     navigationController?.pushViewController(eulaVC, animated: true)
   }
 

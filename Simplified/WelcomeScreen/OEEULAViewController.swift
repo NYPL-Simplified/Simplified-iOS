@@ -1,6 +1,6 @@
 import WebKit
 
-class NYPLWelcomeEULAViewController : UIViewController {
+class OEEULAViewController: UIViewController {
   private static let offlineEULAPathComponent = "eula.html"
 
   private let onlineEULAURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
@@ -95,13 +95,13 @@ class NYPLWelcomeEULAViewController : UIViewController {
     // prevent possible infinite loop
     attemptedLoadFromBundle = true
 
-    guard let filePath = Bundle.main.path(forResource: NYPLWelcomeEULAViewController.offlineEULAPathComponent, ofType: nil) else {
+    guard let filePath = Bundle.main.path(forResource: OEEULAViewController.offlineEULAPathComponent, ofType: nil) else {
 
       NYPLErrorLogger.logError(
         withCode: .noURL,
         summary: "Fallback EULA file not Present in Bundle",
         metadata: [
-          "hardcodedFileName": NYPLWelcomeEULAViewController.offlineEULAPathComponent
+          "hardcodedFileName": OEEULAViewController.offlineEULAPathComponent
         ]
       )
 
@@ -133,14 +133,14 @@ class NYPLWelcomeEULAViewController : UIViewController {
 
 // MARK:- WKNavigationDelegate
 
-extension NYPLWelcomeEULAViewController: WKNavigationDelegate {
+extension OEEULAViewController: WKNavigationDelegate {
   func webView(_ webView: WKWebView,
                decidePolicyFor navigationAction: WKNavigationAction,
                decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     if navigationAction.request.url == onlineEULAURL {
       return decisionHandler(.allow)
 
-    } else if navigationAction.request.url?.lastPathComponent == NYPLWelcomeEULAViewController.offlineEULAPathComponent {
+    } else if navigationAction.request.url?.lastPathComponent == OEEULAViewController.offlineEULAPathComponent {
       return decisionHandler(.allow)
 
     } else if navigationAction.navigationType == .linkActivated,

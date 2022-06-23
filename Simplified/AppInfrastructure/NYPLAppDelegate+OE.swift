@@ -26,7 +26,7 @@ extension NYPLAppDelegate: OEAppUIStructureConfigurating {
         NYPLSettings.shared.userHasSeenWelcomeScreen = true
       }
     } else {
-      let eulaVC = NYPLWelcomeEULAViewController() {
+      let eulaVC = OEEULAViewController() {
         UIView.transition(
           with: self.window,
           duration: 0.5,
