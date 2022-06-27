@@ -760,7 +760,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           && self.selectedUserAccount.barcode.length != 0) {
         NYPLSettingsDeleteLibraryCardViewController *vc = [[NYPLSettingsDeleteLibraryCardViewController alloc]
                                                            initWithEmail:self.selectedAccount.supportEmail
-                                                           barcode:self.selectedUserAccount.barcode];
+                                                           barcode:self.selectedUserAccount.barcode
+                                                           libraryName:self.selectedAccount.name];
         UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:vc];
         [self presentViewController:navVC animated:YES completion:nil];
       }

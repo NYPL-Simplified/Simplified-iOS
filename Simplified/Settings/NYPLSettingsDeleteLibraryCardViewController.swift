@@ -14,10 +14,12 @@ import MessageUI
   
   private var supportEmail: String
   private var barcode: String
+  private var libraryName: String
   
-  @objc init(email: String, barcode: String) {
+  @objc init(email: String, barcode: String, libraryName: String) {
     self.supportEmail = email
     self.barcode = barcode
+    self.libraryName = libraryName
     
     super.init(nibName: nil, bundle: nil)
   }
@@ -55,7 +57,7 @@ import MessageUI
       let paragraphStyle = NSMutableParagraphStyle()
       paragraphStyle.alignment = .center
       
-      let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
+      let font = UIFont.customFont(forTextStyle: .body)
       let attributedString = NSMutableAttributedString(string: NSLocalizedString("E-Mail to cancel your library card",
                                                                                  comment: "Button title for compose email"),
                                                        attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue,
@@ -101,12 +103,14 @@ import MessageUI
       return
     }
     
-    let body = "\n\n---\nBarcode: \(barcode)"
+    let body = """
+I am writing to have my library card, barcode \(barcode), deleted from your system. I understand this means I lose access to all digital and branch services tied to my library card that are offered by \(libraryName).
+"""
     let mailComposeViewController = MFMailComposeViewController.init()
     mailComposeViewController.mailComposeDelegate = self
     mailComposeViewController.setSubject(NYPLLocalizationNotNeeded("Delete Library Card"))
     mailComposeViewController.setToRecipients([supportEmail])
-    mailComposeViewController.setMessageBody(body, isHTML: false)
+    mailComposeViewController.setMessageBody(NYPLLocalizationNotNeeded(body), isHTML: false)
     present(mailComposeViewController, animated: true, completion: nil)
   }
   
@@ -150,17 +154,12 @@ import MessageUI
   }()
   
   private func libraryCardDeletionDescription() -> NSMutableAttributedString {
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineSpacing = 1.1
-    paragraphStyle.lineHeightMultiple = 1.1
-    
     let description = NSLocalizedString("DeleteLibraryCardDescription",
                                         comment: "Description of the delete action")
-    let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
+    let font = UIFont.customFont(forTextStyle: .body)
     let attributedString = NSMutableAttributedString(string:description,
                                                      attributes: [.font: font as Any,
-                                                                  .foregroundColor: NYPLConfiguration.primaryTextColor,
-                                                                  .paragraphStyle: paragraphStyle]
+                                                                  .foregroundColor: NYPLConfiguration.primaryTextColor]
     )
 
     return attributedString
