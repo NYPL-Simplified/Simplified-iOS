@@ -55,7 +55,7 @@ import UIKit
       // Delete Button
       let paragraphStyle = NSMutableParagraphStyle()
       paragraphStyle.alignment = .center
-      let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
+      let font = UIFont.customFont(forTextStyle: .body)
       let attributedString = NSMutableAttributedString(string: NSLocalizedString("Delete Reading Data",
                                                                                  comment: "Button title for delete reading data"),
                                                        attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue,
@@ -161,10 +161,6 @@ import UIKit
   }()
   
   private func dataDeletionDescription() -> NSMutableAttributedString {
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineSpacing = 1.1
-    paragraphStyle.lineHeightMultiple = 1.1
-    
     #if SIMPLYE
     let description = NSLocalizedString("DeleteServerDataDescriptionSimplyE",
                                         comment: "Description of the delete action")
@@ -172,11 +168,10 @@ import UIKit
     let description = NSLocalizedString("DeleteServerDataDescriptionOpeneBooks",
                                         comment: "Description of the delete action")
     #endif
-    let font = UIFont.customFont(forTextStyle: .body, multiplier: 0.9)
+    let font = UIFont.customFont(forTextStyle: .body)
     let attributedString = NSMutableAttributedString(string:description,
                                                      attributes: [.font: font as Any,
-                                                                  .foregroundColor: NYPLConfiguration.primaryTextColor,
-                                                                  .paragraphStyle: paragraphStyle]
+                                                                  .foregroundColor: NYPLConfiguration.primaryTextColor]
     )
 
     return attributedString
