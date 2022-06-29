@@ -757,10 +757,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindDeleteLibraryAccount: {
 #ifdef SIMPLYE
       if (self.selectedAccount.supportEmail.length != 0
-          && self.selectedUserAccount.barcode.length != 0) {
+          && self.selectedUserAccount.authorizationIdentifier.length != 0) {
         NYPLSettingsDeleteLibraryCardViewController *vc = [[NYPLSettingsDeleteLibraryCardViewController alloc]
                                                            initWithEmail:self.selectedAccount.supportEmail
-                                                           barcode:self.selectedUserAccount.barcode
+                                                           barcode:self.selectedUserAccount.authorizationIdentifier
                                                            libraryName:self.selectedAccount.name];
         UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:vc];
         [self presentViewController:navVC animated:YES completion:nil];
