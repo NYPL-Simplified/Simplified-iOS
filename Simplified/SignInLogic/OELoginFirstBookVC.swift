@@ -314,7 +314,7 @@ extension OELoginFirstBookVC: NYPLSignInOutBusinessLogicUIDelegate {
     NYPLMainThreadRun.asyncIfNeeded { [self] in
       signInButton.isUserInteractionEnabled = true
       spinner.stopAnimating()
-      postLoginConfigurator?.setUpRootVC()
+      postLoginConfigurator?.setUpRootVC(userIsSignedIn: true)
     }
   }
 

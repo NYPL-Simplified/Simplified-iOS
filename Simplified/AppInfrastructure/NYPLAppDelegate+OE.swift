@@ -9,17 +9,16 @@
 import Foundation
 
 @objc protocol OEAppUIStructureConfigurating {
-  @objc func setUpRootVC()
+
+  /// - Parameter userIsSignedIn: Pass `true` if this is called after a
+  /// successful login; pass `false` in all other cases.
+  @objc func setUpRootVC(userIsSignedIn: Bool)
 }
 
 extension NYPLAppDelegate: OEAppUIStructureConfigurating {
-  @objc func setUpRootVC() {
+  @objc func setUpRootVC(userIsSignedIn: Bool) {
     if NYPLSettings.shared.userHasAcceptedEULA {
-      if NYPLSettings.shared.userHasSeenWelcomeScreen,
-
-          // NB: this causes the lazy creation of AccountManager
-          NYPLUserAccount.sharedAccount().isSignedIn()
-      {
+      if NYPLSettings.shared.userHasSeenWelcomeScreen, userIsSignedIn {
         window.rootViewController = NYPLRootTabBarController.shared()
       } else {
         window.rootViewController = createLoginNavController()

@@ -71,7 +71,7 @@ extension OELoginCleverHelper: NYPLSignInOutBusinessLogicUIDelegate {
     DispatchQueue.main.async {
       assert(businessLogic.userAccount.isSignedIn())
       Log.debug(#function, "about to set up root VC; isSignedIn=\(businessLogic.userAccount.isSignedIn())")
-      self.postLoginConfigurator?.setUpRootVC()
+      self.postLoginConfigurator?.setUpRootVC(userIsSignedIn: true)
     }
   }
 
