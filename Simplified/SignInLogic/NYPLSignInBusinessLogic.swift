@@ -193,12 +193,16 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   private var _selectedAuthentication: AccountDetails.Authentication?
   @objc var selectedAuthentication: AccountDetails.Authentication? {
     get {
-      guard _selectedAuthentication == nil else { return _selectedAuthentication }
-      guard userAccount.authDefinition == nil else { return userAccount.authDefinition }
+      if _selectedAuthentication != nil {
+        return _selectedAuthentication
+      }
+      if userAccount.authDefinition != nil {
+        return userAccount.authDefinition
+      }
       guard let auths = libraryAccount?.details?.auths else { return nil }
-      guard auths.count > 1 else { return auths.first }
+      guard auths.count == 1 else { return nil }
 
-      return nil
+      return auths.first
     }
     set {
       _selectedAuthentication = newValue
