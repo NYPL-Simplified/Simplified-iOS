@@ -1583,7 +1583,7 @@ didEncounterValidationError:(NSError *)error
                                                                 completion:nil];
 }
 
-- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
+- (void)businessLogicDidSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];

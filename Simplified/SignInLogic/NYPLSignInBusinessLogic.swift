@@ -129,7 +129,12 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   @objc var isLoggingInAfterSignUp: Bool = false
 
   /// A closure that will be invoked at the end of the sign-in process when
-  /// refreshing authentication.
+  /// successfully refreshing authentication.
+  /// - Important: the semantics of this are different from the semantics of
+  /// `businessLogicDidSignIn(_:)`: the latter is called at
+  /// the end of an actual authentication flow on the UI delegate,
+  /// while `refreshAuthCompletion` is called when the refresh flow end,
+  /// which may not be associated with any UI.
   var refreshAuthCompletion: (() -> Void)? = nil
 
   /// This overrides the sign-in state logic to behave as if the user isn't
@@ -486,11 +491,13 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
 
   /// Updates the user account for the library we are signing in to.
   ///
+  /// If there was a DRM authorization error, every user detail will be removed.
+  ///
   /// - Parameters:
   ///   - drmSuccess: whether the DRM authorization was successful or not.
-  ///   Ignored if the app is built without DRM support.
-  ///   - barcode: The new barcode, if available.
-  ///   - pin: The new PIN, if barcode is provided.
+  ///   Pass `true` if the app is built without DRM support.
+  ///   - barcode: The new barcode or username, if available.
+  ///   - pin: The new PIN, if `barcode` is provided.
   ///   - authToken: the token if `selectedAuthentication` is OAuth or SAML. 
   ///   - patron: The patron info for OAuth / SAML authentication.
   ///   - cookies: Cookies for SAML authentication.
@@ -500,12 +507,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
                          authToken: String?,
                          patron: [String:Any]?,
                          cookies: [HTTPCookie]?) {
-    #if FEATURE_DRM_CONNECTOR
     guard drmSuccess else {
       userAccount.removeAll()
       return
     }
-    #endif
 
     if let selectedAuthentication = selectedAuthentication {
       if selectedAuthentication.isOauthClientCredentials {

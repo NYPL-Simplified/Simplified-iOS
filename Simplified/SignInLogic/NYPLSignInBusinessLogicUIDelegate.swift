@@ -21,11 +21,11 @@ import UIKit
   /// - Parameter businessLogic: The business logic in charge of signing in.
   func businessLogicWillSignIn(_ businessLogic: NYPLSignInBusinessLogic)
 
-  /// Notifies the delegate that the process of signing in is completed,
-  /// successfully or not.
+  /// Notifies the delegate that the process of signing in has completed
+  /// successfully.
   /// - Note: This is always called on the main thread.
   /// - Parameter businessLogic: The business logic in charge of signing in.
-  func businessLogicDidCompleteSignIn(_ businessLogic: NYPLSignInBusinessLogic)
+  func businessLogicDidSignIn(_ businessLogic: NYPLSignInBusinessLogic)
 
   /// Notifies the delegate that an error happened during sign in,
   /// providing (if available) a user-friendly message and title, possibly

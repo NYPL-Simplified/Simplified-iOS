@@ -956,16 +956,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-/**
- @note This method is not doing any logging in case `success` is false.
-
- @param success Whether Adobe DRM authorization was successful or not.
- @param error If errorMessage is absent, this will be used to derive a message
- to present to the user.
- @param errorMessage Will be presented to the user and will be used as a
- localization key to attempt to localize it.
- */
-- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
+- (void)businessLogicDidSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];

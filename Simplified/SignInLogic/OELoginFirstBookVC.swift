@@ -316,7 +316,7 @@ extension OELoginFirstBookVC: NYPLSignInOutBusinessLogicUIDelegate {
     spinner.startAnimating()
   }
 
-  func businessLogicDidCompleteSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
+  func businessLogicDidSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
     NYPLMainThreadRun.asyncIfNeeded { [self] in
       signInButton.isUserInteractionEnabled = true
       spinner.stopAnimating()

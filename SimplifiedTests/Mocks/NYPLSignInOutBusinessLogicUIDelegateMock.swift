@@ -31,7 +31,7 @@ class NYPLSignInOutBusinessLogicUIDelegateMock: NSObject, NYPLSignInOutBusinessL
   func businessLogicWillSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
   }
 
-  func businessLogicDidCompleteSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
+  func businessLogicDidSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
   }
 
   func businessLogic(_ logic: NYPLSignInBusinessLogic,
