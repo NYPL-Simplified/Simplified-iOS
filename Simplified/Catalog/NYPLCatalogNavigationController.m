@@ -139,12 +139,12 @@
   };
 
   NYPLUserAccount * const user = NYPLUserAccount.sharedAccount;
-  if (user.authDefinition.needsAgeCheck) {
+  if (user.defaultAuthDefinition.needsAgeCheck) {
     [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
                                                                      currentLibraryAccountProvider:[AccountsManager shared]
                                                                                         completion:^(BOOL isOfAge)  {
       [NYPLMainThreadRun asyncIfNeeded: ^{
-        mainFeedUrl = [user.authDefinition coppaURLWithIsOfAge:isOfAge];
+        mainFeedUrl = [user coppaURLWithIsOfAge:isOfAge];
         completion();
       }];
     }];
@@ -165,12 +165,12 @@
   [super viewDidLoad];
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   if (settings.userHasSeenWelcomeScreen) {
-    if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
+    if (NYPLUserAccount.sharedAccount.defaultAuthDefinition.needsAgeCheck) {
       [[[AccountsManager shared] ageCheck] verifyCurrentAccountAgeRequirementWithUserAccountProvider:[NYPLUserAccount sharedAccount]
                                                                        currentLibraryAccountProvider:[AccountsManager shared]
                                                                                           completion:^(BOOL isOfAge) {
         dispatch_async(dispatch_get_main_queue(), ^{
-          NSURL *mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
+          NSURL *mainFeedUrl = [NYPLUserAccount.sharedAccount coppaURLWithIsOfAge:isOfAge];
           [NYPLSettings.shared updateMainFeedURLIfNeededWithURL:mainFeedUrl];
         });
       }];
@@ -223,13 +223,13 @@
     return;
   }
 
-  if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
+  if (NYPLUserAccount.sharedAccount.defaultAuthDefinition.needsAgeCheck) {
     NYPLUserAccount *userAccount = [NYPLUserAccount sharedAccount];
     [[[AccountsManager shared] ageCheck]
      verifyCurrentAccountAgeRequirementWithUserAccountProvider:userAccount
      currentLibraryAccountProvider:[AccountsManager shared]
      completion:^(BOOL isOfAge) {
-      NSURL *mainFeedUrl = [userAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
+      NSURL *mainFeedUrl = [userAccount coppaURLWithIsOfAge:isOfAge];
       [settings setAccountMainFeedURL:mainFeedUrl];
       [NYPLMainThreadRun asyncIfNeeded:^{
         [self presentWelcomeScreen];
