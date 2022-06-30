@@ -13,7 +13,7 @@
 "Loading... Please wait." = "Loading... Please wait.";
 "BarcodeOrUsername" = "Barcode or Username";
 "Borrow" = "Get";
-"BorrowFailed" = "Borrowing failed";
+"BorrowFailed" = "Borrowing Failed";
 "BorrowCouldNotBeCompletedFormat" = "Borrowing %@ could not be completed.";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
