@@ -27,11 +27,11 @@ class OELoginFirstBookVC: UIViewController {
   @IBOutlet var troublesButton: UIButton!
   @IBOutlet var faqButton: UIButton!
 
-  weak var postLoginConfigurator: OEAppUIStructureConfigurating?
+  private weak var postLoginConfigurator: OEAppUIStructureConfigurating?
 
   // MARK: - Validation logic
 
-  private var businessLogic: NYPLSignInBusinessLogic!
+  private(set) var businessLogic: NYPLSignInBusinessLogic!
 
   private var frontEndValidator: NYPLUserAccountFrontEndValidation!
 
@@ -60,6 +60,12 @@ class OELoginFirstBookVC: UIViewController {
       uiDelegate: self,
       drmAuthorizerAdobe: nil,
       drmAuthorizerAxis: NYPLAxisDRMAuthorizer.sharedInstance)
+
+    let firstBookAuth = businessLogic.libraryAccount?.details?.auths.filter { auth in
+      auth.isOauthClientCredentials
+    }.first
+    businessLogic.selectedIDP = nil
+    businessLogic.selectedAuthentication = firstBookAuth
 
     frontEndValidator = NYPLUserAccountFrontEndValidation(
       account: libraryAccount,
