@@ -9,6 +9,7 @@
 @interface NYPLCatalogNavigationController()
 
 @property (nonatomic) UIViewController *const feedVC;
+@property(nonatomic) NYPLReauthenticator *reauthenticator;
 
 @end
 
@@ -63,9 +64,11 @@
 - (instancetype)init
 {
   self = [super init];
-  
+
   self.tabBarItem.title = NSLocalizedString(@"Catalog", nil);
   self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
+
+  self.reauthenticator = [[NYPLReauthenticator alloc] init];
 
   if ([self topLevelCatalogURL] != nil) {
     [self loadTopLevelCatalogViewController];
@@ -150,7 +153,7 @@
     }];
   } else if (user.catalogRequiresAuthentication && !user.hasCredentials) {
     // we're signed out, so sign in
-    [NYPLAccountSignInViewController requestCredentialsWithCompletion:^{
+    [self.reauthenticator refreshAuthenticationWithCompletion:^(__unused BOOL isSignedIn) {
       [NYPLMainThreadRun asyncIfNeeded:completion];
     }];
   } else {

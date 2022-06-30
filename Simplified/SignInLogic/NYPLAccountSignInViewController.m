@@ -554,30 +554,23 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 #pragma mark - Modal presentation
 
-+ (void)requestCredentialsWithCompletion:(void (^)(void))completion
-{
-  [NYPLMainThreadRun asyncIfNeeded:^{
-    NYPLAccountSignInViewController *signInVC = [[self alloc] init];
-    [signInVC presentIfNeededUsingExistingCredentials:NO
-                                    completionHandler:completion];
-  }];
-}
-
 /**
- * Presents itself to begin the login process.
+ * Refreshes authentication presenting itself to begin the login process,
+ * if needed.
  *
  * @param useExistingCredentials Should the screen be filled with the barcode when available?
- * @param completionHandler Called upon successful authentication
+ * @param refreshCompletion Called upon successful authentication refresh.
+ * This block might be retained strongly.
  */
 - (void)presentIfNeededUsingExistingCredentials:(BOOL const)useExistingCredentials
-                              completionHandler:(void (^)(void))completionHandler
+                              refreshCompletion:(void (^)(void))refreshCompletion
 {
   // Tell the VC to create its text fields so we can set their properties.
   [self view];
 
   BOOL shouldPresentVC = [self.businessLogic
                           refreshAuthIfNeededUsingExistingCredentials:useExistingCredentials
-                          completion:completionHandler];
+                          completion:refreshCompletion];
 
   if (shouldPresentVC) {
     [self presentAsModal];

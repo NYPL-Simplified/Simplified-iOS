@@ -408,15 +408,20 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   ///   - usingExistingCredentials: Force using existing credentials for the
   ///   authentication refresh attempt.
   ///   - completion: Block to be run after the authentication refresh attempt
-  ///   is performed.
+  ///   is performed. This block might be retained strongly.
   /// - Returns: `true` if a sign-in UI is needed to refresh authentication.
   @objc func refreshAuthIfNeeded(usingExistingCredentials: Bool,
-                                 completion: (() -> Void)?) -> Bool {
+                                 completion: (() -> Void)? = nil) -> Bool {
 
-    guard
-      let authDef = userAccount.authDefinition,
-      (authDef.isBasic || authDef.isOauth || authDef.isSaml)
-    else {
+    // force login if there's no authDef saved
+    guard let authDef = userAccount.authDefinition else {
+      Log.debug(#function, "Found no authDefinition while refreshing auth: should present sign-in UI")
+      ignoreSignedInState = true
+      refreshAuthCompletion = completion
+      return true
+    }
+
+    guard (authDef.isBasic || authDef.isOauth || authDef.isSaml) else {
       completion?()
       return false
     }
