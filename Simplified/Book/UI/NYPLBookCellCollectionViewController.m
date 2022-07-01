@@ -23,6 +23,7 @@
   if(!self) return nil;
   
   self.observers = [NSMutableArray array];
+  self.reauthenticator = [[NYPLReauthenticator alloc] init];
   
   return self;
 }

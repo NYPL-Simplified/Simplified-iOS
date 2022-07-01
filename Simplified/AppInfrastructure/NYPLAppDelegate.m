@@ -82,7 +82,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   [self setUpAppearance];
   [self.window makeKeyAndVisible];
-  [self setUpRootVC];
+
+  // NB: this causes the lazy creation of AccountManager
+  BOOL isSignedIn = [NYPLUserAccount.sharedAccount isSignedIn];
+  
+  [self setUpRootVCWithUserIsSignedIn:isSignedIn];
 
   [NYPLErrorLogger logNewAppLaunch];
 

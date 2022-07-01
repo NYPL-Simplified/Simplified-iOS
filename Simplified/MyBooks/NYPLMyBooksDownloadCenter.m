@@ -384,9 +384,11 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
       [self.reauthenticator authenticateIfNeeded:NYPLUserAccount.sharedAccount
                                afterHTTPResponse:downloadTask.response
                              withProblemDocument:problemDoc
-                        authenticationCompletion:nil];
-
-      [self alertForProblemDocument:problemDoc error:failureError book:book];
+                                      completion:^(BOOL isSignedIn) {
+        if (!isSignedIn) {
+          [self alertForProblemDocument:problemDoc error:failureError book:book];
+        }
+      }];
     });
     
     [[NYPLBookRegistry sharedRegistry]
@@ -822,8 +824,10 @@ didCompleteWithError:(NSError *)error
             NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
             __weak __auto_type wSelf = self;
             [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
-                                                      authenticationCompletion:^{
-              [wSelf startDownloadForBook:book];
+                                                                    completion:^(BOOL isSignedIn) {
+              if (isSignedIn) {
+                [wSelf startDownloadForBook:book];
+              }
             }];
             return;
           } else {
@@ -1061,8 +1065,10 @@ didCompleteWithError:(NSError *)error
 
             __weak __auto_type wSelf = self;
             [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
-                                                      authenticationCompletion:^{
-              [wSelf startDownloadForBook:book];
+                                                                    completion:^(BOOL isSignedIn) {
+              if (isSignedIn) {
+                [wSelf startDownloadForBook:book];
+              }
             }];
           };
 
@@ -1095,10 +1101,12 @@ didCompleteWithError:(NSError *)error
       }
     }
   } else {
-    [NYPLAccountSignInViewController
-     requestCredentialsWithCompletion:^{
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }];
+    __weak __auto_type wSelf = self;
+    [self.reauthenticator refreshAuthenticationWithCompletion:^(BOOL isSignedIn) {
+      if (isSignedIn) {
+        [wSelf startDownloadForBook:book];
+      }
+    }];
   }
 }
 
@@ -1309,8 +1317,10 @@ didCompleteWithError:(NSError *)error
       NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
       __weak __auto_type wSelf = self;
       [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
-                                                authenticationCompletion:^{
-        [wSelf returnBookWithIdentifier:identifier];
+                                                              completion:^(BOOL isSignedIn) {
+        if (isSignedIn) {
+          [wSelf returnBookWithIdentifier:identifier];
+        }
       }];
     } else {
       [self presentAlertForError:nil orErrorDict:errorDict returningBook:book];
@@ -1556,7 +1566,7 @@ didFinishDownload:(BOOL)didFinishDownload
   // where the barcode and pin are entered but according to ADEPT the device
   // is not authorized. To be used, the account must have a barcode and pin."
   [self.reauthenticator authenticateIfNeededUsingExistingCredentials:YES
-                                            authenticationCompletion:nil];
+                                                          completion:nil];
 }
 
 #endif

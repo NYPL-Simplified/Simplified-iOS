@@ -99,7 +99,10 @@ private enum StorageKey: String {
       return _authDefinition.read()
     }
     set {
-      guard let newValue = newValue else { return }
+      guard let newValue = newValue else {
+        Log.debug(#function, "Attempted to write value for authDefinition but bailed because newValue was nil")
+        return
+      }
       Log.debug(#function, "About to write value \(newValue.authType) for authDefinition")
       _authDefinition.write(newValue)
 
@@ -115,7 +118,7 @@ private enum StorageKey: String {
           AccountsManager.shared.ageCheck.verifyCurrentAccountAgeRequirement(userAccountProvider: self,
                                                                              currentLibraryAccountProvider: AccountsManager.shared) { [weak self] meetsAgeRequirement in
             DispatchQueue.main.async {
-              mainFeed = self?.authDefinition?.coppaURL(isOfAge: meetsAgeRequirement)
+              mainFeed = self?.coppaURL(isOfAge: meetsAgeRequirement)
               resolveFn()
             }
           }
@@ -126,6 +129,46 @@ private enum StorageKey: String {
 
       notifyAccountDidChange()
     }
+  }
+
+  private func possibleAuths() -> [AccountDetails.Authentication] {
+    let libraryAccount: Account?
+    if let libraryUUID = self.libraryUUID {
+      libraryAccount = AccountsManager.shared.account(libraryUUID)
+    } else {
+      libraryAccount = AccountsManager.shared.currentAccount
+    }
+    return libraryAccount?.details?.auths ?? []
+  }
+
+  func coppaURL(isOfAge: Bool) -> URL? {
+    let auths = possibleAuths()
+    let coppaAuth = auths.filter {
+      $0.authType == .coppa
+    }
+
+    return coppaAuth.first?.coppaURL(isOfAge: isOfAge)
+  }
+
+  /// Returns the first Authentication definition available in the
+  /// authentication document.
+  ///
+  /// - Note: This is currently used as a quick way to get the authentication
+  /// definition when signed out from a library with only one authentication
+  /// definition.
+  ///
+  /// - Important: This computed variable is here only for backward
+  /// compatibility. It seems inherently wrong to choose the first definition
+  /// as the default, because this will easily break for library with multiple
+  /// ways to authenticate the user.
+  ///
+  /// - Important: DO NOT USE IN NEW CODE. If the user is signed in, simply use
+  /// the `authDefinition` getter directly instead.
+  var defaultAuthDefinition: AccountDetails.Authentication? {
+    guard let signedInAuthDefinition = authDefinition else {
+      return possibleAuths().first
+    }
+    return signedInAuthDefinition
   }
 
   /// The queue where updates to the `credentials` property happen.
@@ -301,13 +344,17 @@ private enum StorageKey: String {
     return self.authDefinition?.isOauthClientCredentials ?? false
   }
 
+  /// The URL to use to refresh the token in the OAuth Client Credentials flow.
   var oauthTokenRefreshURL: URL? {
-    return self.authDefinition?.oauthIntermediaryUrl
+    let oauthClientCredentialsAuth = possibleAuths().filter {
+      $0.isOauthClientCredentials
+    }.first
+    return oauthClientCredentialsAuth?.oauthIntermediaryUrl
   }
   
   // Oauth requires login to load catalog
   var catalogRequiresAuthentication: Bool {
-    return authDefinition?.catalogRequiresAuthentication ?? false
+    return defaultAuthDefinition?.catalogRequiresAuthentication ?? false
   }
 
   // MARK: - Legacy
@@ -362,11 +409,11 @@ private enum StorageKey: String {
   }
 
   var requiresUserAuthentication: Bool {
-    return authDefinition?.requiresUserAuthentication ?? false
+    return defaultAuthDefinition?.requiresUserAuthentication ?? false
   }
 
   var needsAgeCheck: Bool {
-    return authDefinition?.authType == .coppa
+    return defaultAuthDefinition?.authType == .coppa
   }
 
   var deviceID: String? { _deviceID.read() }

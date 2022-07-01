@@ -57,10 +57,6 @@ class OELoginChoiceViewController : UIViewController {
     firstBookLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     firstBookLoginButton?.layer.borderWidth = 1
 
-    if let navController = navigationController {
-      cleverHelper = OELoginCleverHelper(navigationController: navController, postLoginConfigurator: postLoginConfigurator)
-    }
-
     updateColors()
   }
 
@@ -81,7 +77,13 @@ class OELoginChoiceViewController : UIViewController {
   // MARK: - Actions
   
   @IBAction func didSelectClever() {
-    cleverHelper?.startCleverFlow()
+    // very defensive: in OE there's only one library account, so at this point
+    // the cleverHelper (which requires a lib account) should already be created.
+    if cleverHelper == nil {
+      cleverHelper = makeCleverHelper()
+    }
+
+    cleverHelper?.startCleverFlow(onNavigationController: navigationController)
   }
 
   @IBAction func didSelectFirstBook() {
@@ -114,6 +116,16 @@ class OELoginChoiceViewController : UIViewController {
 
   // MARK: - Private helpers
 
+  private func makeCleverHelper() -> OELoginCleverHelper? {
+    guard let libraryAccount = AccountsManager.shared.currentAccount else {
+      NYPLAlertUtils.presentUnrecoverableAlert(for: "Unable to get library Account instance after selecting First Book as login choice")
+      return nil
+    }
+
+    return OELoginCleverHelper(libraryAccount: libraryAccount,
+                               postLoginConfigurator: postLoginConfigurator)
+  }
+
   private func updateColors() {
     // set up colors per our scheme
     cleverLoginButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
@@ -123,6 +135,4 @@ class OELoginChoiceViewController : UIViewController {
     cleverLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
     firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
   }
-
-  // TODO: IOS-511: see NYPLSignInVC::presentAsModal
 }

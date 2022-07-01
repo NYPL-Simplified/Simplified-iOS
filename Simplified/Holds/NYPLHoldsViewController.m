@@ -267,10 +267,10 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 - (void)didPullToRefresh
 {  
   if ([NYPLUserAccount sharedAccount].requiresUserAuthentication) {
-    if([[NYPLUserAccount sharedAccount] hasCredentials]) {
+    if ([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
-      [NYPLAccountSignInViewController requestCredentialsWithCompletion:nil];
+      [self.reauthenticator refreshAuthenticationWithCompletion:nil];
       [self.refreshControl endRefreshing];
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }

@@ -366,11 +366,12 @@ OK:
 - (void)didPullToRefresh
 {
   if ([NYPLUserAccount sharedAccount].requiresUserAuthentication) {
-    if([[NYPLUserAccount sharedAccount] hasCredentials]) {
+    if ([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
-      [NYPLAccountSignInViewController requestCredentialsWithCompletion:nil];
-      [self.refreshControl endRefreshing];
+      [self.reauthenticator refreshAuthenticationWithCompletion:^(__unused BOOL isSignedIn) {
+        [self.refreshControl endRefreshing];
+      }];
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }
   } else {

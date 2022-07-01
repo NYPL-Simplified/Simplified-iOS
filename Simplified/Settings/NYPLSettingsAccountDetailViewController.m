@@ -1583,7 +1583,7 @@ didEncounterValidationError:(NSError *)error
                                                                 completion:nil];
 }
 
-- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
+- (void)businessLogicDidSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
@@ -1608,7 +1608,7 @@ didEncounterSignOutError:(NSError *)error
 - (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
 {
 #if OPENEBOOKS
-  [((NYPLAppDelegate*)UIApplication.sharedApplication.delegate) setUpRootVC];
+  [((NYPLAppDelegate*)UIApplication.sharedApplication.delegate) setUpRootVCWithUserIsSignedIn:NO];
 #else
   [self removeActivityTitle];
   [self setupTableData];

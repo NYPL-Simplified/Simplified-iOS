@@ -72,7 +72,7 @@
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="username"/>
                                             <connections>
-                                                <action selector="didSelectTextField:" destination="-1" eventType="editingDidBegin" id="roH-R5-aMw"/>
+                                                <action selector="didBeginEditingTextField:" destination="-1" eventType="editingDidBegin" id="F1B-2z-gkn"/>
                                                 <action selector="textFieldDidChange:" destination="-1" eventType="editingChanged" id="eE6-Bd-BcH"/>
                                             </connections>
                                         </textField>
@@ -92,7 +92,7 @@
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                             <connections>
-                                                <action selector="didSelectTextField:" destination="-1" eventType="editingDidBegin" id="G94-3b-jOx"/>
+                                                <action selector="didBeginEditingTextField:" destination="-1" eventType="editingDidBegin" id="IBL-6v-h2V"/>
                                                 <action selector="signIn" destination="-1" eventType="primaryActionTriggered" id="wot-Pe-4GG"/>
                                                 <action selector="textFieldDidChange:" destination="-1" eventType="editingChanged" id="3fl-Xi-zn2"/>
                                             </connections>

@@ -10,22 +10,20 @@ import UIKit
 
 class OELoginCleverHelper: NSObject {
 
-  var signInBusinessLogic: NYPLSignInBusinessLogic!
-  weak var navigationController: UINavigationController?
+  private(set) var signInBusinessLogic: NYPLSignInBusinessLogic!
+  private weak var navigationController: UINavigationController?
   var forceEditability: Bool = false
-  weak var postLoginConfigurator: OEAppUIStructureConfigurating?
+  private weak var postLoginConfigurator: OEAppUIStructureConfigurating?
 
-  init(navigationController: UINavigationController,
+  init(libraryAccount: Account,
        postLoginConfigurator: OEAppUIStructureConfigurating?) {
-    self.navigationController = navigationController
     self.postLoginConfigurator = postLoginConfigurator
 
     super.init()
 
-    let accountManager = AccountsManager.shared
     self.signInBusinessLogic = NYPLSignInBusinessLogic(
-      libraryAccountID: accountManager.currentAccountId!, //TODO
-      libraryAccountsProvider: accountManager,
+      libraryAccountID: libraryAccount.uuid,
+      libraryAccountsProvider: AccountsManager.shared,
       urlSettingsProvider: NYPLSettings.shared,
       bookRegistry: NYPLBookRegistry.shared(),
       bookDownloadsRemover: NYPLMyBooksDownloadCenter.shared(),
@@ -35,7 +33,8 @@ class OELoginCleverHelper: NSObject {
       drmAuthorizerAxis: NYPLAxisDRMAuthorizer.sharedInstance)
   }
 
-  func startCleverFlow() {
+  func startCleverFlow(onNavigationController navController: UINavigationController?) {
+    navigationController = navController
     let cleverAuth = signInBusinessLogic.libraryAccount?.details?.auths.filter { auth in
       auth.isOauthIntermediary
     }.first
@@ -67,11 +66,11 @@ extension OELoginCleverHelper: NYPLSignInOutBusinessLogicUIDelegate {
     // unused
   }
 
-  func businessLogicDidCompleteSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
+  func businessLogicDidSignIn(_ businessLogic: NYPLSignInBusinessLogic) {
     DispatchQueue.main.async {
       assert(businessLogic.userAccount.isSignedIn())
       Log.debug(#function, "about to set up root VC; isSignedIn=\(businessLogic.userAccount.isSignedIn())")
-      self.postLoginConfigurator?.setUpRootVC()
+      self.postLoginConfigurator?.setUpRootVC(userIsSignedIn: true)
     }
   }
 

@@ -14,10 +14,11 @@ extension NYPLSignInBusinessLogic {
   ///
   /// In order, the following tasks are performed:
   /// 1. update the user account for the library we are signing in to,
-  /// 2. call the `refreshAuthCompletion` in case that was set,
-  /// 3. dismiss the presented view controller in case the `uiDelegate` was a modal,
-  /// 4. call the `uiDelegate` `businessLogicDidCompleteSignIn` callback,
-  /// 5. refresh / sync the BookRegistry if DRM authorization was successful.
+  /// 2. if there was a DRM error, notify the user (via uiDelegate) and exit,
+  /// 3. call the `refreshAuthCompletion` in case that was set,
+  /// 4. dismiss the presented view controller in case the `uiDelegate` was a modal,
+  /// 5. call the `uiDelegate` `businessLogicDidSignIn(_:)` callback,
+  /// 6. refresh / sync the BookRegistry.
   ///
   /// - Note: This does not log the error/message to Crashlytics.
   /// - Parameters:
@@ -30,56 +31,54 @@ extension NYPLSignInBusinessLogic {
   func finalizeSignIn(forDRMAuthorization drmSuccess: Bool,
                       error: Error? = nil,
                       errorMessage: String? = nil) {
+
+    self.updateUserAccount(forDRMAuthorization: drmSuccess,
+                           withBarcode: self.uiDelegate?.username,
+                           pin: self.uiDelegate?.pin,
+                           authToken: self.authToken,
+                           patron: self.patron,
+                           cookies: self.cookies)
+
+    guard drmSuccess else {
+      NotificationCenter.default.post(name: .NYPLSyncEnded, object: nil)
+
+      NYPLMainThreadRun.asyncIfNeeded { [self] in
+        self.uiDelegate?.businessLogic(self,
+                                       didEncounterValidationError: error,
+                                       userFriendlyErrorTitle: "SettingsAccountViewControllerLoginFailed",
+                                       andMessage: errorMessage)
+      }
+      return
+    }
+
+    // no need to force a login, as we just logged in successfully
+    self.ignoreSignedInState = false
+
+    let refreshCompletion = self.refreshAuthCompletion
+    self.refreshAuthCompletion = nil
+
     NYPLMainThreadRun.asyncIfNeeded { [self] in
-      defer {
-        Log.debug(#function, "will call didCompleteSignIn async on credentialsUpdateQueue...")
-        self.userAccount.credentialsUpdateQueue.async { [weak self] in
-          guard let self = self else {
-            return
-          }
-          NotificationCenter.default.post(name: .NYPLIsSigningIn, object: false)
-          self.uiDelegate?.businessLogicDidCompleteSignIn(self)
-
-          if drmSuccess {
-            self.refreshBookRegistryIfNeeded()
-          }
-        }
-      }
-
-      self.updateUserAccount(forDRMAuthorization: drmSuccess,
-                             withBarcode: self.uiDelegate?.username,
-                             pin: self.uiDelegate?.pin,
-                             authToken: self.authToken,
-                             patron: self.patron,
-                             cookies: self.cookies)
-
-      #if FEATURE_DRM_CONNECTOR
-      guard drmSuccess else {
-        NotificationCenter.default.post(name: .NYPLSyncEnded, object: nil)
-
-        let alert = NYPLAlertUtils.alert(title: "SettingsAccountViewControllerLoginFailed",
-                                         message: errorMessage,
-                                         error: error as NSError?)
-        NYPLPresentationUtils.safelyPresent(alert, animated: true)
-        return
-      }
-      #endif
-
-      // no need to force a login, as we just logged in successfully
-      self.ignoreSignedInState = false
-
-      let completionHandler = self.refreshAuthCompletion
-      self.refreshAuthCompletion = nil
-
       if !self.isLoggingInAfterSignUp, let vc = self.uiDelegate as? UIViewController {
         // don't dismiss anything if the vc is not even on the view stack
         if vc.view.superview != nil || vc.presentingViewController != nil {
-          self.uiDelegate?.dismiss(animated: true, completion: completionHandler)
+          self.uiDelegate?.dismiss(animated: true, completion: refreshCompletion)
+          self.notifyUIDelegateAndSync()
           return
         }
       }
 
-      completionHandler?()
+      refreshCompletion?()
+      self.notifyUIDelegateAndSync()
+    }
+  }
+
+  private func notifyUIDelegateAndSync() {
+    Log.debug(#function, "will call didCompleteSignIn async on credentialsUpdateQueue...")
+    self.userAccount.credentialsUpdateQueue.async { [weak self] in
+      guard let self = self else { return }
+      NotificationCenter.default.post(name: .NYPLIsSigningIn, object: false)
+      self.uiDelegate?.businessLogicDidSignIn(self)
+      self.refreshBookRegistryIfNeeded()
     }
   }
 
