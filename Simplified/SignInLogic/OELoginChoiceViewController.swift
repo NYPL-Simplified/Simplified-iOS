@@ -128,8 +128,12 @@ class OELoginChoiceViewController : UIViewController {
 
   private func updateColors() {
     // set up colors per our scheme
+    view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
+    navigationController?.navigationBar.tintColor = NYPLConfiguration.actionColor
     cleverLoginButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
-    firstBookLoginButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    firstBookLoginButton?.setTitleColor(NYPLConfiguration.firstBookColor, for: .normal)
+    cleverLoginButton?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
+    firstBookLoginButton?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
     termsButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
     privacyButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
     cleverLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor

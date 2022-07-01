@@ -420,6 +420,7 @@
 		732F474E260B224A00E2CB64 /* NYPLBookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */; };
 		732F474F260B224A00E2CB64 /* NYPLBookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */; };
 		732F929323ECB51F0099244C /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
+		73340FFD286EB98B00537A05 /* OEColors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73340FFC286EB98B00537A05 /* OEColors.xcassets */; };
 		7335BA9F2453C5B6000295F2 /* NYPLReaderPositions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */; };
 		73369F1727862B4500752ECB /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1627862B4500752ECB /* PureLayout */; };
 		73369F1927862B9900752ECB /* NYPLAEToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 73369F1827862B9900752ECB /* NYPLAEToolkit */; };
@@ -1971,6 +1972,7 @@
 		732F04F72638AFC40018A82E /* NYPLLCPClientFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLCPClientFacade.swift; sourceTree = "<group>"; };
 		732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkSpec.swift; sourceTree = "<group>"; };
 		732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBackgroundExecutor.swift; sourceTree = "<group>"; };
+		73340FFC286EB98B00537A05 /* OEColors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = OEColors.xcassets; sourceTree = "<group>"; };
 		7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NYPLReaderPositions.storyboard; sourceTree = "<group>"; };
 		733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkExecutor.swift; sourceTree = "<group>"; };
 		733875662423E540000FEB67 /* NYPLCaching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCaching.swift; sourceTree = "<group>"; };
@@ -3343,6 +3345,7 @@
 				738170142526504800BA2C44 /* GoogleService-Info.plist */,
 				73085E202502E2CD008F6244 /* OpenEBooks_OPDS2_Catalog_Feed.json */,
 				73735306256828EA00FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json */,
+				73340FFC286EB98B00537A05 /* OEColors.xcassets */,
 				7358EE7B250062BD00DDA0CC /* OEImages.xcassets */,
 				7358EE902500642900DDA0CC /* OELaunchScreen.xib */,
 				73E64E6B252BB89A00276953 /* eula.html */,
@@ -4086,6 +4089,7 @@
 				7358EE7C250062BD00DDA0CC /* OEImages.xcassets in Resources */,
 				73B70A34284FCD8100BDF490 /* OELoginNavHeader.xib in Resources */,
 				73043AE32851552C0060FAAA /* OELoginFirstBookVC.xib in Resources */,
+				73340FFD286EB98B00537A05 /* OEColors.xcassets in Resources */,
 				73FCA39825005BA4001B0C5D /* OpenDyslexic3-Bold.ttf in Resources */,
 				7380E70F254B408C004613B1 /* NYPLReaderPositions.storyboard in Resources */,
 				738170152526504800BA2C44 /* GoogleService-Info.plist in Resources */,
@@ -5745,7 +5749,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
@@ -5793,7 +5797,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";

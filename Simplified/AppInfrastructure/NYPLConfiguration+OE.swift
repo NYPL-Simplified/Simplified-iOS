@@ -56,4 +56,22 @@ extension NYPLConfiguration {
     }
     return UIFont(name: NYPLConfiguration.systemFontFamilyName, size: 22.0)
   }
+
+  static var firstBookColor: UIColor {
+    if #available(iOS 11.0, *),
+       let color = UIColor(named: "firstBookColor") {
+      return color
+    } else {
+      return actionColor
+    }
+  }
+
+  static var buttonBackgroundColor: UIColor {
+    if #available(iOS 11.0, *),
+       let color = UIColor(named: "buttonBackgroundColor") {
+      return color
+    } else {
+      return primaryBackgroundColor
+    }
+  }
 }
