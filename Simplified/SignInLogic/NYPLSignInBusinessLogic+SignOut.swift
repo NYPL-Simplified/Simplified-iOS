@@ -124,18 +124,7 @@ extension NYPLSignInBusinessLogic {
                                    didEncounterSignOutError: errorWithProblemDoc,
                                    withHTTPStatusCode: statusCode)
   }
-  #endif
-  
-  private func completeLogOutProcess() {
-    bookDownloadsRemover.reset(libraryAccountID)
-    bookRegistry.reset(libraryAccountID)
-    userAccount.removeAll()
-    networker.resetLibrarySpecificInfo()
-    selectedIDP = nil
-    uiDelegate?.businessLogicDidFinishDeauthorizing(self)
-  }
 
-  #if FEATURE_DRM_CONNECTOR
   private func deauthorizeDevice() {
     guard let licensor = userAccount.licensor else {
       Log.warn(#file, "No Licensor available to deauthorize device. Will remove user credentials anyway.")
@@ -186,4 +175,13 @@ extension NYPLSignInBusinessLogic {
     }
   }
   #endif
+
+  private func completeLogOutProcess() {
+    bookDownloadsRemover.reset(libraryAccountID)
+    bookRegistry.reset(libraryAccountID)
+    userAccount.removeAll()
+    networker.resetLibrarySpecificInfo()
+    selectedIDP = nil
+    uiDelegate?.businessLogicDidFinishDeauthorizing(self)
+  }
 }

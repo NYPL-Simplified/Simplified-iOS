@@ -1,7 +1,6 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
-#import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLBook.h"

@@ -164,17 +164,11 @@ private enum StorageKey: String {
 
       _credentials.write(newValue)
 
-      // make sure to set the barcode related to the current account (aka library)
-      // not the one we just signed in to, because we could have signed in into
-      // library A, but still browsing the catalog of library B.
-      if case let .barcodeAndPin(barcode: userBarcode, pin: _) = newValue {
-        NYPLErrorLogger.setUserID(userBarcode)
-      }
+      setCrashReportingUserID(barcode)
 
       notifyAccountDidChange()
     }
   }
-
 
   /// At all times, this returns the current user account.
   ///
@@ -189,7 +183,16 @@ private enum StorageKey: String {
     // document has been loaded.
     return sharedAccount(libraryUUID: AccountsManager.shared.currentAccountId)
   }
-    
+
+  /// CHANGES the user account singleton to work as the user account for the
+  /// given library.
+  ///
+  /// This function is deprecated.
+  ///
+  /// - Important: This "getter" function has side effects. Avoid using it.
+  /// - Parameter libraryUUID: The UUID of the library.
+  /// - Returns: The shared NYPLUserAccount instance with its libraryUUID
+  /// changed to match the one provided in input.
   class func sharedAccount(libraryUUID: String?) -> NYPLUserAccount {
     shared.accountInfoLock.lock()
     defer {
@@ -512,10 +515,20 @@ private enum StorageKey: String {
     _deviceID.write(id)
     notifyAccountDidChange()
   }
-    
+
+  private func setCrashReportingUserID(_ userID: String?) {
+    // make sure to set the barcode related to the current account (aka library)
+    // not the one we just signed in to, because we could have signed in into
+    // library A, but still browsing the catalog of library B.
+    if libraryUUID == AccountsManager.shared.currentAccountId {
+      NYPLErrorLogger.setUserID(userID)
+    }
+  }
+
   // MARK: - Remove
 
   func removeAll() {
+    setCrashReportingUserID(nil)
     keychainTransaction.perform {
       _adobeToken.write(nil)
       _patron.write(nil)

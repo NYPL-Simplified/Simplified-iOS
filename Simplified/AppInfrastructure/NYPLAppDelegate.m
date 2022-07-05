@@ -4,7 +4,6 @@
 
 #import "SimplyE-Swift.h"
 
-#import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"

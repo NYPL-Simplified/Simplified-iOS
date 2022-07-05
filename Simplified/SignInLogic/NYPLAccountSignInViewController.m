@@ -7,7 +7,6 @@
 #import "NYPLAppDelegate.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"
@@ -1005,14 +1004,17 @@ didEncounterValidationError:(NSError *)error
 didEncounterSignOutError:(NSError *)error
       withHTTPStatusCode:(NSInteger)statusCode
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 - (void)businessLogicWillSignOut:(NYPLSignInBusinessLogic *)businessLogic
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 - (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 @end

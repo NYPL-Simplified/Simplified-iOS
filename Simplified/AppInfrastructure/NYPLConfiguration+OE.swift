@@ -63,9 +63,9 @@ extension NYPLConfiguration {
 
   static func welcomeScreenFont() -> UIFont? {
     if UIDevice.current.userInterfaceIdiom == .phone {
-      return UIFont(name: NYPLConfiguration.systemFontFamilyName(),
+      return UIFont(name: NYPLConfiguration.systemFontFamilyName,
                     size: 16.0)
     }
-    return UIFont(name: NYPLConfiguration.systemFontFamilyName(), size: 22.0)
+    return UIFont(name: NYPLConfiguration.systemFontFamilyName, size: 22.0)
   }
 }

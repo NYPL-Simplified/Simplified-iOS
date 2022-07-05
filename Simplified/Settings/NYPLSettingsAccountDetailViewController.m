@@ -5,7 +5,6 @@
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogNavigationController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLOPDS.h"
@@ -22,7 +21,7 @@
 #endif
 
 typedef NS_ENUM(NSInteger, CellKind) {
-  CellKindAdvancedSettings,
+  CellKindDeleteServerData,
   CellKindAgeCheck,
   CellKindBarcodeImage,
   CellKindBarcode,
@@ -34,10 +33,17 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindAbout,
   CellKindPrivacyPolicy,
   CellKindContentLicense,
-  CellReportIssue
+  CellReportIssue,
+  CellKindDeleteLibraryAccount
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLSignInOutBusinessLogicUIDelegate>
+typedef NS_ENUM(NSInteger, AccountDetailSection) {
+  AccountInfoSection,
+  SyncSection,
+  DeleteServerDataSection
+};
+
+@interface NYPLSettingsAccountDetailViewController () <NYPLSignInOutBusinessLogicUIDelegate, NYPLServerDataDeleting>
 
 // view state
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
@@ -61,6 +67,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UIView *accountInfoHeaderView;
 @property (nonatomic) UIView *accountInfoFooterView;
 @property (nonatomic) UIView *syncFooterView;
+@property (nonatomic) UIView *deleteServerDataFooterView;
 @property (nonatomic) UIActivityIndicatorView *juvenileActivityView;
 
 // account state
@@ -71,10 +78,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 static const NSInteger sLinearViewTag = 1111;
 static const CGFloat sVerticalMarginPadding = 2.0;
-
-// table view sections indeces
-static const NSInteger sSection0AccountInfo = 0;
-static const NSInteger sSection1Sync = 1;
 
 // Constraint constants
 static const CGFloat sConstantZero = 0.0;
@@ -405,7 +408,7 @@ Authenticating with any of those barcodes should work.
   return authCells;
 }
 
-- (NSArray *) accountInfoSection {
+- (NSArray *) cellKindForAccountInfoSection {
   NSMutableArray *workingSection = @[].mutableCopy;
   if (self.businessLogic.selectedAuthentication.needsAgeCheck) {
     workingSection = @[@(CellKindAgeCheck)].mutableCopy;
@@ -459,25 +462,30 @@ Authenticating with any of those barcodes should work.
 
 - (void)setupTableData
 {
-  NSArray *section0AcctInfo = [self accountInfoSection];
-
-  NSMutableArray *section2About = [[NSMutableArray alloc] init];
+  NSArray *section0AcctInfo = [self cellKindForAccountInfoSection];
+  NSMutableArray *section1Sync = [[NSMutableArray alloc] init];
+  NSMutableArray *section2DeleteServerData = [[NSMutableArray alloc] init];
+  NSMutableArray *section3About = [[NSMutableArray alloc] init];
+  
   if ([self.selectedAccount.details getLicenseURL:URLTypePrivacyPolicy]) {
-    [section2About addObject:@(CellKindPrivacyPolicy)];
+    [section3About addObject:@(CellKindPrivacyPolicy)];
   }
   if ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) {
-    [section2About addObject:@(CellKindContentLicense)];
+    [section3About addObject:@(CellKindContentLicense)];
   }
-  NSMutableArray *section1Sync = [[NSMutableArray alloc] init];
+  
   if ([self.businessLogic shouldShowSyncButton]) {
     [section1Sync addObject:@(CellKindSyncButton)];
-    [section2About addObject:@(CellKindAdvancedSettings)];
+  }
+  
+  if ([self.businessLogic isSignedIn]) {
+    [section2DeleteServerData addObject:@(CellKindDeleteServerData)];
   }
   
   if ([self.businessLogic registrationIsPossible]) {
-    self.tableData = @[section0AcctInfo, @[@(CellKindRegistration)], section1Sync].mutableCopy;
+    self.tableData = @[section0AcctInfo, @[@(CellKindRegistration)], section1Sync, section2DeleteServerData].mutableCopy;
   } else {
-    self.tableData = @[section0AcctInfo, section1Sync].mutableCopy;
+    self.tableData = @[section0AcctInfo, section1Sync, section2DeleteServerData].mutableCopy;
   }
 
   if ([self.businessLogic juvenileCardsManagementIsPossible]) {
@@ -488,7 +496,22 @@ Authenticating with any of those barcodes should work.
     [self.tableData addObject:@[@(CellReportIssue)]];
   }
   
-  [self.tableData addObject:section2About];
+  [self.tableData addObject:section3About];
+
+#ifdef SIMPLYE
+  NSMutableArray *section4DeleteAccount = [[NSMutableArray alloc] init];
+  
+  if ([self.businessLogic isSignedIn]) {
+    // TODO: iOS-412 Unsubscribe from email
+    
+    if (self.selectedAccount.supportEmail != nil
+        && [self.selectedAccount.details supportsCardCreator]) {
+      [section4DeleteAccount addObject:@(CellKindDeleteLibraryAccount)];
+    }
+  }
+  
+  [self.tableData addObject:section4DeleteAccount];
+#endif
 
   // compute final tableview contents, adding all non-empty sections
   NSMutableArray *finalTableContents = [[NSMutableArray alloc] init];
@@ -670,9 +693,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindSyncButton: {
       break;
     }
-    case CellKindAdvancedSettings: {
-      NYPLSettingsAdvancedViewController *vc = [[NYPLSettingsAdvancedViewController alloc] initWithAccount:self.selectedAccountId];
-      [self.navigationController pushViewController:vc animated:YES];
+    case CellKindDeleteServerData: {
+      NYPLSettingsDeleteServerDataViewController *vc = [[NYPLSettingsDeleteServerDataViewController alloc] initWithDelegate:self];
+      UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:vc];
+      [self presentViewController:navVC animated:YES completion:nil];
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       break;
     }
     case CellKindBarcodeImage: {
@@ -727,6 +752,21 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       title:NSLocalizedString(@"Content Licenses", nil)
                                       failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       [self.navigationController pushViewController:vc animated:YES];
+      break;
+    }
+    case CellKindDeleteLibraryAccount: {
+#ifdef SIMPLYE
+      if (self.selectedAccount.supportEmail.length != 0
+          && self.selectedUserAccount.authorizationIdentifier.length != 0) {
+        NYPLSettingsDeleteLibraryCardViewController *vc = [[NYPLSettingsDeleteLibraryCardViewController alloc]
+                                                           initWithEmail:self.selectedAccount.supportEmail
+                                                           barcode:self.selectedUserAccount.authorizationIdentifier
+                                                           libraryName:self.selectedAccount.name];
+        UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:vc];
+        [self presentViewController:navVC animated:YES completion:nil];
+      }
+#endif
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       break;
     }
   }
@@ -1057,16 +1097,55 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.hidden = ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
       return cell;
     }
-    case CellKindAdvancedSettings: {
+    case CellKindDeleteServerData: {
       UITableViewCell *cell = [[UITableViewCell alloc]
                                initWithStyle:UITableViewCellStyleDefault
                                reuseIdentifier:nil];
-      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = NSLocalizedString(@"Advanced", nil);
+#ifdef SIMPLYE
+      cell.textLabel.text = NSLocalizedString(@"Delete my SimplyE Data", nil);
+#else
+      cell.textLabel.text = NSLocalizedString(@"Delete my Open eBooks Data", nil);
+#endif
+      
+      cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
+      
+      UIImageView *imageView = [self rightArrowImageView];
+      imageView.tintColor = NYPLConfiguration.deleteActionColor;
+      cell.accessoryView = imageView;
+      
+      return cell;
+    }
+    case CellKindDeleteLibraryAccount: {
+      UITableViewCell *cell = [[UITableViewCell alloc]
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+      cell.textLabel.text = NSLocalizedString(@"Delete Library Card", nil);
+      cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
+      
+      UIImageView *imageView = [self rightArrowImageView];
+      imageView.tintColor = NYPLConfiguration.deleteActionColor;
+      cell.accessoryView = imageView;
+      
       return cell;
     }
   }
+}
+
+- (UIImageView *)rightArrowImageView {
+  UIImage *image;
+  if (@available(iOS 13.0, *)) {
+    image = [UIImage systemImageNamed:@"chevron.right"];
+  } else {
+    image = [[UIImage imageNamed:@"ArrowRight"]
+             imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  }
+  
+  UIImageView *imageView = [[UIImageView alloc]
+                            initWithFrame:CGRectMake(0, 0, image.size.width, image.size.height)];
+  imageView.image = image;
+  return imageView;
 }
 
 - (UITableViewCell *)createRegistrationCell
@@ -1116,30 +1195,32 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-  if (section == sSection0AccountInfo) {
+  if (section == AccountInfoSection) {
     return UITableViewAutomaticDimension;
   }
   return 0;
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
 {
-  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
+  if ((section == AccountInfoSection && [self.businessLogic shouldShowEULALink]) ||
+      (section == SyncSection && [self.businessLogic shouldShowSyncButton]) ||
+      (section == DeleteServerDataSection && [self.businessLogic isSignedIn])) {
     return UITableViewAutomaticDimension;
   }
   return 0;
 }
 -(CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
 {
-  if (section == sSection0AccountInfo) {
+  if (section == AccountInfoSection) {
     return 80;
   }
   return 0;
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForFooterInSection:(__unused NSInteger)section
 {
-  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
+  if ((section == AccountInfoSection && [self.businessLogic shouldShowEULALink]) ||
+      (section == SyncSection && [self.businessLogic shouldShowSyncButton]) ||
+      (section == DeleteServerDataSection && [self.businessLogic isSignedIn])) {
     return 44;
   }
   return 0;
@@ -1156,7 +1237,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-  if (section == sSection0AccountInfo) {
+  if (section == AccountInfoSection) {
     UIView *containerView = [[UIView alloc] init];
     containerView.preservesSuperviewLayoutMargins = YES;
     UILabel *titleLabel = [[UILabel alloc] init];
@@ -1199,8 +1280,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
   // something's wrong, it gets called every refresh cycle when scrolling
-  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
-      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
+  if ((section == AccountInfoSection && [self.businessLogic shouldShowEULALink]) ||
+      (section == SyncSection && [self.businessLogic shouldShowSyncButton]) ||
+      (section == DeleteServerDataSection && [self.businessLogic isSignedIn])) {
+    
+    if (section == AccountInfoSection && self.accountInfoFooterView) {
+      return self.accountInfoFooterView;
+    } else if (section == SyncSection && self.syncFooterView) {
+      return self.syncFooterView;
+    } else if (section == DeleteServerDataSection && self.deleteServerDataFooterView) {
+      return self.deleteServerDataFooterView;
+    }
 
     UIView *container = [[UIView alloc] init];
     container.preservesSuperviewLayoutMargins = YES;
@@ -1209,25 +1299,33 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
-    NSMutableAttributedString *eulaString;
-    if (section == sSection0AccountInfo) {
+    NSMutableAttributedString *footerString;
+    if (section == AccountInfoSection) {
       [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
       NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
                                           [NYPLConfiguration actionColor],
                                         NSUnderlineStyleAttributeName :
                                           @(NSUnderlineStyleSingle) };
-      eulaString = [[NSMutableAttributedString alloc]
-                    initWithString:NSLocalizedString(@"By signing in, you agree to the End User License Agreement.", nil) attributes:linkAttributes];
-    } else { // sync section
+      footerString = [[NSMutableAttributedString alloc]
+                      initWithString:NSLocalizedString(@"By signing in, you agree to the End User License Agreement.", nil) attributes:linkAttributes];
+    } else if (section == SyncSection) { // sync section
       NSDictionary *attrs;
       attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration primaryTextColor] };
-      eulaString = [[NSMutableAttributedString alloc]
-                    initWithString:NSLocalizedString(@"Save your reading position and bookmarks to all your other devices.",
-                                                     @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
-                    attributes:attrs];
+      footerString = [[NSMutableAttributedString alloc]
+                      initWithString:NSLocalizedString(@"Save your reading position and bookmarks to all your other devices.",
+                                                       @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
+                      attributes:attrs];
+    } else { // Delete Server Data
+      NSDictionary *attrs;
+      attrs = @{ NSForegroundColorAttributeName : [NYPLConfiguration primaryTextColor] };
+      footerString = [[NSMutableAttributedString alloc]
+                      initWithString:NSLocalizedString(@"Delete all the bookmarks you have saved in the cloud.",
+                                                       @"Explain to the user they can delete their bookmarks in the cloud.")
+                      attributes:attrs];
+
     }
-    footerLabel.attributedText = eulaString;
+    footerLabel.attributedText = footerString;
 
     [container addSubview:footerLabel];
     [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
@@ -1235,10 +1333,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8.0];
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:16.0 relation:NSLayoutRelationGreaterThanOrEqual];
 
-    if (section == sSection0AccountInfo) {
+    if (section == AccountInfoSection) {
       self.accountInfoFooterView = container;
-    } else if (section == sSection1Sync) {
+    } else if (section == SyncSection) {
       self.syncFooterView = container;
+    } else if (section == DeleteServerDataSection) {
+      self.deleteServerDataFooterView = container;
     }
 
     return container;
@@ -1609,8 +1709,27 @@ didEncounterSignOutError:(NSError *)error
 
 - (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
 {
+#if OPENEBOOKS
+  [((NYPLAppDelegate*)UIApplication.sharedApplication.delegate) setUpRootVC];
+#else
   [self removeActivityTitle];
   [self setupTableData];
+#endif
+}
+
+#pragma mark - NYPLServerDataDeleting Delegate
+
+- (void)didDeleteServerData {
+  [self dismissViewControllerAnimated:YES completion:^{
+    [[AccountsManager shared] account:self.selectedAccountId].details.syncPermissionGranted = NO;
+    NYPLSettings.shared.userHasSeenFirstTimeSyncMessage = NO;
+    
+    // Present alert and update sync button
+    self.syncSwitch.enabled = NO;
+    NSString *alertTitle = NSLocalizedString(@"You have successfully deleted your SimplyE data", nil);
+    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:alertTitle message:nil];
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:self animated:YES completion:nil];
+  }];
 }
 
 @end

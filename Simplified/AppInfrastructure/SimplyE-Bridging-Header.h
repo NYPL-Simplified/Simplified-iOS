@@ -26,7 +26,6 @@
 #import "NYPLCatalogFeedViewController.h"
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLCatalogGroupedFeed.h"
-#import "NYPLConfiguration.h"
 #import "NYPLFacetView.h"
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLKeychain.h"

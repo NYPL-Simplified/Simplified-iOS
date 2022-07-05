@@ -257,12 +257,37 @@
 "Under 13" = "Meno di 13";
 "13 or Older" = "13 o di più";
 
-// NYPLSettingsAdvancedViewController
-"Advanced" = "Impostazioni avanzate";
-"Selecting \"Delete\" will remove all bookmarks from the server for %@." = "Selezionando  \"Rimuovi\" cancellerai tutti i tuoi segnalibri dal server per %@.";
-"Delete Server Data" = "Rimuovi dati dal server";
+// Account / Data deletion
+"Delete my SimplyE Data" = "Rimuovi i miei dati di SimplyE";
+"Delete my Open eBooks Data" = "Rimuovi i miei dati di Open eBooks";
+"Delete Reading Data" = "Rimozione dati";
 "Please wait..." = "Attendere, prego...";
 "Delete all the bookmarks you have saved in the cloud." = "Tutti i segnalibri salvati sul server saranno rimossi.";
+"You have successfully deleted your SimplyE data" = "I tuoi dati di SimplyE sono stati rimossi";
+"Unsubscribe from emails" = "Rimuovimi dalle email";
+"E-Mail to cancel your library card" = "Manda una mail per cancellare la tua tessera";
+"If the above link does not work, please email us at" = "Se il link soprastante non funziona, manda una mail a";
+"Delete Library Card" = "Cancella la mia tessera";
+"Delete Data Failed" = "Si è verificato un problema nella cancellazione dei dati";
+"Thank You" = "Grazie";
+"Your email has been sent." = "La tua mail è stata inviata.";
+"DeleteServerDataDescriptionSimplyE" = "SimplyE non crea nessun account a parte la tessera della biblioteca. I dati che SimplyE salva sono:
+
+• le informazioni della tua tessera che ti consentono di accedere alla biblioteca
+• l'ultimo punto raggiunto nei libri che stai leggendo o ascoltando
+• i segnalibri che hai creato nei libri che stai leggendo
+
+Le informazioni del tuo account sono salvate esternamente al tuo iPhone / iPad solo col tuo consenso. Se vuoi che siano cancellati solamente i tuoi segnalibri o i punti di lettura, vai alla pagina dello schermo precedente e imposta \"Sincronizza i segnalibri\" su \"spento\". Poi torna su questa pagina e seleziona \"Rimozione dati\". A questo punto puoi disconnetterti, e SimplyE non salverà più nessun dato.";
+"DeleteServerDataDescriptionOpeneBooks" = "Open eBooks non crea nessun account a parte la tessera della biblioteca. I dati che Open eBooks salva sono:
+
+• le informazioni della tua tessera che ti consentono di accedere alla biblioteca
+• l'ultimo punto raggiunto nei libri che stai leggendo o ascoltando
+• i segnalibri che hai creato nei libri che stai leggendo
+
+Le informazioni del tuo account sono salvate esternamente al tuo iPhone / iPad solo col tuo consenso. Se vuoi che siano cancellati solamente i tuoi segnalibri o i punti di lettura, vai alla pagina dello schermo precedente e imposta \"Sincronizza i segnalibri\" su \"spento\". Poi torna su questa pagina e seleziona \"Rimozione dati\". A questo punto puoi disconnetterti, e Open eBooks non salverà più nessun dato.";
+"DeleteLibraryCardDescription" = "Cancellare il tuo account o tutti i tuoi dati personali richiede la cancellazione della tua tessera della biblioteca.
+
+Ciò significa che non avrai più accesso agli ebooks, audiobooks, database e altre risorse digitali. Non potrai più usare la tua tessera neanche alle succursali locali. Se vuoi procedere, per proteggere la tua privacy contattaci via email.";
 
 // Open eBooks
 "Welcome to Open eBooks" = "Benvenuti a Open eBooks!";

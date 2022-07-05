@@ -1,7 +1,6 @@
 @import PureLayout;
 #import "SimplyE-Swift.h"
 
-#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLLocalization.h"

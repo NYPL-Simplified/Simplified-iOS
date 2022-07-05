@@ -2,7 +2,6 @@
 #import "NYPLCatalogGroupedFeedViewController.h"
 #import "NYPLCatalogUngroupedFeed.h"
 #import "NYPLCatalogUngroupedFeedViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLOPDS.h"
 #import "NYPLXML.h"
 #import "SimplyE-Swift.h"

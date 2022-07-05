@@ -185,7 +185,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   }
     
   func syncBookmarks(completion: @escaping (Bool, [NYPLReadiumBookmark]) -> ()) {
-    NYPLReachability.shared()?.reachability(for: NYPLConfiguration.mainFeedURL(),
+    NYPLReachability.shared()?.reachability(for: NYPLConfiguration.mainFeedURL,
                                             timeoutInternal: 8.0,
                                             handler: { (reachable) in
       guard reachable else {
