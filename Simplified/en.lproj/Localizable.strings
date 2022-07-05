@@ -223,6 +223,8 @@
 "Please log out and try your card information again." = "Please log out and try your card information again.";
 "Sign-in Error" = "Sign-in Error";
 "We could not find a match for the credentials provided." = "We could not find a match for the credentials provided.";
+"You have timed out. Please sign back in." = "You have timed out. Please sign back in.";
+"Sign in on Clever" = "Sign in on Clever";
 
 // MARK: - sign up / card creation
 "Need a library card for your child?" = "Need a library card for your child?";
