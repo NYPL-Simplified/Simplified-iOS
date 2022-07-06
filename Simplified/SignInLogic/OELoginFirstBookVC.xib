@@ -87,10 +87,13 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PIN" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="5Ha-4R-aDH" userLabel="PIN Field">
+                                        <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PIN" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="5Ha-4R-aDH" userLabel="PIN Field" customClass="NYPLPasswordField" customModule="SimplyE" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="15.5" width="498" height="34"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="eyeImage" value="Eye"/>
+                                            </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="didBeginEditingTextField:" destination="-1" eventType="editingDidBegin" id="IBL-6v-h2V"/>
                                                 <action selector="signIn" destination="-1" eventType="primaryActionTriggered" id="wot-Pe-4GG"/>
@@ -168,7 +171,13 @@
             <point key="canvasLocation" x="133.0078125" y="122.10834553440702"/>
         </view>
     </objects>
+    <designables>
+        <designable name="5Ha-4R-aDH">
+            <size key="intrinsicContentSize" width="56.5" height="34"/>
+        </designable>
+    </designables>
     <resources>
+        <image name="Eye" width="24" height="24"/>
         <image name="LogoFirstBook" width="47" height="40"/>
         <systemColor name="linkColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

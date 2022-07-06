@@ -941,6 +941,7 @@
 		73BDB07A25F198D200556C35 /* R2Streamer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73BDB08325F1992B00556C35 /* R2Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73BF0CCE245769D80009FC61 /* NYPLReaderTOCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7386C1F9245276CA004C78BD /* NYPLReaderTOCCell.swift */; };
+		73C06B542876527C005CDA5B /* NYPLPasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C06B4F2876527C005CDA5B /* NYPLPasswordField.swift */; };
 		73C3CF5425C8EB6900CA8166 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		73C3CF5525C8EB6A00CA8166 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		73C3CF5725C8EB6B00CA8166 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
@@ -1972,6 +1973,7 @@
 		732F04F72638AFC40018A82E /* NYPLLCPClientFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLLCPClientFacade.swift; sourceTree = "<group>"; };
 		732F474A260B224A00E2CB64 /* NYPLBookmarkSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkSpec.swift; sourceTree = "<group>"; };
 		732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBackgroundExecutor.swift; sourceTree = "<group>"; };
+		7332FA3A28764B7800537D07 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		73340FFC286EB98B00537A05 /* OEColors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = OEColors.xcassets; sourceTree = "<group>"; };
 		7335BA9A2453C48F000295F2 /* NYPLReaderPositions.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NYPLReaderPositions.storyboard; sourceTree = "<group>"; };
 		733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkExecutor.swift; sourceTree = "<group>"; };
@@ -2092,6 +2094,7 @@
 		73B80BAA25509B43000BCAC1 /* NYPLSignInBusinessLogic+CardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSignInBusinessLogic+CardCreation.swift"; sourceTree = "<group>"; };
 		73BC285C269F96C00037930A /* NYPLReaderSettings+Conversions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLReaderSettings+Conversions.swift"; sourceTree = "<group>"; };
 		73BC2869269F995E0037930A /* NYPLReaderSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderSettingsTests.swift; sourceTree = "<group>"; };
+		73C06B4F2876527C005CDA5B /* NYPLPasswordField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLPasswordField.swift; sourceTree = "<group>"; };
 		73C3CF5925CB8D6100CA8166 /* NYPLNetworkExecutorMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkExecutorMock.swift; sourceTree = "<group>"; };
 		73CB8CC8285012D700603BA1 /* OELoginNavHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OELoginNavHeader.swift; sourceTree = "<group>"; };
 		73CC48A4260BFC4800F1E2C3 /* NYPLReadiumBookmark+Compare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLReadiumBookmark+Compare.swift"; sourceTree = "<group>"; };
@@ -3419,6 +3422,7 @@
 				113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */,
 				1111973A19880E8D0014462F /* NYPLLinearView.h */,
 				1111973B19880E8D0014462F /* NYPLLinearView.m */,
+				73C06B4F2876527C005CDA5B /* NYPLPasswordField.swift */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
 				17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */,
@@ -3504,6 +3508,7 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7332FA3A28764B7800537D07 /* UIKit.framework */,
 				176F8A802519684D00CE5BFB /* AudioEngine.xcframework */,
 				03B092291E7885A600AD338D /* AudioToolbox.framework */,
 				03B0922B1E7886C900AD338D /* AVFoundation.framework */,
@@ -3828,7 +3833,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = NYPL;
-				LastSwiftUpdateCheck = 0730;
+				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1330;
 				ORGANIZATIONNAME = NYPL;
 				TargetAttributes = {
@@ -5033,6 +5038,7 @@
 				73085E30250308A4008F6244 /* NYPLSettingsSplitViewController.swift in Sources */,
 				73FCA33825005BA4001B0C5D /* NYPLOPDSEntry.m in Sources */,
 				73FCA33A25005BA4001B0C5D /* NYPLIndeterminateProgressView.m in Sources */,
+				73C06B542876527C005CDA5B /* NYPLPasswordField.swift in Sources */,
 				73FCA33B25005BA4001B0C5D /* NSString+NYPLStringAdditions.m in Sources */,
 				73FCA33C25005BA4001B0C5D /* NYPLKeychainManager.swift in Sources */,
 				73FCA33D25005BA4001B0C5D /* NYPLCookiesWebViewController.swift in Sources */,
@@ -5749,7 +5755,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
@@ -5797,7 +5803,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
