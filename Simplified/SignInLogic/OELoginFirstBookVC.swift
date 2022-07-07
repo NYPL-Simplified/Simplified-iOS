@@ -19,7 +19,7 @@ class OELoginFirstBookVC: UIViewController {
   @IBOutlet var accessCodeLabel: UILabel!
   @IBOutlet var accessCodeField: UITextField!
   @IBOutlet var pinLabel: UILabel!
-  @IBOutlet var pinField: UITextField!
+  @IBOutlet var pinField: NYPLPasswordField!
 
   @IBOutlet var signInButton: UIButton!
   @IBOutlet var spinner: UIActivityIndicatorView!
