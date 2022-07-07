@@ -1,16 +1,6 @@
 {
   "images" : [
     {
-      "filename" : "oe-for-any.pdf",
-      "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "light"
-        }
-      ],
       "filename" : "oe-for-light.pdf",
       "idiom" : "universal"
     },

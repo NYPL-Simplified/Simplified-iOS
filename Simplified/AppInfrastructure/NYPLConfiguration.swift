@@ -87,4 +87,16 @@ class NYPLConfiguration: NSObject {
   static var cornerRadius: CGFloat {
     return 5
   }
+
+  static var shadowRadius: CGFloat {
+    return 2
+  }
+
+  static var shadowOpacity: Float {
+    return 0.9
+  }
+
+  static var shadowOffset: CGSize {
+    return CGSize(width: 0, height: 1)
+  }
 }

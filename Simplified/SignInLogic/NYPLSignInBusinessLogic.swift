@@ -205,6 +205,17 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
         return userAccount.authDefinition
       }
       guard let auths = libraryAccount?.details?.auths else { return nil }
+
+      #if OPENEBOOKS
+      if userAccount.barcode != nil {
+        let firstBook = auths.filter { $0.isOauthClientCredentials }
+        return firstBook.first
+      } else if userAccount.authToken != nil {
+        let clever = auths.filter { $0.isOauthIntermediary }
+        return clever.first
+      }
+      #endif
+
       guard auths.count == 1 else { return nil }
 
       return auths.first
