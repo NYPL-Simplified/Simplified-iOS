@@ -26,7 +26,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="r7H-2F-5yY" userLabel="Header Stack View">
-                    <rect key="frame" x="20" y="35.5" width="280" height="58.5"/>
+                    <rect key="frame" x="20" y="25.5" width="280" height="58.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Get Started" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kBk-Yz-S6I">
                             <rect key="frame" x="70" y="0.0" width="140.5" height="31.5"/>
@@ -42,8 +42,8 @@
                         </label>
                     </subviews>
                 </stackView>
-                <stackView opaque="NO" contentMode="scaleAspectFit" verticalHuggingPriority="751" horizontalCompressionResistancePriority="751" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="7se-wG-U8e" userLabel="Buttons Stack View">
-                    <rect key="frame" x="10.5" y="174" width="299.5" height="132"/>
+                <stackView opaque="NO" contentMode="scaleAspectFit" verticalHuggingPriority="751" horizontalCompressionResistancePriority="751" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="7se-wG-U8e" userLabel="Buttons Stack View">
+                    <rect key="frame" x="10.5" y="164" width="299.5" height="152"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mNl-Kk-26v">
                             <rect key="frame" x="0.0" y="0.0" width="299.5" height="56"/>
@@ -63,7 +63,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2FO-PV-W8O">
-                            <rect key="frame" x="0.0" y="76" width="299.5" height="56"/>
+                            <rect key="frame" x="0.0" y="96" width="299.5" height="56"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                             <inset key="contentEdgeInsets" minX="30" minY="8" maxX="30" maxY="8"/>
                             <inset key="titleEdgeInsets" minX="-8" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -85,7 +85,7 @@
                     </constraints>
                 </stackView>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="xrU-C6-Ubg" userLabel="Footer Stack View">
-                    <rect key="frame" x="20" y="386" width="280" height="73"/>
+                    <rect key="frame" x="20" y="396" width="280" height="73"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TVY-67-KcQ">
                             <rect key="frame" x="97" y="0.0" width="86" height="29"/>
