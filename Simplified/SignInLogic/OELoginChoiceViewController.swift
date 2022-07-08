@@ -173,11 +173,16 @@ class OELoginChoiceViewController : UIViewController {
     cleverLoginButton?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
     firstBookLoginButton?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
     if #available(iOS 13.0, *), UIScreen.main.traitCollection.userInterfaceStyle == .dark {
-      cleverLoginButton?.setTitleColor(NYPLConfiguration.primaryTextColor, for: .highlighted)
-      firstBookLoginButton?.setTitleColor(NYPLConfiguration.primaryTextColor, for: .highlighted)
+      [cleverLoginButton, firstBookLoginButton].forEach {
+        $0?.setTitleColor(NYPLConfiguration.primaryTextColor, for: .highlighted)
+        $0?.layer.borderWidth = 1
+        $0?.layer.borderColor = NYPLConfiguration.fieldBorderColor.cgColor
+      }
     } else {
-      cleverLoginButton?.setTitleColor(NYPLConfiguration.cleverColor, for: .highlighted)
-      firstBookLoginButton?.setTitleColor(NYPLConfiguration.firstBookColor, for: .highlighted)
+      [cleverLoginButton, firstBookLoginButton].forEach {
+        $0?.setTitleColor(NYPLConfiguration.cleverColor, for: .highlighted)
+        $0?.layer.borderWidth = 0
+      }
     }
   }
 }
