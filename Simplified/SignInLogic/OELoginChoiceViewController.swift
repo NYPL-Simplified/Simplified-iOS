@@ -86,15 +86,6 @@ class OELoginChoiceViewController : UIViewController {
       return
     }
 
-    if #available(iOS 13.0, *), UIScreen.main.traitCollection.userInterfaceStyle == .dark {
-      if button == cleverLoginButton {
-        button.backgroundColor = NYPLConfiguration.cleverColor
-      } else if button == firstBookLoginButton {
-        button.backgroundColor = NYPLConfiguration.firstBookColor
-      }
-      return
-    }
-
     button.backgroundColor = NYPLConfiguration.secondaryBackgroundColor
   }
 
@@ -160,29 +151,30 @@ class OELoginChoiceViewController : UIViewController {
     // set up colors per our scheme
     view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     navigationController?.navigationBar.tintColor = NYPLConfiguration.actionColor
-    cleverLoginButton?.setTitleColor(NYPLConfiguration.cleverColor, for: .normal)
-    firstBookLoginButton?.setTitleColor(NYPLConfiguration.firstBookColor, for: .normal)
+    if #available(iOS 13.0, *), UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+      cleverLoginButton?.setTitleColor(NYPLConfiguration.primaryTextColor, for: .normal)
+      firstBookLoginButton?.setTitleColor(NYPLConfiguration.primaryTextColor, for: .normal)
+    } else {
+      cleverLoginButton?.setTitleColor(NYPLConfiguration.cleverColor, for: .normal)
+      firstBookLoginButton?.setTitleColor(NYPLConfiguration.firstBookColor, for: .normal)
+    }
     resetButtonDefaultColors()
+    [cleverLoginButton, firstBookLoginButton].forEach {
+      if #available(iOS 13.0, *), UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+        $0?.layer.borderWidth = 1
+        $0?.layer.borderColor = NYPLConfiguration.fieldBorderColor.cgColor
+      } else {
+        $0?.layer.borderWidth = 0
+      }
+      $0?.layer.shadowColor = NYPLConfiguration.shadowColor.cgColor
+    }
     termsButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
     privacyButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
-    cleverLoginButton?.layer.shadowColor = NYPLConfiguration.shadowColor.cgColor
-    firstBookLoginButton?.layer.shadowColor = NYPLConfiguration.shadowColor.cgColor
   }
 
   private func resetButtonDefaultColors() {
-    cleverLoginButton?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
-    firstBookLoginButton?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
-    if #available(iOS 13.0, *), UIScreen.main.traitCollection.userInterfaceStyle == .dark {
-      [cleverLoginButton, firstBookLoginButton].forEach {
-        $0?.setTitleColor(NYPLConfiguration.primaryTextColor, for: .highlighted)
-        $0?.layer.borderWidth = 1
-        $0?.layer.borderColor = NYPLConfiguration.fieldBorderColor.cgColor
-      }
-    } else {
-      [cleverLoginButton, firstBookLoginButton].forEach {
-        $0?.setTitleColor(NYPLConfiguration.cleverColor, for: .highlighted)
-        $0?.layer.borderWidth = 0
-      }
+    [cleverLoginButton, firstBookLoginButton].forEach {
+      $0?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
     }
   }
 }
