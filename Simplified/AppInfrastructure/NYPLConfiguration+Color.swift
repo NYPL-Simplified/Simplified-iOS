@@ -15,6 +15,7 @@ private enum ColorAsset: String {
   case secondaryText
   case action
   case touchDownAction
+  case buttonBackground
   case deleteAction
   case fieldBorder
   case disabledFieldText
@@ -89,12 +90,12 @@ private enum ColorAsset: String {
       return color
     }
 
-    return .systemRed
+    return .blue
   }
 
   static var buttonBackgroundColor: UIColor {
     if #available(iOS 11.0, *),
-       let color = UIColor(named: "buttonBackground") {
+       let color = UIColor(named: ColorAsset.buttonBackground.rawValue) {
       return color
     } else {
       return primaryBackgroundColor

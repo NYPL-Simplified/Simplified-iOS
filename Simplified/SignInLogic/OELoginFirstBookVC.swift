@@ -346,7 +346,7 @@ extension OELoginFirstBookVC: NYPLSignInOutBusinessLogicUIDelegate {
                      didEncounterValidationError error: Error?,
                      userFriendlyErrorTitle title: String?,
                      andMessage serverMessage: String?) {
-    signInButton.isUserInteractionEnabled = true
+    updateSignInButton()
     spinner.stopAnimating()
 
     let alert: UIAlertController!
