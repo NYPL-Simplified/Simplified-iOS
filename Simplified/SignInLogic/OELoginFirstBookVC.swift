@@ -117,9 +117,9 @@ class OELoginFirstBookVC: UIViewController {
     // -- set up custom look and feel
     accessCodeField.layer.borderWidth = 1
     pinField.layer.borderWidth = 1
-    troublesButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
-    faqButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    signInButton.layer.cornerRadius = NYPLConfiguration.cornerRadius
     updateSignInButton()
+    updateStaticColors()
     updateTextFieldColors(forEditingField: nil)
 
     // -- set up validation hooks
@@ -139,6 +139,7 @@ class OELoginFirstBookVC: UIViewController {
     if #available(iOS 12.0, *) {
       if let previousStyle = previousTraits?.userInterfaceStyle {
         if previousStyle != UIScreen.main.traitCollection.userInterfaceStyle {
+          updateStaticColors()
           updateSignInButton()
           let selectedField: UITextField? = { [self] in
             if accessCodeField.isFirstResponder {
@@ -169,6 +170,18 @@ class OELoginFirstBookVC: UIViewController {
     }
 
     updateTextFieldColors(forEditingField: selectedTextField)
+  }
+
+  @IBAction func didTouchDownOnButton(_ sender: Any) {
+    guard let button = sender as? UIButton else {
+      return
+    }
+
+    button.backgroundColor = NYPLConfiguration.touchDownActionColor
+  }
+
+  @IBAction func didTouchUpOutsideButton(_ sender: Any) {
+    updateSignInButton()
   }
 
   @IBAction func signIn() {
@@ -232,6 +245,11 @@ class OELoginFirstBookVC: UIViewController {
     }
   }
 
+  private func updateStaticColors() {
+    troublesButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+    faqButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
+  }
+  
   // MARK: - Keyboard bs
 
   private func registerForKeyboardNotifications() {
@@ -328,7 +346,7 @@ extension OELoginFirstBookVC: NYPLSignInOutBusinessLogicUIDelegate {
                      didEncounterValidationError error: Error?,
                      userFriendlyErrorTitle title: String?,
                      andMessage serverMessage: String?) {
-    signInButton.isUserInteractionEnabled = true
+    updateSignInButton()
     spinner.stopAnimating()
 
     let alert: UIAlertController!

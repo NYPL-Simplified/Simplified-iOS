@@ -32,14 +32,14 @@
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="16T-Xw-D86">
                     <rect key="frame" x="0.0" y="0.0" width="1024" height="1292"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="753" verticalHuggingPriority="752" horizontalCompressionResistancePriority="752" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="bBA-wY-sp6">
-                            <rect key="frame" x="263" y="20" width="498" height="332"/>
+                        <stackView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="753" verticalHuggingPriority="752" horizontalCompressionResistancePriority="752" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="bBA-wY-sp6">
+                            <rect key="frame" x="294" y="20" width="436" height="436"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" verticalHuggingPriority="751" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="yt3-Ua-Zr8" userLabel="firstBookStackView">
-                                    <rect key="frame" x="0.0" y="0.0" width="498" height="40"/>
+                                <view contentMode="scaleToFill" horizontalHuggingPriority="751" verticalHuggingPriority="754" translatesAutoresizingMaskIntoConstraints="NO" id="0II-Jt-p3J">
+                                    <rect key="frame" x="0.0" y="0.0" width="436" height="40"/>
                                     <subviews>
                                         <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" verticalHuggingPriority="751" image="LogoFirstBook" translatesAutoresizingMaskIntoConstraints="NO" id="jd6-0Z-7cw">
-                                            <rect key="frame" x="0.0" y="0.0" width="48" height="40"/>
+                                            <rect key="frame" x="6" y="0.0" width="48" height="40"/>
                                             <accessibility key="accessibilityConfiguration" label="First Book logo">
                                                 <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                                             </accessibility>
@@ -47,28 +47,38 @@
                                                 <constraint firstAttribute="width" secondItem="jd6-0Z-7cw" secondAttribute="height" multiplier="1.2" id="lrd-Lv-jrl"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="750" text="Sign In" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iry-k1-t9g">
-                                            <rect key="frame" x="56" y="0.0" width="442" height="40"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="750" text="Sign In" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iry-k1-t9g">
+                                            <rect key="frame" x="180" y="5.5" width="76" height="29"/>
                                             <accessibility key="accessibilityConfiguration">
                                                 <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                             </accessibility>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
-                                </stackView>
+                                    <constraints>
+                                        <constraint firstAttribute="height" secondItem="jd6-0Z-7cw" secondAttribute="height" id="2Mm-XK-mw4"/>
+                                        <constraint firstItem="Iry-k1-t9g" firstAttribute="centerY" secondItem="jd6-0Z-7cw" secondAttribute="centerY" id="4uT-EI-bBH"/>
+                                        <constraint firstItem="jd6-0Z-7cw" firstAttribute="top" secondItem="0II-Jt-p3J" secondAttribute="top" id="JRt-1u-2iL"/>
+                                        <constraint firstItem="jd6-0Z-7cw" firstAttribute="leading" secondItem="0II-Jt-p3J" secondAttribute="leading" constant="6" id="LOX-VJ-egz"/>
+                                        <constraint firstItem="Iry-k1-t9g" firstAttribute="centerX" secondItem="0II-Jt-p3J" secondAttribute="centerX" id="Uxd-Su-Yd2"/>
+                                    </constraints>
+                                </view>
                                 <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Gq1-0X-sPm" userLabel="AccessCodeStackView">
-                                    <rect key="frame" x="0.0" y="60" width="498" height="49.5"/>
+                                    <rect key="frame" x="0.0" y="64" width="436" height="73.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="751" text="Access Code" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OXT-k5-fpc" userLabel="Access Code Label">
-                                            <rect key="frame" x="0.0" y="0.0" width="498" height="13.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="436" height="13.5"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Access Code" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="fbn-ND-Xrg" userLabel="Access Code Field">
-                                            <rect key="frame" x="0.0" y="15.5" width="498" height="34"/>
+                                            <rect key="frame" x="0.0" y="15.5" width="436" height="58"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="58" id="aYB-p1-Enx"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="username"/>
                                             <connections>
@@ -79,16 +89,16 @@
                                     </subviews>
                                 </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="hJ1-dz-BFK" userLabel="PINStackView">
-                                    <rect key="frame" x="0.0" y="129.5" width="498" height="49.5"/>
+                                    <rect key="frame" x="0.0" y="161.5" width="436" height="73.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="751" text="PIN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UGR-Lw-gzH" userLabel="PIN Label">
-                                            <rect key="frame" x="0.0" y="0.0" width="498" height="13.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="436" height="13.5"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PIN" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="5Ha-4R-aDH" userLabel="PIN Field" customClass="NYPLPasswordField" customModule="SimplyE" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="15.5" width="498" height="34"/>
+                                            <rect key="frame" x="0.0" y="15.5" width="436" height="58"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                             <userDefinedRuntimeAttributes>
@@ -103,47 +113,58 @@
                                     </subviews>
                                 </stackView>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pqW-PY-aKd" userLabel="SignInButton">
-                                    <rect key="frame" x="0.0" y="199" width="498" height="31"/>
+                                    <rect key="frame" x="0.0" y="259" width="436" height="58"/>
                                     <color key="backgroundColor" systemColor="linkColor"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title="Sign In" cornerStyle="small"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Sign In"/>
                                     <connections>
+                                        <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDragEnter" id="nrk-NV-dQs"/>
+                                        <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDown" id="x8t-by-ygL"/>
+                                        <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchDragExit" id="eQ9-bn-hW5"/>
+                                        <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchUpOutside" id="kTI-vr-vl7"/>
                                         <action selector="signIn" destination="-1" eventType="touchUpInside" id="dPY-ig-2Ew"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w82-VR-y3G" userLabel="havingTroubleButton">
-                                    <rect key="frame" x="0.0" y="250" width="498" height="31"/>
+                                    <rect key="frame" x="0.0" y="341" width="436" height="35.5"/>
                                     <accessibility key="accessibilityConfiguration">
                                         <accessibilityTraits key="traits" link="YES"/>
                                     </accessibility>
                                     <color key="tintColor" systemColor="linkColor"/>
                                     <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title="Having trouble signing in?"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Having trouble signing in?">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="18"/>
+                                    </buttonConfiguration>
                                     <connections>
                                         <action selector="showTroubleshooting" destination="-1" eventType="touchUpInside" id="FBz-Ib-Lrs"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9JZ-mw-ahY" userLabel="FAQButton">
-                                    <rect key="frame" x="0.0" y="301" width="498" height="31"/>
+                                    <rect key="frame" x="0.0" y="400.5" width="436" height="35.5"/>
                                     <accessibility key="accessibilityConfiguration">
                                         <accessibilityTraits key="traits" link="YES"/>
                                     </accessibility>
                                     <color key="tintColor" systemColor="linkColor"/>
                                     <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title="Frequently Asked Questions"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Frequently Asked Questions">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="18"/>
+                                    </buttonConfiguration>
                                     <connections>
                                         <action selector="showFAQ" destination="-1" eventType="touchUpInside" id="9oF-jA-Ogv"/>
                                     </connections>
                                 </button>
                             </subviews>
                             <constraints>
+                                <constraint firstItem="5Ha-4R-aDH" firstAttribute="height" secondItem="pqW-PY-aKd" secondAttribute="height" id="0Bv-5y-SZp"/>
                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="332" placeholder="YES" id="5DI-LG-IPt"/>
-                                <constraint firstAttribute="width" relation="lessThanOrEqual" secondItem="bBA-wY-sp6" secondAttribute="height" multiplier="1.5:1" priority="751" id="i14-F3-0Un"/>
+                                <constraint firstItem="fbn-ND-Xrg" firstAttribute="height" secondItem="5Ha-4R-aDH" secondAttribute="height" id="P27-P3-71W"/>
+                                <constraint firstAttribute="width" relation="lessThanOrEqual" secondItem="bBA-wY-sp6" secondAttribute="height" multiplier="1:1" priority="751" id="i14-F3-0Un"/>
                             </constraints>
                         </stackView>
                         <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="LpP-7w-4UM">
-                            <rect key="frame" x="731" y="224.5" width="20" height="20"/>
+                            <rect key="frame" x="700" y="298" width="20" height="20"/>
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </activityIndicatorView>

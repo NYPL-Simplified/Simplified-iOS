@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import QuartzCore
 
 class OELoginChoiceViewController : UIViewController {
   @IBOutlet var headerLabel: UILabel?
@@ -45,17 +46,21 @@ class OELoginChoiceViewController : UIViewController {
     }
 
     headerLabel?.text = NSLocalizedString("Get Started", comment: "Login page header")
-    subHeaderLabel?.text = NSLocalizedString("Login to access the collection", comment: "Login page sub header")
+    subHeaderLabel?.text = NSLocalizedString("Login to access the collection.", comment: "Login page sub header")
     cleverLoginButton?.setTitle(NSLocalizedString("Sign in with Clever", comment: "Login button text"), for: .normal)
     firstBookLoginButton?.setTitle(NSLocalizedString("Sign in with First Book", comment: "Login button text"), for: .normal)
     termsButton?.setTitle(NSLocalizedString("Terms of Use", comment: "Button Text"), for: .normal)
     privacyButton?.setTitle(NSLocalizedString("Privacy Notice", comment: "Button Text"), for: .normal)
 
-    // rounded corners for buttons
-    cleverLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
-    cleverLoginButton?.layer.borderWidth = 1
-    firstBookLoginButton?.layer.cornerRadius = NYPLConfiguration.cornerRadius
-    firstBookLoginButton?.layer.borderWidth = 1
+    [cleverLoginButton, firstBookLoginButton].forEach {
+      // rounded corners
+      $0?.layer.cornerRadius = NYPLConfiguration.cornerRadius
+      // drop shadows
+      $0?.layer.masksToBounds = false
+      $0?.layer.shadowOpacity = NYPLConfiguration.shadowOpacity
+      $0?.layer.shadowRadius = NYPLConfiguration.shadowRadius
+      $0?.layer.shadowOffset = NYPLConfiguration.shadowOffset
+    }
 
     updateColors()
   }
@@ -75,8 +80,22 @@ class OELoginChoiceViewController : UIViewController {
   }
 
   // MARK: - Actions
-  
+
+  @IBAction func didTouchDownOnButton(_ sender: Any) {
+    guard let button = sender as? UIButton else {
+      return
+    }
+
+    button.backgroundColor = NYPLConfiguration.secondaryBackgroundColor
+  }
+
+  @IBAction func didTouchUpOutsideButton(_ sender: Any) {
+    resetButtonDefaultColors()
+  }
+
   @IBAction func didSelectClever() {
+    resetButtonDefaultColors()
+
     // very defensive: in OE there's only one library account, so at this point
     // the cleverHelper (which requires a lib account) should already be created.
     if cleverHelper == nil {
@@ -87,6 +106,8 @@ class OELoginChoiceViewController : UIViewController {
   }
 
   @IBAction func didSelectFirstBook() {
+    resetButtonDefaultColors()
+
     guard let libraryAccount = AccountsManager.shared.currentAccount else {
       NYPLAlertUtils.presentUnrecoverableAlert(for: "Unable to get library Account instance after selecting First Book as login choice")
       return
@@ -130,13 +151,30 @@ class OELoginChoiceViewController : UIViewController {
     // set up colors per our scheme
     view.backgroundColor = NYPLConfiguration.primaryBackgroundColor
     navigationController?.navigationBar.tintColor = NYPLConfiguration.actionColor
-    cleverLoginButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
-    firstBookLoginButton?.setTitleColor(NYPLConfiguration.firstBookColor, for: .normal)
-    cleverLoginButton?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
-    firstBookLoginButton?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
+    if #available(iOS 13.0, *), UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+      cleverLoginButton?.setTitleColor(NYPLConfiguration.primaryTextColor, for: .normal)
+      firstBookLoginButton?.setTitleColor(NYPLConfiguration.primaryTextColor, for: .normal)
+    } else {
+      cleverLoginButton?.setTitleColor(NYPLConfiguration.cleverColor, for: .normal)
+      firstBookLoginButton?.setTitleColor(NYPLConfiguration.firstBookColor, for: .normal)
+    }
+    resetButtonDefaultColors()
+    [cleverLoginButton, firstBookLoginButton].forEach {
+      if #available(iOS 13.0, *), UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+        $0?.layer.borderWidth = 1
+        $0?.layer.borderColor = NYPLConfiguration.fieldBorderColor.cgColor
+      } else {
+        $0?.layer.borderWidth = 0
+      }
+      $0?.layer.shadowColor = NYPLConfiguration.shadowColor.cgColor
+    }
     termsButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
     privacyButton?.setTitleColor(NYPLConfiguration.actionColor, for: .normal)
-    cleverLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
-    firstBookLoginButton?.layer.borderColor = NYPLConfiguration.secondaryBackgroundColor.cgColor
+  }
+
+  private func resetButtonDefaultColors() {
+    [cleverLoginButton, firstBookLoginButton].forEach {
+      $0?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
+    }
   }
 }

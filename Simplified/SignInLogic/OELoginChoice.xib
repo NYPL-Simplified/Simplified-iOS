@@ -26,7 +26,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="r7H-2F-5yY" userLabel="Header Stack View">
-                    <rect key="frame" x="20" y="15.5" width="280" height="58.5"/>
+                    <rect key="frame" x="20" y="25.5" width="280" height="58.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Get Started" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kBk-Yz-S6I">
                             <rect key="frame" x="70" y="0.0" width="140.5" height="31.5"/>
@@ -34,39 +34,49 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login to access the collection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r6d-RP-zth">
-                            <rect key="frame" x="44" y="41.5" width="192" height="17"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login to access the collection." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r6d-RP-zth">
+                            <rect key="frame" x="42" y="41.5" width="196" height="17"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
                 </stackView>
-                <stackView opaque="NO" contentMode="scaleAspectFit" verticalHuggingPriority="751" horizontalCompressionResistancePriority="751" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="7se-wG-U8e" userLabel="Buttons Stack View">
-                    <rect key="frame" x="10.5" y="174" width="299.5" height="132"/>
+                <stackView opaque="NO" contentMode="scaleAspectFit" verticalHuggingPriority="751" horizontalCompressionResistancePriority="751" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="7se-wG-U8e" userLabel="Buttons Stack View">
+                    <rect key="frame" x="10.5" y="164" width="299.5" height="152"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mNl-Kk-26v">
+                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mNl-Kk-26v">
                             <rect key="frame" x="0.0" y="0.0" width="299.5" height="56"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                             <inset key="contentEdgeInsets" minX="30" minY="8" maxX="30" maxY="8"/>
-                            <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="titleEdgeInsets" minX="-1" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                             <state key="normal" title="Sign in with Clever" image="LogoClever">
                                 <color key="titleColor" systemColor="linkColor"/>
                             </state>
                             <connections>
                                 <action selector="didSelectClever" destination="-1" eventType="touchUpInside" id="z4P-Ox-Gwm"/>
+                                <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDown" id="CW2-wn-lDo"/>
+                                <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDragEnter" id="ssK-PX-DiU"/>
+                                <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchUpOutside" id="Jlj-Ft-bvj"/>
+                                <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchDragExit" id="wY6-VD-uGu"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2FO-PV-W8O">
-                            <rect key="frame" x="0.0" y="76" width="299.5" height="56"/>
+                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2FO-PV-W8O">
+                            <rect key="frame" x="0.0" y="96" width="299.5" height="56"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                             <inset key="contentEdgeInsets" minX="30" minY="8" maxX="30" maxY="8"/>
-                            <inset key="titleEdgeInsets" minX="0.0" minY="2" maxX="-6" maxY="0.0"/>
+                            <inset key="titleEdgeInsets" minX="-8" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="-11" minY="0.0" maxX="0.0" maxY="0.0"/>
                             <state key="normal" title="Sign in with First Book" image="LogoFirstBook">
                                 <color key="titleColor" systemColor="linkColor"/>
                             </state>
                             <connections>
                                 <action selector="didSelectFirstBook" destination="-1" eventType="touchUpInside" id="mfx-lF-Gmr"/>
+                                <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDown" id="NUp-Gc-36l"/>
+                                <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDragEnter" id="g89-oB-YE7"/>
+                                <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchUpOutside" id="2ba-54-0YD"/>
+                                <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchDragExit" id="UL3-vr-Zge"/>
                             </connections>
                         </button>
                     </subviews>
@@ -74,8 +84,8 @@
                         <constraint firstItem="2FO-PV-W8O" firstAttribute="height" secondItem="mNl-Kk-26v" secondAttribute="height" id="GVD-Cu-RmY"/>
                     </constraints>
                 </stackView>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="xrU-C6-Ubg" userLabel="Footer Stack View">
-                    <rect key="frame" x="20" y="406" width="280" height="68"/>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="xrU-C6-Ubg" userLabel="Footer Stack View">
+                    <rect key="frame" x="20" y="396" width="280" height="73"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TVY-67-KcQ">
                             <rect key="frame" x="97" y="0.0" width="86" height="29"/>
@@ -89,7 +99,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BBG-sg-YOF">
-                            <rect key="frame" x="93" y="39" width="94" height="29"/>
+                            <rect key="frame" x="93" y="44" width="94" height="29"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" title="Privacy Notice">
@@ -110,8 +120,8 @@
                 <constraint firstItem="7se-wG-U8e" firstAttribute="leading" relation="lessThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="leading" priority="751" constant="10" id="HXC-sd-l0b"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7se-wG-U8e" secondAttribute="trailing" priority="751" constant="10" id="Hj9-oR-BHb"/>
                 <constraint firstItem="xrU-C6-Ubg" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="LeH-yH-bHz"/>
-                <constraint firstItem="xrU-C6-Ubg" firstAttribute="top" secondItem="7se-wG-U8e" secondAttribute="bottom" constant="100" id="SkU-ra-dYq"/>
-                <constraint firstItem="7se-wG-U8e" firstAttribute="top" secondItem="r7H-2F-5yY" secondAttribute="bottom" constant="100" id="iTQ-FW-A1L"/>
+                <constraint firstItem="xrU-C6-Ubg" firstAttribute="top" secondItem="7se-wG-U8e" secondAttribute="bottom" constant="80" id="SkU-ra-dYq"/>
+                <constraint firstItem="7se-wG-U8e" firstAttribute="top" secondItem="r7H-2F-5yY" secondAttribute="bottom" constant="80" id="iTQ-FW-A1L"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="r7H-2F-5yY" secondAttribute="trailing" constant="20" id="mf3-EH-Ja0"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="xrU-C6-Ubg" secondAttribute="trailing" constant="20" id="nzY-zr-li7"/>
                 <constraint firstItem="r7H-2F-5yY" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="rCj-BB-PVq"/>
