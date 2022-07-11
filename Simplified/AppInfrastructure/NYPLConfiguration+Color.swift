@@ -146,4 +146,13 @@ private enum ColorAsset: String {
 
     return .black
   }
+  
+  static var transparentBackgroundColor: UIColor {
+    if #available(iOS 12.0, *),
+       UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+      return UIColor(white: 0.2, alpha: 0.7)
+    } else {
+      return UIColor(white: 0, alpha: 0.7)
+    }
+  }
 }
