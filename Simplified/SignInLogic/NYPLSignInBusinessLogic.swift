@@ -196,6 +196,13 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   @objc var selectedIDP: OPDS2SamlIDP?
 
   private var _selectedAuthentication: AccountDetails.Authentication?
+
+  /// The authentication definition the business logic is working with.
+  ///
+  /// - Important: The assumption here is that the `libraryAccount`
+  /// authentication document supports one and only one authentication
+  /// definition. The notable exception to this rule is Open eBooks, which
+  /// supports two.
   @objc var selectedAuthentication: AccountDetails.Authentication? {
     get {
       if _selectedAuthentication != nil {
@@ -205,6 +212,30 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
         return userAccount.authDefinition
       }
       guard let auths = libraryAccount?.details?.auths else { return nil }
+
+      // Open eBooks is the only "library" that supports more than one
+      // authentication method.
+      #if OPENEBOOKS
+      if userAccount.isSignedIn() {
+        if userAccount.barcode != nil {
+          let firstBook = auths.filter { $0.isOauthClientCredentials }
+          return firstBook.first
+        } else if userAccount.authToken != nil {
+          let clever = auths.filter { $0.isOauthIntermediary }
+          return clever.first
+        } else {
+          let authTypes = auths.map { $0.authType }
+          NYPLErrorLogger.logError(
+            withCode: .noSelectedAuthentication,
+            summary: "Sign-in business logic missing authDefinition, barcode and authToken",
+            metadata: [
+              "isSignedIn?": userAccount.isSignedIn(),
+              "auth definition types": authTypes
+            ])
+        }
+      }
+      #endif
+
       guard auths.count == 1 else { return nil }
 
       return auths.first
