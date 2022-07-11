@@ -7,8 +7,6 @@
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLFacetView.h"
 #import "NYPLOpenSearchDescription.h"
-#import "NYPLAccountSignInViewController.h"
-
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "UIView+NYPLViewAdditions.h"

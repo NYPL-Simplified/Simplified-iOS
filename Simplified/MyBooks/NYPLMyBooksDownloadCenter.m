@@ -7,7 +7,6 @@
 #endif
 
 #import "NSString+NYPLStringAdditions.h"
-#import "NYPLAccountSignInViewController.h"
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
