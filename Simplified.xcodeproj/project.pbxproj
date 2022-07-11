@@ -1383,7 +1383,6 @@
 		73FCA34925005BA4001B0C5D /* NYPLCatalogGroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */; };
 		73FCA34A25005BA4001B0C5D /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
 		73FCA34B25005BA4001B0C5D /* NYPLLoginCellTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089E430B24A2459100310360 /* NYPLLoginCellTypes.swift */; };
-		73FCA34C25005BA4001B0C5D /* NYPLAccountSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */; };
 		73FCA34D25005BA4001B0C5D /* NYPLUserProfileDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3A28CB22D3DA850042B3BD /* NYPLUserProfileDocument.swift */; };
 		73FCA34E25005BA4001B0C5D /* AccountsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F94CD01DD6288C00CE8F4F /* AccountsManager.swift */; };
 		73FCA34F25005BA4001B0C5D /* NYPLLocalization.m in Sources */ = {isa = PBXBuildFile; fileRef = 52592BB721220A1100587288 /* NYPLLocalization.m */; };
@@ -5081,7 +5080,6 @@
 				73FCA34A25005BA4001B0C5D /* NYPLCatalogFacet.m in Sources */,
 				7357073B272B487700B7BF16 /* NYPLSignInBusinessLogic+OE.swift in Sources */,
 				73FCA34B25005BA4001B0C5D /* NYPLLoginCellTypes.swift in Sources */,
-				73FCA34C25005BA4001B0C5D /* NYPLAccountSignInViewController.m in Sources */,
 				597E2729268B537E00A3CD23 /* NYPLAxisBookDownloadMediator.swift in Sources */,
 				73FCA34D25005BA4001B0C5D /* NYPLUserProfileDocument.swift in Sources */,
 				597E272C268B537E00A3CD23 /* NYPLFullAxisNowResourceAdapter.swift in Sources */,
@@ -5773,7 +5771,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
@@ -5821,7 +5819,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";

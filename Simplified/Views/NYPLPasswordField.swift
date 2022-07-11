@@ -70,9 +70,11 @@ open class NYPLPasswordField: UITextField {
   }
 
   private func updateImageConstraints() {
-    guard let eyeHeight = font?.pointSize else {
+    guard let fontSize = font?.pointSize else {
       return
     }
+
+    let eyeHeight = fontSize * 2.0
 
     guard let eyeSize = eyeButton.image(for: .normal)?.size else {
       return

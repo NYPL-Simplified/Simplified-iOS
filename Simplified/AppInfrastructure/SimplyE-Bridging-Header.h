@@ -4,13 +4,13 @@
 #import "AdobeDRMContainer.h"
 #endif
 
-#ifndef OPENEBOOKS
+#ifdef SIMPLYE
+#import "NYPLAccountSignInViewController.h"
 #import "NYPLBarcodeScanningViewController.h"
 #import "NYPLZXingEncoder.h"
 #endif
 
 #import "NSDate+NYPLDateAdditions.h"
-#import "NYPLAccountSignInViewController.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
