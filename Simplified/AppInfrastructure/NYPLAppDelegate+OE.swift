@@ -8,25 +8,30 @@
 
 import Foundation
 
-extension NYPLAppDelegate {
-  @objc func setUpRootVC() {
+@objc protocol OEAppUIStructureConfigurating {
+
+  /// - Parameter userIsSignedIn: Pass `true` if this is called after a
+  /// successful login; pass `false` in all other cases.
+  @objc func setUpRootVC(userIsSignedIn: Bool)
+}
+
+extension NYPLAppDelegate: OEAppUIStructureConfigurating {
+  @objc func setUpRootVC(userIsSignedIn: Bool) {
     if NYPLSettings.shared.userHasAcceptedEULA {
-      if NYPLSettings.shared.userHasSeenWelcomeScreen,
-          NYPLUserAccount.sharedAccount().isSignedIn()
-      {
+      if NYPLSettings.shared.userHasSeenWelcomeScreen, userIsSignedIn {
         window.rootViewController = NYPLRootTabBarController.shared()
       } else {
-        window.rootViewController = OETutorialViewController()
+        window.rootViewController = createLoginNavController()
+        NYPLSettings.shared.userHasSeenWelcomeScreen = true
       }
     } else {
-      let eulaURL = URL(string: "https://openebooks.net/app_user_agreement.html")!
-      let eulaVC = NYPLWelcomeEULAViewController(onlineEULAURL: eulaURL) {
+      let eulaVC = OEEULAViewController() {
         UIView.transition(
           with: self.window,
           duration: 0.5,
           options: [.transitionCurlUp, .allowAnimatedContent, .layoutSubviews],
           animations: {
-            self.window?.rootViewController = OETutorialViewController()
+            self.window?.rootViewController = self.createLoginNavController()
         },
           completion: nil
         )
@@ -36,15 +41,13 @@ extension NYPLAppDelegate {
     }
   }
 
-  @objc func completeBecomingActive() {
-    if !NYPLUserAccount.sharedAccount().isSignedIn()
-      && NYPLSettings.shared.userHasSeenWelcomeScreen
-      && !isSigningIn {
-      
-      OETutorialChoiceViewController.showLoginPicker()
-    }
+  private func createLoginNavController() -> UINavigationController {
+    let vc = OELoginChoiceViewController(postLoginConfigurator: self)
+    return UINavigationController(rootViewController: vc)
   }
+}
 
+extension NYPLAppDelegate {
   /// Handle all custom URL schemes specific to Open eBooks here.
   /// - Parameter url: The URL to process.
   /// - Returns: `true` if the app should handle the URL because it matches a

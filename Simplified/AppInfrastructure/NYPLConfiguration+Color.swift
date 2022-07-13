@@ -14,10 +14,13 @@ private enum ColorAsset: String {
   case secondaryBackground
   case secondaryText
   case action
+  case touchDownAction
+  case buttonBackground
   case deleteAction
   case fieldBorder
   case disabledFieldText
   case progressBarBackground
+  case shadow
 }
 
 @objc extension NYPLConfiguration {
@@ -80,7 +83,25 @@ private enum ColorAsset: String {
 
     return .systemBlue
   }
-  
+
+  static var touchDownActionColor: UIColor {
+    if #available(iOS 11.0, *),
+       let color = UIColor(named: ColorAsset.touchDownAction.rawValue) {
+      return color
+    }
+
+    return .blue
+  }
+
+  static var buttonBackgroundColor: UIColor {
+    if #available(iOS 11.0, *),
+       let color = UIColor(named: ColorAsset.buttonBackground.rawValue) {
+      return color
+    } else {
+      return primaryBackgroundColor
+    }
+  }
+
   static var deleteActionColor: UIColor {
     if #available(iOS 11.0, *),
        let color = UIColor(named: ColorAsset.deleteAction.rawValue) {
@@ -107,7 +128,16 @@ private enum ColorAsset: String {
 
     return .lightGray
   }
-  
+
+  static var shadowColor: UIColor {
+    if #available(iOS 11.0, *),
+       let color = UIColor(named: ColorAsset.shadow.rawValue) {
+      return color
+    }
+
+    return .darkGray
+  }
+
   static var progressBarBackgroundColor: UIColor {
     if #available(iOS 11.0, *),
        let color = UIColor(named: ColorAsset.progressBarBackground.rawValue) {

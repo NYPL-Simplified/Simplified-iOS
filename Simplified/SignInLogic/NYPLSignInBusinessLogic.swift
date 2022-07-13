@@ -129,7 +129,12 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   @objc var isLoggingInAfterSignUp: Bool = false
 
   /// A closure that will be invoked at the end of the sign-in process when
-  /// refreshing authentication.
+  /// successfully refreshing authentication.
+  /// - Important: the semantics of this are different from the semantics of
+  /// `businessLogicDidSignIn(_:)`: the latter is called at
+  /// the end of an actual authentication flow on the UI delegate,
+  /// while `refreshAuthCompletion` is called when the refresh flow end,
+  /// which may not be associated with any UI.
   var refreshAuthCompletion: (() -> Void)? = nil
 
   /// This overrides the sign-in state logic to behave as if the user isn't
@@ -191,14 +196,49 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   @objc var selectedIDP: OPDS2SamlIDP?
 
   private var _selectedAuthentication: AccountDetails.Authentication?
+
+  /// The authentication definition the business logic is working with.
+  ///
+  /// - Important: The assumption here is that the `libraryAccount`
+  /// authentication document supports one and only one authentication
+  /// definition. The notable exception to this rule is Open eBooks, which
+  /// supports two.
   @objc var selectedAuthentication: AccountDetails.Authentication? {
     get {
-      guard _selectedAuthentication == nil else { return _selectedAuthentication }
-      guard userAccount.authDefinition == nil else { return userAccount.authDefinition }
+      if _selectedAuthentication != nil {
+        return _selectedAuthentication
+      }
+      if userAccount.authDefinition != nil {
+        return userAccount.authDefinition
+      }
       guard let auths = libraryAccount?.details?.auths else { return nil }
-      guard auths.count > 1 else { return auths.first }
 
-      return nil
+      // Open eBooks is the only "library" that supports more than one
+      // authentication method.
+      #if OPENEBOOKS
+      if userAccount.isSignedIn() {
+        if userAccount.barcode != nil {
+          let firstBook = auths.filter { $0.isOauthClientCredentials }
+          return firstBook.first
+        } else if userAccount.authToken != nil {
+          let clever = auths.filter { $0.isOauthIntermediary }
+          return clever.first
+        } else {
+          let authTypes = auths.map { $0.authType }
+          NYPLErrorLogger.logError(
+            withCode: .noSelectedAuthentication,
+            summary: "Sign-in business logic missing authDefinition, barcode and authToken",
+            metadata: [
+              "isSignedIn?": userAccount.isSignedIn(),
+              "auth definition types": authTypes
+            ])
+        }
+      }
+      #endif
+
+      guard auths.count == 1 else { return nil }
+
+      return auths.first
     }
     set {
       _selectedAuthentication = newValue
@@ -399,15 +439,20 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   ///   - usingExistingCredentials: Force using existing credentials for the
   ///   authentication refresh attempt.
   ///   - completion: Block to be run after the authentication refresh attempt
-  ///   is performed.
+  ///   is performed. This block might be retained strongly.
   /// - Returns: `true` if a sign-in UI is needed to refresh authentication.
   @objc func refreshAuthIfNeeded(usingExistingCredentials: Bool,
-                                 completion: (() -> Void)?) -> Bool {
+                                 completion: (() -> Void)? = nil) -> Bool {
 
-    guard
-      let authDef = userAccount.authDefinition,
-      (authDef.isBasic || authDef.isOauth || authDef.isSaml)
-    else {
+    // force login if there's no authDef saved
+    guard let authDef = userAccount.authDefinition else {
+      Log.debug(#function, "Found no authDefinition while refreshing auth: should present sign-in UI")
+      ignoreSignedInState = true
+      refreshAuthCompletion = completion
+      return true
+    }
+
+    guard (authDef.isBasic || authDef.isOauth || authDef.isSaml) else {
       completion?()
       return false
     }
@@ -481,11 +526,14 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
   }
 
   /// Updates the user account for the library we are signing in to.
+  ///
+  /// If there was a DRM authorization error, every user detail will be removed.
+  ///
   /// - Parameters:
   ///   - drmSuccess: whether the DRM authorization was successful or not.
-  ///   Ignored if the app is built without DRM support.
-  ///   - barcode: The new barcode, if available.
-  ///   - pin: The new PIN, if barcode is provided.
+  ///   Pass `true` if the app is built without DRM support.
+  ///   - barcode: The new barcode or username, if available.
+  ///   - pin: The new PIN, if `barcode` is provided.
   ///   - authToken: the token if `selectedAuthentication` is OAuth or SAML. 
   ///   - patron: The patron info for OAuth / SAML authentication.
   ///   - cookies: Cookies for SAML authentication.
@@ -495,12 +543,10 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
                          authToken: String?,
                          patron: [String:Any]?,
                          cookies: [HTTPCookie]?) {
-    #if FEATURE_DRM_CONNECTOR
     guard drmSuccess else {
       userAccount.removeAll()
       return
     }
-    #endif
 
     if let selectedAuthentication = selectedAuthentication {
       if selectedAuthentication.isOauthClientCredentials {
@@ -531,16 +577,6 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     }
 
     userAccount.authDefinition = selectedAuthentication
-
-    if libraryAccountID == libraryAccountsProvider.currentAccountId {
-      bookRegistry.syncResettingCache(false) { [weak bookRegistry] errorDict in
-        if errorDict == nil {
-          bookRegistry?.save()
-        }
-      }
-    }
-
-    NotificationCenter.default.post(name: .NYPLIsSigningIn, object: false)
   }
 
   private func setBarcode(_ barcode: String?, pin: String?) {

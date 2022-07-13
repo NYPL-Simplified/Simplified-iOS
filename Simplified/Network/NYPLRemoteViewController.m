@@ -211,10 +211,11 @@
           self.needsReauthentication = NO;
 
           __block NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
-          [reauthenticator authenticateIfNeededUsingExistingCredentials:YES
-                                               authenticationCompletion:^{
-            // make sure to retain the reauthenticator until end of auth
-            // flow and then break any possible retain cycle
+          [reauthenticator
+           authenticateIfNeededUsingExistingCredentials:YES
+           completion:^(__unused BOOL isSignedIn){
+            // with ARC, make sure to retain the reauthenticator until end
+            // of auth flow and then break any possible retain cycle
             reauthenticator = nil;
             NYPLLOG(@"Re-loading from RemoteVC because authentication had expired");
             [self load];

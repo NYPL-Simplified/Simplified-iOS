@@ -10,7 +10,7 @@ import Foundation
 
 extension NYPLSignInBusinessLogic {
   //----------------------------------------------------------------------------
-  func oauthIntermediaryLogIn() {
+  func oauthIntermediaryURL() -> URL? {
     // for this kind of authentication, we want to redirect user to Safari to
     // conduct the process
     guard let oauthURL = selectedAuthentication?.oauthIntermediaryUrl else {
@@ -19,7 +19,7 @@ extension NYPLSignInBusinessLogic {
                                metadata: [
                                 "authMethod": selectedAuthentication?.methodDescription ?? "N/A",
                                 "context": uiDelegate?.context ?? "N/A"])
-      return
+      return nil
     }
 
     guard var urlComponents = URLComponents(url: oauthURL, resolvingAgainstBaseURL: true) else {
@@ -29,7 +29,7 @@ extension NYPLSignInBusinessLogic {
                                 "authMethod": selectedAuthentication?.methodDescription ?? "N/A",
                                 "OAUth Intermediary URL": oauthURL.absoluteString,
                                 "context": uiDelegate?.context ?? "N/A"])
-      return
+      return nil
     }
 
     let redirectParam = URLQueryItem(
@@ -45,9 +45,18 @@ extension NYPLSignInBusinessLogic {
                                 "OAUth Intermediary URL": oauthURL.absoluteString,
                                 "redirectParam": redirectParam,
                                 "context": uiDelegate?.context ?? "N/A"])
+      return nil
+    }
+
+    return finalURL
+  }
+
+  func oauthIntermediaryLogIn() {
+    guard let finalURL = oauthIntermediaryURL() else {
       return
     }
 
+    Log.debug(#function, "setting up observer for redirect URL")
     NotificationCenter.default
       .addObserver(self,
                    selector: #selector(handleRedirectURL(_:)),
@@ -80,6 +89,7 @@ extension NYPLSignInBusinessLogic {
     NotificationCenter.default
       .removeObserver(self, name: .NYPLAppDelegateDidReceiveCleverRedirectURL, object: nil)
 
+    Log.debug(#function, "Received OAuth redirect with object \(String(describing: notification.object))")
     guard let url = notification.object as? URL else {
       NYPLErrorLogger.logError(withCode: .noURL,
                                summary: "Sign-in redirection error",

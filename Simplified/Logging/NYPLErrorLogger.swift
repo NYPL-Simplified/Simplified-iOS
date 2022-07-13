@@ -58,6 +58,7 @@ fileprivate let nullString = "null"
   case oauthPatronInfoDecodeFail = 313
   case unrecognizedUniversalLink = 314
   case validationWithoutAuthToken = 315
+  case noSelectedAuthentication = 316
 
   // audiobooks
   case audiobookCorrupted = 401

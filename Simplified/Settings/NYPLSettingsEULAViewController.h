@@ -4,7 +4,7 @@
 
 @interface NYPLSettingsEULAViewController : UIViewController <WKNavigationDelegate>
 
-- (instancetype)initWithAccount:(Account *)account;
-- (instancetype)initWithNYPLURL;
+- (nonnull instancetype)initWithAccount:(nonnull Account *)account;
+- (nonnull instancetype)initWithNYPLURL;
 
 @end

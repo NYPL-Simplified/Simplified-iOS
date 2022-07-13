@@ -76,12 +76,16 @@
     // "This handles a bug that seems to occur when the user updates,
     // where the barcode and pin are entered but according to ADEPT the device
     // is not authorized. To be used, the account must have a barcode and pin."
-    NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
+    __block NYPLReauthenticator *reauthenticator = [[NYPLReauthenticator alloc] init];
     [reauthenticator authenticateIfNeededUsingExistingCredentials:YES
-                                         authenticationCompletion:^{
-      dispatch_async(dispatch_get_main_queue(), ^{
-        [self openBook:book successCompletion:successCompletion]; // with successful DRM activation
-      });
+                                                       completion:^(BOOL isSignedIn) {
+      if (isSignedIn) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [self openBook:book successCompletion:successCompletion];
+          // with ARC, retain the reauthenticator until we're done, then release it
+          reauthenticator = nil;
+        });
+      }
     }];
   } else {
     [self openBook:book successCompletion:successCompletion];

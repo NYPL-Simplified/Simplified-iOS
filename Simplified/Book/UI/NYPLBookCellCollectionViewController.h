@@ -4,9 +4,12 @@
 // of this class should set the relevant properties of the collection view appropriately to handle
 // their unique needs.
 
+@class NYPLReauthenticator;
+
 @interface NYPLBookCellCollectionViewController : UIViewController
 
 @property (nonatomic) UICollectionView *collectionView;
+@property (nonatomic) NYPLReauthenticator *reauthenticator;
 
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;

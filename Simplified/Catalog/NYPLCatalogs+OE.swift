@@ -10,9 +10,10 @@ import Foundation
 
 extension NYPLCatalogNavigationController {
   @objc func didSignOut() {
-    popToRootViewController(animated: true)
-
-    loadTopLevelCatalogViewController()
+    NYPLMainThreadRun.asyncIfNeeded { [self] in
+      popToRootViewController(animated: true)
+      loadTopLevelCatalogViewController()
+    }
   }
 }
 

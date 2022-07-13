@@ -9,12 +9,9 @@
 import Foundation
 
 extension NYPLAppDelegate {
-  @objc func setUpRootVC() {
+  @objc func setUpRootVC(userIsSignedIn: Bool) {
     //    self.window.rootViewController = SETutorialViewController()
     window.rootViewController = NYPLRootTabBarController.shared()
-  }
-
-  @objc func completeBecomingActive() {
   }
 
   /// Handle all custom URL schemes specific to SimplyE here.

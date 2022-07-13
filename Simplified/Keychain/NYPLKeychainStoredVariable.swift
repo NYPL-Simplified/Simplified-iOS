@@ -12,6 +12,10 @@ protocol Keyable {
   var key: String { get set }
 }
 
+/// Frontend to saving data on the keychain for a given key.
+///
+/// All updates happen asynchrounously on the same serial queue, which targets
+/// the same global concurrent queue for all instances of this class.
 class NYPLKeychainVariable<VariableType>: Keyable {
   var key: String {
     didSet {
@@ -31,9 +35,15 @@ class NYPLKeychainVariable<VariableType>: Keyable {
   // The stored value will also be invalidated once the key changes
   fileprivate var cachedValue: VariableType?
 
+  // The serial queue where writing to the keychain happens.
+  let updateQueue: DispatchQueue
+
   init(key: String, accountInfoLock: NSRecursiveLock) {
     self.key = key
     self.transaction = NYPLKeychainVariableTransaction(accountInfoLock: accountInfoLock)
+    updateQueue = DispatchQueue(label: "org.nypl.NYPLKeychainVariable.updateQueue.\(key)",
+                                qos: .userInitiated,
+                                target: .global(qos: .userInitiated))
   }
 
   func read() -> VariableType? {
@@ -61,7 +71,7 @@ class NYPLKeychainVariable<VariableType>: Keyable {
       alreadyInited = true
 
       // write new data to keychain in background
-      DispatchQueue.global(qos: .userInitiated).async { [key] in
+      updateQueue.async { [key] in
         if let newValue = newValue {
           // if there is a new value, set it
           NYPLKeychain.shared()?.setObject(newValue, forKey: key)
@@ -93,12 +103,14 @@ class NYPLKeychainCodableVariable<VariableType: Codable>: NYPLKeychainVariable<V
     transaction.perform {
       cachedValue = newValue
       alreadyInited = true
-      DispatchQueue.global(qos: .userInitiated).async { [key] in
-        Log.debug(#file, "Writing `\(String(describing: newValue))` on keychain for \(key)")
+      updateQueue.async { [key] in
+        Log.debug(#file, "About to write on keychain for \(key)")
         if let newValue = newValue, let data = try? JSONEncoder().encode(newValue) {
           NYPLKeychain.shared()?.setObject(data, forKey: key)
+          Log.debug(#file, "Wrote `\(newValue)` on keychain for \(key)")
         } else {
           NYPLKeychain.shared()?.removeObject(forKey: key)
+          Log.info(#file, "Removed value from keychain for \(key)")
         }
       }
     }
