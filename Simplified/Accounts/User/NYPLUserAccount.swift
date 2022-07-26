@@ -20,6 +20,8 @@ private enum StorageKey: String {
   case authDefinition = "NYPLAccountAuthDefinitionKey"
   case cookies = "NYPLAccountAuthCookiesKey"
 
+  /// Generates the Keychain key for the enum case by appending the given
+  /// library UUID to the enum raw value.
   func keyForLibrary(uuid libraryUUID: String?) -> String {
     guard
       // historically user data for NYPL has not used keys that contain the
@@ -51,6 +53,11 @@ private enum StorageKey: String {
 ///
 /// This class works as a singleton even if the initializer is not private
 /// for unit tests reasons.
+///
+/// The way this class achieves saving credentials for multiple accounts is
+/// by storing credentials on the keychain using storage keys that contain the
+/// the library UUID appended after the actual key name.
+/// - seealso: StorageKey.keyForLibrary(uuid:)
 @objcMembers class NYPLUserAccount : NSObject, NYPLUserAccountProvider, NYPLOAuthTokenProvider {
   static private let shared = NYPLUserAccount()
 
@@ -89,17 +96,14 @@ private enum StorageKey: String {
 
   var authDefinition: AccountDetails.Authentication? {
     get {
-      guard let read = _authDefinition.read() else {
-        if let libraryUUID = self.libraryUUID {
-          return AccountsManager.shared.account(libraryUUID)?.details?.auths.first
-        }
-            
-        return AccountsManager.shared.currentAccount?.details?.auths.first
-      }
-      return read
+      return _authDefinition.read()
     }
     set {
-      guard let newValue = newValue else { return }
+      guard let newValue = newValue else {
+        Log.debug(#function, "Attempted to write value for authDefinition but bailed because newValue was nil")
+        return
+      }
+      Log.debug(#function, "About to write value \(newValue.authType) for authDefinition")
       _authDefinition.write(newValue)
 
       DispatchQueue.main.async {
@@ -114,7 +118,7 @@ private enum StorageKey: String {
           AccountsManager.shared.ageCheck.verifyCurrentAccountAgeRequirement(userAccountProvider: self,
                                                                              currentLibraryAccountProvider: AccountsManager.shared) { [weak self] meetsAgeRequirement in
             DispatchQueue.main.async {
-              mainFeed = self?.authDefinition?.coppaURL(isOfAge: meetsAgeRequirement)
+              mainFeed = self?.coppaURL(isOfAge: meetsAgeRequirement)
               resolveFn()
             }
           }
@@ -127,6 +131,51 @@ private enum StorageKey: String {
     }
   }
 
+  private func possibleAuths() -> [AccountDetails.Authentication] {
+    let libraryAccount: Account?
+    if let libraryUUID = self.libraryUUID {
+      libraryAccount = AccountsManager.shared.account(libraryUUID)
+    } else {
+      libraryAccount = AccountsManager.shared.currentAccount
+    }
+    return libraryAccount?.details?.auths ?? []
+  }
+
+  func coppaURL(isOfAge: Bool) -> URL? {
+    let auths = possibleAuths()
+    let coppaAuth = auths.filter {
+      $0.authType == .coppa
+    }
+
+    return coppaAuth.first?.coppaURL(isOfAge: isOfAge)
+  }
+
+  /// Returns the first Authentication definition available in the
+  /// authentication document.
+  ///
+  /// - Note: This is currently used as a quick way to get the authentication
+  /// definition when signed out from a library with only one authentication
+  /// definition.
+  ///
+  /// - Important: This computed variable is here only for backward
+  /// compatibility. It seems inherently wrong to choose the first definition
+  /// as the default, because this will easily break for library with multiple
+  /// ways to authenticate the user.
+  ///
+  /// - Important: DO NOT USE IN NEW CODE. If the user is signed in, simply use
+  /// the `authDefinition` getter directly instead.
+  var defaultAuthDefinition: AccountDetails.Authentication? {
+    guard let signedInAuthDefinition = authDefinition else {
+      return possibleAuths().first
+    }
+    return signedInAuthDefinition
+  }
+
+  /// The queue where updates to the `credentials` property happen.
+  var credentialsUpdateQueue: DispatchQueue {
+    return _credentials.updateQueue
+  }
+  
   var credentials: NYPLCredentials? {
     get {
       var credentials = _credentials.read()
@@ -295,13 +344,17 @@ private enum StorageKey: String {
     return self.authDefinition?.isOauthClientCredentials ?? false
   }
 
+  /// The URL to use to refresh the token in the OAuth Client Credentials flow.
   var oauthTokenRefreshURL: URL? {
-    return self.authDefinition?.oauthIntermediaryUrl
+    let oauthClientCredentialsAuth = possibleAuths().filter {
+      $0.isOauthClientCredentials
+    }.first
+    return oauthClientCredentialsAuth?.oauthIntermediaryUrl
   }
   
   // Oauth requires login to load catalog
   var catalogRequiresAuthentication: Bool {
-    return authDefinition?.catalogRequiresAuthentication ?? false
+    return defaultAuthDefinition?.catalogRequiresAuthentication ?? false
   }
 
   // MARK: - Legacy
@@ -356,11 +409,11 @@ private enum StorageKey: String {
   }
 
   var requiresUserAuthentication: Bool {
-    return authDefinition?.requiresUserAuthentication ?? false
+    return defaultAuthDefinition?.requiresUserAuthentication ?? false
   }
 
   var needsAgeCheck: Bool {
-    return authDefinition?.authType == .coppa
+    return defaultAuthDefinition?.authType == .coppa
   }
 
   var deviceID: String? { _deviceID.read() }
@@ -460,6 +513,7 @@ private enum StorageKey: String {
   
   @objc(setPatron:)
   func setPatron(_ patron: [String : Any]) {
+    Log.debug(#file, "About to write value for patron property")
     _patron.write(patron)
     notifyAccountDidChange()
   }
@@ -474,6 +528,8 @@ private enum StorageKey: String {
   /// - Parameter token: The new OAuth token.
   @objc(setAuthToken:)
   func setAuthToken(_ token: String) {
+    Log.debug(#function, "authType=\(String(describing: authDefinition?.authType)) authToken=\(token)")
+
     // this check is required because in the client credentials flow we need
     // to save both the username/password and authtoken. However, during
     // sign-in, when we save the OAuth token this triggers an accountDidChange
@@ -482,6 +538,7 @@ private enum StorageKey: String {
     // to save username and password. For this reason we require to save
     // the refresh username and password *before* saving the authToken.
     if !hasOAuthClientCredentials() || authTokenRefreshUsername != nil {
+      Log.debug(#function, "About to write credentials for authToken...")
       credentials = .token(authToken: token)
     }
   }
@@ -539,6 +596,7 @@ private enum StorageKey: String {
 
       keychainTransaction.perform {
         _authDefinition.write(nil)
+        Log.debug(#function, "authDefinition after removing value: \(String(describing: _authDefinition.read()?.authType))")
         _credentials.write(nil)
         _cookies.write(nil)
         _authorizationIdentifier.write(nil)

@@ -92,7 +92,7 @@ class NYPLOAuthTokenRefresher {
     let req = URLRequest(url: tokenRefreshURL)
     let (responseData, response, error) = urlSession.synchronouslyExecute(req)
 
-    var logMetadata: [String: Any] = [
+    let logMetadata: [String: Any] = [
       "request": req.loggableString,
       "responseData is nil?": (responseData == nil)
     ]
@@ -106,21 +106,29 @@ class NYPLOAuthTokenRefresher {
       return .failure(error as NYPLUserFriendlyError, response)
     }
 
+    guard let responseData = responseData else {
+      return fail(for: req, response: response, metadata: logMetadata)
+    }
+
     guard
       let httpResponse = response as? HTTPURLResponse,
-      httpResponse.isSuccess(),
-      let responseData = responseData
+      httpResponse.isSuccess()
     else {
-      logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("Server response failure: please check your connection or try again later.", comment: "A generic error message for a HTTP response failure")
-      NYPLErrorLogger.logNetworkError(code: NYPLErrorCode.responseFail,
+      guard let problemDoc = try? NYPLProblemDocument.fromData(responseData) else {
+        return fail(for: req, response: response, metadata: logMetadata)
+      }
+
+      let err = NSError.makeFromProblemDocument(
+        problemDoc,
+        domain: "Oauth Client Credentials token refresh failure",
+        code: NYPLErrorCode.responseFail.rawValue,
+        userInfo: [NSError.httpResponseKey: response ?? "N/A"])
+
+      NYPLErrorLogger.logNetworkError(err, code: .responseFail,
                                       summary: "OAuth Client Credentials token refresh failure",
                                       request: req,
                                       response: response,
                                       metadata: logMetadata)
-      logMetadata[NSError.httpResponseKey] = response
-      let err = NSError(domain: "Client Credentials OAuth Token refresh failure",
-                        code: NYPLErrorCode.responseFail.rawValue,
-                        userInfo: logMetadata)
       return .failure(err, response)
     }
 
@@ -148,5 +156,29 @@ class NYPLOAuthTokenRefresher {
     Log.info(#file, "OAuth Client Credentials token refresh complete. Elapsed time: \(elapsed) sec")
 
     return .success(token, httpResponse)
+  }
+
+  private func fail(for request: URLRequest,
+                    response: URLResponse?,
+                    metadata: [String: Any]) -> NYPLResult<NYPLOAuthAccessToken> {
+    let err = makeGenericError(for: request, response: response, metadata: metadata)
+    return .failure(err, response)
+  }
+
+  private func makeGenericError(for request: URLRequest,
+                                response: URLResponse?,
+                                metadata: [String: Any]) -> NSError {
+    var logMetadata = metadata
+    logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("Server response failure: please check your connection or try again later.", comment: "A generic error message for a HTTP response failure")
+    NYPLErrorLogger.logNetworkError(code: NYPLErrorCode.responseFail,
+                                    summary: "OAuth Client Credentials token refresh failure: no data",
+                                    request: request,
+                                    response: response,
+                                    metadata: logMetadata)
+    logMetadata[NSError.httpResponseKey] = response
+    let err = NSError(domain: "Client Credentials OAuth Token refresh failure: no data",
+                      code: NYPLErrorCode.responseFail.rawValue,
+                      userInfo: logMetadata)
+    return err
   }
 }

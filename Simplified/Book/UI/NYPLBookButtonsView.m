@@ -144,6 +144,14 @@
   }
 }
 
+- (BOOL)shouldShowDeleteInsteadOfReturn
+{
+  AccountDetailsAuthentication *defaultAuthDef = NYPLUserAccount.sharedAccount.defaultAuthDefinition;
+  
+  return (self.book.defaultAcquisitionIfOpenAccess
+          || !defaultAuthDef.requiresUserAuthentication);
+}
+
 - (void)updateButtons
 {
   NSArray *visibleButtonInfo = nil;
@@ -182,8 +190,8 @@
       break;
     case NYPLBookButtonsStateDownloadNeeded:
     {
-      NSString *title = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-      NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+      NSString *title = [self shouldShowDeleteInsteadOfReturn] ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
+      NSString *hint = [self shouldShowDeleteInsteadOfReturn] ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
                               TitleKey: NSLocalizedString(@"Download", nil),
@@ -218,8 +226,8 @@
           break;
       }
 
-      NSString *title = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-      NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+      NSString *title = [self shouldShowDeleteInsteadOfReturn] ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
+      NSString *hint = [self shouldShowDeleteInsteadOfReturn] ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
       visibleButtonInfo = @[buttonInfo,
                             @{ButtonKey: self.deleteButton,
@@ -270,7 +278,7 @@
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
     if(button == self.deleteButton && (!fulfillmentId && fulfillmentIdRequired) && !hasRevokeLink) {
-      if(!self.book.defaultAcquisitionIfOpenAccess && NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication) {
+      if(![self shouldShowDeleteInsteadOfReturn]) {
         continue;
       }
     }
@@ -360,13 +368,13 @@
     case NYPLBookStateDownloadFailed:
     case NYPLBookStateDownloadNeeded:
     case NYPLBookStateDownloadSuccessful:
-      title = ((self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication)
+      title = ([self shouldShowDeleteInsteadOfReturn]
                ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
                : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
-      message = ((self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication)
+      message = ([self shouldShowDeleteInsteadOfReturn]
                  ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil)
                  : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil));
-      confirmButtonTitle = ((self.book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.requiresUserAuthentication)
+      confirmButtonTitle = ([self shouldShowDeleteInsteadOfReturn]
                             ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
                             : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
       break;
