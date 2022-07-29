@@ -17,8 +17,10 @@ class OECleverReauthenticatorVC: UIViewController {
   init(libraryAccount: Account,
        postLoginConfigurator: OEAppUIStructureConfigurating?) {
     cleverHelper = OELoginCleverHelper(libraryAccount: libraryAccount,
+                                       uiDelegate: nil,
                                        postLoginConfigurator: postLoginConfigurator)
     super.init(nibName: "OECleverReauthenticatorVC", bundle: nil)
+    cleverHelper.uiDelegate = self
   }
 
   @available(*, unavailable)
@@ -40,6 +42,20 @@ class OECleverReauthenticatorVC: UIViewController {
   }
   
   @IBAction func didTapRefresh() {
-    cleverHelper.startCleverFlow(onNavigationController: navigationController)
+    cleverHelper.startCleverFlow()
   }
 }
+
+extension OECleverReauthenticatorVC: OECleverUIDelegate {
+
+  func cleverHelperWillSignIn(_ helper: OELoginCleverHelper) {
+    refreshAuthButton?.isEnabled = false
+  }
+
+  func cleverHelperDidFinish(_ helper: OELoginCleverHelper, error: Error?) {
+    if error != nil {
+      refreshAuthButton?.isEnabled = true
+    }
+  }
+}
+
