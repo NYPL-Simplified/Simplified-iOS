@@ -13,6 +13,7 @@ class OELoginChoiceViewController : UIViewController {
   @IBOutlet var headerLabel: UILabel?
   @IBOutlet var subHeaderLabel: UILabel?
   @IBOutlet var cleverLoginButton: UIButton?
+  @IBOutlet var cleverSpinner: UIActivityIndicatorView?
   @IBOutlet var firstBookLoginButton: UIButton?
   @IBOutlet var termsButton: UIButton?
   @IBOutlet var privacyButton: UIButton?
@@ -23,6 +24,18 @@ class OELoginChoiceViewController : UIViewController {
   init(postLoginConfigurator: OEAppUIStructureConfigurating) {
     self.postLoginConfigurator = postLoginConfigurator
     super.init(nibName: "OELoginChoice", bundle: nil)
+
+    // even if renabling is handled by the OECleverUIDelegate methods,
+    // we need to always renable the button in case the Clever flow fails
+    // on the Clever's side. In that case the user will not be redirected
+    // automatically to OE, and once they do open our app manually the
+    // button will be disabled and they'll be stuck. Note that in this
+    // situation `view[Will|Did]Appear` are not being called.
+    NotificationCenter.default
+      .addObserver(self,
+                   selector: #selector(reenableCleverButton(_:)),
+                   name: UIApplication.didBecomeActiveNotification,
+                   object: nil)
   }
   
   @available(*, unavailable)
@@ -102,7 +115,7 @@ class OELoginChoiceViewController : UIViewController {
       cleverHelper = makeCleverHelper()
     }
 
-    cleverHelper?.startCleverFlow(onNavigationController: navigationController)
+    cleverHelper?.startCleverFlow()
   }
 
   @IBAction func didSelectFirstBook() {
@@ -144,6 +157,7 @@ class OELoginChoiceViewController : UIViewController {
     }
 
     return OELoginCleverHelper(libraryAccount: libraryAccount,
+                               uiDelegate: self,
                                postLoginConfigurator: postLoginConfigurator)
   }
 
@@ -175,6 +189,29 @@ class OELoginChoiceViewController : UIViewController {
   private func resetButtonDefaultColors() {
     [cleverLoginButton, firstBookLoginButton].forEach {
       $0?.backgroundColor = NYPLConfiguration.buttonBackgroundColor
+    }
+  }
+
+  @objc private func reenableCleverButton(_ notif: NSNotification) {
+    cleverLoginButton?.isEnabled = true
+  }
+}
+
+extension OELoginChoiceViewController: OECleverUIDelegate {
+  func cleverHelperWillSignIn(_ helper: OELoginCleverHelper) {
+    cleverSpinner?.startAnimating()
+    cleverLoginButton?.isEnabled = false
+  }
+
+  func cleverHelperDidFinish(_ helper: OELoginCleverHelper, error: Error?) {
+    if error != nil {
+      cleverSpinner?.stopAnimating()
+      cleverLoginButton?.isEnabled = true
+    } else {
+      // since didBecomeActive notification comes in before our callback,
+      // and that notification is really just for when the callback is NOT
+      // called, reset the state as it was.
+      cleverLoginButton?.isEnabled = false
     }
   }
 }
