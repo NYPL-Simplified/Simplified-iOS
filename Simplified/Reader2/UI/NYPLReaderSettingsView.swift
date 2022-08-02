@@ -156,21 +156,21 @@ class NYPLReaderSettingsView: UIView {
       blackOnSepiaButton.isEnabled = false
       blackOnWhiteButton.isEnabled = true
       whiteOnBlackButton.isEnabled = true
-      backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor()
+      backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor
       foregroundColor = .black
       break
     case .blackOnWhite:
       blackOnSepiaButton.isEnabled = true
       blackOnWhiteButton.isEnabled = false
       whiteOnBlackButton.isEnabled = true
-      backgroundColor = NYPLConfiguration.readerBackgroundColor()
+      backgroundColor = NYPLConfiguration.readerBackgroundColor
       foregroundColor = .black
       break
     case .whiteOnBlack:
       blackOnSepiaButton.isEnabled = true
       blackOnWhiteButton.isEnabled = true
       whiteOnBlackButton.isEnabled = false
-      backgroundColor = NYPLConfiguration.readerBackgroundDarkColor()
+      backgroundColor = NYPLConfiguration.readerBackgroundDarkColor
       foregroundColor = .white
       break
     }
@@ -276,13 +276,13 @@ class NYPLReaderSettingsView: UIView {
     
     switch colorScheme {
     case .blackOnSepia:
-      selectedFontBottomBorder.backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor()
+      selectedFontBottomBorder.backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor
       break
     case .blackOnWhite:
-      selectedFontBottomBorder.backgroundColor = NYPLConfiguration.readerBackgroundColor()
+      selectedFontBottomBorder.backgroundColor = NYPLConfiguration.readerBackgroundColor
       break
     case .whiteOnBlack:
-      selectedFontBottomBorder.backgroundColor = NYPLConfiguration.readerBackgroundDarkColor()
+      selectedFontBottomBorder.backgroundColor = NYPLConfiguration.readerBackgroundDarkColor
       break
     }
     
@@ -585,7 +585,7 @@ class NYPLReaderSettingsView: UIView {
                                                          NSAttributedString.Key.foregroundColor: UIColor.black],
                                  disabledStateAttributes: [NSAttributedString.Key.underlineStyle: 1,
                                                            NSAttributedString.Key.foregroundColor: NYPLConfiguration.mainColor()])
-    button.backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor()
+    button.backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor
     button.accessibilityLabel = NSLocalizedString("BlackOnSepiaText", comment: "Accessible label for the color scheme")
     button.addTarget(self, action: #selector(didSelectBlackOnSepia), for: .touchUpInside)
     return button
@@ -600,7 +600,7 @@ class NYPLReaderSettingsView: UIView {
                                                          NSAttributedString.Key.foregroundColor: UIColor.black],
                                  disabledStateAttributes: [NSAttributedString.Key.underlineStyle: 1,
                                                            NSAttributedString.Key.foregroundColor: NYPLConfiguration.mainColor()])
-    button.backgroundColor = NYPLConfiguration.readerBackgroundColor()
+    button.backgroundColor = NYPLConfiguration.readerBackgroundColor
     button.accessibilityLabel = NSLocalizedString("BlackOnWhiteText", comment: "Accessible label for the color scheme")
     button.addTarget(self, action: #selector(didSelectBlackOnWhite), for: .touchUpInside)
     return button
@@ -615,7 +615,7 @@ class NYPLReaderSettingsView: UIView {
                                                          NSAttributedString.Key.foregroundColor: UIColor.white],
                                  disabledStateAttributes: [NSAttributedString.Key.underlineStyle: 1,
                                                            NSAttributedString.Key.foregroundColor: UIColor.white])
-    button.backgroundColor = NYPLConfiguration.readerBackgroundDarkColor()
+    button.backgroundColor = NYPLConfiguration.readerBackgroundDarkColor
     button.accessibilityLabel = NSLocalizedString("WhiteOnBlackText", comment: "Accessible label for the color scheme")
     button.addTarget(self, action: #selector(didSelectWhiteOnBlack), for: .touchUpInside)
     return button

@@ -2,7 +2,6 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLBookCellCollectionViewController.h"
@@ -24,6 +23,7 @@
   if(!self) return nil;
   
   self.observers = [NSMutableArray array];
+  self.reauthenticator = [[NYPLReauthenticator alloc] init];
   
   return self;
 }

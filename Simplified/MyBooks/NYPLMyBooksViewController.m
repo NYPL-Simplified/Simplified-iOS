@@ -5,11 +5,8 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLFacetView.h"
 #import "NYPLOpenSearchDescription.h"
-#import "NYPLAccountSignInViewController.h"
-
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -367,11 +364,12 @@ OK:
 - (void)didPullToRefresh
 {
   if ([NYPLUserAccount sharedAccount].requiresUserAuthentication) {
-    if([[NYPLUserAccount sharedAccount] hasCredentials]) {
+    if ([[NYPLUserAccount sharedAccount] hasCredentials]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
-      [NYPLAccountSignInViewController requestCredentialsWithCompletion:nil];
-      [self.refreshControl endRefreshing];
+      [self.reauthenticator refreshAuthenticationWithCompletion:^(__unused BOOL isSignedIn) {
+        [self.refreshControl endRefreshing];
+      }];
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }
   } else {
@@ -400,12 +398,16 @@ OK:
 
 - (void)syncBegan
 {
-  self.navigationItem.leftBarButtonItem.enabled = NO;
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+  }];
 }
 
 - (void)syncEnded
 {
-  self.navigationItem.leftBarButtonItem.enabled = YES;
+  [NYPLMainThreadRun asyncIfNeeded:^{
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+  }];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)__unused size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)__unused coordinator

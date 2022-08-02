@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina3_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OELoginChoiceViewController" customModule="SimplyE" customModuleProvider="target">
+            <connections>
+                <outlet property="cleverLoginButton" destination="mNl-Kk-26v" id="NZu-qs-Oaa"/>
+                <outlet property="cleverSpinner" destination="Qvz-v3-tR2" id="rhY-AC-yYz"/>
+                <outlet property="firstBookLoginButton" destination="2FO-PV-W8O" id="aKZ-Ce-7pf"/>
+                <outlet property="headerLabel" destination="kBk-Yz-S6I" id="6ZP-rb-2eG"/>
+                <outlet property="privacyButton" destination="BBG-sg-YOF" id="fjC-l5-OpD"/>
+                <outlet property="subHeaderLabel" destination="r6d-RP-zth" id="If9-0C-ju2"/>
+                <outlet property="termsButton" destination="TVY-67-KcQ" id="Zip-dy-Lsc"/>
+                <outlet property="view" destination="iN0-l3-epB" id="CUS-kX-hy8"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="r7H-2F-5yY" userLabel="Header Stack View">
+                    <rect key="frame" x="20" y="25.5" width="280" height="58.5"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Get Started" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kBk-Yz-S6I">
+                            <rect key="frame" x="70" y="0.0" width="140.5" height="31.5"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login to access the collection." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r6d-RP-zth">
+                            <rect key="frame" x="42" y="41.5" width="196" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
+                <stackView opaque="NO" contentMode="scaleAspectFit" verticalHuggingPriority="751" horizontalCompressionResistancePriority="751" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="7se-wG-U8e" userLabel="Buttons Stack View">
+                    <rect key="frame" x="10.5" y="164" width="299.5" height="152"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mNl-Kk-26v">
+                            <rect key="frame" x="0.0" y="0.0" width="299.5" height="56"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                            <inset key="contentEdgeInsets" minX="30" minY="8" maxX="30" maxY="8"/>
+                            <inset key="titleEdgeInsets" minX="-1" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <state key="normal" title="Sign in with Clever" image="LogoClever">
+                                <color key="titleColor" systemColor="linkColor"/>
+                            </state>
+                            <connections>
+                                <action selector="didSelectClever" destination="-1" eventType="touchUpInside" id="z4P-Ox-Gwm"/>
+                                <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDown" id="CW2-wn-lDo"/>
+                                <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDragEnter" id="ssK-PX-DiU"/>
+                                <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchUpOutside" id="Jlj-Ft-bvj"/>
+                                <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchDragExit" id="wY6-VD-uGu"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2FO-PV-W8O">
+                            <rect key="frame" x="0.0" y="96" width="299.5" height="56"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                            <inset key="contentEdgeInsets" minX="30" minY="8" maxX="30" maxY="8"/>
+                            <inset key="titleEdgeInsets" minX="-8" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="-11" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <state key="normal" title="Sign in with First Book" image="LogoFirstBook">
+                                <color key="titleColor" systemColor="linkColor"/>
+                            </state>
+                            <connections>
+                                <action selector="didSelectFirstBook" destination="-1" eventType="touchUpInside" id="mfx-lF-Gmr"/>
+                                <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDown" id="NUp-Gc-36l"/>
+                                <action selector="didTouchDownOnButton:" destination="-1" eventType="touchDragEnter" id="g89-oB-YE7"/>
+                                <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchUpOutside" id="2ba-54-0YD"/>
+                                <action selector="didTouchUpOutsideButton:" destination="-1" eventType="touchDragExit" id="UL3-vr-Zge"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="2FO-PV-W8O" firstAttribute="height" secondItem="mNl-Kk-26v" secondAttribute="height" id="GVD-Cu-RmY"/>
+                    </constraints>
+                </stackView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="xrU-C6-Ubg" userLabel="Footer Stack View">
+                    <rect key="frame" x="20" y="396" width="280" height="73"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TVY-67-KcQ">
+                            <rect key="frame" x="97" y="0.0" width="86" height="29"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Terms of Use">
+                                <color key="titleColor" systemColor="linkColor"/>
+                            </state>
+                            <connections>
+                                <action selector="showEULA" destination="-1" eventType="touchUpInside" id="cTU-7I-HG1"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BBG-sg-YOF">
+                            <rect key="frame" x="93" y="44" width="94" height="29"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Privacy Notice">
+                                <color key="titleColor" systemColor="linkColor"/>
+                            </state>
+                            <connections>
+                                <action selector="showPrivacyNotice" destination="-1" eventType="touchUpInside" id="UBk-Vb-nyr"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </stackView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Qvz-v3-tR2">
+                    <rect key="frame" x="280" y="182" width="20" height="20"/>
+                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="color" systemColor="systemGrayColor"/>
+                </activityIndicatorView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="Qvz-v3-tR2" firstAttribute="centerY" secondItem="mNl-Kk-26v" secondAttribute="centerY" id="0MK-L0-ul0"/>
+                <constraint firstItem="7se-wG-U8e" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="2zv-ua-nL5"/>
+                <constraint firstItem="7se-wG-U8e" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="5Uo-xF-uh7"/>
+                <constraint firstItem="7se-wG-U8e" firstAttribute="leading" relation="lessThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="leading" priority="751" constant="10" id="HXC-sd-l0b"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7se-wG-U8e" secondAttribute="trailing" priority="751" constant="10" id="Hj9-oR-BHb"/>
+                <constraint firstItem="xrU-C6-Ubg" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="LeH-yH-bHz"/>
+                <constraint firstItem="xrU-C6-Ubg" firstAttribute="top" secondItem="7se-wG-U8e" secondAttribute="bottom" constant="80" id="SkU-ra-dYq"/>
+                <constraint firstItem="Qvz-v3-tR2" firstAttribute="trailing" secondItem="mNl-Kk-26v" secondAttribute="trailing" constant="-10" id="gG7-A6-i5n"/>
+                <constraint firstItem="7se-wG-U8e" firstAttribute="top" secondItem="r7H-2F-5yY" secondAttribute="bottom" constant="80" id="iTQ-FW-A1L"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="r7H-2F-5yY" secondAttribute="trailing" constant="20" id="mf3-EH-Ja0"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="xrU-C6-Ubg" secondAttribute="trailing" constant="20" id="nzY-zr-li7"/>
+                <constraint firstItem="r7H-2F-5yY" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="rCj-BB-PVq"/>
+            </constraints>
+            <point key="canvasLocation" x="137.68115942028987" y="125.89285714285714"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="LogoClever" width="40" height="40"/>
+        <image name="LogoFirstBook" width="47" height="40"/>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

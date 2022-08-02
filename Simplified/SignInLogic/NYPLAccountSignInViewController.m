@@ -7,7 +7,6 @@
 #import "NYPLAppDelegate.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"
@@ -50,6 +49,8 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) UITableViewCell *logInCell;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) NSArray *tableData;
+@property (nonatomic) UITextField *usernameTextField;
+@property (nonatomic) UITextField *PINTextField;
 
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
@@ -58,9 +59,6 @@ typedef NS_ENUM(NSInteger, Section) {
 @end
 
 @implementation NYPLAccountSignInViewController
-
-@synthesize usernameTextField;
-@synthesize PINTextField;
 
 CGFloat const marginPadding = 2.0;
 
@@ -556,30 +554,23 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 #pragma mark - Modal presentation
 
-+ (void)requestCredentialsWithCompletion:(void (^)(void))completion
-{
-  [NYPLMainThreadRun asyncIfNeeded:^{
-    NYPLAccountSignInViewController *signInVC = [[self alloc] init];
-    [signInVC presentIfNeededUsingExistingCredentials:NO
-                                    completionHandler:completion];
-  }];
-}
-
 /**
- * Presents itself to begin the login process.
+ * Refreshes authentication presenting itself to begin the login process,
+ * if needed.
  *
  * @param useExistingCredentials Should the screen be filled with the barcode when available?
- * @param completionHandler Called upon successful authentication
+ * @param refreshCompletion Called upon successful authentication refresh.
+ * This block might be retained strongly.
  */
 - (void)presentIfNeededUsingExistingCredentials:(BOOL const)useExistingCredentials
-                              completionHandler:(void (^)(void))completionHandler
+                              refreshCompletion:(void (^)(void))refreshCompletion
 {
   // Tell the VC to create its text fields so we can set their properties.
   [self view];
 
   BOOL shouldPresentVC = [self.businessLogic
                           refreshAuthIfNeededUsingExistingCredentials:useExistingCredentials
-                          completion:completionHandler];
+                          completion:refreshCompletion];
 
   if (shouldPresentVC) {
     [self presentAsModal];
@@ -958,16 +949,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-/**
- @note This method is not doing any logging in case `success` is false.
-
- @param success Whether Adobe DRM authorization was successful or not.
- @param error If errorMessage is absent, this will be used to derive a message
- to present to the user.
- @param errorMessage Will be presented to the user and will be used as a
- localization key to attempt to localize it.
- */
-- (void)businessLogicDidCompleteSignIn:(NYPLSignInBusinessLogic *)businessLogic
+- (void)businessLogicDidSignIn:(NYPLSignInBusinessLogic *)businessLogic
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
@@ -1005,14 +987,17 @@ didEncounterValidationError:(NSError *)error
 didEncounterSignOutError:(NSError *)error
       withHTTPStatusCode:(NSInteger)statusCode
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 - (void)businessLogicWillSignOut:(NYPLSignInBusinessLogic *)businessLogic
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 - (void)businessLogicDidFinishDeauthorizing:(NYPLSignInBusinessLogic *)businessLogic
 {
+  // nothing to do since the sign-in modal is never used to sign-out
 }
 
 @end

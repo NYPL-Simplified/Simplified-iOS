@@ -70,7 +70,6 @@ class OPDS2SamlIDP: NSObject, Codable {
     let coppaOverUrl:URL?
     let oauthIntermediaryUrl:URL?
     let methodDescription: String?
-
     let samlIdps: [OPDS2SamlIDP]?
 
     init(auth: OPDS2AuthenticationDocument.Authentication) {
@@ -174,6 +173,10 @@ class OPDS2SamlIDP: NSObject, Codable {
       oauthIntermediaryUrl = authentication.oauthIntermediaryUrl
       methodDescription = authentication.methodDescription
       samlIdps = authentication.samlIdps
+    }
+
+    override var description: String {
+      return "\(authType)"
     }
   }
 

@@ -4,17 +4,10 @@
 
 #import "SimplyE-Swift.h"
 
-#import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
-
-
-#if defined(FEATURE_DRM_CONNECTOR)
-#import <ADEPT/ADEPT.h>
-#import "NYPLAccountSignInViewController.h"
-#endif
 
 // TODO: Remove these imports and move handling the "open a book url" code to a more appropriate handler
 #import "NYPLXML.h"
@@ -43,6 +36,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 {
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+  [self.window setBackgroundColor:[NYPLConfiguration primaryBackgroundColor]];
 
   if (@available(iOS 15.0, *)) {
     UINavigationBarAppearance *navBarAppearance = [[UINavigationBarAppearance alloc] init];
@@ -88,7 +82,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   [self setUpAppearance];
   [self.window makeKeyAndVisible];
-  [self setUpRootVC];
+
+  // NB: this causes the lazy creation of AccountManager
+  BOOL isSignedIn = [NYPLUserAccount.sharedAccount isSignedIn];
+  
+  [self setUpRootVCWithUserIsSignedIn:isSignedIn];
 
   [NYPLErrorLogger logNewAppLaunch];
 
@@ -184,7 +182,6 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 -(void)applicationDidBecomeActive:(__unused UIApplication *)app
 {
   [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
-  [self completeBecomingActive];
 }
 
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application

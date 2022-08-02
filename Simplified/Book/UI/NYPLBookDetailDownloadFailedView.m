@@ -1,7 +1,6 @@
 @import PureLayout;
 #import "SimplyE-Swift.h"
 
-#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"

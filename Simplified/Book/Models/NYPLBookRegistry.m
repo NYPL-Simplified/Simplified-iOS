@@ -3,7 +3,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistryRecord.h"
-#import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "NYPLOPDS.h"
 #import "NYPLMyBooksDownloadCenter.h"
@@ -314,7 +313,8 @@ static NSString *const RecordsKey = @"records";
     self.syncShouldCommit = YES;
     [self broadcastChange];
   } //@synchronized
-  
+
+  NYPLLOG(@"[syncWithCompletionHandler] Begin BookRegistry syncing...");
   [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
                             networkExecutor:[NYPLNetworkExecutor shared]
                            shouldResetCache:shouldResetCache

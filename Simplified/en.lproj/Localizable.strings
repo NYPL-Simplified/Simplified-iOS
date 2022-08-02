@@ -1,8 +1,8 @@
-// Accessibility Labels
+// MARK: - Accessibility Labels
 
 "AccessibilitySwitchLibrary" = "Change Library Account";
 
-// Generic
+// MARK: - Generic
 "AlphabetFontType" = "Aa";
 "AlphabetFontStyle" = "ABCabc";
 "AboutApp" = "About SimplyE";
@@ -13,7 +13,7 @@
 "Loading... Please wait." = "Loading... Please wait.";
 "BarcodeOrUsername" = "Barcode or Username";
 "Borrow" = "Get";
-"BorrowFailed" = "Borrowing failed";
+"BorrowFailed" = "Borrowing Failed";
 "BorrowCouldNotBeCompletedFormat" = "Borrowing %@ could not be completed.";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
@@ -87,18 +87,19 @@
 "Back" = "Back";
 "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.";
 "The page could not load due to a connection error." = "The page could not load due to a connection error.";
+"An unrecoverable error occurred. Please force-quit the app and try again." = "An unrecoverable error occurred. Please force-quit the app and try again.";
 
-// Generic networking
+// MARK: - Generic networking
 "Server response failure: please check your connection or try again later." = "Server response failure: please check your connection or try again later.";
 "HTTP status" = "HTTP status";
 
-// NYPLAppDelegate
+// MARK: - NYPLAppDelegate
 "AppDelegateUpdateRequiredTitle" = "Update Required";
 "AppDelegateUpdateRequiredMessageFormat" = "A critical update is required for applications older than version %@. Essential parts of the application will not function correctly until an update is performed.";
 "AppDelegateUpdateNow" = "Update Now";
 "AppDelegateUpdateRemindMeLater" = "Remind Me Later";
 
-// NYPLBookButtonsView
+// MARK: - NYPLBookButtonsView
 "BookButtonsViewRemoveHoldTitle" = "Remove Reservation";
 "BookButtonsViewRemoveHoldMessage" = "Are you sure you want to remove \"%@\" from your reservations? You will no longer be in line for this book.";
 "BookButtonsViewRemoveHoldConfirm" = "Remove";
@@ -108,7 +109,7 @@
 "Cancels hold for %@" = "Cancels hold for %@";
 "Downloads %@" = "Downloads %@";
 
-// Book Details
+// MARK: - Book Details
 "BookDetailViewControllerTitle" = "Details";
 "BookDetailViewControllerDownloadNeededTitle" = "Your book has not yet been downloaded.";
 "BookDetailViewControllerDownloadSuccessfulTitle" = "Your book is ready to read!";
@@ -119,13 +120,13 @@
 "BookDetailViewControllerDistributedByFormat" = "Distributed by: ";
 "It will expire in %@." = "It will expire in %@.";
 
-// NYPLBookCellDelegate
+// MARK: - NYPLBookCellDelegate
 "Unsupported Item" = "Unsupported Item";
 "The item you are trying to open is not currently supported." = "The item you are trying to open is not currently supported.";
 "Corrupted Audiobook" = "Corrupted Audiobook";
 "The audiobook you are trying to open appears to be corrupted. Try downloading it again." = "The audiobook you are trying to open appears to be corrupted. Try downloading it again.";
 
-// NYPLFacetView
+// MARK: - NYPLFacetView
 "FacetViewNotActive" = "<>";
 
 // NYPLHoldsViewController
@@ -135,17 +136,13 @@
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
 "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download." = "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.";
 
-// MyBooks
+// MARK: - MyBooks
 "%@ was returned successfully." = "%@ was returned successfully.";
-
-// NYPLMyBooksDownloadCenter
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Delete";
 "MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Are you sure you want to delete \"%@\"?";
 "MyBooksGoToCatalog" = "Visit the Catalog to\nadd books to My Books.";
 "MyBooksDownloadCenterConfirmReturnTitle" = "Return";
 "MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Are you sure you want to return \"%@\"?";
-
-// NYPLMyBooksViewController
 "MyBooksViewControllerTitle" = "My Books";
 "MyBooksViewControllerSearchTitle" = "Search My Books";
 "MyBooksViewControllerFacetAll" = "All";
@@ -155,13 +152,13 @@
 "MyBooksViewControllerGroupShow" = "Show";
 "MyBooksViewControllerGroupSortBy" = "Sort By";
 
-// ereader
+// MARK: - ereader
 "ReaderViewControllerCorruptTitle" = "Could Not Display Book";
 "ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
 "Previous Chapter" = "Previous Chapter";
 "Next Chapter" = "Next Chapter";
 
-// NYPLReaderSettingsView
+// MARK: - NYPLReaderSettingsView
 "Sans serif font" = "Sans serif font";
 "Serif font" = "Serif font";
 "Special font" = "Special font";
@@ -176,34 +173,34 @@
 "Publisher's Default" = "Publisher's Default";
 "Show the publisher-specified fonts and layout choices in this ebook" = "Show the publisher-specified fonts and layout choices in this ebook";
 
-// NYPLReaderSettingsViewController
+// MARK: - NYPLReaderSettingsViewController
 "ReaderViewControllerToggleReaderSettings" = "Toggle reader settings";
 
-// Reader Positions (TOC and Bookmarks)
+// MARK: - Reader Positions (TOC and Bookmarks)
 "ReaderTOCViewControllerTitle" = "Table of Contents";
 "%@ through chapter" = "%@ through chapter";
 "There are no bookmarks for this book." = "There are no bookmarks for this book.";
 
-// Reader error messages (R2)
+// MARK: - Reader error messages (R2)
 "Content Protection Error" = "Content Protection Error";
 "The book you were trying to open is invalid." = "The book you were trying to open is invalid.";
 "An error was encountered while trying to open this book." = "An error was encountered while trying to open this book.";
 "The book you were trying to read is in an unsupported format." = "The book you were trying to read is in an unsupported format.";
 "The book you were trying to read is corrupted. Please try downloading it again." = "The book you were trying to read is corrupted. Please try downloading it again.";
 
-// Authentication generic
+// MARK: - Authentication generic
 "Authentication Expired" = "Authentication Expired";
 "Your authentication details have expired. Please sign in again." = "Your authentication details have expired. Please sign in again.";
 "Authentication Required" = "Authentication Required";
 "Please sign in to use this functionality." = "Please sign in to use this functionality.";
 
-// Age Check
+// MARK: - Age Check
 "Age Verification" = "Age Verification";
 "Please enter your birth year" = "Please enter your birth year";
 "Done" = "Done";
 "Next" = "Next";
 
-// NYPLSettingsAccountDetailViewController and NYPLAccountSignInViewController
+// MARK: - Account settings VC and sign-in modal
 "Add Library" = "Add Library";
 "Report an Issue" = "Report an Issue";
 "Show Barcode" = "Show Barcode";
@@ -227,27 +224,29 @@
 "Please log out and try your card information again." = "Please log out and try your card information again.";
 "Sign-in Error" = "Sign-in Error";
 "We could not find a match for the credentials provided." = "We could not find a match for the credentials provided.";
+"You have timed out. Please sign back in." = "You have timed out. Please sign back in.";
+"Sign in on Clever" = "Sign in on Clever";
 
-// sign up / card creation
+// MARK: - sign up / card creation
 "Need a library card for your child?" = "Need a library card for your child?";
 "Your eligibility for this card can't be confirmed. Please contact your library if this is in error." = "Your eligibility for this card can't be confirmed. Please contact your library if this is in error.";
 "We're sorry. Currently we do not support signups for new patrons via the app." = "We're sorry. Currently we do not support signups for new patrons via the app.";
 "We're sorry. Our sign up system is currently down. Please try again later." = "We're sorry. Our sign up system is currently down. Please try again later.";
 
-// NYPLSettingsEULAViewController
+// MARK: - NYPLSettingsEULAViewController
 "Accept" = "Accept";
 "Reject" = "Reject";
 "EULA" = "User Agreement";
 "EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
 "NOTICE" = "NOTICE";
 
-// NYPLSettingsLibrarySelectionViewController
+// MARK: - NYPLSettingsLibrarySelectionViewController
 "Add Your Library" = "Add Your Library";
 
-// NYPLSettingsPrivacyPolicyViewController
+// MARK: - NYPLSettingsPrivacyPolicyViewController
 "SettingsAccountViewControllerMessageTooManyActivations" = "Too many devices have been authorized with this library card.";
 
-// NYPLWelcomeScreen
+// MARK: - NYPLWelcomeScreen
 "Age Verification" = "Age Verification";
 "You must be 13 years of age or older to download some of the books from this collection. How old are you?" = "You must be 13 years of age or older to download some of the books from this collection. How old are you?";
 "Read E-Books from Your Library" = "Read E-Books from Your Library";
@@ -259,16 +258,50 @@
 "Under 13" = "Under 13";
 "13 or Older" = "13 or Older";
 
-// NYPLSettingsAdvancedViewController
-"Advanced" = "Advanced";
-"Selecting \"Delete\" will remove all bookmarks from the server for %@." = "Selecting \"Delete\" will remove all bookmarks from the server for %@.";
-"Delete Server Data" = "Delete Server Data";
+// Account / Data deletion
+"Delete my SimplyE Data" = "Delete my SimplyE Data";
+"Delete my Open eBooks Data" = "Delete my Open eBooks Data";
+"Delete Reading Data" = "Delete Reading Data";
 "Please wait..." = "Please wait...";
 "Delete all the bookmarks you have saved in the cloud." = "Delete all the bookmarks you have saved in the cloud.";
+"You have successfully deleted your SimplyE data" = "You have successfully deleted your SimplyE data";
+"Unsubscribe from emails" = "Unsubscribe from emails";
+"E-Mail to cancel your library card" = "E-Mail to cancel your library card";
+"If the above link does not work, please email us at" = "If the above link does not work, please email us at";
+"Delete Library Card" = "Delete Library Card";
+"Delete Data Failed" = "Delete Data Failed";
+"Thank You" = "Thank You";
+"Your email has been sent." = "Your email has been sent.";
+"DeleteServerDataDescriptionSimplyE" = "SimplyE does not create any accounts outside of your library card. The content that the SimplyE app saves is:
+
+• your library card information to log into your library
+• your last known place in the book you’re reading or listening to
+• and any bookmarks or highlights you’ve created for your current book
+
+Your account information is saved outside of your current device if you specifically permit us to save it. If you only want your bookmarks and reading location deleted, please go to back to the prior screen. Set the “Sync Bookmarks” toggle to OFF, then come back to this page and tap “Delete Reading Data”. Then you can log out, and SimplyE will no longer save any of your information.";
+"DeleteServerDataDescriptionOpeneBooks" = "Open eBooks does not create any accounts outside of your library card. The content that the Open eBooks app saves is:
+
+• your library card information to log into your library
+• your last known place in the book you’re reading or listening to
+• and any bookmarks or highlights you’ve created for your current book
+
+Your account information is saved outside of your current device if you specifically permit us to save it. If you only want your bookmarks and reading location deleted, please go to back to the prior screen. Set the “Sync Bookmarks” toggle to OFF, then come back to this page and tap “Delete Reading Data”. Then you can log out, and Open eBooks will no longer save any of your information.";
+"DeleteLibraryCardDescription" = "If you want to delete your account, or all of your library patron data, this will require deleting your library card altogether.
+
+Deleting your account means that you will no longer have access to ebooks, audiobooks, databases and other digital resources. You also can no longer use your card at your local branches. If you wish to proceed, in order to protect your privacy, please email us.";
 
 // Open eBooks
 "Welcome to Open eBooks" = "Welcome to Open eBooks!";
 "You need to login to access the collection." = "You need to login to access the collection.";
+"Access Code" = "Access Code";
+"Having trouble signing in?" = "Having trouble signing in?";
+"Frequently Asked Questions" = "Frequently Asked Questions";
+"Get Started" = "Get Started";
+"Login to access the collection." = "Login to access the collection.";
+"Sign in with Clever" = "Sign in with Clever";
+"Sign in with First Book" = "Sign in with First Book";
+"Terms of Use" = "Terms of Use";
+"Privacy Notice" = "Privacy Notice";
 
 // Date+NYPLAdditions
 "year_suffix_short" = "%d y";

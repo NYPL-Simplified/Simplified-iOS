@@ -37,8 +37,6 @@ extension NYPLConfiguration {
 
   // MARK:-
 
-  static let openEBooksRequestCodesURL = URL(string: "http://openebooks.net/getstarted.html")!
-
   @objc static func mainColor() -> UIColor {
     if #available(iOS 12.0, *),
        UIScreen.main.traitCollection.userInterfaceStyle == UIUserInterfaceStyle.dark {
@@ -47,25 +45,33 @@ extension NYPLConfiguration {
     return UIColor(red: 141.0/255.0, green: 199.0/255.0, blue: 64.0/255.0, alpha: 1.0)
   }
 
-  static var welcomeTutorialBackgroundColor: UIColor {
-    if #available(iOS 11.0, *) {
-      if let color = UIColor(named: "TutorialColor") {
-        return color
-      }
-    }
-
-    return .white
-  }
-
   static func cardCreationEnabled() -> Bool {
     return false
   }
 
   static func welcomeScreenFont() -> UIFont? {
     if UIDevice.current.userInterfaceIdiom == .phone {
-      return UIFont(name: NYPLConfiguration.systemFontFamilyName(),
+      return UIFont(name: NYPLConfiguration.systemFontFamilyName,
                     size: 16.0)
     }
-    return UIFont(name: NYPLConfiguration.systemFontFamilyName(), size: 22.0)
+    return UIFont(name: NYPLConfiguration.systemFontFamilyName, size: 22.0)
+  }
+
+  static var cleverColor: UIColor {
+    if #available(iOS 11.0, *),
+       let color = UIColor(named: "clever") {
+      return color
+    } else {
+      return actionColor
+    }
+  }
+
+  static var firstBookColor: UIColor {
+    if #available(iOS 11.0, *),
+       let color = UIColor(named: "firstBook") {
+      return color
+    } else {
+      return actionColor
+    }
   }
 }

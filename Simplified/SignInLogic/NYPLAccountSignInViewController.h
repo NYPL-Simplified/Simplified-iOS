@@ -27,23 +27,12 @@
  * - you are certain the user is logged out;
  * - you need to perform some additional customization before presenting the VC.
  *
- * In all other cases you should use either the @p NYPLReauthenticator class
- * or the @p requestCredentialsWithCompletion: method.
+ * In all other cases you should use the @p NYPLReauthenticator class.
  *
  * @param useExistingCredentials Should the screen be filled with the barcode when available?
  * @param completionHandler Called upon successful authentication
  */
 - (void)presentIfNeededUsingExistingCredentials:(BOOL const)useExistingBarcode
-                              completionHandler:(void (^)(void))completionHandler;
-
-/**
- * Present sign in view controller to begin the login process.
- *
- * If unsure whether user is already logged in or not, use
- * @p NYPLReauthenticator instead.
- *
- * @param completion Called upon successful authentication.
- */
-+ (void)requestCredentialsWithCompletion:(void (^)(void))completion;
+                              refreshCompletion:(void (^)(void))completionHandler;
 
 @end

@@ -36,7 +36,7 @@ class NYPLReaderTOCBusinessLogic {
     guard tocElements.indices.contains(index) else {
       return nil
     }
-    return Locator(link: tocElements[index].link)
+    return publication.locate(tocElements[index].link)
   }
 
   func shouldSelectTOCItem(at index: Int) -> Bool {

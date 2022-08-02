@@ -196,4 +196,12 @@ import UIKit
       Log.info(#file, msg)
     }
   }
+
+  static func presentUnrecoverableAlert(for error: String) {
+    Log.error(#file, error)
+    let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""),
+                                  message: NSLocalizedString("An unrecoverable error occurred. Please force-quit the app and try again.", comment: "Generic error message for internal errors"),
+                                  preferredStyle: .alert)
+    NYPLPresentationUtils.safelyPresent(alert)
+  }
 }

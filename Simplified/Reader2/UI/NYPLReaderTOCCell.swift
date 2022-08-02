@@ -31,7 +31,7 @@ import UIKit
 
     background?.layer.borderColor = NYPLConfiguration.mainColor().cgColor
     background?.layer.borderWidth = 1
-    background?.layer.cornerRadius = 3
+    background?.layer.cornerRadius = NYPLConfiguration.cornerRadius
     backgroundColor = .clear
 
     background.isHidden = !isForCurrentChapter
