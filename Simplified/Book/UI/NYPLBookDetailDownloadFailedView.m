@@ -24,15 +24,19 @@
   
   [self updateColors];
   
+  self.showAudiobookError = NO;
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   self.messageLabel.textColor = [UIColor whiteColor];
-  self.messageLabel.text = NSLocalizedString(@"The download could not be completed.\nScroll down to 'View Issues' to see details.", nil);
+  self.messageLabel.text = NSLocalizedString(@"The download could not be completed.", nil);
   self.messageLabel.numberOfLines = 0;
   [self addSubview:self.messageLabel];
-  [self.messageLabel autoPinEdgesToSuperviewEdges];
-  
+  [self.messageLabel autoCenterInSuperview];
+  [self.messageLabel autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:12 relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:12 relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeTop relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeBottom relation:NSLayoutRelationGreaterThanOrEqual];
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(didChangePreferredContentSize)
                                                name:UIContentSizeCategoryDidChangeNotification
@@ -55,14 +59,23 @@
     }
   }
 }
+- (void)setHidden:(BOOL)hidden {
+  [super setHidden:hidden];
+  /// The height of this view is constrainted to the normal view and downloading view.
+  /// If this is presenting an error message which takes more than 1 line,
+  /// we need to set the message to an empty string when this view is being hidden,
+  /// so the other views can resize to the height they need.
+  if (hidden) {
+    self.messageLabel.text = @"";
+  }
+}
 
 - (void)updateColors {
+  self.backgroundColor = [NYPLConfiguration mainColor];
   if (@available(iOS 12.0, *)) {
     if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
       self.backgroundColor = [NYPLConfiguration secondaryBackgroundColor];
     }
-  } else {
-    self.backgroundColor = [NYPLConfiguration mainColor];
   }
 }
 
@@ -72,6 +85,11 @@
 }
 
 - (void)configureFailMessageWithProblemDocument:(NYPLProblemDocument *)problemDoc {
+  if (self.showAudiobookError) {
+    self.messageLabel.text = NSLocalizedString(@"Your download did not complete successfully. Retry or contact support.", nil);
+    return;
+  }
+  
   if (problemDoc != nil) {
     self.messageLabel.text = NSLocalizedString(@"The download could not be completed.\nScroll down to 'View Issues' to see details.", nil);
   } else {

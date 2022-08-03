@@ -106,12 +106,11 @@
 }
 
 - (void)updateColors {
+  self.progressView.tintColor = [NYPLConfiguration primaryBackgroundColor];
   if (@available(iOS 12.0, *)) {
     if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
       self.progressView.tintColor = [NYPLConfiguration actionColor];
     }
-  } else {
-    self.progressView.tintColor = [NYPLConfiguration primaryBackgroundColor];
   }
 }
 
