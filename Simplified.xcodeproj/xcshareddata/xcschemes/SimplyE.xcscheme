@@ -124,6 +124,46 @@
                ReferencedContainer = "container:tenprintcover-ios/TenPrintCover.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "NYPLAxisTests"
+               BuildableName = "NYPLAxisTests"
+               BlueprintName = "NYPLAxisTests"
+               ReferencedContainer = "container:Axis-iOS">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "NYPLAudiobookToolkitTests"
+               BuildableName = "NYPLAudiobookToolkitTests"
+               BlueprintName = "NYPLAudiobookToolkitTests"
+               ReferencedContainer = "container:NYPLAudiobookToolkit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "NYPLCardCreatorTests"
+               BuildableName = "NYPLCardCreatorTests"
+               BlueprintName = "NYPLCardCreatorTests"
+               ReferencedContainer = "container:CardCreator-iOS">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "OverdriveProcessorTests"
+               BuildableName = "OverdriveProcessorTests"
+               BlueprintName = "OverdriveProcessorTests"
+               ReferencedContainer = "container:audiobook-ios-overdrive">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
