@@ -1,3 +1,5 @@
+@import NYPLUtilities;
+
 #if FEATURE_AUDIOBOOKS
 @import NYPLAudiobookToolkit;
 #endif
@@ -742,7 +744,7 @@ didCompleteWithError:(NSError *)error
   if(!identifier) return nil;
   NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
   NSString *pathExtension = [self pathExtensionForBook:book];
-  return [[[self contentDirectoryURL:account] URLByAppendingPathComponent:[identifier SHA256]]
+  return [[[self contentDirectoryURL:account] URLByAppendingPathComponent:[identifier sha256]]
           URLByAppendingPathExtension:pathExtension];
 }
 

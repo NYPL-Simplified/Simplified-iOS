@@ -691,7 +691,6 @@
 		739E6061244A0D8600D00301 /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; };
 		739E6062244A0D8600D00301 /* NYPLAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F35A194F847100DC322F /* NYPLAsync.m */; };
 		739E6063244A0D8600D00301 /* NYPLReloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */; };
-		739E6064244A0D8600D00301 /* NYPLReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E69404091E4A789800E566ED /* NYPLReachabilityManager.m */; };
 		739E6067244A0D8600D00301 /* NYPLCatalogGroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */; };
 		739E6068244A0D8600D00301 /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
 		739E6069244A0D8600D00301 /* NYPLProblemDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1B141422CBE3570006C964 /* NYPLProblemDocument.swift */; };
@@ -1041,7 +1040,6 @@
 		73EB0A8225821DF4006BC997 /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; };
 		73EB0A8325821DF4006BC997 /* NYPLAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F35A194F847100DC322F /* NYPLAsync.m */; };
 		73EB0A8425821DF4006BC997 /* NYPLReloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */; };
-		73EB0A8525821DF4006BC997 /* NYPLReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E69404091E4A789800E566ED /* NYPLReachabilityManager.m */; };
 		73EB0A8725821DF4006BC997 /* NYPLCatalogGroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */; };
 		73EB0A8825821DF4006BC997 /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
 		73EB0A8925821DF4006BC997 /* NYPLProblemDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1B141422CBE3570006C964 /* NYPLProblemDocument.swift */; };
@@ -1282,7 +1280,6 @@
 		73FCA2C425005BA4001B0C5D /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; };
 		73FCA2C525005BA4001B0C5D /* NYPLAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F35A194F847100DC322F /* NYPLAsync.m */; };
 		73FCA2C625005BA4001B0C5D /* NYPLReloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */; };
-		73FCA2C725005BA4001B0C5D /* NYPLReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E69404091E4A789800E566ED /* NYPLReachabilityManager.m */; };
 		73FCA2C925005BA4001B0C5D /* NYPLCatalogGroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */; };
 		73FCA2CA25005BA4001B0C5D /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
 		73FCA2CB25005BA4001B0C5D /* NYPLProblemDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1B141422CBE3570006C964 /* NYPLProblemDocument.swift */; };
@@ -1477,7 +1474,6 @@
 		E671FF7D1E3A7068002AB13F /* NYPLNetworkQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E671FF7C1E3A7068002AB13F /* NYPLNetworkQueue.swift */; };
 		E683953B217663B100371072 /* NYPLFacetViewDefaultDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E683953A217663B100371072 /* NYPLFacetViewDefaultDataSource.swift */; };
 		E68CCFC51F9F80CF003DDA6C /* NYPLBarcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68CCFC41F9F80CF003DDA6C /* NYPLBarcode.swift */; };
-		E694040A1E4A789800E566ED /* NYPLReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E69404091E4A789800E566ED /* NYPLReachabilityManager.m */; };
 		E699BA402166598B00A0736A /* NYPLEntryPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E699BA3F2166598B00A0736A /* NYPLEntryPointView.swift */; };
 		E6B1F4FB1DD20EA900D73CA1 /* NYPLSettingsAccountsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B1F4FA1DD20EA900D73CA1 /* NYPLSettingsAccountsListVC.swift */; };
 		E6B3269F1EE066DE00DB877A /* NYPLBookDetailTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B3269E1EE066DE00DB877A /* NYPLBookDetailTableView.swift */; };
@@ -2232,8 +2228,6 @@
 		E671FF7C1E3A7068002AB13F /* NYPLNetworkQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLNetworkQueue.swift; sourceTree = "<group>"; };
 		E683953A217663B100371072 /* NYPLFacetViewDefaultDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLFacetViewDefaultDataSource.swift; sourceTree = "<group>"; };
 		E68CCFC41F9F80CF003DDA6C /* NYPLBarcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBarcode.swift; sourceTree = "<group>"; };
-		E69404081E4A789800E566ED /* NYPLReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReachabilityManager.h; sourceTree = "<group>"; };
-		E69404091E4A789800E566ED /* NYPLReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReachabilityManager.m; sourceTree = "<group>"; };
 		E699BA3F2166598B00A0736A /* NYPLEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLEntryPointView.swift; sourceTree = "<group>"; };
 		E6B1F4FA1DD20EA900D73CA1 /* NYPLSettingsAccountsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsAccountsListVC.swift; sourceTree = "<group>"; };
 		E6B3269E1EE066DE00DB877A /* NYPLBookDetailTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookDetailTableView.swift; sourceTree = "<group>"; };
@@ -2905,8 +2899,6 @@
 				73AB364827F3D7AA0067BAAC /* NYPLOAuthTokenRefresher.swift */,
 				2DB436361D4C049200F8E69D /* NYPLReachability.h */,
 				2DB436371D4C049200F8E69D /* NYPLReachability.m */,
-				E69404081E4A789800E566ED /* NYPLReachabilityManager.h */,
-				E69404091E4A789800E566ED /* NYPLReachabilityManager.m */,
 				73DE8979260BEA13003D9135 /* NYPLRequestExecuting.swift */,
 				A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */,
 				A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */,
@@ -4399,7 +4391,6 @@
 				5916E7E02627922B0021CD67 /* NYPLSignInBusinessLogic+Axis.swift in Sources */,
 				739E6062244A0D8600D00301 /* NYPLAsync.m in Sources */,
 				739E6063244A0D8600D00301 /* NYPLReloadView.m in Sources */,
-				739E6064244A0D8600D00301 /* NYPLReachabilityManager.m in Sources */,
 				739E6067244A0D8600D00301 /* NYPLCatalogGroupedFeedViewController.m in Sources */,
 				73B551012511737B00D05B86 /* SEMigrations.swift in Sources */,
 				17FFE881278BC65F0084E65D /* NYPLOPDSFeedFetcher.swift in Sources */,
@@ -4662,7 +4653,6 @@
 				73EB0A8325821DF4006BC997 /* NYPLAsync.m in Sources */,
 				73EB0A8425821DF4006BC997 /* NYPLReloadView.m in Sources */,
 				73D8D27625A68D3B00DF5F69 /* NYPLEPUBViewController.swift in Sources */,
-				73EB0A8525821DF4006BC997 /* NYPLReachabilityManager.m in Sources */,
 				2126FE6625C089110095C45C /* ReaderFormatModule.swift in Sources */,
 				7321485C28651E4B000DF0F0 /* NYPLSignInModalFactory.swift in Sources */,
 				73EB0A8725821DF4006BC997 /* NYPLCatalogGroupedFeedViewController.m in Sources */,
@@ -4926,7 +4916,6 @@
 				7359DCB527E92462001C4254 /* NYPLSignInBusinessLogic+OAuthClientCredentials.swift in Sources */,
 				73FCA2C625005BA4001B0C5D /* NYPLReloadView.m in Sources */,
 				1747335C2853B1190090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
-				73FCA2C725005BA4001B0C5D /* NYPLReachabilityManager.m in Sources */,
 				73FCA2C925005BA4001B0C5D /* NYPLCatalogGroupedFeedViewController.m in Sources */,
 				73FCA2CA25005BA4001B0C5D /* NYPLBackgroundExecutor.swift in Sources */,
 				73CB8CC9285012D700603BA1 /* OELoginNavHeader.swift in Sources */,
@@ -5168,7 +5157,6 @@
 				085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */,
 				1183F35B194F847100DC322F /* NYPLAsync.m in Sources */,
 				11B20E6E19D9F6DD00877A23 /* NYPLReloadView.m in Sources */,
-				E694040A1E4A789800E566ED /* NYPLReachabilityManager.m in Sources */,
 				A4BA1D0E1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m in Sources */,
 				17FFE880278BC65F0084E65D /* NYPLOPDSFeedFetcher.swift in Sources */,
 				732F929323ECB51F0099244C /* NYPLBackgroundExecutor.swift in Sources */,
