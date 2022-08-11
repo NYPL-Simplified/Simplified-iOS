@@ -4,7 +4,6 @@ let HoldNotificationCategoryIdentifier = "NYPLHoldToReserveNotificationCategory"
 let CheckOutActionIdentifier = "NYPLCheckOutNotificationAction"
 let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 
-@available (iOS 10.0, *)
 @objcMembers class NYPLUserNotifications: NSObject
 {
   private let unCenter = UNUserNotificationCenter.current()
@@ -121,7 +120,6 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
   }
 }
 
-@available (iOS 10.0, *)
 extension NYPLUserNotifications: UNUserNotificationCenterDelegate
 {
   func userNotificationCenter(_ center: UNUserNotificationCenter,
