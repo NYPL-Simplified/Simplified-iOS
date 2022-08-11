@@ -121,9 +121,10 @@
 - (void)viewDidLayoutSubviews
 {
   [super viewDidLayoutSubviews];
+
   UIEdgeInsets newInsets = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
                                             0,
-                                            self.bottomLayoutGuide.length,
+                                            self.view.safeAreaInsets.bottom,
                                             0);
   if (!UIEdgeInsetsEqualToEdgeInsets(self.collectionView.contentInset, newInsets)) {
     self.collectionView.contentInset = newInsets;
@@ -300,7 +301,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.view addSubview:self.facetBarView];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
+  [self.facetBarView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
 }
 
 #pragma mark NYPLEntryPointViewDelegate
