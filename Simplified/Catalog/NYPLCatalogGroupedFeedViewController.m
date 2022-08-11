@@ -102,8 +102,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   [self.view addSubview:self.facetBarView];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
-
+  [self.facetBarView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
 
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -132,11 +131,11 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   [super didMoveToParentViewController:parent];
   
   if(parent) {
-    CGFloat top = parent.topLayoutGuide.length;
+    CGFloat top = self.view.safeAreaInsets.top;
     if (self.facetBarView.frame.size.height > 0) {
        top = CGRectGetMaxY(self.facetBarView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
     }
-    CGFloat bottom = parent.bottomLayoutGuide.length;
+    CGFloat bottom = self.view.safeAreaInsets.bottom;
     
     UIEdgeInsets insets = UIEdgeInsetsMake(top, 0, bottom, 0);
     self.tableView.contentInset = insets;

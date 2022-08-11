@@ -53,7 +53,7 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
 {
   return UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
                           0,
-                          self.parentViewController.bottomLayoutGuide.length,
+                          self.view.safeAreaInsets.bottom,
                           0);
 }
 
@@ -105,7 +105,7 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   [self.view addSubview:self.facetBarView];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
+  [self.facetBarView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
 
   self.collectionViewActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.collectionViewActivityIndicator.hidden = YES;

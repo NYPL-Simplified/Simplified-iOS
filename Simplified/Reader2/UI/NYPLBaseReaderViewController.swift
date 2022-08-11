@@ -70,7 +70,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
 
     super.init(nibName: nil, bundle: nil)
 
-    NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: Notification.Name(UIAccessibilityVoiceOverStatusChanged), object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
   }
 
   @available(*, unavailable)
