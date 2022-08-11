@@ -3851,7 +3851,7 @@
 			attributes = {
 				CLASSPREFIX = NYPL;
 				LastSwiftUpdateCheck = 1330;
-				LastUpgradeCheck = 1330;
+				LastUpgradeCheck = 1340;
 				ORGANIZATIONNAME = NYPL;
 				TargetAttributes = {
 					2D2B47711D08F807007F7764 = {
