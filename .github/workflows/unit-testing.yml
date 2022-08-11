@@ -3,15 +3,17 @@ on:
   pull_request:
 jobs:
   build-and-test:
-    runs-on: macOS-latest
+    runs-on: macOS-12
     if: github.event.pull_request.head.repo.full_name == github.repository
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
-      - name: Force latest Xcode #currently 13.2.1 cos 13.3.1 still in beta at github; once ready for prod the Xcode.app symlink will automatically select it
-        run: ls -la /Applications && sudo xcode-select -switch /Applications/Xcode.app
       - name: Print System Info
         run: uname -a
+      - name: Check available Xcodes
+        run: ls -la /Applications | grep Xcode
+      - name: Force Xcode we use for development
+        run: sudo xcode-select -switch /Applications/Xcode_13.4.1.app
       - name: Checkout main repo and submodules
         uses: actions/checkout@v2
         with:

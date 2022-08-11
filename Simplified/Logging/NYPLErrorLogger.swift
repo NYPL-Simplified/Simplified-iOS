@@ -5,7 +5,8 @@
 
 import CFNetwork
 import Foundation
-import Firebase
+import FirebaseCore
+import FirebaseCrashlytics
 
 fileprivate let nullString = "null"
 
