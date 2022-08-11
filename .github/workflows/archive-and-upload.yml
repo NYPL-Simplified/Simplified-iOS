@@ -5,9 +5,10 @@ on:
       - develop
       - release/**
       - feature/**
+      - story/IOS-436/ios11
 jobs:
   version-check:
-    runs-on: macOS-latest
+    runs-on: macOS-12
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
@@ -40,7 +41,7 @@ jobs:
       simplye_changed: ${{ steps.detectapp.outputs.simplye_changed }}
       openebooks_changed: ${{ steps.detectapp.outputs.openebooks_changed }}
   upload-arc:
-    runs-on: macOS-latest
+    runs-on: macOS-12
     needs: version-check
     if: needs.version-check.outputs.simplye_changed == '1' || needs.version-check.outputs.openebooks_changed == '1'
     env:

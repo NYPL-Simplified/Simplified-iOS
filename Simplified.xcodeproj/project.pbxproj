@@ -366,6 +366,10 @@
 		731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */; };
 		731B2B25244A2B6E00A7A649 /* R2Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; };
 		731B2B27244A2B7100A7A649 /* R2Streamer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; };
+		731CA5E028A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */; };
+		731CA5E128A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */; };
+		731CA5E228A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */; };
+		731CA5E328A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */; };
 		7320AB36251EBC9900E3F04D /* Date+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */; };
 		7320AB3A251EBC9900E3F04D /* NYPLOPDSAcquisitionPathEntry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2D8790A220129AC400E2763F /* NYPLOPDSAcquisitionPathEntry.xml */; };
 		7320AB3B251EBC9900E3F04D /* UpdateCheckNeedsUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */; };
@@ -1970,6 +1974,7 @@
 		731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogic.swift; sourceTree = "<group>"; };
 		731B2B12244A1D6500A7A649 /* R2Streamer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = R2Streamer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		731B2B18244A1D8600A7A649 /* R2Navigator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = R2Navigator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FirebaseCoreInternal.xcframework; path = ../../tmp/firebase/Carthage/Build/FirebaseCoreInternal.xcframework; sourceTree = "<group>"; };
 		7320AB48251EBC9900E3F04D /* OpenEbooksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenEbooksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7321485928651E4B000DF0F0 /* NYPLSignInModalFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInModalFactory.swift; sourceTree = "<group>"; };
 		73225DEA250B471400EF1877 /* NYPLRootTabBarController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+OE.swift"; sourceTree = "<group>"; };
@@ -2309,6 +2314,7 @@
 				732F0443263376540018A82E /* SwiftSoup.xcframework in Frameworks */,
 				739E610E244A0D8600D00301 /* SystemConfiguration.framework in Frameworks */,
 				739E6112244A0D8600D00301 /* UIKit.framework in Frameworks */,
+				731CA5E128A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */,
 				732F0435263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
 				732F0482263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
 				7392E4662788E7AF006F010E /* NYPLCardCreator in Frameworks */,
@@ -2367,6 +2373,7 @@
 				73EB0B3C25821DF4006BC997 /* SystemConfiguration.framework in Frameworks */,
 				73EB0B4025821DF4006BC997 /* UIKit.framework in Frameworks */,
 				732F0484263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
+				731CA5E228A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */,
 				7392E46A2788E7CB006F010E /* NYPLCardCreator in Frameworks */,
 				7392E4682788E7CB006F010E /* NYPLAudiobookToolkit in Frameworks */,
 				739F43A62770FEA5005A8E1F /* NYPLUtilities in Frameworks */,
@@ -2400,6 +2407,7 @@
 				73FCA37125005BA4001B0C5D /* libTenPrintCover.a in Frameworks */,
 				73FCA37325005BA4001B0C5D /* libxml2.dylib in Frameworks */,
 				73FCA37225005BA4001B0C5D /* libz.dylib in Frameworks */,
+				731CA5E328A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */,
 				73FCA36A25005BA4001B0C5D /* LocalAuthentication.framework in Frameworks */,
 				73FCA35D25005BA4001B0C5D /* MediaPlayer.framework in Frameworks */,
 				732F0452263376BB0018A82E /* Minizip.xcframework in Frameworks */,
@@ -2438,10 +2446,10 @@
 				73061A78273DDAFE00B50318 /* DifferenceKit.xcframework in Frameworks */,
 				7347B4A9265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
 				7347B4BC265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
-				73A1731227ADA7D3005E7BCF /* NYPLAxis in Frameworks */,
 				7347B4C0265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework in Frameworks */,
 				7347B4B8265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
 				7347B4B4265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */,
+				73A1731227ADA7D3005E7BCF /* NYPLAxis in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				732F0439263375520018A82E /* Fuzi.xcframework in Frameworks */,
 				732F04482633768D0018A82E /* GCDWebServer.xcframework in Frameworks */,
@@ -2471,6 +2479,7 @@
 				732F0442263376540018A82E /* SwiftSoup.xcframework in Frameworks */,
 				08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
+				731CA5E028A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */,
 				732F0434263374FC0018A82E /* ZIPFoundation.xcframework in Frameworks */,
 				732F0481263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
 				7392E4602788E752006F010E /* NYPLAudiobookToolkit in Frameworks */,
@@ -3540,6 +3549,7 @@
 				7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */,
 				7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */,
 				7347B4B3265EFC7A00E4E386 /* FirebaseCoreDiagnostics.xcframework */,
+				731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */,
 				7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */,
 				7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */,
 				A823D810192BABA400B55DE2 /* Foundation.framework */,
@@ -5783,7 +5793,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
@@ -5831,7 +5841,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
@@ -6007,7 +6017,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -6058,7 +6068,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
