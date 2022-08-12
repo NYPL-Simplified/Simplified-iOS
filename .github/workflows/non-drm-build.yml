@@ -3,12 +3,14 @@ on:
   pull_request:
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: macOS-12
     steps:
+      - name: Print System Info
+        run: uname -a
       - name: Check available Xcodes
-        run: ls -la /Applications
-      - name: Force latest Xcode #currently 13.2.1 cos 13.3.1 still in beta at github; once ready for prod the Xcode.app symlink will automatically select it
-        run: sudo xcode-select -switch /Applications/Xcode.app
+        run: ls -la /Applications | grep Xcode
+      - name: Force Xcode we use for development
+        run: sudo xcode-select -switch /Applications/Xcode_13.4.1.app
       - name: Checkout main repo
         uses: actions/checkout@v2
       - name: Set up repo for nonDRM build
