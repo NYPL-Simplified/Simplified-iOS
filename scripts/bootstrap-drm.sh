@@ -4,8 +4,12 @@
 #   Checks out all dependent repos and sets them up for developing
 #   SimplyE or Open eBooks with DRM support.
 #
+# WARNINGS
+# 1. Run this script once on a fresh clone of the Simplified-iOS repo.
+#    After that, you'll be better off running `build-dependencies.sh` instead.
+# 2. This script is not idempotent.
+#
 # USAGE
-#   You only have to run this script once.
 #   Run it from the root of Simplified-iOS, e.g.:
 #
 #     ./scripts/bootstrap-drm.sh
