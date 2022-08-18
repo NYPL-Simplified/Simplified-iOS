@@ -116,6 +116,8 @@ class NYPLBookmarkFactory {
         return nil
     }
 
+    // Check if bookmarks are audiobook bookmarks
+    
     guard let (href, idref, progress) =
       parseLocatorString(selectorValueEscJSON, publication: publication) else {
         return nil
