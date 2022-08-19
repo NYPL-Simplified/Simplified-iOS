@@ -185,7 +185,9 @@ class OPDS2SamlIDP: NSObject, Codable {
   let supportsSimplyESync:Bool
   let supportsCardCreator:Bool
   let supportsReservations:Bool
-  let supportsUnsubscribeEmail:Bool
+  var supportsUnsubscribeEmail: Bool {
+    urlUnsubscribeEmail != nil
+  }
   let auths: [Authentication]
 
   let mainColor:String?
@@ -286,9 +288,6 @@ class OPDS2SamlIDP: NSObject, Codable {
     }
     
     urlUnsubscribeEmail = URL.init(string: authenticationDocument.links?.first(where: { $0.rel == "http://librarysimplified.org/rel/email/unsubscribe/options" })?.href ?? "")
-    // TODO: For Testing, remove when in prod
-    urlUnsubscribeEmail = URL.init(string: "https://pub.email.nypl.org/manage-subscriptions")
-    supportsUnsubscribeEmail = urlUnsubscribeEmail != nil
     
     super.init()
     
@@ -321,79 +320,50 @@ class OPDS2SamlIDP: NSObject, Codable {
     switch urlType {
     case .acknowledgements:
       urlAcknowledgements = URL
-      setAccountDictionaryKey("urlAcknowledgements", toValue: URL.absoluteString as AnyObject)
     case .contentLicenses:
       urlContentLicenses = URL
-      setAccountDictionaryKey("urlContentLicenses", toValue: URL.absoluteString as AnyObject)
     case .eula:
       urlEULA = URL
-      setAccountDictionaryKey("urlEULA", toValue: URL.absoluteString as AnyObject)
     case .privacyPolicy:
       urlPrivacyPolicy = URL
-      setAccountDictionaryKey("urlPrivacyPolicy", toValue: URL.absoluteString as AnyObject)
     case .annotations:
       urlAnnotations = URL
-      setAccountDictionaryKey("urlAnnotations", toValue: URL.absoluteString as AnyObject)
     case .unsubscribeEmail:
       urlUnsubscribeEmail = URL
-      setAccountDictionaryKey("urlUnsubscribeEmail", toValue: URL.absoluteString as AnyObject)
     }
+
+    setAccountDictionaryKey(urlType.stringValue, toValue: URL.absoluteString as AnyObject)
   }
   
   func getLicenseURL(_ type: URLType) -> URL? {
+    let url: URL?
     switch type {
     case .acknowledgements:
-      if let url = urlAcknowledgements {
-        return url
-      } else {
-        guard let urlString = getAccountDictionaryKey("urlAcknowledgements") as? String else { return nil }
-        guard let result = URL(string: urlString) else { return nil }
-        return result
-      }
+      url = urlAcknowledgements
     case .contentLicenses:
-      if let url = urlContentLicenses {
-        return url
-      } else {
-        guard let urlString = getAccountDictionaryKey("urlContentLicenses") as? String else { return nil }
-        guard let result = URL(string: urlString) else { return nil }
-        return result
-      }
+      url = urlContentLicenses
     case .eula:
-      if let url = urlEULA {
-        return url
-      } else {
-        guard let urlString = getAccountDictionaryKey("urlEULA") as? String else { return nil }
-        guard let result = URL(string: urlString) else { return nil }
-        return result
-      }
+      url = urlEULA
     case .privacyPolicy:
-      if let url = urlPrivacyPolicy {
-        return url
-      } else {
-        guard let urlString = getAccountDictionaryKey("urlPrivacyPolicy") as? String else { return nil }
-        guard let result = URL(string: urlString) else { return nil }
-        return result
-      }
+      url = urlPrivacyPolicy
     case .annotations:
-      if let url = urlAnnotations {
-        return url
-      } else {
-        guard let urlString = getAccountDictionaryKey("urlAnnotations") as? String else { return nil }
-        guard let result = URL(string: urlString) else { return nil }
-        return result
-      }
+      url = urlAnnotations
     case .unsubscribeEmail:
-      if let url = urlUnsubscribeEmail {
-        return url
-      } else {
-        guard let urlString = getAccountDictionaryKey("urlUnsubscribeEmail") as? String else { return nil }
-        guard let result = URL(string: urlString) else { return nil }
-        return result
-      }
+      url = urlUnsubscribeEmail
     }
+
+    if url != nil {
+      return url
+    }
+
+    if let urlString = getAccountDictionaryKey(type.stringValue) as? String {
+      return URL(string: urlString)
+    }
+
+    return nil
   }
   
-  fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
+  private func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
     if var savedDict = defaults.value(forKey: self.uuid) as? [String: AnyObject] {
       savedDict[key] = value
       defaults.set(savedDict, forKey: self.uuid)
@@ -402,7 +372,7 @@ class OPDS2SamlIDP: NSObject, Codable {
     }
   }
   
-  fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
+  private func getAccountDictionaryKey(_ key: String) -> AnyObject? {
     let savedDict = defaults.value(forKey: self.uuid) as? [String: AnyObject]
     guard let result = savedDict?[key] else { return nil }
     return result
@@ -529,6 +499,7 @@ extension AccountDetails {
     supportsSimplyESync=\(supportsSimplyESync)
     supportsCardCreator=\(supportsCardCreator)
     supportsReservations=\(supportsReservations)
+    supportsUnsubscribeEmail=\(supportsUnsubscribeEmail)
     """
   }
 }
@@ -553,6 +524,23 @@ extension Account {
   case privacyPolicy
   case annotations
   case unsubscribeEmail
+
+  var stringValue: String {
+    switch self {
+    case .acknowledgements:
+      return "urlAcknowledgements"
+    case .contentLicenses:
+      return "urlContentLicenses"
+    case .eula:
+      return "urlEULA"
+    case .privacyPolicy:
+      return "urlPrivacyPolicy"
+    case .annotations:
+      return "urlAnnotations"
+    case .unsubscribeEmail:
+      return "urlUnsubscribeEmail"
+    }
+  }
 }
 
 // MARK: LoginKeyboard
