@@ -294,30 +294,30 @@ class OPDS2SamlIDP: NSObject, Codable {
     
     if let urlString = authenticationDocument.links?.first(where: { $0.rel == "privacy-policy" })?.href,
       let url = URL(string: urlString) {
-      setURL(url, forLicense: .privacyPolicy)
+      setURL(url, forURLType: .privacyPolicy)
     }
     
     if let urlString = authenticationDocument.links?.first(where: { $0.rel == "terms-of-service" })?.href,
       let url = URL(string: urlString) {
-      setURL(url, forLicense: .eula)
+      setURL(url, forURLType: .eula)
     }
     
     if let urlString = authenticationDocument.links?.first(where: { $0.rel == "license" })?.href,
       let url = URL(string: urlString) {
-      setURL(url, forLicense: .contentLicenses)
+      setURL(url, forURLType: .contentLicenses)
     }
     
     if let urlString = authenticationDocument.links?.first(where: { $0.rel == "copyright" })?.href,
       let url = URL(string: urlString) {
-      setURL(url, forLicense: .acknowledgements)
+      setURL(url, forURLType: .acknowledgements)
     }
     
     if let url = urlUnsubscribeEmail {
-      setURL(url, forLicense: .unsubscribeEmail)
+      setURL(url, forURLType: .unsubscribeEmail)
     }
   }
 
-  func setURL(_ URL: URL, forLicense urlType: URLType) -> Void {
+  func setURL(_ URL: URL, forURLType urlType: URLType) -> Void {
     switch urlType {
     case .acknowledgements:
       urlAcknowledgements = URL
