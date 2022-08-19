@@ -774,7 +774,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeUnsubscribeEmail]
-                                      title:NSLocalizedString(@"Unsubscribe from emails", nil)
+                                      title:NSLocalizedString(@"Unsubscribe from Emails", nil)
                                       failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
       [self.navigationController pushViewController:vc animated:YES];
       break;
@@ -1119,7 +1119,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return [self deletionStyleTableViewCell:NSLocalizedString(@"Delete Library Card", nil)];
     }
     case CellKindUnsubscribeEmail: {
-      return [self deletionStyleTableViewCell:NSLocalizedString(@"Unsubscribe from emails", nil)];
+      return [self deletionStyleTableViewCell:NSLocalizedString(@"Unsubscribe from Emails", nil)];
     }
   }
 }
