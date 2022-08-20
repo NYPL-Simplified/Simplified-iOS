@@ -772,11 +772,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindUnsubscribeEmail: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeUnsubscribeEmail]
-                                      title:NSLocalizedString(@"Unsubscribe from Emails", nil)
-                                      failureMessage:NSLocalizedString(@"The page could not load due to a connection error.", nil)];
-      [self.navigationController pushViewController:vc animated:YES];
+      NSURL *url = [self.selectedAccount.details getLicenseURL:URLTypeUnsubscribeEmail];
+      [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
       break;
     }
     }
@@ -1119,7 +1116,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return [self deletionStyleTableViewCell:NSLocalizedString(@"Delete Library Card", nil)];
     }
     case CellKindUnsubscribeEmail: {
-      return [self deletionStyleTableViewCell:NSLocalizedString(@"Unsubscribe from Emails", nil)];
+      return [self deletionStyleNoChevronTableViewCell:NSLocalizedString(@"Unsubscribe from Emails", nil)];
     }
   }
 }
@@ -1139,14 +1136,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   return imageView;
 }
 
-- (UITableViewCell *)deletionStyleTableViewCell:(NSString *)title {
+- (UITableViewCell *)deletionStyleNoChevronTableViewCell:(NSString *)title {
   UITableViewCell *cell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
   cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   cell.textLabel.text = title;
   cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
-  
+  return cell;
+}
+
+- (UITableViewCell *)deletionStyleTableViewCell:(NSString *)title {
+  UITableViewCell *cell = [self deletionStyleNoChevronTableViewCell:title];
+
   UIImageView *imageView = [self rightArrowImageView];
   imageView.tintColor = NYPLConfiguration.deleteActionColor;
   cell.accessoryView = imageView;
