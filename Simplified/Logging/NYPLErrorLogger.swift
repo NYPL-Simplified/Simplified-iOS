@@ -63,6 +63,9 @@ fileprivate let nullString = "null"
   // audiobooks
   case audiobookCorrupted = 401
   case audiobookExternalError = 402
+  case audiobookDownloadTimedOutReachable = 403
+  case audiobookDownloadTimedOutNotReachable = 404
+  case audiobookDownloadCompletedBeyondTimeLimit = 405
 
   // ereader
   case nilCFI = 500

@@ -243,6 +243,22 @@
                               AddIndicatorKey: @(NO)}];
       break;
     }
+    case NYPLBookButtonsStateDownloadingUsable:
+    {
+      NSDictionary *buttonInfo = @{};
+      if (self.book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
+        buttonInfo = @{ButtonKey: self.readButton,
+                       TitleKey: NSLocalizedString(@"Listen", nil),
+                       HintKey: self.readButton.timeRemainingString ?: @"",
+                       AddIndicatorKey: @(YES)};
+      }
+      visibleButtonInfo = @[buttonInfo,
+                            @{ButtonKey: self.cancelButton,
+                              TitleKey: NSLocalizedString(@"Cancel", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the download for the current book: %@", nil), self.book.title],
+                              AddIndicatorKey: @(NO)}];
+      break;
+    }
     case NYPLBookButtonsStateDownloadFailed:
     {
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
@@ -364,6 +380,7 @@
     case NYPLBookStateUsed:
     case NYPLBookStateSAMLStarted:
     case NYPLBookStateDownloading:
+    case NYPLBookStateDownloadingUsable:
     case NYPLBookStateUnregistered:
     case NYPLBookStateDownloadFailed:
     case NYPLBookStateDownloadNeeded:
@@ -427,6 +444,7 @@
 {
   switch([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier]) {
     case NYPLBookStateSAMLStarted:
+    case NYPLBookStateDownloadingUsable:
     case NYPLBookStateDownloading: {
       [self.downloadingDelegate didSelectCancelForBookDetailDownloadingView:self];
       break;

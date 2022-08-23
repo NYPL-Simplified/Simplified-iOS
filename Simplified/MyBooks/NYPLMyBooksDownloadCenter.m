@@ -1,3 +1,5 @@
+@import NYPLUtilities;
+
 #if FEATURE_AUDIOBOOKS
 @import NYPLAudiobookToolkit;
 #endif
@@ -84,6 +86,11 @@
   
 #if defined(FEATURE_DRM_CONNECTOR)
   [NYPLADEPT sharedInstance].delegate = self;
+#endif
+  
+#if FEATURE_AUDIOBOOKS
+  self.audiobookDownloader = [[NYPLAudiobookDownloader alloc] init];
+  self.audiobookDownloader.delegate = (id)self;
 #endif
   
   NSURLSessionConfiguration *const configuration =
@@ -394,8 +401,14 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
      setState:NYPLBookStateDownloadFailed
      forIdentifier:book.identifier];
   }
-
+  
+#if FEATURE_AUDIOBOOKS
+  if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
+    [self downloadAudiobookForBook:book];
+  }
+#else
   [self broadcastUpdate:book.identifier];
+#endif
 }
 
 #pragma mark - NSURLSessionTaskDelegate
@@ -731,7 +744,7 @@ didCompleteWithError:(NSError *)error
   if(!identifier) return nil;
   NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
   NSString *pathExtension = [self pathExtensionForBook:book];
-  return [[[self contentDirectoryURL:account] URLByAppendingPathComponent:[identifier SHA256]]
+  return [[[self contentDirectoryURL:account] URLByAppendingPathComponent:[identifier sha256]]
           URLByAppendingPathExtension:pathExtension];
 }
 
@@ -914,6 +927,7 @@ didCompleteWithError:(NSError *)error
         state = NYPLBookStateDownloadNeeded;
       }
       break;
+    case NYPLBookStateDownloadingUsable:
     case NYPLBookStateDownloading:
       // Ignore double button presses, et cetera.
       return;
@@ -1193,11 +1207,26 @@ didCompleteWithError:(NSError *)error
     [[NYPLBookRegistry sharedRegistry]
      setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
   }
+#if FEATURE_AUDIOBOOKS
+  [self.audiobookDownloader cancelDownloadFetchingNextIfNeededFor:identifier];
+#endif
 }
 
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
 {
-  return [self downloadInfoForBookIdentifier:bookIdentifier].downloadProgress;
+  NYPLMyBooksDownloadInfo *info = [self downloadInfoForBookIdentifier:bookIdentifier];
+#if FEATURE_AUDIOBOOKS
+  /// In the case of resuming audiobook download, we do not have the `downloadInfo`
+  /// and we cannot create one because we no longer have access to the original `downloadTask`.
+  /// Therefore we retrieve the download progress from `NYPLAudiobookDownloader` directly.
+  if (!info) {
+    DefaultAudiobookManager *audiobookManager = [self.audiobookDownloader audiobookManagerFor:bookIdentifier];
+    if (audiobookManager) {
+      return audiobookManager.networkService.downloadProgress;
+    }
+  }
+#endif
+  return info.downloadProgress;
 }
 
 #pragma mark - Send out NYPLMyBooksDownloadCenterDidChange
@@ -1637,5 +1666,14 @@ didFinishDownload:(BOOL)didFinishDownload
 }
 #endif
 
+#if FEATURE_AUDIOBOOKS
+- (void)downloadProgressDidUpdateTo:(double)progress forBookIdentifier:(NSString *)bookID {
+  NYPLLOG_F(@"Download progress updated to %f for %@", progress, bookID);
+  self.bookIdentifierToDownloadInfo[bookID] = [[self downloadInfoForBookIdentifier:bookID]
+                                               withDownloadProgress:progress];
+
+  [self broadcastUpdate:bookID];
+}
+#endif
 
 @end

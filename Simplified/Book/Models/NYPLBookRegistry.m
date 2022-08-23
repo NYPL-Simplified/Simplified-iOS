@@ -184,6 +184,11 @@ static NSString *const RecordsKey = @"records";
       if(record.state == NYPLBookStateDownloading || record.state == NYPLBookStateSAMLStarted) {
         self.identifiersToRecords[record.book.identifier] =
         [record recordWithState:NYPLBookStateDownloadFailed];
+      } else if (record.state == NYPLBookStateDownloadingUsable) {
+        // If an audiobook background download was still in progress when we quit,
+        // it will now be download successful and resume download when user open the book
+        self.identifiersToRecords[record.book.identifier] =
+        [record recordWithState:NYPLBookStateDownloadSuccessful];
       } else {
         self.identifiersToRecords[record.book.identifier] = record;
       }
@@ -374,7 +379,9 @@ static NSString *const RecordsKey = @"records";
         }
         for (NSString *identifier in identifiersToRemove) {
           NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
-          if (record && (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed)) {
+          if (record && (record.state == NYPLBookStateDownloadSuccessful ||
+                         record.state == NYPLBookStateUsed ||
+                         record.state == NYPLBookStateDownloadingUsable)) {
             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
           }
           [self removeBookForIdentifier:identifier];
@@ -536,6 +543,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
       case NYPLBookStateDownloading:
       case NYPLBookStateDownloadFailed:
       case NYPLBookStateDownloadSuccessful:
+      case NYPLBookStateDownloadingUsable:
       case NYPLBookStateUsed:
         self.identifiersToRecords[identifier] = [record recordWithState:NYPLBookStateDownloadNeeded];
         [self broadcastChange];
@@ -560,6 +568,10 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
       return NYPLBookStateUnregistered;
     }
   }
+}
+
+- (NSInteger)stateRawValueForIdentifier:(nonnull NSString *)identifier {
+  return [self stateForIdentifier:identifier];
 }
 
 - (void)setLocation:(NYPLBookLocation *const)location forIdentifier:(NSString *const)identifier
@@ -851,6 +863,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   return [self booksMatchingStates:@[@(NYPLBookStateDownloadNeeded),
                                      @(NYPLBookStateDownloading),
+                                     @(NYPLBookStateDownloadingUsable),
                                      @(NYPLBookStateSAMLStarted),
                                      @(NYPLBookStateDownloadFailed),
                                      @(NYPLBookStateDownloadSuccessful),

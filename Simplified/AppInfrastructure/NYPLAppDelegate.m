@@ -23,7 +23,7 @@
 #if FEATURE_AUDIOBOOKS
 @property (nonatomic) AudiobookLifecycleManager *audiobookLifecycleManager;
 #endif
-@property (nonatomic) NYPLReachability *reachabilityManager;
+@property (nonatomic) NYPLReachability *reachability;
 @property (nonatomic) NYPLUserNotifications *notificationsManager;
 @property (nonatomic, readwrite) BOOL isSigningIn;
 @end
@@ -77,7 +77,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
                                            object:nil];
 
   [[NetworkQueue shared] addObserverForOfflineQueue];
-  self.reachabilityManager = [NYPLReachability sharedReachability];
+  self.reachability = [NYPLReachability sharedReachability];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   [self setUpAppearance];

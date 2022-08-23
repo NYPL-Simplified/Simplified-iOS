@@ -521,6 +521,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     }
 
     NYPLNetworkExecutor.shared.POST(annotationsURL,
+                                    additionalHeaders: ["Content-Type" : "application/json"],
                                     httpBody: jsonData) { result in
       switch result {
       case .success(let data, _):

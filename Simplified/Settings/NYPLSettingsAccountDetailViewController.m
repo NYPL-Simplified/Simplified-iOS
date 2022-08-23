@@ -1724,8 +1724,12 @@ didEncounterSignOutError:(NSError *)error
     NYPLSettings.shared.userHasSeenFirstTimeSyncMessage = NO;
     
     // Present alert and update sync button
-    self.syncSwitch.enabled = NO;
+    self.syncSwitch.on = NO;
+#ifdef SIMPLYE
     NSString *alertTitle = NSLocalizedString(@"You have successfully deleted your SimplyE data", nil);
+#else
+    NSString *alertTitle = NSLocalizedString(@"You have successfully deleted your Open eBooks data", nil);
+#endif
     UIAlertController *alert = [NYPLAlertUtils alertWithTitle:alertTitle message:nil];
     [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:self animated:YES completion:nil];
   }];

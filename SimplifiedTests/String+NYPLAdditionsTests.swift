@@ -39,9 +39,4 @@ class String_NYPLAdditionsTests: XCTestCase {
     let s = ("eW5KWkVzV01uVHVkRUdnNjQ2VG11YQ" as NSString).fileSystemSafeBase64DecodedString(usingEncoding: String.Encoding.utf8.rawValue)
     XCTAssertEqual(s, "ynJZEsWMnTudEGg646Tmua")
   }
-
-  func testSHA256() {
-    XCTAssertEqual(("967824¬Ó¨⁄€™®©♟♞♝♜♛♚♙♘♗♖♕♔" as NSString).sha256(),
-                   "269b80eff0cd705e4b1de9fdbb2e1b0bccf30e6124cdc3487e8d74620eedf254")
-  }
 }

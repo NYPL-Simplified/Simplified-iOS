@@ -1,3 +1,5 @@
+@import NYPLUtilities;
+
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
@@ -84,7 +86,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (nullable NSURL *)URLForPinnedThumbnailImageOfBookIdentifier:(NSString *const)bookIdentifier
 {
-  NSString *encryptedBookID = [bookIdentifier SHA256];
+  NSString *encryptedBookID = [bookIdentifier sha256];
   if (encryptedBookID) {
     return [[self pinnedThumbnailImageDirectoryURL]
             URLByAppendingPathComponent:encryptedBookID];

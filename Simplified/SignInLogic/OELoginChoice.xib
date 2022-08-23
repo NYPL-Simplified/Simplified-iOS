@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OELoginChoiceViewController" customModule="SimplyE" customModuleProvider="target">
             <connections>
                 <outlet property="cleverLoginButton" destination="mNl-Kk-26v" id="NZu-qs-Oaa"/>
+                <outlet property="cleverSpinner" destination="Qvz-v3-tR2" id="rhY-AC-yYz"/>
                 <outlet property="firstBookLoginButton" destination="2FO-PV-W8O" id="aKZ-Ce-7pf"/>
                 <outlet property="headerLabel" destination="kBk-Yz-S6I" id="6ZP-rb-2eG"/>
                 <outlet property="privacyButton" destination="BBG-sg-YOF" id="fjC-l5-OpD"/>
@@ -111,16 +112,23 @@
                         </button>
                     </subviews>
                 </stackView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Qvz-v3-tR2">
+                    <rect key="frame" x="280" y="182" width="20" height="20"/>
+                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="color" systemColor="systemGrayColor"/>
+                </activityIndicatorView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="Qvz-v3-tR2" firstAttribute="centerY" secondItem="mNl-Kk-26v" secondAttribute="centerY" id="0MK-L0-ul0"/>
                 <constraint firstItem="7se-wG-U8e" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="2zv-ua-nL5"/>
                 <constraint firstItem="7se-wG-U8e" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="5Uo-xF-uh7"/>
                 <constraint firstItem="7se-wG-U8e" firstAttribute="leading" relation="lessThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="leading" priority="751" constant="10" id="HXC-sd-l0b"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7se-wG-U8e" secondAttribute="trailing" priority="751" constant="10" id="Hj9-oR-BHb"/>
                 <constraint firstItem="xrU-C6-Ubg" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="LeH-yH-bHz"/>
                 <constraint firstItem="xrU-C6-Ubg" firstAttribute="top" secondItem="7se-wG-U8e" secondAttribute="bottom" constant="80" id="SkU-ra-dYq"/>
+                <constraint firstItem="Qvz-v3-tR2" firstAttribute="trailing" secondItem="mNl-Kk-26v" secondAttribute="trailing" constant="-10" id="gG7-A6-i5n"/>
                 <constraint firstItem="7se-wG-U8e" firstAttribute="top" secondItem="r7H-2F-5yY" secondAttribute="bottom" constant="80" id="iTQ-FW-A1L"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="r7H-2F-5yY" secondAttribute="trailing" constant="20" id="mf3-EH-Ja0"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="xrU-C6-Ubg" secondAttribute="trailing" constant="20" id="nzY-zr-li7"/>
@@ -137,6 +145,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

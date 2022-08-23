@@ -53,6 +53,7 @@
                                                         delegate:self];
   self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry]
                                stateForIdentifier:self.book.identifier];
+  [self updateDetailViewDownloadProgressForBookState:self.bookDetailView.state];
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
@@ -336,8 +337,15 @@
       self.book = newBook;
       self.bookDetailView.book = newBook;
     }
-    self.bookDetailView.state = [registry stateForIdentifier:self.book.identifier];
+    [self updateDetailViewDownloadProgressForBookState:[registry stateForIdentifier:self.book.identifier]];
   }];
+}
+
+- (void)updateDetailViewDownloadProgressForBookState:(NYPLBookState) state{
+  self.bookDetailView.state = state;
+  if (state == NYPLBookStateDownloading || state == NYPLBookStateDownloadingUsable) {
+    self.bookDetailView.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] downloadProgressForBookIdentifier:self.book.identifier];
+  }
 }
 
 @end

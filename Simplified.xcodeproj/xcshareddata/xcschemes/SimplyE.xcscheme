@@ -100,6 +100,13 @@
             BlueprintName = "NYPLCardCreator"
             ReferencedContainer = "container:CardCreator-iOS">
          </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "NYPLAxis"
+            BuildableName = "NYPLAxis"
+            BlueprintName = "NYPLAxis"
+            ReferencedContainer = "container:Axis-iOS">
+         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference

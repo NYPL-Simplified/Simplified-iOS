@@ -9,7 +9,6 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLLinearView.h"
 #import "NYPLOPDSFeed.h"
-#import "NYPLReachability.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLXML.h"

@@ -8,15 +8,23 @@
 
 import UIKit
 
+protocol OECleverUIDelegate: NSObject {
+  var navigationController: UINavigationController? { get }
+  func cleverHelperWillSignIn(_ helper: OELoginCleverHelper)
+  func cleverHelperDidFinish(_ helper: OELoginCleverHelper, error: Error?)
+}
+
 class OELoginCleverHelper: NSObject {
 
   private(set) var signInBusinessLogic: NYPLSignInBusinessLogic!
-  private weak var navigationController: UINavigationController?
   var forceEditability: Bool = false
   private weak var postLoginConfigurator: OEAppUIStructureConfigurating?
+  weak var uiDelegate: OECleverUIDelegate?
 
   init(libraryAccount: Account,
+       uiDelegate: OECleverUIDelegate?,
        postLoginConfigurator: OEAppUIStructureConfigurating?) {
+    self.uiDelegate = uiDelegate
     self.postLoginConfigurator = postLoginConfigurator
 
     super.init()
@@ -33,8 +41,8 @@ class OELoginCleverHelper: NSObject {
       drmAuthorizerAxis: NYPLAxisDRMAuthorizer.sharedInstance)
   }
 
-  func startCleverFlow(onNavigationController navController: UINavigationController?) {
-    navigationController = navController
+  func startCleverFlow() {
+    uiDelegate?.cleverHelperWillSignIn(self)
     let cleverAuth = signInBusinessLogic.libraryAccount?.details?.auths.filter { auth in
       auth.isOauthIntermediary
     }.first
@@ -70,6 +78,7 @@ extension OELoginCleverHelper: NYPLSignInOutBusinessLogicUIDelegate {
     DispatchQueue.main.async {
       assert(businessLogic.userAccount.isSignedIn())
       Log.debug(#function, "about to set up root VC; isSignedIn=\(businessLogic.userAccount.isSignedIn())")
+      self.uiDelegate?.cleverHelperDidFinish(self, error: nil)
       self.postLoginConfigurator?.setUpRootVC(userIsSignedIn: true)
     }
   }
@@ -85,15 +94,21 @@ extension OELoginCleverHelper: NYPLSignInOutBusinessLogicUIDelegate {
       alert = NYPLAlertUtils.alert(title: title, error: error as? NSError)
     }
 
-    self.present(alert, animated: true, completion: nil)
+    self.present(alert, animated: true) { [weak self] in
+      guard let self = self else { return }
+      self.uiDelegate?.cleverHelperDidFinish(self, error: error)
+    }
   }
 
   func dismiss(animated flag: Bool, completion: (() -> Void)?) {
-    navigationController?.dismiss(animated: flag, completion: completion)
+    uiDelegate?.navigationController?.dismiss(animated: flag,
+                                              completion: completion)
   }
 
   func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)?) {
-    navigationController?.present(viewControllerToPresent, animated: flag, completion: completion)
+    uiDelegate?.navigationController?.present(viewControllerToPresent,
+                                              animated: flag,
+                                              completion: completion)
   }
 
   // MARK: - NYPLBasicAuthCredentialsProvider

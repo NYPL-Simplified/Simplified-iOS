@@ -32,6 +32,7 @@
 "DownloadCouldNotBeCompletedFormat" = "Il download di %@ non può essere completato.";
 "The download could not be completed.\nScroll down to 'View Issues' to see details." = "Il download non è stato completato.\nScorri in fondo alla pagina per i dettagli dell'errore.";
 "The download could not be completed." = "Il download non è stato completato.";
+"Your download did not complete successfully. Retry or contact support." = "Si è verificato un problema durante lo scaricamento del tuo audiolibro. Riprova oppure contatta la tua biblioteca.";
 "View Issues" = "Mostra il problema";
 "Report a Problem" = "Riferisci un problema";
 "Related Books" = "Libri correlati";
@@ -257,12 +258,13 @@
 "13 or Older" = "13 o di più";
 
 // Account / Data deletion
-"Delete my SimplyE Data" = "Rimuovi i miei dati di SimplyE";
-"Delete my Open eBooks Data" = "Rimuovi i miei dati di Open eBooks";
+"Delete my SimplyE Data" = "Rimuovi i miei dati";
+"Delete my Open eBooks Data" = "Rimuovi i miei dati";
 "Delete Reading Data" = "Rimozione dati";
 "Please wait..." = "Attendere, prego...";
 "Delete all the bookmarks you have saved in the cloud." = "Tutti i segnalibri salvati sul server saranno rimossi.";
-"You have successfully deleted your SimplyE data" = "I tuoi dati di SimplyE sono stati rimossi";
+"You have successfully deleted your SimplyE data" = "I dati del tuo utente SimplyE sono stati rimossi";
+"You have successfully deleted your Open eBooks data" = "I dati del tuo utente Open eBooks sono stati rimossi";
 "Unsubscribe from emails" = "Rimuovimi dalle email";
 "E-Mail to cancel your library card" = "Manda una mail per cancellare la tua tessera";
 "If the above link does not work, please email us at" = "Se il link soprastante non funziona, manda una mail a";
