@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import NYPLUtilities
 @testable import SimplyE
 
 class NYPLBookmarkDeserializationTests: XCTestCase {
@@ -38,19 +39,19 @@ class NYPLBookmarkDeserializationTests: XCTestCase {
     let locator = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as! String
 
     // test: make a bookmark with the data we manually read with the wrong book id
-    let wrong1 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                          annotationType: .bookmark,
-                                          bookID: "ciccio",
-                                          publication: NYPLFake.bookmarkSpecPublication)
+    let wrong1 = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                 annotationType: .bookmark,
+                                                 bookID: "ciccio",
+                                                 publication: NYPLFake.bookmarkSpecPublication)
 
     // test: make a bookmark with the data we manually read
     guard let madeBookmark =
-      NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                               annotationType: .bookmark,
-                               bookID: bookID,
-                               publication: NYPLFake.bookmarkSpecPublication) else {
-                                XCTFail("Failed to create bookmark from valid data")
-                                return
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                      annotationType: .bookmark,
+                                      bookID: bookID,
+                                      publication: NYPLFake.bookmarkSpecPublication) else {
+                                        XCTFail("Failed to create bookmark from valid data")
+                                        return
     }
 
     // verify
@@ -80,19 +81,19 @@ class NYPLBookmarkDeserializationTests: XCTestCase {
     let locator = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as! String
 
     // test: make a bookmark with the data we manually read with the wrong book id
-    let wrong1 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                          annotationType: .readingProgress,
-                                          bookID: "ciccio",
-                                          publication: NYPLFake.bookmarkSpecPublication)
+    let wrong1 = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                 annotationType: .readingProgress,
+                                                 bookID: "ciccio",
+                                                 publication: NYPLFake.bookmarkSpecPublication)
 
     // test: make a bookmark with the data we manually read
     guard let madeBookmark =
-      NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                               annotationType: .readingProgress,
-                               bookID: bookID,
-                               publication: NYPLFake.bookmarkSpecPublication) else {
-                                XCTFail("Failed to create bookmark from valid data")
-                                return
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                      annotationType: .readingProgress,
+                                      bookID: bookID,
+                                      publication: NYPLFake.bookmarkSpecPublication) else {
+                                        XCTFail("Failed to create bookmark from valid data")
+                                        return
     }
 
     // verify
@@ -120,10 +121,10 @@ class NYPLBookmarkDeserializationTests: XCTestCase {
     XCTAssertEqual(motivation, NYPLBookmarkSpec.Motivation.readingProgress.rawValue)
 
     // test: make a locator with the data we manually read
-    let bookmark = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                            annotationType: .readingProgress,
-                                            bookID: bookID,
-                                            publication: NYPLFake.bookmarkSpecPublication)
+    let bookmark = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                   annotationType: .readingProgress,
+                                                   bookID: bookID,
+                                                   publication: NYPLFake.bookmarkSpecPublication)
 
     // verify
     XCTAssertNil(bookmark, "should not deserialize a Bookmark without a Body section")
@@ -139,14 +140,14 @@ class NYPLBookmarkDeserializationTests: XCTestCase {
     let bookID = target[NYPLBookmarkSpec.Target.Source.key] as! String
 
     // test: make a locator with the data we manually read
-    let bookmark = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                            annotationType: .bookmark,
-                                            bookID: bookID,
-                                            publication: NYPLFake.bookmarkSpecPublication)
-    let readingProgress = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                                   annotationType: .readingProgress,
+    let bookmark = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                   annotationType: .bookmark,
                                                    bookID: bookID,
                                                    publication: NYPLFake.bookmarkSpecPublication)
+    let readingProgress = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                          annotationType: .readingProgress,
+                                                          bookID: bookID,
+                                                          publication: NYPLFake.bookmarkSpecPublication)
 
     // verify
     XCTAssertNil(bookmark, "should not deserialize a Bookmark without a Motivation section")
@@ -165,10 +166,10 @@ class NYPLBookmarkDeserializationTests: XCTestCase {
     XCTAssertEqual(motivation, NYPLBookmarkSpec.Motivation.readingProgress.rawValue)
 
     // test: make a locator with the data we manually read
-    let readingProgress = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                                   annotationType: .readingProgress,
-                                                   bookID: "A book",
-                                                   publication: NYPLFake.bookmarkSpecPublication)
+    let readingProgress = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                          annotationType: .readingProgress,
+                                                          bookID: "A book",
+                                                          publication: NYPLFake.bookmarkSpecPublication)
 
     // verify
     XCTAssertNil(readingProgress, "should not deserialize a Bookmark without a Target section")
@@ -189,10 +190,10 @@ class NYPLBookmarkDeserializationTests: XCTestCase {
     XCTAssertEqual(selectorValue?.trimmingCharacters(in: .whitespacesAndNewlines), "{\n [] }")
 
     // test: make a locator with the data we manually read
-    let readingProgress = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                                   annotationType: .readingProgress,
-                                                   bookID: bookID,
-                                                   publication: NYPLFake.bookmarkSpecPublication)
+    let readingProgress = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                          annotationType: .readingProgress,
+                                                          bookID: bookID,
+                                                          publication: NYPLFake.bookmarkSpecPublication)
 
     // verify
     XCTAssertNil(readingProgress, "should not deserialize a Bookmark without a Selector section")
@@ -213,10 +214,10 @@ class NYPLBookmarkDeserializationTests: XCTestCase {
     XCTAssertNil(device)
 
     // test: make a locator with the data we manually read
-    let bookmark = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                            annotationType: .readingProgress,
-                                            bookID: bookID,
-                                            publication: NYPLFake.bookmarkSpecPublication)
+    let bookmark = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                   annotationType: .readingProgress,
+                                                   bookID: bookID,
+                                                   publication: NYPLFake.bookmarkSpecPublication)
 
     // verify
     XCTAssertNil(bookmark, "should not deserialize a Bookmark without a Body-device section")
@@ -238,12 +239,12 @@ class NYPLBookmarkDeserializationTests: XCTestCase {
 
     // test: make a bookmark with the data we manually read
     guard let madeBookmark =
-      NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                               annotationType: .bookmark,
-                               bookID: bookID,
-                               publication: NYPLFake.bookmarkSpecPublication) else {
-                                XCTFail("Failed to create bookmark from valid data")
-                                return
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                      annotationType: .bookmark,
+                                      bookID: bookID,
+                                      publication: NYPLFake.bookmarkSpecPublication) else {
+                                        XCTFail("Failed to create bookmark from valid data")
+                                        return
     }
 
     // verify

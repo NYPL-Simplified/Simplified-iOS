@@ -65,7 +65,7 @@ class NYPLLastReadPositionPoster {
 
     // attempt to store location on server
     if annotationsSynchronizer.syncIsPossibleAndPermitted() {
-      let selectorValue = NYPLBookmarkFactory
+      let selectorValue = NYPLReadiumBookmarkFactory
         .makeLocatorString(chapterHref: locator.href,
                            chapterProgression: Float(chapterProgress))
 
