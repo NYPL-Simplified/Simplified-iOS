@@ -1,4 +1,5 @@
 import R2Shared
+import NYPLUtilities
 
 /// This class specifies the keys used to represent a NYPLReadiumBookmark
 /// as a dictionary.
@@ -58,11 +59,11 @@ import R2Shared
   var location: String {
     switch chapterID {
     case .href(let href):
-      return NYPLBookmarkFactory.makeLocatorString(
+      return NYPLReadiumBookmarkFactory.makeLocatorString(
         chapterHref: href,
         chapterProgression: progressWithinChapter)
     case .idref(let idref):
-      return NYPLBookmarkFactory.makeLegacyLocatorString(
+      return NYPLReadiumBookmarkFactory.makeLegacyLocatorString(
         idref: idref,
         chapterProgression: progressWithinChapter,
         cfi: contentCFI ?? "")
@@ -136,7 +137,7 @@ import R2Shared
   {
     var hrefFromLocation: String?
     var idrefFromLocation: String?
-    if let loc = location, let tuple = NYPLBookmarkFactory.parseLocatorString(loc) {
+    if let loc = location, let tuple = NYPLReadiumBookmarkFactory.parseLocatorString(loc) {
       (hrefFromLocation, idrefFromLocation, _) = tuple
     }
 
@@ -171,7 +172,7 @@ import R2Shared
     var idrefFromLocation: String?
     var progressFromLocation: Double?
     let location = dictionary[NYPLBookmarkDictionaryRepresentation.locationKey] as? String
-    if let loc = location, let tuple = NYPLBookmarkFactory.parseLocatorString(loc) {
+    if let loc = location, let tuple = NYPLReadiumBookmarkFactory.parseLocatorString(loc) {
       (hrefFromLocation, idrefFromLocation, progressFromLocation) = tuple
     }
 
@@ -195,7 +196,7 @@ import R2Shared
 
     self.contentCFI = dictionary[NYPLBookmarkDictionaryRepresentation.cfiKey] as? String
     let time = dictionary[NYPLBookmarkDictionaryRepresentation.timeKey] as? String
-    self.creationTime = NYPLBookmarkFactory.makeCreationTime(fromRFC3339timestamp: time)
+    self.creationTime = NYPLReadiumBookmarkFactory.makeCreationTime(fromRFC3339timestamp: time)
     self.chapter = dictionary[NYPLBookmarkDictionaryRepresentation.chapterKey] as? String
     self.device = dictionary[NYPLBookmarkDictionaryRepresentation.deviceKey] as? String
 
@@ -242,7 +243,7 @@ extension NYPLReadiumBookmark {
 
     let extras = NYPLBookmarkSpec.Body.BookProgress(value: progressWithinBook)
     let spec = NYPLBookmarkSpec(id: annotationId,
-                                time: creationTime,
+                                time: creationTime.rfc3339String,
                                 device: device ?? "",
                                 bodyOthers: extras.dictionaryValue,
                                 motivation: motivation,

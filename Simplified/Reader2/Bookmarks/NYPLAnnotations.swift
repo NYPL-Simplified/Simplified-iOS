@@ -1,5 +1,6 @@
 import UIKit
 import R2Shared
+import NYPLUtilities
 
 protocol NYPLAnnotationSyncing: AnyObject {
   // Server status
@@ -269,7 +270,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   class func postReadingPosition(forBook bookID: String, selectorValue: String) {
     // Format annotation for submission to server according to spec
-    let bookmark = NYPLBookmarkSpec(time: Date(),
+    let bookmark = NYPLBookmarkSpec(time: Date().rfc3339String,
                                     device: NYPLUserAccount.sharedAccount().deviceID ?? "",
                                     motivation: .readingProgress,
                                     bookID: bookID,
@@ -428,7 +429,8 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
                           completion: @escaping (_ serverID: String?) -> ()) {
 
     let serializableBookmark = bookmark
-      .serializableRepresentation(forMotivation: .bookmark, bookID: bookID)
+      .serializableRepresentation(forMotivation: .bookmark,
+                                  bookID: bookID)
 
     guard syncIsPossibleAndPermitted() else {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -485,10 +487,10 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     }
 
     let bookmarks = items.compactMap {
-      NYPLBookmarkFactory.make(fromServerAnnotation: $0,
-                               annotationType: motivation,
-                               bookID: bookID,
-                               publication: publication)
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: $0,
+                                      annotationType: motivation,
+                                      bookID: bookID,
+                                      publication: publication)
     }
 
     return bookmarks

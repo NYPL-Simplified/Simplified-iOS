@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import NYPLUtilities
 @testable import SimplyE
 
 class NYPLBookmarkSpecTests: XCTestCase {
@@ -39,7 +40,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     let progress = Float(json[NYPLBookmarkSpec.Target.Selector.Value.locatorChapterProgressionKey] as! Double)
 
     // test: make a locator, encode it to binary, parse binary back to JSON
-    let madeLocatorString = NYPLBookmarkFactory
+    let madeLocatorString = NYPLReadiumBookmarkFactory
       .makeLocatorString(chapterHref: chapterID, chapterProgression: progress)
     let madeLocatorData = madeLocatorString.data(using: .utf8)!
     let madeJSONObject: Any
@@ -80,7 +81,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     let cfi = json[NYPLBookmarkSpec.Target.Selector.Value.legacyLocatorCFIKey] as! String
 
     // test: make a locator, encode it to binary, parse binary back to JSON
-    let madeLocatorString = NYPLBookmarkFactory
+    let madeLocatorString = NYPLReadiumBookmarkFactory
       .makeLegacyLocatorString(idref: chapterID,
                                chapterProgression: progress,
                                cfi: cfi)
@@ -126,7 +127,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     XCTAssertLessThan(progress, 0.0)
 
     // test
-    let madeLocatorString = NYPLBookmarkFactory
+    let madeLocatorString = NYPLReadiumBookmarkFactory
       .makeLocatorString(chapterHref: chapterID, chapterProgression: progress)
 
     // verify
@@ -161,7 +162,7 @@ class NYPLBookmarkSpecTests: XCTestCase {
     XCTAssertGreaterThan(progress, 1.0)
 
     // test
-    let madeLocatorString = NYPLBookmarkFactory
+    let madeLocatorString = NYPLReadiumBookmarkFactory
       .makeLocatorString(chapterHref: chapterID, chapterProgression: progress)
 
     // verify
