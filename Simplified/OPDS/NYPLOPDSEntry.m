@@ -8,6 +8,7 @@
 #import "SimplyE-Swift.h"
 
 #import "NYPLOPDSEntry.h"
+@import NYPLUtilities;
 
 @interface NYPLOPDSEntry ()
 
@@ -158,7 +159,7 @@
       return nil;
     }
     
-    self.updated = [NSDate dateWithRFC3339String:updatedString];
+    self.updated = [[NSDate alloc] initWithRfc3339String:updatedString];
     if(!self.updated) {
       NYPLLOG(@"Element 'updated' does not contain an RFC 3339 date.");
       return nil;
