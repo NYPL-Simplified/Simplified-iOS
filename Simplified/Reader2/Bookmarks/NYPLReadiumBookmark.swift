@@ -243,7 +243,7 @@ extension NYPLReadiumBookmark {
 
     let extras = NYPLBookmarkSpec.Body.BookProgress(value: progressWithinBook)
     let spec = NYPLBookmarkSpec(id: annotationId,
-                                time: creationTime.rfc3339String,
+                                time: creationTime,
                                 device: device ?? "",
                                 bodyOthers: extras.dictionaryValue,
                                 motivation: motivation,

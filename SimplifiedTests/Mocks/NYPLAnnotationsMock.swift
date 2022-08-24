@@ -56,7 +56,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
       return
     }
     
-    let bookmarkSpec = NYPLBookmarkSpec(time: Date().rfc3339String,
+    let bookmarkSpec = NYPLBookmarkSpec(time: Date(),
                                         device: "",
                                         motivation: .readingProgress,
                                         bookID: bookID,

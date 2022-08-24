@@ -270,7 +270,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   class func postReadingPosition(forBook bookID: String, selectorValue: String) {
     // Format annotation for submission to server according to spec
-    let bookmark = NYPLBookmarkSpec(time: Date().rfc3339String,
+    let bookmark = NYPLBookmarkSpec(time: Date(),
                                     device: NYPLUserAccount.sharedAccount().deviceID ?? "",
                                     motivation: .readingProgress,
                                     bookID: bookID,

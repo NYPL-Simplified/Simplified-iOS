@@ -3,6 +3,7 @@
 #import "NYPLXML.h"
 
 #import "NYPLOPDSAcquisitionAvailability.h"
+@import NYPLUtilities;
 
 static NSString *const caseKey = @"case";
 static NSString *const copiesAvailableKey = @"copiesAvailable";
@@ -103,10 +104,10 @@ NYPLOPDSAcquisitionAvailabilityWithLinkXML(NYPLXML *const _Nonnull linkXML)
   }
 
   NSString *const sinceString = [linkXML firstChildWithName:availabilityName].attributes[sinceAttribute];
-  NSDate *const since = sinceString ? [NSDate dateWithRFC3339String:sinceString] : nil;
+  NSDate *const since = sinceString ? [[NSDate alloc] initWithRfc3339String:sinceString] : nil;
   
   NSString *const untilString = [linkXML firstChildWithName:availabilityName].attributes[untilAttribute];
-  NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
+  NSDate *const until = untilString ? [[NSDate alloc] initWithRfc3339String:untilString] : nil;
 
   if ([statusString isEqual:@"unavailable"]) {
     return [[NYPLOPDSAcquisitionAvailabilityUnavailable alloc]
@@ -152,10 +153,10 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
   }
 
   NSString *const sinceString = NYPLNullToNil(dictionary[sinceKey]);
-  NSDate *const since = sinceString ? [NSDate dateWithRFC3339String:sinceString] : nil;
+  NSDate *const since = sinceString ? [[NSDate alloc] initWithRfc3339String:sinceString] : nil;
 
   NSString *const untilString = NYPLNullToNil(dictionary[untilKey]);
-  NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
+  NSDate *const until = untilString ? [[NSDate alloc] initWithRfc3339String:untilString] : nil;
 
   if ([caseString isEqual:unavailableCase]) {
     NSNumber *const copiesHeldNumber = dictionary[copiesHeldKey];
@@ -229,8 +230,8 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
        caseKey: limitedCase,
        copiesAvailableKey: @(limited.copiesAvailable),
        copiesTotalKey: @(limited.copiesTotal),
-       sinceKey: NYPLNullFromNil([limited.since RFC3339String]),
-       untilKey: NYPLNullFromNil([limited.until RFC3339String])
+       sinceKey: NYPLNullFromNil([limited.since rfc3339String]),
+       untilKey: NYPLNullFromNil([limited.until rfc3339String])
      };
    } unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *const _Nonnull unlimited) {
      result = @{
@@ -241,8 +242,8 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
        caseKey: reservedCase,
        holdsPositionKey: @(reserved.holdPosition),
        copiesTotalKey: @(reserved.copiesTotal),
-       sinceKey: NYPLNullFromNil([reserved.since RFC3339String]),
-       untilKey: NYPLNullFromNil([reserved.until RFC3339String])
+       sinceKey: NYPLNullFromNil([reserved.since rfc3339String]),
+       untilKey: NYPLNullFromNil([reserved.until rfc3339String])
      };
    } ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady * _Nonnull ready) {
      result = @{
