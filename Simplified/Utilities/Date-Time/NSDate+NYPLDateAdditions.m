@@ -2,32 +2,6 @@
 
 @implementation NSDate (NYPLDateAdditions)
 
-+ (NSDate *)dateWithRFC3339String:(NSString *const)string
-{
-  // sanity check
-  if (string == nil) {
-    return nil;
-  }
-
-  static NSDateFormatter *dateFormatter;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-  });
-
-  dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssX5";
-  NSDate *const date = [dateFormatter dateFromString:string];
-  
-  if(!date) {
-    dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.SSSSSSX5";
-    return [dateFormatter dateFromString:string];
-  }
-  
-  return date;
-}
-
 + (NSDate *)dateWithISO8601DateString:(NSString *const)string
 {
   // sanity check
@@ -50,20 +24,6 @@
   }
 
   return date;
-}
-
-- (NSString *)RFC3339String
-{
-  static NSDateFormatter *dateFormatter;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
-    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-  });
-
-  return [dateFormatter stringFromDate:self];
 }
 
 - (NSDateComponents *)UTCComponents

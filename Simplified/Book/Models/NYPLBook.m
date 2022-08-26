@@ -2,6 +2,7 @@
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
+@import NYPLUtilities;
 
 #import "NYPLBook.h"
 
@@ -299,7 +300,7 @@ static NSString *const UpdatedKey = @"updated";
     NSInteger const totalCopies = totalCopiesString ? [totalCopiesString integerValue] : NSNotFound;
 
     NSString *const untilString = NYPLNullToNil(dictionary[DeprecatedAvailableUntilKey]);
-    NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
+    NSDate *const until = untilString ? [[NSDate alloc] initWithRfc3339String:untilString] : nil;
 
     // This information is not available so we default to the until date.
     NSDate *const since = until;
@@ -438,7 +439,7 @@ static NSString *const UpdatedKey = @"updated";
   self.imageThumbnailURL = imageThumbnail ? [NSURL URLWithString:imageThumbnail] : nil;
   
   NSString *const dateString = NYPLNullToNil(dictionary[PublishedKey]);
-  self.published = dateString ? [NSDate dateWithRFC3339String:dateString] : nil;
+  self.published = dateString ? [[NSDate alloc] initWithRfc3339String:dateString] : nil;
   
   self.publisher = NYPLNullToNil(dictionary[PublisherKey]);
   
@@ -455,7 +456,7 @@ static NSString *const UpdatedKey = @"updated";
   self.title = dictionary[TitleKey];
   if(!self.title) return nil;
   
-  self.updated = [NSDate dateWithRFC3339String:dictionary[UpdatedKey]];
+  self.updated = [[NSDate alloc] initWithRfc3339String:dictionary[UpdatedKey]];
   if(!self.updated) return nil;
   
   return self;
@@ -480,7 +481,7 @@ static NSString *const UpdatedKey = @"updated";
            IdentifierKey: self.identifier,
            ImageURLKey: NYPLNullFromNil([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNullFromNil([self.imageThumbnailURL absoluteString]),
-           PublishedKey: NYPLNullFromNil([self.published RFC3339String]),
+           PublishedKey: NYPLNullFromNil([self.published rfc3339String]),
            PublisherKey: NYPLNullFromNil(self.publisher),
            RelatedURLKey: NYPLNullFromNil([self.relatedWorksURL absoluteString]),
            ReportURLKey: NYPLNullFromNil([self.reportURL absoluteString]),
@@ -489,7 +490,7 @@ static NSString *const UpdatedKey = @"updated";
            SubtitleKey: NYPLNullFromNil(self.subtitle),
            SummaryKey: NYPLNullFromNil(self.summary),
            TitleKey: self.title,
-           UpdatedKey: [self.updated RFC3339String]
+           UpdatedKey: [self.updated rfc3339String]
           };
 }
 

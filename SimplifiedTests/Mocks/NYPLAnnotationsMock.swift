@@ -8,6 +8,7 @@
 
 import Foundation
 import R2Shared
+import NYPLUtilities
 @testable import SimplyE
 
 class NYPLAnnotationsMock: NYPLAnnotationSyncing {
@@ -43,7 +44,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
       return
     }
     let bookmarkData = bookmarkSpec.dictionaryForJSONSerialization()
-    let bookmark = NYPLBookmarkFactory.make(fromServerAnnotation: bookmarkData,
+    let bookmark = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: bookmarkData,
                                             annotationType: .readingProgress,
                                             bookID: id,
                                             publication: publication)

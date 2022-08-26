@@ -8,8 +8,9 @@
 
 import Foundation
 import R2Shared
+import NYPLUtilities
 
-class NYPLBookmarkFactory {
+class NYPLReadiumBookmarkFactory {
 
   private let publication: Publication?
   private let drmDeviceID: String?
@@ -115,7 +116,7 @@ class NYPLBookmarkFactory {
         Log.error(#file, "Error reading required Selector Value for bookID \(bookID) from Target: \(target)")
         return nil
     }
-
+    
     guard let (href, idref, progress) =
       parseLocatorString(selectorValueEscJSON, publication: publication) else {
         return nil
@@ -129,7 +130,7 @@ class NYPLBookmarkFactory {
 
     let legacyProgress = body["http://librarysimplified.org/terms/progressWithinChapter"]
     let progressWithinChapter = (progress ?? legacyProgress as? Double) ?? 0.0
-    let creationTime = NYPLBookmarkFactory.makeCreationTime(fromRFC3339timestamp:
+    let creationTime = NYPLReadiumBookmarkFactory.makeCreationTime(fromRFC3339timestamp:
       body[NYPLBookmarkSpec.Body.Time.key] as? String)
 
     // non-essential info

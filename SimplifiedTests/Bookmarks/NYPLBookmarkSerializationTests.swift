@@ -8,6 +8,7 @@
 
 import XCTest
 import R2Shared
+import NYPLUtilities
 @testable import SimplyE
 
 class NYPLBookmarkSerializationTests: XCTestCase {
@@ -30,8 +31,8 @@ class NYPLBookmarkSerializationTests: XCTestCase {
                           locations: locations)
     let r2Location = NYPLBookmarkR2Location(resourceIndex: 1,
                                            locator: locator)
-    let factory = NYPLBookmarkFactory(publication: NYPLFake.dummyPublication,
-                                      drmDeviceID: "deviceID")
+    let factory = NYPLReadiumBookmarkFactory(publication: NYPLFake.dummyPublication,
+                                             drmDeviceID: "deviceID")
     let bookmark = factory.make(fromR2Location: r2Location)
     XCTAssertNotNil(bookmark)
     XCTAssertEqual(bookmark?.progressWithinChapter, Float(locations.progression!))
@@ -74,12 +75,12 @@ class NYPLBookmarkSerializationTests: XCTestCase {
     let motivation = NYPLBookmarkSpec.Motivation(rawValue: motivationString)!
 
     guard let bookmark =
-      NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                               annotationType: motivation,
-                               bookID: bookID,
-                               publication: NYPLFake.dummyPublication) else {
-                                XCTFail("Failed to create bookmark from valid data")
-                                return
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                      annotationType: motivation,
+                                      bookID: bookID,
+                                      publication: NYPLFake.dummyPublication) else {
+                                        XCTFail("Failed to create bookmark from valid data")
+                                        return
     }
 
     // test
