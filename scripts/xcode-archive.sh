@@ -32,6 +32,10 @@ if [ "$BUILD_CONTEXT" == "ci" ]; then
   security find-identity -p codesigning -v
 fi
 
+echo "Current build dir: `pwd`"
+echo "Carthage contents:"
+ls -la Carthage/Build
+
 # build
 # Note: xcodebuild creates archive `ARCHIVE_NAME.xcarchive` inside ARCHIVE_DIR
 # Also note: `-disableAutomaticPackageResolution` is for making sure to always

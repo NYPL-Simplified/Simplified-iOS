@@ -389,7 +389,7 @@
 		118A0E201992B3FD00792DDE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1330;
+				LastUpgradeCheck = 1340;
 				ORGANIZATIONNAME = Readium;
 			};
 			buildConfigurationList = 118A0E231992B3FD00792DDE /* Build configuration list for PBXProject "RDServices" */;
@@ -537,7 +537,7 @@
 					"\"$(NYPLADEPT_ADOBE_SDK)/DRM_Connector_Prerelease/dp/public\"",
 					"\"$(NYPLADEPT_ADOBE_SDK)/DRM_Connector_Prerelease/xml/uft/public\"",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -590,7 +590,7 @@
 					"\"$(NYPLADEPT_ADOBE_SDK)/DRM_Connector_Prerelease/dp/public\"",
 					"\"$(NYPLADEPT_ADOBE_SDK)/DRM_Connector_Prerelease/xml/uft/public\"",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				VALIDATE_PRODUCT = YES;

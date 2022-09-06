@@ -10,7 +10,7 @@ Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/relea
 
 # System Requirements
 
-- Install Xcode 13.1 in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install Xcode 13.4.1 in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) 0.38 or newer if you haven't already. Using `brew` is recommended.
 
 # Building without DRM support
@@ -33,7 +33,7 @@ Open `Simplified.xcodeproj` and build the `SimplyE-noDRM` target.
 ## Building from Scratch
 
 01. Contact project lead and ensure you have access to all the required private repos.
-02. Build the dependencies (typically you'll need to run this only once):
+02. Set up the repo and build the dependencies (you'll need to do this only once):
 ```bash
 git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
 cd Simplified-iOS
@@ -43,16 +43,16 @@ cd Simplified-iOS
 
 ## Building Dependencies Individually
 
-Unless the DRM dependencies change (which is very seldom) you shouldn't need to run the `bootstrap-drm.sh` script more than once.
+Unless the DRM dependencies change (which is very seldom) you will not need to run the `bootstrap-drm.sh` script more than once. Regarding the other dependencies, there are leaner / faster ways to rebuild them.
 
-First party dependencies are managed via Swift Package Manager. Most of these dependencies are managed via local Swift packages, given by the git submodules checkouts. They are built automatically when you build the `Simplified` Xcode project targets.
+First party dependencies are managed via Swift Package Manager. Most of these dependencies are managed via local Swift packages (with the exception of iOS-Utilities, which is remote), given by the git submodules checkouts. PureLayout is also managed via SPM. They are built automatically when you build the `Simplified` Xcode project targets.
 
-Other 3rd party dependencies are managed via Carthage. To rebuild them you can use the following idempotent script:
+All other 3rd party dependencies are managed via Carthage. To rebuild them you can use the following idempotent script:
 ```bash
 cd Simplified-iOS #repo root
 ./scripts/build-dependencies.sh
 ```
-The `scripts` directory contains a number of other scripts to build dependencies more granularly and also to build/archive/test the app from the command line. These scripts are the same used by our CI system. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
+The `scripts` directory contains a number of other scripts to build dependencies more granularly and also to build/test/archive the app from the command line. These scripts are the same used by our CI system. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
 
 # Building for Readium 2 Integration
 
@@ -92,7 +92,7 @@ Release branch names follow the convention: `release/simplye/<version>` or `rele
 
 Feature branch names (for features whose development is a month or more): `feature/<feature-name>`, e.g. `feature/my-new-screen`.
 
-[Continuous integration](https://github.com/NYPL-Simplified/Simplified/wiki/iOS-CI-CD) is enabled on push events on `develop`, release and feature branches. SimplyE device builds are uploaded to Firebase and, for release builds, also to TestFlight.
+[Continuous integration](https://github.com/NYPL-Simplified/Simplified/wiki/iOS-CI-CD) is enabled on push events on `develop`, release and feature branches. SimplyE and Open eBooks device builds are uploaded to Firebase and, for release builds, also to TestFlight.
 
 # License
 

@@ -17,6 +17,6 @@ echo "Building SimplyE without DRM support..."
 
 xcodebuild -project Simplified.xcodeproj \
            -scheme SimplyE-noDRM \
-           -destination platform=iOS\ Simulator,OS=15.0,name=iPhone\ 13\ Pro\
+           -destination platform=iOS\ Simulator,OS=15.5,name=iPhone\ 13\ Pro\
            clean build | \
            if command -v xcpretty &> /dev/null; then xcpretty; else cat; fi

@@ -34,7 +34,8 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindPrivacyPolicy,
   CellKindContentLicense,
   CellReportIssue,
-  CellKindDeleteLibraryAccount
+  CellKindDeleteLibraryAccount,
+  CellKindUnsubscribeEmail
 };
 
 typedef NS_ENUM(NSInteger, AccountDetailSection) {
@@ -500,9 +501,11 @@ static const CGFloat sConstantSpacing = 12.0;
 #ifdef SIMPLYE
   NSMutableArray *section4DeleteAccount = [[NSMutableArray alloc] init];
   
+  if (self.selectedAccount.details.supportsUnsubscribeEmail) {
+    [section4DeleteAccount addObject:@(CellKindUnsubscribeEmail)];
+  }
+  
   if ([self.businessLogic isSignedIn]) {
-    // TODO: iOS-412 Unsubscribe from email
-    
     if (self.selectedAccount.supportEmail != nil
         && [self.selectedAccount.details supportsCardCreator]) {
       [section4DeleteAccount addObject:@(CellKindDeleteLibraryAccount)];
@@ -767,6 +770,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 #endif
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       break;
+    case CellKindUnsubscribeEmail: {
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+      NSURL *url = [self.selectedAccount.details getLicenseURL:URLTypeUnsubscribeEmail];
+      [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+      break;
+    }
     }
   }
 }
@@ -1097,37 +1106,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return cell;
     }
     case CellKindDeleteServerData: {
-      UITableViewCell *cell = [[UITableViewCell alloc]
-                               initWithStyle:UITableViewCellStyleDefault
-                               reuseIdentifier:nil];
-      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
 #ifdef SIMPLYE
-      cell.textLabel.text = NSLocalizedString(@"Delete my SimplyE Data", nil);
+      return [self deletionStyleTableViewCell:NSLocalizedString(@"Delete my SimplyE Data", nil)];
 #else
-      cell.textLabel.text = NSLocalizedString(@"Delete my Open eBooks Data", nil);
+      return [self deletionStyleTableViewCell:NSLocalizedString(@"Delete my Open eBooks Data", nil)];
 #endif
-      
-      cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
-      
-      UIImageView *imageView = [self rightArrowImageView];
-      imageView.tintColor = NYPLConfiguration.deleteActionColor;
-      cell.accessoryView = imageView;
-      
-      return cell;
     }
     case CellKindDeleteLibraryAccount: {
-      UITableViewCell *cell = [[UITableViewCell alloc]
-                               initWithStyle:UITableViewCellStyleDefault
-                               reuseIdentifier:nil];
-      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = NSLocalizedString(@"Delete Library Card", nil);
-      cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
-      
-      UIImageView *imageView = [self rightArrowImageView];
-      imageView.tintColor = NYPLConfiguration.deleteActionColor;
-      cell.accessoryView = imageView;
-      
-      return cell;
+      return [self deletionStyleTableViewCell:NSLocalizedString(@"Delete Library Card", nil)];
+    }
+    case CellKindUnsubscribeEmail: {
+      return [self deletionStyleNoChevronTableViewCell:NSLocalizedString(@"Unsubscribe from Emails", nil)];
     }
   }
 }
@@ -1145,6 +1134,26 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                             initWithFrame:CGRectMake(0, 0, image.size.width, image.size.height)];
   imageView.image = image;
   return imageView;
+}
+
+- (UITableViewCell *)deletionStyleNoChevronTableViewCell:(NSString *)title {
+  UITableViewCell *cell = [[UITableViewCell alloc]
+                           initWithStyle:UITableViewCellStyleDefault
+                           reuseIdentifier:nil];
+  cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  cell.textLabel.text = title;
+  cell.textLabel.textColor = NYPLConfiguration.deleteActionColor;
+  return cell;
+}
+
+- (UITableViewCell *)deletionStyleTableViewCell:(NSString *)title {
+  UITableViewCell *cell = [self deletionStyleNoChevronTableViewCell:title];
+
+  UIImageView *imageView = [self rightArrowImageView];
+  imageView.tintColor = NYPLConfiguration.deleteActionColor;
+  cell.accessoryView = imageView;
+  
+  return cell;
 }
 
 - (UITableViewCell *)createRegistrationCell

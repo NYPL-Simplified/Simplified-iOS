@@ -20,7 +20,7 @@ jobs:
       - name: Check Carthage version
         run: command -v carthage && carthage version
       - name: Checkout main repo
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2
         with:
           token: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Add Private Repo Auth
@@ -46,14 +46,16 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
     steps:
-      - name: Force Xcode 13.3.1
-        run: sudo xcode-select -switch /Applications/Xcode_13.1.app
+      - name: Check available Xcodes
+        run: ls -la /Applications | grep Xcode
+      - name: Force Xcode we use for development
+        run: sudo xcode-select -switch /Applications/Xcode_13.4.1.app
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
       - name: Check Firebase Tools version
         run: command -v firebase && firebase --version
       - name: Checkout main repo and submodules
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2
         with:
           submodules: true
           token: ${{ secrets.IOS_DEV_CI_PAT }}
@@ -70,7 +72,7 @@ jobs:
           GITHUB_REPO_OWNER: ${{ github.repository_owner }}
       - name: Checkout Adobe RMSDK
         if: needs.version-check.outputs.simplye_changed == '1'
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2
         with:
           repository: NYPL-Simplified/DRM-iOS-AdeptConnector
           token: ${{ secrets.IOS_DEV_CI_PAT }}
