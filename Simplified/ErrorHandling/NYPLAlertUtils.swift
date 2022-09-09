@@ -11,60 +11,56 @@ import UIKit
    - Returns: The alert controller to be presented.
    */
   class func alert(title: String?,
-                   message: String?,
+                   message: String? = nil,
                    error: NSError?) -> UIAlertController {
-    if let message = message {
-      return alert(title: title, message: message)
-    } else {
-      return alert(title: title, error: error)
-    }
-  }
-
-  /**
-    Generates an alert view from errors of domains: NSURLErrorDomain, NYPLADEPTErrorDomain
-
-   - Parameter title: The alert title; can be a localization key.
-    - Parameter error: An error. If the error contains a localizedDescription, that will be used for the alert message.
-    - Returns: The alert controller to be presented.
-   */
-  class func alert(title: String?, error: NSError?) -> UIAlertController {
-    var message = ""
+    var commonErrorsMessage = ""
     let domain = error?.domain ?? ""
     let code = error?.code ?? 0
 
     // handle common iOS networking errors
     if domain == NSURLErrorDomain {
       if code == NSURLErrorNotConnectedToInternet {
-        message = "NotConnected"
+        commonErrorsMessage = "NotConnected"
       } else if code == NSURLErrorCancelled {
-        message = "Cancelled"
+        commonErrorsMessage = "Cancelled"
       } else if code == NSURLErrorTimedOut {
-        message = "TimedOut"
+        commonErrorsMessage = "TimedOut"
       } else if code == NSURLErrorUnsupportedURL {
-        message = "UnsupportedURL"
+        commonErrorsMessage = "UnsupportedURL"
       } else {
-        message = "UnknownRequestError"
+        commonErrorsMessage = "UnknownRequestError"
       }
     }
     #if FEATURE_DRM_CONNECTOR
     if domain == NYPLADEPTErrorDomain {
       if code == NYPLADEPTError.authenticationFailed.rawValue {
-        message = "SettingsAccountViewControllerInvalidCredentials"
+        commonErrorsMessage = "SettingsAccountViewControllerInvalidCredentials"
       } else if code == NYPLADEPTError.tooManyActivations.rawValue {
-        message = "SettingsAccountViewControllerMessageTooManyActivations"
+        commonErrorsMessage = "SettingsAccountViewControllerMessageTooManyActivations"
       } else {
-        message = "DRM error: \(error?.localizedDescriptionWithRecovery ?? "Please try again.")"
+        commonErrorsMessage = "DRM error: \(error?.localizedDescriptionWithRecovery ?? "Please try again.")"
       }
     }
     #endif
 
-    if message.isEmpty {
+    let finalMessage: String
+    if commonErrorsMessage.isEmpty {
       // since it wasn't a networking or Adobe DRM error, show the error
       // description if present
       if let errorDescription = error?.localizedDescriptionWithRecovery, !errorDescription.isEmpty {
-        message = errorDescription
+        if let message = message {
+          finalMessage = message + "\n" + errorDescription
+        } else {
+          finalMessage = errorDescription
+        }
       } else {
-        message = "An error occurred. Please try again later or report an issue from the Settings tab."
+        if let message = message {
+          finalMessage = message
+        } else {
+          finalMessage = "An error occurred. Please try again later or report an issue from the Settings tab."
+        }
+
+        // log error
         var metadata = [String: Any]()
         metadata["alertTitle"] = title ?? "N/A"
         if let error = error {
@@ -75,9 +71,11 @@ import UIKit
                                  summary: "Displayed error alert with generic message",
                                  metadata: metadata)
       }
+    } else {
+      finalMessage = commonErrorsMessage
     }
 
-    return alert(title: title, message: message)
+    return alert(title: title, message: finalMessage)
   }
   
   /**

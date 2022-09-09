@@ -530,7 +530,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [self.businessLogic startRegularCardCreationWithCompletion:^(UINavigationController * _Nullable navVC, NSError * _Nullable error) {
     [cell setUserInteractionEnabled:YES];
     if (error) {
-      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:NSLocalizedString(@"Error", "Alert title") error:error];
+      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:NSLocalizedString(@"Error", "Alert title") message:nil error:error];
       [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert
                                                          viewController:nil
                                                                animated:YES
@@ -976,6 +976,7 @@ didEncounterValidationError:(NSError *)error
                                    message:serverMessage];
   } else {
     alert = [NYPLAlertUtils alertWithTitle:title
+                                   message:nil
                                      error:error];
   }
 

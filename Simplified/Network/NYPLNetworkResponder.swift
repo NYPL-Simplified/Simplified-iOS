@@ -190,7 +190,11 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
     // no problem document nor error, but response could still be a failure
     if let httpResponse = task.response as? HTTPURLResponse {
       guard httpResponse.isSuccess() else {
-        logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("Server response failure: please check your connection or try again later.", comment: "A generic error message for a HTTP response failure")
+        if let responseContent = String(data: responseData, encoding: .utf8) {
+          logMetadata[NSError.httpResponseContentKey] = responseContent
+        }
+        logMetadata[NSLocalizedDescriptionKey] = NSError.makeGenericServerErrorMessage(
+          forHTTPStatus: httpResponse.statusCode)
         NYPLErrorLogger.logNetworkError(code: NYPLErrorCode.responseFail,
                                         summary: "Network request failed: server error response",
                                         request: task.originalRequest,

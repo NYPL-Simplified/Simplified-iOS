@@ -39,6 +39,7 @@ extension NYPLUserFriendlyError {
 extension NSError: NYPLUserFriendlyError {
   private static let problemDocumentKey = "problemDocument"
   public static let httpResponseKey = "response"
+  public static let httpResponseContentKey = "responseContent"
 
   @objc var problemDocument: NYPLProblemDocument? {
     return userInfo[NSError.problemDocumentKey] as? NYPLProblemDocument
@@ -79,5 +80,12 @@ extension NSError: NYPLUserFriendlyError {
     var userInfo = userInfo ?? [String: Any]()
     userInfo[NSError.problemDocumentKey] = problemDoc
     return NSError(domain: domain, code: code, userInfo: userInfo)
+  }
+
+  static func makeGenericServerErrorMessage(forHTTPStatus code: Int) -> String {
+    return NSLocalizedString("Server response failure", comment: "")
+    + " (" + String(code) + "). "
+    + NSLocalizedString("Please check your connection or try again later.",
+                        comment: "Generic recovery message")
   }
 }

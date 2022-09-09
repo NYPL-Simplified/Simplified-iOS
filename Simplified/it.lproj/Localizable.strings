@@ -86,7 +86,8 @@
 "An unrecoverable error occurred. Please force-quit the app and try again." = "Si è verificato un errore critico. È consigliato chiudere l'applicazione e riprovare.";
 
 // MARK: - Generic networking
-"Server response failure: please check your connection or try again later." = "Comunicazione col server fallita: controlla la tua connessione a internet o riprova più tardi.";
+"Server response failure" = "Comunicazione col server fallita";
+"Please check your connection or try again later." = "Controlla la tua connessione a internet o riprova più tardi.";
 "HTTP status" = "Codice errore HTTP";
 
 // MARK: - NYPLAppDelegate
