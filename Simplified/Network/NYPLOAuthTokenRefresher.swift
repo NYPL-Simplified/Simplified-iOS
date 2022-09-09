@@ -169,7 +169,9 @@ class NYPLOAuthTokenRefresher {
                                 response: URLResponse?,
                                 metadata: [String: Any]) -> NSError {
     var logMetadata = metadata
-    logMetadata[NSLocalizedDescriptionKey] = NSLocalizedString("Server response failure: please check your connection or try again later.", comment: "A generic error message for a HTTP response failure")
+    let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+    logMetadata[NSLocalizedDescriptionKey] = NSError.makeGenericServerErrorMessage(
+      forHTTPStatus: statusCode)
     NYPLErrorLogger.logNetworkError(code: NYPLErrorCode.responseFail,
                                     summary: "OAuth Client Credentials token refresh failure: no data",
                                     request: request,
