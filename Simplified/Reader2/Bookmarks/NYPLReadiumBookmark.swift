@@ -27,7 +27,7 @@ import NYPLUtilities
 
 /// Internal representation of an annotation. This may represent an actual
 /// user bookmark as well as the "bookmark" of the last read position in a book.
-@objcMembers final class NYPLReadiumBookmark: NSObject {
+@objcMembers final class NYPLReadiumBookmark: NSObject, NYPLBookmark {
   /// The bookmark ID. Optional because only the server assigns it.
   var annotationId:String?
 

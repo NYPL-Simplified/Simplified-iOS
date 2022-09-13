@@ -37,7 +37,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
                                    forBook bookID: String,
                                    completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->())
   
-  static func postBookmark(_ bookmark: NYPLReadiumBookmark,
+  static func postBookmark(_ bookmark: NYPLBookmark,
                            forBookID bookID: String,
                            completion: @escaping (_ serverID: String?) -> ())
   
@@ -424,7 +424,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   ///   - bookmark: The bookmark to save to the server.
   ///   - bookID: The book ID the bookmark refers to.
   ///   - completion: Always called at the end of the api call.
-  class func postBookmark(_ bookmark: NYPLReadiumBookmark,
+  class func postBookmark(_ bookmark: NYPLBookmark,
                           forBookID bookID: String,
                           completion: @escaping (_ serverID: String?) -> ()) {
 
