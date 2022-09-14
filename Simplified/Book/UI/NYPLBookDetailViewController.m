@@ -145,7 +145,9 @@
                                             successCompletion:^{
     // dismiss ourselves if we were presented, since we want to show the ereader
     if (self.modalPresentationStyle == UIModalPresentationFormSheet) {
-      [self dismissViewControllerAnimated:true completion:nil];
+      [self dismissViewControllerAnimated:true completion:successCompletion];
+    } else {
+      successCompletion();
     }
   }];
 }
