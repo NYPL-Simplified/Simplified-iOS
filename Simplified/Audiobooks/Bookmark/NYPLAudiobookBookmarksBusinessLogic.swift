@@ -84,11 +84,9 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarksBusinessLogicDe
     // TODO: Should this function return bookmark for UI update?
   }
   
+  /// Sync bookmarks from server and filter results with local bookmarks and deleted bookmarks.
+  /// - Parameter completion: completion block to be executed when sync succeed or fail.
   func syncBookmarks(completion: @escaping (Bool) -> ()) {
-    // Check logic from NYPLReadiumBookmarksBusinessLogic
-    // Fetch bookmarks from server
-    // Filter bookmarks (local, deleted etc.)
-    // Update bookmark in business logic
     NYPLReachability.shared()?.reachability(for: NYPLConfiguration.mainFeedURL,
                                             timeoutInternal: 8.0,
                                             handler: { (reachable) in
@@ -114,10 +112,11 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarksBusinessLogicDe
           }
         }
         
-        self.annotationsSynchronizer.getServerBookmarks(forBook: self.book.identifier,
+        self.annotationsSynchronizer.getServerBookmarks(of: NYPLAudiobookBookmark.self,
+                                                        forBook: self.book.identifier,
                                                         publication: nil,
                                                         atURL: self.book.annotationsURL) { serverBookmarks in
-          guard let serverBookmarks = serverBookmarks as? [NYPLAudiobookBookmark] else {
+          guard let serverBookmarks = serverBookmarks else {
             self.handleBookmarksSyncFail(message: "Ending sync without running completion. Returning original list of bookmarks.",
                                          completion: completion)
             return

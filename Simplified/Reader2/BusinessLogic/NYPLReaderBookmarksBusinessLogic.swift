@@ -207,10 +207,11 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
           }
         }
         
-        self.annotationsSynchronizer.getServerBookmarks(forBook: self.book.identifier,
+        self.annotationsSynchronizer.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                                        forBook: self.book.identifier,
                                                         publication: self.publication,
                                                         atURL: self.book.annotationsURL) { serverBookmarks in
-          guard let serverBookmarks = serverBookmarks as? [NYPLReadiumBookmark] else {
+          guard let serverBookmarks = serverBookmarks else {
             self.handleBookmarksSyncFail(message: "Ending sync without running completion. Returning original list of bookmarks.",
                                          completion: completion)
             return
