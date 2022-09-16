@@ -296,7 +296,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
                                     reason:@"Unable to fulfill loan with Adobe"
                               downloadTask:downloadTask
                                   metadata:nil];
-              [self failDownloadWithAlertForBook:book];
+              [self failDownloadWithAlertForBook:book error:fulfillError];
             }
           }];
         }
@@ -512,7 +512,7 @@ didCompleteWithError:(NSError *)error
                         metadata:@{
                           @"urlSessionError": error
                         }];
-    [self failDownloadWithAlertForBook:book];
+    [self failDownloadWithAlertForBook:book error:error];
   }
 }
 
@@ -969,7 +969,7 @@ didCompleteWithError:(NSError *)error
                              @"book": book.loggableDictionary,
                              @"bookRegistryState": [NYPLBookStateHelper stringValueFromBookState:state]
                            }];
-          [self failDownloadWithAlertForBook:book];
+          [self failDownloadWithAlertForBook:book error:error];
           return;
         }
 
@@ -1012,7 +1012,7 @@ didCompleteWithError:(NSError *)error
                                  @"book": book.loggableDictionary,
                                  @"bookRegistryState": [NYPLBookStateHelper stringValueFromBookState:state]
                                }];
-              [self failDownloadWithAlertForBook:book];
+              [self failDownloadWithAlertForBook:book error:error];
               return;
             }
               
@@ -1358,10 +1358,15 @@ didCompleteWithError:(NSError *)error
 
 #pragma mark - Error Handling
 
+- (void)failDownloadWithAlertForBook:(NYPLBook *const)book
+{
+  return [self failDownloadWithAlertForBook:book error:nil];
+}
+
 /// Notifies the book registry AND the user that a book failed to download.
 /// @note This method does NOT log to Crashlytics.
 /// @param book The book that failed to download.
-- (void)failDownloadWithAlertForBook:(NYPLBook *const)book
+- (void)failDownloadWithAlertForBook:(NYPLBook *const)book error:(NSError *)error
 {
   [[NYPLBookRegistry sharedRegistry]
    addBook:book
@@ -1377,7 +1382,9 @@ didCompleteWithError:(NSError *)error
 
   dispatch_async(dispatch_get_main_queue(), ^{
     NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
-    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed" message:formattedMessage];
+    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed"
+                                                      message:formattedMessage
+                                                        error:error];
     [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
   });
 
@@ -1512,7 +1519,7 @@ didFinishDownload:(BOOL)didFinishDownload
                                  @"AdobeRights": rights ?: @"N/A",
                                  @"AdobeTag": tag ?: @"N/A"
                                }];
-      [self failDownloadWithAlertForBook:book];
+      [self failDownloadWithAlertForBook:book error:adeptError];
       return;
     }
     
@@ -1550,7 +1557,7 @@ didFinishDownload:(BOOL)didFinishDownload
   }
 
   if(didFinishDownload == NO || didSucceedCopying == NO) {
-    [self failDownloadWithAlertForBook:book];
+    [self failDownloadWithAlertForBook:book error:adeptError];
     return;
   }
 
@@ -1627,7 +1634,7 @@ didFinishDownload:(BOOL)didFinishDownload
       @"licenseUrl": licenseUrl ?: @"nil",
       @"book": [book loggableDictionary] ?: @"nil"
     }];
-    [self failDownloadWithAlertForBook:book];
+    [self failDownloadWithAlertForBook:book error:replaceError];
     return;
   }
   // LCP library expects an .lcpl file at licenseUrl
@@ -1643,7 +1650,7 @@ didFinishDownload:(BOOL)didFinishDownload
                          @"licenseURL": licenseUrl  ?: @"N/A",
                          @"localURL": localUrl  ?: @"N/A",
                        }];
-      [self failDownloadWithAlertForBook:book];
+      [self failDownloadWithAlertForBook:book error:error];
       return;
     }
     BOOL success = [self replaceBook:book

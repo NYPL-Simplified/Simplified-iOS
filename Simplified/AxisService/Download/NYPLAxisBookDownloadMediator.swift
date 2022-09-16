@@ -25,8 +25,8 @@ class NYPLAxisBookDownloadMediator: NYPLAxisBookDownloadListening {
     delegate?.downloadProgressDidUpdate(to: progress, forBook: book)
   }
   
-  func downloadDidFail() {
-    delegate?.failDownloadWithAlert(forBook: book)
+  func downloadDidFail(with error: Error) {
+    delegate?.failDownloadWithAlert(forBook: book, error: error)
   }
   
   func didFinishDownloadingBook(to sourceLocation: URL) {
