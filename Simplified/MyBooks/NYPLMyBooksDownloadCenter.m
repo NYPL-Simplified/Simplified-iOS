@@ -888,6 +888,7 @@ didCompleteWithError:(NSError *)error
      state:NYPLBookStateDownloadNeeded
      fulfillmentId:nil
      readiumBookmarks:nil
+     audiobookBookmarks:nil
      genericBookmarks:nil];
 
     if(borrowCompletion) {
@@ -937,6 +938,7 @@ didCompleteWithError:(NSError *)error
          state:NYPLBookStateDownloadNeeded
          fulfillmentId:nil
          readiumBookmarks:nil
+         audiobookBookmarks:nil
          genericBookmarks:nil];
         state = NYPLBookStateDownloadNeeded;
       }
@@ -1165,6 +1167,7 @@ didCompleteWithError:(NSError *)error
    state:NYPLBookStateDownloading
    fulfillmentId:nil
    readiumBookmarks:nil
+   audiobookBookmarks:nil
    genericBookmarks:nil];
 
   // if the book ID is nil something seriously wrong is happening that should
@@ -1393,6 +1396,7 @@ didCompleteWithError:(NSError *)error
    state:NYPLBookStateDownloadFailed
    fulfillmentId:nil
    readiumBookmarks:nil
+   audiobookBookmarks:nil
    genericBookmarks:nil];
 
 #if defined(AXIS)
