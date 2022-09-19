@@ -105,6 +105,9 @@
 		17123D4427CEFB5700088193 /* NYPLBookCellDelegate+AudiobookProgressSaving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17123D4227CEFB5700088193 /* NYPLBookCellDelegate+AudiobookProgressSaving.swift */; };
 		17123D4527CEFB5700088193 /* NYPLBookCellDelegate+AudiobookProgressSaving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17123D4227CEFB5700088193 /* NYPLBookCellDelegate+AudiobookProgressSaving.swift */; };
 		171966A924170819007BB87E /* NYPLBookState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171966A824170819007BB87E /* NYPLBookState.swift */; };
+		1723BF9C28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1723BF9B28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift */; };
+		1723BF9D28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1723BF9B28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift */; };
+		1723BF9E28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1723BF9B28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift */; };
 		1724CA6A26E00D030015A174 /* NYPLReaderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724CA6926E00D030015A174 /* NYPLReaderSettingsView.swift */; };
 		1724CA6B26E00D030015A174 /* NYPLReaderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724CA6926E00D030015A174 /* NYPLReaderSettingsView.swift */; };
 		1724CA6C26E00D030015A174 /* NYPLReaderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724CA6926E00D030015A174 /* NYPLReaderSettingsView.swift */; };
@@ -1847,6 +1850,7 @@
 		17071060242A923400E2648F /* NYPLSecrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSecrets.swift; sourceTree = "<group>"; };
 		17123D4227CEFB5700088193 /* NYPLBookCellDelegate+AudiobookProgressSaving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookCellDelegate+AudiobookProgressSaving.swift"; sourceTree = "<group>"; };
 		171966A824170819007BB87E /* NYPLBookState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookState.swift; sourceTree = "<group>"; };
+		1723BF9B28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLAudiobookBookmark+Compare.swift"; sourceTree = "<group>"; };
 		1724CA6926E00D030015A174 /* NYPLReaderSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderSettingsView.swift; sourceTree = "<group>"; };
 		172F40F926F0A0170017476A /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		172F410926F3BAF70017476A /* NYPLConfiguration+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLConfiguration+Color.swift"; sourceTree = "<group>"; };
@@ -2574,6 +2578,7 @@
 			isa = PBXGroup;
 			children = (
 				177E04FE28A72BD500DF7587 /* NYPLAudiobookBookmarksBusinessLogic.swift */,
+				1723BF9B28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift */,
 			);
 			path = Bookmark;
 			sourceTree = "<group>";
@@ -4684,6 +4689,7 @@
 				7342701E24DCB23000A4F605 /* NSError+NYPLAdditions.swift in Sources */,
 				212B99D8258A36FD00C8BF79 /* LCPAudiobooks.swift in Sources */,
 				739E60F0244A0D8600D00301 /* NYPLAccountSignInViewController.m in Sources */,
+				1723BF9D28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift in Sources */,
 				739E60F1244A0D8600D00301 /* NYPLUserProfileDocument.swift in Sources */,
 				7359DCB327E92462001C4254 /* NYPLSignInBusinessLogic+OAuthClientCredentials.swift in Sources */,
 				739E60F2244A0D8600D00301 /* AccountsManager.swift in Sources */,
@@ -4742,6 +4748,7 @@
 				73EB0A8225821DF4006BC997 /* NSURL+NYPLURLAdditions.m in Sources */,
 				73EB0A8325821DF4006BC997 /* NYPLAsync.m in Sources */,
 				73EB0A8425821DF4006BC997 /* NYPLReloadView.m in Sources */,
+				1723BF9E28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift in Sources */,
 				73D8D27625A68D3B00DF5F69 /* NYPLEPUBViewController.swift in Sources */,
 				2126FE6625C089110095C45C /* ReaderFormatModule.swift in Sources */,
 				7321485C28651E4B000DF0F0 /* NYPLSignInModalFactory.swift in Sources */,
@@ -5453,6 +5460,7 @@
 				212B99D7258A36FD00C8BF79 /* LCPAudiobooks.swift in Sources */,
 				5D3A28CC22D3DA850042B3BD /* NYPLUserProfileDocument.swift in Sources */,
 				03F94CD11DD6288C00CE8F4F /* AccountsManager.swift in Sources */,
+				1723BF9C28D52AEF00551F45 /* NYPLAudiobookBookmark+Compare.swift in Sources */,
 				52592BB821220A1100587288 /* NYPLLocalization.m in Sources */,
 				7359DCB227E92462001C4254 /* NYPLSignInBusinessLogic+OAuthClientCredentials.swift in Sources */,
 				17071065242A923400E2648F /* NYPLSecrets.swift in Sources */,

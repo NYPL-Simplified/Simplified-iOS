@@ -3,6 +3,8 @@
 @class NYPLBook;
 @class NYPLBookLocation;
 @class NYPLReadiumBookmark;
+@class NYPLAudiobookBookmark;
+@protocol NYPLAudiobookRegistryProvider;
 
 typedef NS_ENUM(NSInteger, NYPLBookState);
 
@@ -109,6 +111,7 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
           state:(NSInteger)state
   fulfillmentId:(nullable NSString *)fulfillmentId
 readiumBookmarks:(nullable NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+audiobookBookmarks:(nullable NSArray<NYPLAudiobookBookmark *> *)audiobookBookmarks
 genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // This method should be called whenever new book information is retrieved from a server. Doing so
@@ -174,21 +177,21 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 // Returns the fulfillmentId of a book given its identifier.
 - (nullable NSString *)fulfillmentIdForIdentifier:(nonnull NSString *)identifier;
     
-// Returns the bookmarks for a book given its identifier
+// Returns the readium bookmarks for a book given its identifier
 - (nonnull NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(nonnull NSString *)identifier;
   
-// Add bookmark for a book given its identifier
+// Add readium bookmark for a book given its identifier
 - (void)addReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
              forIdentifier:(nonnull NSString *)identifier;
   
 /**
- Delete bookmark for a book given its identifer and saves updated registry
+ Delete readium bookmark for a book given its identifer and saves updated registry
  to disk.
  */
 - (void)deleteReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
                 forIdentifier:(nonnull NSString *)identifier;
 
-// Replace a bookmark with another, given its identifer
+// Replace a readium bookmark with another, given its identifer
 - (void)replaceBookmark:(nonnull NYPLReadiumBookmark *)oldBookmark
                    with:(nonnull NYPLReadiumBookmark *)newBookmark
           forIdentifier:(nonnull NSString *)identifier;
@@ -259,3 +262,28 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
                       block:(void (^_Nonnull)(void))block;
 
 @end
+
+#if FEATURE_AUDIOBOOKS
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
+@interface NYPLBookRegistry () <NYPLAudiobookRegistryProvider>
+
+// Returns the audiobook bookmarks for an audiobook given its identifier
+- (NSArray<NYPLAudiobookBookmark *> * _Nonnull)audiobookBookmarksForIdentifier:(NSString * _Nonnull)identifier;
+
+// Add audiobook bookmark for a book given its identifier
+- (void)addAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)audiobookBookmark
+               forIdentifier:(NSString * _Nonnull)identifier;
+
+// Delete audiobook bookmark for a book given its identifer and saves updated registry to disk.
+- (void)deleteAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)audiobookBookmark
+                  forIdentifier:(NSString * _Nonnull)identifier;
+
+// Replace an audiobook bookmark with another, given its identifer
+- (void)replaceAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)oldAudiobookBookmark
+        withNewAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)newAudiobookBookmark
+                   forIdentifier:(NSString * _Nonnull)identifier;
+
+@end
+#pragma clang diagnostic pop
+#endif
