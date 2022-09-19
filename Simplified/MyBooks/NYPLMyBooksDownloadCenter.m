@@ -804,52 +804,66 @@ didCompleteWithError:(NSError *)error
   return self.bookIdentifierToDownloadInfo[bookIdentifier];
 }
 
+- (void)handleBorrowError:(NSDictionary<NSString *,id> * _Nullable)errorDict
+                  forBook:(NYPLBook *)book
+         borrowCompletion:(void (^)(void))borrowCompletion
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    if (borrowCompletion) {
+      borrowCompletion();
+      return;
+    }
+
+    // create an alert to display for error, feed, or feed count conditions
+    NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"BorrowCouldNotBeCompletedFormat", nil), book.title];
+    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
+
+    // set different message for special type of error or just add document message for generic error
+    if (errorDict) {
+      if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeLoanAlreadyExists]) {
+        formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
+                                                                        comment: @"When book is already checked out on patron's other device(s), they will get this message"), book.title];
+        alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
+      } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
+        NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
+        __weak __auto_type wSelf = self;
+        [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
+                                                                completion:^(BOOL isSignedIn) {
+          if (isSignedIn) {
+            [wSelf startDownloadForBook:book];
+          }
+        }];
+        return;
+      } else {
+        [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:errorDict] append:NO];
+      }
+    }
+
+    // display the alert
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+  }];
+}
+
 - (void)startBorrowForBook:(NYPLBook *)book
            attemptDownload:(BOOL)shouldAttemptDownload
           borrowCompletion:(void (^)(void))borrowCompletion
 {
   [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.defaultAcquisitionIfBorrow.hrefURL
+
+  NSURL *borrowURL = book.defaultAcquisitionIfBorrow.hrefURL;
+  if (borrowURL == nil) {
+    [self handleBorrowError:nil forBook:book borrowCompletion:borrowCompletion];
+    return;
+  }
+
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:borrowURL
                             networkExecutor:[NYPLNetworkExecutor shared]
                            shouldResetCache:NO
                                  completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
     if (errorDict || !feed || feed.entries.count < 1) {
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        if (borrowCompletion) {
-          borrowCompletion();
-          return;
-        }
-
-        // create an alert to display for error, feed, or feed count conditions
-        NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"BorrowCouldNotBeCompletedFormat", nil), book.title];
-        UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
-
-        // set different message for special type of error or just add document message for generic error
-        if (errorDict) {
-          if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeLoanAlreadyExists]) {
-            formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
-                                                                            comment: @"When book is already checked out on patron's other device(s), they will get this message"), book.title];
-            alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
-          } else if ([errorDict[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
-            NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
-            __weak __auto_type wSelf = self;
-            [self.reauthenticator authenticateIfNeededUsingExistingCredentials:NO
-                                                                    completion:^(BOOL isSignedIn) {
-              if (isSignedIn) {
-                [wSelf startDownloadForBook:book];
-              }
-            }];
-            return;
-          } else {
-            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:errorDict] append:NO];
-          }
-        }
-
-        // display the alert
-        [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
-      }];
+      [self handleBorrowError:errorDict forBook:book borrowCompletion:borrowCompletion];
       return;
     }
     // after borrowing this book now has [book defaultAcquisitionIfBorrow] == nil
@@ -1313,6 +1327,11 @@ didCompleteWithError:(NSError *)error
   }
 
   [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
+
+  if (book.revokeURL == nil) {
+    [self presentAlertForError:nil orErrorDict:nil returningBook:book];
+    return;
+  }
 
   // revoke loan with the CM
   [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:book.revokeURL
