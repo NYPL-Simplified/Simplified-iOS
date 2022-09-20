@@ -314,27 +314,25 @@ static NSString *const RecordsKey = @"records";
     [self broadcastChange];
   } //@synchronized
 
+  NSURL *loansURL = [[[AccountsManager sharedInstance] currentAccount] loansUrl];
+  if (loansURL == nil) {
+    [self handleSyncError:nil
+        wasResettingCache:shouldResetCache
+               completion:completion
+   backgroundFetchHandler:fetchHandler];
+    return;
+  }
+
   NYPLLOG(@"[syncWithCompletionHandler] Begin BookRegistry syncing...");
-  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:loansURL
                             networkExecutor:[NYPLNetworkExecutor shared]
                            shouldResetCache:shouldResetCache
                                  completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     if(!feed) {
-      NYPLLOG(@"Failed to obtain sync data.");
-      self.syncing = NO;
-      [self broadcastChange];
-      [[NSOperationQueue mainQueue]
-       addOperationWithBlock:^{
-         if(completion) completion(errorDict);
-         if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
-         [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-       }];
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeApiCall
-                                summary:@"Unable to fetch loans"
-                               metadata:@{
-                                 @"shouldResetCache": @(shouldResetCache),
-                                 @"errorDict": errorDict ?: @"N/A"
-                               }];
+      [self handleSyncError:errorDict
+          wasResettingCache:shouldResetCache
+                 completion:completion
+     backgroundFetchHandler:fetchHandler];
       return;
     }
 
@@ -408,6 +406,29 @@ static NSString *const RecordsKey = @"records";
     } else {
       commitBlock();
     }
+  }];
+}
+
+- (void)handleSyncError:(NSDictionary<NSString *,id> * _Nullable)errorDict
+      wasResettingCache:(BOOL)wasResettingCache
+             completion:(void (^)(NSDictionary *errorDict))completion
+ backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
+
+{
+  // no need to log error event because NYPLOPDSFeedFetcher already does that
+  NYPLLOG_F(@"Error fetching/syncing (shouldResetCache=%d) loans: %@",
+            wasResettingCache, errorDict);
+  self.syncing = NO;
+  [self broadcastChange];
+  [[NSOperationQueue mainQueue]
+   addOperationWithBlock:^{
+    if(completion) {
+      completion(errorDict);
+    }
+    if(backgroundFetchHandler) {
+      backgroundFetchHandler(UIBackgroundFetchResultFailed);
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
   }];
 }
 
