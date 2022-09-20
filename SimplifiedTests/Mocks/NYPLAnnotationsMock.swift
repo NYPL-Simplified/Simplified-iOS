@@ -13,7 +13,7 @@ import NYPLUtilities
 
 class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   static var failRequest: Bool = false
-  static var serverBookmarks: [String: [NYPLReadiumBookmark]] = [String: [NYPLReadiumBookmark]]()
+  static var serverBookmarks: [String: [NYPLBookmark]] = [String: [NYPLBookmark]]()
   static var readingPositions: [String: NYPLBookmarkSpec] = [String: NYPLBookmarkSpec]()
   
   // For generating unique annotation id
@@ -66,18 +66,19 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   
   // Bookmark
   
-  static func getServerBookmarks(forBook bookID:String?,
-                                 publication: Publication?,
-                                 atURL annotationURL:URL?,
-                                 completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
+  static func getServerBookmarks<T>(of type: T.Type,
+                                    forBook bookID: String?,
+                                    publication: Publication?,
+                                    atURL annotationURL: URL?,
+                                    completion: @escaping ([T]?) -> ()) where T : NYPLBookmark {
     guard !failRequest, let id = bookID else {
       completion(nil)
       return
     }
-    completion(serverBookmarks[id])
+    completion(serverBookmarks[id] as? [T])
   }
   
-  static func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark]) {
+  static func deleteBookmarks(_ bookmarks: [NYPLBookmark]) {
     guard !failRequest else {
       return
     }
@@ -87,7 +88,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
       }
     }
   }
-  
+
   static func deleteBookmark(annotationId: String,
                              completionHandler: @escaping (_ success: Bool) -> ()) {
     let stringComponents = annotationId.components(separatedBy: "_")
@@ -100,21 +101,22 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
     serverBookmarks[bookID] = bookmarks.filter{ $0.annotationId != annotationId }
     completionHandler(true)
   }
-  
-  static func uploadLocalBookmarks(_ bookmarks: [NYPLReadiumBookmark],
-                                   forBook bookID: String,
-                                   completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->()) {
+
+  static func uploadLocalBookmarks<T>(_ bookmarks: [T],
+                                      forBook bookID: String,
+                                      completion: @escaping ([T], [T]) -> ()) where T : NYPLBookmark {
     guard !failRequest else {
       completion([], bookmarks)
       return
     }
-    var bookmarksUpdated = [NYPLReadiumBookmark]()
-    var bookmarksFailedToUpdate = [NYPLReadiumBookmark]()
+    var bookmarksUpdated = [T]()
+    var bookmarksFailedToUpdate = [T]()
     for bookmark in bookmarks {
       postBookmark(bookmark, forBookID: bookID) { serverID in
         if let serverID = serverID {
-          bookmark.annotationId = serverID
-          bookmarksUpdated.append(bookmark)
+          var newBookmark = bookmark
+          newBookmark.annotationId = serverID
+          bookmarksUpdated.append(newBookmark)
         } else {
           bookmarksFailedToUpdate.append(bookmark)
         }
@@ -123,24 +125,23 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
     completion(bookmarksUpdated, bookmarksFailedToUpdate)
   }
   
-  static func postBookmark(_ bookmark: NYPLReadiumBookmark,
-                           forBookID bookID: String,
-                           completion: @escaping (_ serverID: String?) -> ()) {
+  static func postBookmark(_ bookmark: NYPLBookmark, forBookID bookID: String, completion: @escaping (String?) -> ()) {
     guard !failRequest else {
       completion(nil)
       return
     }
-    
+
     if let bookmarks = serverBookmarks[bookID],
-       bookmarks.contains(bookmark)
+       bookmarks.contains(where: { $0.annotationId == bookmark.annotationId })
     {
       completion(nil)
       return
     }
     let annotationID = generateAnnotationID(bookID)
-    bookmark.annotationId = annotationID
+    var newBookmark = bookmark
+    newBookmark.annotationId = annotationID
     var currentBookmarks = serverBookmarks[bookID] ?? [NYPLReadiumBookmark]()
-    currentBookmarks.append(bookmark)
+    currentBookmarks.append(newBookmark)
     serverBookmarks[bookID] = currentBookmarks
     completion(annotationID)
   }
