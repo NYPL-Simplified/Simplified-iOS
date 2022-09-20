@@ -106,12 +106,16 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
 // will overwrite the existing book as if |updateBook:| were called. The location may be nil. The
 // state provided must be one of NYPLBookState and must not be |NYPLBookStateUnregistered|.
 // TODO: Use NYPLBookState instead of NSInteger when migrate to Swift
+// Note: The object type of the audiobook bookmarks array is not specified
+// because using a forward declaration class in the function signature
+// will cause the function not being accessible from Swift.
+// To avoid error, we perform a check on the object type in the body of the function.
 - (void)addBook:(nonnull NYPLBook *)book
        location:(nullable NYPLBookLocation *)location
           state:(NSInteger)state
   fulfillmentId:(nullable NSString *)fulfillmentId
 readiumBookmarks:(nullable NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
-audiobookBookmarks:(nullable NSArray<NYPLAudiobookBookmark *> *)audiobookBookmarks
+audiobookBookmarks:(nullable NSArray *)audiobookBookmarks
 genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // This method should be called whenever new book information is retrieved from a server. Doing so

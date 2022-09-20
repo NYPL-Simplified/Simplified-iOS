@@ -463,6 +463,12 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     @throw NSInvalidArgumentException;
   }
   
+  // Check to make sure audiobook bookmarks array contains NYPLAudiobookBookmark Object
+  NSArray<NYPLAudiobookBookmark *> *newAudiobookBookmarks = nil;
+  if ([[audiobookBookmarks firstObject] isKindOfClass:[NYPLAudiobookBookmark class]]) {
+    newAudiobookBookmarks = audiobookBookmarks;
+  }
+  
   @synchronized(self) {
     [self.coverRegistry pinThumbnailImageForBook:book];
     self.identifiersToRecords[book.identifier] = [[NYPLBookRegistryRecord alloc]
@@ -471,7 +477,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
                                                   state:state
                                                   fulfillmentId:fulfillmentId
                                                   readiumBookmarks:readiumBookmarks
-                                                  audiobookBookmarks:audiobookBookmarks
+                                                  audiobookBookmarks:newAudiobookBookmarks
                                                   genericBookmarks:genericBookmarks];
     [self broadcastChange];
   }
