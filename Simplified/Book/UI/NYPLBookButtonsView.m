@@ -132,6 +132,13 @@
   }
 }
 
+- (void)updateProcessingState
+{
+  BOOL isCurrentlyProcessing = [[NYPLBookRegistry sharedRegistry]
+                                processingForIdentifier:self.book.identifier];
+  [self updateProcessingState:isCurrentlyProcessing];
+}
+
 - (void)updateProcessingState:(BOOL)isCurrentlyProcessing
 {
   if (isCurrentlyProcessing) {
@@ -351,9 +358,7 @@
   _book = book;
   [self updateButtons];
 
-  BOOL isCurrentlyProcessing = [[NYPLBookRegistry sharedRegistry]
-                                processingForIdentifier:self.book.identifier];
-  [self updateProcessingState:isCurrentlyProcessing];
+  [self updateProcessingState];
 }
 
 - (void)setState:(NYPLBookButtonsState const)state
@@ -428,7 +433,10 @@
 {
   self.activityIndicator.center = self.readButton.center;
   [self updateProcessingState:YES];
-  [self.delegate didSelectReadForBook:self.book successCompletion:nil];
+  [self.delegate didSelectReadForBook:self.book
+                    successCompletion:^{
+    [self updateProcessingState];
+  }];
 }
 
 - (void)didSelectDownload
