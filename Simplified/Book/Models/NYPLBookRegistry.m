@@ -8,9 +8,13 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "SimplyE-Swift.h"
 
+#if FEATURE_AUDIOBOOKS
 @import NYPLAudiobookToolkit;
 
+@interface NYPLBookRegistry () <NYPLAudiobookRegistryProvider>
+#else
 @interface NYPLBookRegistry ()
+#endif
 
 @property (nonatomic) NYPLBookCoverRegistry *coverRegistry;
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;
@@ -463,11 +467,15 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     @throw NSInvalidArgumentException;
   }
   
-  // Check to make sure audiobook bookmarks array contains NYPLAudiobookBookmark Object
-  NSArray<NYPLAudiobookBookmark *> *newAudiobookBookmarks = nil;
-  if ([[audiobookBookmarks firstObject] isKindOfClass:[NYPLAudiobookBookmark class]]) {
+  // Check to make sure audiobook bookmarks array contains NYPLAudiobookBookmark Object,
+  // otherwise, pass in an empty array
+  NSArray<NYPLAudiobookBookmark *> *newAudiobookBookmarks = [NSArray array];
+#if FEATURE_AUDIOBOOKS
+  if (audiobookBookmarks &&
+      [[audiobookBookmarks firstObject] isKindOfClass:[NYPLAudiobookBookmark class]]) {
     newAudiobookBookmarks = audiobookBookmarks;
   }
+#endif
   
   @synchronized(self) {
     [self.coverRegistry pinThumbnailImageForBook:book];
