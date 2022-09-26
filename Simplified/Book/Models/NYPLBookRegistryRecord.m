@@ -4,7 +4,10 @@
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
+
+#if FEATURE_AUDIOBOOKS
 @import NYPLAudiobookToolkit;
+#endif
 
 @interface NYPLBookRegistryRecord ()
 
@@ -122,19 +125,30 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
   
   NSMutableArray<NYPLReadiumBookmark *> *readiumBookmarks = [NSMutableArray array];
   for (NSDictionary *dict in NYPLNullToNil(dictionary[ReadiumBookmarksKey])) {
-    [readiumBookmarks addObject:[[NYPLReadiumBookmark alloc] initWithDictionary:dict]];
+    NYPLReadiumBookmark *bookmark = [[NYPLReadiumBookmark alloc] initWithDictionary:dict];
+    if (bookmark) {
+      [readiumBookmarks addObject:bookmark];
+    }
   }
   self.readiumBookmarks = readiumBookmarks;
   
   NSMutableArray<NYPLAudiobookBookmark *> *audiobookBookmarks = [NSMutableArray array];
+#if FEATURE_AUDIOBOOKS
   for (NSDictionary *dict in NYPLNullToNil(dictionary[AudiobookBookmarksKey])) {
-    [audiobookBookmarks addObject:[[NYPLAudiobookBookmark alloc] initWithDictionary:dict]];
+    NYPLAudiobookBookmark *bookmark = [[NYPLAudiobookBookmark alloc] initWithDictionary:dict];
+    if (bookmark) {
+      [audiobookBookmarks addObject:bookmark];
+    }
   }
+#endif
   self.audiobookBookmarks = audiobookBookmarks;
 
   NSMutableArray<NYPLBookLocation *> *genericBookmarks = [NSMutableArray array];
   for (NSDictionary *dict in NYPLNullToNil(dictionary[GenericBookmarksKey])) {
-    [genericBookmarks addObject:[[NYPLBookLocation alloc] initWithDictionary:dict]];
+    NYPLBookLocation *bookmark = [[NYPLBookLocation alloc] initWithDictionary:dict];
+    if (bookmark) {
+      [genericBookmarks addObject:bookmark];
+    }
   }
   self.genericBookmarks = genericBookmarks;
   
@@ -149,10 +163,12 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
   }
   
   NSMutableArray *audiobookBookmarks = [NSMutableArray array];
+#if FEATURE_AUDIOBOOKS
   for (NYPLAudiobookBookmark *audiobookBookmark in self.audiobookBookmarks) {
     [audiobookBookmarks addObject:audiobookBookmark.dictionaryRepresentation];
   }
-
+#endif
+  
   NSMutableArray *genericBookmarks = [NSMutableArray array];
   for (NYPLBookLocation *genericBookmark in self.genericBookmarks) {
     [genericBookmarks addObject:genericBookmark.dictionaryRepresentation];

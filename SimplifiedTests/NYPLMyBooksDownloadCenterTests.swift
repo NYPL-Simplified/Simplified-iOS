@@ -1,7 +1,6 @@
 import XCTest
 
 @testable import SimplyE
-import NYPLAudiobookToolkit
 
 class NYPLMyBooksDownloadCenterTests: XCTestCase {
   func testDeleteLocalContent() {
@@ -69,7 +68,7 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
         state: NYPLBookState.DownloadSuccessful.rawValue,
         fulfillmentId: "",
         readiumBookmarks: [NYPLReadiumBookmark](),
-        audiobookBookmarks: [NYPLAudiobookBookmark](),
+        audiobookBookmarks: nil,
         genericBookmarks: [NYPLBookLocation]()
       )
 

@@ -1,7 +1,9 @@
 import UIKit
 import R2Shared
 import NYPLUtilities
+#if FEATURE_AUDIOBOOKS
 import NYPLAudiobookToolkit
+#endif
 
 protocol NYPLAnnotationSyncing: AnyObject {
   // Server status
@@ -302,7 +304,6 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   // Completion handler will return a nil parameter if there are any failures with
   // the network request, deserialization, or sync permission is not allowed.
-  // TODO: support generic parameter
   class func getServerBookmarks<T: NYPLBookmark>(of type: T.Type,
                                                  forBook bookID:String?,
                                                  publication: Publication?,
@@ -496,20 +497,27 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
     var bookmarks = [T]()
     
+#if FEATURE_AUDIOBOOKS
     if type == NYPLAudiobookBookmark.self {
       bookmarks = items.compactMap{
+        /// Given NYPLAudiobookToolkit has no access to classes in Simplified-iOS repo,
+        /// we pass the NYPLBookmarkFactory class to NYPLAudiobookBookmarkFactory through a protocol,
+        /// in order to allow NYPLAudiobookBookmarkFactory to access the parser function in NYPLBookmarkFactory.
         NYPLAudiobookBookmarkFactory.make(fromServerAnnotation: $0,
                                           selectorValueParser: NYPLBookmarkFactory.self,
                                           annotationType: motivation,
                                           bookID: bookID) as? T
       }
-    } else {
-      bookmarks = items.compactMap{
-        NYPLReadiumBookmarkFactory.make(fromServerAnnotation: $0,
-                                        annotationType: motivation,
-                                        bookID: bookID,
-                                        publication: publication) as? T
-      }
+      
+      return bookmarks
+    }
+#endif
+    
+    bookmarks = items.compactMap{
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: $0,
+                                      annotationType: motivation,
+                                      bookID: bookID,
+                                      publication: publication) as? T
     }
     
     return bookmarks

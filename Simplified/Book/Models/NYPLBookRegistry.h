@@ -266,28 +266,3 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
                       block:(void (^_Nonnull)(void))block;
 
 @end
-
-#if FEATURE_AUDIOBOOKS
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Weverything"
-@interface NYPLBookRegistry () <NYPLAudiobookRegistryProvider>
-
-// Returns the audiobook bookmarks for an audiobook given its identifier
-- (NSArray<NYPLAudiobookBookmark *> * _Nonnull)audiobookBookmarksForIdentifier:(NSString * _Nonnull)identifier;
-
-// Add audiobook bookmark for a book given its identifier
-- (void)addAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)audiobookBookmark
-               forIdentifier:(NSString * _Nonnull)identifier;
-
-// Delete audiobook bookmark for a book given its identifer and saves updated registry to disk.
-- (void)deleteAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)audiobookBookmark
-                  forIdentifier:(NSString * _Nonnull)identifier;
-
-// Replace an audiobook bookmark with another, given its identifer
-- (void)replaceAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)oldAudiobookBookmark
-        withNewAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)newAudiobookBookmark
-                   forIdentifier:(NSString * _Nonnull)identifier;
-
-@end
-#pragma clang diagnostic pop
-#endif
