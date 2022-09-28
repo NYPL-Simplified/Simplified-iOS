@@ -8,7 +8,13 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "SimplyE-Swift.h"
 
+#if FEATURE_AUDIOBOOKS
+@import NYPLAudiobookToolkit;
+
+@interface NYPLBookRegistry () <NYPLAudiobookRegistryProvider>
+#else
 @interface NYPLBookRegistry ()
+#endif
 
 @property (nonatomic) NYPLBookCoverRegistry *coverRegistry;
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;
@@ -372,7 +378,7 @@ static NSString *const RecordsKey = @"records";
           if(existingBook) {
             [self updateBook:book];
           } else {
-            [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil readiumBookmarks:nil genericBookmarks:nil];
+            [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil readiumBookmarks:nil audiobookBookmarks:nil genericBookmarks:nil];
           }
         }
         for (NSString *identifier in identifiersToRemove) {
@@ -450,6 +456,11 @@ static NSString *const RecordsKey = @"records";
           state:(NSInteger)state
   fulfillmentId:(NSString *)fulfillmentId
 readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+#ifdef FEATURE_AUDIOBOOKS
+audiobookBookmarks:(nullable NSArray<NYPLAudiobookBookmark*> *)audiobookBookmarks
+#else
+audiobookBookmarks:(nullable NSArray *)audiobookBookmarks
+#endif
 genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   if(!book) {
@@ -468,6 +479,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
                                                   state:state
                                                   fulfillmentId:fulfillmentId
                                                   readiumBookmarks:readiumBookmarks
+                                                  audiobookBookmarks:audiobookBookmarks
                                                   genericBookmarks:genericBookmarks];
     [self broadcastChange];
   }
@@ -711,6 +723,78 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     [[NYPLBookRegistry sharedRegistry] save];
   }
 }
+
+#if FEATURE_AUDIOBOOKS
+- (NSArray<NYPLAudiobookBookmark *> * _Nonnull)audiobookBookmarksForIdentifier:(NSString * _Nonnull)identifier {
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    
+    NSArray<NYPLAudiobookBookmark *> *sortedArray = [record.audiobookBookmarks sortedArrayUsingComparator:^NSComparisonResult(NYPLAudiobookBookmark *obj1, NYPLAudiobookBookmark *obj2) {
+      if ([obj1 lessThan:obj2]) {
+        return NSOrderedAscending;
+      } else {
+        return NSOrderedDescending;
+      }
+    }];
+      
+    return sortedArray ?: [NSArray array];
+  }
+}
+
+- (void)addAudiobookBookmark:(nonnull NYPLAudiobookBookmark *)bookmark
+               forIdentifier:(nonnull NSString *)identifier {
+  @synchronized(self) {
+    
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    
+    NSMutableArray<NYPLAudiobookBookmark *> *bookmarks = record.audiobookBookmarks.mutableCopy;
+    if (!bookmarks) {
+      bookmarks = [NSMutableArray array];
+    }
+    [bookmarks addObject:bookmark];
+    
+    self.identifiersToRecords[identifier] = [record recordWithAudiobookBookmarks:bookmarks];
+    
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+
+- (void)deleteAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)audiobookBookmark forIdentifier:(NSString * _Nonnull)identifier {
+  @synchronized(self) {
+      
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+      
+    NSMutableArray<NYPLAudiobookBookmark *> *bookmarks = record.audiobookBookmarks.mutableCopy;
+    if (!bookmarks) {
+      return;
+    }
+    [bookmarks removeObject:audiobookBookmark];
+    
+    self.identifiersToRecords[identifier] = [record recordWithAudiobookBookmarks:bookmarks];
+    
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+
+
+- (void)replaceAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)oldAudiobookBookmark withNewAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)newAudiobookBookmark forIdentifier:(NSString * _Nonnull)identifier {
+  @synchronized(self) {
+    
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    
+    NSMutableArray<NYPLAudiobookBookmark *> *bookmarks = record.audiobookBookmarks.mutableCopy;
+    if (!bookmarks) {
+      return;
+    }
+    [bookmarks removeObject:oldAudiobookBookmark];
+    [bookmarks addObject:newAudiobookBookmark];
+
+    self.identifiersToRecords[identifier] = [record recordWithAudiobookBookmarks:bookmarks];
+    
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+#endif
 
 - (NSArray<NYPLBookLocation *> *)genericBookmarksForIdentifier:(NSString *)identifier
 {

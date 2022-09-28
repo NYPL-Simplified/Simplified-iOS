@@ -81,26 +81,9 @@ class NYPLReadiumBookmarkFactory {
     }
 
     guard
-      let target = annotation[NYPLBookmarkSpec.Target.key] as? [String: Any],
-      let source = target[NYPLBookmarkSpec.Target.Source.key] as? String,
-      let motivation = annotation[NYPLBookmarkSpec.Motivation.key] as? String,
       let body = annotation[NYPLBookmarkSpec.Body.key] as? [String: Any]
     else {
-      Log.error(#file, "Error parsing required info (target, source, motivation, body) for bookID \(bookID) in annotation: \(annotation)")
-      return nil
-    }
-
-    guard source == bookID else {
-      NYPLErrorLogger.logError(withCode: .bookmarkReadError,
-                               summary: "Got bookmark for a different book",
-                               metadata: [
-                                "requestedBookID": bookID,
-                                "serverAnnotation": annotation])
-      return nil
-    }
-
-    guard motivation.contains(annotationType.rawValue) else {
-      Log.error(#file, "Can't create bookmark for bookID \(bookID), `\(motivation)` motivation does not match expected `\(annotationType.rawValue)` motivation.")
+      Log.error(#file, "Error parsing required info (body) for bookID \(bookID) in annotation: \(annotation)")
       return nil
     }
 
@@ -110,11 +93,13 @@ class NYPLReadiumBookmarkFactory {
     }
 
     guard
-      let selector = target[NYPLBookmarkSpec.Target.Selector.key] as? [String: Any],
-      let selectorValueEscJSON = selector[NYPLBookmarkSpec.Target.Selector.Value.key] as? String
-      else {
-        Log.error(#file, "Error reading required Selector Value for bookID \(bookID) from Target: \(target)")
-        return nil
+      let selectorValueEscJSON = NYPLBookmarkFactory.parseSelectorJSONString(
+        fromServerAnnotation: annotation,
+        annotationType: annotationType,
+        bookID: bookID)
+    else {
+      // Error is being logged in NYPLBookmarkFactory
+      return nil
     }
     
     guard let (href, idref, progress) =
