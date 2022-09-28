@@ -456,7 +456,11 @@ static NSString *const RecordsKey = @"records";
           state:(NSInteger)state
   fulfillmentId:(NSString *)fulfillmentId
 readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
-audiobookBookmarks:(NSArray<NYPLAudiobookBookmark *> *)audiobookBookmarks
+#ifdef FEATURE_AUDIOBOOKS
+audiobookBookmarks:(nullable NSArray<NYPLAudiobookBookmark*> *)audiobookBookmarks
+#else
+audiobookBookmarks:(nullable NSArray *)audiobookBookmarks
+#endif
 genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   if(!book) {
@@ -467,16 +471,6 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     @throw NSInvalidArgumentException;
   }
   
-  // Check to make sure audiobook bookmarks array contains NYPLAudiobookBookmark Object,
-  // otherwise, pass in an empty array
-  NSArray<NYPLAudiobookBookmark *> *newAudiobookBookmarks = [NSArray array];
-#if FEATURE_AUDIOBOOKS
-  if (audiobookBookmarks &&
-      [[audiobookBookmarks firstObject] isKindOfClass:[NYPLAudiobookBookmark class]]) {
-    newAudiobookBookmarks = audiobookBookmarks;
-  }
-#endif
-  
   @synchronized(self) {
     [self.coverRegistry pinThumbnailImageForBook:book];
     self.identifiersToRecords[book.identifier] = [[NYPLBookRegistryRecord alloc]
@@ -485,7 +479,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
                                                   state:state
                                                   fulfillmentId:fulfillmentId
                                                   readiumBookmarks:readiumBookmarks
-                                                  audiobookBookmarks:newAudiobookBookmarks
+                                                  audiobookBookmarks:audiobookBookmarks
                                                   genericBookmarks:genericBookmarks];
     [self broadcastChange];
   }
