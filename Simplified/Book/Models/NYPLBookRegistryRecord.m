@@ -35,7 +35,11 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
             readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+#if FEATURE_AUDIOBOOKS
           audiobookBookmarks:(NSArray<NYPLAudiobookBookmark *> *)audiobookBookmarks
+#else
+          audiobookBookmarks:(NSArray *)audiobookBookmarks
+#endif
             genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   self = [super init];
@@ -238,7 +242,11 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
                            genericBookmarks:self.genericBookmarks];
 }
 
+#if FEATURE_AUDIOBOOKS
 - (instancetype)recordWithAudiobookBookmarks:(NSArray<NYPLAudiobookBookmark *> *)bookmarks
+#else
+- (instancetype)recordWithAudiobookBookmarks:(NSArray *)bookmarks
+#endif
 {
   return [[[self class] alloc] initWithBook:self.book
                                    location:self.location

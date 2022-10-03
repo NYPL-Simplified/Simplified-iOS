@@ -185,6 +185,7 @@
 		179A0BCA28D15F4100FAB9AB /* NYPLBookmarkFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179A0BC628D15F4100FAB9AB /* NYPLBookmarkFactory.swift */; };
 		17A5AB4F25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */; };
 		17A5AB5025D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */; };
+		17A9E7C928E6599900362040 /* NYPLBookRegistryMock+Audiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A9E7C828E6599900362040 /* NYPLBookRegistryMock+Audiobooks.swift */; };
 		17ADCF4F254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
 		17ADCF54254BBA4E00D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
 		17BE24C125F2ED5400AE707F /* NYPLAgeCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */; };
@@ -194,6 +195,7 @@
 		17BE24E725FABCDE00AE707F /* NYPLUserAccountProviderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BE24E625FABCDE00AE707F /* NYPLUserAccountProviderMock.swift */; };
 		17BE24ED25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BE24EC25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift */; };
 		17BE24EF25FB114900AE707F /* simplye_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = 17BE24EE25FB114900AE707F /* simplye_authentication_document.json */; };
+		17C4F75328E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C4F75228E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift */; };
 		17DFC5ED251E7FBC003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
 		17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		17E81F08261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
@@ -1873,12 +1875,14 @@
 		179A0BBD28CC0BA200FAB9AB /* NYPLAudiobookRegistryProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAudiobookRegistryProvider.swift; sourceTree = "<group>"; };
 		179A0BC628D15F4100FAB9AB /* NYPLBookmarkFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkFactory.swift; sourceTree = "<group>"; };
 		17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCPPassphraseAuthenticationService.swift; sourceTree = "<group>"; };
+		17A9E7C828E6599900362040 /* NYPLBookRegistryMock+Audiobooks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookRegistryMock+Audiobooks.swift"; sourceTree = "<group>"; };
 		17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarksBusinessLogicTests.swift; sourceTree = "<group>"; };
 		17BE24D625F85D2300AE707F /* NYPLAgeCheckTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckTests.swift; sourceTree = "<group>"; };
 		17BE24DF25FABA0900AE707F /* NYPLAgeCheckChoiceStorageMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckChoiceStorageMock.swift; sourceTree = "<group>"; };
 		17BE24E625FABCDE00AE707F /* NYPLUserAccountProviderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountProviderMock.swift; sourceTree = "<group>"; };
 		17BE24EC25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCurrentLibraryAccountProviderMock.swift; sourceTree = "<group>"; };
 		17BE24EE25FB114900AE707F /* simplye_authentication_document.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = simplye_authentication_document.json; sourceTree = "<group>"; };
+		17C4F75228E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAudiobookBookmarksBusinessLogicTests.swift; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLRoundedButton.swift; sourceTree = "<group>"; };
 		17E81F31261FF758001003C2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -2991,6 +2995,7 @@
 				17BE24EC25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift */,
 				178AD3E7276053BE003A6C12 /* NYPLAnnotationsMock.swift */,
 				17843D2227853914000D488E /* NYPLOPDSFeedFetcherMock.swift */,
+				17A9E7C828E6599900362040 /* NYPLBookRegistryMock+Audiobooks.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -3737,6 +3742,7 @@
 				17BE24D625F85D2300AE707F /* NYPLAgeCheckTests.swift */,
 				5941F685268D1B2000F69F0B /* NYPLAxisTests */,
 				73BC2869269F995E0037930A /* NYPLReaderSettingsTests.swift */,
+				17C4F75228E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift */,
 			);
 			path = SimplifiedTests;
 			sourceTree = "<group>";
@@ -4353,6 +4359,7 @@
 				177C25F628B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift in Sources */,
 				7375AE5A25382AC900C85211 /* NYPLUserAccountMock.swift in Sources */,
 				73C3CF5A25CB8D6100CA8166 /* NYPLNetworkExecutorMock.swift in Sources */,
+				17C4F75328E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift in Sources */,
 				735771AE2537687D00067CEA /* NYPLURLSettingsProviderMock.swift in Sources */,
 				735771B12537691800067CEA /* NYPLDRMAuthorizingMock.swift in Sources */,
 				730EF263260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift in Sources */,
@@ -4375,6 +4382,7 @@
 				735771AB2537650E00067CEA /* NYPLLibraryAccountsProviderMock.swift in Sources */,
 				1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */,
 				2D8790A520129AF200E2763F /* NYPLOPDSAcquisitionPathTests.swift in Sources */,
+				17A9E7C928E6599900362040 /* NYPLBookRegistryMock+Audiobooks.swift in Sources */,
 				735350B724918432006021BD /* URLRequest+NYPLTests.swift in Sources */,
 				73A794CA25492C9800C59CC1 /* NYPLFake.swift in Sources */,
 				7384C804242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift in Sources */,
