@@ -143,7 +143,6 @@
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
 		17681C5127E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml in Resources */ = {isa = PBXBuildFile; fileRef = 17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */; };
 		17681C5227E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml in Resources */ = {isa = PBXBuildFile; fileRef = 17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */; };
-		177C25F628B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177C25F528B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift */; };
 		177C25FC28B704A600A786F1 /* NYPLUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 177C25FB28B704A600A786F1 /* NYPLUtilities */; };
 		177C25FE28B704A600A786F1 /* NYPLUtilities in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 177C25FB28B704A600A786F1 /* NYPLUtilities */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		177E04FF28A72BD500DF7587 /* NYPLAudiobookBookmarksBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177E04FE28A72BD500DF7587 /* NYPLAudiobookBookmarksBusinessLogic.swift */; };
@@ -188,6 +187,7 @@
 		17A9E7C928E6599900362040 /* NYPLBookRegistryMock+Audiobooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A9E7C828E6599900362040 /* NYPLBookRegistryMock+Audiobooks.swift */; };
 		17ADCF4F254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
 		17ADCF54254BBA4E00D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */; };
+		17B0252828EFAD2000248EA2 /* NYPLAudiobookBookmarkSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B0252728EFAD2000248EA2 /* NYPLAudiobookBookmarkSerializationTests.swift */; };
 		17BE24C125F2ED5400AE707F /* NYPLAgeCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */; };
 		17BE24C625F2ED5800AE707F /* NYPLAgeCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17631AEC25E488CD006079C4 /* NYPLAgeCheckViewController.swift */; };
 		17BE24DA25F85D2300AE707F /* NYPLAgeCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BE24D625F85D2300AE707F /* NYPLAgeCheckTests.swift */; };
@@ -1859,7 +1859,6 @@
 		1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementManagerTests.swift; sourceTree = "<group>"; };
 		17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NYPLCatalogUngroupedFeedWithZeroBooks.xml; sourceTree = "<group>"; };
 		176F8A802519684D00CE5BFB /* AudioEngine.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AudioEngine.xcframework; path = NYPLAEToolkit/build/AudioEngine.xcframework; sourceTree = "<group>"; };
-		177C25F528B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookmarkSpec+AudiobookTests.swift"; sourceTree = "<group>"; };
 		177E04FE28A72BD500DF7587 /* NYPLAudiobookBookmarksBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAudiobookBookmarksBusinessLogic.swift; sourceTree = "<group>"; };
 		1782E49F28B4648E00EA7107 /* valid-locator-3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "valid-locator-3.json"; sourceTree = "<group>"; };
 		1782E4A228B464EC00EA7107 /* invalid-locator-5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "invalid-locator-5.json"; sourceTree = "<group>"; };
@@ -1877,6 +1876,7 @@
 		17A5AB4E25D201BD005DFF05 /* LCPPassphraseAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCPPassphraseAuthenticationService.swift; sourceTree = "<group>"; };
 		17A9E7C828E6599900362040 /* NYPLBookRegistryMock+Audiobooks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookRegistryMock+Audiobooks.swift"; sourceTree = "<group>"; };
 		17ADCF4E254BB84800D0A5FE /* NYPLReaderBookmarksBusinessLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarksBusinessLogicTests.swift; sourceTree = "<group>"; };
+		17B0252728EFAD2000248EA2 /* NYPLAudiobookBookmarkSerializationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAudiobookBookmarkSerializationTests.swift; sourceTree = "<group>"; };
 		17BE24D625F85D2300AE707F /* NYPLAgeCheckTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckTests.swift; sourceTree = "<group>"; };
 		17BE24DF25FABA0900AE707F /* NYPLAgeCheckChoiceStorageMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheckChoiceStorageMock.swift; sourceTree = "<group>"; };
 		17BE24E625FABCDE00AE707F /* NYPLUserAccountProviderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountProviderMock.swift; sourceTree = "<group>"; };
@@ -2820,11 +2820,11 @@
 				73F6BFA5261E60C400A71AB8 /* only-essential-info-bookmark.json */,
 				73D4DC202627B1DA005CAFFA /* annotation-response.json */,
 				730EF262260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift */,
-				177C25F528B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift */,
 				7340A8B526151FDA00B2D5FA /* NYPLBookmarkDeserializationTests.swift */,
 				73F6BFA2261E515E00A71AB8 /* NYPLR1BookmarkDeserializationTests.swift */,
 				733EE5992620D2F6006A735C /* NYPLBookmarkSerializationTests.swift */,
 				73D4DC182627A0C0005CAFFA /* NYPLAnnotationResponseTests.swift */,
+				17B0252728EFAD2000248EA2 /* NYPLAudiobookBookmarkSerializationTests.swift */,
 			);
 			name = Bookmarks;
 			sourceTree = "<group>";
@@ -4356,7 +4356,6 @@
 				17BE24DA25F85D2300AE707F /* NYPLAgeCheckTests.swift in Sources */,
 				17BE24E025FABA0900AE707F /* NYPLAgeCheckChoiceStorageMock.swift in Sources */,
 				7340A8B626151FDA00B2D5FA /* NYPLBookmarkDeserializationTests.swift in Sources */,
-				177C25F628B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift in Sources */,
 				7375AE5A25382AC900C85211 /* NYPLUserAccountMock.swift in Sources */,
 				73C3CF5A25CB8D6100CA8166 /* NYPLNetworkExecutorMock.swift in Sources */,
 				17C4F75328E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift in Sources */,
@@ -4367,6 +4366,7 @@
 				B51C1DFE22860563003B49A5 /* OPDS2CatalogsFeedTests.swift in Sources */,
 				73A794BD2548E36100C59CC1 /* NYPLBookCreationTests.swift in Sources */,
 				5D73DA4322A080BA00162CB8 /* NYPLMyBooksDownloadCenterTests.swift in Sources */,
+				17B0252828EFAD2000248EA2 /* NYPLAudiobookBookmarkSerializationTests.swift in Sources */,
 				730D17C02552124B004CAC83 /* NYPLMyBooksDownloadsCenterMock.swift in Sources */,
 				735F41A3243E381D00046182 /* String+NYPLAdditionsTests.swift in Sources */,
 				73F6BFA3261E515E00A71AB8 /* NYPLR1BookmarkDeserializationTests.swift in Sources */,
