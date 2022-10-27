@@ -294,26 +294,26 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
     XCTAssertEqual(bookmarkBusinessLogic.bookmarksCount, 1)
     
     guard let secondChapterLocation = ChapterLocation(number: 1, part: 2, duration: 50.0, startOffset: 0, playheadOffset: 15.0, title: "Title", audiobookID: bookIdentifier),
-          let secondDuplicatedChapterLocation = ChapterLocation(number: 1, part: 2, duration: 50.0, startOffset: 0, playheadOffset: 18.0, title: "Title", audiobookID: bookIdentifier) else {
+          let secondDuplicatedChapterLocation = ChapterLocation(number: 1, part: 2, duration: 50.0, startOffset: 0, playheadOffset: 18.1, title: "Title", audiobookID: bookIdentifier) else {
       XCTFail("Failed to create chapter location")
       return
     }
     bookmarkBusinessLogic.addAudiobookBookmark(secondChapterLocation)
     XCTAssertEqual(bookmarkBusinessLogic.bookmarksCount, 2)
     
-    // Adding bookmark with matching chapter location and 3s difference (considered as different bookmark)
+    // Adding bookmark with matching chapter location and >3s difference (considered as different bookmark)
     bookmarkBusinessLogic.addAudiobookBookmark(secondDuplicatedChapterLocation)
     XCTAssertEqual(bookmarkBusinessLogic.bookmarksCount, 3)
     
     guard let thirdChapterLocation = ChapterLocation(number: 1, part: 3, duration: 70.0, startOffset: 0, playheadOffset: 35.0, title: "Title", audiobookID: bookIdentifier),
-          let thirdDuplicatedChapterLocation = ChapterLocation(number: 1, part: 3, duration: 70.0, startOffset: 0, playheadOffset: 32.0, title: "Title", audiobookID: bookIdentifier) else {
+          let thirdDuplicatedChapterLocation = ChapterLocation(number: 1, part: 3, duration: 70.0, startOffset: 0, playheadOffset: 31.9, title: "Title", audiobookID: bookIdentifier) else {
       XCTFail("Failed to create chapter location")
       return
     }
     bookmarkBusinessLogic.addAudiobookBookmark(thirdChapterLocation)
     XCTAssertEqual(bookmarkBusinessLogic.bookmarksCount, 4)
     
-    // Adding bookmark with matching chapter location and 3s difference in backward direction (considered as different bookmark)
+    // Adding bookmark with matching chapter location and >3s difference in backward direction (considered as different bookmark)
     bookmarkBusinessLogic.addAudiobookBookmark(thirdDuplicatedChapterLocation)
     XCTAssertEqual(bookmarkBusinessLogic.bookmarksCount, 5)
   }
