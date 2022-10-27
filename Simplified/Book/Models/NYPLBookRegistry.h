@@ -29,7 +29,15 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
 
 @end
 
+#if FEATURE_AUDIOBOOKS
+// Hiding warnings for protocol defined in Swift is not accessible in ObjC
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
+@interface NYPLBookRegistry : NSObject <NYPLBookRegistryProvider, NYPLAudiobookRegistryProvider>
+#pragma clang diagnostic pop
+#else
 @interface NYPLBookRegistry : NSObject <NYPLBookRegistryProvider>
+#endif
 
 // Returns all registered books.
 @property (atomic, readonly, nonnull) NSArray *allBooks;
@@ -216,6 +224,18 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 // Delete a generic bookmark (book location) for a book given its identifier
 - (void)deleteGenericBookmark:(nonnull NYPLBookLocation *)bookmark
                 forIdentifier:(nonnull NSString *)identifier;
+
+#if FEATURE_AUDIOBOOKS
+- (NSArray<NYPLAudiobookBookmark *> * _Nonnull)audiobookBookmarksForIdentifier:(NSString * _Nonnull)identifier;
+
+- (void)addAudiobookBookmark:(nonnull NYPLAudiobookBookmark *)bookmark
+               forIdentifier:(nonnull NSString *)identifier;
+
+- (void)deleteAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)audiobookBookmark forIdentifier:(NSString * _Nonnull)identifier;
+
+
+- (void)replaceAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)oldAudiobookBookmark withNewAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)newAudiobookBookmark forIdentifier:(NSString * _Nonnull)identifier;
+#endif
 
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.

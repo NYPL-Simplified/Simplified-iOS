@@ -10,11 +10,8 @@
 
 #if FEATURE_AUDIOBOOKS
 @import NYPLAudiobookToolkit;
-
-@interface NYPLBookRegistry () <NYPLAudiobookRegistryProvider>
-#else
-@interface NYPLBookRegistry ()
 #endif
+@interface NYPLBookRegistry ()
 
 @property (nonatomic) NYPLBookCoverRegistry *coverRegistry;
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;

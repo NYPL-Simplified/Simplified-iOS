@@ -196,6 +196,9 @@
 		17BE24ED25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BE24EC25FB09F000AE707F /* NYPLCurrentLibraryAccountProviderMock.swift */; };
 		17BE24EF25FB114900AE707F /* simplye_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = 17BE24EE25FB114900AE707F /* simplye_authentication_document.json */; };
 		17C4F75328E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C4F75228E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift */; };
+		17D8633C29031A750096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8633B29031A750096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift */; };
+		17D8633D29031A760096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8633B29031A750096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift */; };
+		17D8633E29031A760096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8633B29031A750096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift */; };
 		17DFC5ED251E7FBC003A19CC /* AudioEngine.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; };
 		17DFC5F6251E84CF003A19CC /* AudioEngine.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 176F8A802519684D00CE5BFB /* AudioEngine.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		17E81F08261522B3001003C2 /* NYPLRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */; };
@@ -1884,6 +1887,7 @@
 		17BE24EE25FB114900AE707F /* simplye_authentication_document.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = simplye_authentication_document.json; sourceTree = "<group>"; };
 		17C4F75228E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAudiobookBookmarksBusinessLogicTests.swift; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
+		17D8633B29031A750096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookCellDelegate+AudiobookBookmark.swift"; sourceTree = "<group>"; };
 		17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLRoundedButton.swift; sourceTree = "<group>"; };
 		17E81F31261FF758001003C2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		17E81F332620DAE0001003C2 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = it; path = it.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -3214,6 +3218,7 @@
 				085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */,
 				085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */,
 				17123D4227CEFB5700088193 /* NYPLBookCellDelegate+AudiobookProgressSaving.swift */,
+				17D8633B29031A750096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -4463,6 +4468,7 @@
 				73A172FD27ADA6FA005E7BCF /* NYPLAxisContentProtection.swift in Sources */,
 				7386C1F824525AFF004C78BD /* NYPLReaderTOCBusinessLogic.swift in Sources */,
 				172F410B26F3BAF70017476A /* NYPLConfiguration+Color.swift in Sources */,
+				17D8633D29031A760096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift in Sources */,
 				739E6059244A0D8600D00301 /* NYPLAlertUtils.swift in Sources */,
 				739E605A244A0D8600D00301 /* OPDS2Publication.swift in Sources */,
 				739E605B244A0D8600D00301 /* String+MD5.swift in Sources */,
@@ -4833,6 +4839,7 @@
 				73ED943A271F95F3001E5B73 /* NYPLBookCellDelegate+Audiobooks.m in Sources */,
 				73EB0ACD25821DF4006BC997 /* NYPLMyBooksDownloadInfo.m in Sources */,
 				73EB0ACE25821DF4006BC997 /* NYPLBookLocation.m in Sources */,
+				17D8633E29031A760096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift in Sources */,
 				73EB0ACF25821DF4006BC997 /* NYPLFacetView.m in Sources */,
 				1785228E27F52B59004445ED /* AudiobookManifestAdapter.swift in Sources */,
 				2126FE3C25C059810095C45C /* ReaderError.swift in Sources */,
@@ -5229,6 +5236,7 @@
 				5D1B142A22CC179F0006C964 /* NYPLAlertUtils.swift in Sources */,
 				7386C1F724525AFF004C78BD /* NYPLReaderTOCBusinessLogic.swift in Sources */,
 				172F410A26F3BAF70017476A /* NYPLConfiguration+Color.swift in Sources */,
+				17D8633C29031A750096F11A /* NYPLBookCellDelegate+AudiobookBookmark.swift in Sources */,
 				B51C1E0222861BBF003B49A5 /* OPDS2Publication.swift in Sources */,
 				5DD567AF22B95A30001F0C83 /* String+MD5.swift in Sources */,
 				E671FF7D1E3A7068002AB13F /* NYPLNetworkQueue.swift in Sources */,
@@ -5682,6 +5690,7 @@
 				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 7;
 				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5735,6 +5744,7 @@
 				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 7;
 				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5787,6 +5797,7 @@
 				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 7;
 				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -5837,6 +5848,7 @@
 				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 7;
 				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -6109,6 +6121,7 @@
 				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 7;
 				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -6162,6 +6175,7 @@
 				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 7;
 				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
