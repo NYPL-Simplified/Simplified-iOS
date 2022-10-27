@@ -177,6 +177,8 @@
 "ReaderTOCViewControllerTitle" = "Sommario";
 "%@ through chapter" = "%@ del capitolo";
 "There are no bookmarks for this book." = "Non ci sono segnalibri per questo libro.";
+"Error Syncing Bookmarks" = "Errore nella sincronizzazione dei segnalibri";
+"There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later." = "Si è verificato un errore nella sincronizzazione dei segnalibri. Assicurati che il tuo dispositivo sia collegato a internet e riprova.";
 
 // MARK: - Reader error messages (R2)
 "Content Protection Error" = "Errore nella protezione del contenuto";
