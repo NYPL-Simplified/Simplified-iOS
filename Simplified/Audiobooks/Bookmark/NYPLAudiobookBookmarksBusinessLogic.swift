@@ -9,11 +9,23 @@
 import Foundation
 import NYPLAudiobookToolkit
 
-class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarksBusinessLogicDelegate {
+class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   
   // MARK: - Properties
   
-  var bookmarks: [NYPLAudiobookBookmark]
+  var bookmarks: [NYPLAudiobookBookmark] {
+    didSet {
+      updateBookmarksDictionary()
+    }
+  }
+  
+  /// Given that we need to constantly check if there exists a bookmark
+  /// at the audio player current location.
+  /// We use the chapter info as key and store an array of bookmarks
+  /// of the same chapter into the dictionary. This improve the performance by
+  /// avoiding comparison between the current location and
+  /// all the existing bookmarks of this audiobook.
+  var bookmarksDictionary: [String: [NYPLAudiobookBookmark]]
   
   let book: NYPLBook
   private let drmDeviceID: String?
@@ -25,6 +37,14 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarksBusinessLogicDe
     return bookmarks.count
   }
   
+  var shouldAllowRefresh: Bool {
+    return annotationsSynchronizer.syncIsPossibleAndPermitted()
+  }
+  
+  var noBookmarksText: String {
+    return NSLocalizedString("There are no bookmarks for this book.", comment: "Text showing in bookmarks view when there are no bookmarks")
+  }
+  
   // MARK: - Init
   
   init(book: NYPLBook,
@@ -32,15 +52,47 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarksBusinessLogicDe
        bookRegistryProvider: NYPLAudiobookRegistryProvider,
        currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider,
        annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
-    self.bookmarks = [NYPLAudiobookBookmark]()
     self.book = book
     self.drmDeviceID = drmDeviceID
     self.bookRegistry = bookRegistryProvider
     self.currentLibraryAccountProvider = currentLibraryAccountProvider
     self.annotationsSynchronizer = annotationsSynchronizer
+    self.bookmarks = bookRegistry.audiobookBookmarks(for: book.identifier)
+    self.bookmarksDictionary = [String: [NYPLAudiobookBookmark]]()
+    updateBookmarksDictionary()
   }
   
-  // MARK: - NYPLAudiobookBookmarksBusinessLogicDelegate
+  // MARK: - NYPLAudiobookBookmarking
+  
+  /// Verifies if a bookmark exists at the given location.
+  /// - Parameter location: The audiobook location to be checked.
+  /// - Returns: The bookmark at the given `location` if it exists,
+  /// otherwise nil.
+  func bookmarkExisting(at location: ChapterLocation) -> NYPLAudiobookBookmark? {
+    /// Audiobook player can sometimes pass an incorrect ChapterLocation object
+    /// and cause a crash with the logic below. Doing a sanity check here and avoid such crash.
+    /// See iOS-449.
+    guard location.playheadOffset <= location.duration else {
+      return nil
+    }
+    
+    let chapterKey = key(for: location)
+    guard let bookmarksInCurrentChapter = bookmarksDictionary[chapterKey] else {
+      return nil
+    }
+    
+    let rangeMin = max((location.playheadOffset - 3.0), 0.0)
+    let rangeMax = min((location.playheadOffset + 3.0), location.duration)
+    let range = rangeMin...rangeMax
+    
+    for bookmark in bookmarksInCurrentChapter {
+      if range.contains(bookmark.time) {
+        return bookmark
+      }
+    }
+    
+    return nil
+  }
   
   func bookmark(at index: Int) -> NYPLAudiobookBookmark? {
     guard index >= 0 && index < bookmarksCount else {
@@ -48,6 +100,16 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarksBusinessLogicDe
     }
     
     return bookmarks[index]
+  }
+  
+  func bookmarkIsFirstInChapter(_ bookmark: NYPLAudiobookBookmark) -> Bool {
+    let chapterKey = key(for: bookmark)
+    guard let bookmarksInCurrentChapter = bookmarksDictionary[chapterKey],
+          let firstBookmark = bookmarksInCurrentChapter.first else {
+      return false
+    }
+    
+    return firstBookmark == bookmark
   }
   
   func addAudiobookBookmark(_ chapterLocation: ChapterLocation) {
@@ -62,26 +124,34 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarksBusinessLogicDe
                                          creationTime: Date())
     
     // Store bookmark to local storage
+    addBookmarkToDictionary(bookmark)
     bookmarks.append(bookmark)
     bookmarks.sort{ $0 < $1 }
     
     // Upload bookmark to server and store to local storage
     postBookmark(bookmark)
-    
-    // TODO: Should this function return bookmark for UI update?
   }
   
   /// Delete a bookmark from local storage and server if sync permission is granted
+  /// - Parameter bookmark: The bookmark
+  func deleteAudiobookBookmark(_ bookmark: NYPLAudiobookBookmark) {
+    bookmarks.removeAll(where: { $0.isEqual(bookmark) })
+    deleteBookmarkInDictionary(bookmark)
+    didDeleteBookmark(bookmark)
+  }
+  
+  /// Delete a specific bookmark from local storage and server if sync permission is granted
   /// - Parameter index: The index of the bookmark.
-  func deleteAudiobookBookmark(at index: Int) {
+  func deleteAudiobookBookmark(at index: Int) -> Bool {
     guard index >= 0 && index < bookmarks.count else {
-      return
+      return false
     }
 
     let bookmark = bookmarks.remove(at: index)
+    deleteBookmarkInDictionary(bookmark)
     didDeleteBookmark(bookmark)
 
-    // TODO: Should this function return bookmark for UI update?
+    return true
   }
   
   /// Sync bookmarks from server and filter results with local bookmarks and deleted bookmarks.
@@ -248,14 +318,39 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarksBusinessLogicDe
     completion(false)
   }
   
-  /// Verifies if a bookmark exists at the given location.
-  /// - Parameter location: The audiobook location to be checked.
-  /// - Returns: The bookmark at the given `location` if it exists,
-  /// otherwise nil.
-  private func bookmarkExisting(at location: ChapterLocation) -> NYPLAudiobookBookmark? {
-    return bookmarks.first {
-      $0.locationMatches(location)
+  // MARK: - Helper
+  
+  private func updateBookmarksDictionary() {
+    bookmarksDictionary.removeAll()
+    for bookmark in bookmarks {
+      addBookmarkToDictionary(bookmark)
     }
+  }
+  
+  private func addBookmarkToDictionary(_ bookmark: NYPLAudiobookBookmark) {
+    let key = key(for: bookmark)
+    if let existingBookmarks = bookmarksDictionary[key] {
+      let newBookmarks = existingBookmarks + [bookmark]
+      bookmarksDictionary[key] = newBookmarks.sorted { $0 < $1 }
+    } else {
+      bookmarksDictionary[key] = [bookmark]
+    }
+  }
+  
+  private func deleteBookmarkInDictionary(_ bookmark: NYPLAudiobookBookmark) {
+    let key = key(for: bookmark)
+    if let existingBookmarks = bookmarksDictionary[key] {
+      let newBookmarks = existingBookmarks.filter { $0.time != bookmark.time }
+      bookmarksDictionary[key] = newBookmarks
+    }
+  }
+
+  private func key(for chapter: ChapterLocation) -> String {
+    return "\(chapter.audiobookID)_\(chapter.number)_\(chapter.part)_\(chapter.duration)"
+  }
+  
+  private func key(for bookmark: NYPLAudiobookBookmark) -> String {
+    return "\(bookmark.audiobookId)_\(bookmark.chapter)_\(bookmark.part)_\(bookmark.duration)"
   }
 }
 #endif

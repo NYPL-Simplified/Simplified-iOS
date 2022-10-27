@@ -58,6 +58,7 @@
 }
 
 - (void)presentAudiobook:(NYPLBook *)book withAudiobookManager:(DefaultAudiobookManager *)audiobookManager {
+  [self setBookmarkBusinessLogicForBook:book AudiobookManager:audiobookManager];
   [NYPLMainThreadRun asyncIfNeeded:^{
     AudiobookPlayerViewController *audiobookVC = [self createPlayerVCForAudiobook:audiobookManager.audiobook
                                                                          withBook:book
