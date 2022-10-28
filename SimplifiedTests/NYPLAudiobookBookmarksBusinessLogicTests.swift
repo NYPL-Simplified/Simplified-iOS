@@ -377,7 +377,7 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
     XCTAssertEqual(self.bookRegistryMock.audiobookBookmarks(for: self.bookIdentifier).count, 2)
     
     // Deleting bookmark at index
-    bookmarkBusinessLogic.deleteAudiobookBookmark(at: 1)
+    XCTAssertEqual(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 1), true)
     
     // BookRegistry should have one bookmark after deletion
     // Server should not contain the deleted bookmark
@@ -414,16 +414,73 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
     XCTAssertEqual(self.bookRegistryMock.audiobookBookmarks(for: self.bookIdentifier).count, 2)
     
     // Deleting bookmark at invalid index
-    bookmarkBusinessLogic.deleteAudiobookBookmark(at: -1)
+    XCTAssertEqual(bookmarkBusinessLogic.deleteAudiobookBookmark(at: -1), false)
     
     // Bookmarks in BookRegistry should remain unchanged
     XCTAssertEqual(self.bookRegistryMock.audiobookBookmarks(for: self.bookIdentifier).count, 2)
     
     // Deleting bookmark at invalid index
-    bookmarkBusinessLogic.deleteAudiobookBookmark(at: 3)
+    XCTAssertEqual(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 3), false)
     
     // Bookmarks in BookRegistry should remain unchanged
     XCTAssertEqual(self.bookRegistryMock.audiobookBookmarks(for: self.bookIdentifier).count, 2)
+  }
+  
+  func testBookmarkExisting() throws {
+    guard let chapterLocation = ChapterLocation(number: 1, part: 1, duration: 10.0, startOffset: 0, playheadOffset: 1.0, title: "Title", audiobookID: bookIdentifier) else {
+      XCTFail("Failed to create chapter location")
+      return
+    }
+    
+    XCTAssertNil(bookmarkBusinessLogic.bookmarkExisting(at:chapterLocation))
+    bookmarkBusinessLogic.addAudiobookBookmark(chapterLocation)
+    XCTAssertNotNil(bookmarkBusinessLogic.bookmarkExisting(at:chapterLocation))
+    
+    XCTAssertEqual(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 0), true)
+    XCTAssertNil(bookmarkBusinessLogic.bookmarkExisting(at:chapterLocation))
+  }
+  
+  func testBookmarkIsFirstInChapter() throws {
+    guard let firstChapterLocation = ChapterLocation(number: 1, part: 1, duration: 30.0, startOffset: 0, playheadOffset: 1.0, title: "Title", audiobookID: bookIdentifier),
+    let secondChapterLocation = ChapterLocation(number: 1, part: 1, duration: 30.0, startOffset: 0, playheadOffset: 5.0, title: "Title", audiobookID: bookIdentifier),
+    let thirdChapterLocation = ChapterLocation(number: 1, part: 1, duration: 30.0, startOffset: 0, playheadOffset: 10.0, title: "Title", audiobookID: bookIdentifier) else {
+      XCTFail("Failed to create chapter location")
+      return
+    }
+    
+    bookmarkBusinessLogic.addAudiobookBookmark(firstChapterLocation)
+    bookmarkBusinessLogic.addAudiobookBookmark(secondChapterLocation)
+    bookmarkBusinessLogic.addAudiobookBookmark(thirdChapterLocation)
+    
+    guard let firstBookmark = bookmarkBusinessLogic.bookmarkExisting(at: firstChapterLocation),
+          let secondBookmark = bookmarkBusinessLogic.bookmarkExisting(at: secondChapterLocation),
+          let thirdBookmark = bookmarkBusinessLogic.bookmarkExisting(at: thirdChapterLocation) else {
+      XCTFail("Failed to add/retrieve bookmark")
+      return
+    }
+    
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark), true)
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark), false)
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark), false)
+    
+    // Delete first bookmark, secondBookmark should now be the first bookmark in the chapter
+    XCTAssertNotNil(bookmarkBusinessLogic.deleteAudiobookBookmark(firstBookmark))
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark), false)
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark), true)
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark), false)
+    
+    // Delete second bookmark, thirdBookmark should now be the first bookmark in the chapter
+    XCTAssertNotNil(bookmarkBusinessLogic.deleteAudiobookBookmark(secondBookmark))
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark), false)
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark), false)
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark), true)
+    
+    // Delete third bookmark, there should now be no bookmarks in the chapter
+    XCTAssertNotNil(bookmarkBusinessLogic.deleteAudiobookBookmark(thirdBookmark))
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark), false)
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark), false)
+    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark), false)
+
   }
   
   // MARK: Helper
