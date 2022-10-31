@@ -377,7 +377,7 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
     XCTAssertEqual(self.bookRegistryMock.audiobookBookmarks(for: self.bookIdentifier).count, 2)
     
     // Deleting bookmark at index
-    XCTAssertEqual(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 1), true)
+    XCTAssertTrue(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 1))
     
     // BookRegistry should have one bookmark after deletion
     // Server should not contain the deleted bookmark
@@ -414,13 +414,13 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
     XCTAssertEqual(self.bookRegistryMock.audiobookBookmarks(for: self.bookIdentifier).count, 2)
     
     // Deleting bookmark at invalid index
-    XCTAssertEqual(bookmarkBusinessLogic.deleteAudiobookBookmark(at: -1), false)
+    XCTAssertFalse(bookmarkBusinessLogic.deleteAudiobookBookmark(at: -1))
     
     // Bookmarks in BookRegistry should remain unchanged
     XCTAssertEqual(self.bookRegistryMock.audiobookBookmarks(for: self.bookIdentifier).count, 2)
     
     // Deleting bookmark at invalid index
-    XCTAssertEqual(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 3), false)
+    XCTAssertFalse(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 3))
     
     // Bookmarks in BookRegistry should remain unchanged
     XCTAssertEqual(self.bookRegistryMock.audiobookBookmarks(for: self.bookIdentifier).count, 2)
@@ -436,7 +436,7 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
     bookmarkBusinessLogic.addAudiobookBookmark(chapterLocation)
     XCTAssertNotNil(bookmarkBusinessLogic.bookmarkExisting(at:chapterLocation))
     
-    XCTAssertEqual(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 0), true)
+    XCTAssertTrue(bookmarkBusinessLogic.deleteAudiobookBookmark(at: 0))
     XCTAssertNil(bookmarkBusinessLogic.bookmarkExisting(at:chapterLocation))
   }
   
@@ -459,27 +459,27 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
       return
     }
     
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark), true)
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark), false)
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark), false)
+    XCTAssertTrue(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark))
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark))
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark))
     
     // Delete first bookmark, secondBookmark should now be the first bookmark in the chapter
     XCTAssertNotNil(bookmarkBusinessLogic.deleteAudiobookBookmark(firstBookmark))
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark), false)
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark), true)
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark), false)
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark))
+    XCTAssertTrue(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark))
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark))
     
     // Delete second bookmark, thirdBookmark should now be the first bookmark in the chapter
     XCTAssertNotNil(bookmarkBusinessLogic.deleteAudiobookBookmark(secondBookmark))
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark), false)
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark), false)
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark), true)
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark))
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark))
+    XCTAssertTrue(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark))
     
     // Delete third bookmark, there should now be no bookmarks in the chapter
     XCTAssertNotNil(bookmarkBusinessLogic.deleteAudiobookBookmark(thirdBookmark))
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark), false)
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark), false)
-    XCTAssertEqual(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark), false)
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(firstBookmark))
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(secondBookmark))
+    XCTAssertFalse(bookmarkBusinessLogic.bookmarkIsFirstInChapter(thirdBookmark))
 
   }
   

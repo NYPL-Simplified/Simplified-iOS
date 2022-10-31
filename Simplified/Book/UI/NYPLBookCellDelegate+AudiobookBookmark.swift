@@ -14,11 +14,13 @@ import UIKit
 /// The NYPLAudiobookBookmarksBusinessLogic is not accessible from ObjC,
 /// so we do this in a Swift extension file.
 @objc extension NYPLBookCellDelegate {
-  @objc(setBookmarkBusinessLogicForBook:AudiobookManager:)
-  func setBookmarkBusinessLogic(for book: NYPLBook, _ audiobookManager: DefaultAudiobookManager) {
+  @objc(setBookmarkBusinessLogicForBook:AudiobookManager:AudiobookRegistryProvider:)
+  func setBookmarkBusinessLogic(for book: NYPLBook,
+                                audiobookManager: DefaultAudiobookManager,
+                                audiobookRegistryProvider: NYPLAudiobookRegistryProvider) {
     let bizLogic = NYPLAudiobookBookmarksBusinessLogic(book: book,
                                                        drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
-                                                       bookRegistryProvider: NYPLBookRegistry.shared(),
+                                                       bookRegistryProvider: audiobookRegistryProvider,
                                                        currentLibraryAccountProvider: AccountsManager.shared,
                                                        annotationsSynchronizer: NYPLAnnotations.self)
     audiobookManager.bookmarkBusinessLogic = bizLogic
