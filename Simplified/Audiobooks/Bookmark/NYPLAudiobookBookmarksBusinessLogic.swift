@@ -25,7 +25,7 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   /// of the same chapter into the dictionary. This improve the performance by
   /// avoiding comparison between the current location and
   /// all the existing bookmarks of this audiobook.
-  var bookmarksDictionary: [String: [NYPLAudiobookBookmark]]
+  private var bookmarksDictionary: [String: [NYPLAudiobookBookmark]]
   
   let book: NYPLBook
   private let drmDeviceID: String?
@@ -329,8 +329,8 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   
   private func addBookmarkToDictionary(_ bookmark: NYPLAudiobookBookmark) {
     let key = key(for: bookmark)
-    if let existingBookmarks = bookmarksDictionary[key] {
-      let newBookmarks = existingBookmarks + [bookmark]
+    if let existingChapterBookmarks = bookmarksDictionary[key] {
+      let newBookmarks = existingChapterBookmarks + [bookmark]
       bookmarksDictionary[key] = newBookmarks.sorted { $0 < $1 }
     } else {
       bookmarksDictionary[key] = [bookmark]
