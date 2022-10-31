@@ -181,6 +181,8 @@
 "ReaderTOCViewControllerTitle" = "Table of Contents";
 "%@ through chapter" = "%@ through chapter";
 "There are no bookmarks for this book." = "There are no bookmarks for this book.";
+"Error Syncing Bookmarks" = "Error Syncing Bookmarks";
+"There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later." = "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.";
 
 // MARK: - Reader error messages (R2)
 "Content Protection Error" = "Content Protection Error";
