@@ -129,7 +129,7 @@ extension OELoginCleverHelper: NYPLSignInOutBusinessLogicUIDelegate {
     signInBusinessLogic.userAccount.hasCredentials()
   }
 
-  // MARK: - NYPLOAuthTokenProvider
+  // MARK: - NYPLOAuthTokenSource
 
   var authToken: String? {
     signInBusinessLogic.userAccount.authToken

@@ -83,7 +83,7 @@ CGFloat const marginPadding = 2.0;
   return self.businessLogic.userAccount.hasCredentials;
 }
 
-#pragma mark - NYPLOAuthTokenProvider
+#pragma mark - NYPLOAuthTokenSource
 
 - (NSString *)authToken
 {

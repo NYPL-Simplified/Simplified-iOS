@@ -377,7 +377,7 @@ extension OELoginFirstBookVC: NYPLSignInOutBusinessLogicUIDelegate {
     businessLogic.userAccount.hasCredentials()
   }
 
-  // MARK: - NYPLOAuthTokenProvider
+  // MARK: - NYPLOAuthTokenSource
 
   var authToken: String? {
     businessLogic.userAccount.authToken

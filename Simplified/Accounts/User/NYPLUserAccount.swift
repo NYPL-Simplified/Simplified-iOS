@@ -41,7 +41,7 @@ private enum StorageKey: String {
   static func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
 }
 
-@objc protocol NYPLOAuthTokenProvider {
+@objc protocol NYPLOAuthTokenSource {
   var authToken: String? { get }
   func setAuthToken(_ token: String)
   func hasOAuthClientCredentials() -> Bool
@@ -58,7 +58,7 @@ private enum StorageKey: String {
 /// by storing credentials on the keychain using storage keys that contain the
 /// the library UUID appended after the actual key name.
 /// - seealso: StorageKey.keyForLibrary(uuid:)
-@objcMembers class NYPLUserAccount : NSObject, NYPLUserAccountProvider, NYPLOAuthTokenProvider {
+@objcMembers class NYPLUserAccount : NSObject, NYPLUserAccountProvider, NYPLOAuthTokenSource {
   static private let shared = NYPLUserAccount()
 
   private let accountInfoLock = NSRecursiveLock()

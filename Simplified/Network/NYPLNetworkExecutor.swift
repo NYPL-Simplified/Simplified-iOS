@@ -30,16 +30,16 @@ enum NYPLResult<SuccessInfo> {
   private let responder: NYPLNetworkResponder
 
   /// Designated initializer.
-  /// - Parameter credentialsProvider: The object responsible with providing credentials.
+  /// - Parameter credentialsSource: The object responsible with providing credentials.
   /// - Parameter cachingStrategy: The strategy to cache responses with.
   /// - Parameter waitsForConnectivity: if `false`, a request submitted when
   /// there's no internet will fail immediately.
   /// - Parameter delegateQueue: The queue where callbacks will be called.
-  @objc init(credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider,
+  @objc init(credentialsSource: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenSource,
              cachingStrategy: NYPLCachingStrategy,
              waitsForConnectivity: Bool = true,
              delegateQueue: OperationQueue? = nil) {
-    self.responder = NYPLNetworkResponder(credentialsProvider: credentialsProvider,
+    self.responder = NYPLNetworkResponder(credentialsSource: credentialsSource,
                                           useFallbackCaching: cachingStrategy == .fallback)
 
     let config = NYPLCaching.makeURLSessionConfiguration(
@@ -61,7 +61,7 @@ enum NYPLResult<SuccessInfo> {
   }
 
   /// A shared generic executor with enabled fallback caching.
-  @objc static let shared = NYPLNetworkExecutor(credentialsProvider: NYPLUserAccount.sharedAccount(),
+  @objc static let shared = NYPLNetworkExecutor(credentialsSource: NYPLUserAccount.sharedAccount(),
                                                 cachingStrategy: .fallback)
 
   @objc func request(for url: URL) -> URLRequest {
@@ -78,7 +78,7 @@ enum NYPLResult<SuccessInfo> {
     request.httpMethod = httpMethod
     request.httpBody = httpBody
 
-    if let authToken = responder.credentialsProvider.authToken {
+    if let authToken = responder.credentialsSource.authToken {
       let headers = [
         "Authorization" : "Bearer \(authToken)",
         "Content-Type" : "application/json"
@@ -150,7 +150,7 @@ extension NYPLNetworkExecutor: NYPLOAuthTokenFetching {
     if oauthTokenRefresher == nil {
       responder.oauthTokenRefresher = NYPLOAuthTokenRefresher(
         refreshURL: url,
-        oauthTokenProvider: responder.credentialsProvider,
+        oauthTokenSetter: responder.credentialsSource,
         urlSession: urlSession)
     }
 
@@ -189,8 +189,8 @@ extension NYPLNetworkExecutor: NYPLRequestExecuting {
       task.resume()
     }
 
-    if responder.credentialsProvider.hasOAuthClientCredentials(),
-       let tokenRefreshURL = responder.credentialsProvider.oauthTokenRefreshURL {
+    if responder.credentialsSource.hasOAuthClientCredentials(),
+       let tokenRefreshURL = responder.credentialsSource.oauthTokenRefreshURL {
 
       fetchAndStoreShortLivedOAuthToken(at: tokenRefreshURL) { result in
         startTask()
