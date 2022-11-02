@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import NYPLUtilities
 @testable import SimplyE
 
 class NYPLR1BookmarkDeserializationTests: XCTestCase {
@@ -35,23 +36,23 @@ class NYPLR1BookmarkDeserializationTests: XCTestCase {
     let publication = NYPLFake.bookmarkSpecPublication
 
     // test: make bookmark with the wrong book id or annotation type
-    let wrong1 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                          annotationType: .bookmark,
-                                          bookID: "ciccio",
-                                          publication: publication)
-    let wrong2 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                          annotationType: .readingProgress,
-                                          bookID: bookID,
-                                          publication: publication)
+    let wrong1 = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                 annotationType: .bookmark,
+                                                 bookID: "ciccio",
+                                                 publication: publication)
+    let wrong2 = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                 annotationType: .readingProgress,
+                                                 bookID: bookID,
+                                                 publication: publication)
 
     // test: make a bookmark with the data we manually read
     guard let madeBookmark =
-      NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                               annotationType: .bookmark,
-                               bookID: bookID,
-                               publication: publication) else {
-                                XCTFail("Failed to create bookmark from valid data")
-                                return
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                      annotationType: .bookmark,
+                                      bookID: bookID,
+                                      publication: publication) else {
+                                        XCTFail("Failed to create bookmark from valid data")
+                                        return
     }
 
     // verify
@@ -85,23 +86,23 @@ class NYPLR1BookmarkDeserializationTests: XCTestCase {
     let publication = NYPLFake.bookmarkSpecPublication
 
     // test: make bookmark with the wrong book id or annotation type
-    let wrong1 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                          annotationType: motivation,
-                                          bookID: "ciccio",
-                                          publication: publication)
-    let wrong2 = NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                                          annotationType: .bookmark,
-                                          bookID: bookID,
-                                          publication: publication)
+    let wrong1 = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                 annotationType: motivation,
+                                                 bookID: "ciccio",
+                                                 publication: publication)
+    let wrong2 = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                                 annotationType: .bookmark,
+                                                 bookID: bookID,
+                                                 publication: publication)
 
     // test: make a bookmark with the data we manually read
     guard let madeBookmark =
-      NYPLBookmarkFactory.make(fromServerAnnotation: json,
-                               annotationType: motivation,
-                               bookID: bookID,
-                               publication: publication) else {
-                                XCTFail("Failed to create bookmark from valid data")
-                                return
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: json,
+                                      annotationType: motivation,
+                                      bookID: bookID,
+                                      publication: publication) else {
+                                        XCTFail("Failed to create bookmark from valid data")
+                                        return
     }
 
     // verify

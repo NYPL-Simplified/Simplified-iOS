@@ -90,7 +90,8 @@
 "An unrecoverable error occurred. Please force-quit the app and try again." = "An unrecoverable error occurred. Please force-quit the app and try again.";
 
 // MARK: - Generic networking
-"Server response failure: please check your connection or try again later." = "Server response failure: please check your connection or try again later.";
+"Server response failure" = "Server response failure";
+"Please check your connection or try again later." = "Please check your connection or try again later.";
 "HTTP status" = "HTTP status";
 
 // MARK: - NYPLAppDelegate

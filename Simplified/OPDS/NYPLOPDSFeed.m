@@ -7,6 +7,7 @@
 #import "NYPLXML.h"
 #import "SimplyE-Swift.h"
 #import "NYPLOPDSFeed.h"
+@import NYPLUtilities;
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -110,7 +111,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
       return nil;
     }
     
-    self.updated = [NSDate dateWithRFC3339String:updatedString];
+    self.updated = [[NSDate alloc] initWithRfc3339String:updatedString];
     if(!self.updated) {
       NYPLLOG(@"Element 'updated' does not contain an RFC 3339 date.");
       return nil;

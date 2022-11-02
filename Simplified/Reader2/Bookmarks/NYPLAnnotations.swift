@@ -1,5 +1,9 @@
 import UIKit
 import R2Shared
+import NYPLUtilities
+#if FEATURE_AUDIOBOOKS
+import NYPLAudiobookToolkit
+#endif
 
 protocol NYPLAnnotationSyncing: AnyObject {
   // Server status
@@ -22,21 +26,22 @@ protocol NYPLAnnotationSyncing: AnyObject {
   
   // Bookmark
   
-  static func getServerBookmarks(forBook bookID:String?,
-                                 publication: Publication?,
-                                 atURL annotationURL:URL?,
-                                 completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ())
+  static func getServerBookmarks<T: NYPLBookmark>(of type: T.Type,
+                                                  forBook bookID:String?,
+                                                  publication: Publication?,
+                                                  atURL annotationURL:URL?,
+                                                  completion: @escaping (_ bookmarks: [T]?) -> ())
   
-  static func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark])
+  static func deleteBookmarks(_ bookmarks: [NYPLBookmark])
   
   static func deleteBookmark(annotationId: String,
                              completionHandler: @escaping (_ success: Bool) -> ())
   
-  static func uploadLocalBookmarks(_ bookmarks: [NYPLReadiumBookmark],
-                                   forBook bookID: String,
-                                   completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->())
+  static func uploadLocalBookmarks<T: NYPLBookmark>(_ bookmarks: [T],
+                                                    forBook bookID: String,
+                                                    completion: @escaping ([T], [T])->())
   
-  static func postBookmark(_ bookmark: NYPLReadiumBookmark,
+  static func postBookmark(_ bookmark: NYPLBookmark,
                            forBookID bookID: String,
                            completion: @escaping (_ serverID: String?) -> ())
   
@@ -257,11 +262,12 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
     _ = executor.GET(url,
                      cachePolicy: .reloadIgnoringLocalCacheData) { data, _, error in
-      let bookmarks = parseAnnotationsResponse(data,
-                                               error: error,
-                                               motivation: .readingProgress,
-                                               publication: publication,
-                                               bookID: bookID)
+      let bookmarks: [NYPLReadiumBookmark]? = parseAnnotationsResponse(data,
+                                                                       of: NYPLReadiumBookmark.self,
+                                                                       error: error,
+                                                                       motivation: .readingProgress,
+                                                                       publication: publication,
+                                                                       bookID: bookID)
       let readPos = bookmarks?.first
       completion(readPos)
     }
@@ -298,10 +304,11 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   // Completion handler will return a nil parameter if there are any failures with
   // the network request, deserialization, or sync permission is not allowed.
-  class func getServerBookmarks(forBook bookID:String?,
-                                publication: Publication?,
-                                atURL annotationURL:URL?,
-                                completion: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
+  class func getServerBookmarks<T: NYPLBookmark>(of type: T.Type,
+                                                 forBook bookID:String?,
+                                                 publication: Publication?,
+                                                 atURL annotationURL:URL?,
+                                                 completion: @escaping (_ bookmarks: [T]?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -316,16 +323,17 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     }
 
     NYPLNetworkExecutor.shared.GET(annotationURL, cachePolicy: .reloadIgnoringLocalCacheData) { data, _, error in
-      let bookmarks = parseAnnotationsResponse(data,
-                                               error: error,
-                                               motivation: .bookmark,
-                                               publication: publication,
-                                               bookID: bookID)
+      let bookmarks: [T]? = parseAnnotationsResponse(data,
+                                                     of: T.self,
+                                                     error: error,
+                                                     motivation: .bookmark,
+                                                     publication: publication,
+                                                     bookID: bookID)
       completion(bookmarks)
     }
   }
 
-  class func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark]) {
+  class func deleteBookmarks(_ bookmarks: [NYPLBookmark]) {
 
     if !syncIsPossibleAndPermitted() {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -378,9 +386,9 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   // Method is called when the SyncManager is syncing bookmarks
   // If an existing local bookmark is missing an annotationID, assume it still needs to be uploaded.
-  class func uploadLocalBookmarks(_ bookmarks: [NYPLReadiumBookmark],
+  class func uploadLocalBookmarks<T: NYPLBookmark>(_ bookmarks: [T],
                                   forBook bookID: String,
-                                  completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->()) {
+                                  completion: @escaping ([T], [T])->()) {
 
     if !syncIsPossibleAndPermitted() {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -389,16 +397,17 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
     Log.debug(#file, "Begin task of uploading local bookmarks, count: \(bookmarks.count).")
     let uploadGroup = DispatchGroup()
-    var bookmarksFailedToUpdate = [NYPLReadiumBookmark]()
-    var bookmarksUpdated = [NYPLReadiumBookmark]()
+    var bookmarksFailedToUpdate = [T]()
+    var bookmarksUpdated = [T]()
 
     for localBookmark in bookmarks {
       if localBookmark.annotationId == nil {
         uploadGroup.enter()
         postBookmark(localBookmark, forBookID: bookID) { serverID in
           if let ID = serverID {
-            localBookmark.annotationId = ID
-            bookmarksUpdated.append(localBookmark)
+            var newBookmark = localBookmark
+            newBookmark.annotationId = ID
+            bookmarksUpdated.append(newBookmark)
           } else {
             Log.error(#file, "Local Bookmark not uploaded: \(localBookmark)")
             bookmarksFailedToUpdate.append(localBookmark)
@@ -423,12 +432,13 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   ///   - bookmark: The bookmark to save to the server.
   ///   - bookID: The book ID the bookmark refers to.
   ///   - completion: Always called at the end of the api call.
-  class func postBookmark(_ bookmark: NYPLReadiumBookmark,
+  class func postBookmark(_ bookmark: NYPLBookmark,
                           forBookID bookID: String,
                           completion: @escaping (_ serverID: String?) -> ()) {
 
     let serializableBookmark = bookmark
-      .serializableRepresentation(forMotivation: .bookmark, bookID: bookID)
+      .serializableRepresentation(forMotivation: .bookmark,
+                                  bookID: bookID)
 
     guard syncIsPossibleAndPermitted() else {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -453,11 +463,12 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   // MARK: - Helpers / Private methods
 
-  private class func parseAnnotationsResponse(_ data: Data?,
-                                              error: Error?,
-                                              motivation: NYPLBookmarkSpec.Motivation,
-                                              publication: Publication?,
-                                              bookID: String) -> [NYPLReadiumBookmark]? {
+  private class func parseAnnotationsResponse<T: NYPLBookmark>(_ data: Data?,
+                                                               of type: T.Type,
+                                                               error: Error?,
+                                                               motivation: NYPLBookmarkSpec.Motivation,
+                                                               publication: Publication?,
+                                                               bookID: String) -> [T]? {
     let metadata: [String: Any] = ["bookID": bookID,
                                    "motivation": motivation]
     if let error = error as NSError? {
@@ -484,13 +495,31 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
         return nil
     }
 
-    let bookmarks = items.compactMap {
-      NYPLBookmarkFactory.make(fromServerAnnotation: $0,
-                               annotationType: motivation,
-                               bookID: bookID,
-                               publication: publication)
+    var bookmarks = [T]()
+    
+#if FEATURE_AUDIOBOOKS
+    if type == NYPLAudiobookBookmark.self {
+      bookmarks = items.compactMap{
+        /// Given NYPLAudiobookToolkit has no access to classes in Simplified-iOS repo,
+        /// we pass the NYPLBookmarkFactory class to NYPLAudiobookBookmarkFactory through a protocol,
+        /// in order to allow NYPLAudiobookBookmarkFactory to access the parser function in NYPLBookmarkFactory.
+        NYPLAudiobookBookmarkFactory.make(fromServerAnnotation: $0,
+                                          selectorValueParser: NYPLBookmarkFactory.self,
+                                          annotationType: motivation,
+                                          bookID: bookID) as? T
+      }
+      
+      return bookmarks
     }
-
+#endif
+    
+    bookmarks = items.compactMap{
+      NYPLReadiumBookmarkFactory.make(fromServerAnnotation: $0,
+                                      annotationType: motivation,
+                                      bookID: bookID,
+                                      publication: publication) as? T
+    }
+    
     return bookmarks
   }
 
@@ -596,7 +625,7 @@ extension NYPLAnnotations {
                                            motivation: NYPLBookmarkSpec.Motivation,
                                            publication: Publication?,
                                            bookID: String) -> [NYPLReadiumBookmark]? {
-    parseAnnotationsResponse(data, error: error, motivation: motivation,
+    parseAnnotationsResponse(data, of: NYPLReadiumBookmark.self, error: error, motivation: motivation,
                              publication: publication, bookID: bookID)
   }
 }

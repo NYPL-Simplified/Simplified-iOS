@@ -202,7 +202,8 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
 
   func testAddBookmarkWithSucceededUpload() throws {
     // Make sure server contains no bookmark
-    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+    annotationsMock.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                       forBook: bookIdentifier,
                                        publication: nil,
                                        atURL: nil) { bookmarks in
       XCTAssertEqual(bookmarks, nil)
@@ -216,7 +217,8 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
     
     // There should be one bookmark uploaded
     XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
-    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+    annotationsMock.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                       forBook: bookIdentifier,
                                        publication: nil,
                                        atURL: nil) { bookmarks in
       guard let bookmarks = bookmarks else {
@@ -229,7 +231,8 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
 
   func testAddBookmarkWithFailedUpload() throws {
     // Make sure server contains no bookmark
-    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+    annotationsMock.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                       forBook: bookIdentifier,
                                        publication: nil,
                                        atURL: nil) { bookmarks in
       XCTAssertEqual(bookmarks, nil)
@@ -247,7 +250,8 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
     XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
     
     annotationsMock.failRequest = false
-    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+    annotationsMock.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                       forBook: bookIdentifier,
                                        publication: nil,
                                        atURL: nil) { bookmarks in
       XCTAssertEqual(bookmarks, nil)
@@ -300,7 +304,8 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
     // BookRegistry should have one bookmark after deletion
     // Server should not contain the deleted bookmark
     XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
-    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+    annotationsMock.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                       forBook: bookIdentifier,
                                        publication: nil,
                                        atURL: nil) { bookmarks in
       guard let bookmarks = bookmarks else {
@@ -339,7 +344,8 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
     // BookRegistry should have one bookmark after deletion
     // Server should not contain the deleted bookmark
     XCTAssertEqual(self.bookRegistryMock.readiumBookmarks(forIdentifier: self.bookIdentifier).count, 1)
-    annotationsMock.getServerBookmarks(forBook: bookIdentifier,
+    annotationsMock.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                       forBook: bookIdentifier,
                                        publication: nil,
                                        atURL: nil) { bookmarks in
       guard let bookmarks = bookmarks else {

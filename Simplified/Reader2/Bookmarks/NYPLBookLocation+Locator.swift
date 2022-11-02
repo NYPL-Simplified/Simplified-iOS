@@ -8,13 +8,14 @@
 
 import Foundation
 import R2Shared
+import NYPLUtilities
 
 extension NYPLBookLocation {
   static let r2Renderer = "readium2"
   
   convenience init?(locator: Locator,
                     renderer: String = NYPLBookLocation.r2Renderer) {
-    let locatorString = NYPLBookmarkFactory
+    let locatorString = NYPLReadiumBookmarkFactory
       .makeLocatorString(chapterHref: locator.href,
                          chapterProgression: Float(locator.locations.progression ?? 0.0))
 

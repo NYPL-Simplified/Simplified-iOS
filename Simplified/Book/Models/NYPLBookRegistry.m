@@ -8,7 +8,13 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "SimplyE-Swift.h"
 
+#if FEATURE_AUDIOBOOKS
+@import NYPLAudiobookToolkit;
+
+@interface NYPLBookRegistry () <NYPLAudiobookRegistryProvider>
+#else
 @interface NYPLBookRegistry ()
+#endif
 
 @property (nonatomic) NYPLBookCoverRegistry *coverRegistry;
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;
@@ -314,27 +320,25 @@ static NSString *const RecordsKey = @"records";
     [self broadcastChange];
   } //@synchronized
 
+  NSURL *loansURL = [[[AccountsManager sharedInstance] currentAccount] loansUrl];
+  if (loansURL == nil) {
+    [self handleSyncError:nil
+        wasResettingCache:shouldResetCache
+               completion:completion
+   backgroundFetchHandler:fetchHandler];
+    return;
+  }
+
   NYPLLOG(@"[syncWithCompletionHandler] Begin BookRegistry syncing...");
-  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
+  [NYPLOPDSFeedFetcher fetchOPDSFeedWithUrl:loansURL
                             networkExecutor:[NYPLNetworkExecutor shared]
                            shouldResetCache:shouldResetCache
                                  completion:^(NYPLOPDSFeed * _Nullable feed, NSDictionary<NSString *,id> * _Nullable errorDict) {
     if(!feed) {
-      NYPLLOG(@"Failed to obtain sync data.");
-      self.syncing = NO;
-      [self broadcastChange];
-      [[NSOperationQueue mainQueue]
-       addOperationWithBlock:^{
-         if(completion) completion(errorDict);
-         if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
-         [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-       }];
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeApiCall
-                                summary:@"Unable to fetch loans"
-                               metadata:@{
-                                 @"shouldResetCache": @(shouldResetCache),
-                                 @"errorDict": errorDict ?: @"N/A"
-                               }];
+      [self handleSyncError:errorDict
+          wasResettingCache:shouldResetCache
+                 completion:completion
+     backgroundFetchHandler:fetchHandler];
       return;
     }
 
@@ -374,7 +378,7 @@ static NSString *const RecordsKey = @"records";
           if(existingBook) {
             [self updateBook:book];
           } else {
-            [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil readiumBookmarks:nil genericBookmarks:nil];
+            [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil readiumBookmarks:nil audiobookBookmarks:nil genericBookmarks:nil];
           }
         }
         for (NSString *identifier in identifiersToRemove) {
@@ -411,6 +415,29 @@ static NSString *const RecordsKey = @"records";
   }];
 }
 
+- (void)handleSyncError:(NSDictionary<NSString *,id> * _Nullable)errorDict
+      wasResettingCache:(BOOL)wasResettingCache
+             completion:(void (^)(NSDictionary *errorDict))completion
+ backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
+
+{
+  // no need to log error event because NYPLOPDSFeedFetcher already does that
+  NYPLLOG_F(@"Error fetching/syncing (shouldResetCache=%d) loans: %@",
+            wasResettingCache, errorDict);
+  self.syncing = NO;
+  [self broadcastChange];
+  [[NSOperationQueue mainQueue]
+   addOperationWithBlock:^{
+    if(completion) {
+      completion(errorDict);
+    }
+    if(backgroundFetchHandler) {
+      backgroundFetchHandler(UIBackgroundFetchResultFailed);
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
+  }];
+}
+
 - (void)syncWithStandardAlertsOnCompletion
 {
   [self syncResettingCache:YES completionHandler:^(NSDictionary *errorDict) {
@@ -429,6 +456,11 @@ static NSString *const RecordsKey = @"records";
           state:(NSInteger)state
   fulfillmentId:(NSString *)fulfillmentId
 readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+#ifdef FEATURE_AUDIOBOOKS
+audiobookBookmarks:(nullable NSArray<NYPLAudiobookBookmark*> *)audiobookBookmarks
+#else
+audiobookBookmarks:(nullable NSArray *)audiobookBookmarks
+#endif
 genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   if(!book) {
@@ -447,6 +479,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
                                                   state:state
                                                   fulfillmentId:fulfillmentId
                                                   readiumBookmarks:readiumBookmarks
+                                                  audiobookBookmarks:audiobookBookmarks
                                                   genericBookmarks:genericBookmarks];
     [self broadcastChange];
   }
@@ -690,6 +723,78 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     [[NYPLBookRegistry sharedRegistry] save];
   }
 }
+
+#if FEATURE_AUDIOBOOKS
+- (NSArray<NYPLAudiobookBookmark *> * _Nonnull)audiobookBookmarksForIdentifier:(NSString * _Nonnull)identifier {
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    
+    NSArray<NYPLAudiobookBookmark *> *sortedArray = [record.audiobookBookmarks sortedArrayUsingComparator:^NSComparisonResult(NYPLAudiobookBookmark *obj1, NYPLAudiobookBookmark *obj2) {
+      if ([obj1 lessThan:obj2]) {
+        return NSOrderedAscending;
+      } else {
+        return NSOrderedDescending;
+      }
+    }];
+      
+    return sortedArray ?: [NSArray array];
+  }
+}
+
+- (void)addAudiobookBookmark:(nonnull NYPLAudiobookBookmark *)bookmark
+               forIdentifier:(nonnull NSString *)identifier {
+  @synchronized(self) {
+    
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    
+    NSMutableArray<NYPLAudiobookBookmark *> *bookmarks = record.audiobookBookmarks.mutableCopy;
+    if (!bookmarks) {
+      bookmarks = [NSMutableArray array];
+    }
+    [bookmarks addObject:bookmark];
+    
+    self.identifiersToRecords[identifier] = [record recordWithAudiobookBookmarks:bookmarks];
+    
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+
+- (void)deleteAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)audiobookBookmark forIdentifier:(NSString * _Nonnull)identifier {
+  @synchronized(self) {
+      
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+      
+    NSMutableArray<NYPLAudiobookBookmark *> *bookmarks = record.audiobookBookmarks.mutableCopy;
+    if (!bookmarks) {
+      return;
+    }
+    [bookmarks removeObject:audiobookBookmark];
+    
+    self.identifiersToRecords[identifier] = [record recordWithAudiobookBookmarks:bookmarks];
+    
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+
+
+- (void)replaceAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)oldAudiobookBookmark withNewAudiobookBookmark:(NYPLAudiobookBookmark * _Nonnull)newAudiobookBookmark forIdentifier:(NSString * _Nonnull)identifier {
+  @synchronized(self) {
+    
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    
+    NSMutableArray<NYPLAudiobookBookmark *> *bookmarks = record.audiobookBookmarks.mutableCopy;
+    if (!bookmarks) {
+      return;
+    }
+    [bookmarks removeObject:oldAudiobookBookmark];
+    [bookmarks addObject:newAudiobookBookmark];
+
+    self.identifiersToRecords[identifier] = [record recordWithAudiobookBookmarks:bookmarks];
+    
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+#endif
 
 - (NSArray<NYPLBookLocation *> *)genericBookmarksForIdentifier:(NSString *)identifier
 {

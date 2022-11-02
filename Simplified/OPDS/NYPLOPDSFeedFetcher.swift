@@ -66,17 +66,15 @@ import Foundation
   ///   - Parameter url: The URL to contact
   ///   - Parameter shouldResetCache: Pass YES to wipe the whole cache.
   ///   - Parameter completion: Always invoked at the end no matter what,
-  ///   providing an OPDS feed object in case of success and an dictionary containing error information otherwise.
-  class func fetchOPDSFeed(url: URL?,
+  ///   providing an OPDS feed object in case of success and an dictionary
+  ///   containing error information otherwise.
+  ///
+  ///   - Note: This function logs events for all error situations.
+  ///   - Important: If calling from objc, make sure to nil-check `url`!
+  class func fetchOPDSFeed(url: URL,
                            networkExecutor: NYPLHTTPRequestExecutingBasic,
                            shouldResetCache: Bool,
                            completion: @escaping (_ feed: NYPLOPDSFeed?, _ error: [String: Any]?) -> Void) {
-    guard let url = url else {
-      Log.error(#function, "Unable to fetch OPDS feed with empty URL.")
-      completion(nil, nil)
-      return
-    }
-    
     let cachePolicy: NSURLRequest.CachePolicy = shouldResetCache ? .reloadIgnoringCacheData : .useProtocolCachePolicy
     
     _ = networkExecutor.GET(url,

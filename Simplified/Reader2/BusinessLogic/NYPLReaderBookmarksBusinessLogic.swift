@@ -20,7 +20,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   private let drmDeviceID: String?
   private let bookRegistry: NYPLBookRegistryProvider
   private let currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
-  private let bookmarksFactory: NYPLBookmarkFactory
+  private let bookmarksFactory: NYPLReadiumBookmarkFactory
   
   private let annotationsSynchronizer: NYPLAnnotationSyncing.Type
 
@@ -36,8 +36,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
     self.bookRegistry = bookRegistryProvider
     bookmarks = bookRegistryProvider.readiumBookmarks(forIdentifier: book.identifier)
     self.currentLibraryAccountProvider = currentLibraryAccountProvider
-    self.bookmarksFactory = NYPLBookmarkFactory(publication: publication,
-                                                drmDeviceID: drmDeviceID)
+    self.bookmarksFactory = NYPLReadiumBookmarkFactory(publication: publication,
+                                                       drmDeviceID: drmDeviceID)
 
     self.annotationsSynchronizer = annotationsSynchronizer
     
@@ -207,7 +207,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
           }
         }
         
-        self.annotationsSynchronizer.getServerBookmarks(forBook: self.book.identifier,
+        self.annotationsSynchronizer.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                                        forBook: self.book.identifier,
                                                         publication: self.publication,
                                                         atURL: self.book.annotationsURL) { serverBookmarks in
           guard let serverBookmarks = serverBookmarks else {

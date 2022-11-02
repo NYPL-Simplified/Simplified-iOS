@@ -11,7 +11,7 @@ import NYPLAxis
 
 @objc protocol NYPLBookDownloadBroadcasting {
   func downloadProgressDidUpdate(to progress: Double, forBook book: NYPLBook)
-  func failDownloadWithAlert(forBook book: NYPLBook)
+  func failDownloadWithAlert(forBook book: NYPLBook, error: Error?)
   func replaceBook(_ book: NYPLBook,
                    withFileAtURL sourceLocation: URL,
                    forDownloadTask downloadtask: URLSessionDownloadTask) -> Bool

@@ -68,6 +68,7 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
         state: NYPLBookState.DownloadSuccessful.rawValue,
         fulfillmentId: "",
         readiumBookmarks: [NYPLReadiumBookmark](),
+        audiobookBookmarks: nil,
         genericBookmarks: [NYPLBookLocation]()
       )
 

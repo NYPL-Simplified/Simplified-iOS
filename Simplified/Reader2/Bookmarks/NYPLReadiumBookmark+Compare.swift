@@ -7,6 +7,7 @@
 
 import Foundation
 import R2Shared
+import NYPLUtilities
 
 extension NYPLReadiumBookmark {
 

@@ -1,0 +1,18 @@
+{
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  "type": "Annotation",
+  "id": "urn:uuid:715885bc-23d3-4d7d-bd87-f5e7a042c4ba",
+  "body": {
+    "http://librarysimplified.org/terms/time": "2022-06-27T12:47:49Z",
+    "http://librarysimplified.org/terms/device": "urn:uuid:c83db5b1-9130-4b86-93ea-634b00235c7c",
+    "http://librarysimplified.org/terms/chapter": "Chapter title"
+  },
+  "motivation": "http://librarysimplified.org/terms/annotation/idling",
+  "target": {
+    "selector": {
+      "type": "oa:FragmentSelector",
+      "value": "{\n \"@type\": \"LocatorAudioBookTime\",\n \"part\": 3,\n  \"chapter\": 32,\n  \"title\": \"Chapter title\",\n  \"audiobookID\": \"urn:uuid:b309844e-7d4e-403e-945b-fbc78acd5e03\",\n \"duration\": 190000,\n  \"time\": 78000}\n"
+    },
+    "source": "urn:uuid:1daa8de6-94e8-4711-b7d1-e43b572aa6e0"
+  }
+}

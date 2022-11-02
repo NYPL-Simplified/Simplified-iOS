@@ -3,6 +3,8 @@
 @class NYPLBook;
 @class NYPLBookLocation;
 @class NYPLReadiumBookmark;
+@class NYPLAudiobookBookmark;
+@protocol NYPLAudiobookRegistryProvider;
 
 typedef NS_ENUM(NSInteger, NYPLBookState);
 
@@ -104,11 +106,21 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
 // will overwrite the existing book as if |updateBook:| were called. The location may be nil. The
 // state provided must be one of NYPLBookState and must not be |NYPLBookStateUnregistered|.
 // TODO: Use NYPLBookState instead of NSInteger when migrate to Swift
+// Note: For targets without the FEATURE_ADUIOBOOKS macro,
+// the object type of the audiobook bookmarks array is not specified
+// because using a forward declaration class in the function signature
+// will cause the function inaccessible from Swift.
+// Pass in `nil` for audiobook bookmarks when calling this function for those targets.
 - (void)addBook:(nonnull NYPLBook *)book
        location:(nullable NYPLBookLocation *)location
           state:(NSInteger)state
   fulfillmentId:(nullable NSString *)fulfillmentId
 readiumBookmarks:(nullable NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+#ifdef FEATURE_AUDIOBOOKS
+audiobookBookmarks:(nullable NSArray<NYPLAudiobookBookmark*> *)audiobookBookmarks
+#else
+audiobookBookmarks:(nullable NSArray *)audiobookBookmarks
+#endif
 genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // This method should be called whenever new book information is retrieved from a server. Doing so
@@ -174,21 +186,21 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 // Returns the fulfillmentId of a book given its identifier.
 - (nullable NSString *)fulfillmentIdForIdentifier:(nonnull NSString *)identifier;
     
-// Returns the bookmarks for a book given its identifier
+// Returns the readium bookmarks for a book given its identifier
 - (nonnull NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(nonnull NSString *)identifier;
   
-// Add bookmark for a book given its identifier
+// Add readium bookmark for a book given its identifier
 - (void)addReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
              forIdentifier:(nonnull NSString *)identifier;
   
 /**
- Delete bookmark for a book given its identifer and saves updated registry
+ Delete readium bookmark for a book given its identifer and saves updated registry
  to disk.
  */
 - (void)deleteReadiumBookmark:(nonnull NYPLReadiumBookmark *)bookmark
                 forIdentifier:(nonnull NSString *)identifier;
 
-// Replace a bookmark with another, given its identifer
+// Replace a readium bookmark with another, given its identifer
 - (void)replaceBookmark:(nonnull NYPLReadiumBookmark *)oldBookmark
                    with:(nonnull NYPLReadiumBookmark *)newBookmark
           forIdentifier:(nonnull NSString *)identifier;

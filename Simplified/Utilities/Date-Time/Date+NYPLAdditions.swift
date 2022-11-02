@@ -40,10 +40,6 @@ public extension Date {
   var rfc1123String: String {
     return Date.rfc1123DateFormatter.string(from: self)
   }
-  
-  var rfc3339String: String {
-    return (self as NSDate).rfc3339String()
-  }
 
   /// A date string with the choice of short or long suffix
   /// Example: 5 years / 5 y / 6 months / 1 day
