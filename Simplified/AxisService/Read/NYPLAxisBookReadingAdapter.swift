@@ -13,20 +13,18 @@ import R2Streamer
 
 struct NYPLAxisBookReadingAdapter {
   
-  private let axisKeysProvider: NYPLAxisKeysProviding
   private let decryptor: NYPLAxisContentDecrypting
   private let downloader: NYPLAxisItemDownloading
   
-  init?(axisKeysProvider: NYPLAxisKeysProviding = NYPLAxisKeysProvider(),
-       decryptor: NYPLAxisContentDecrypting? = NYPLAxisContentDecryptor(),
-       downloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader(downloader: NYPLAxisContentDownloader(), errorLogger: NYPLAxisErrorLogsAdapter())
+  init?(decryptor: NYPLAxisContentDecrypting? = NYPLAxisContentDecryptor(),
+        downloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader(downloader: NYPLAxisContentDownloader(),
+                                                                     errorLogger: NYPLAxisErrorLogsAdapter())
   ) {
     
     guard let decryptor = decryptor else {
       return nil
     }
     
-    self.axisKeysProvider = axisKeysProvider
     self.decryptor = decryptor
     self.downloader = downloader
   }
