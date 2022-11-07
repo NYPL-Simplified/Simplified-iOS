@@ -36,9 +36,9 @@ struct NYPLAxisBookReadingAdapter {
   ///   - asset: R2 book asset on disk associated to a NYPLBook
   ///   - completion: Returns a R2 tuple containing the PublicationAsset and
   ///   its Content Protection, or an error.
-  func openAsset(_ asset: FileAsset,
-                 fetcher: Fetcher,
-                 completion: @escaping ProtectedAssetCompletion) {
+  func open(asset: FileAsset,
+            fetcher: Fetcher,
+            completion: @escaping ProtectedAssetCompletion) {
     
     let licenseService = NYPLAxisLicenseService(axisItemDownloader: downloader,
                                                 cypher: decryptor.cypher,
@@ -83,6 +83,4 @@ struct NYPLAxisBookReadingAdapter {
                                         onCreatePublication: nil)
     return protectedAsset
   }
-  
-  
 }
