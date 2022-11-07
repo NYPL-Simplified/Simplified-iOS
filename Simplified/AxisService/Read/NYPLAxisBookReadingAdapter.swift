@@ -12,21 +12,14 @@ import R2Shared
 import R2Streamer
 
 struct NYPLAxisBookReadingAdapter {
-  
   private let decryptor: NYPLAxisContentDecrypting
-  private let downloader: NYPLAxisItemDownloading
-  
-  init?(decryptor: NYPLAxisContentDecrypting? = NYPLAxisContentDecryptor(),
-        downloader: NYPLAxisItemDownloading = NYPLAxisItemDownloader(downloader: NYPLAxisContentDownloader(),
-                                                                     errorLogger: NYPLAxisErrorLogsAdapter())
-  ) {
-    
+
+  init?(decryptor: NYPLAxisContentDecrypting? = NYPLAxisContentDecryptor()) {
     guard let decryptor = decryptor else {
       return nil
     }
     
     self.decryptor = decryptor
-    self.downloader = downloader
   }
   
   /// Given an asset on disk, obtains the R2 ProtectedAsset needed to open
@@ -40,14 +33,13 @@ struct NYPLAxisBookReadingAdapter {
             fetcher: Fetcher,
             completion: @escaping ProtectedAssetCompletion) {
     
-    let licenseService = NYPLAxisLicenseService(axisItemDownloader: downloader,
-                                                cypher: decryptor.cypher,
-                                                errorLogger: NYPLAxisErrorLogsAdapter(),
-                                                parentDirectory: asset.url)
+    let licenseService = NYPLAxisLicenseExtractService(
+      errorLogger: NYPLAxisErrorLogsAdapter(),
+      parentDirectory: asset.url)
     
     // we decrypt the encrypted key (used to unlock content) and use that
     // to get the ProtectedAsset
-    licenseService.extractAESKey { result in
+    licenseService.extractAESKeyFromDisk { result in
       switch result {
       case .success(let key):
         // If it succeeded and returned data is nil,
