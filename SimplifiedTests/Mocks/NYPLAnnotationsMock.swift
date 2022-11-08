@@ -23,6 +23,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   
   static func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
                                       settings: NYPLAnnotationSettings,
+                                      syncPermissionGranted: Bool,
                                       syncSupportedCompletion: @escaping (Bool, Error?) -> ()) {
     syncSupportedCompletion(true, nil)
   }

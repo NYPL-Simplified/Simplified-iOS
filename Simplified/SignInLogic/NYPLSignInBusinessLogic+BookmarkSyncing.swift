@@ -66,12 +66,16 @@ extension NYPLSignInBusinessLogic {
       preWork()
     }
 
-    NYPLAnnotations.requestServerSyncStatus(forAccount: userAccount, settings: NYPLSettings.shared) { enableSync, error in
-      NYPLMainThreadRun.sync {
-        postWork(enableSync, error)
-      }
+    NYPLAnnotations.requestServerSyncStatus(
+      forAccount: userAccount,
+      settings: NYPLSettings.shared,
+      syncPermissionGranted: libraryDetails.syncPermissionGranted) { enableSync, error in
+        
+        NYPLMainThreadRun.sync {
+          postWork(enableSync, error)
+        }
 
-      self.permissionsCheckLock.unlock()
-    }
+        self.permissionsCheckLock.unlock()
+      }
   }
 }
