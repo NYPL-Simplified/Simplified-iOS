@@ -64,7 +64,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
               bookRegistry: bookRegistry,
               bookDownloadsRemover: bookDownloadsRemover,
               userAccountProvider: userAccountProvider,
-              networkExecutor: NYPLNetworkExecutor(credentialsProvider: uiDelegate,
+              networkExecutor: NYPLNetworkExecutor(credentialsSource: uiDelegate,
                                                    cachingStrategy: .ephemeral,
                                                    delegateQueue: OperationQueue.main),
               uiDelegate: uiDelegate,

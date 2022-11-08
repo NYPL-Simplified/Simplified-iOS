@@ -27,7 +27,7 @@ class NYPLLastReadPositionSynchronizer {
   init(bookRegistry: NYPLBookRegistryProvider) {
     self.bookRegistry = bookRegistry
     failFastNetworkExecutor = NYPLNetworkExecutor(
-      credentialsProvider: NYPLUserAccount.sharedAccount(),
+      credentialsSource: NYPLUserAccount.sharedAccount(),
       cachingStrategy: .ephemeral,
       waitsForConnectivity: false)
   }

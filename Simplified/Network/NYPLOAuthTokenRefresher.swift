@@ -17,7 +17,7 @@ class NYPLOAuthTokenRefresher {
   private let urlSession: URLSession
   private let tokenRefreshURL: URL
   private let serialQueue: DispatchQueue
-  private let oauthTokenProvider: NYPLOAuthTokenProvider
+  private let oauthTokenSetter: NYPLOAuthTokenSource
 
   var currentToken: NYPLOAuthAccessToken? {
     didSet {
@@ -25,7 +25,7 @@ class NYPLOAuthTokenRefresher {
         return
       }
 
-      oauthTokenProvider.setAuthToken(token)
+      oauthTokenSetter.setAuthToken(token)
     }
   }
 
@@ -38,13 +38,13 @@ class NYPLOAuthTokenRefresher {
   /// Designated initializer
   /// - Parameters:
   ///   - refreshURL: The URL to be used to obtain a new token.
-  ///   - oauthTokenProvider: The object that will be storing the token.
+  ///   - oauthTokenSetter: The object that will be storing the token.
   ///   - urlSession: The URLSession that will execute the request. This
   ///   urlSession needs to be able to handle the authentication necessary
   ///   to obtain a new token.
-  init(refreshURL: URL, oauthTokenProvider: NYPLOAuthTokenProvider, urlSession: URLSession) {
+  init(refreshURL: URL, oauthTokenSetter: NYPLOAuthTokenSource, urlSession: URLSession) {
     tokenRefreshURL = refreshURL
-    self.oauthTokenProvider = oauthTokenProvider
+    self.oauthTokenSetter = oauthTokenSetter
     self.urlSession = urlSession
     serialQueue = DispatchQueue(label: "nypl_refresh_oauth_token_queue",
                                 qos: .userInitiated,
