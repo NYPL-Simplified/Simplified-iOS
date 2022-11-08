@@ -12,7 +12,7 @@ import Foundation
   var accountMainFeedURL: URL? { get set }
 }
 
-@objcMembers class NYPLSettings: NSObject, NYPLFeedURLProvider, NYPLAgeCheckChoiceStorage {
+@objcMembers class NYPLSettings: NSObject, NYPLFeedURLProvider, NYPLAgeCheckChoiceStorage, NYPLAnnotationSettings {
   static let shared = NYPLSettings()
 
   @objc class func sharedSettings() -> NYPLSettings {

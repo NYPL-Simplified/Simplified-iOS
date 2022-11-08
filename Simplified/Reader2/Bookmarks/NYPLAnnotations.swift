@@ -9,6 +9,7 @@ protocol NYPLAnnotationSyncing: AnyObject {
   // Server status
   
   static func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
+                                      settings: NYPLAnnotationSettings,
                                       syncSupportedCompletion: @escaping (_ enableSync: Bool,
                                                                           _ error: Error?) -> ())
   
@@ -50,6 +51,11 @@ protocol NYPLAnnotationSyncing: AnyObject {
   static func syncIsPossibleAndPermitted() -> Bool
 }
 
+@objc
+protocol NYPLAnnotationSettings: AnyObject {
+  var userHasSeenFirstTimeSyncMessage: Bool {get set}
+}
+
 final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   // MARK: - Sync Settings
 
@@ -69,6 +75,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   ///   process, unless sync is not supported by the current library.
   @objc
   class func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
+                                     settings: NYPLAnnotationSettings,
                                      syncSupportedCompletion: @escaping (_ enableSync: Bool,
                                                                          _ error: Error?) -> ()) {
     guard syncIsPossible(userAccount) else {
@@ -76,7 +83,6 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
       return
     }
 
-    let settings = NYPLSettings.shared
     if settings.userHasSeenFirstTimeSyncMessage == true &&
         AccountsManager.shared.currentAccount?.details?.syncPermissionGranted == false {
       syncSupportedCompletion(false, nil)

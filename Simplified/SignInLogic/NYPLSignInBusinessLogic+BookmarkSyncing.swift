@@ -66,7 +66,7 @@ extension NYPLSignInBusinessLogic {
       preWork()
     }
 
-    NYPLAnnotations.requestServerSyncStatus(forAccount: userAccount) { enableSync, error in
+    NYPLAnnotations.requestServerSyncStatus(forAccount: userAccount, settings: NYPLSettings.shared) { enableSync, error in
       NYPLMainThreadRun.sync {
         postWork(enableSync, error)
       }
