@@ -937,6 +937,10 @@
 		73A794C72549098700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml in Resources */ = {isa = PBXBuildFile; fileRef = 73A794C62549095700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml */; };
 		73A794CA25492C9800C59CC1 /* NYPLFake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A794C925492C9800C59CC1 /* NYPLFake.swift */; };
 		73A794CB25492C9800C59CC1 /* NYPLFake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A794C925492C9800C59CC1 /* NYPLFake.swift */; };
+		73AA8A8E291C2DFA000F3F9A /* NYPLRootTabBarController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AA8A89291C2CDD000F3F9A /* NYPLRootTabBarController+Common.swift */; };
+		73AA8A8F291C2DFA000F3F9A /* NYPLRootTabBarController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AA8A89291C2CDD000F3F9A /* NYPLRootTabBarController+Common.swift */; };
+		73AA8A90291C2DFB000F3F9A /* NYPLRootTabBarController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AA8A89291C2CDD000F3F9A /* NYPLRootTabBarController+Common.swift */; };
+		73AA8A91291C2DFB000F3F9A /* NYPLRootTabBarController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AA8A89291C2CDD000F3F9A /* NYPLRootTabBarController+Common.swift */; };
 		73AB364927F3D7AA0067BAAC /* NYPLOAuthTokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AB364827F3D7AA0067BAAC /* NYPLOAuthTokenRefresher.swift */; };
 		73AB364A27F3D7AA0067BAAC /* NYPLOAuthTokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AB364827F3D7AA0067BAAC /* NYPLOAuthTokenRefresher.swift */; };
 		73AB364B27F3D7AA0067BAAC /* NYPLOAuthTokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AB364827F3D7AA0067BAAC /* NYPLOAuthTokenRefresher.swift */; };
@@ -2153,6 +2157,7 @@
 		73A794BC2548E36100C59CC1 /* NYPLBookCreationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookCreationTests.swift; sourceTree = "<group>"; };
 		73A794C62549095700C59CC1 /* NYPLOPDSAcquisitionPathEntryMinimal.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NYPLOPDSAcquisitionPathEntryMinimal.xml; sourceTree = "<group>"; };
 		73A794C925492C9800C59CC1 /* NYPLFake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLFake.swift; sourceTree = "<group>"; };
+		73AA8A89291C2CDD000F3F9A /* NYPLRootTabBarController+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+Common.swift"; sourceTree = "<group>"; };
 		73AB364827F3D7AA0067BAAC /* NYPLOAuthTokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOAuthTokenRefresher.swift; sourceTree = "<group>"; };
 		73AB365127F5119C0067BAAC /* URLSession+SynchronousTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+SynchronousTasks.swift"; sourceTree = "<group>"; };
 		73B501C024F48D4B00FBAD7D /* NYPLUserAccountFrontEndValidation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLUserAccountFrontEndValidation.swift; sourceTree = "<group>"; };
@@ -2865,6 +2870,7 @@
 				738CB2052509A87700891F31 /* NYPLConfiguration+SE.swift */,
 				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
 				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
+				73AA8A89291C2CDD000F3F9A /* NYPLRootTabBarController+Common.swift */,
 				73225DEA250B471400EF1877 /* NYPLRootTabBarController+OE.swift */,
 				739ECB2D25108EE800691A70 /* NYPLRootTabBarController+SE.swift */,
 				730EDFFF251567820038DD9F /* NYPLLibraryNavigationController.h */,
@@ -4479,6 +4485,7 @@
 				5916E7D5262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */,
 				73A172FC27ADA6FA005E7BCF /* NYPLAxisProtectedAssetHandler.swift in Sources */,
 				1747331D284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
+				73AA8A8F291C2DFA000F3F9A /* NYPLRootTabBarController+Common.swift in Sources */,
 				73B5510D2511750A00D05B86 /* NYPLSamlIDPCell.swift in Sources */,
 				73A172FA27ADA6FA005E7BCF /* NYPLAxisErrorLogsAdapter.swift in Sources */,
 				739E605F244A0D8600D00301 /* NYPLXML.m in Sources */,
@@ -4929,6 +4936,7 @@
 				73EB0B1925821DF4006BC997 /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,
 				73EB0B1A25821DF4006BC997 /* NYPLCatalogGroupedFeed.m in Sources */,
 				73EB0B1B25821DF4006BC997 /* NYPLCatalogFacet.m in Sources */,
+				73AA8A90291C2DFB000F3F9A /* NYPLRootTabBarController+Common.swift in Sources */,
 				73EB0B1C25821DF4006BC997 /* NYPLBook+DistributorChecks.swift in Sources */,
 				73EB0B1D25821DF4006BC997 /* NYPLLoginCellTypes.swift in Sources */,
 				73EB0B1E25821DF4006BC997 /* NYPLAccountSignInViewController.m in Sources */,
@@ -5145,6 +5153,7 @@
 				73FCA32D25005BA4001B0C5D /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
 				73FCA32E25005BA4001B0C5D /* NYPLRootTabBarController.m in Sources */,
 				7380E713254B4091004613B1 /* LibraryService.swift in Sources */,
+				73AA8A91291C2DFB000F3F9A /* NYPLRootTabBarController+Common.swift in Sources */,
 				73FCA32F25005BA4001B0C5D /* ExtendedNavBarView.swift in Sources */,
 				219E4D9225C34A8600588588 /* DRMLibraryService.swift in Sources */,
 				73FCA33025005BA4001B0C5D /* OPDS2Link.swift in Sources */,
@@ -5247,6 +5256,7 @@
 				5916E7D4262791B20021CD67 /* NYPLSignInBusinessLogic+Adept.swift in Sources */,
 				73A172E627ADA6F9005E7BCF /* NYPLAxisProtectedAssetHandler.swift in Sources */,
 				1747331C284AA4100090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
+				73AA8A8E291C2DFA000F3F9A /* NYPLRootTabBarController+Common.swift in Sources */,
 				111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */,
 				73A172E427ADA6F9005E7BCF /* NYPLAxisErrorLogsAdapter.swift in Sources */,
 				731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */,

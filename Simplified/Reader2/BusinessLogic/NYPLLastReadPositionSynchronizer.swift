@@ -9,9 +9,16 @@
 import Foundation
 import R2Shared
 
+protocol NYPLLastReadPositionSynchronizing {
+  func sync(for publication: Publication,
+            book: NYPLBook,
+            drmDeviceID: String?,
+            completion: @escaping (Locator?) -> Void)
+}
+
 /// A front-end to the Annotations api to sync the reading progress for
 /// a given book with the progress on the server.
-class NYPLLastReadPositionSynchronizer {
+class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
   private let bookRegistry: NYPLBookRegistryProvider
 
   private enum NavigationChoice: Int {
