@@ -126,10 +126,10 @@
                                          successCompletion:successCompletion];
 
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount]
-                                            settings:[NYPLSettings sharedSettings]
-                               syncPermissionGranted:currentAccount.details.syncPermissionGranted
-                             syncSupportedCompletion:^(BOOL enableSync, NSError *error) {
+  [NYPLAnnotations
+   requestServerSyncStatusWithSettings:[NYPLSettings sharedSettings]
+   syncPermissionGranted:currentAccount.details.syncPermissionGranted
+   syncSupportedCompletion:^(BOOL enableSync, NSError *error) {
     if (error == nil) {
       currentAccount.details.syncPermissionGranted = enableSync;
     }

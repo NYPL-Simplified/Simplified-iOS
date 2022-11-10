@@ -67,7 +67,6 @@ extension NYPLSignInBusinessLogic {
     }
 
     NYPLAnnotations.requestServerSyncStatus(
-      forAccount: userAccount,
       settings: NYPLSettings.shared,
       syncPermissionGranted: libraryDetails.syncPermissionGranted) { enableSync, error in
         
