@@ -59,7 +59,7 @@
                                            selector:@selector(setTabViewControllers)
                                                name:NSNotification.NYPLCurrentAccountDidChange
                                              object:nil];
-  self.r2Owner = [self createR2Owner];
+  self.r2Owner = [self makeR2Owner];
   return self;
 }
 
