@@ -61,13 +61,16 @@ final class ReaderModule: ReaderModuleAPI {
 
   init(delegate: R2ModuleDelegate?,
        resourcesServer: ResourcesServer,
-       lastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing) {
+       lastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing,
+       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
     self.progressSynchronizer = lastReadPositionSynchronizer
 
     formatModules = [
-      EPUBModule(delegate: self.delegate, resourcesServer: resourcesServer)
+      EPUBModule(delegate: self.delegate,
+                 resourcesServer: resourcesServer,
+                 annotationsSynchronizer: annotationsSynchronizer)
     ]
   }
   

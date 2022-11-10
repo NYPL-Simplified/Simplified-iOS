@@ -26,13 +26,16 @@ class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
   }
 
   private let failFastNetworkExecutor: NYPLNetworkExecutor
+  let synchronizer: NYPLAnnotationSyncing.Type
 
   /// Designated initializer.
   ///
   /// - Parameters:
   ///   - bookRegistry: The registry that stores the reading progresses.
-  init(bookRegistry: NYPLBookRegistryProvider) {
+  init(bookRegistry: NYPLBookRegistryProvider,
+       synchronizer: NYPLAnnotationSyncing.Type) {
     self.bookRegistry = bookRegistry
+    self.synchronizer = synchronizer
     failFastNetworkExecutor = NYPLNetworkExecutor(
       credentialsSource: NYPLUserAccount.sharedAccount(),
       cachingStrategy: .ephemeral,
@@ -109,7 +112,7 @@ class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
 
     let localLocation = bookRegistry.location(forIdentifier: book.identifier)
 
-    NYPLAnnotations
+    synchronizer
       .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL, usingNetworkExecutor: failFastNetworkExecutor) { bookmark in
 
         guard let bookmark = bookmark else {

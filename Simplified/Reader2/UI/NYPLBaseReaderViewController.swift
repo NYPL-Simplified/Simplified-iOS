@@ -47,7 +47,8 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   ///   - drm: Information about the DRM associated with the publication.
   init(navigator: UIViewController & Navigator,
        publication: Publication,
-       book: NYPLBook) {
+       book: NYPLBook,
+       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
 
     self.navigator = navigator
     self.publication = publication
@@ -55,7 +56,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
     lastReadPositionPoster = NYPLLastReadPositionPoster(
       book: book,
       bookRegistryProvider: NYPLBookRegistry.shared(),
-      annotationsSynchronizer: NYPLAnnotations.self
+      annotationsSynchronizer: annotationsSynchronizer
     )
 
     bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(
@@ -64,7 +65,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
       bookRegistryProvider: NYPLBookRegistry.shared(),
       currentLibraryAccountProvider: AccountsManager.shared,
-      annotationsSynchronizer: NYPLAnnotations.self)
+      bookmarksSynchronizer: annotationsSynchronizer)
 
     bookmarksBusinessLogic.syncBookmarks { (_, _) in }
 

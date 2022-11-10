@@ -11,8 +11,10 @@ import Foundation
 extension NYPLRootTabBarController {
   @objc func createR2Owner() -> NYPLR2Owner {
     let lastReadSyncer = NYPLLastReadPositionSynchronizer(
-      bookRegistry: NYPLBookRegistry.shared())
+      bookRegistry: NYPLBookRegistry.shared(),
+      synchronizer: NYPLAnnotations.self)
 
-    return NYPLR2Owner(lastReadPositionSynchronizer: lastReadSyncer)
+    return NYPLR2Owner(lastReadPositionSynchronizer: lastReadSyncer,
+                       annotationsSynchronizer: NYPLAnnotations.self)
   }
 }

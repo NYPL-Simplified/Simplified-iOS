@@ -3046,8 +3046,6 @@
 		7361615525F75E3900395337 /* BusinessLogic */ = {
 			isa = PBXGroup;
 			children = (
-				73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */,
-				73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */,
 				734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */,
 				1188F3DF1A1ECC4B006B2F36 /* NYPLReaderSettings.h */,
 				1188F3E01A1ECC4B006B2F36 /* NYPLReaderSettings.m */,
@@ -3145,11 +3143,22 @@
 				73DE8984260BF61B003D9135 /* Bookmarks */,
 				7361615525F75E3900395337 /* BusinessLogic */,
 				73DB2D0924132C8B008346ED /* Internal */,
+				73AA8A92291C70E2000F3F9A /* Networking */,
 				7361615425F706D600395337 /* ReaderStackConfiguration */,
 				7361615325F705A500395337 /* ReaderPresentation */,
 				73F7136D2417260700C63B81 /* UI */,
 			);
 			path = Reader2;
+			sourceTree = "<group>";
+		};
+		73AA8A92291C70E2000F3F9A /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
+				73DB56CB25F7F684003788EE /* NYPLLastReadPositionPoster.swift */,
+				73DB56C125F769FF003788EE /* NYPLLastReadPositionSynchronizer.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		73B5DFD72605296300225C12 /* Book */ = {
@@ -3530,7 +3539,6 @@
 		73DE8984260BF61B003D9135 /* Bookmarks */ = {
 			isa = PBXGroup;
 			children = (
-				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 				1798538A255A4092009F94D9 /* NYPLBookLocation+Locator.swift */,
 				730EF265260967FF008E1DC3 /* NYPLReadiumBookmarkFactory.swift */,
 				73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */,

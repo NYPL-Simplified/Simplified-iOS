@@ -6,7 +6,7 @@ import NYPLAudiobookToolkit
 #endif
 
 protocol NYPLAnnotationSyncing: AnyObject {
-  // Server status
+  // Server sync status
   
   static func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
                                       settings: NYPLAnnotationSettings,
@@ -15,7 +15,9 @@ protocol NYPLAnnotationSyncing: AnyObject {
                                                                           _ error: Error?) -> ())
   
   static func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->())
-  
+
+  static func syncIsPossibleAndPermitted() -> Bool
+
   // Reading position
   
   static func syncReadingPosition(ofBook bookID: String?,
@@ -46,10 +48,6 @@ protocol NYPLAnnotationSyncing: AnyObject {
   static func postBookmark(_ bookmark: NYPLBookmark,
                            forBookID bookID: String,
                            completion: @escaping (_ serverID: String?) -> ())
-  
-  // Permission
-  
-  static func syncIsPossibleAndPermitted() -> Bool
 }
 
 @objc
