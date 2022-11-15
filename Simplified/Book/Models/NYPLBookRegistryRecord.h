@@ -13,7 +13,11 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
 @property (nonatomic, readonly) NYPLBookState state;
 @property (nonatomic, readonly) NSString *fulfillmentId; // nilable
 @property (nonatomic, readonly) NSArray<NYPLReadiumBookmark *> *readiumBookmarks; // nilable
+#if FEATURE_AUDIOBOOKS
 @property (nonatomic, readonly) NSArray<NYPLAudiobookBookmark *> *audiobookBookmarks; // nilable
+#else
+@property (nonatomic, readonly) NSArray *audiobookBookmarks; // nilable
+#endif
 @property (nonatomic, readonly) NSArray<NYPLBookLocation *> *genericBookmarks; // nilable
 
 + (id)new NS_UNAVAILABLE;
@@ -25,7 +29,11 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
             readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+#if FEATURE_AUDIOBOOKS
           audiobookBookmarks:(NSArray<NYPLAudiobookBookmark *> *)audiobookBookmarks
+#else
+          audiobookBookmarks:(NSArray *)audiobookBookmarks
+#endif
             genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // designated initializer
@@ -43,7 +51,11 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
 
 - (instancetype)recordWithReadiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)bookmarks;
 
+#if FEATURE_AUDIOBOOKS
 - (instancetype)recordWithAudiobookBookmarks:(NSArray<NYPLAudiobookBookmark *> *)bookmarks;
+#else
+- (instancetype)recordWithAudiobookBookmarks:(NSArray *)bookmarks;
+#endif
 
 - (instancetype)recordWithGenericBookmarks:(NSArray<NYPLBookLocation *> *)bookmarks;
 
