@@ -38,6 +38,7 @@ protocol ReaderModuleAPI {
   /// - Parameter navigationController: The navigation stack the book will be presented in.
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
+                          serverPermissions: NYPLReaderServerPermissions,
                           deviceID: String?,
                           in navigationController: UINavigationController,
                           successCompletion: (() -> Void)?)
@@ -78,6 +79,7 @@ final class ReaderModule: ReaderModuleAPI {
   
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
+                          serverPermissions: NYPLReaderServerPermissions,
                           deviceID: String?,
                           in navigationController: UINavigationController,
                           successCompletion: (() -> Void)?) {
@@ -90,20 +92,23 @@ final class ReaderModule: ReaderModuleAPI {
       return
     }
 
-    progressSynchronizer.sync(for: publication,
-                              book: book,
-                              drmDeviceID: deviceID) { [weak self] initialLocator in
-                                self?.finalizePresentation(for: publication,
-                                                           book: book,
-                                                           formatModule: formatModule,
-                                                           positioningAt: initialLocator,
-                                                           in: navigationController,
-                                                           successCompletion: successCompletion)
-    }
+    progressSynchronizer.sync(
+      for: publication,
+      book: book,
+      drmDeviceID: deviceID) { [weak self] initialLocator in
+        self?.finalizePresentation(for: publication,
+                                   book: book,
+                                   serverPermissions: serverPermissions,
+                                   formatModule: formatModule,
+                                   positioningAt: initialLocator,
+                                   in: navigationController,
+                                   successCompletion: successCompletion)
+      }
   }
 
   private func finalizePresentation(for publication: Publication,
                                     book: NYPLBook,
+                                    serverPermissions: NYPLReaderServerPermissions,
                                     formatModule: ReaderFormatModule,
                                     positioningAt initialLocator: Locator?,
                                     in navigationController: UINavigationController,
@@ -112,6 +117,7 @@ final class ReaderModule: ReaderModuleAPI {
       let readerVC = try formatModule.makeReaderViewController(
         for: publication,
         book: book,
+        serverPermissions: serverPermissions,
         initialLocation: initialLocator)
 
       let backItem = UIBarButtonItem()

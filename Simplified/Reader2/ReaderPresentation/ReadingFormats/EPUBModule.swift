@@ -35,6 +35,7 @@ final class EPUBModule: ReaderFormatModule {
 
   func makeReaderViewController(for publication: Publication,
                                 book: NYPLBook,
+                                serverPermissions: NYPLReaderServerPermissions,
                                 initialLocation: Locator?) throws -> UIViewController {
       
     guard publication.metadata.identifier != nil else {
@@ -45,6 +46,7 @@ final class EPUBModule: ReaderFormatModule {
                                         book: book,
                                         initialLocation: initialLocation,
                                         resourcesServer: resourcesServer,
+                                        serverPermissions: serverPermissions,
                                         annotationsSynchronizer: annotationsSynchronizer)
     epubVC.moduleDelegate = delegate
     return epubVC

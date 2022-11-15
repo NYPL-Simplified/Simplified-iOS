@@ -9,7 +9,10 @@
 import Foundation
 
 @objc extension NYPLRootTabBarController {
-  func presentBook(_ book: NYPLBook, fromFileURL fileURL: URL?, successCompletion: (() -> Void)?) {
+  func presentBook(_ book: NYPLBook,
+                   fromFileURL fileURL: URL?,
+                   serverPermissions: NYPLReaderServerPermissions,
+                   successCompletion: (() -> Void)?) {
     guard let libraryService = r2Owner?.libraryService, let readerModule = r2Owner?.readerModule else {
       return
     }
@@ -24,6 +27,7 @@ import Foundation
       case .success(let publication):
         readerModule.presentPublication(publication,
                                         book: book,
+                                        serverPermissions: serverPermissions,
                                         deviceID: drmDeviceID,
                                         in: navVC,
                                         successCompletion: successCompletion)

@@ -30,7 +30,7 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   let book: NYPLBook
   private let drmDeviceID: String?
   private let bookRegistry: NYPLAudiobookRegistryProvider
-  private let currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
+  private let serverPermissions: NYPLReaderServerPermissions
   private let annotationsSynchronizer: NYPLAnnotationSyncing.Type
   
   var bookmarksCount: Int {
@@ -50,12 +50,12 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   init(book: NYPLBook,
        drmDeviceID: String?,
        bookRegistryProvider: NYPLAudiobookRegistryProvider,
-       currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider,
+       serverPermissions: NYPLReaderServerPermissions,
        annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
     self.book = book
     self.drmDeviceID = drmDeviceID
     self.bookRegistry = bookRegistryProvider
-    self.currentLibraryAccountProvider = currentLibraryAccountProvider
+    self.serverPermissions = serverPermissions
     self.annotationsSynchronizer = annotationsSynchronizer
     self.bookmarks = bookRegistry.audiobookBookmarks(for: book.identifier)
     self.bookmarksDictionary = [String: [NYPLAudiobookBookmark]]()
@@ -216,10 +216,7 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   /// Store a bookmark to local storage and upload it to server if sync permission is granted
   /// - Parameter bookmark: The bookmark to be stored and uploaded.
   private func postBookmark(_ bookmark: NYPLAudiobookBookmark) {
-    guard
-      let currentAccount = currentLibraryAccountProvider.currentAccount,
-      let accountDetails = currentAccount.details,
-      accountDetails.syncPermissionGranted else {
+    guard serverPermissions.syncPermissionGranted else {
       self.bookRegistry.addAudiobookBookmark(bookmark, for: book.identifier)
         return
     }
@@ -239,14 +236,12 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   private func didDeleteBookmark(_ bookmark: NYPLAudiobookBookmark) {
     bookRegistry.deleteAudiobookBookmark(bookmark, for: book.identifier)
 
-    guard let currentAccount = currentLibraryAccountProvider.currentAccount,
-        let details = currentAccount.details,
-        let annotationId = bookmark.annotationId else {
+    guard let annotationId = bookmark.annotationId else {
       Log.info(#file, "Delete on Server skipped: Annotation ID did not exist for bookmark.")
       return
     }
     
-    if details.syncPermissionGranted && annotationId.count > 0 {
+    if serverPermissions.syncPermissionGranted && annotationId.count > 0 {
       annotationsSynchronizer.deleteBookmark(annotationId: annotationId) { (success) in
         Log.info(#file, success ?
           "Bookmark successfully deleted" :

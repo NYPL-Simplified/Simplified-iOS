@@ -121,11 +121,14 @@
 {
   NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                       fileURLForBookIndentifier:book.identifier];
+
+  AccountsManager *accountMgr = [AccountsManager sharedInstance];
   [[NYPLRootTabBarController sharedController] presentBook:book
                                                fromFileURL:url
+                                         serverPermissions:accountMgr
                                          successCompletion:successCompletion];
 
-  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  Account *currentAccount = [accountMgr currentAccount];
   [NYPLAnnotations
    requestServerSyncStatusWithSettings:[NYPLSettings sharedSettings]
    syncPermissionGranted:currentAccount.details.syncPermissionGranted
