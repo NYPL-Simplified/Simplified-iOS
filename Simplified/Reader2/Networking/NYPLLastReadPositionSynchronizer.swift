@@ -9,9 +9,16 @@
 import Foundation
 import R2Shared
 
+protocol NYPLLastReadPositionSynchronizing {
+  func sync(for publication: Publication,
+            book: NYPLBook,
+            drmDeviceID: String?,
+            completion: @escaping (Locator?) -> Void)
+}
+
 /// A front-end to the Annotations api to sync the reading progress for
 /// a given book with the progress on the server.
-class NYPLLastReadPositionSynchronizer {
+class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
   private let bookRegistry: NYPLBookRegistryProvider
 
   private enum NavigationChoice: Int {
@@ -19,13 +26,16 @@ class NYPLLastReadPositionSynchronizer {
   }
 
   private let failFastNetworkExecutor: NYPLNetworkExecutor
+  let synchronizer: NYPLAnnotationSyncing.Type
 
   /// Designated initializer.
   ///
   /// - Parameters:
   ///   - bookRegistry: The registry that stores the reading progresses.
-  init(bookRegistry: NYPLBookRegistryProvider) {
+  init(bookRegistry: NYPLBookRegistryProvider,
+       synchronizer: NYPLAnnotationSyncing.Type) {
     self.bookRegistry = bookRegistry
+    self.synchronizer = synchronizer
     failFastNetworkExecutor = NYPLNetworkExecutor(
       credentialsSource: NYPLUserAccount.sharedAccount(),
       cachingStrategy: .ephemeral,
@@ -102,7 +112,7 @@ class NYPLLastReadPositionSynchronizer {
 
     let localLocation = bookRegistry.location(forIdentifier: book.identifier)
 
-    NYPLAnnotations
+    synchronizer
       .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL, usingNetworkExecutor: failFastNetworkExecutor) { bookmark in
 
         guard let bookmark = bookmark else {

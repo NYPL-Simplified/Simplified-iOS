@@ -23,7 +23,8 @@ import R2Streamer
   var libraryService: LibraryService! = nil
   var readerModule: ReaderModuleAPI! = nil
 
-  override init() {
+  init(bookRegistry: NYPLBookRegistryProvider,
+       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
     super.init()
     guard let server = PublicationServer() else {
       /// FIXME: we should recover properly if the publication server can't
@@ -32,9 +33,12 @@ import R2Streamer
     }
 
     libraryService = LibraryService(publicationServer: server)
-    readerModule = ReaderModule(delegate: self,
-                                resourcesServer: server,
-                                bookRegistry: NYPLBookRegistry.shared())
+
+    readerModule = ReaderModule(
+      delegate: self,
+      resourcesServer: server,
+      bookRegistry: bookRegistry,
+      annotationsSynchronizer: annotationsSynchronizer)
 
     // Set Readium 2's logging minimum level.
     R2EnableLog(withMinimumSeverityLevel: .debug)

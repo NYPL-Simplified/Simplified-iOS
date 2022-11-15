@@ -22,7 +22,8 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
   init(publication: Publication,
        book: NYPLBook,
        initialLocation: Locator?,
-       resourcesServer: ResourcesServer) {
+       resourcesServer: ResourcesServer,
+       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
 
     // - hyphens = true helps with layout on small screens especially when
     // publisher's defaults are off.
@@ -58,7 +59,10 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
     // to re-set that to reflect our ad-hoc configuration.
     publication.userProperties = navigator.userSettings.userProperties
 
-    super.init(navigator: navigator, publication: publication, book: book)
+    super.init(navigator: navigator,
+               publication: publication,
+               book: book,
+               annotationsSynchronizer: annotationsSynchronizer)
 
     navigator.delegate = self
   }

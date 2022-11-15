@@ -65,7 +65,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       drmDeviceID: "fakeDeviceID",
       bookRegistryProvider: bookRegistryMock,
       currentLibraryAccountProvider: libraryAccountMock,
-      annotationsSynchronizer: annotationsMock)
+      bookmarksSynchronizer: annotationsMock)
     bookmarkCounter = 0
   }
 

@@ -54,20 +54,25 @@ final class ReaderModule: ReaderModuleAPI {
   
   weak var delegate: R2ModuleDelegate?
   private let resourcesServer: ResourcesServer
-  private let progressSynchronizer: NYPLLastReadPositionSynchronizer
+  private let progressSynchronizer: NYPLLastReadPositionSynchronizing
 
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
 
   init(delegate: R2ModuleDelegate?,
        resourcesServer: ResourcesServer,
-       bookRegistry: NYPLBookRegistryProvider) {
+       bookRegistry: NYPLBookRegistryProvider,
+       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
-    self.progressSynchronizer = NYPLLastReadPositionSynchronizer(bookRegistry: bookRegistry)
+    self.progressSynchronizer = NYPLLastReadPositionSynchronizer(
+      bookRegistry: bookRegistry,
+      synchronizer: annotationsSynchronizer)
 
     formatModules = [
-      EPUBModule(delegate: self.delegate, resourcesServer: resourcesServer)
+      EPUBModule(delegate: self.delegate,
+                 resourcesServer: resourcesServer,
+                 annotationsSynchronizer: annotationsSynchronizer)
     ]
   }
   

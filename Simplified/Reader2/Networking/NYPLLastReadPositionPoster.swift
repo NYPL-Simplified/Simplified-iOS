@@ -60,7 +60,7 @@ class NYPLLastReadPositionPoster {
       return
     }
 
-    // save location locally, so that it can be later be saved on disk
+    // save location locally, so that it can be saved on disk later
     bookRegistryProvider.setLocation(location, forIdentifier: book.identifier)
 
     // attempt to store location on server

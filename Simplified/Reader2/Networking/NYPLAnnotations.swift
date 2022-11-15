@@ -6,16 +6,18 @@ import NYPLAudiobookToolkit
 #endif
 
 protocol NYPLAnnotationSyncing: AnyObject {
-  // Server status
+  // Server sync status
   
-  static func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
-                                      settings: NYPLAnnotationSettings,
+  static func requestServerSyncStatus(settings: NYPLAnnotationSettings,
                                       syncPermissionGranted: Bool,
                                       syncSupportedCompletion: @escaping (_ enableSync: Bool,
                                                                           _ error: Error?) -> ())
   
-  static func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->())
-  
+  static func updateServerSyncSetting(toEnabled enabled: Bool,
+                                      completion:@escaping (Bool)->())
+
+  static func syncIsPossibleAndPermitted() -> Bool
+
   // Reading position
   
   static func syncReadingPosition(ofBook bookID: String?,
@@ -46,10 +48,6 @@ protocol NYPLAnnotationSyncing: AnyObject {
   static func postBookmark(_ bookmark: NYPLBookmark,
                            forBookID bookID: String,
                            completion: @escaping (_ serverID: String?) -> ())
-  
-  // Permission
-  
-  static func syncIsPossibleAndPermitted() -> Bool
 }
 
 @objc
@@ -71,16 +69,17 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   /// - Note: This flow will be run only for the user account on the currently
   /// selected library. Anything else will result in a no-op.
   /// - Parameters:
-  ///   - userAccount: The account to attempt to enable annotations-syncing on.
+  ///   - settings: The interface to the settings related to annotations.
+  ///   - syncPermissionGranted: Whether the permission to sync bookmarks was
+  ///   granted or not.
   ///   - syncSupportedCompletion: Handler always called at the end of the
   ///   process, unless sync is not supported by the current library.
   @objc
-  class func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
-                                     settings: NYPLAnnotationSettings,
+  class func requestServerSyncStatus(settings: NYPLAnnotationSettings,
                                      syncPermissionGranted: Bool,
                                      syncSupportedCompletion: @escaping (_ enableSync: Bool,
                                                                          _ error: Error?) -> ()) {
-    guard syncIsPossible(userAccount) else {
+    guard syncIsPossible() else {
       Log.info(#function, "Account does not satisfy conditions for sync setting request.")
       return
     }
@@ -595,16 +594,17 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     return annotationID
   }
 
-  /// Annotation-syncing is possible only if the given `account` is signed-in
+  /// Annotation-syncing is possible only if the current user account is signed-in
   /// and if the currently selected library supports it.
-  class func syncIsPossible(_ account: NYPLUserAccount) -> Bool {
+  private class func syncIsPossible() -> Bool {
     let library = AccountsManager.shared.currentAccount
-    return account.hasCredentials() && library?.details?.supportsSimplyESync == true
+    let userAccount = NYPLUserAccount.sharedAccount()
+    return userAccount.hasCredentials() && library?.details?.supportsSimplyESync == true
   }
 
   class func syncIsPossibleAndPermitted() -> Bool {
-    let acct = AccountsManager.shared.currentAccount
-    return syncIsPossible(NYPLUserAccount.sharedAccount()) && acct?.details?.syncPermissionGranted == true
+    let library = AccountsManager.shared.currentAccount
+    return syncIsPossible() && library?.details?.syncPermissionGranted == true
   }
 
   static var annotationsURL: URL? {
