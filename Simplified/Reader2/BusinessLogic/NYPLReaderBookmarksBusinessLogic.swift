@@ -19,7 +19,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   private let publication: Publication
   private let drmDeviceID: String?
   private let bookRegistry: NYPLBookRegistryProvider
-  private let serverPermissions: NYPLReaderServerPermissions
+  private let syncPermission: Bool
   private let bookmarksFactory: NYPLReadiumBookmarkFactory
   private let bookmarksSynchronizer: NYPLAnnotationSyncing.Type
 
@@ -27,14 +27,14 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
        r2Publication: Publication,
        drmDeviceID: String?,
        bookRegistryProvider: NYPLBookRegistryProvider,
-       serverPermissions: NYPLReaderServerPermissions,
+       syncPermission: Bool,
        bookmarksSynchronizer: NYPLAnnotationSyncing.Type) {
     self.book = book
     self.publication = r2Publication
     self.drmDeviceID = drmDeviceID
     self.bookRegistry = bookRegistryProvider
     bookmarks = bookRegistryProvider.readiumBookmarks(forIdentifier: book.identifier)
-    self.serverPermissions = serverPermissions
+    self.syncPermission = syncPermission
     self.bookmarksFactory = NYPLReadiumBookmarkFactory(publication: publication,
                                                        drmDeviceID: drmDeviceID)
     self.bookmarksSynchronizer = bookmarksSynchronizer
@@ -108,7 +108,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   }
     
   private func postBookmark(_ bookmark: NYPLReadiumBookmark) {
-    guard serverPermissions.syncPermissionGranted else {
+    guard syncPermission else {
       self.bookRegistry.add(bookmark, forIdentifier: book.identifier)
       return
     }
@@ -154,7 +154,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
       return
     }
     
-    if serverPermissions.syncPermissionGranted && annotationId.count > 0 {
+    if syncPermission && annotationId.count > 0 {
       bookmarksSynchronizer.deleteBookmark(annotationId: annotationId) { (success) in
         Log.info(#file, success ?
           "Bookmark successfully deleted" :

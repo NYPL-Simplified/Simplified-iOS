@@ -30,7 +30,7 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   let book: NYPLBook
   private let drmDeviceID: String?
   private let bookRegistry: NYPLAudiobookRegistryProvider
-  private let serverPermissions: NYPLReaderServerPermissions
+  private let syncPermission: Bool
   private let annotationsSynchronizer: NYPLAnnotationSyncing.Type
   
   var bookmarksCount: Int {
@@ -50,12 +50,12 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   init(book: NYPLBook,
        drmDeviceID: String?,
        bookRegistryProvider: NYPLAudiobookRegistryProvider,
-       serverPermissions: NYPLReaderServerPermissions,
+       syncPermission: Bool,
        annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
     self.book = book
     self.drmDeviceID = drmDeviceID
     self.bookRegistry = bookRegistryProvider
-    self.serverPermissions = serverPermissions
+    self.syncPermission = syncPermission
     self.annotationsSynchronizer = annotationsSynchronizer
     self.bookmarks = bookRegistry.audiobookBookmarks(for: book.identifier)
     self.bookmarksDictionary = [String: [NYPLAudiobookBookmark]]()
@@ -216,7 +216,7 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   /// Store a bookmark to local storage and upload it to server if sync permission is granted
   /// - Parameter bookmark: The bookmark to be stored and uploaded.
   private func postBookmark(_ bookmark: NYPLAudiobookBookmark) {
-    guard serverPermissions.syncPermissionGranted else {
+    guard syncPermission else {
       self.bookRegistry.addAudiobookBookmark(bookmark, for: book.identifier)
         return
     }
@@ -241,7 +241,7 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
       return
     }
     
-    if serverPermissions.syncPermissionGranted && annotationId.count > 0 {
+    if syncPermission && annotationId.count > 0 {
       annotationsSynchronizer.deleteBookmark(annotationId: annotationId) { (success) in
         Log.info(#file, success ?
           "Bookmark successfully deleted" :

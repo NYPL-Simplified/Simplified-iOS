@@ -58,11 +58,13 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
     libraryAccountMock = NYPLLibraryAccountMock()
     libraryAccountMock.currentAccount?.details?.syncPermissionGranted = true
     annotationsMock = NYPLAnnotationsMock.self
-    bookmarkBusinessLogic = NYPLAudiobookBookmarksBusinessLogic(book: fakeBook,
-                                                                drmDeviceID: deviceID,
-                                                                bookRegistryProvider: bookRegistryMock,
-                                                                currentLibraryAccountProvider: libraryAccountMock,
-                                                                annotationsSynchronizer: annotationsMock)
+    bookmarkBusinessLogic = NYPLAudiobookBookmarksBusinessLogic(
+      book: fakeBook,
+      drmDeviceID: deviceID,
+      bookRegistryProvider: bookRegistryMock,
+      syncPermission: libraryAccountMock.syncPermissionGranted,
+      annotationsSynchronizer: annotationsMock)
+    
     bookmarkCounter = 0
   }
 

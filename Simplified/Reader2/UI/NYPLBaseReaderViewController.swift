@@ -48,7 +48,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
   init(navigator: UIViewController & Navigator,
        publication: Publication,
        book: NYPLBook,
-       serverPermissions: NYPLReaderServerPermissions,
+       syncPermission: Bool,
        annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
 
     self.navigator = navigator
@@ -65,7 +65,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
       r2Publication: publication,
       drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
       bookRegistryProvider: NYPLBookRegistry.shared(),
-      serverPermissions: serverPermissions,
+      syncPermission: syncPermission,
       bookmarksSynchronizer: annotationsSynchronizer)
 
     bookmarksBusinessLogic.syncBookmarks { (_, _) in }

@@ -23,7 +23,7 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
        book: NYPLBook,
        initialLocation: Locator?,
        resourcesServer: ResourcesServer,
-       serverPermissions: NYPLReaderServerPermissions,
+       syncPermission: Bool,
        annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
 
     // - hyphens = true helps with layout on small screens especially when
@@ -63,7 +63,7 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
     super.init(navigator: navigator,
                publication: publication,
                book: book,
-               serverPermissions: serverPermissions,
+               syncPermission: syncPermission,
                annotationsSynchronizer: annotationsSynchronizer)
 
     navigator.delegate = self

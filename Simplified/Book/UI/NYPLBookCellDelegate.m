@@ -123,15 +123,17 @@
                       fileURLForBookIndentifier:book.identifier];
 
   AccountsManager *accountMgr = [AccountsManager sharedInstance];
+  Account *currentAccount = [accountMgr currentAccount];
+  BOOL syncPermission = currentAccount.details.syncPermissionGranted;
+
   [[NYPLRootTabBarController sharedController] presentBook:book
                                                fromFileURL:url
-                                         serverPermissions:accountMgr
+                                            syncPermission:syncPermission
                                          successCompletion:successCompletion];
 
-  Account *currentAccount = [accountMgr currentAccount];
   [NYPLAnnotations
    requestServerSyncStatusWithSettings:[NYPLSettings sharedSettings]
-   syncPermissionGranted:currentAccount.details.syncPermissionGranted
+   syncPermissionGranted:syncPermission
    syncSupportedCompletion:^(BOOL enableSync, NSError *error) {
     if (error == nil) {
       currentAccount.details.syncPermissionGranted = enableSync;
