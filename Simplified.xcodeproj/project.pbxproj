@@ -143,7 +143,6 @@
 		1763C0D624F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */; };
 		17681C5127E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml in Resources */ = {isa = PBXBuildFile; fileRef = 17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */; };
 		17681C5227E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml in Resources */ = {isa = PBXBuildFile; fileRef = 17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */; };
-		177C25F628B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177C25F528B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift */; };
 		177C25FC28B704A600A786F1 /* NYPLUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 177C25FB28B704A600A786F1 /* NYPLUtilities */; };
 		177C25FE28B704A600A786F1 /* NYPLUtilities in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 177C25FB28B704A600A786F1 /* NYPLUtilities */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		177E04FF28A72BD500DF7587 /* NYPLAudiobookBookmarksBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177E04FE28A72BD500DF7587 /* NYPLAudiobookBookmarksBusinessLogic.swift */; };
@@ -1863,7 +1862,6 @@
 		1763C0D524F460FE00A4D0E2 /* NYPLAnnouncementManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAnnouncementManagerTests.swift; sourceTree = "<group>"; };
 		17681C5027E0314400DF1F8C /* NYPLCatalogUngroupedFeedWithZeroBooks.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NYPLCatalogUngroupedFeedWithZeroBooks.xml; sourceTree = "<group>"; };
 		176F8A802519684D00CE5BFB /* AudioEngine.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AudioEngine.xcframework; path = NYPLAEToolkit/build/AudioEngine.xcframework; sourceTree = "<group>"; };
-		177C25F528B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLBookmarkSpec+AudiobookTests.swift"; sourceTree = "<group>"; };
 		177E04FE28A72BD500DF7587 /* NYPLAudiobookBookmarksBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAudiobookBookmarksBusinessLogic.swift; sourceTree = "<group>"; };
 		1782E49F28B4648E00EA7107 /* valid-locator-3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "valid-locator-3.json"; sourceTree = "<group>"; };
 		1782E4A228B464EC00EA7107 /* invalid-locator-5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "invalid-locator-5.json"; sourceTree = "<group>"; };
@@ -2826,7 +2824,6 @@
 				73F6BFA5261E60C400A71AB8 /* only-essential-info-bookmark.json */,
 				73D4DC202627B1DA005CAFFA /* annotation-response.json */,
 				730EF262260955EF008E1DC3 /* NYPLBookmarkSpecTests.swift */,
-				177C25F528B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift */,
 				7340A8B526151FDA00B2D5FA /* NYPLBookmarkDeserializationTests.swift */,
 				73F6BFA2261E515E00A71AB8 /* NYPLR1BookmarkDeserializationTests.swift */,
 				733EE5992620D2F6006A735C /* NYPLBookmarkSerializationTests.swift */,
@@ -4364,7 +4361,6 @@
 				17BE24DA25F85D2300AE707F /* NYPLAgeCheckTests.swift in Sources */,
 				17BE24E025FABA0900AE707F /* NYPLAgeCheckChoiceStorageMock.swift in Sources */,
 				7340A8B626151FDA00B2D5FA /* NYPLBookmarkDeserializationTests.swift in Sources */,
-				177C25F628B702EF00A786F1 /* NYPLBookmarkSpec+AudiobookTests.swift in Sources */,
 				7375AE5A25382AC900C85211 /* NYPLUserAccountMock.swift in Sources */,
 				73C3CF5A25CB8D6100CA8166 /* NYPLNetworkExecutorMock.swift in Sources */,
 				17C4F75328E62D050007BE9B /* NYPLAudiobookBookmarksBusinessLogicTests.swift in Sources */,
@@ -5691,7 +5687,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -5743,7 +5738,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -5794,7 +5788,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -5843,7 +5836,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -6114,7 +6106,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -6166,7 +6157,6 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 8;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
