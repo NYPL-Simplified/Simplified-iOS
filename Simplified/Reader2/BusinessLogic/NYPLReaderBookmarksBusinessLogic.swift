@@ -19,7 +19,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   private let publication: Publication
   private let drmDeviceID: String?
   private let bookRegistry: NYPLBookRegistryProvider
-  private let currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider
+  private let syncPermission: Bool
   private let bookmarksFactory: NYPLReadiumBookmarkFactory
   private let bookmarksSynchronizer: NYPLAnnotationSyncing.Type
 
@@ -27,14 +27,14 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
        r2Publication: Publication,
        drmDeviceID: String?,
        bookRegistryProvider: NYPLBookRegistryProvider,
-       currentLibraryAccountProvider: NYPLCurrentLibraryAccountProvider,
+       syncPermission: Bool,
        bookmarksSynchronizer: NYPLAnnotationSyncing.Type) {
     self.book = book
     self.publication = r2Publication
     self.drmDeviceID = drmDeviceID
     self.bookRegistry = bookRegistryProvider
     bookmarks = bookRegistryProvider.readiumBookmarks(forIdentifier: book.identifier)
-    self.currentLibraryAccountProvider = currentLibraryAccountProvider
+    self.syncPermission = syncPermission
     self.bookmarksFactory = NYPLReadiumBookmarkFactory(publication: publication,
                                                        drmDeviceID: drmDeviceID)
     self.bookmarksSynchronizer = bookmarksSynchronizer
@@ -108,12 +108,9 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   }
     
   private func postBookmark(_ bookmark: NYPLReadiumBookmark) {
-    guard
-      let currentAccount = currentLibraryAccountProvider.currentAccount,
-      let accountDetails = currentAccount.details,
-      accountDetails.syncPermissionGranted else {
-        self.bookRegistry.add(bookmark, forIdentifier: book.identifier)
-        return
+    guard syncPermission else {
+      self.bookRegistry.add(bookmark, forIdentifier: book.identifier)
+      return
     }
     
     bookmarksSynchronizer.postBookmark(bookmark, forBookID: book.identifier) { serverAnnotationID in
@@ -152,14 +149,12 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   private func didDeleteBookmark(_ bookmark: NYPLReadiumBookmark) {
     bookRegistry.delete(bookmark, forIdentifier: book.identifier)
 
-    guard let libraryAccount = currentLibraryAccountProvider.currentAccount,
-        let libAccountDetails = libraryAccount.details,
-        let annotationId = bookmark.annotationId else {
+    guard let annotationId = bookmark.annotationId else {
       Log.info(#file, "Delete on Server skipped: Annotation ID did not exist for bookmark.")
       return
     }
     
-    if libAccountDetails.syncPermissionGranted && annotationId.count > 0 {
+    if syncPermission && annotationId.count > 0 {
       bookmarksSynchronizer.deleteBookmark(annotationId: annotationId) { (success) in
         Log.info(#file, success ?
           "Bookmark successfully deleted" :

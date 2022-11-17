@@ -89,3 +89,9 @@ class NYPLLibraryAccountMock: NSObject, NYPLLibraryAccountsProvider {
     }
   }
 }
+
+extension NYPLLibraryAccountMock: NYPLReaderServerPermissions {
+  var syncPermissionGranted: Bool {
+    return currentAccount?.details?.syncPermissionGranted ?? false
+  }
+}

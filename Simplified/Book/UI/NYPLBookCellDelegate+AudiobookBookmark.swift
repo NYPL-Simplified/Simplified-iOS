@@ -18,11 +18,12 @@ import UIKit
   func setBookmarkBusinessLogic(for book: NYPLBook,
                                 audiobookManager: DefaultAudiobookManager,
                                 audiobookRegistryProvider: NYPLAudiobookRegistryProvider) {
-    let bizLogic = NYPLAudiobookBookmarksBusinessLogic(book: book,
-                                                       drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
-                                                       bookRegistryProvider: audiobookRegistryProvider,
-                                                       currentLibraryAccountProvider: AccountsManager.shared,
-                                                       annotationsSynchronizer: NYPLAnnotations.self)
+    let bizLogic = NYPLAudiobookBookmarksBusinessLogic(
+      book: book,
+      drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
+      bookRegistryProvider: audiobookRegistryProvider,
+      syncPermission: AccountsManager.shared.syncPermissionGranted,
+      annotationsSynchronizer: NYPLAnnotations.self)
     audiobookManager.bookmarkBusinessLogic = bizLogic
   }
 }
