@@ -49,7 +49,7 @@ class NYPLBaseReaderViewController: UIViewController, Loggable {
        publication: Publication,
        book: NYPLBook,
        syncPermission: Bool,
-       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
 
     self.navigator = navigator
     self.publication = publication

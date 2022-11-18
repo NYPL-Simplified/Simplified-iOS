@@ -89,6 +89,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     self.urlSettingsProvider = urlSettingsProvider
     self.bookRegistry = bookRegistry
     self.bookDownloadsRemover = bookDownloadsRemover
+    self.annotationsSynchronizer = NYPLAnnotations()
     self.userAccountProvider = userAccountProvider
     self.networker = networkExecutor
     self.drmAuthorizerAdobe = drmAuthorizerAdobe
@@ -103,6 +104,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
 
   /// Signing out implies removing book downloads from the device.
   let bookDownloadsRemover: NYPLBookDownloadsDeleting
+
+  let annotationsSynchronizer: NYPLServerSyncing
 
   /// Provides the user account for a given library.
   private let userAccountProvider: NYPLUserAccountProvider.Type

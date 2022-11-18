@@ -31,7 +31,7 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
   private let drmDeviceID: String?
   private let bookRegistry: NYPLAudiobookRegistryProvider
   private let syncPermission: Bool
-  private let annotationsSynchronizer: NYPLAnnotationSyncing.Type
+  private let annotationsSynchronizer: NYPLAnnotationSyncing
   
   var bookmarksCount: Int {
     return bookmarks.count
@@ -51,7 +51,7 @@ class NYPLAudiobookBookmarksBusinessLogic: NYPLAudiobookBookmarking {
        drmDeviceID: String?,
        bookRegistryProvider: NYPLAudiobookRegistryProvider,
        syncPermission: Bool,
-       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
     self.book = book
     self.drmDeviceID = drmDeviceID
     self.bookRegistry = bookRegistryProvider

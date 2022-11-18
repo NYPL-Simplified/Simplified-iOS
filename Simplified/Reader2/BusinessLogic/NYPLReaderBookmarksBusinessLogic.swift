@@ -21,14 +21,14 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   private let bookRegistry: NYPLBookRegistryProvider
   private let syncPermission: Bool
   private let bookmarksFactory: NYPLReadiumBookmarkFactory
-  private let bookmarksSynchronizer: NYPLAnnotationSyncing.Type
+  private let bookmarksSynchronizer: NYPLAnnotationSyncing
 
   init(book: NYPLBook,
        r2Publication: Publication,
        drmDeviceID: String?,
        bookRegistryProvider: NYPLBookRegistryProvider,
        syncPermission: Bool,
-       bookmarksSynchronizer: NYPLAnnotationSyncing.Type) {
+       bookmarksSynchronizer: NYPLAnnotationSyncing) {
     self.book = book
     self.publication = r2Publication
     self.drmDeviceID = drmDeviceID

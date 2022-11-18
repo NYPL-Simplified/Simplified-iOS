@@ -63,7 +63,7 @@ final class ReaderModule: ReaderModuleAPI {
   init(delegate: R2ModuleDelegate?,
        resourcesServer: ResourcesServer,
        bookRegistry: NYPLBookRegistryProvider,
-       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
     self.progressSynchronizer = NYPLLastReadPositionSynchronizer(

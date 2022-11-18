@@ -1,4 +1,5 @@
 @class NYPLR2Owner;
+@class NYPLAnnotations;
 @class NYPLCatalogNavigationController;
 
 @interface NYPLRootTabBarController : UITabBarController
@@ -11,6 +12,7 @@
 + (instancetype)sharedController;
 
 @property (readonly) NYPLR2Owner *r2Owner;
+@property NYPLAnnotations *annotationsSync;
 @property(nonatomic, readonly) NYPLCatalogNavigationController *catalogNavigationController;
 
 /// This method will present a view controller from the receiver, or from the

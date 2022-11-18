@@ -20,7 +20,7 @@ class NYPLLastReadPositionPoster {
 
   // external dependencies
   private let bookRegistryProvider: NYPLBookRegistryProvider
-  private let annotationsSynchronizer: NYPLAnnotationSyncing.Type
+  private let annotationsSynchronizer: NYPLAnnotationSyncing
 
   // internal state management
   private var lastReadPositionUploadDate: Date
@@ -29,7 +29,7 @@ class NYPLLastReadPositionPoster {
 
   init(book: NYPLBook,
        bookRegistryProvider: NYPLBookRegistryProvider,
-       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
     self.book = book
     self.bookRegistryProvider = bookRegistryProvider
     self.lastReadPositionUploadDate = Date()
