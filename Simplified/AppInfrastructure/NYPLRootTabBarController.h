@@ -12,7 +12,7 @@
 + (instancetype)sharedController;
 
 @property (readonly) NYPLR2Owner *r2Owner;
-@property NYPLAnnotations *annotationsSync;
+@property NYPLAnnotations *annotationsSynchronizer;
 @property(nonatomic, readonly) NYPLCatalogNavigationController *catalogNavigationController;
 
 /// This method will present a view controller from the receiver, or from the

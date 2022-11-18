@@ -14,7 +14,7 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
   var bookmarkBusinessLogic: NYPLAudiobookBookmarksBusinessLogic!
   var bookRegistryMock: NYPLBookRegistryMock!
   var libraryAccountMock: NYPLLibraryAccountMock!
-  var annotationsMock: NYPLAnnotationsMock.Type!
+  var annotationsMock: NYPLAnnotationsMock!
   var bookmarkCounter: Int = 0
   let bookIdentifier = "fakeAudiobook"
   let deviceID = "fakeDeviceID"
@@ -57,7 +57,7 @@ class NYPLAudiobookBookmarksBusinessLogicTests: XCTestCase {
     bookRegistryMock.addBook(book: fakeBook, state: .DownloadSuccessful)
     libraryAccountMock = NYPLLibraryAccountMock()
     libraryAccountMock.currentAccount?.details?.syncPermissionGranted = true
-    annotationsMock = NYPLAnnotationsMock.self
+    annotationsMock = NYPLAnnotationsMock()
     bookmarkBusinessLogic = NYPLAudiobookBookmarksBusinessLogic(
       book: fakeBook,
       drmDeviceID: deviceID,

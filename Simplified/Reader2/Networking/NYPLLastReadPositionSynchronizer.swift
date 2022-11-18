@@ -25,14 +25,14 @@ class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
     case stay, moveToServerLocator
   }
 
-  let synchronizer: NYPLAnnotationSyncing
+  let synchronizer: NYPLLastReadPositionSupportAPI
 
   /// Designated initializer.
   ///
   /// - Parameters:
   ///   - bookRegistry: The registry that stores the reading progresses.
   init(bookRegistry: NYPLBookRegistryProvider,
-       synchronizer: NYPLAnnotationSyncing) {
+       synchronizer: NYPLLastReadPositionSupportAPI) {
     self.bookRegistry = bookRegistry
     self.synchronizer = synchronizer
   }

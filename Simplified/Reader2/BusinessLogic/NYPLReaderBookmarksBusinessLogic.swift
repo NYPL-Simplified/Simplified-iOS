@@ -21,14 +21,14 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   private let bookRegistry: NYPLBookRegistryProvider
   private let syncPermission: Bool
   private let bookmarksFactory: NYPLReadiumBookmarkFactory
-  private let bookmarksSynchronizer: NYPLAnnotationSyncing
+  private let synchronizer: NYPLAnnotationSyncing
 
   init(book: NYPLBook,
        r2Publication: Publication,
        drmDeviceID: String?,
        bookRegistryProvider: NYPLBookRegistryProvider,
        syncPermission: Bool,
-       bookmarksSynchronizer: NYPLAnnotationSyncing) {
+       synchronizer: NYPLAnnotationSyncing) {
     self.book = book
     self.publication = r2Publication
     self.drmDeviceID = drmDeviceID
@@ -37,7 +37,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
     self.syncPermission = syncPermission
     self.bookmarksFactory = NYPLReadiumBookmarkFactory(publication: publication,
                                                        drmDeviceID: drmDeviceID)
-    self.bookmarksSynchronizer = bookmarksSynchronizer
+    self.synchronizer = synchronizer
     
     super.init()
   }
@@ -113,7 +113,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
       return
     }
     
-    bookmarksSynchronizer.postBookmark(bookmark, forBookID: book.identifier) { serverAnnotationID in
+    synchronizer.postBookmark(bookmark, forBookID: book.identifier) { serverAnnotationID in
       Log.info(#function, serverAnnotationID != nil ? "Bookmark upload succeed" : "Bookmark failed to upload")
       bookmark.annotationId = serverAnnotationID
       self.bookRegistry.add(bookmark, forIdentifier: self.book.identifier)
@@ -155,7 +155,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
     }
     
     if syncPermission && annotationId.count > 0 {
-      bookmarksSynchronizer.deleteBookmark(annotationId: annotationId) { (success) in
+      synchronizer.deleteBookmark(annotationId: annotationId) { (success) in
         Log.info(#file, success ?
           "Bookmark successfully deleted" :
           "Failed to delete bookmark from server. Will attempt again on next Sync")
@@ -174,7 +174,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
   // MARK: - Bookmark Syncing
 
   func shouldAllowRefresh() -> Bool {
-    return bookmarksSynchronizer.syncIsPossibleAndPermitted()
+    return synchronizer.syncIsPossibleAndPermitted()
   }
     
   func syncBookmarks(completion: @escaping (Bool, [NYPLReadiumBookmark]) -> ()) {
@@ -191,7 +191,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
       // First check for and upload any local bookmarks that have never been saved to the server.
       // Wait til that's finished, then download the server's bookmark list and filter out any that can be deleted.
       let localBookmarks = self.bookRegistry.readiumBookmarks(forIdentifier: self.book.identifier)
-      self.bookmarksSynchronizer.uploadLocalBookmarks(localBookmarks, forBook: self.book.identifier) { (bookmarksUploaded, bookmarksFailedToUpload) in
+      self.synchronizer.uploadLocalBookmarks(localBookmarks, forBook: self.book.identifier) { (bookmarksUploaded, bookmarksFailedToUpload) in
         for localBookmark in localBookmarks {
           for uploadedBookmark in bookmarksUploaded {
             if localBookmark.isEqual(uploadedBookmark) {
@@ -200,10 +200,10 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
           }
         }
         
-        self.bookmarksSynchronizer.getServerBookmarks(of: NYPLReadiumBookmark.self,
-                                                        forBook: self.book.identifier,
-                                                        publication: self.publication,
-                                                        atURL: self.book.annotationsURL) { serverBookmarks in
+        self.synchronizer.getServerBookmarks(of: NYPLReadiumBookmark.self,
+                                             forBook: self.book.identifier,
+                                             publication: self.publication,
+                                             atURL: self.book.annotationsURL) { serverBookmarks in
           guard let serverBookmarks = serverBookmarks else {
             self.handleBookmarksSyncFail(message: "Ending sync without running completion. Returning original list of bookmarks.",
                                          completion: completion)
@@ -279,7 +279,7 @@ class NYPLReaderBookmarksBusinessLogic: NSObject {
       bookRegistry.add(bookmark, forIdentifier: self.book.identifier)
     }
     
-    bookmarksSynchronizer.deleteBookmarks(serverBookmarksToDelete)
+    synchronizer.deleteBookmarks(serverBookmarksToDelete)
     
     completion()
   }

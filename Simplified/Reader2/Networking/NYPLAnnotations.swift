@@ -5,68 +5,61 @@ import NYPLUtilities
 import NYPLAudiobookToolkit
 #endif
 
-@objc
+protocol NYPLAnnotationSettings: AnyObject {
+  var userHasSeenFirstTimeSyncMessage: Bool {get set}
+}
+
 protocol NYPLServerSyncUpdating: AnyObject {
   func updateServerSyncSetting(toEnabled enabled: Bool,
                                completion:@escaping (Bool)->())
 }
 
-@objc
-protocol NYPLServerSyncing: NYPLServerSyncUpdating {
-  func requestServerSyncStatus(settings: NYPLAnnotationSettings,
-                               syncPermissionGranted: Bool,
-                               syncSupportedCompletion: @escaping (_ enableSync: Bool,
-                                                                   _ error: Error?) -> ())
+protocol NYPLServerSyncChecking: AnyObject {
+  func checkServerSyncStatus(settings: NYPLAnnotationSettings,
+                             syncPermissionGranted: Bool,
+                             syncSupportedCompletion: @escaping (_ enableSync: Bool,
+                                                                 _ error: Error?) -> ())
+  func syncIsPossibleAndPermitted() -> Bool
 }
 
-@objc
-protocol NYPLAnnotationSettings: AnyObject {
-  var userHasSeenFirstTimeSyncMessage: Bool {get set}
-}
-
-protocol NYPLAnnotationSyncing: NYPLServerSyncing {
-
-  // Server sync status
-
-  // NYPLLastReadPositionPoster, NYPLReaderBookmarksBusinessLogic
+protocol NYPLLastReadPositionSupportAPI: AnyObject {
   func syncIsPossibleAndPermitted() -> Bool
 
-  // Reading position
-
-  // needed by NYPLLastReadPositionSynchronizer
   func syncReadingPosition(ofBook bookID: String?,
                            publication: Publication?,
                            toURL url: URL?,
                            completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ())
 
-  // NYPLLastReadPositionPoster
   func postReadingPosition(forBook bookID: String, selectorValue: String)
-  
-  // Bookmark
 
-  // NYPLReaderBookmarksBusinessLogic
+}
+
+protocol NYPLAnnotationSyncing: NYPLServerSyncUpdating, NYPLServerSyncChecking, NYPLLastReadPositionSupportAPI {
+
+  // Bookmarks
+
   func getServerBookmarks<T: NYPLBookmark>(of type: T.Type,
                                            forBook bookID:String?,
                                            publication: Publication?,
                                            atURL annotationURL:URL?,
                                            completion: @escaping (_ bookmarks: [T]?) -> ())
-  // NYPLReaderBookmarksBusinessLogic
+
   func deleteBookmarks(_ bookmarks: [NYPLBookmark])
 
-  // NYPLReaderBookmarksBusinessLogic
   func deleteBookmark(annotationId: String,
                       completionHandler: @escaping (_ success: Bool) -> ())
 
-  // NYPLReaderBookmarksBusinessLogic
   func uploadLocalBookmarks<T: NYPLBookmark>(_ bookmarks: [T],
                                              forBook bookID: String,
                                              completion: @escaping ([T], [T])->())
 
-  // NYPLReaderBookmarksBusinessLogic
   func postBookmark(_ bookmark: NYPLBookmark,
                     forBookID bookID: String,
                     completion: @escaping (_ serverID: String?) -> ())
 }
+
+//------------------------------------------------------------------------------
+// MARK: -
 
 final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
@@ -99,11 +92,10 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   ///   granted or not.
   ///   - syncSupportedCompletion: Handler always called at the end of the
   ///   process, unless sync is not supported by the current library.
-  @objc
-  func requestServerSyncStatus(settings: NYPLAnnotationSettings,
-                               syncPermissionGranted: Bool,
-                               syncSupportedCompletion: @escaping (_ enableSync: Bool,
-                                                                   _ error: Error?) -> ()) {
+  func checkServerSyncStatus(settings: NYPLAnnotationSettings,
+                             syncPermissionGranted: Bool,
+                             syncSupportedCompletion: @escaping (_ enableSync: Bool,
+                                                                 _ error: Error?) -> ()) {
     guard syncIsPossible() else {
       Log.info(#function, "Account does not satisfy conditions for sync setting request.")
       return

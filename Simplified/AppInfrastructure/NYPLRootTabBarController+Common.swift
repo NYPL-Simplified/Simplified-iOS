@@ -10,8 +10,8 @@ import Foundation
 
 extension NYPLRootTabBarController {
   @objc func makeR2Owner() -> NYPLR2Owner {
-    self.annotationsSync = NYPLAnnotations()
+    self.annotationsSynchronizer = NYPLAnnotations()
     return NYPLR2Owner(bookRegistry: NYPLBookRegistry.shared(),
-                       annotationsSynchronizer: annotationsSync)
+                       annotationsSynchronizer: annotationsSynchronizer)
   }
 }

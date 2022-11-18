@@ -23,7 +23,7 @@ import UIKit
       drmDeviceID: NYPLUserAccount.sharedAccount().deviceID,
       bookRegistryProvider: audiobookRegistryProvider,
       syncPermission: AccountsManager.shared.syncPermissionGranted,
-      annotationsSynchronizer: NYPLRootTabBarController.shared().annotationsSync)
+      annotationsSynchronizer: NYPLRootTabBarController.shared().annotationsSynchronizer)
     audiobookManager.bookmarkBusinessLogic = bizLogic
   }
 }

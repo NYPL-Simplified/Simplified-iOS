@@ -18,15 +18,14 @@ class NYPLEPUBOpener: NSObject {
     let currentAccountDetails = AccountsManager.shared.currentAccount?.details
     let syncPermission = currentAccountDetails?.syncPermissionGranted ?? false
     let rootTabController = NYPLRootTabBarController.shared()
-    let serverSyncRequester = rootTabController?.annotationsSync
     rootTabController?.presentBook(book,
                                    fromFileURL: url,
                                    syncPermission: syncPermission,
                                    successCompletion: successCompletion)
     
-    serverSyncRequester?
-      .requestServerSyncStatus(settings: NYPLSettings.shared,
-                               syncPermissionGranted: syncPermission) { enableSync, error in
+    rootTabController?.annotationsSynchronizer?
+      .checkServerSyncStatus(settings: NYPLSettings.shared,
+                             syncPermissionGranted: syncPermission) { enableSync, error in
         guard error == nil else {
           return
         }

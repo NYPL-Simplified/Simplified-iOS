@@ -19,7 +19,7 @@ import UIKit
   private let syncSettingUpdater: NYPLServerSyncUpdating
   
   @objc init(delegate: NYPLServerDataDeleting) {
-    self.syncSettingUpdater = NYPLRootTabBarController.shared().annotationsSync
+    self.syncSettingUpdater = NYPLRootTabBarController.shared().annotationsSynchronizer
     self.delegate = delegate
     
     super.init(nibName: nil, bundle: nil)

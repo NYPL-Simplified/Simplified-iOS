@@ -12,32 +12,32 @@ import NYPLUtilities
 @testable import SimplyE
 
 class NYPLAnnotationsMock: NYPLAnnotationSyncing {
-  static var failRequest: Bool = false
-  static var serverBookmarks: [String: [NYPLBookmark]] = [String: [NYPLBookmark]]()
-  static var readingPositions: [String: NYPLBookmarkSpec] = [String: NYPLBookmarkSpec]()
+  var failRequest: Bool = false
+  var serverBookmarks: [String: [NYPLBookmark]] = [String: [NYPLBookmark]]()
+  var readingPositions: [String: NYPLBookmarkSpec] = [String: NYPLBookmarkSpec]()
   
   // For generating unique annotation id
-  static private var annotationCounter: Int = 0
+  private var annotationCounter: Int = 0
   
   // Server status
   
-  static func requestServerSyncStatus(settings: NYPLAnnotationSettings,
-                                      syncPermissionGranted: Bool,
-                                      syncSupportedCompletion: @escaping (Bool, Error?) -> ()) {
+  func checkServerSyncStatus(settings: NYPLAnnotationSettings,
+                             syncPermissionGranted: Bool,
+                             syncSupportedCompletion: @escaping (Bool, Error?) -> ()) {
     syncSupportedCompletion(true, nil)
   }
   
-  static func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
+  func updateServerSyncSetting(toEnabled enabled: Bool,
+                               completion:@escaping (Bool)->()) {
     completion(false)
   }
   
   // Reading position
   
-  static func syncReadingPosition(ofBook bookID: String?,
-                                  publication: Publication?,
-                                  toURL url:URL?,
-                                  usingNetworkExecutor: NYPLHTTPRequestExecutingBasic,
-                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
+  func syncReadingPosition(ofBook bookID: String?,
+                           publication: Publication?,
+                           toURL url:URL?,
+                           completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
     guard !failRequest,
           let id = bookID,
           let bookmarkSpec = readingPositions[id] else {
@@ -46,13 +46,13 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
     }
     let bookmarkData = bookmarkSpec.dictionaryForJSONSerialization()
     let bookmark = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: bookmarkData,
-                                            annotationType: .readingProgress,
-                                            bookID: id,
-                                            publication: publication)
+                                                   annotationType: .readingProgress,
+                                                   bookID: id,
+                                                   publication: publication)
     completion(bookmark)
   }
   
-  static func postReadingPosition(forBook bookID: String, selectorValue: String) {
+  func postReadingPosition(forBook bookID: String, selectorValue: String) {
     guard !failRequest else {
       return
     }
@@ -67,11 +67,11 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   
   // Bookmark
   
-  static func getServerBookmarks<T>(of type: T.Type,
-                                    forBook bookID: String?,
-                                    publication: Publication?,
-                                    atURL annotationURL: URL?,
-                                    completion: @escaping ([T]?) -> ()) where T : NYPLBookmark {
+  func getServerBookmarks<T>(of type: T.Type,
+                             forBook bookID: String?,
+                             publication: Publication?,
+                             atURL annotationURL: URL?,
+                             completion: @escaping ([T]?) -> ()) where T : NYPLBookmark {
     guard !failRequest, let id = bookID else {
       completion(nil)
       return
@@ -79,7 +79,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
     completion(serverBookmarks[id] as? [T])
   }
   
-  static func deleteBookmarks(_ bookmarks: [NYPLBookmark]) {
+  func deleteBookmarks(_ bookmarks: [NYPLBookmark]) {
     guard !failRequest else {
       return
     }
@@ -90,8 +90,8 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
     }
   }
 
-  static func deleteBookmark(annotationId: String,
-                             completionHandler: @escaping (_ success: Bool) -> ()) {
+  func deleteBookmark(annotationId: String,
+                      completionHandler: @escaping (_ success: Bool) -> ()) {
     let stringComponents = annotationId.components(separatedBy: "_")
     guard !failRequest,
           let bookID = stringComponents.first,
@@ -103,9 +103,9 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
     completionHandler(true)
   }
 
-  static func uploadLocalBookmarks<T>(_ bookmarks: [T],
-                                      forBook bookID: String,
-                                      completion: @escaping ([T], [T]) -> ()) where T : NYPLBookmark {
+  func uploadLocalBookmarks<T>(_ bookmarks: [T],
+                               forBook bookID: String,
+                               completion: @escaping ([T], [T]) -> ()) where T : NYPLBookmark {
     guard !failRequest else {
       completion([], bookmarks)
       return
@@ -126,7 +126,9 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
     completion(bookmarksUpdated, bookmarksFailedToUpdate)
   }
   
-  static func postBookmark(_ bookmark: NYPLBookmark, forBookID bookID: String, completion: @escaping (String?) -> ()) {
+  func postBookmark(_ bookmark: NYPLBookmark,
+                    forBookID bookID: String,
+                    completion: @escaping (String?) -> ()) {
     guard !failRequest else {
       completion(nil)
       return
@@ -149,7 +151,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   
   // Permission
   
-  static func syncIsPossibleAndPermitted() -> Bool {
+  func syncIsPossibleAndPermitted() -> Bool {
     return true
   }
   
@@ -157,7 +159,7 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   
   /// Returns an unique string in the format of "[bookID]_number"
   /// eg. BookID123_37
-  static func generateAnnotationID(_ bookID: String) -> String {
+  func generateAnnotationID(_ bookID: String) -> String {
     annotationCounter += 1
     return "\(bookID)_\(annotationCounter)"
   }
