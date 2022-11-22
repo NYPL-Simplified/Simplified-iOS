@@ -24,7 +24,7 @@ import R2Streamer
   var readerModule: ReaderModuleAPI! = nil
 
   init(bookRegistry: NYPLBookRegistryProvider,
-       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
     super.init()
     guard let server = PublicationServer() else {
       /// FIXME: we should recover properly if the publication server can't

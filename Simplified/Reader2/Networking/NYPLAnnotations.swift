@@ -5,57 +5,75 @@ import NYPLUtilities
 import NYPLAudiobookToolkit
 #endif
 
-protocol NYPLAnnotationSyncing: AnyObject {
-  // Server sync status
-  
-  static func requestServerSyncStatus(settings: NYPLAnnotationSettings,
-                                      syncPermissionGranted: Bool,
-                                      syncSupportedCompletion: @escaping (_ enableSync: Bool,
-                                                                          _ error: Error?) -> ())
-  
-  static func updateServerSyncSetting(toEnabled enabled: Bool,
-                                      completion:@escaping (Bool)->())
-
-  static func syncIsPossibleAndPermitted() -> Bool
-
-  // Reading position
-  
-  static func syncReadingPosition(ofBook bookID: String?,
-                                  publication: Publication?,
-                                  toURL url: URL?,
-                                  usingNetworkExecutor executor: NYPLHTTPRequestExecutingBasic,
-                                  completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ())
-  
-  static func postReadingPosition(forBook bookID: String, selectorValue: String)
-  
-  // Bookmark
-  
-  static func getServerBookmarks<T: NYPLBookmark>(of type: T.Type,
-                                                  forBook bookID:String?,
-                                                  publication: Publication?,
-                                                  atURL annotationURL:URL?,
-                                                  completion: @escaping (_ bookmarks: [T]?) -> ())
-  
-  static func deleteBookmarks(_ bookmarks: [NYPLBookmark])
-  
-  static func deleteBookmark(annotationId: String,
-                             completionHandler: @escaping (_ success: Bool) -> ())
-  
-  static func uploadLocalBookmarks<T: NYPLBookmark>(_ bookmarks: [T],
-                                                    forBook bookID: String,
-                                                    completion: @escaping ([T], [T])->())
-  
-  static func postBookmark(_ bookmark: NYPLBookmark,
-                           forBookID bookID: String,
-                           completion: @escaping (_ serverID: String?) -> ())
-}
-
-@objc
 protocol NYPLAnnotationSettings: AnyObject {
   var userHasSeenFirstTimeSyncMessage: Bool {get set}
 }
 
+protocol NYPLServerSyncUpdating: AnyObject {
+  func updateServerSyncSetting(toEnabled enabled: Bool,
+                               completion:@escaping (Bool)->())
+}
+
+protocol NYPLServerSyncChecking: AnyObject {
+  func checkServerSyncStatus(settings: NYPLAnnotationSettings,
+                             syncPermissionGranted: Bool,
+                             syncSupportedCompletion: @escaping (_ enableSync: Bool,
+                                                                 _ error: Error?) -> ())
+  func syncIsPossibleAndPermitted() -> Bool
+}
+
+protocol NYPLLastReadPositionSupportAPI: AnyObject {
+  func syncIsPossibleAndPermitted() -> Bool
+
+  func syncReadingPosition(ofBook bookID: String?,
+                           publication: Publication?,
+                           toURL url: URL?,
+                           completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ())
+
+  func postReadingPosition(forBook bookID: String, selectorValue: String)
+
+}
+
+protocol NYPLAnnotationSyncing: NYPLServerSyncUpdating, NYPLServerSyncChecking, NYPLLastReadPositionSupportAPI {
+
+  // Bookmarks
+
+  func getServerBookmarks<T: NYPLBookmark>(of type: T.Type,
+                                           forBook bookID:String?,
+                                           publication: Publication?,
+                                           atURL annotationURL:URL?,
+                                           completion: @escaping (_ bookmarks: [T]?) -> ())
+
+  func deleteBookmarks(_ bookmarks: [NYPLBookmark])
+
+  func deleteBookmark(annotationId: String,
+                      completionHandler: @escaping (_ success: Bool) -> ())
+
+  func uploadLocalBookmarks<T: NYPLBookmark>(_ bookmarks: [T],
+                                             forBook bookID: String,
+                                             completion: @escaping ([T], [T])->())
+
+  func postBookmark(_ bookmark: NYPLBookmark,
+                    forBookID bookID: String,
+                    completion: @escaping (_ serverID: String?) -> ())
+}
+
+//------------------------------------------------------------------------------
+// MARK: -
+
 final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
+
+  let failFastExecutor: NYPLNetworkExecutor
+
+  override init() {
+    failFastExecutor = NYPLNetworkExecutor(
+      credentialsSource: NYPLUserAccount.sharedAccount(),
+      cachingStrategy: .ephemeral,
+      waitsForConnectivity: false)
+
+    super.init()
+  }
+
   // MARK: - Sync Settings
 
   /// Shows (if needed) the opt-in flow for syncing the user bookmarks and
@@ -74,11 +92,10 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   ///   granted or not.
   ///   - syncSupportedCompletion: Handler always called at the end of the
   ///   process, unless sync is not supported by the current library.
-  @objc
-  class func requestServerSyncStatus(settings: NYPLAnnotationSettings,
-                                     syncPermissionGranted: Bool,
-                                     syncSupportedCompletion: @escaping (_ enableSync: Bool,
-                                                                         _ error: Error?) -> ()) {
+  func checkServerSyncStatus(settings: NYPLAnnotationSettings,
+                             syncPermissionGranted: Bool,
+                             syncSupportedCompletion: @escaping (_ enableSync: Bool,
+                                                                 _ error: Error?) -> ()) {
     guard syncIsPossible() else {
       Log.info(#function, "Account does not satisfy conditions for sync setting request.")
       return
@@ -108,11 +125,11 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
       if (!initialized && settings.userHasSeenFirstTimeSyncMessage == false) {
         Log.info(#function, "Sync has never been initialized for the patron. Showing alert flow.")
         NYPLMainThreadRun.asyncIfNeeded {
-          #if OPENEBOOKS
+#if OPENEBOOKS
           let title = "Open eBooks Sync"
-          #else
+#else
           let title = "SimplyE Sync"
-          #endif
+#endif
           let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
           let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
           let notNowAction = UIAlertAction(title: "Not Now", style: .default) { action in
@@ -146,27 +163,27 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   ///   - completion: if a network request is actually performed, this block
   /// is guaranteed to be called on the Main queue. Otherwise, this is called
   /// on the same thread the function was invoked on.
-  class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
+  func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
     if (NYPLUserAccount.sharedAccount().hasCredentials() &&
-      AccountsManager.shared.currentAccount?.details?.supportsSimplyESync == true) {
+        AccountsManager.shared.currentAccount?.details?.supportsSimplyESync == true) {
       guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
         Log.error(#file, "Could not create user profile URL from string. Abandoning attempt to update sync setting.")
         completion(false)
         return
       }
       let parameters = ["settings": ["simplified:synchronize_annotations": enabled]] as [String : Any]
-      updateSyncSettings(at: userProfileUrl, parameters, { success in
+      NYPLAnnotations.updateSyncSettings(at: userProfileUrl, parameters, { success in
         if !success {
-          handleSyncSettingError()
+          NYPLAnnotations.handleSyncSettingError()
         }
         completion(success)
       })
     }
   }
 
-  private class func fetchSyncStatus(completion: @escaping (_ initialized: Bool,
-                                                            _ syncIsPermitted: Bool,
-                                                            _ error: Error?) -> ()) {
+  private func fetchSyncStatus(completion: @escaping (_ initialized: Bool,
+                                                      _ syncIsPermitted: Bool,
+                                                      _ error: Error?) -> ()) {
     guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
       Log.error(#file, "Failed to create user profile URL from string. Abandoning attempt to retrieve sync setting.")
       return
@@ -209,7 +226,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   private class func updateSyncSettings(at url: URL,
                                         _ parameters: [String:Any],
                                         _ completion: @escaping (Bool)->()) {
-    guard let jsonData = makeSubmissionData(fromRepresentation: parameters) else {
+    guard let jsonData = NYPLAnnotations.makeSubmissionData(fromRepresentation: parameters) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
       completion(false)
       return
@@ -222,7 +239,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
         let httpStatus = (response as? HTTPURLResponse)?.statusCode ?? -1
         Log.error(#file, "Error updating sync settings, server returned: \(httpStatus)")
         if NetworkQueue.StatusCodes.contains(error.code) {
-          self.addRequestToOfflineQueue(httpMethod: .PUT,
+          NYPLAnnotations.addRequestToOfflineQueue(httpMethod: .PUT,
                                         url: url,
                                         parameters: parameters)
         }
@@ -248,11 +265,10 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   /// Reads the current reading position from the server, parses the response
   /// and returns the result to the `completionHandler`.
-  class func syncReadingPosition(ofBook bookID: String?,
-                                 publication: Publication?,
-                                 toURL url:URL?,
-                                 usingNetworkExecutor executor: NYPLHTTPRequestExecutingBasic,
-                                 completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
+  func syncReadingPosition(ofBook bookID: String?,
+                           publication: Publication?,
+                           toURL url:URL?,
+                           completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -266,20 +282,21 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
       return
     }
 
-    _ = executor.GET(url,
-                     cachePolicy: .reloadIgnoringLocalCacheData) { data, _, error in
-      let bookmarks: [NYPLReadiumBookmark]? = parseAnnotationsResponse(data,
-                                                                       of: NYPLReadiumBookmark.self,
-                                                                       error: error,
-                                                                       motivation: .readingProgress,
-                                                                       publication: publication,
-                                                                       bookID: bookID)
+    _ = failFastExecutor.GET(url,
+                             cachePolicy: .reloadIgnoringLocalCacheData) { data, _, error in
+      let bookmarks: [NYPLReadiumBookmark]? = NYPLAnnotations
+        .parseAnnotationsResponse(data,
+                                  of: NYPLReadiumBookmark.self,
+                                  error: error,
+                                  motivation: .readingProgress,
+                                  publication: publication,
+                                  bookID: bookID)
       let readPos = bookmarks?.first
       completion(readPos)
     }
   }
 
-  class func postReadingPosition(forBook bookID: String, selectorValue: String) {
+  func postReadingPosition(forBook bookID: String, selectorValue: String) {
     // Format annotation for submission to server according to spec
     let bookmark = NYPLBookmarkSpec(time: Date(),
                                     device: NYPLUserAccount.sharedAccount().deviceID ?? "",
@@ -310,11 +327,11 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   // Completion handler will return a nil parameter if there are any failures with
   // the network request, deserialization, or sync permission is not allowed.
-  class func getServerBookmarks<T: NYPLBookmark>(of type: T.Type,
-                                                 forBook bookID:String?,
-                                                 publication: Publication?,
-                                                 atURL annotationURL:URL?,
-                                                 completion: @escaping (_ bookmarks: [T]?) -> ()) {
+  func getServerBookmarks<T: NYPLBookmark>(of type: T.Type,
+                                           forBook bookID:String?,
+                                           publication: Publication?,
+                                           atURL annotationURL:URL?,
+                                           completion: @escaping (_ bookmarks: [T]?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -329,17 +346,18 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     }
 
     NYPLNetworkExecutor.shared.GET(annotationURL, cachePolicy: .reloadIgnoringLocalCacheData) { data, _, error in
-      let bookmarks: [T]? = parseAnnotationsResponse(data,
-                                                     of: T.self,
-                                                     error: error,
-                                                     motivation: .bookmark,
-                                                     publication: publication,
-                                                     bookID: bookID)
+      let bookmarks: [T]? = NYPLAnnotations
+        .parseAnnotationsResponse(data,
+                                  of: T.self,
+                                  error: error,
+                                  motivation: .bookmark,
+                                  publication: publication,
+                                  bookID: bookID)
       completion(bookmarks)
     }
   }
 
-  class func deleteBookmarks(_ bookmarks: [NYPLBookmark]) {
+  func deleteBookmarks(_ bookmarks: [NYPLBookmark]) {
 
     if !syncIsPossibleAndPermitted() {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -359,8 +377,8 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     }
   }
 
-  class func deleteBookmark(annotationId: String,
-                            completionHandler: @escaping (_ success: Bool) -> ()) {
+  func deleteBookmark(annotationId: String,
+                      completionHandler: @escaping (_ success: Bool) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -392,9 +410,9 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   // Method is called when the SyncManager is syncing bookmarks
   // If an existing local bookmark is missing an annotationID, assume it still needs to be uploaded.
-  class func uploadLocalBookmarks<T: NYPLBookmark>(_ bookmarks: [T],
-                                  forBook bookID: String,
-                                  completion: @escaping ([T], [T])->()) {
+  func uploadLocalBookmarks<T: NYPLBookmark>(_ bookmarks: [T],
+                                             forBook bookID: String,
+                                             completion: @escaping ([T], [T])->()) {
 
     if !syncIsPossibleAndPermitted() {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -438,9 +456,9 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   ///   - bookmark: The bookmark to save to the server.
   ///   - bookID: The book ID the bookmark refers to.
   ///   - completion: Always called at the end of the api call.
-  class func postBookmark(_ bookmark: NYPLBookmark,
-                          forBookID bookID: String,
-                          completion: @escaping (_ serverID: String?) -> ()) {
+  func postBookmark(_ bookmark: NYPLBookmark,
+                    forBookID bookID: String,
+                    completion: @escaping (_ serverID: String?) -> ()) {
 
     let serializableBookmark = bookmark
       .serializableRepresentation(forMotivation: .bookmark,
@@ -485,20 +503,21 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
     }
 
     guard let data = data,
-      let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
-      let json = jsonObject as? [String: Any] else {
-        NYPLErrorLogger.logError(withCode: .serializationFail,
-                                 summary: "NYPLAnnotations::parseAnnotationsResponse error",
-                                 metadata: metadata)
-        return nil
+          let jsonObject = try? JSONSerialization.jsonObject(with: data,
+                                                             options: []),
+          let json = jsonObject as? [String: Any] else {
+      NYPLErrorLogger.logError(withCode: .serializationFail,
+                               summary: "NYPLAnnotations::parseAnnotationsResponse error",
+                               metadata: metadata)
+      return nil
     }
 
     guard let first = json["first"] as? [String: Any],
-      let items = first["items"] as? [[String: Any]] else {
-        NYPLErrorLogger.logError(withCode: .noData,
-                                 summary: "NYPLAnnotations::parseAnnotationsResponse error",
-                                 metadata: metadata)
-        return nil
+          let items = first["items"] as? [[String: Any]] else {
+      NYPLErrorLogger.logError(withCode: .noData,
+                               summary: "NYPLAnnotations::parseAnnotationsResponse error",
+                               metadata: metadata)
+      return nil
     }
 
     var bookmarks = [T]()
@@ -533,10 +552,10 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
   ///
   /// - Note: Does not log error reports to Crashlytics. That responsibility is
   /// left to the caller.
-  private class func postAnnotation(forBook bookID: String,
-                                    withParameters parameters: [String: Any],
-                                    queueOffline: Bool,
-                                    _ completion: @escaping (_ result: Result<String?, Error>) -> ()) {
+  private func postAnnotation(forBook bookID: String,
+                              withParameters parameters: [String: Any],
+                              queueOffline: Bool,
+                              _ completion: @escaping (_ result: Result<String?, Error>) -> ()) {
 
     guard let annotationsURL = NYPLAnnotations.annotationsURL else {
       let err = NSError(domain: "Error posting annotation",
@@ -546,7 +565,7 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
       return
     }
 
-    guard let jsonData = makeSubmissionData(fromRepresentation: parameters) else {
+    guard let jsonData = NYPLAnnotations.makeSubmissionData(fromRepresentation: parameters) else {
       let err = NSError(domain: "Error posting annotation",
                         code: NYPLErrorCode.serializationFail.rawValue,
                         userInfo: ["Reason": "Could not create JSON body from input params",
@@ -561,16 +580,16 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
       switch result {
       case .success(let data, _):
         Log.info(#file, "Annotation POST for bookID \(bookID): Success 200.")
-        let serverAnnotationID = annotationID(fromNetworkData: data)
+        let serverAnnotationID = NYPLAnnotations.annotationID(fromNetworkData: data)
         completion(.success(serverAnnotationID))
       case .failure(let error, _):
         let err = error as NSError
         Log.error(#file, "Annotation POST for bookID \(bookID): Error (nsCode: \(err.code) Description: \(err.localizedDescription))")
         if NetworkQueue.StatusCodes.contains(err.code) && queueOffline {
-          self.addRequestToOfflineQueue(httpMethod: .POST,
-                                        url: annotationsURL,
-                                        bookID: bookID,
-                                        parameters: parameters)
+          NYPLAnnotations.addRequestToOfflineQueue(httpMethod: .POST,
+                                                   url: annotationsURL,
+                                                   bookID: bookID,
+                                                   parameters: parameters)
         }
         completion(.failure(err))
       }
@@ -596,13 +615,13 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   /// Annotation-syncing is possible only if the current user account is signed-in
   /// and if the currently selected library supports it.
-  private class func syncIsPossible() -> Bool {
+  private func syncIsPossible() -> Bool {
     let library = AccountsManager.shared.currentAccount
     let userAccount = NYPLUserAccount.sharedAccount()
     return userAccount.hasCredentials() && library?.details?.supportsSimplyESync == true
   }
 
-  class func syncIsPossibleAndPermitted() -> Bool {
+  func syncIsPossibleAndPermitted() -> Bool {
     let library = AccountsManager.shared.currentAccount
     return syncIsPossible() && library?.details?.syncPermissionGranted == true
   }

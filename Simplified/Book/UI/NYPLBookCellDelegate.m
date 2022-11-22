@@ -101,7 +101,7 @@
 
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB:
-      [self openEPUB:book successCompletion:successCompletion];
+      [[[NYPLEPUBOpener alloc] init] open:book successCompletion:successCompletion];
       break;
     case NYPLBookContentTypePDF:
       [self openPDF:book];
@@ -115,30 +115,6 @@
       [self presentUnsupportedItemError];
       break;
   }
-}
-
-- (void)openEPUB:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
-{
-  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                      fileURLForBookIndentifier:book.identifier];
-
-  AccountsManager *accountMgr = [AccountsManager sharedInstance];
-  Account *currentAccount = [accountMgr currentAccount];
-  BOOL syncPermission = currentAccount.details.syncPermissionGranted;
-
-  [[NYPLRootTabBarController sharedController] presentBook:book
-                                               fromFileURL:url
-                                            syncPermission:syncPermission
-                                         successCompletion:successCompletion];
-
-  [NYPLAnnotations
-   requestServerSyncStatusWithSettings:[NYPLSettings sharedSettings]
-   syncPermissionGranted:syncPermission
-   syncSupportedCompletion:^(BOOL enableSync, NSError *error) {
-    if (error == nil) {
-      currentAccount.details.syncPermissionGranted = enableSync;
-    }
-  }];
 }
 
 - (void)openPDF:(NYPLBook *)book {

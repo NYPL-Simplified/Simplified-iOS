@@ -20,7 +20,7 @@ class NYPLLastReadPositionPoster {
 
   // external dependencies
   private let bookRegistryProvider: NYPLBookRegistryProvider
-  private let annotationsSynchronizer: NYPLAnnotationSyncing.Type
+  private let synchronizer: NYPLLastReadPositionSupportAPI
 
   // internal state management
   private var lastReadPositionUploadDate: Date
@@ -29,12 +29,12 @@ class NYPLLastReadPositionPoster {
 
   init(book: NYPLBook,
        bookRegistryProvider: NYPLBookRegistryProvider,
-       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
+       synchronizer: NYPLLastReadPositionSupportAPI) {
     self.book = book
     self.bookRegistryProvider = bookRegistryProvider
     self.lastReadPositionUploadDate = Date()
       .addingTimeInterval(-NYPLLastReadPositionPoster.throttlingInterval)
-    self.annotationsSynchronizer = annotationsSynchronizer
+    self.synchronizer = synchronizer
 
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(postQueuedReadPositionInSerialQueue),
@@ -64,7 +64,7 @@ class NYPLLastReadPositionPoster {
     bookRegistryProvider.setLocation(location, forIdentifier: book.identifier)
 
     // attempt to store location on server
-    if annotationsSynchronizer.syncIsPossibleAndPermitted() {
+    if synchronizer.syncIsPossibleAndPermitted() {
       let selectorValue = NYPLReadiumBookmarkFactory
         .makeLocatorString(chapterHref: locator.href,
                            chapterProgression: Float(chapterProgress))
@@ -98,7 +98,7 @@ class NYPLLastReadPositionPoster {
   }
 
   @objc private func postQueuedReadPositionInSerialQueue() {
-    if annotationsSynchronizer.syncIsPossibleAndPermitted() {
+    if synchronizer.syncIsPossibleAndPermitted() {
       serialQueue.async { [weak self] in
         self?.postQueuedReadPosition()
       }
@@ -111,7 +111,7 @@ class NYPLLastReadPositionPoster {
       return
     }
 
-    annotationsSynchronizer.postReadingPosition(forBook: book.identifier,
+    synchronizer.postReadingPosition(forBook: book.identifier,
                                                 selectorValue: queuedReadPosition)
     self.queuedReadPosition = ""
     self.lastReadPositionUploadDate = Date()

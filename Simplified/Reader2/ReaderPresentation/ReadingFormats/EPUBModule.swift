@@ -19,11 +19,11 @@ final class EPUBModule: ReaderFormatModule {
   
   weak var delegate: R2ModuleDelegate?
   let resourcesServer: ResourcesServer
-  private let annotationsSynchronizer: NYPLAnnotationSyncing.Type
+  private let annotationsSynchronizer: NYPLAnnotationSyncing
   
   init(delegate: R2ModuleDelegate?,
        resourcesServer: ResourcesServer,
-       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
     self.annotationsSynchronizer = annotationsSynchronizer

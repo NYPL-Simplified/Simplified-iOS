@@ -16,8 +16,10 @@ import UIKit
   private let tableViewFooterViewHeight: CGFloat = 15.0
   
   @objc weak var delegate: NYPLServerDataDeleting?
+  private let syncSettingUpdater: NYPLServerSyncUpdating
   
   @objc init(delegate: NYPLServerDataDeleting) {
+    self.syncSettingUpdater = NYPLRootTabBarController.shared().annotationsSynchronizer
     self.delegate = delegate
     
     super.init(nibName: nil, bundle: nil)
@@ -85,19 +87,20 @@ import UIKit
                                     comment: "Loading view message")
     let vc = NYPLActivityIndicatorMessageViewController(message: message)
     present(vc, animated: false)
-    NYPLAnnotations.updateServerSyncSetting(toEnabled: false) { [weak self] success in
-      NYPLMainThreadRun.asyncIfNeeded {
-        guard let self = self else {
-          return
-        }
-        self.dismiss(animated: false)
-        if success {
-          self.delegate?.didDeleteServerData()
-        } else {
-          self.showAlert()
+    syncSettingUpdater
+      .updateServerSyncSetting(toEnabled: false) { [weak self] success in
+        NYPLMainThreadRun.asyncIfNeeded {
+          guard let self = self else {
+            return
+          }
+          self.dismiss(animated: false)
+          if success {
+            self.delegate?.didDeleteServerData()
+          } else {
+            self.showAlert()
+          }
         }
       }
-    }
     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
       self.dismiss(animated: false)
       self.showAlert()

@@ -25,21 +25,16 @@ class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
     case stay, moveToServerLocator
   }
 
-  private let failFastNetworkExecutor: NYPLNetworkExecutor
-  let synchronizer: NYPLAnnotationSyncing.Type
+  let synchronizer: NYPLLastReadPositionSupportAPI
 
   /// Designated initializer.
   ///
   /// - Parameters:
   ///   - bookRegistry: The registry that stores the reading progresses.
   init(bookRegistry: NYPLBookRegistryProvider,
-       synchronizer: NYPLAnnotationSyncing.Type) {
+       synchronizer: NYPLLastReadPositionSupportAPI) {
     self.bookRegistry = bookRegistry
     self.synchronizer = synchronizer
-    failFastNetworkExecutor = NYPLNetworkExecutor(
-      credentialsSource: NYPLUserAccount.sharedAccount(),
-      cachingStrategy: .ephemeral,
-      waitsForConnectivity: false)
   }
 
   /// Fetches the read position from the server and alerts the user
@@ -113,7 +108,7 @@ class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
     let localLocation = bookRegistry.location(forIdentifier: book.identifier)
 
     synchronizer
-      .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL, usingNetworkExecutor: failFastNetworkExecutor) { bookmark in
+      .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL) { bookmark in
 
         guard let bookmark = bookmark else {
           Log.info(#function, "No reading position annotation exists on the server for \(book.loggableShortString()).")

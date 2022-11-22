@@ -24,7 +24,7 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
        initialLocation: Locator?,
        resourcesServer: ResourcesServer,
        syncPermission: Bool,
-       annotationsSynchronizer: NYPLAnnotationSyncing.Type) {
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
 
     // - hyphens = true helps with layout on small screens especially when
     // publisher's defaults are off.
