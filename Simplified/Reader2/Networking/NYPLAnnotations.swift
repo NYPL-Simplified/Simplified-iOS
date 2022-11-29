@@ -25,10 +25,11 @@ protocol NYPLServerSyncChecking: AnyObject {
 protocol NYPLLastReadPositionSupportAPI: AnyObject {
   func syncIsPossibleAndPermitted() -> Bool
 
-  func syncReadingPosition(ofBook bookID: String?,
-                           publication: Publication?,
-                           toURL url: URL?,
-                           completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ())
+  func syncReadingPosition<T: NYPLBookmark>(of type: T.Type,
+                                            forBook bookID: String?,
+                                            publication: Publication?,
+                                            toURL url: URL?,
+                                            completion: @escaping (_ readPos: T?) -> ())
 
   func postReadingPosition(forBook bookID: String, selectorValue: String)
 
@@ -265,10 +266,11 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
   /// Reads the current reading position from the server, parses the response
   /// and returns the result to the `completionHandler`.
-  func syncReadingPosition(ofBook bookID: String?,
-                           publication: Publication?,
-                           toURL url:URL?,
-                           completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
+  func syncReadingPosition<T: NYPLBookmark>(of type: T.Type,
+                                            forBook bookID: String?,
+                                            publication: Publication?,
+                                            toURL url: URL?,
+                                            completion: @escaping (_ readPos: T?) -> ()) {
 
     guard syncIsPossibleAndPermitted() else {
       Log.info(#file, "Library account does not support sync or sync is disabled by user.")
@@ -284,9 +286,9 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
 
     _ = failFastExecutor.GET(url,
                              cachePolicy: .reloadIgnoringLocalCacheData) { data, _, error in
-      let bookmarks: [NYPLReadiumBookmark]? = NYPLAnnotations
+      let bookmarks: [T]? = NYPLAnnotations
         .parseAnnotationsResponse(data,
-                                  of: NYPLReadiumBookmark.self,
+                                  of: T.self,
                                   error: error,
                                   motivation: .readingProgress,
                                   publication: publication,
