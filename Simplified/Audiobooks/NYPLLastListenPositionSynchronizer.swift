@@ -9,31 +9,22 @@
 import Foundation
 import NYPLAudiobookToolkit
 
-// TODO: Update NYPLAnnotations to have generic sync reading position function
-// TODO: Implement network executor as property of NYPLLastListenPositionSynchronizer, see NYPLLastReadPositionSynchronizer
 // TODO: Ask Risa about sync interval and chapterLocation vs server bookmark
-
-// Placeholder, move to audiobook toolkit
-protocol NYPLLastListenPositionSynchronizing {
-  func getLastListenPosition(for bookID: String,
-                             completion: @escaping (_ localPosition: NYPLAudiobookBookmark?, _ serverPosition: NYPLAudiobookBookmark?) -> ())
-  func postLastListenPosition(_ location: NYPLAudiobookBookmark, for bookID: String)
-}
 
 class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
   private let book: NYPLBook
   private let bookRegistryProvider: NYPLBookRegistryProvider
-  private let annotationSynchronizer: NYPLAnnotationSyncing
+  private let annotationsSynchronizer: NYPLLastReadPositionSupportAPI
   
   private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).lastListenedPositionSynchronizer", target: .global(qos: .utility))
   private let renderer: String = "NYPLAudiobookToolkit"
   
   init(book: NYPLBook,
        bookRegistryProvider: NYPLBookRegistryProvider,
-       annotationSynchronizer: NYPLAnnotationSyncing) {
+       annotationsSynchronizer: NYPLLastReadPositionSupportAPI) {
     self.book = book
     self.bookRegistryProvider = bookRegistryProvider
-    self.annotationSynchronizer = annotationSynchronizer
+    self.annotationsSynchronizer = annotationsSynchronizer
   }
   
   func getLastListenPosition(for bookID: String,
@@ -44,15 +35,8 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
       // Retrive local last-listened position
       let localPosition = self.getLocalLastListenPosition(for: bookID)
       
-      // Check if server sync allowed
-      // Return local last-listened position if not
-      guard self.annotationSynchronizer.syncIsPossibleAndPermitted() else {
-        completion(localPosition, nil)
-        return
-      }
-      
       // Retrieve last-listened position from server, return both local and server positions
-      self.annotationSynchronizer.syncReadingPosition(of: NYPLAudiobookBookmark.self,
+      self.annotationsSynchronizer.syncReadingPosition(of: NYPLAudiobookBookmark.self,
                                                       forBook: bookID,
                                                       publication: nil,
                                                       toURL: self.book.annotationsURL) { serverPosition in
@@ -66,6 +50,8 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
         // last listen position worth restoring) if:
         // 1 - The most recent position on the server comes from the same device, or
         // 2 - The server and the client have the same position marked
+        
+        // TODO: Only return server position if server position is further than local position in the book
         if localPosition?.device == serverPosition.device ||
             serverPosition.isEqual(localPosition) {
           completion(localPosition, nil)
@@ -77,15 +63,40 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
     }
   }
   
-  func postLastListenPosition(_ location: NYPLAudiobookBookmark, for bookID: String) {
+  func updateLastListenPositionInMemory(_ location: ChapterLocation) {
     let selectorValue = NYPLAudiobookBookmarkFactory.makeLocatorString(title: location.title ?? "",
                                                                        part: location.part,
-                                                                       chapter: location.chapter,
-                                                                       audiobookId: location.audiobookId,
+                                                                       chapter: location.number,
+                                                                       audiobookId: location.audiobookID,
                                                                        duration: location.duration,
-                                                                       time: location.time)
+                                                                       time: location.playheadOffset)
+    
+    let bookLocation = NYPLBookLocation.init(locationString: selectorValue, renderer: self.renderer)
     serialQueue.async { [weak self] in
-      self?.annotationSynchronizer.postReadingPosition(forBook: bookID, selectorValue: selectorValue)
+      guard let self = self else {
+        return
+      }
+      self.bookRegistryProvider.setLocation(bookLocation, forIdentifier: self.book.identifier)
+    }
+  }
+  
+  
+  func syncLastListenPositionToServer() {
+    let bookID = self.book.identifier
+    
+    guard let localPosition = getLocalLastListenPosition(for: bookID) else {
+      return
+    }
+    
+    let selectorValue = NYPLAudiobookBookmarkFactory.makeLocatorString(title: localPosition.title ?? "",
+                                                                       part: localPosition.part,
+                                                                       chapter: localPosition.chapter,
+                                                                       audiobookId: localPosition.audiobookId,
+                                                                       duration: localPosition.duration,
+                                                                       time: localPosition.time)
+    serialQueue.async { [weak self] in
+      self?.annotationsSynchronizer.postReadingPosition(forBook: bookID,
+                                                        selectorValue: selectorValue)
     }
   }
   
@@ -97,7 +108,7 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
       return nil
     }
     
-    if let bookmark = self.bookmark(from: bookLocation.locationString) {
+    if let bookmark = NYPLAudiobookBookmark(selectorString: bookLocation.locationString, creationTime: Date()) {
       return bookmark
     }
       
@@ -110,12 +121,10 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
   }
   
   private func chapterLocation(from locationString: String) -> ChapterLocation? {
-    // TODO:
-    return nil
-  }
-  
-  private func bookmark(from locationString: String) -> NYPLAudiobookBookmark? {
-    // TODO:
-    return nil
+    guard let data = locationString.data(using: .utf8),
+          let chapterLocation = ChapterLocation.fromData(data) else {
+      return nil
+    }
+    return chapterLocation
   }
 }

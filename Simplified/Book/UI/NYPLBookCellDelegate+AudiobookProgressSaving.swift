@@ -11,7 +11,7 @@ import NYPLAudiobookToolkit
 import UIKit
 import NYPLUtilities
 
-private let NYPLAudiobookProgressSavingInterval: DispatchTimeInterval = .seconds(60)
+private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .seconds(60)
 
 @objc extension NYPLBookCellDelegate {
   
@@ -19,19 +19,19 @@ private let NYPLAudiobookProgressSavingInterval: DispatchTimeInterval = .seconds
     NYPLBookRegistry.shared().save()
   }
   
-  // Create a timer that saves the audiobook progress periodically when the app is inactive.
+  // Create a timer that saves the audiobook progress to disk and post to server periodically.
   // We do save the progress when app is being killed and applicationWillTerminate: is called,
   // but applicationWillTerminate: is not always called when users force quit the app.
-  // This method is triggered when app resigns active.
-  @objc(scheduleProgressSavingTimerForAudiobookManager:)
-  func scheduleProgressSavingTimer(for manager: DefaultAudiobookManager?) {
+  // We only save to disk when app is in background.
+  @objc(scheduleLastListenPositionSynchronizingTimerForAudiobookManager:)
+  func scheduleLastListenPositionSynchronizingTimer(for manager: DefaultAudiobookManager?) {
     guard let manager = manager else {
       return
     }
 
     weak var weakManager = manager
     
-    let timer = NYPLRepeatingTimer(interval: NYPLAudiobookProgressSavingInterval,
+    let timer = NYPLRepeatingTimer(interval: NYPLAudiobookPositionSyncingInterval,
                                    queue: self.audiobookProgressSavingQueue) { [weak self] in
       var isActive = false
 
@@ -39,17 +39,28 @@ private let NYPLAudiobookProgressSavingInterval: DispatchTimeInterval = .seconds
         isActive = UIApplication.shared.applicationState == .active
       }
 
-      if isActive {
-        // DispatchSourceTimer will automatically cancel the timer if it is released.
-        weakManager?.cancelProgressSavingTimer()
-      } else {
-        if let manager = weakManager,
-           !manager.progressSavingTimerIsNil() {
-          self?.savePosition()
-        }
+      // Save audiobook progress to disk if app is in background
+      if !isActive {
+        self?.savePosition()
+      }
+      
+      // Post audiobook progress to server
+      if let manager = weakManager {
+        manager.lastListenPositionSynchronizer?.syncLastListenPositionToServer()
       }
     }
-    manager.setProgressSavingTimer(timer)
+    manager.setLastListenPositionSyncingTimer(timer)
+  }
+  
+  @objc(setLastListenPositionSynchronizerForBook:AudiobookManager:BookRegistryProvider:)
+  func setLastListenPositionSynchronizer(for book: NYPLBook,
+                                         audiobookManager: DefaultAudiobookManager,
+                                         bookRegistryProvider: NYPLBookRegistryProvider) {
+    let lastListenPosSynchronizer = NYPLLastListenPositionSynchronizer(book: book,
+                                                                       bookRegistryProvider: bookRegistryProvider,
+                                                                       annotationsSynchronizer: NYPLRootTabBarController.shared().annotationsSynchronizer)
+    
+    audiobookManager.lastListenPositionSynchronizer = lastListenPosSynchronizer
   }
 }
 #endif
