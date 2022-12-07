@@ -72,19 +72,10 @@
     // present audiobook player on screen
     [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
     
-    // TODO: - Get last listen position in audio player
-//    NYPLBookLocation *const bookLocation =
-//    [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
-//
-//    // move player to saved position
-//    if (bookLocation) {
-//      NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
-//      ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
-//      NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
-//      [audiobookManager.audiobook.player movePlayheadToLocation:chapterLocation];
-//    }
+    // Restore last listen position from local storage and server
+    [self restoreLastListenPositionForAudiobookManager:audiobookManager];
     
-    // Timer for writing last listen position to disk and server
+    // Set up timer for writing last listen position to local storage and server
     [self scheduleLastListenPositionSynchronizingTimerForAudiobookManager:audiobookManager];
   }];
 }

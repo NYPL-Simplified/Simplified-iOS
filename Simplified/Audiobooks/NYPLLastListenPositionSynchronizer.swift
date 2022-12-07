@@ -5,11 +5,9 @@
 //  Created by Ernest Fan on 2022-11-10.
 //  Copyright © 2022 NYPL. All rights reserved.
 //
-
+#if FEATURE_AUDIOBOOKS
 import Foundation
 import NYPLAudiobookToolkit
-
-// TODO: Ask Risa about sync interval and chapterLocation vs server bookmark
 
 class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
   private let book: NYPLBook
@@ -27,17 +25,16 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
     self.annotationsSynchronizer = annotationsSynchronizer
   }
   
-  func getLastListenPosition(for bookID: String,
-                             completion: @escaping (_ localPosition: NYPLAudiobookBookmark?, _ serverPosition: NYPLAudiobookBookmark?) -> ()) {
+  func getLastListenPosition(completion: @escaping (_ localPosition: NYPLAudiobookBookmark?, _ serverPosition: NYPLAudiobookBookmark?) -> ()) {
     serialQueue.async { [weak self] in
       guard let self = self else { return }
       
       // Retrive local last-listened position
-      let localPosition = self.getLocalLastListenPosition(for: bookID)
+      let localPosition = self.getLocalLastListenPosition(for: self.book.identifier)
       
       // Retrieve last-listened position from server, return both local and server positions
       self.annotationsSynchronizer.syncReadingPosition(of: NYPLAudiobookBookmark.self,
-                                                      forBook: bookID,
+                                                       forBook: self.book.identifier,
                                                       publication: nil,
                                                       toURL: self.book.annotationsURL) { serverPosition in
         guard let serverPosition = serverPosition else {
@@ -46,14 +43,17 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
           return
         }
         
-        // Pass through returning nil (meaning the server doesn't have a
+        guard let localPosition = localPosition else {
+          completion(nil, serverPosition)
+          return
+        }
+        
+        // Pass through without server position (meaning the server doesn't have a
         // last listen position worth restoring) if:
         // 1 - The most recent position on the server comes from the same device, or
-        // 2 - The server and the client have the same position marked
-        
-        // TODO: Only return server position if server position is further than local position in the book
-        if localPosition?.device == serverPosition.device ||
-            serverPosition.isEqual(localPosition) {
+        // 2 - The local position is further in the audiobook than the server position
+        if serverPosition.device == NYPLUserAccount.sharedAccount().deviceID ||
+            localPosition >= serverPosition {
           completion(localPosition, nil)
           return
         }
@@ -128,3 +128,4 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
     return chapterLocation
   }
 }
+#endif

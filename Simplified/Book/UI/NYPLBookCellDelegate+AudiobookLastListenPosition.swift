@@ -1,5 +1,5 @@
 //
-//  NYPLBookCellDelegate+AudiobookProgressSaving.swift
+//  NYPLBookCellDelegate+AudiobookLastListenPositio.swift
 //  Simplified
 //
 //  Created by Ernest Fan on 2022-03-01.
@@ -61,6 +61,54 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
                                                                        annotationsSynchronizer: NYPLRootTabBarController.shared().annotationsSynchronizer)
     
     audiobookManager.lastListenPositionSynchronizer = lastListenPosSynchronizer
+  }
+  
+  @objc(restoreLastListenPositionForAudiobookManager:)
+  func restoreLastListenPosition(audiobookManager: DefaultAudiobookManager) {
+    audiobookManager.lastListenPositionSynchronizer?.getLastListenPosition(completion: { [weak self] localPosition, serverPosition in
+      
+      guard let self = self else {
+        return
+      }
+      
+      NYPLMainThreadRun.asyncIfNeeded {
+        if let serverPosition = serverPosition {
+          self.presentAlert(serverPosition) { position in
+            let finalPosition = position != nil ? position : localPosition
+            guard let finalPosition = finalPosition else {
+              return
+            }
+            
+            audiobookManager.movePlayhead(to: finalPosition)
+          }
+        } else if let localPosition = localPosition {
+          audiobookManager.movePlayhead(to: localPosition)
+        }
+      }
+    })
+  }
+  
+  private func presentAlert(_ serverPosition: NYPLAudiobookBookmark,
+                            completion: @escaping (NYPLAudiobookBookmark?) -> ()) {
+    // TODO: - Update localized strings
+    let alert = UIAlertController(title: NSLocalizedString("Sync Reading Position", comment: "An alert title notifying the user the reading position has been synced"),
+                                  message: NSLocalizedString("Do you want to move to the page on which you left off?", comment: "An alert message asking the user to perform navigation to the synced reading position or not"),
+                                  preferredStyle: .alert)
+
+    let stayText = NSLocalizedString("Stay", comment: "Do not perform navigation")
+    let stayAction = UIAlertAction(title: stayText, style: .cancel) { _ in
+      completion(nil)
+    }
+
+    let moveText = NSLocalizedString("Move", comment: "Perform navigation")
+    let moveAction = UIAlertAction(title: moveText, style: .default) { _ in
+      completion(serverPosition)
+    }
+
+    alert.addAction(stayAction)
+    alert.addAction(moveAction)
+
+    NYPLPresentationUtils.safelyPresent(alert)
   }
 }
 #endif
