@@ -24,11 +24,11 @@
 
 #pragma mark - Audiobook Methods
 
-- (void)openAudiobook:(NYPLBook *)book {
+- (void)openAudiobook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion {
   // If an audiobook download is in progress, we should use the existing AudiobookManager.
   DefaultAudiobookManager *audiobookManager = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] audiobookManagerForBookID:book.identifier];
   if (audiobookManager) {
-    [self presentAudiobook:book withAudiobookManager:audiobookManager];
+    [self presentAudiobook:book withAudiobookManager:audiobookManager successCompletion:successCompletion];
     return;
   }
   
@@ -53,34 +53,37 @@
         break;
     }
     
-    [self openAudiobook:book withJSON:json decryptor:decryptor];
+    [self openAudiobook:book withJSON:json decryptor:decryptor successCompletion:successCompletion];
   }];
 }
 
-- (void)presentAudiobook:(NYPLBook *)book withAudiobookManager:(DefaultAudiobookManager *)audiobookManager {
+- (void)presentAudiobook:(NYPLBook *)book
+    withAudiobookManager:(DefaultAudiobookManager *)audiobookManager
+       successCompletion:(void(^)(void))successCompletion {
   [self setBookmarkBusinessLogicForBook:book AudiobookManager:audiobookManager AudiobookRegistryProvider:[NYPLBookRegistry sharedRegistry]];
   
   [self setLastListenPositionSynchronizerForBook:book
-                                AudiobookManager:audiobookManager
-                            BookRegistryProvider:[NYPLBookRegistry sharedRegistry]];
+                                audiobookManager:audiobookManager
+                            bookRegistryProvider:[NYPLBookRegistry sharedRegistry]];
   
   [NYPLMainThreadRun asyncIfNeeded:^{
     AudiobookPlayerViewController *audiobookVC = [self createPlayerVCForAudiobook:audiobookManager.audiobook
                                                                          withBook:book
                                                       configuringAudiobookManager:audiobookManager];
-
-    // present audiobook player on screen
-    [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
     
-    // Restore last listen position from local storage and server
-    [self restoreLastListenPositionForAudiobookManager:audiobookManager];
+    [self restoreLastListenPositionAndPresentAudiobookPlayerVC:audiobookVC
+                                              audiobookManager:audiobookManager
+                                             successCompletion:successCompletion];
     
     // Set up timer for writing last listen position to local storage and server
     [self scheduleLastListenPositionSynchronizingTimerForAudiobookManager:audiobookManager];
   }];
 }
 
-- (void)openAudiobook:(NYPLBook *)book withJSON:(NSDictionary *)json decryptor:(id<DRMDecryptor>)audiobookDrmDecryptor {
+- (void)openAudiobook:(NYPLBook *)book
+             withJSON:(NSDictionary *)json
+            decryptor:(id<DRMDecryptor>)audiobookDrmDecryptor
+    successCompletion:(void(^)(void))successCompletion {
   [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
       id<Audiobook> const audiobook = [AudiobookFactory audiobook:json decryptor:audiobookDrmDecryptor];
@@ -109,7 +112,7 @@
         ];
       }
 
-      [self presentAudiobook:book withAudiobookManager:manager];
+      [self presentAudiobook:book withAudiobookManager:manager successCompletion:successCompletion];
     }];
   }];
 }

@@ -52,7 +52,7 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
     manager.setLastListenPositionSyncingTimer(timer)
   }
   
-  @objc(setLastListenPositionSynchronizerForBook:AudiobookManager:BookRegistryProvider:)
+  @objc(setLastListenPositionSynchronizerForBook:audiobookManager:bookRegistryProvider:)
   func setLastListenPositionSynchronizer(for book: NYPLBook,
                                          audiobookManager: DefaultAudiobookManager,
                                          bookRegistryProvider: NYPLBookRegistryProvider) {
@@ -63,8 +63,11 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
     audiobookManager.lastListenPositionSynchronizer = lastListenPosSynchronizer
   }
   
-  @objc(restoreLastListenPositionForAudiobookManager:)
-  func restoreLastListenPosition(audiobookManager: DefaultAudiobookManager) {
+  @objc(restoreLastListenPositionAndPresentAudiobookPlayerVC:audiobookManager:successCompletion:)
+  func restoreLastListenPositionAndPresent(audiobookPlayerVC: AudiobookPlayerViewController,
+                                           audiobookManager: DefaultAudiobookManager,
+                                           successCompletion: @escaping () -> ()) {
+    // Restore last listen position from local storage and server
     audiobookManager.lastListenPositionSynchronizer?.getLastListenPosition(completion: { [weak self] localPosition, serverPosition in
       
       guard let self = self else {
@@ -72,6 +75,12 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
       }
       
       NYPLMainThreadRun.asyncIfNeeded {
+        // Present audio player
+        NYPLRootTabBarController.shared().pushViewController(audiobookPlayerVC, animated: true)
+        // Call completion handler when audiobook has been successfully opened
+        successCompletion()
+        
+        // Present alert for user to decide if they want to move to position found on server
         if let serverPosition = serverPosition {
           self.presentAlert(serverPosition) { position in
             let finalPosition = position != nil ? position : localPosition
