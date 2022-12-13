@@ -99,9 +99,10 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
   
   private func presentAlert(_ serverPosition: NYPLAudiobookBookmark,
                             completion: @escaping (NYPLAudiobookBookmark?) -> ()) {
-    // TODO: - Update localized strings
-    let alert = UIAlertController(title: NSLocalizedString("Sync Reading Position", comment: "An alert title notifying the user the reading position has been synced"),
-                                  message: NSLocalizedString("Do you want to move to the page on which you left off?", comment: "An alert message asking the user to perform navigation to the synced reading position or not"),
+    let alert = UIAlertController(title: NSLocalizedString("Sync Reading Position",
+                                                           comment: "An alert title notifying the user the listening position has been synced"),
+                                  message: NSLocalizedString("Do you want to stay at this location in your audiobook or move to the furthest location you have listened to?",
+                                                             comment: "An alert message asking the user to perform navigation to the synced listening position or not"),
                                   preferredStyle: .alert)
 
     let stayText = NSLocalizedString("Stay", comment: "Do not perform navigation")
