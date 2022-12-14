@@ -13,53 +13,52 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
   private let book: NYPLBook
   private let bookRegistryProvider: NYPLBookRegistryProvider
   private let annotationsSynchronizer: NYPLLastReadPositionSupportAPI
+  private let deviceID: String?
   
-  private let serialQueue = DispatchQueue(label: "\(Bundle.main.bundleIdentifier!).lastListenedPositionSynchronizer", target: .global(qos: .utility))
   private let renderer: String = "NYPLAudiobookToolkit"
   
   init(book: NYPLBook,
        bookRegistryProvider: NYPLBookRegistryProvider,
-       annotationsSynchronizer: NYPLLastReadPositionSupportAPI) {
+       annotationsSynchronizer: NYPLLastReadPositionSupportAPI,
+       deviceID: String?) {
     self.book = book
     self.bookRegistryProvider = bookRegistryProvider
     self.annotationsSynchronizer = annotationsSynchronizer
+    self.deviceID = deviceID
   }
   
   func getLastListenPosition(completion: @escaping (_ localPosition: NYPLAudiobookBookmark?, _ serverPosition: NYPLAudiobookBookmark?) -> ()) {
-    serialQueue.async { [weak self] in
-      guard let self = self else { return }
-      
-      // Retrive local last-listened position
-      let localPosition = self.getLocalLastListenPosition(for: self.book.identifier)
-      
-      // Retrieve last-listened position from server, return both local and server positions
-      self.annotationsSynchronizer.syncReadingPosition(of: NYPLAudiobookBookmark.self,
-                                                       forBook: self.book.identifier,
-                                                      publication: nil,
-                                                      toURL: self.book.annotationsURL) { serverPosition in
-        guard let serverPosition = serverPosition else {
-          Log.info(#function, "No reading position annotation exists on the server for \(self.book.loggableShortString()).")
-          completion(localPosition, nil)
-          return
-        }
-        
-        guard let localPosition = localPosition else {
-          completion(nil, serverPosition)
-          return
-        }
-        
-        // Pass through without server position (meaning the server doesn't have a
-        // last listen position worth restoring) if:
-        // 1 - The most recent position on the server comes from the same device, or
-        // 2 - The local position is further in the audiobook than the server position
-        if serverPosition.device == NYPLUserAccount.sharedAccount().deviceID ||
-            localPosition >= serverPosition {
-          completion(localPosition, nil)
-          return
-        }
-        
-        completion(localPosition, serverPosition)
+    
+    // Retrieve local last-listened position
+    let localPosition = self.getLocalLastListenPosition(for: book.identifier)
+    
+    // Retrieve last-listened position from server, return both local and server positions
+    self.annotationsSynchronizer.syncReadingPosition(of: NYPLAudiobookBookmark.self,
+                                                     forBook: book.identifier,
+                                                    publication: nil,
+                                                    toURL: book.annotationsURL) { serverPosition in
+      guard let serverPosition = serverPosition else {
+        Log.info(#function, "No reading position annotation exists on the server for \(self.book.loggableShortString()).")
+        completion(localPosition, nil)
+        return
       }
+      
+      guard let localPosition = localPosition else {
+        completion(nil, serverPosition)
+        return
+      }
+      
+      // Pass through without server position (meaning the server doesn't have a
+      // last listen position worth restoring) if:
+      // 1 - The most recent position on the server comes from the same device, or
+      // 2 - The local position is further in the audiobook than the server position
+      if serverPosition.device == self.deviceID ||
+          localPosition >= serverPosition {
+        completion(localPosition, nil)
+        return
+      }
+      
+      completion(localPosition, serverPosition)
     }
   }
   
@@ -72,12 +71,8 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
                                                                        time: location.playheadOffset)
     
     let bookLocation = NYPLBookLocation.init(locationString: selectorValue, renderer: self.renderer)
-    serialQueue.async { [weak self] in
-      guard let self = self else {
-        return
-      }
-      self.bookRegistryProvider.setLocation(bookLocation, forIdentifier: self.book.identifier)
-    }
+
+    bookRegistryProvider.setLocation(bookLocation, forIdentifier: self.book.identifier)
   }
   
   
@@ -94,10 +89,9 @@ class NYPLLastListenPositionSynchronizer: NYPLLastListenPositionSynchronizing {
                                                                        audiobookId: localPosition.audiobookId,
                                                                        duration: localPosition.duration,
                                                                        time: localPosition.time)
-    serialQueue.async { [weak self] in
-      self?.annotationsSynchronizer.postReadingPosition(forBook: bookID,
-                                                        selectorValue: selectorValue)
-    }
+
+    annotationsSynchronizer.postReadingPosition(forBook: bookID,
+                                                selectorValue: selectorValue)
   }
   
   // MARK: - Helper

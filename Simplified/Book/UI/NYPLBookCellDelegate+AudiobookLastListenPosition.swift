@@ -35,13 +35,13 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
                                    queue: self.audiobookProgressSavingQueue) { [weak self] in
       var isActive = false
 
-      NYPLMainThreadRun.sync {
+      NYPLMainThreadRun.asyncIfNeeded {
         isActive = UIApplication.shared.applicationState == .active
-      }
-
-      // Save audiobook progress to disk if app is in background
-      if !isActive {
-        self?.savePosition()
+        
+        // Save audiobook progress to disk if app is in background
+        if !isActive {
+          self?.savePosition()
+        }
       }
       
       // Post audiobook progress to server
@@ -52,13 +52,16 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
     manager.setLastListenPositionSyncingTimer(timer)
   }
   
-  @objc(setLastListenPositionSynchronizerForBook:audiobookManager:bookRegistryProvider:)
+  /// - Important: Must be called on the main thread since it accesses NYPLRootTabBarController.
+  @objc(setLastListenPositionSynchronizerForBook:audiobookManager:bookRegistryProvider:deviceID:)
   func setLastListenPositionSynchronizer(for book: NYPLBook,
                                          audiobookManager: DefaultAudiobookManager,
-                                         bookRegistryProvider: NYPLBookRegistryProvider) {
+                                         bookRegistryProvider: NYPLBookRegistryProvider,
+                                         deviceID: String?) {
     let lastListenPosSynchronizer = NYPLLastListenPositionSynchronizer(book: book,
                                                                        bookRegistryProvider: bookRegistryProvider,
-                                                                       annotationsSynchronizer: NYPLRootTabBarController.shared().annotationsSynchronizer)
+                                                                       annotationsSynchronizer: NYPLRootTabBarController.shared().annotationsSynchronizer,
+                                                                       deviceID: deviceID)
     
     audiobookManager.lastListenPositionSynchronizer = lastListenPosSynchronizer
   }

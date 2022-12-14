@@ -64,7 +64,8 @@
   
   [self setLastListenPositionSynchronizerForBook:book
                                 audiobookManager:audiobookManager
-                            bookRegistryProvider:[NYPLBookRegistry sharedRegistry]];
+                            bookRegistryProvider:[NYPLBookRegistry sharedRegistry]
+                                        deviceID:[[NYPLUserAccount sharedAccount] deviceID]];
   
   [NYPLMainThreadRun asyncIfNeeded:^{
     AudiobookPlayerViewController *audiobookVC = [self createPlayerVCForAudiobook:audiobookManager.audiobook
