@@ -24,11 +24,11 @@
 
 #pragma mark - Audiobook Methods
 
-- (void)openAudiobook:(NYPLBook *)book {
+- (void)openAudiobook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion {
   // If an audiobook download is in progress, we should use the existing AudiobookManager.
   DefaultAudiobookManager *audiobookManager = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] audiobookManagerForBookID:book.identifier];
   if (audiobookManager) {
-    [self presentAudiobook:book withAudiobookManager:audiobookManager];
+    [self presentAudiobook:book withAudiobookManager:audiobookManager successCompletion:successCompletion];
     return;
   }
   
@@ -53,42 +53,38 @@
         break;
     }
     
-    [self openAudiobook:book withJSON:json decryptor:decryptor];
+    [self openAudiobook:book withJSON:json decryptor:decryptor successCompletion:successCompletion];
   }];
 }
 
-- (void)presentAudiobook:(NYPLBook *)book withAudiobookManager:(DefaultAudiobookManager *)audiobookManager {
+- (void)presentAudiobook:(NYPLBook *)book
+    withAudiobookManager:(DefaultAudiobookManager *)audiobookManager
+       successCompletion:(void(^)(void))successCompletion {
   [self setBookmarkBusinessLogicForBook:book AudiobookManager:audiobookManager AudiobookRegistryProvider:[NYPLBookRegistry sharedRegistry]];
+  
+  [self setLastListenPositionSynchronizerForBook:book
+                                audiobookManager:audiobookManager
+                            bookRegistryProvider:[NYPLBookRegistry sharedRegistry]
+                                        deviceID:[[NYPLUserAccount sharedAccount] deviceID]];
+  
   [NYPLMainThreadRun asyncIfNeeded:^{
     AudiobookPlayerViewController *audiobookVC = [self createPlayerVCForAudiobook:audiobookManager.audiobook
                                                                          withBook:book
                                                       configuringAudiobookManager:audiobookManager];
-
-    // present audiobook player on screen
-    [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
     
-    NYPLBookLocation *const bookLocation =
-    [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
-
-    // move player to saved position
-    if (bookLocation) {
-      NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
-      ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
-      NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
-      [audiobookManager.audiobook.player movePlayheadToLocation:chapterLocation];
-    }
+    [self restoreLastListenPositionAndPresentAudiobookPlayerVC:audiobookVC
+                                              audiobookManager:audiobookManager
+                                             successCompletion:successCompletion];
     
-    // poll audiobook player so that we can save the reading position
-    [self scheduleTimerForAudiobook:book manager:audiobookManager viewController:audiobookVC];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(scheduleAudiobookProgressSavingTimer)
-                                                 name:UIApplicationWillResignActiveNotification
-                                               object:nil];
+    // Set up timer for writing last listen position to local storage and server
+    [self scheduleLastListenPositionSynchronizingTimerForAudiobookManager:audiobookManager];
   }];
 }
 
-- (void)openAudiobook:(NYPLBook *)book withJSON:(NSDictionary *)json decryptor:(id<DRMDecryptor>)audiobookDrmDecryptor {
+- (void)openAudiobook:(NYPLBook *)book
+             withJSON:(NSDictionary *)json
+            decryptor:(id<DRMDecryptor>)audiobookDrmDecryptor
+    successCompletion:(void(^)(void))successCompletion {
   [AudioBookVendorsHelper updateVendorKeyWithBook:json completion:^(NSError * _Nullable error) {
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
       id<Audiobook> const audiobook = [AudiobookFactory audiobook:json decryptor:audiobookDrmDecryptor];
@@ -117,7 +113,7 @@
         ];
       }
 
-      [self presentAudiobook:book withAudiobookManager:manager];
+      [self presentAudiobook:book withAudiobookManager:manager successCompletion:successCompletion];
     }];
   }];
 }
@@ -192,40 +188,6 @@
                                metadata:metadata];
     }
   }];
-}
-
-// Non-thread safe: currently this is always called on the main thread.
-// Even more stricly, since NTPLBookCellDelegate is a singleton (!?), this
-// method should be called only when the previous audiobookViewController is
-// no longer used.
-- (void)scheduleTimerForAudiobook:(NYPLBook *)book
-                          manager:(DefaultAudiobookManager *)manager
-                   viewController:(AudiobookPlayerViewController *)audiobookVC
-{
-  self.book = book;
-  self.manager = manager;
-
-  __weak UIViewController *const weakAudiobookVC = audiobookVC;
-  [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer *_Nonnull timer) {
-    if (weakAudiobookVC == nil) {
-      [timer invalidate];
-      NYPLLOG(@"Invalidating audiobook polling timer and resetting BookCellDelegate state");
-      self.book = nil;
-      self.manager = nil;
-      return;
-    }
-
-    NSString *const string = [[NSString alloc]
-                              initWithData:manager.audiobook.player.currentChapterLocation.toData
-                              encoding:NSUTF8StringEncoding];
-    [[NYPLBookRegistry sharedRegistry]
-     setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
-     forIdentifier:book.identifier];
-  }];
-}
-
-- (void)scheduleAudiobookProgressSavingTimer {
-  [self scheduleProgressSavingTimerForAudiobookManager:self.manager];
 }
 
 - (void)presentDRMKeyError:(NSError *) error

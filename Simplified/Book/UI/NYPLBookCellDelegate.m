@@ -108,7 +108,7 @@
       break;
 #if FEATURE_AUDIOBOOKS
     case NYPLBookContentTypeAudiobook:
-      [self openAudiobook:book];
+      [self openAudiobook:book successCompletion:successCompletion];
       break;
 #endif
     default:

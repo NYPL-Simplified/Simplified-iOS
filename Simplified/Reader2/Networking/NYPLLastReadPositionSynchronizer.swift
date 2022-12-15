@@ -107,34 +107,32 @@ class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
 
     let localLocation = bookRegistry.location(forIdentifier: book.identifier)
 
-    synchronizer
-      .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL) { bookmark in
+    synchronizer.syncReadingPosition(of: NYPLReadiumBookmark.self, forBook: book.identifier, publication: publication, toURL: book.annotationsURL) { bookmark in
+      guard let bookmark = bookmark else {
+        Log.info(#function, "No reading position annotation exists on the server for \(book.loggableShortString()).")
+        completion(nil)
+        return
+      }
 
-        guard let bookmark = bookmark else {
-          Log.info(#function, "No reading position annotation exists on the server for \(book.loggableShortString()).")
-          completion(nil)
-          return
-        }
+      let deviceID = bookmark.device ?? ""
+      let serverLocationString = bookmark.location
 
-        let deviceID = bookmark.device ?? ""
-        let serverLocationString = bookmark.location
+      // Pass through returning nil (meaning the server doesn't have a
+      // last read location worth restoring) if:
+      // 1 - The most recent page on the server comes from the same device, or
+      // 2 - The server and the client have the same page marked
+      if deviceID == drmDeviceID
+        || localLocation?.locationString == serverLocationString {
 
-        // Pass through returning nil (meaning the server doesn't have a
-        // last read location worth restoring) if:
-        // 1 - The most recent page on the server comes from the same device, or
-        // 2 - The server and the client have the same page marked
-        if deviceID == drmDeviceID
-          || localLocation?.locationString == serverLocationString {
+        // server location does not differ from or should take no precedence
+        // over the local position
+        completion(nil)
+        return
+      }
 
-          // server location does not differ from or should take no precedence
-          // over the local position
-          completion(nil)
-          return
-        }
-
-        // we got a server location that differs from the local: return that
-        // so that clients can decide what to do
-        completion(bookmark.locator(forPublication: publication))
+      // we got a server location that differs from the local: return that
+      // so that clients can decide what to do
+      completion(bookmark.locator(forPublication: publication))
     }
   }
 

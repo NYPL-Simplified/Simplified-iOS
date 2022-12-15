@@ -34,22 +34,28 @@ class NYPLAnnotationsMock: NYPLAnnotationSyncing {
   
   // Reading position
   
-  func syncReadingPosition(ofBook bookID: String?,
-                           publication: Publication?,
-                           toURL url:URL?,
-                           completion: @escaping (_ readPos: NYPLReadiumBookmark?) -> ()) {
+  func syncReadingPosition<T>(of type: T.Type,
+                              forBook bookID: String?,
+                              publication: Publication?,
+                              toURL url: URL?,
+                              completion: @escaping (T?) -> ()) where T : NYPLBookmark {
     guard !failRequest,
           let id = bookID,
           let bookmarkSpec = readingPositions[id] else {
       completion(nil)
       return
     }
+    
     let bookmarkData = bookmarkSpec.dictionaryForJSONSerialization()
-    let bookmark = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: bookmarkData,
-                                                   annotationType: .readingProgress,
-                                                   bookID: id,
-                                                   publication: publication)
-    completion(bookmark)
+    if type == NYPLReadiumBookmark.self {
+      let bookmark = NYPLReadiumBookmarkFactory.make(fromServerAnnotation: bookmarkData,
+                                                     annotationType: .readingProgress,
+                                                     bookID: id,
+                                                     publication: publication)
+      completion(bookmark as? T)
+      return
+    }
+    completion(nil)
   }
   
   func postReadingPosition(forBook bookID: String, selectorValue: String) {

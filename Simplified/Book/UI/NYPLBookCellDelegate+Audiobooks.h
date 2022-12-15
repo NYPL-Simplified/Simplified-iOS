@@ -16,7 +16,7 @@
 
 @interface NYPLBookCellDelegate (Audiobooks) <RefreshDelegate>
 
-- (void)openAudiobook:(NYPLBook *)book;
+- (void)openAudiobook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion;
 
 @end
 
