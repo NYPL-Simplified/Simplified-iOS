@@ -72,7 +72,7 @@ class NYPLSignInOutBusinessLogicUIDelegateMock: NSObject, NYPLSignInOutBusinessL
 
   var forceEditability: Bool = false
 
-  // MARK: - NYPLOAuthTokenProvider
+  // MARK: - NYPLOAuthTokenSource
 
   var authToken: String? {
     return "fake token"

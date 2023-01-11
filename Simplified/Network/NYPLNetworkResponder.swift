@@ -37,7 +37,7 @@ class NYPLNetworkResponder: NSObject {
 
   /// The object providing the credentials to respond to an authentication
   /// challenge.
-  let credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider
+  let credentialsSource: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenSource
 
   var oauthTokenRefresher: NYPLOAuthTokenRefresher?
 
@@ -45,14 +45,14 @@ class NYPLNetworkResponder: NSObject {
   /// - Parameter shouldEnableFallbackCaching: If set to `true`, the executor
   /// will attempt to cache responses even when these lack a sufficient set of
   /// caching headers. The default is `false`.
-  /// - Parameter credentialsProvider: The object providing the credentials
+  /// - Parameter credentialsSource: The object providing the credentials
   /// to respond to an authentication challenge.
-  init(credentialsProvider: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenProvider,
+  init(credentialsSource: NYPLBasicAuthCredentialsProvider & NYPLOAuthTokenSource,
        useFallbackCaching: Bool = false) {
     self.taskInfo = [Int: NYPLNetworkTaskInfo]()
     self.taskInfoLock = NSRecursiveLock()
     self.useFallbackCaching = useFallbackCaching
-    self.credentialsProvider = credentialsProvider
+    self.credentialsSource = credentialsSource
     super.init()
   }
 
@@ -163,7 +163,7 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
       // if we detect an expired client credentials token,
       // nil it out so that next time it will trigger a token refresh
       let problemDoc = errorWithProblemDoc.problemDocument
-      if credentialsProvider.hasOAuthClientCredentials(),
+      if credentialsSource.hasOAuthClientCredentials(),
          response.indicatesAuthenticationNeedsRefresh(with: problemDoc) {
         oauthTokenRefresher?.currentToken = nil
       }
@@ -301,7 +301,7 @@ extension NYPLNetworkResponder: URLSessionTaskDelegate {
                   didReceive challenge: URLAuthenticationChallenge,
                   completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
   {
-    let authChallenger = NYPLBasicAuth(credentialsProvider: credentialsProvider)
+    let authChallenger = NYPLBasicAuth(credentialsProvider: credentialsSource)
     authChallenger.handleChallenge(challenge, completion: completionHandler)
   }
 }

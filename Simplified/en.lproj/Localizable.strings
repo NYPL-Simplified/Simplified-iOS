@@ -184,6 +184,13 @@
 "Error Syncing Bookmarks" = "Error Syncing Bookmarks";
 "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later." = "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.";
 
+// MARK: - Reader/Player Positions (Sync)
+"Sync Reading Position" = "Sync Reading Position";
+"Do you want to move to the page on which you left off?" = "Do you want to move to the page on which you left off?";
+"Do you want to stay at this location in your audiobook or move to the furthest location you have listened to?" = "Do you want to stay at this location in your audiobook or move to the furthest location you have listened to?";
+"Stay" = "Stay";
+"Move" = "Move";
+
 // MARK: - Reader error messages (R2)
 "Content Protection Error" = "Content Protection Error";
 "The book you were trying to open is invalid." = "The book you were trying to open is invalid.";

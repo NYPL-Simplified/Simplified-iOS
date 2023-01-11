@@ -19,10 +19,14 @@ final class EPUBModule: ReaderFormatModule {
   
   weak var delegate: R2ModuleDelegate?
   let resourcesServer: ResourcesServer
+  private let annotationsSynchronizer: NYPLAnnotationSyncing
   
-  init(delegate: R2ModuleDelegate?, resourcesServer: ResourcesServer) {
+  init(delegate: R2ModuleDelegate?,
+       resourcesServer: ResourcesServer,
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
+    self.annotationsSynchronizer = annotationsSynchronizer
   }
 
   func supports(_ publication: Publication) -> Bool {
@@ -31,6 +35,7 @@ final class EPUBModule: ReaderFormatModule {
 
   func makeReaderViewController(for publication: Publication,
                                 book: NYPLBook,
+                                syncPermission: Bool,
                                 initialLocation: Locator?) throws -> UIViewController {
       
     guard publication.metadata.identifier != nil else {
@@ -40,7 +45,9 @@ final class EPUBModule: ReaderFormatModule {
     let epubVC = NYPLEPUBViewController(publication: publication,
                                         book: book,
                                         initialLocation: initialLocation,
-                                        resourcesServer: resourcesServer)
+                                        resourcesServer: resourcesServer,
+                                        syncPermission: syncPermission,
+                                        annotationsSynchronizer: annotationsSynchronizer)
     epubVC.moduleDelegate = delegate
     return epubVC
   }

@@ -348,3 +348,9 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     }
   }
 }
+
+extension AccountsManager: NYPLReaderServerPermissions {
+  var syncPermissionGranted: Bool {
+    return currentAccount?.details?.syncPermissionGranted ?? false
+  }
+}

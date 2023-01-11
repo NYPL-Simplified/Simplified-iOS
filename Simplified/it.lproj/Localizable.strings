@@ -180,6 +180,13 @@
 "Error Syncing Bookmarks" = "Errore nella sincronizzazione dei segnalibri";
 "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later." = "Si è verificato un errore nella sincronizzazione dei segnalibri. Assicurati che il tuo dispositivo sia collegato a internet e riprova.";
 
+// MARK: - Reader/Player Positions (Sync)
+"Sync Reading Position" = "Sincronizza punto di lettura";
+"Do you want to move to the page on which you left off?" = "Vuoi spostarti alla pagina dove hai smesso di leggere l'ultima volta?";
+"Do you want to stay at this location in your audiobook or move to the furthest location you have listened to?" = "Vuoi rimanere nella posizione attuale di questo audiolibro o spostarti all'ultimo punto che hai ascoltato?";
+"Stay" = "Rimani";
+"Move" = "Spostati";
+
 // MARK: - Reader error messages (R2)
 "Content Protection Error" = "Errore nella protezione del contenuto";
 "The book you were trying to open is invalid." = "Il libro che stavi cercando di leggere è in un formato non valido.";

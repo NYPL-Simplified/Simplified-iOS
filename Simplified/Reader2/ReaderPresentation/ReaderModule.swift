@@ -38,6 +38,7 @@ protocol ReaderModuleAPI {
   /// - Parameter navigationController: The navigation stack the book will be presented in.
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
+                          syncPermission: Bool,
                           deviceID: String?,
                           in navigationController: UINavigationController,
                           successCompletion: (() -> Void)?)
@@ -54,25 +55,31 @@ final class ReaderModule: ReaderModuleAPI {
   
   weak var delegate: R2ModuleDelegate?
   private let resourcesServer: ResourcesServer
-  private let progressSynchronizer: NYPLLastReadPositionSynchronizer
+  private let progressSynchronizer: NYPLLastReadPositionSynchronizing
 
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
 
   init(delegate: R2ModuleDelegate?,
        resourcesServer: ResourcesServer,
-       bookRegistry: NYPLBookRegistryProvider) {
+       bookRegistry: NYPLBookRegistryProvider,
+       annotationsSynchronizer: NYPLAnnotationSyncing) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
-    self.progressSynchronizer = NYPLLastReadPositionSynchronizer(bookRegistry: bookRegistry)
+    self.progressSynchronizer = NYPLLastReadPositionSynchronizer(
+      bookRegistry: bookRegistry,
+      synchronizer: annotationsSynchronizer)
 
     formatModules = [
-      EPUBModule(delegate: self.delegate, resourcesServer: resourcesServer)
+      EPUBModule(delegate: self.delegate,
+                 resourcesServer: resourcesServer,
+                 annotationsSynchronizer: annotationsSynchronizer)
     ]
   }
   
   func presentPublication(_ publication: Publication,
                           book: NYPLBook,
+                          syncPermission: Bool,
                           deviceID: String?,
                           in navigationController: UINavigationController,
                           successCompletion: (() -> Void)?) {
@@ -85,20 +92,23 @@ final class ReaderModule: ReaderModuleAPI {
       return
     }
 
-    progressSynchronizer.sync(for: publication,
-                              book: book,
-                              drmDeviceID: deviceID) { [weak self] initialLocator in
-                                self?.finalizePresentation(for: publication,
-                                                           book: book,
-                                                           formatModule: formatModule,
-                                                           positioningAt: initialLocator,
-                                                           in: navigationController,
-                                                           successCompletion: successCompletion)
-    }
+    progressSynchronizer.sync(
+      for: publication,
+      book: book,
+      drmDeviceID: deviceID) { [weak self] initialLocator in
+        self?.finalizePresentation(for: publication,
+                                   book: book,
+                                   syncPermission: syncPermission,
+                                   formatModule: formatModule,
+                                   positioningAt: initialLocator,
+                                   in: navigationController,
+                                   successCompletion: successCompletion)
+      }
   }
 
   private func finalizePresentation(for publication: Publication,
                                     book: NYPLBook,
+                                    syncPermission: Bool,
                                     formatModule: ReaderFormatModule,
                                     positioningAt initialLocator: Locator?,
                                     in navigationController: UINavigationController,
@@ -107,6 +117,7 @@ final class ReaderModule: ReaderModuleAPI {
       let readerVC = try formatModule.makeReaderViewController(
         for: publication,
         book: book,
+        syncPermission: syncPermission,
         initialLocation: initialLocator)
 
       let backItem = UIBarButtonItem()

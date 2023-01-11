@@ -14,13 +14,13 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
   var bookmarkBusinessLogic: NYPLReaderBookmarksBusinessLogic!
   var bookRegistryMock: NYPLBookRegistryMock!
   var libraryAccountMock: NYPLLibraryAccountMock!
-  var annotationsMock: NYPLAnnotationsMock.Type!
+  var annotationsMock: NYPLAnnotationsMock!
   var bookmarkCounter: Int = 0
   let bookIdentifier = "fakeEpub"
 
   override func setUpWithError() throws {
     try super.setUpWithError()
-    
+
     let emptyUrl = URL.init(fileURLWithPath: "")
     let fakeAcquisition = NYPLOPDSAcquisition.init(
       relation: .generic,
@@ -56,7 +56,7 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
     bookRegistryMock.addBook(book: fakeBook, state: .DownloadSuccessful)
     libraryAccountMock = NYPLLibraryAccountMock()
     libraryAccountMock.currentAccount?.details?.syncPermissionGranted = true
-    annotationsMock = NYPLAnnotationsMock.self
+    annotationsMock = NYPLAnnotationsMock()
     let manifest = Manifest(metadata: Metadata(title: "fakeMetadata"))
     let pub = Publication(manifest: manifest)
     bookmarkBusinessLogic = NYPLReaderBookmarksBusinessLogic(
@@ -64,8 +64,8 @@ class NYPLReaderBookmarksBusinessLogicTests: XCTestCase {
       r2Publication: pub,
       drmDeviceID: "fakeDeviceID",
       bookRegistryProvider: bookRegistryMock,
-      currentLibraryAccountProvider: libraryAccountMock,
-      annotationsSynchronizer: annotationsMock)
+      syncPermission: true,
+      synchronizer: annotationsMock)
     bookmarkCounter = 0
   }
 

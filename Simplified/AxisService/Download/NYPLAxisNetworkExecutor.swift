@@ -16,7 +16,7 @@ class NYPLAxisNetworkExecutor: NYPLAxisNetworkExecuting {
   
   init() {
     self.requestExecutor = NYPLNetworkExecutor(
-      credentialsProvider: NYPLUserAccount.sharedAccount(),
+      credentialsSource: NYPLUserAccount.sharedAccount(),
       cachingStrategy: .ephemeral)
   }
   

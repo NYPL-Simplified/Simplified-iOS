@@ -101,37 +101,20 @@
 
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB:
-      [self openEPUB:book successCompletion:successCompletion];
+      [[[NYPLEPUBOpener alloc] init] open:book successCompletion:successCompletion];
       break;
     case NYPLBookContentTypePDF:
       [self openPDF:book];
       break;
 #if FEATURE_AUDIOBOOKS
     case NYPLBookContentTypeAudiobook:
-      [self openAudiobook:book];
+      [self openAudiobook:book successCompletion:successCompletion];
       break;
 #endif
     default:
       [self presentUnsupportedItemError];
       break;
   }
-}
-
-- (void)openEPUB:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
-{
-  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                      fileURLForBookIndentifier:book.identifier];
-  [[NYPLRootTabBarController sharedController] presentBook:book
-                                               fromFileURL:url
-                                         successCompletion:successCompletion];
-
-  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount]
-                             syncSupportedCompletion:^(BOOL enableSync, NSError *error) {
-    if (error == nil) {
-      currentAccount.details.syncPermissionGranted = enableSync;
-    }
-  }];
 }
 
 - (void)openPDF:(NYPLBook *)book {

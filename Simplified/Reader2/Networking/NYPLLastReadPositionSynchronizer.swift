@@ -9,27 +9,32 @@
 import Foundation
 import R2Shared
 
+protocol NYPLLastReadPositionSynchronizing {
+  func sync(for publication: Publication,
+            book: NYPLBook,
+            drmDeviceID: String?,
+            completion: @escaping (Locator?) -> Void)
+}
+
 /// A front-end to the Annotations api to sync the reading progress for
 /// a given book with the progress on the server.
-class NYPLLastReadPositionSynchronizer {
+class NYPLLastReadPositionSynchronizer: NYPLLastReadPositionSynchronizing {
   private let bookRegistry: NYPLBookRegistryProvider
 
   private enum NavigationChoice: Int {
     case stay, moveToServerLocator
   }
 
-  private let failFastNetworkExecutor: NYPLNetworkExecutor
+  let synchronizer: NYPLLastReadPositionSupportAPI
 
   /// Designated initializer.
   ///
   /// - Parameters:
   ///   - bookRegistry: The registry that stores the reading progresses.
-  init(bookRegistry: NYPLBookRegistryProvider) {
+  init(bookRegistry: NYPLBookRegistryProvider,
+       synchronizer: NYPLLastReadPositionSupportAPI) {
     self.bookRegistry = bookRegistry
-    failFastNetworkExecutor = NYPLNetworkExecutor(
-      credentialsProvider: NYPLUserAccount.sharedAccount(),
-      cachingStrategy: .ephemeral,
-      waitsForConnectivity: false)
+    self.synchronizer = synchronizer
   }
 
   /// Fetches the read position from the server and alerts the user
@@ -102,34 +107,32 @@ class NYPLLastReadPositionSynchronizer {
 
     let localLocation = bookRegistry.location(forIdentifier: book.identifier)
 
-    NYPLAnnotations
-      .syncReadingPosition(ofBook: book.identifier, publication: publication, toURL: book.annotationsURL, usingNetworkExecutor: failFastNetworkExecutor) { bookmark in
+    synchronizer.syncReadingPosition(of: NYPLReadiumBookmark.self, forBook: book.identifier, publication: publication, toURL: book.annotationsURL) { bookmark in
+      guard let bookmark = bookmark else {
+        Log.info(#function, "No reading position annotation exists on the server for \(book.loggableShortString()).")
+        completion(nil)
+        return
+      }
 
-        guard let bookmark = bookmark else {
-          Log.info(#function, "No reading position annotation exists on the server for \(book.loggableShortString()).")
-          completion(nil)
-          return
-        }
+      let deviceID = bookmark.device ?? ""
+      let serverLocationString = bookmark.location
 
-        let deviceID = bookmark.device ?? ""
-        let serverLocationString = bookmark.location
+      // Pass through returning nil (meaning the server doesn't have a
+      // last read location worth restoring) if:
+      // 1 - The most recent page on the server comes from the same device, or
+      // 2 - The server and the client have the same page marked
+      if deviceID == drmDeviceID
+        || localLocation?.locationString == serverLocationString {
 
-        // Pass through returning nil (meaning the server doesn't have a
-        // last read location worth restoring) if:
-        // 1 - The most recent page on the server comes from the same device, or
-        // 2 - The server and the client have the same page marked
-        if deviceID == drmDeviceID
-          || localLocation?.locationString == serverLocationString {
+        // server location does not differ from or should take no precedence
+        // over the local position
+        completion(nil)
+        return
+      }
 
-          // server location does not differ from or should take no precedence
-          // over the local position
-          completion(nil)
-          return
-        }
-
-        // we got a server location that differs from the local: return that
-        // so that clients can decide what to do
-        completion(bookmark.locator(forPublication: publication))
+      // we got a server location that differs from the local: return that
+      // so that clients can decide what to do
+      completion(bookmark.locator(forPublication: publication))
     }
   }
 

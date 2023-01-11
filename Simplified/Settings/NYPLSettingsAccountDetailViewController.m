@@ -124,7 +124,7 @@ static const CGFloat sConstantSpacing = 12.0;
   return self.selectedUserAccount.hasCredentials;
 }
 
-#pragma mark - NYPLOAuthTokenProvider
+#pragma mark - NYPLOAuthTokenSource
 
 - (NSString *)authToken
 {

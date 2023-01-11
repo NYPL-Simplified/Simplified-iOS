@@ -13,9 +13,9 @@ import R2Streamer
 typealias ProtectedAssetCompletion = (Result<ProtectedAsset?, Publication.OpeningError>) -> Void
 
 protocol NYPLAxisProtectedAssetOpening {
-  func openAsset(_ asset: FileAsset,
-                 fetcher: Fetcher,
-                 completion: @escaping ProtectedAssetCompletion)
+  func open(asset: FileAsset,
+            fetcher: Fetcher,
+            completion: @escaping ProtectedAssetCompletion)
 }
 
 struct NYPLAxisProtectedAssetOpener: NYPLAxisProtectedAssetOpening {
@@ -32,11 +32,11 @@ struct NYPLAxisProtectedAssetOpener: NYPLAxisProtectedAssetOpening {
   /// Opens asset using the `bookReadingAdapter` instance property which first
   /// decrypts the encrypted key from disk, and uses the decrypted key to unlock
   ///  and provide data to the ereader.
-  func openAsset(_ asset: FileAsset,
-                 fetcher: Fetcher,
-                 completion: @escaping ProtectedAssetCompletion) {
+  func open(asset: FileAsset,
+            fetcher: Fetcher,
+            completion: @escaping ProtectedAssetCompletion) {
     
-    bookReadingAdapter.openAsset(asset, fetcher: fetcher, completion: completion)
+    bookReadingAdapter.open(asset: asset, fetcher: fetcher, completion: completion)
   }
   
 }

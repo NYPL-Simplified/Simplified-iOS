@@ -27,9 +27,13 @@ class OPDS2SamlIDP: NSObject, Codable {
   func isSignedIn() -> Bool
 }
 
+@objc protocol NYPLReaderServerPermissions {
+  var syncPermissionGranted:Bool {get}
+}
+
 // MARK: AccountDetails
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
-@objcMembers final class AccountDetails: NSObject {
+@objcMembers final class AccountDetails: NSObject, NYPLReaderServerPermissions {
   enum AuthType: String, Codable {
     /// This is used with barcode/username credentials on SimplyE. It was also
     /// used for FirstBook authentication on Open eBooks versions before 2.4.0.

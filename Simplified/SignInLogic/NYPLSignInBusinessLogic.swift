@@ -64,7 +64,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
               bookRegistry: bookRegistry,
               bookDownloadsRemover: bookDownloadsRemover,
               userAccountProvider: userAccountProvider,
-              networkExecutor: NYPLNetworkExecutor(credentialsProvider: uiDelegate,
+              networkExecutor: NYPLNetworkExecutor(credentialsSource: uiDelegate,
                                                    cachingStrategy: .ephemeral,
                                                    delegateQueue: OperationQueue.main),
               uiDelegate: uiDelegate,
@@ -89,6 +89,7 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
     self.urlSettingsProvider = urlSettingsProvider
     self.bookRegistry = bookRegistry
     self.bookDownloadsRemover = bookDownloadsRemover
+    self.syncStatusSynchronizer = NYPLAnnotations()
     self.userAccountProvider = userAccountProvider
     self.networker = networkExecutor
     self.drmAuthorizerAdobe = drmAuthorizerAdobe
@@ -103,6 +104,8 @@ class NYPLSignInBusinessLogic: NSObject, NYPLSignedInStateProvider, NYPLCurrentL
 
   /// Signing out implies removing book downloads from the device.
   let bookDownloadsRemover: NYPLBookDownloadsDeleting
+
+  let syncStatusSynchronizer: NYPLServerSyncUpdating & NYPLServerSyncChecking
 
   /// Provides the user account for a given library.
   private let userAccountProvider: NYPLUserAccountProvider.Type

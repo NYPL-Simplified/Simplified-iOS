@@ -29,7 +29,7 @@ extension NYPLSignInBusinessLogic {
                                   postServerSyncCompletion: @escaping (Bool) -> Void) {
     if granted {
       // When granting, attempt to enable on the server.
-      NYPLAnnotations.updateServerSyncSetting(toEnabled: true) { success in
+      syncStatusSynchronizer.updateServerSyncSetting(toEnabled: true) { success in
         self.libraryAccount?.details?.syncPermissionGranted = success
         NYPLMainThreadRun.asyncIfNeeded {
           postServerSyncCompletion(success)
@@ -66,12 +66,15 @@ extension NYPLSignInBusinessLogic {
       preWork()
     }
 
-    NYPLAnnotations.requestServerSyncStatus(forAccount: userAccount) { enableSync, error in
-      NYPLMainThreadRun.sync {
-        postWork(enableSync, error)
-      }
+    syncStatusSynchronizer.checkServerSyncStatus(
+      settings: NYPLSettings.shared,
+      syncPermissionGranted: libraryDetails.syncPermissionGranted) { enableSync, error in
+        
+        NYPLMainThreadRun.sync {
+          postWork(enableSync, error)
+        }
 
-      self.permissionsCheckLock.unlock()
-    }
+        self.permissionsCheckLock.unlock()
+      }
   }
 }
