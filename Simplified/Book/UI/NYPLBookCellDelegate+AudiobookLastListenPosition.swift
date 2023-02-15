@@ -69,7 +69,7 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
   @objc(restoreLastListenPositionAndPresentAudiobookPlayerVC:audiobookManager:successCompletion:)
   func restoreLastListenPositionAndPresent(audiobookPlayerVC: AudiobookPlayerViewController,
                                            audiobookManager: DefaultAudiobookManager,
-                                           successCompletion: @escaping () -> ()) {
+                                           successCompletion: (() -> ())?) {
     // Restore last listen position from local storage and server
     audiobookManager.lastListenPositionSynchronizer?.getLastListenPosition(completion: { [weak self] localPosition, serverPosition in
       
@@ -81,7 +81,7 @@ private let NYPLAudiobookPositionSyncingInterval: DispatchTimeInterval = .second
         // Present audio player
         NYPLRootTabBarController.shared().pushViewController(audiobookPlayerVC, animated: true)
         // Call completion handler when audiobook has been successfully opened
-        successCompletion()
+        successCompletion?()
         
         // Present alert for user to decide if they want to move to position found on server
         if let serverPosition = serverPosition {
