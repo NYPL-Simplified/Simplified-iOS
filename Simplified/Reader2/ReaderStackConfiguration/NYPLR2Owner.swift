@@ -41,7 +41,7 @@ import R2Streamer
       annotationsSynchronizer: annotationsSynchronizer)
 
     // Set Readium 2's logging minimum level.
-    R2EnableLog(withMinimumSeverityLevel: .debug)
+    R2EnableLog(withMinimumSeverityLevel: .warning)
   }
 
   deinit {
