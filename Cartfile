@@ -1,4 +1,2 @@
-binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseCrashlyticsBinary.json"
-binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"
 github "NYPL-Simplified/PDFRendererProvider-iOS" "master"
 github "ettore/zxingify-objc" "master"

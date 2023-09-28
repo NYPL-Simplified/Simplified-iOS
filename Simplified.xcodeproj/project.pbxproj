@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -346,9 +346,6 @@
 		7314D1422551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7314D13F2551E73C00723E26 /* NYPLSignInBusinessLogic+SignOut.swift */; };
 		73186815285B9074001B9D86 /* OELoginCleverHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73186811285B9074001B9D86 /* OELoginCleverHelper.swift */; };
 		731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */; };
-		731CA5E028A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */; };
-		731CA5E228A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */; };
-		731CA5E328A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */; };
 		7320AB36251EBC9900E3F04D /* Date+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */; };
 		7320AB3A251EBC9900E3F04D /* NYPLOPDSAcquisitionPathEntry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2D8790A220129AC400E2763F /* NYPLOPDSAcquisitionPathEntry.xml */; };
 		7320AB3B251EBC9900E3F04D /* UpdateCheckNeedsUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */; };
@@ -399,30 +396,6 @@
 		734731232514235900BE3D2C /* NYPLAppDelegate+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734731222514235900BE3D2C /* NYPLAppDelegate+SE.swift */; };
 		734731262514236A00BE3D2C /* NYPLAppDelegate+OE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734731252514236A00BE3D2C /* NYPLAppDelegate+OE.swift */; };
 		7347312925142FE200BE3D2C /* NYPLSettings+SE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7347312825142FE200BE3D2C /* NYPLSettings+SE.swift */; };
-		7347B4A9265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */; };
-		7347B4AB265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */; };
-		7347B4AC265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */; };
-		7347B4B4265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */; };
-		7347B4B6265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */; };
-		7347B4B7265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */; };
-		7347B4B8265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */; };
-		7347B4BA265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */; };
-		7347B4BB265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */; };
-		7347B4BC265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */; };
-		7347B4BE265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */; };
-		7347B4BF265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */; };
-		7347B4CA265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */; };
-		7347B4CC265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */; };
-		7347B4CD265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */; };
-		7347B4CE265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */; };
-		7347B4D0265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */; };
-		7347B4D1265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */; };
-		7347B4D2265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */; };
-		7347B4D4265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */; };
-		7347B4D5265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */; };
-		7347B4DD265EFD1300E4E386 /* nanopb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4DC265EFD1300E4E386 /* nanopb.xcframework */; };
-		7347B4DF265EFD1300E4E386 /* nanopb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4DC265EFD1300E4E386 /* nanopb.xcframework */; };
-		7347B4E0265EFD1300E4E386 /* nanopb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7347B4DC265EFD1300E4E386 /* nanopb.xcframework */; };
 		7347E8B02AC604E200EE509E /* R2Navigator in Frameworks */ = {isa = PBXBuildFile; productRef = 7347E8AF2AC604E200EE509E /* R2Navigator */; };
 		7347E8B22AC604E200EE509E /* R2Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 7347E8B12AC604E200EE509E /* R2Shared */; };
 		7347E8B42AC604E200EE509E /* R2Streamer in Frameworks */ = {isa = PBXBuildFile; productRef = 7347E8B32AC604E200EE509E /* R2Streamer */; };
@@ -473,6 +446,7 @@
 		735DD0CE2522A0730096D1F9 /* UIColor+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735DD0BD252299A90096D1F9 /* UIColor+NYPLAdditionsTests.swift */; };
 		735DD0D02522A0730096D1F9 /* UserProfileDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3A28D322D3FBB90042B3BD /* UserProfileDocumentTests.swift */; };
 		735DD0D12522A0730096D1F9 /* URLRequest+NYPLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735350B624918432006021BD /* URLRequest+NYPLTests.swift */; };
+		735ED9F92AC625CC00057EC4 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 735ED9F82AC625CC00057EC4 /* FirebaseCrashlytics */; };
 		735F41A3243E381D00046182 /* String+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735F41A2243E381D00046182 /* String+NYPLAdditionsTests.swift */; };
 		735F559525A63EBF00AC6582 /* NYPLR2Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */; };
 		735FCB3A2506FAD0009A8C95 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 735FCB392506FACF009A8C95 /* ReaderClientCert.sig */; };
@@ -1558,7 +1532,6 @@
 		73165C67268662FA0021A6AD /* checkout-r2-branch.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "checkout-r2-branch.sh"; sourceTree = "<group>"; };
 		73186811285B9074001B9D86 /* OELoginCleverHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OELoginCleverHelper.swift; sourceTree = "<group>"; };
 		731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogic.swift; sourceTree = "<group>"; };
-		731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FirebaseCoreInternal.xcframework; path = Carthage/Build/FirebaseCoreInternal.xcframework; sourceTree = "<group>"; };
 		7320AB48251EBC9900E3F04D /* OpenEbooksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenEbooksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7321485928651E4B000DF0F0 /* NYPLSignInModalFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInModalFactory.swift; sourceTree = "<group>"; };
 		73225DEA250B471400EF1877 /* NYPLRootTabBarController+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLRootTabBarController+OE.swift"; sourceTree = "<group>"; };
@@ -1592,14 +1565,6 @@
 		734731222514235900BE3D2C /* NYPLAppDelegate+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLAppDelegate+SE.swift"; sourceTree = "<group>"; };
 		734731252514236A00BE3D2C /* NYPLAppDelegate+OE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLAppDelegate+OE.swift"; sourceTree = "<group>"; };
 		7347312825142FE200BE3D2C /* NYPLSettings+SE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NYPLSettings+SE.swift"; sourceTree = "<group>"; };
-		7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FirebaseAnalytics.xcframework; path = Carthage/Build/FirebaseAnalytics.xcframework; sourceTree = "<group>"; };
-		7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FirebaseInstallations.xcframework; path = Carthage/Build/FirebaseInstallations.xcframework; sourceTree = "<group>"; };
-		7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FirebaseCrashlytics.xcframework; path = Carthage/Build/FirebaseCrashlytics.xcframework; sourceTree = "<group>"; };
-		7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FirebaseCore.xcframework; path = Carthage/Build/FirebaseCore.xcframework; sourceTree = "<group>"; };
-		7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleDataTransport.xcframework; path = Carthage/Build/GoogleDataTransport.xcframework; sourceTree = "<group>"; };
-		7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleUtilities.xcframework; path = Carthage/Build/GoogleUtilities.xcframework; sourceTree = "<group>"; };
-		7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleAppMeasurement.xcframework; path = Carthage/Build/GoogleAppMeasurement.xcframework; sourceTree = "<group>"; };
-		7347B4DC265EFD1300E4E386 /* nanopb.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = nanopb.xcframework; path = Carthage/Build/nanopb.xcframework; sourceTree = "<group>"; };
 		734917D0242D77D800059AA5 /* NYPLUserSettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserSettingsVC.swift; sourceTree = "<group>"; };
 		734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLR1R2UserSettings.swift; sourceTree = "<group>"; };
 		734B789025659611006FB8AD /* URLResponse+NYPLAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLResponse+NYPLAuthentication.swift"; sourceTree = "<group>"; };
@@ -1848,14 +1813,7 @@
 				73EB0B3F25821DF4006BC997 /* CoreLocation.framework in Frameworks */,
 				73EB0B2F25821DF4006BC997 /* CoreMedia.framework in Frameworks */,
 				73EB0B3025821DF4006BC997 /* CoreVideo.framework in Frameworks */,
-				7347B4AB265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
-				7347B4BA265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
-				7347B4BE265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
-				7347B4B6265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */,
 				73EB0B4125821DF4006BC997 /* Foundation.framework in Frameworks */,
-				7347B4D4265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */,
-				7347B4CC265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */,
-				7347B4D0265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */,
 				73EB0B3A25821DF4006BC997 /* libc++.dylib in Frameworks */,
 				73EB0B3325821DF4006BC997 /* libiconv.tbd in Frameworks */,
 				73EB0B3925821DF4006BC997 /* libicucore.tbd in Frameworks */,
@@ -1865,14 +1823,12 @@
 				73EB0B4525821DF4006BC997 /* libz.dylib in Frameworks */,
 				73EB0B3B25821DF4006BC997 /* LocalAuthentication.framework in Frameworks */,
 				73EB0B2E25821DF4006BC997 /* MediaPlayer.framework in Frameworks */,
-				7347B4DF265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
 				732F04702633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				73EB0B3525821DF4006BC997 /* QuartzCore.framework in Frameworks */,
 				73EB0B3D25821DF4006BC997 /* Security.framework in Frameworks */,
 				73EB0B3C25821DF4006BC997 /* SystemConfiguration.framework in Frameworks */,
 				73EB0B4025821DF4006BC997 /* UIKit.framework in Frameworks */,
 				732F0484263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
-				731CA5E228A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */,
 				7392E46A2788E7CB006F010E /* NYPLCardCreator in Frameworks */,
 				7392E4682788E7CB006F010E /* NYPLAudiobookToolkit in Frameworks */,
 				739F43A62770FEA5005A8E1F /* NYPLUtilities in Frameworks */,
@@ -1887,15 +1843,7 @@
 				73FCA36325005BA4001B0C5D /* CoreGraphics.framework in Frameworks */,
 				73FCA35E25005BA4001B0C5D /* CoreMedia.framework in Frameworks */,
 				73FCA35F25005BA4001B0C5D /* CoreVideo.framework in Frameworks */,
-				7347B4AC265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
-				7347B4BB265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
-				7347B4BF265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
-				731CA5E328A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */,
-				7347B4B7265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */,
 				73FCA37025005BA4001B0C5D /* Foundation.framework in Frameworks */,
-				7347B4D5265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */,
-				7347B4CD265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */,
-				7347B4D1265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */,
 				73FCA36925005BA4001B0C5D /* libc++.dylib in Frameworks */,
 				73FCA36225005BA4001B0C5D /* libiconv.tbd in Frameworks */,
 				73FCA36825005BA4001B0C5D /* libicucore.tbd in Frameworks */,
@@ -1904,7 +1852,6 @@
 				73FCA37225005BA4001B0C5D /* libz.dylib in Frameworks */,
 				73FCA36A25005BA4001B0C5D /* LocalAuthentication.framework in Frameworks */,
 				73FCA35D25005BA4001B0C5D /* MediaPlayer.framework in Frameworks */,
-				7347B4E0265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
 				7392E46C2788E7D8006F010E /* NYPLAxis in Frameworks */,
 				73369F1E27862D6800752ECB /* PureLayout in Frameworks */,
 				73F5DE882774EE3200597F1E /* NYPLUtilities in Frameworks */,
@@ -1930,16 +1877,8 @@
 				7347E8B22AC604E200EE509E /* R2Shared in Frameworks */,
 				03B0922E1E7886ED00AD338D /* CoreVideo.framework in Frameworks */,
 				7347E8B02AC604E200EE509E /* R2Navigator in Frameworks */,
-				7347B4A9265EFC1B00E4E386 /* FirebaseAnalytics.xcframework in Frameworks */,
-				7347B4BC265EFC7A00E4E386 /* FirebaseCore.xcframework in Frameworks */,
-				731CA5E028A465A100ABC8DE /* FirebaseCoreInternal.xcframework in Frameworks */,
-				7347B4B8265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework in Frameworks */,
-				7347B4B4265EFC7A00E4E386 /* FirebaseInstallations.xcframework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				7347E8B62AC604E200EE509E /* ReadiumAdapterGCDWebServer in Frameworks */,
-				7347B4D2265EFCC700E4E386 /* GoogleAppMeasurement.xcframework in Frameworks */,
-				7347B4CA265EFCC700E4E386 /* GoogleDataTransport.xcframework in Frameworks */,
-				7347B4CE265EFCC700E4E386 /* GoogleUtilities.xcframework in Frameworks */,
 				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
 				03B092261E7883C400AD338D /* libiconv.tbd in Frameworks */,
@@ -1951,7 +1890,6 @@
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */,
 				03B092301E78871A00AD338D /* MediaPlayer.framework in Frameworks */,
-				7347B4DD265EFD1300E4E386 /* nanopb.xcframework in Frameworks */,
 				73829F4127861584008B2A80 /* NYPLAEToolkit in Frameworks */,
 				73A1731227ADA7D3005E7BCF /* NYPLAxis in Frameworks */,
 				7392E4602788E752006F010E /* NYPLAudiobookToolkit in Frameworks */,
@@ -1962,6 +1900,7 @@
 				732F046D2633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347E8B82AC604E200EE509E /* ReadiumLCP in Frameworks */,
 				03B092241E78839D00AD338D /* QuartzCore.framework in Frameworks */,
+				735ED9F92AC625CC00057EC4 /* FirebaseCrashlytics in Frameworks */,
 				08A352241BDE8E640040BF1D /* Security.framework in Frameworks */,
 				08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
@@ -3046,15 +2985,7 @@
 				03B092271E78859E00AD338D /* CoreMedia.framework */,
 				1146EE3F1A5DD071009F7576 /* CoreText.framework */,
 				03B0922D1E7886ED00AD338D /* CoreVideo.framework */,
-				7347B4A2265EFC1B00E4E386 /* FirebaseAnalytics.xcframework */,
-				7347B4B2265EFC7A00E4E386 /* FirebaseCore.xcframework */,
-				731CA5DF28A465A100ABC8DE /* FirebaseCoreInternal.xcframework */,
-				7347B4B1265EFC7A00E4E386 /* FirebaseCrashlytics.xcframework */,
-				7347B4B0265EFC7A00E4E386 /* FirebaseInstallations.xcframework */,
 				A823D810192BABA400B55DE2 /* Foundation.framework */,
-				7347B4C9265EFCC700E4E386 /* GoogleAppMeasurement.xcframework */,
-				7347B4C7265EFCC600E4E386 /* GoogleDataTransport.xcframework */,
-				7347B4C8265EFCC600E4E386 /* GoogleUtilities.xcframework */,
 				03B092251E7883C400AD338D /* libiconv.tbd */,
 				08A352211BDE8E560040BF1D /* libicucore.tbd */,
 				119503EA1993F91E009FB788 /* libc++.dylib */,
@@ -3063,7 +2994,6 @@
 				119503E41993F90C009FB788 /* libePub3-iOS.a */,
 				2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */,
 				03B0922F1E78871A00AD338D /* MediaPlayer.framework */,
-				7347B4DC265EFD1300E4E386 /* nanopb.xcframework */,
 				732F046C2633783B0018A82E /* PDFRendererProvider.xcframework */,
 				03B092231E78839D00AD338D /* QuartzCore.framework */,
 				08A352231BDE8E640040BF1D /* Security.framework */,
@@ -3320,6 +3250,7 @@
 				7347E8B32AC604E200EE509E /* R2Streamer */,
 				7347E8B52AC604E200EE509E /* ReadiumAdapterGCDWebServer */,
 				7347E8B72AC604E200EE509E /* ReadiumLCP */,
+				735ED9F82AC625CC00057EC4 /* FirebaseCrashlytics */,
 			);
 			productName = Simplified;
 			productReference = A823D80D192BABA400B55DE2 /* SimplyE.app */;
@@ -3377,6 +3308,7 @@
 				73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */,
 				7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */,
 				7347E8AE2AC604E200EE509E /* XCRemoteSwiftPackageReference "swift-toolkit" */,
+				735ED9F72AC625CC00057EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = A823D80E192BABA400B55DE2 /* Products */;
 			projectDirPath = "";
@@ -3631,6 +3563,7 @@
 		};
 		73DA43AD2404CA9500985482 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 12;
 			files = (
 			);
@@ -4991,11 +4924,6 @@
 				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Carthage/Build",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/NYPLAEToolkit/build",
-				);
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -5058,11 +4986,6 @@
 				DEFINES_MODULE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Carthage/Build",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/NYPLAEToolkit/build",
-				);
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -5096,7 +5019,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
-				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
@@ -5147,7 +5069,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
-				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/AppInfrastructure/Simplified-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -5270,6 +5191,14 @@
 				kind = branch;
 			};
 		};
+		735ED9F72AC625CC00057EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -5322,6 +5251,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */;
 			productName = NYPLUtilities;
+		};
+		735ED9F82AC625CC00057EC4 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 735ED9F72AC625CC00057EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		73829F4027861584008B2A80 /* NYPLAEToolkit */ = {
 			isa = XCSwiftPackageProductDependency;
