@@ -3,7 +3,7 @@ on:
   pull_request:
 jobs:
   build-and-test:
-    runs-on: macOS-12
+    runs-on: macOS-13
     if: github.event.pull_request.head.repo.full_name == github.repository
     env:
       GITHUB_TOKEN: ${{ secrets.IOS_DEV_CI_PAT }}
@@ -13,14 +13,14 @@ jobs:
       - name: Check available Xcodes
         run: ls -la /Applications | grep Xcode
       - name: Force Xcode we use for development
-        run: sudo xcode-select -switch /Applications/Xcode_13.4.1.app
+        run: sudo xcode-select -switch /Applications/Xcode_14.3.app
       - name: Checkout main repo and submodules
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: true
           token: ${{ secrets.IOS_DEV_CI_PAT }}
       - name: Checkout Adobe RMSDK
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: NYPL-Simplified/DRM-iOS-AdeptConnector
           token: ${{ secrets.IOS_DEV_CI_PAT }}
