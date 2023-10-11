@@ -461,6 +461,7 @@
 		7369A39C264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
 		7369A39F264AF9710029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
 		7369A3A0264AF9710029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
+		736BEB4A2AD765A700142DC3 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 736BEB492AD765A700142DC3 /* SQLite */; };
 		7373530B25682E3200FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json in Resources */ = {isa = PBXBuildFile; fileRef = 73735306256828EA00FE1B7E /* OpenEBooks_OPDS2_Catalog_Feed-QA.json */; };
 		7375AE5A25382AC900C85211 /* NYPLUserAccountMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7375AE5925382AC900C85211 /* NYPLUserAccountMock.swift */; };
 		7375AE5B25382AC900C85211 /* NYPLUserAccountMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7375AE5925382AC900C85211 /* NYPLUserAccountMock.swift */; };
@@ -1835,6 +1836,7 @@
 				736455332AD71C5B0061F35E /* R2Streamer in Frameworks */,
 				7392E46A2788E7CB006F010E /* NYPLCardCreator in Frameworks */,
 				7392E4682788E7CB006F010E /* NYPLAudiobookToolkit in Frameworks */,
+				736BEB4A2AD765A700142DC3 /* SQLite in Frameworks */,
 				736455312AD71C5B0061F35E /* R2Shared in Frameworks */,
 				7364552D2AD71C410061F35E /* ReadiumAdapterGCDWebServer in Frameworks */,
 				739F43A62770FEA5005A8E1F /* NYPLUtilities in Frameworks */,
@@ -3190,7 +3192,6 @@
 				73EB0A6425821DF4006BC997 /* Sources */,
 				73EB0B2C25821DF4006BC997 /* Frameworks */,
 				73EB0B5825821DF4006BC997 /* Resources */,
-				73EB0B7125821DF4006BC997 /* Crashlytics */,
 				735694C626C7007C008768E0 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -3207,6 +3208,7 @@
 				736455302AD71C5B0061F35E /* R2Shared */,
 				736455322AD71C5B0061F35E /* R2Streamer */,
 				736455342AD71D490061F35E /* FirebaseCrashlytics */,
+				736BEB492AD765A700142DC3 /* SQLite */,
 			);
 			productName = Simplified;
 			productReference = 73EB0B7525821DF4006BC997 /* SimplyE-noDRM.app */;
@@ -3324,6 +3326,7 @@
 				7314651E2786106900027CFA /* XCRemoteSwiftPackageReference "PureLayout" */,
 				7347E8AE2AC604E200EE509E /* XCRemoteSwiftPackageReference "swift-toolkit" */,
 				735ED9F72AC625CC00057EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				736BEB482AD765A700142DC3 /* XCRemoteSwiftPackageReference "SQLite" */,
 			);
 			productRefGroup = A823D80E192BABA400B55DE2 /* Products */;
 			projectDirPath = "";
@@ -3579,27 +3582,6 @@
 		73DA43AD2404CA9500985482 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 12;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-				"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist",
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-			);
-			name = Crashlytics;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/scripts/firebase/run\"\n";
-		};
-		73EB0B7125821DF4006BC997 /* Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
 			files = (
 			);
@@ -5214,6 +5196,15 @@
 				minimumVersion = 10.0.0;
 			};
 		};
+		736BEB482AD765A700142DC3 /* XCRemoteSwiftPackageReference "SQLite" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
+			requirement = {
+				kind = versionRange;
+				maximumVersion = 0.13.3;
+				minimumVersion = 0.12.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -5296,6 +5287,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 735ED9F72AC625CC00057EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
+		};
+		736BEB492AD765A700142DC3 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 736BEB482AD765A700142DC3 /* XCRemoteSwiftPackageReference "SQLite" */;
+			productName = SQLite;
 		};
 		73829F4027861584008B2A80 /* NYPLAEToolkit */ = {
 			isa = XCSwiftPackageProductDependency;
