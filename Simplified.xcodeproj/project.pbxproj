@@ -452,6 +452,11 @@
 		735FCB3A2506FAD0009A8C95 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 735FCB392506FACF009A8C95 /* ReaderClientCert.sig */; };
 		735FED262427494900144C97 /* NYPLNetworkResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735FED252427494900144C97 /* NYPLNetworkResponder.swift */; };
 		7360D0D524BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
+		7364552D2AD71C410061F35E /* ReadiumAdapterGCDWebServer in Frameworks */ = {isa = PBXBuildFile; productRef = 7364552C2AD71C410061F35E /* ReadiumAdapterGCDWebServer */; };
+		7364552F2AD71C5B0061F35E /* R2Navigator in Frameworks */ = {isa = PBXBuildFile; productRef = 7364552E2AD71C5B0061F35E /* R2Navigator */; };
+		736455312AD71C5B0061F35E /* R2Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 736455302AD71C5B0061F35E /* R2Shared */; };
+		736455332AD71C5B0061F35E /* R2Streamer in Frameworks */ = {isa = PBXBuildFile; productRef = 736455322AD71C5B0061F35E /* R2Streamer */; };
+		736455352AD71D490061F35E /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 736455342AD71D490061F35E /* FirebaseCrashlytics */; };
 		7364D69C2492A38C0087B056 /* Publication+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364D69B2492A38C0087B056 /* Publication+NYPLAdditions.swift */; };
 		7369A39C264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
 		7369A39F264AF9710029D8AB /* NYPLAdobeContentProtectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7369A39B264AF9700029D8AB /* NYPLAdobeContentProtectionService.swift */; };
@@ -1819,19 +1824,24 @@
 				73EB0B3925821DF4006BC997 /* libicucore.tbd in Frameworks */,
 				73EB0B3825821DF4006BC997 /* libRDServices.a in Frameworks */,
 				73EB0B4225821DF4006BC997 /* libTenPrintCover.a in Frameworks */,
+				736455352AD71D490061F35E /* FirebaseCrashlytics in Frameworks */,
 				73EB0B4625821DF4006BC997 /* libxml2.dylib in Frameworks */,
 				73EB0B4525821DF4006BC997 /* libz.dylib in Frameworks */,
 				73EB0B3B25821DF4006BC997 /* LocalAuthentication.framework in Frameworks */,
 				73EB0B2E25821DF4006BC997 /* MediaPlayer.framework in Frameworks */,
 				732F04702633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				73EB0B3525821DF4006BC997 /* QuartzCore.framework in Frameworks */,
+				7364552F2AD71C5B0061F35E /* R2Navigator in Frameworks */,
+				736455332AD71C5B0061F35E /* R2Streamer in Frameworks */,
+				7392E46A2788E7CB006F010E /* NYPLCardCreator in Frameworks */,
+				7392E4682788E7CB006F010E /* NYPLAudiobookToolkit in Frameworks */,
+				736455312AD71C5B0061F35E /* R2Shared in Frameworks */,
+				7364552D2AD71C410061F35E /* ReadiumAdapterGCDWebServer in Frameworks */,
+				739F43A62770FEA5005A8E1F /* NYPLUtilities in Frameworks */,
 				73EB0B3D25821DF4006BC997 /* Security.framework in Frameworks */,
 				73EB0B3C25821DF4006BC997 /* SystemConfiguration.framework in Frameworks */,
 				73EB0B4025821DF4006BC997 /* UIKit.framework in Frameworks */,
 				732F0484263378F00018A82E /* ZXingObjC.xcframework in Frameworks */,
-				7392E46A2788E7CB006F010E /* NYPLCardCreator in Frameworks */,
-				7392E4682788E7CB006F010E /* NYPLAudiobookToolkit in Frameworks */,
-				739F43A62770FEA5005A8E1F /* NYPLUtilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1874,22 +1884,24 @@
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */,
 				03B092281E78859E00AD338D /* CoreMedia.framework in Frameworks */,
-				7347E8B22AC604E200EE509E /* R2Shared in Frameworks */,
 				03B0922E1E7886ED00AD338D /* CoreVideo.framework in Frameworks */,
-				7347E8B02AC604E200EE509E /* R2Navigator in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
-				7347E8B62AC604E200EE509E /* ReadiumAdapterGCDWebServer in Frameworks */,
 				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
 				03B092261E7883C400AD338D /* libiconv.tbd in Frameworks */,
 				08A352221BDE8E560040BF1D /* libicucore.tbd in Frameworks */,
-				7347E8B42AC604E200EE509E /* R2Streamer in Frameworks */,
 				08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */,
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */,
 				03B092301E78871A00AD338D /* MediaPlayer.framework in Frameworks */,
+				732F046D2633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
+				03B092241E78839D00AD338D /* QuartzCore.framework in Frameworks */,
+				7347E8B22AC604E200EE509E /* R2Shared in Frameworks */,
+				7347E8B02AC604E200EE509E /* R2Navigator in Frameworks */,
+				7347E8B62AC604E200EE509E /* ReadiumAdapterGCDWebServer in Frameworks */,
+				7347E8B42AC604E200EE509E /* R2Streamer in Frameworks */,
 				73829F4127861584008B2A80 /* NYPLAEToolkit in Frameworks */,
 				73A1731227ADA7D3005E7BCF /* NYPLAxis in Frameworks */,
 				7392E4602788E752006F010E /* NYPLAudiobookToolkit in Frameworks */,
@@ -1897,9 +1909,7 @@
 				731465202786106900027CFA /* PureLayout in Frameworks */,
 				7392E4622788E75B006F010E /* NYPLCardCreator in Frameworks */,
 				73579046276BE7F2009F1ADF /* NYPLUtilities in Frameworks */,
-				732F046D2633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
 				7347E8B82AC604E200EE509E /* ReadiumLCP in Frameworks */,
-				03B092241E78839D00AD338D /* QuartzCore.framework in Frameworks */,
 				735ED9F92AC625CC00057EC4 /* FirebaseCrashlytics in Frameworks */,
 				08A352241BDE8E640040BF1D /* Security.framework in Frameworks */,
 				08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */,
@@ -3192,6 +3202,11 @@
 				739F43A52770FEA5005A8E1F /* NYPLUtilities */,
 				7392E4672788E7CB006F010E /* NYPLAudiobookToolkit */,
 				7392E4692788E7CB006F010E /* NYPLCardCreator */,
+				7364552C2AD71C410061F35E /* ReadiumAdapterGCDWebServer */,
+				7364552E2AD71C5B0061F35E /* R2Navigator */,
+				736455302AD71C5B0061F35E /* R2Shared */,
+				736455322AD71C5B0061F35E /* R2Streamer */,
+				736455342AD71D490061F35E /* FirebaseCrashlytics */,
 			);
 			productName = Simplified;
 			productReference = 73EB0B7525821DF4006BC997 /* SimplyE-noDRM.app */;
@@ -5253,6 +5268,31 @@
 			productName = NYPLUtilities;
 		};
 		735ED9F82AC625CC00057EC4 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 735ED9F72AC625CC00057EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		7364552C2AD71C410061F35E /* ReadiumAdapterGCDWebServer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7347E8AE2AC604E200EE509E /* XCRemoteSwiftPackageReference "swift-toolkit" */;
+			productName = ReadiumAdapterGCDWebServer;
+		};
+		7364552E2AD71C5B0061F35E /* R2Navigator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7347E8AE2AC604E200EE509E /* XCRemoteSwiftPackageReference "swift-toolkit" */;
+			productName = R2Navigator;
+		};
+		736455302AD71C5B0061F35E /* R2Shared */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7347E8AE2AC604E200EE509E /* XCRemoteSwiftPackageReference "swift-toolkit" */;
+			productName = R2Shared;
+		};
+		736455322AD71C5B0061F35E /* R2Streamer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7347E8AE2AC604E200EE509E /* XCRemoteSwiftPackageReference "swift-toolkit" */;
+			productName = R2Streamer;
+		};
+		736455342AD71D490061F35E /* FirebaseCrashlytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 735ED9F72AC625CC00057EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
