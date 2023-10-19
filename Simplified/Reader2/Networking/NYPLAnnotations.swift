@@ -241,8 +241,8 @@ final class NYPLAnnotations: NSObject, NYPLAnnotationSyncing {
         Log.error(#file, "Error updating sync settings, server returned: \(httpStatus)")
         if NetworkQueue.StatusCodes.contains(error.code) {
           NYPLAnnotations.addRequestToOfflineQueue(httpMethod: .PUT,
-                                        url: url,
-                                        parameters: parameters)
+                                                   url: url,
+                                                   parameters: parameters)
         }
         completion(false)
         return

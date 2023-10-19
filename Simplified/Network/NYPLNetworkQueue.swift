@@ -84,7 +84,7 @@ final class NetworkQueue: NSObject {
       let methodString = method.rawValue
       let dateCreated = NSKeyedArchiver.archivedData(withRootObject: Date())
       // left for backward compatibility
-      let headerData = NSKeyedArchiver.archivedData(withRootObject: [:])
+      let headerData: Data? = nil
 
       guard let db = self.startDatabaseConnection() else { return }
       

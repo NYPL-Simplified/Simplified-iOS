@@ -20,23 +20,18 @@ import R2Streamer
 /// modules' delegates.
 @objc public final class NYPLR2Owner: NSObject {
 
-  var libraryService: LibraryService! = nil
+  var libraryService: LibraryService
   var readerModule: ReaderModuleAPI! = nil
 
   init(bookRegistry: NYPLBookRegistryProvider,
        annotationsSynchronizer: NYPLAnnotationSyncing) {
-    super.init()
-    guard let server = PublicationServer() else {
-      /// FIXME: we should recover properly if the publication server can't
-      /// start, maybe this should only forbid opening a publication?
-      fatalError("Can't start publication server")
-    }
+    libraryService = LibraryService()
 
-    libraryService = LibraryService(publicationServer: server)
+    super.init()
 
     readerModule = ReaderModule(
       delegate: self,
-      resourcesServer: server,
+      resourcesServer: libraryService.publicationServer,
       bookRegistry: bookRegistry,
       annotationsSynchronizer: annotationsSynchronizer)
 

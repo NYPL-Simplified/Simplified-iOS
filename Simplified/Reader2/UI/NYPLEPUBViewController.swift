@@ -13,6 +13,50 @@ import UIKit
 import R2Shared
 import R2Navigator
 
+// =============================================================================
+// MARK: - Workaround for VoiceOver Issues
+
+/// Temporary workaround to continue using old UserSettings APIs in Readium.
+/// 
+/// Upgrading to the newer Preferences API requires also upgrading the
+/// HTTP server from `PublicationServer` to `GCDHTTPServer`, but this exposes
+/// some scrolling and navigating book content issues with VoiceOver.
+/// By providing a way to cast to a non-deprecated protocol when access to the
+/// deprecated apis is required, this workaround allows to silence the
+/// deprecation warnings from Readium.
+private protocol SettingsAccessing {
+  var userSettings: UserSettings {get}
+  func updateUserSettingStyle()
+}
+
+extension EPUBNavigatorViewController: SettingsAccessing {
+}
+
+fileprivate protocol EPUBNavigatorViewControllerMaking {
+  func make(publication: Publication,
+            initialLocation: Locator?,
+            resourcesServer: ResourcesServer,
+            config: EPUBNavigatorViewController.Configuration) -> EPUBNavigatorViewController
+}
+
+fileprivate class EPUBNavigatorViewControllerFactory: EPUBNavigatorViewControllerMaking {
+  @available(*, deprecated, message: "To suppress this warning, cast to EPUBNavigatorViewControllerMaking protocol")
+  fileprivate
+  func make(publication: Publication,
+            initialLocation: Locator?,
+            resourcesServer: ResourcesServer,
+            config: EPUBNavigatorViewController.Configuration) -> EPUBNavigatorViewController {
+    EPUBNavigatorViewController(publication: publication,
+                                initialLocation: initialLocation,
+                                resourcesServer: resourcesServer,
+                                config: config)
+  }
+}
+
+
+// =============================================================================
+// MARK: -
+
 class NYPLEPUBViewController: NYPLBaseReaderViewController {
   
   var popoverUserconfigurationAnchor: UIBarButtonItem?
@@ -48,17 +92,20 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
         preloadNextPositionCount: 0,
         debugState: true)
 
-    let navigator = EPUBNavigatorViewController(publication: publication,
-                                                initialLocation: initialLocation,
-                                                resourcesServer: resourcesServer,
-                                                config: config)
-    userSettings = NYPLR1R2UserSettings(r2UserSettings: navigator.userSettings)
+    // when changing the type of the navigator, also change `epubNavigator` getter
+    let factory: EPUBNavigatorViewControllerMaking = EPUBNavigatorViewControllerFactory()
+    let navigator = factory.make(publication: publication,
+                                 initialLocation: initialLocation,
+                                 resourcesServer: resourcesServer,
+                                 config: config)
+    let navUserSettings = (navigator as SettingsAccessing).userSettings
+    userSettings = NYPLR1R2UserSettings(r2UserSettings: navUserSettings)
 
     // EPUBNavigatorViewController::init creates a UserSettings object and sets
     // it into the publication. However, that UserSettings object will have the
     // defaults options for the various user properties (fonts etc), so we need
     // to re-set that to reflect our ad-hoc configuration.
-    publication.userProperties = navigator.userSettings.userProperties
+    publication.userProperties = navUserSettings.userProperties
 
     super.init(navigator: navigator,
                publication: publication,
@@ -69,7 +116,7 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
     navigator.delegate = self
   }
 
-  var epubNavigator: EPUBNavigatorViewController {
+  fileprivate var epubNavigator: SettingsAccessing {
     return navigator as! EPUBNavigatorViewController
   }
 
