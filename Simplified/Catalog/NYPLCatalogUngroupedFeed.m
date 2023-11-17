@@ -38,6 +38,12 @@ static NSUInteger const preloadThreshold = 100;
   
   self.books = [NSMutableArray array];
   
+  // Create an expiration date object with value of 2 months from now
+  NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+  [dateComponents setMonth:2];
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  NSDate *expirationDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate new] options:0];
+  
   for(NYPLOPDSEntry *const entry in feed.entries) {
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
@@ -50,6 +56,13 @@ static NSUInteger const preloadThreshold = 100;
       continue;
     }
     
+    /// Add a custom expiration date (2 months from now) to banned book.
+    /// This expiration date will be overwritten by the updatedBookMetadata function below
+    /// if the book is already checked out.
+    if (!NYPLUserAccount.sharedAccount.requiresUserAuthentication) {
+      [book addCustomExpirateDate:expirationDate];
+    }
+
     NYPLBook *updatedBook = [[NYPLBookRegistry sharedRegistry] updatedBookMetadata:book];
     if(updatedBook) {
       book = updatedBook;

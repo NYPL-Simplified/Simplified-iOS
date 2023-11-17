@@ -276,4 +276,8 @@ availability:(id<NYPLOPDSAcquisitionAvailability> const _Nonnull)availability
   };
 }
 
+- (void)updateAvailability:(id<NYPLOPDSAcquisitionAvailability> _Nonnull)availability {
+  self.availability = availability;
+}
+
 @end

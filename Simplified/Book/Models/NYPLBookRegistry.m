@@ -448,6 +448,29 @@ static NSString *const RecordsKey = @"records";
   }];
 }
 
+- (void)removeExpiredBooksWithoutFeed
+{
+  @synchronized(self) {
+    NSMutableArray *booksToRemove = [[NSMutableArray alloc] init];
+    for (NSString *bookIdentifer in self.identifiersToRecords) {
+      NYPLBookRegistryRecord *record = self.identifiersToRecords[bookIdentifer];
+      // Add the book to remove list if it is distributed by Axis360 and expired
+      if(record &&
+        record.book.defaultAcquisition.type &&
+        [record.book.defaultAcquisition.type isEqualToString:ContentTypeAxis360]) {
+          if (record.book.defaultAcquisition.availability.until &&
+            [record.book.defaultAcquisition.availability.until compare:[NSDate date]] == NSOrderedAscending) {
+              [booksToRemove addObject:bookIdentifer];
+          }
+      }
+    }
+    for (NSString *bookIdentifier in booksToRemove) {
+      [self removeBookForIdentifier:bookIdentifier];
+    }
+    [self save];
+  }
+}
+
 - (void)addBook:(NYPLBook *const)book
        location:(NYPLBookLocation *const)location
           state:(NSInteger)state

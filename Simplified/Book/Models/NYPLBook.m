@@ -618,4 +618,19 @@ static NSString *const UpdatedKey = @"updated";
   return defaultType;
 }
 
+- (void)addCustomExpirateDate:(nonnull NSDate *)date
+{
+  if (self.defaultAcquisitionIfOpenAccess.type &&
+      [self.defaultAcquisitionIfOpenAccess.type isEqualToString:ContentTypeAxis360] &&
+      !self.defaultAcquisitionIfOpenAccess.availability.until)
+  {
+    NYPLOPDSAcquisitionAvailabilityLimited *currentAvailability = (NYPLOPDSAcquisitionAvailabilityLimited *)self.defaultAcquisition.availability;
+    NYPLOPDSAcquisitionAvailabilityLimited *newAvailability = [[NYPLOPDSAcquisitionAvailabilityLimited alloc]
+                                                               initWithCopiesAvailable:currentAvailability.copiesAvailable
+                                                               copiesTotal:currentAvailability.copiesTotal
+                                                               since:currentAvailability.since
+                                                               until:date];
+      [self.defaultAcquisition updateAvailability:newAvailability];
+    }
+}
 @end

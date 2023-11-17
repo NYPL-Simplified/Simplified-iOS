@@ -100,4 +100,6 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
 /// @c acquisitionWithDictionary: method for later deserialization.
 - (NSDictionary *_Nonnull)dictionaryRepresentation;
 
+- (void)updateAvailability:(id<NYPLOPDSAcquisitionAvailability> _Nonnull)availability;
+
 @end
