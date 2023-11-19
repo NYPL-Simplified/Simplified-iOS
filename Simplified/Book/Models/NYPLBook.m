@@ -618,10 +618,9 @@ static NSString *const UpdatedKey = @"updated";
   return defaultType;
 }
 
-- (void)addCustomExpirateDate:(nonnull NSDate *)date
+- (void)addBannedBookExpiration
 {
-  if (self.defaultAcquisitionIfOpenAccess.type &&
-      [self.defaultAcquisitionIfOpenAccess.type isEqualToString:ContentTypeAxis360] &&
+  if ([self.defaultAcquisitionIfOpenAccess.type isEqualToString:ContentTypeAxis360] &&
       !self.defaultAcquisitionIfOpenAccess.availability.until)
   {
     NYPLOPDSAcquisitionAvailabilityLimited *currentAvailability = (NYPLOPDSAcquisitionAvailabilityLimited *)self.defaultAcquisition.availability;
@@ -629,8 +628,16 @@ static NSString *const UpdatedKey = @"updated";
                                                                initWithCopiesAvailable:currentAvailability.copiesAvailable
                                                                copiesTotal:currentAvailability.copiesTotal
                                                                since:currentAvailability.since
-                                                               until:date];
-      [self.defaultAcquisition updateAvailability:newAvailability];
+                                                               until:[self createBannedBookExpirationDate]];
+      [self.defaultAcquisition setAvailability:newAvailability];
     }
+}
+
+// Create an expiration date object with value of 2 months from now
+- (NSDate *)createBannedBookExpirationDate {
+  NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+  [dateComponents setMonth:2];
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  return [calendar dateByAddingComponents:dateComponents toDate:[NSDate new] options:0];
 }
 @end

@@ -72,7 +72,7 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
 @property (nonatomic, readonly, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
 
 /// The availability of the result of the acquisition.
-@property (nonatomic, readonly, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
+@property (nonatomic, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
 
 + (instancetype _Null_unspecified)new NS_UNAVAILABLE;
 - (instancetype _Null_unspecified)init NS_UNAVAILABLE;
@@ -99,7 +99,5 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
 /// @return A serialized form of an acqusition suitable for passing to the
 /// @c acquisitionWithDictionary: method for later deserialization.
 - (NSDictionary *_Nonnull)dictionaryRepresentation;
-
-- (void)updateAvailability:(id<NYPLOPDSAcquisitionAvailability> _Nonnull)availability;
 
 @end

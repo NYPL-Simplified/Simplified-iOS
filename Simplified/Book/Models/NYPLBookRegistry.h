@@ -110,10 +110,10 @@ typedef NS_ENUM(NSInteger, NYPLBookState);
 - (void)syncWithStandardAlertsOnCompletion;
 
 /**
- Goes through all books in registry and remove the expired books distributed by Axis 360.
+ Goes through all books in registry and remove the expired banned books distributed by Axis 360.
  @note: Only call this function if the library does not require authentication
  */
-- (void)removeExpiredBooksWithoutFeed;
+- (void)removeExpiredBannedBooks;
 
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present

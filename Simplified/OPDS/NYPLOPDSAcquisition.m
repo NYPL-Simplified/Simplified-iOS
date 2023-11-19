@@ -106,7 +106,6 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation const relation)
 @property (nonatomic, copy, nonnull) NSString *type;
 @property (nonatomic, nonnull) NSURL *hrefURL;
 @property (nonatomic, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
-@property (nonatomic, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
 
 @end
 
@@ -274,10 +273,6 @@ availability:(id<NYPLOPDSAcquisitionAvailability> const _Nonnull)availability
     indirectAcquisitionsKey: [mutableIndirectAcquistionDictionaries copy],
     availabilityKey: NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(self.availability)
   };
-}
-
-- (void)updateAvailability:(id<NYPLOPDSAcquisitionAvailability> _Nonnull)availability {
-  self.availability = availability;
 }
 
 @end

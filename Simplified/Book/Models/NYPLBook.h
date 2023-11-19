@@ -102,9 +102,9 @@
 /// @return The default NYPLBookContentType
 - (NYPLBookContentType)defaultBookContentType;
 
-/// Add a custom expiration date to book if
+/// Add a custom expiration date to banned book if
 /// 1. book is distributed by Axis360
 /// 2. book does not contain an expiration date
-- (void)addCustomExpirateDate:(nonnull NSDate *)date;
+- (void)addBannedBookExpiration;
 
 @end

@@ -139,7 +139,7 @@
 
   [[NYPLBookRegistry sharedRegistry] justLoad];
   if (!NYPLUserAccount.sharedAccount.requiresUserAuthentication) {
-    [[NYPLBookRegistry sharedRegistry] removeExpiredBooksWithoutFeed];
+    [[NYPLBookRegistry sharedRegistry] removeExpiredBannedBooks];
   }
   UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
   if (applicationState == UIApplicationStateActive) {
