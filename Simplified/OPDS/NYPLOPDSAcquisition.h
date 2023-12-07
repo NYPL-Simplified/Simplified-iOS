@@ -72,7 +72,7 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
 @property (nonatomic, readonly, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
 
 /// The availability of the result of the acquisition.
-@property (nonatomic, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
+@property (nonatomic, readonly, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
 
 + (instancetype _Null_unspecified)new NS_UNAVAILABLE;
 - (instancetype _Null_unspecified)init NS_UNAVAILABLE;

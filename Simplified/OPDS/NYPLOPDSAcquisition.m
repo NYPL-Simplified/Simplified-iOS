@@ -106,6 +106,7 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation const relation)
 @property (nonatomic, copy, nonnull) NSString *type;
 @property (nonatomic, nonnull) NSURL *hrefURL;
 @property (nonatomic, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
+@property (nonatomic, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
 
 @end
 

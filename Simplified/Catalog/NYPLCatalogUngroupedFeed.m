@@ -50,13 +50,6 @@ static NSUInteger const preloadThreshold = 100;
       continue;
     }
     
-    /// Add a custom expiration date (2 months from now) to banned book.
-    /// This expiration date will be overwritten by the updatedBookMetadata function below
-    /// if the book is already checked out.
-    if (!NYPLUserAccount.sharedAccount.requiresUserAuthentication) {
-      [book addBannedBookExpiration];
-    }
-
     NYPLBook *updatedBook = [[NYPLBookRegistry sharedRegistry] updatedBookMetadata:book];
     if(updatedBook) {
       book = updatedBook;
