@@ -59,6 +59,8 @@ import UIKit
       idiom = "tv"
     case .mac:
       idiom = "mac"
+    case .vision:
+      idiom = "vision"
     case .unspecified:
       fallthrough
     @unknown default:
