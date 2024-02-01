@@ -1,6 +1,7 @@
 @class NYPLCatalogGroupedFeed;
 @class NYPLRemoteViewController;
 
+/// This VC represents the catalog screen with horizontal feed lanes.
 @interface NYPLCatalogGroupedFeedViewController : UIViewController
 
 + (id)new NS_UNAVAILABLE;

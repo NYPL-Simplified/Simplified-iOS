@@ -1,7 +1,7 @@
-/// This class is designed to provide a simple way to implement view controllers that must retreive
+/// This class is designed to provide a simple way to implement view controllers that must retrieve
 /// some sort of network-available data before they can do anything. The idea is that an instance of
 /// |NYPLRemoteViewController| can be told to load the data present at some URL. While the data is
-/// downloading, it will display a progress indicator. Once the data has been retreived, the handler
+/// downloading, it will display a progress indicator. Once the data has been retrieved, the handler
 /// function provided will be called. That handler then returns a new view controller that is
 /// added as a child vc by the instance of |NYPLRemoteViewController|.
 ///

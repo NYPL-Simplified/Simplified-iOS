@@ -3,6 +3,9 @@
 
 #import "NYPLBookCellCollectionViewController.h"
 
+/// This VC handles the presentation of vertical list of books, such as
+/// My Books, Holds, and a single lane of the catalog presented by itself
+/// in a vertically scrolling list.
 @interface NYPLCatalogUngroupedFeedViewController : NYPLBookCellCollectionViewController
 
 + (id)new NS_UNAVAILABLE;
