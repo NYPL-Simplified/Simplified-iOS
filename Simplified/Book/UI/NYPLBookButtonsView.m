@@ -434,7 +434,7 @@
   self.activityIndicator.center = self.readButton.center;
   [self updateProcessingState:YES];
   [self.delegate didSelectReadForBook:self.book
-                    successCompletion:^{
+                           completion:^(__unused BOOL success) {
     [self updateProcessingState];
   }];
 }

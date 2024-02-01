@@ -12,7 +12,7 @@ import Foundation
   func presentBook(_ book: NYPLBook,
                    fromFileURL fileURL: URL?,
                    syncPermission: Bool,
-                   successCompletion: (() -> Void)?) {
+                   completion: ((_ success: Bool) -> Void)?) {
     guard let libraryService = r2Owner?.libraryService, let readerModule = r2Owner?.readerModule else {
       return
     }
@@ -30,7 +30,7 @@ import Foundation
                                         syncPermission: syncPermission,
                                         deviceID: drmDeviceID,
                                         in: navVC,
-                                        successCompletion: successCompletion)
+                                        completion: completion)
       case .cancelled:
         // .cancelled is returned when publication has restricted access to its resources and can't be rendered
         NYPLErrorLogger.logError(nil, summary: "Error accessing book resources", metadata: [

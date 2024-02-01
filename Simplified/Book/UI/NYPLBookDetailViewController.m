@@ -139,15 +139,17 @@
 }
 
 - (void)didSelectReadForBook:(NYPLBook *)book
-           successCompletion:(__unused void(^)(void))successCompletion
+                  completion:(void(^)(BOOL success))completion
 {
   [[NYPLBookCellDelegate sharedDelegate] didSelectReadForBook:book
-                                            successCompletion:^{
+                                                   completion:^(BOOL success) {
     // dismiss ourselves if we were presented, since we want to show the ereader
     if (self.modalPresentationStyle == UIModalPresentationFormSheet) {
-      [self dismissViewControllerAnimated:true completion:successCompletion];
+      [self dismissViewControllerAnimated:true completion:^{
+        completion(success);
+      }];
     } else {
-      successCompletion();
+      completion(success);
     }
   }];
 }

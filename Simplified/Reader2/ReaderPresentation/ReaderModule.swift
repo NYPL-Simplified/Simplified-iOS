@@ -41,7 +41,7 @@ protocol ReaderModuleAPI {
                           syncPermission: Bool,
                           deviceID: String?,
                           in navigationController: UINavigationController,
-                          successCompletion: (() -> Void)?)
+                          completion: ((_ success: Bool) -> Void)?)
   
 }
 
@@ -82,7 +82,7 @@ final class ReaderModule: ReaderModuleAPI {
                           syncPermission: Bool,
                           deviceID: String?,
                           in navigationController: UINavigationController,
-                          successCompletion: (() -> Void)?) {
+                          completion: ((_ success: Bool) -> Void)?) {
     if delegate == nil {
       NYPLErrorLogger.logError(nil, summary: "ReaderModule delegate is not set")
     }
@@ -102,7 +102,7 @@ final class ReaderModule: ReaderModuleAPI {
                                    formatModule: formatModule,
                                    positioningAt: initialLocator,
                                    in: navigationController,
-                                   successCompletion: successCompletion)
+                                   completion: completion)
       }
   }
 
@@ -112,7 +112,7 @@ final class ReaderModule: ReaderModuleAPI {
                                     formatModule: ReaderFormatModule,
                                     positioningAt initialLocator: Locator?,
                                     in navigationController: UINavigationController,
-                                    successCompletion: (() -> Void)?) {
+                                    completion: ((_ success: Bool) -> Void)?) {
     do {
       let readerVC = try formatModule.makeReaderViewController(
         for: publication,
@@ -126,9 +126,10 @@ final class ReaderModule: ReaderModuleAPI {
       readerVC.hidesBottomBarWhenPushed = true
       navigationController.pushViewController(readerVC, animated: true)
 
-      successCompletion?()
+      completion?(true)
     } catch {
       delegate?.presentError(error, from: navigationController)
+      completion?(false)
     }
   }
 }
