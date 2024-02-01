@@ -454,10 +454,11 @@ static NSString *const RecordsKey = @"records";
     NSMutableArray *booksToRemove = [[NSMutableArray alloc] init];
     for (NSString *bookIdentifer in self.identifiersToRecords) {
       NYPLBookRegistryRecord *record = self.identifiersToRecords[bookIdentifer];
+      NYPLOPDSAcquisition *acquisition = record.book.defaultAcquisition;
       // Add the book to remove list if it is distributed by Axis360 and expired
-      if([record.book.defaultAcquisition.type isEqualToString:ContentTypeAxis360]) {
-          if (record.book.defaultAcquisition.availability.until &&
-            [record.book.defaultAcquisition.availability.until compare:[NSDate date]] == NSOrderedAscending) {
+      // or with no expiration
+      if ([acquisition.type isEqualToString:ContentTypeAxis360]) {
+          if ([acquisition.availability.until compare:[NSDate date]] != NSOrderedDescending) {
               [booksToRemove addObject:bookIdentifer];
           }
       }
