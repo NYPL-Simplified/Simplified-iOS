@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "AppCheck",
+        "repositoryURL": "https://github.com/google/app-check.git",
+        "state": {
+          "branch": null,
+          "revision": "3e464dad87dad2d29bb29a97836789bf0f8f67d2",
+          "version": "10.18.1"
+        }
+      },
+      {
         "package": "CryptoSwift",
         "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
         "state": {
@@ -33,8 +42,8 @@
         "repositoryURL": "https://github.com/firebase/firebase-ios-sdk",
         "state": {
           "branch": null,
-          "revision": "8a8ec57a272e0d31480fb0893dda0cf4f769b57e",
-          "version": "10.15.0"
+          "revision": "b880ec8ec927a838c51c12862c6222c30d7097d7",
+          "version": "10.20.0"
         }
       },
       {
@@ -60,8 +69,8 @@
         "repositoryURL": "https://github.com/google/GoogleAppMeasurement.git",
         "state": {
           "branch": null,
-          "revision": "03b9beee1a61f62d32c521e172e192a1663a5e8b",
-          "version": "10.13.0"
+          "revision": "ceec9f28dea12b7cf3dabf18b5ed7621c88fd4aa",
+          "version": "10.20.0"
         }
       },
       {
@@ -69,8 +78,8 @@
         "repositoryURL": "https://github.com/google/GoogleDataTransport.git",
         "state": {
           "branch": null,
-          "revision": "aae45a320fd0d11811820335b1eabc8753902a40",
-          "version": "9.2.5"
+          "revision": "a732a4b47f59e4f725a2ea10f0c77e93a7131117",
+          "version": "9.3.0"
         }
       },
       {
@@ -78,8 +87,8 @@
         "repositoryURL": "https://github.com/google/GoogleUtilities.git",
         "state": {
           "branch": null,
-          "revision": "c38ce365d77b04a9a300c31061c5227589e5597b",
-          "version": "7.11.5"
+          "revision": "bc27fad73504f3d4af235de451f02ee22586ebd3",
+          "version": "7.12.1"
         }
       },
       {
@@ -87,8 +96,8 @@
         "repositoryURL": "https://github.com/google/grpc-binary.git",
         "state": {
           "branch": null,
-          "revision": "f1b366129d1125be7db83247e003fc333104b569",
-          "version": "1.50.2"
+          "revision": "a673bc2937fbe886dd1f99c401b01b6d977a9c98",
+          "version": "1.49.1"
         }
       },
       {
@@ -96,8 +105,8 @@
         "repositoryURL": "https://github.com/google/gtm-session-fetcher.git",
         "state": {
           "branch": null,
-          "revision": "d415594121c9e8a4f9d79cecee0965cf35e74dbd",
-          "version": "3.1.1"
+          "revision": "115f75e43851774934d695449a4836123c3246e1",
+          "version": "3.2.0"
         }
       },
       {
@@ -114,7 +123,7 @@
         "repositoryURL": "https://github.com/NYPL-Simplified/iOS-Utilities",
         "state": {
           "branch": "main",
-          "revision": "b26a3340c5dd38efc5de1d6b15f4cf62e94a6f5a",
+          "revision": "1d4940668a2265bd8954daf6fcedce2ceaf745e7",
           "version": null
         }
       },
@@ -123,8 +132,8 @@
         "repositoryURL": "https://github.com/firebase/leveldb.git",
         "state": {
           "branch": null,
-          "revision": "0706abcc6b0bd9cedfbb015ba840e4a780b5159b",
-          "version": "1.22.2"
+          "revision": "9d108e9112aa1d65ce508facf804674546116d9c",
+          "version": "1.22.3"
         }
       },
       {
@@ -168,8 +177,8 @@
         "repositoryURL": "https://github.com/apple/swift-protobuf.git",
         "state": {
           "branch": null,
-          "revision": "3c54ab05249f59f2c6641dd2920b8358ea9ed127",
-          "version": "1.24.0"
+          "revision": "65e8f29b2d63c4e38e736b25c27b83e012159be8",
+          "version": "1.25.2"
         }
       },
       {
@@ -177,8 +186,8 @@
         "repositoryURL": "https://github.com/readium/swift-toolkit.git",
         "state": {
           "branch": null,
-          "revision": "ce50635a0d6699f2e279d1331f6bf7e236bf5f76",
-          "version": "2.6.0"
+          "revision": "a62962bbb862a5852ce8f79c5369213f38c79e8e",
+          "version": "2.6.1"
         }
       },
       {
