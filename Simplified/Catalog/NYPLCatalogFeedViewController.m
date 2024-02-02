@@ -138,6 +138,9 @@
   }
 
   [[NYPLBookRegistry sharedRegistry] justLoad];
+  if (!NYPLUserAccount.sharedAccount.requiresUserAuthentication) {
+    [[NYPLBookRegistry sharedRegistry] removeExpiredBannedBooks];
+  }
   UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
   if (applicationState == UIApplicationStateActive) {
     [self syncBookRegistryForNewFeed];

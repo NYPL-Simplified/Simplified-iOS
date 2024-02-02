@@ -15,6 +15,43 @@ import UIKit
 import R2Shared
 import R2Streamer
 
+// =============================================================================
+// MARK: - Workaround for VoiceOver Issues
+
+/// Temporary workaround to continue using the old Readium `PublicationServer`.
+///
+/// Readium 2.5.0 deprecates `PublicationServer` and introduces
+/// `GCDHTTPServer` in its place. However, this causes significant scrolling
+/// and book content navigation issues with VoiceOver. By casting your
+/// `PublicationServer` references to `PublicationServing`, this workaround
+/// silences the deprecation warnings until we find an official solution.
+protocol PublicationServing: ResourcesServer {
+  func add(_ publication: Publication) throws
+  func removeAll()
+}
+
+extension PublicationServer: PublicationServing {
+  @available(*, deprecated, message: "To suppress this warning, cast to PublicationServing protocol")
+  func add(_ publication: Publication) throws {
+    try add(publication, at: UUID().uuidString)
+  }
+}
+
+private protocol PublicationServerMaking {
+  func make() -> PublicationServing?
+}
+
+private class PublicationServerFactory: PublicationServerMaking {
+  @available(*, deprecated, message: "To suppress this warning, cast to PublicationServerMaking protocol")
+  func make() -> PublicationServing? {
+    PublicationServer()
+  }
+}
+
+
+// =============================================================================
+// MARK: -
+
 /// The LibraryService makes a book ready for presentation without dealing
 /// with the specifics of how a book should be presented.
 ///
@@ -24,14 +61,20 @@ import R2Streamer
 final class LibraryService: Loggable {
   
   private let streamer: Streamer
-  private let publicationServer: PublicationServer
+  let publicationServer: PublicationServing
   private var drmLibraryServices = [DRMLibraryService]()
   
   private lazy var documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
   
-  init(publicationServer: PublicationServer) {
-    self.publicationServer = publicationServer
-    
+  init() {
+    guard let server = (PublicationServerFactory() as PublicationServerMaking).make() else {
+      /// FIXME: we should recover properly if the publication server can't
+      /// start, maybe this should only forbid opening a publication?
+      fatalError("Can't start publication server")
+    }
+
+    self.publicationServer = server
+
     #if FEATURE_DRM_CONNECTOR
     drmLibraryServices.append(AdobeDRMLibraryService())
     #endif
@@ -91,7 +134,7 @@ final class LibraryService: Loggable {
     }
     .eraseToAnyError()
   }
-  
+
   private func preparePresentation(of publication: Publication) {
     // What we want to avoid here it to add a webPub to the publication server,
     // because there's no need to do that if it is loaded remotely from a URL.
@@ -106,7 +149,7 @@ final class LibraryService: Loggable {
     guard publication.baseURL == nil else {
       return
     }
-    
+
     publicationServer.removeAll()
     do {
       try publicationServer.add(publication)

@@ -1,6 +1,2 @@
-binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseCrashlyticsBinary.json"
-binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"
 github "NYPL-Simplified/PDFRendererProvider-iOS" "master"
-github "stephencelis/SQLite.swift" ~> 0.12.2
-github "zxingify/zxingify-objc" ~> 3.6
-github "readium/swift-toolkit" "develop"
+github "ettore/zxingify-objc" "master"

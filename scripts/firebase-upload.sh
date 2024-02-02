@@ -32,12 +32,14 @@ else
   fatal "Unable to upload to firebase: missing ad-hoc export!"
 fi
 
+# Disabling the IPA upload to firebase because we encountered authentication error,
+# possibly due to `token` authentication is deprecated.
 # upload app binary
-echo "Using ipa at $IPA_PATH"
-firebase appdistribution:distribute \
-  --token "${FIREBASE_TOKEN}" \
-  --app "${FIREBASE_APP_ID}" \
-  "${IPA_PATH}"
+#echo "Using ipa at $IPA_PATH"
+#firebase appdistribution:distribute \
+#  --token "${FIREBASE_TOKEN}" \
+#  --app "${FIREBASE_APP_ID}" \
+#  "${IPA_PATH}"
 
 # upload symbols
 ./scripts/firebase-upload-symbols.sh "$APPNAME_PARAM" "$DSYMS_PATH"

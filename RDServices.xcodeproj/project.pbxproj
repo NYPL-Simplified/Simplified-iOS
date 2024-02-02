@@ -389,7 +389,7 @@
 		118A0E201992B3FD00792DDE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1340;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = Readium;
 			};
 			buildConfigurationList = 118A0E231992B3FD00792DDE /* Build configuration list for PBXProject "RDServices" */;

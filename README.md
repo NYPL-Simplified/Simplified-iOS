@@ -10,7 +10,7 @@ Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/relea
 
 # System Requirements
 
-- Install Xcode 13.4.1 in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install Xcode 14.3.1 in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) 0.38 or newer if you haven't already. Using `brew` is recommended.
 
 # Building without DRM support
@@ -54,25 +54,11 @@ cd Simplified-iOS #repo root
 ```
 The `scripts` directory contains a number of other scripts to build dependencies more granularly and also to build/test/archive the app from the command line. These scripts are the same used by our CI system. All these scripts must be run from the root of the Simplified-iOS repo, not from the `scripts` directory.
 
-# Building for Readium 2 Integration
-
-Before working on R2 integration, make sure you can build the app by following the steps listed above.
-
-For working on integrating R2 into SimplyE, first clone the following repo as a sibling of `Simplified-iOS` on the file system:
-```bash
-cd Simplified-iOS/..
-git clone https://github.com/readium/swift-toolkit
-```
-Then rebuild the dependencies:
-```bash
-cd Simplified-iOS
-./scripts/build-carthage-R2-integration.sh
-```
-Finally, open `SimplifiedR2.workspace` and use the `SimplyE-R2dev` target to build the app.
-
 # Building Open eBooks
 
 Open eBooks is an app primarily targeted toward the education space. It requires DRM. Follow the same steps as indicated above and use the "Open eBooks" Xcode target.
+
+NOTE: the Open eBooks target needs to be upgraded to match SimplyE's.
 
 # Contributing
 
@@ -96,7 +82,7 @@ Feature branch names (for features whose development is a month or more): `featu
 
 # License
 
-Copyright © 2015-2022 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2015-2023 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
