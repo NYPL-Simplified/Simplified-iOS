@@ -63,7 +63,8 @@
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
 }
 
-- (void)didSelectReadForBook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
+- (void)didSelectReadForBook:(NYPLBook *)book 
+                  completion:(void(^)(BOOL success))completion
 {
 #if FEATURE_DRM_CONNECTOR
   // Try to prevent blank books bug
@@ -81,37 +82,40 @@
                                                        completion:^(BOOL isSignedIn) {
       if (isSignedIn) {
         dispatch_async(dispatch_get_main_queue(), ^{
-          [self openBook:book successCompletion:successCompletion];
+          [self openBook:book completion:completion];
           // with ARC, retain the reauthenticator until we're done, then release it
           reauthenticator = nil;
         });
       }
     }];
   } else {
-    [self openBook:book successCompletion:successCompletion];
+    [self openBook:book completion:completion];
   }
 #else
-  [self openBook:book successCompletion:successCompletion];
+  [self openBook:book completion:completion];
 #endif//FEATURE_DRM_CONNECTOR
 }
 
-- (void)openBook:(NYPLBook *)book successCompletion:(void(^)(void))successCompletion
+- (void)openBook:(NYPLBook *)book completion:(void(^)(BOOL success))completion
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
 
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB:
-      [[[NYPLEPUBOpener alloc] init] open:book successCompletion:successCompletion];
+      [[[NYPLEPUBOpener alloc] init] open:book completion:completion];
       break;
     case NYPLBookContentTypePDF:
       [self openPDF:book];
       break;
 #if FEATURE_AUDIOBOOKS
-    case NYPLBookContentTypeAudiobook:
-      [self openAudiobook:book successCompletion:successCompletion];
+    case NYPLBookContentTypeAudiobook: {
+      [self openAudiobook:book successCompletion:^{
+        completion(YES);
+      }];
       break;
+    }
 #endif
-    default:
+    case NYPLBookContentTypeUnsupported:
       [self presentUnsupportedItemError];
       break;
   }
@@ -181,7 +185,7 @@
 
 - (void)didSelectListenForBookDownloadingCell:(NYPLBookDownloadingCell *)cell
 {
-  [self didSelectReadForBook:cell.book successCompletion:nil];
+  [self didSelectReadForBook:cell.book completion:nil];
 }
 
 @end

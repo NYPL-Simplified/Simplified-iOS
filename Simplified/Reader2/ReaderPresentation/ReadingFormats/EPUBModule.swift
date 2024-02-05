@@ -39,9 +39,13 @@ final class EPUBModule: ReaderFormatModule {
                                 initialLocation: Locator?) throws -> UIViewController {
       
     guard publication.metadata.identifier != nil else {
-      throw ReaderError.epubNotValid
+      throw ReaderError.epubNotValid("nil metadata id")
     }
     
+    guard publication.baseURL != nil else {
+      throw ReaderError.epubNotValid("nil baseURL")
+    }
+
     let epubVC = NYPLEPUBViewController(publication: publication,
                                         book: book,
                                         initialLocation: initialLocation,

@@ -40,16 +40,21 @@ fileprivate protocol EPUBNavigatorViewControllerMaking {
 }
 
 fileprivate class EPUBNavigatorViewControllerFactory: EPUBNavigatorViewControllerMaking {
+  /// - Important: `publication.baseURL` MUST not be nil when invoking this
+  /// function.
   @available(*, deprecated, message: "To suppress this warning, cast to EPUBNavigatorViewControllerMaking protocol")
   fileprivate
   func make(publication: Publication,
             initialLocation: Locator?,
             resourcesServer: ResourcesServer,
             config: EPUBNavigatorViewController.Configuration) -> EPUBNavigatorViewController {
-    EPUBNavigatorViewController(publication: publication,
-                                initialLocation: initialLocation,
-                                resourcesServer: resourcesServer,
-                                config: config)
+
+    assert(publication.baseURL != nil, "Publication.baseURL MUST not be nil")
+
+    return EPUBNavigatorViewController(publication: publication,
+                                       initialLocation: initialLocation,
+                                       resourcesServer: resourcesServer,
+                                       config: config)
   }
 }
 
@@ -63,6 +68,8 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
 
   let userSettings: NYPLR1R2UserSettings
 
+  /// - Important: `publication.baseURL` MUST not be nil when invoking this
+  /// initializer.
   init(publication: Publication,
        book: NYPLBook,
        initialLocation: Locator?,
@@ -92,7 +99,8 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
         preloadNextPositionCount: 0,
         debugState: true)
 
-    // when changing the type of the navigator, also change `epubNavigator` getter
+    // create navigator
+    assert(publication.baseURL != nil, "Publication.baseURL MUST not be nil when creating a EPUBNavigatorViewController")
     let factory: EPUBNavigatorViewControllerMaking = EPUBNavigatorViewControllerFactory()
     let navigator = factory.make(publication: publication,
                                  initialLocation: initialLocation,

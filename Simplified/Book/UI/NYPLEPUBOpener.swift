@@ -10,7 +10,7 @@ import Foundation
 
 class NYPLEPUBOpener: NSObject {
   @objc
-  func open(_ book: NYPLBook, successCompletion: @escaping () -> Void) {
+  func open(_ book: NYPLBook, completion: @escaping (_ success: Bool) -> Void) {
 
     let url = NYPLMyBooksDownloadCenter.shared()?
       .fileURL(forBookIndentifier: book.identifier)
@@ -21,8 +21,8 @@ class NYPLEPUBOpener: NSObject {
     rootTabController?.presentBook(book,
                                    fromFileURL: url,
                                    syncPermission: syncPermission,
-                                   successCompletion: successCompletion)
-    
+                                   completion: completion)
+
     rootTabController?.annotationsSynchronizer?
       .checkServerSyncStatus(settings: NYPLSettings.shared,
                              syncPermissionGranted: syncPermission) { enableSync, error in
