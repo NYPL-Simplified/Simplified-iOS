@@ -105,11 +105,12 @@ import Foundation
       guard let array = result as? Array<Dictionary<String, Any>> else { return values }
       for item in array {
         if let keyData = item[kSecAttrAccount as String] as? Data,
-          let valueData = item[kSecValueData as String] as? Data,
-          let keyString = NSKeyedUnarchiver.unarchiveObject(with: keyData) as? String {
-            Log.debug(#file, "Value found for keychain key: \(keyString)")
-            let value = NSKeyedUnarchiver.unarchiveObject(with: valueData) as AnyObject
-            values[keyString] = value
+           let valueData = item[kSecValueData as String] as? Data,
+           let keyString = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSString.self, 
+                                                                   from: keyData) 
+        {
+          let value = NSKeyedUnarchiver.unarchiveObject(with: valueData) as? AnyObject
+          values[keyString as String] = value
         }
       }
     }
@@ -141,10 +142,12 @@ import Foundation
       guard let array = result as? Array<Dictionary<String, Any>> else { return }
       for item in array {
         if let keyData = item[kSecAttrAccount as String] as? Data,
-          let valueData = item[kSecValueData as String] as? Data,
-          let keyString = NSKeyedUnarchiver.unarchiveObject(with: keyData) as? String {
+           let valueData = item[kSecValueData as String] as? Data,
+           let keyString = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSString.self,
+                                                                   from: keyData)
+        {
           let value = NSKeyedUnarchiver.unarchiveObject(with: valueData) as AnyObject
-          values[keyString] = value
+          values[keyString as String] = value
         }
       }
     }

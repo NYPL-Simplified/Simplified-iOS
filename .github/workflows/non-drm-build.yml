@@ -10,9 +10,9 @@ jobs:
       - name: Check available Xcodes
         run: ls -la /Applications | grep Xcode
       - name: Force Xcode we use for development
-        run: sudo xcode-select -switch /Applications/Xcode_14.3.app
+        run: sudo xcode-select -switch /Applications/Xcode_15.0.1.app
       - name: Checkout main repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up repo for nonDRM build
         run: exec ./scripts/setup-repo-nodrm.sh
         env:

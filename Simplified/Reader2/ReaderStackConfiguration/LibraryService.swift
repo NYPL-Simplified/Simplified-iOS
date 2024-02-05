@@ -22,7 +22,7 @@ import R2Streamer
 ///
 /// Readium 2.5.0 deprecates `PublicationServer` and introduces
 /// `GCDHTTPServer` in its place. However, this causes significant scrolling
-/// and book content navigation issues with VoiceOver. By casting your
+/// and book content navigation issues with VoiceOver. By casting 
 /// `PublicationServer` references to `PublicationServing`, this workaround
 /// silences the deprecation warnings until we find an official solution.
 protocol PublicationServing: ResourcesServer {

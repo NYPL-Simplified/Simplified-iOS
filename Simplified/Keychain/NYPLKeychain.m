@@ -35,8 +35,14 @@
 
 - (id)objectForKey:(NSString *const)key accessGroup:(NSString *const)groupID
 {
-  NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
-  
+  NSError *error = nil;
+  NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key
+                                                requiringSecureCoding:NO
+                                                                error:&error];
+  if (error) {
+    NYPLLOG_F(@"Error archiving key [%@] while reading from keychain: %@", key, error);
+  }
+
   NSMutableDictionary *const dictionary = [self defaultDictionary];
   dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
   dictionary[(__bridge __strong id) kSecMatchLimit] = (__bridge id) kSecMatchLimitOne;
@@ -61,9 +67,24 @@
 
 - (void)setObject:(id const)value forKey:(NSString *const)key accessGroup:(NSString *const)groupID
 {
-  NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
-  NSData *const valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
-  
+  NSError *error = nil;
+  NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key
+                                                requiringSecureCoding:NO
+                                                                error:&error];
+  if (error) {
+    NYPLLOG_F(@"Error archiving key [%@] while writing to keychain: %@", 
+              key, error);
+    error = nil;
+  }
+
+  NSData *const valueData = [NSKeyedArchiver archivedDataWithRootObject:value
+                                                  requiringSecureCoding:NO
+                                                                  error:&error];
+  if (error) {
+    NYPLLOG_F(@"Error archiving value [%@] for key [%@] while writing to keychain: %@",
+              value, key, error);
+  }
+
   NSMutableDictionary *const queryDictionary = [self defaultDictionary];
   queryDictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
   if (groupID) {
@@ -98,8 +119,15 @@
 
 - (void)removeObjectForKey:(NSString *const)key accessGroup:(NSString *const)groupID
 {
-  NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
-  
+  NSError *error = nil;
+  NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key
+                                                requiringSecureCoding:NO
+                                                                error:&error];
+  if (error) {
+    NYPLLOG_F(@"Error archiving key [%@] while removing from keychain: %@", 
+              key, error);
+  }
+
   NSMutableDictionary *const dictionary = [self defaultDictionary];
   dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
   if (groupID) {

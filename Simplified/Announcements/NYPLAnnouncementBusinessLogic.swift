@@ -27,9 +27,11 @@ class NYPLAnnouncementBusinessLogic {
   // MARK: - Read
     
   private func restorePresentedAnnouncements() {
-    guard let filePathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(announcementsFilename),
+    guard 
+      let filePathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(announcementsFilename),
       let filePathData = try? Data(contentsOf: filePathURL),
-      let unarchived = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(filePathData),
+      let unarchived = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSSet.self, 
+                                                               from: filePathData),
       let presented = unarchived as? Set<String> else {
         return
     }
@@ -61,7 +63,9 @@ class NYPLAnnouncementBusinessLogic {
     }
     
     do {
-      let codedData = NSKeyedArchiver.archivedData(withRootObject: presentedAnnouncements)
+      let codedData = try NSKeyedArchiver
+        .archivedData(withRootObject: presentedAnnouncements,
+                      requiringSecureCoding: false)
       try codedData.write(to: filePathURL)
     } catch {
       NYPLErrorLogger.logError(error,
