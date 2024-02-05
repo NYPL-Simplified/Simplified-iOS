@@ -42,6 +42,6 @@ echo "** Version / build number changes **"
 echo "SimplyE: ($SIMPLYE_CHANGED)"
 echo "Open eBooks: ($OPENEBOOKS_CHANGED)"
 
-echo "::set-output name=simplye_changed::$SIMPLYE_CHANGED"
-echo "::set-output name=openebooks_changed::$OPENEBOOKS_CHANGED"
-
+# make values accessible to GitHub workflows
+echo "simplye_changed=$SIMPLYE_CHANGED" >> $GITHUB_OUTPUT
+echo "openebooks_changed=$OPENEBOOKS_CHANGED" >> $GITHUB_OUTPUT
