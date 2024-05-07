@@ -16,12 +16,5 @@ platform :ios do
       app_identifier: "org.nypl.labs.SimplyE",
       adhoc: "true"
     )
-    sigh(
-      app_identifier: "org.nypl.labs.OpenEbooks"
-    )
-    sigh(
-      app_identifier: "org.nypl.labs.OpenEbooks",
-      adhoc: "true"
-    )
   end
 end

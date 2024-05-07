@@ -1,4 +1,4 @@
-[![SimplyE and Open eBooks Build](https://github.com/NYPL-Simplified/Simplified-iOS/workflows/SimplyE%20and%20Open%20eBooks%20Build/badge.svg)](https://github.com/NYPL-Simplified/Simplified-iOS/actions?query=workflow%3A%22SimplyE%20and%20Open%20eBooks%20Build%22) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![SimplyE  Build](https://github.com/NYPL-Simplified/Simplified-iOS/workflows/SimplyE%20Build/badge.svg)](https://github.com/NYPL-Simplified/Simplified-iOS/actions?query=workflow%3A%22SimplyE%20Build%22) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # SimplyE and Open eBooks
 
@@ -6,11 +6,11 @@ This repo contains the client-side code for the New York Public Library's [Simpl
 
 The 2 apps share most of the code base. App-specific source files will have a `SE` / `OE` prefix or suffix, while configuration files reside in the `SimplyE` and `OpenEbooks` directories at the root of the repo. 
 
-Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/releases) in this repo track both apps. However, you won't see any Open eBooks versions before 1.9.0 because historically Open eBooks lived in a separate repo. Releases that lack an app specifier, i.e. any version such as v3.6.1 and earlier, are SimplyE releases.
+Consequently, [releases](https://github.com/NYPL-Simplified/Simplified-iOS/releases) in this repo track both apps. However, you won't see any Open eBooks versions before 1.9.0 because historically Open eBooks lived in a separate repo. You also won't see Open eBooks releases after 2.5.1, because Open eBooks development has been moved to a different repo. Releases that lack an app specifier, i.e. any version such as v3.6.1 and earlier, are SimplyE releases.
 
 # System Requirements
 
-- Install Xcode 14.3.1 in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install Xcode 15.0.1 in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) 0.38 or newer if you haven't already. Using `brew` is recommended.
 
 # Building without DRM support
@@ -58,7 +58,7 @@ The `scripts` directory contains a number of other scripts to build dependencies
 
 Open eBooks is an app primarily targeted toward the education space. It requires DRM. Follow the same steps as indicated above and use the "Open eBooks" Xcode target.
 
-NOTE: the Open eBooks target needs to be upgraded to match SimplyE's.
+NOTE: *OPEN EBOOKS IS NO LONGER SUPPORTED IN THIS REPO.*
 
 # Contributing
 
@@ -78,11 +78,11 @@ Release branch names follow the convention: `release/simplye/<version>` or `rele
 
 Feature branch names (for features whose development is a month or more): `feature/<feature-name>`, e.g. `feature/my-new-screen`.
 
-[Continuous integration](https://github.com/NYPL-Simplified/Simplified/wiki/iOS-CI-CD) is enabled on push events on `develop`, release and feature branches. SimplyE and Open eBooks device builds are uploaded to Firebase and, for release builds, also to TestFlight.
+[Continuous integration](https://github.com/NYPL-Simplified/Simplified/wiki/iOS-CI-CD) is enabled on push events on `develop`, release and feature branches. SimplyE device builds are uploaded to Firebase and, for release builds, also to TestFlight. *CI no longer builds Open eBooks.*
 
 # License
 
-Copyright © 2015-2023 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2015-2024 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
