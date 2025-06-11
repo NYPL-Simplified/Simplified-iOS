@@ -512,7 +512,6 @@
 		7392E4622788E75B006F010E /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E4612788E75B006F010E /* NYPLCardCreator */; };
 		7392E4682788E7CB006F010E /* NYPLAudiobookToolkit in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E4672788E7CB006F010E /* NYPLAudiobookToolkit */; };
 		7392E46A2788E7CB006F010E /* NYPLCardCreator in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E4692788E7CB006F010E /* NYPLCardCreator */; };
-		7392E46C2788E7D8006F010E /* NYPLAxis in Frameworks */ = {isa = PBXBuildFile; productRef = 7392E46B2788E7D8006F010E /* NYPLAxis */; };
 		7398290E284AC94500382FE1 /* NYPLConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7398290D284AC94500382FE1 /* NYPLConfiguration.swift */; };
 		73982910284AC94500382FE1 /* NYPLConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7398290D284AC94500382FE1 /* NYPLConfiguration.swift */; };
 		73982911284AC94500382FE1 /* NYPLConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7398290D284AC94500382FE1 /* NYPLConfiguration.swift */; };
@@ -1864,7 +1863,6 @@
 				73FCA37225005BA4001B0C5D /* libz.dylib in Frameworks */,
 				73FCA36A25005BA4001B0C5D /* LocalAuthentication.framework in Frameworks */,
 				73FCA35D25005BA4001B0C5D /* MediaPlayer.framework in Frameworks */,
-				7392E46C2788E7D8006F010E /* NYPLAxis in Frameworks */,
 				73369F1E27862D6800752ECB /* PureLayout in Frameworks */,
 				73F5DE882774EE3200597F1E /* NYPLUtilities in Frameworks */,
 				732F04712633783B0018A82E /* PDFRendererProvider.xcframework in Frameworks */,
@@ -3233,7 +3231,6 @@
 			packageProductDependencies = (
 				73F5DE872774EE3200597F1E /* NYPLUtilities */,
 				73369F1D27862D6800752ECB /* PureLayout */,
-				7392E46B2788E7D8006F010E /* NYPLAxis */,
 			);
 			productName = Simplified;
 			productReference = 73FCA3A425005BA4001B0C5D /* Open eBooks.app */;
@@ -3279,9 +3276,10 @@
 		A823D805192BABA400B55DE2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = NYPL;
 				LastSwiftUpdateCheck = 1330;
-				LastUpgradeCheck = 1340;
+				LastUpgradeCheck = 1610;
 				ORGANIZATIONNAME = NYPL;
 				TargetAttributes = {
 					2D2B47711D08F807007F7764 = {
@@ -4911,6 +4909,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -4919,8 +4918,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEFINES_MODULE = YES;
+				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -4937,6 +4938,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "c99 gnu++11";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -4973,6 +4975,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -4981,8 +4984,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEFINES_MODULE = YES;
+				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -4992,6 +4997,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "c99 gnu++11";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -5185,7 +5191,7 @@
 			repositoryURL = "https://github.com/readium/swift-toolkit.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 2.6.1;
+				minimumVersion = 2.7.4;
 			};
 		};
 		73579044276BE7F2009F1ADF /* XCRemoteSwiftPackageReference "iOS-Utilities" */ = {
@@ -5320,10 +5326,6 @@
 		7392E4692788E7CB006F010E /* NYPLCardCreator */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = NYPLCardCreator;
-		};
-		7392E46B2788E7D8006F010E /* NYPLAxis */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = NYPLAxis;
 		};
 		739F43A52770FEA5005A8E1F /* NYPLUtilities */ = {
 			isa = XCSwiftPackageProductDependency;

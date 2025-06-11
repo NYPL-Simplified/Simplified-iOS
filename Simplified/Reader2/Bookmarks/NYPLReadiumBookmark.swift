@@ -86,7 +86,7 @@ import NYPLUtilities
   let progressWithinBook: Float?
 
   var percentInChapter:String {
-    return (self.progressWithinChapter * 100).roundTo(decimalPlaces: 0)
+      return (Double(self.progressWithinChapter * 100)).roundTo(decimalPlaces: 0)
   }
 
   /// The device ID this bookmark was created on.
