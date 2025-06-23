@@ -1,5 +1,6 @@
 import Foundation
 import SQLite
+typealias Expression = SQLite.Expression
 
 /**
  Recommended pattern by SQLite docs
@@ -52,15 +53,15 @@ final class NetworkQueue: NSObject {
   
   private let sqlTable = Table(NetworkQueue.TableName)
   
-    private let sqlID = Expression<Int>(value: "id")
-    private let sqlLibraryID = Expression<String>(value: "library_identifier")
-    private let sqlUpdateID = Expression<String?>(value: "update_identifier")
-    private let sqlUrl = Expression<String>(value: "request_url")
-    private let sqlMethod = Expression<String>(value: "request_method")
-    private let sqlParameters = Expression<Data?>(value: "request_parameters")
-    private let sqlHeader = Expression<Data?>(value: "request_header")
-    private let sqlRetries = Expression<Int>(value: "retry_count")
-    private let sqlDateCreated = Expression<Data>(value: "date_created")
+  private let sqlID = Expression<Int>("id")
+  private let sqlLibraryID = Expression<String>("library_identifier")
+  private let sqlUpdateID = Expression<String?>("update_identifier")
+  private let sqlUrl = Expression<String>("request_url")
+  private let sqlMethod = Expression<String>("request_method")
+  private let sqlParameters = Expression<Data?>("request_parameters")
+  private let sqlHeader = Expression<Data?>("request_header")
+  private let sqlRetries = Expression<Int>("retry_count")
+  private let sqlDateCreated = Expression<Data>("date_created")
   
   
   // MARK: - Public Functions

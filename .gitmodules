@@ -28,3 +28,6 @@
 [submodule "NYPLAudiobookToolkit"]
 	path = NYPLAudiobookToolkit
 	url = https://github.com/NYPL-Simplified/NYPLAudiobookToolkit.git
+[submodule "availability"]
+	path = availability
+	url = https://github.com/go-darwin/availability
