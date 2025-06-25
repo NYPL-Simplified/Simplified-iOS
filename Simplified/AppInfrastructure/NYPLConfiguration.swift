@@ -28,6 +28,10 @@ class NYPLConfiguration: NSObject {
   @objc static var accentColor: UIColor {
     return UIColor(red: 0.0/255.0, green: 144/255.0, blue: 196/255.0, alpha:1.0)
   }
+    
+  @objc static var blueBackgroundColor: UIColor {
+      return UIColor(red: 20/255.0, green: 54/255.0, blue: 97/255.0, alpha:1.0)
+    }
 
   @objc static var readerBackgroundColor: UIColor {
     return UIColor(white: 250/255.0, alpha:1.0)

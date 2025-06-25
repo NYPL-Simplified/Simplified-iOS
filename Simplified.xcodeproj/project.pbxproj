@@ -1030,6 +1030,9 @@
 		8C835DD5234D0B900050A18D /* NYPLFacetBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C835DD4234D0B900050A18D /* NYPLFacetBarView.swift */; };
 		8CC26F832370C1DF0000D8E1 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC26F822370C1DF0000D8E1 /* Account.swift */; };
 		8CE9C471237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CE9C470237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift */; };
+		95F0AA4B2E091D99007AA753 /* DeprecationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F0AA4A2E091D99007AA753 /* DeprecationView.swift */; };
+		95F0AA4C2E091D99007AA753 /* DeprecationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F0AA4A2E091D99007AA753 /* DeprecationView.swift */; };
+		95F0AA4D2E091D99007AA753 /* DeprecationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F0AA4A2E091D99007AA753 /* DeprecationView.swift */; };
 		A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
 		A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */; };
@@ -1708,6 +1711,7 @@
 		8C835DD4234D0B900050A18D /* NYPLFacetBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLFacetBarView.swift; sourceTree = "<group>"; };
 		8CC26F822370C1DF0000D8E1 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		8CE9C470237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookDetailsProblemDocumentViewController.swift; sourceTree = "<group>"; };
+		95F0AA4A2E091D99007AA753 /* DeprecationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecationView.swift; sourceTree = "<group>"; };
 		A4276F461B00046300CA7194 /* NYPLMyBooksDownloadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadInfo.h; sourceTree = "<group>"; };
 		A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksDownloadInfo.m; sourceTree = "<group>"; };
 		A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRemoteViewController.h; sourceTree = "<group>"; };
@@ -2906,6 +2910,7 @@
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
 				17E81F07261522B3001003C2 /* NYPLRoundedButton.swift */,
+				95F0AA4A2E091D99007AA753 /* DeprecationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3763,6 +3768,7 @@
 				2126FE6625C089110095C45C /* ReaderFormatModule.swift in Sources */,
 				7321485C28651E4B000DF0F0 /* NYPLSignInModalFactory.swift in Sources */,
 				73EB0A8725821DF4006BC997 /* NYPLCatalogGroupedFeedViewController.m in Sources */,
+				95F0AA4B2E091D99007AA753 /* DeprecationView.swift in Sources */,
 				73EB0A8825821DF4006BC997 /* NYPLBackgroundExecutor.swift in Sources */,
 				73D8D27F25A68D4300DF5F69 /* NYPLBookmarkR2Location.swift in Sources */,
 				73EB0A8925821DF4006BC997 /* NYPLProblemDocument.swift in Sources */,
@@ -4024,6 +4030,7 @@
 				7359DCB527E92462001C4254 /* NYPLSignInBusinessLogic+OAuthClientCredentials.swift in Sources */,
 				73FCA2C625005BA4001B0C5D /* NYPLReloadView.m in Sources */,
 				1747335C2853B1190090B1F3 /* NYPLSettingsDeleteServerDataViewController.swift in Sources */,
+				95F0AA4C2E091D99007AA753 /* DeprecationView.swift in Sources */,
 				73FCA2C925005BA4001B0C5D /* NYPLCatalogGroupedFeedViewController.m in Sources */,
 				73FCA2CA25005BA4001B0C5D /* NYPLBackgroundExecutor.swift in Sources */,
 				73CB8CC9285012D700603BA1 /* OELoginNavHeader.swift in Sources */,
@@ -4327,6 +4334,7 @@
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				03690E291EB2B44300F75D5F /* NYPLReadiumBookmark.swift in Sources */,
 				E683953B217663B100371072 /* NYPLFacetViewDefaultDataSource.swift in Sources */,
+				95F0AA4D2E091D99007AA753 /* DeprecationView.swift in Sources */,
 				174733662857A6950090B1F3 /* NYPLSettingsDeleteLibraryCardViewController.swift in Sources */,
 				73B5DFDC26052A1800225C12 /* NYPLBookButtonsState.m in Sources */,
 				E6207B652118973800864143 /* NYPLAppTheme.swift in Sources */,

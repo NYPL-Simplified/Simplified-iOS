@@ -66,6 +66,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) FacetShow activeFacetShow;
 @property (nonatomic) FacetSort activeFacetSort;
 @property (nonatomic) NSArray *books;
+@property (nonatomic) DeprecationView *deprecationView;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) UILabel *instructionsLabel;
 @property (nonatomic) UIRefreshControl *refreshControl;
@@ -130,7 +131,13 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   [self.refreshControl addTarget:self action:@selector(didPullToRefresh) forControlEvents:UIControlEventValueChanged];
   [self.collectionView addSubview:self.refreshControl];
   
-  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
+    self.deprecationView = [[DeprecationView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+    [self.view addSubview:self.deprecationView];
+    [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+    [self.deprecationView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
+    
+  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointMake(0, 86) width:0];
   self.facetBarView.facetView.dataSource = self;
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];

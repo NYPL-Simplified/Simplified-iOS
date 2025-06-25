@@ -30,6 +30,7 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) UIRefreshControl *collectionViewRefreshControl;
 @property (nonatomic) UIActivityIndicatorView *collectionViewActivityIndicator;
+@property (nonatomic) DeprecationView *deprecationView;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLFacetViewDefaultDataSource *facetViewDataSource;
 
@@ -94,8 +95,14 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   }
   
   [self.collectionView reloadData];
+    
+    self.deprecationView = [[DeprecationView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+    [self.view addSubview:self.deprecationView];
+    [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+    [self.deprecationView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
 
-  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+    self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointMake(0, 86) width:self.view.bounds.size.width];
   self.facetBarView.entryPointView.delegate = self;
   self.facetBarView.entryPointView.dataSource = self;
   self.facetViewDataSource = [[NYPLFacetViewDefaultDataSource alloc] initWithFacetGroups:self.feed.facetGroups];
@@ -105,7 +112,7 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   [self.view addSubview:self.facetBarView];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.facetBarView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
+    [self.facetBarView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_deprecationView withOffset:6.0];
 
   self.collectionViewActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.collectionViewActivityIndicator.hidden = YES;
