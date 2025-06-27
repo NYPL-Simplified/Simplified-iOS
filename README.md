@@ -1,4 +1,6 @@
 [![SimplyE and Open eBooks Build](https://github.com/NYPL-Simplified/Simplified-iOS/workflows/SimplyE%20and%20Open%20eBooks%20Build/badge.svg)](https://github.com/NYPL-Simplified/Simplified-iOS/actions?query=workflow%3A%22SimplyE%20and%20Open%20eBooks%20Build%22) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+>  The SimplyE app will be discontinued in August 2025 and the resources shared here will be retired.
+
 
 # SimplyE and Open eBooks
 
