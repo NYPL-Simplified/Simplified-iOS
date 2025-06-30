@@ -35,7 +35,7 @@ extension NYPLReadiumBookmark {
       return false
     }
 
-    return self.progressWithinChapter =~= locatorChapterProgress
+    return self.progressWithinChapter == locatorChapterProgress
   }
 
   override func isEqual(_ object: Any?) -> Bool {
@@ -43,7 +43,7 @@ extension NYPLReadiumBookmark {
       return false
     }
 
-    let progressIsEqual = (self.progressWithinChapter =~= other.progressWithinChapter)
+    let progressIsEqual = (self.progressWithinChapter == other.progressWithinChapter)
 
     switch self.chapterID {
     case .href(let href):

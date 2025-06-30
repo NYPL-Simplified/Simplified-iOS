@@ -165,7 +165,7 @@ private let NYPLRoundedButtonPadding: CGFloat = 6.0
 }
 
 extension NYPLRoundedButton {
-  @objc (initWithType:isFromDetailView:)
+  @objc(initWithType:isFromDetailView:)
   convenience init(type: NYPLRoundedButtonType, isFromDetailView: Bool) {
     self.init(type: type, endDate: nil, isFromDetailView: isFromDetailView)
   }

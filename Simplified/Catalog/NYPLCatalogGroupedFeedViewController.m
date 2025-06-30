@@ -34,6 +34,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
+@property (nonatomic) DeprecationView *deprecationView;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NYPLBook *mostRecentBookSelected;
 @property (nonatomic) int tempBookPosition;
@@ -95,14 +96,20 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
 
-  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+  self.deprecationView = [[DeprecationView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+  [self.view addSubview:self.deprecationView];
+  [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.deprecationView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
+    
+  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointMake(0, self.deprecationView.frame.size.height) width:self.view.bounds.size.width];
   self.facetBarView.entryPointView.delegate = self;
   self.facetBarView.entryPointView.dataSource = self;
 
   [self.view addSubview:self.facetBarView];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.facetBarView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
+  [self.facetBarView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_deprecationView];
 
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -131,7 +138,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   [super didMoveToParentViewController:parent];
   
   if(parent) {
-    CGFloat top = self.view.safeAreaInsets.top;
+    CGFloat top = self.view.safeAreaInsets.top + self.deprecationView.frame.size.height + kTableViewInsetAdjustmentWithEntryPoints;
     if (self.facetBarView.frame.size.height > 0) {
        top = CGRectGetMaxY(self.facetBarView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
     }

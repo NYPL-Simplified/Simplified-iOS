@@ -66,6 +66,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) FacetShow activeFacetShow;
 @property (nonatomic) FacetSort activeFacetSort;
 @property (nonatomic) NSArray *books;
+@property (nonatomic) DeprecationView *deprecationView;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) UILabel *instructionsLabel;
 @property (nonatomic) UIRefreshControl *refreshControl;
@@ -115,52 +116,58 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 
 - (void)viewDidLoad
 {
-  [super viewDidLoad];
-  
-  self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
-  
-  self.activeFacetShow = FacetShowAll;
-  self.activeFacetSort = FacetSortAuthor;
-  
-  self.collectionView.dataSource = self;
-  self.collectionView.delegate = self;
+    [super viewDidLoad];
+    
+    self.view.backgroundColor = [NYPLConfiguration primaryBackgroundColor];
+    
+    self.activeFacetShow = FacetShowAll;
+    self.activeFacetSort = FacetSortAuthor;
+    
+    self.collectionView.dataSource = self;
+    self.collectionView.delegate = self;
+    
+    self.collectionView.alwaysBounceVertical = YES;
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(didPullToRefresh) forControlEvents:UIControlEventValueChanged];
+    [self.collectionView addSubview:self.refreshControl];
+    
+    self.deprecationView = [[DeprecationView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+    [self.view addSubview:self.deprecationView];
+    [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+    [self.deprecationView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
 
-  self.collectionView.alwaysBounceVertical = YES;
-  self.refreshControl = [[UIRefreshControl alloc] init];
-  [self.refreshControl addTarget:self action:@selector(didPullToRefresh) forControlEvents:UIControlEventValueChanged];
-  [self.collectionView addSubview:self.refreshControl];
-  
-  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
-  self.facetBarView.facetView.dataSource = self;
-  self.facetBarView.facetView.delegate = self;
-  [self.view addSubview:self.facetBarView];
-  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
-  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.facetBarView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
-  
-  self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-  self.instructionsLabel.hidden = YES;
-  self.instructionsLabel.text = NSLocalizedString(@"MyBooksGoToCatalog", nil);
-  self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
-  self.instructionsLabel.textColor = [NYPLConfiguration primaryTextColor];
-  self.instructionsLabel.numberOfLines = 0;
-  [self.view addSubview:self.instructionsLabel];
-  [self.instructionsLabel autoCenterInSuperview];
-  [self.instructionsLabel autoSetDimension:ALDimensionWidth toSize:300.0];
-  
-  self.searchButton = [[UIBarButtonItem alloc]
-                       initWithImage:[UIImage imageNamed:@"Search"]
-                       style:UIBarButtonItemStylePlain
-                       target:self
-                       action:@selector(didSelectSearch)];
-  self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
-  self.navigationItem.rightBarButtonItem = self.searchButton;
+    self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointMake(0, self.deprecationView.frame.size.height) width:self.view.bounds.size.width];
+    self.facetBarView.facetView.dataSource = self;
+    self.facetBarView.facetView.delegate = self;
+    [self.view addSubview:self.facetBarView];
+    [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+    [self.facetBarView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_deprecationView];
 
-  // prevent possible unusable Search box when going to Search page
-  self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]
-                                           initWithTitle:NSLocalizedString(@"Back", @"Back button text")
-                                           style:UIBarButtonItemStylePlain
-                                           target:nil action:nil];
+    self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    self.instructionsLabel.hidden = YES;
+    self.instructionsLabel.text = NSLocalizedString(@"MyBooksGoToCatalog", nil);
+    self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
+    self.instructionsLabel.textColor = [NYPLConfiguration primaryTextColor];
+    self.instructionsLabel.numberOfLines = 0;
+    [self.view addSubview:self.instructionsLabel];
+    [self.instructionsLabel autoCenterInSuperview];
+    [self.instructionsLabel autoSetDimension:ALDimensionWidth toSize:300.0];
+    
+    self.searchButton = [[UIBarButtonItem alloc]
+                         initWithImage:[UIImage imageNamed:@"Search"]
+                         style:UIBarButtonItemStylePlain
+                         target:self
+                         action:@selector(didSelectSearch)];
+    self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
+    self.navigationItem.rightBarButtonItem = self.searchButton;
+    
+    // prevent possible unusable Search box when going to Search page
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]
+                                             initWithTitle:NSLocalizedString(@"Back", @"Back button text")
+                                             style:UIBarButtonItemStylePlain
+                                             target:nil action:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated

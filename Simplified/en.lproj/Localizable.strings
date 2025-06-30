@@ -322,4 +322,5 @@ Deleting your account means that you will no longer have access to ebooks, audio
 "hour_suffix_short" = "%d h";
 
 // Announcement
-"Announcement" = "Announcement";
+"Important Update" = "Important Update";
+"Please note: SimplyE will discontinue service in late August 2025. Learn more: nypl.org/ebookhelp" = "Please note: SimplyE will discontinue service in late August 2025. Learn more: nypl.org/ebookhelp";

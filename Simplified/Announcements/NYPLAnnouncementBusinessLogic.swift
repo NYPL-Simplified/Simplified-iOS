@@ -83,7 +83,7 @@ class NYPLAnnouncementBusinessLogic {
   - Returns: The alert controller to be presented.
   */
   private func alert(announcements: [Announcement]) -> UIAlertController? {
-    let title = NSLocalizedString("Announcement", comment: "")
+    let title = NSLocalizedString("Important Update", comment: "")
     var currentAlert: UIAlertController? = nil
     
     let alerts = announcements.map {
