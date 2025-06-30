@@ -95,7 +95,6 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFl
     }
     
     [self.collectionView reloadData];
-    
     self.deprecationView = [[DeprecationView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
     [self.view addSubview:self.deprecationView];
     [self.deprecationView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
@@ -112,7 +111,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFl
     [self.view addSubview:self.facetBarView];
     [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
     [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-    [self.facetBarView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_deprecationView withOffset:6.0];
+    [self.facetBarView autoPinEdgeToSuperviewSafeArea:ALEdgeTop];
     
     self.collectionViewActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.collectionViewActivityIndicator.hidden = YES;

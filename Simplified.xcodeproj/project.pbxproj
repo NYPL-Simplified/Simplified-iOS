@@ -4729,7 +4729,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.9.5;
+				MARKETING_VERSION = 3.9.7;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_MODULE_NAME = SimplyE;
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
@@ -4776,7 +4776,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.9.5;
+				MARKETING_VERSION = 3.9.7;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_MODULE_NAME = SimplyE;
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
@@ -5051,7 +5051,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.9.6;
+				MARKETING_VERSION = 3.9.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ld_classic",
@@ -5108,7 +5108,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.9.6;
+				MARKETING_VERSION = 3.9.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ld_classic",

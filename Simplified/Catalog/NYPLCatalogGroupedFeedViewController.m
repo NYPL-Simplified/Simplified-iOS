@@ -140,7 +140,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   if(parent) {
     CGFloat top = self.view.safeAreaInsets.top + self.deprecationView.frame.size.height + kTableViewInsetAdjustmentWithEntryPoints;
     if (self.facetBarView.frame.size.height > 0) {
-       top += CGRectGetMaxY(self.facetBarView.frame);
+       top = CGRectGetMaxY(self.facetBarView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
     }
     CGFloat bottom = self.view.safeAreaInsets.bottom;
     
