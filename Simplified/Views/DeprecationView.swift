@@ -1,6 +1,21 @@
 import UIKit
+import WebKit
 
 @objcMembers class DeprecationView : UIView {
+
+    var linkButton: UIButton = {
+        let linkButton = UIButton(type: .custom)
+        linkButton.backgroundColor = NYPLConfiguration.blueBackgroundColor
+        linkButton.setTitle("Please note: SimplyE will discontinue service in late August 2025. Learn more: nypl.org/ebookhelp", for: .normal)
+        linkButton.setTitleColor(.white, for: .normal)
+        linkButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        linkButton.titleLabel?.textAlignment = .center
+        linkButton.titleLabel?.numberOfLines = 0
+        linkButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        linkButton.translatesAutoresizingMaskIntoConstraints = false
+        linkButton.isUserInteractionEnabled = true
+        return linkButton
+    }()
  
   @available(*, unavailable)
   private override init(frame: CGRect) {
@@ -13,24 +28,17 @@ import UIKit
   }
   
   init(origin: CGPoint, width: CGFloat) {
-    let toolbarHeight = CGFloat(80);
-    
-    super.init(frame: CGRect(x: origin.x, y: origin.y, width: width, height: toolbarHeight))
+      super.init(frame: CGRect(x: origin.x, y: origin.y, width: width, height: linkButton.frame.size.height))
 
-    let linkButton = UIButton(type: .custom)
-      linkButton.backgroundColor = NYPLConfiguration.blueBackgroundColor
-      linkButton.setTitle("Please note: SimplyE will discontinue service in late August 2025. Learn more: nypl.org/ebookhelp", for: .normal)
-      linkButton.setTitleColor(.white, for: .normal)
-      linkButton.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
-      linkButton.titleLabel?.numberOfLines = 0
-      linkButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 30, bottom: 20, right: 30)
-      addSubview(linkButton)
-      linkButton.translatesAutoresizingMaskIntoConstraints = false
-      linkButton.addTarget(self, action: #selector(myButtonTapped(_:)), for: .touchUpInside)
-      
+    addSubview(linkButton)
+    linkButton.addTarget(self, action: #selector(myButtonTapped), for: .touchUpInside)
+    linkButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
+    linkButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
+    linkButton.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+    linkButton.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
   }
     
-  @IBAction func myButtonTapped(_ sender: Any) {
+  @objc func myButtonTapped() {
     if let url = URL(string: "https://www.nypl.org/ebookhelp") {
         UIApplication.shared.open(url)
     } else {
